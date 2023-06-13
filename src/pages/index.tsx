@@ -21,7 +21,7 @@ const Home = () => {
 
         <p className="mt-3 text-2xl">
           Get started by editing{' '}
-          <code className="bg-black-100 rounded-md p-3 font-mono text-lg">pages/index.js</code>
+          <code className="rounded-md p-3 font-mono text-lg">pages/index.js</code>
         </p>
 
         <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full ">
