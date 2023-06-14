@@ -274,6 +274,7 @@ module.exports = {
         darkGray6: '#121214',
         darkGray7: '#1C1C1E',
         darkGray8: '#2A3139',
+        darkGray9: '#212124',
 
         lightGray: '#8B8E91',
         lightGray1: '#EDECEC',
@@ -310,6 +311,18 @@ module.exports = {
 
         lightGray5: '#D4D4D4',
         lightYellow2: '#F8E71C',
+
+        primaryBlue: '#31D3F5',
+        hoverWhite: '#F0F0F0',
+      },
+      dropShadow: {
+        'lg': '0 4px 10px rgba(0,0,0,0.7)',
+      },
+      fontFamily: {
+        barlow: ['Barlow', 'sans-serif', 'ui-sans-serif', 'system-ui'],
+      },
+      maxWidth: {
+        '160px': '160px',
       },
     },
   },
