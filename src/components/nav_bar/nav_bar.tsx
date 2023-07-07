@@ -29,10 +29,10 @@ const NavBar = () => {
 
   // ToDo: (20230614 - Julian) 1. link to other pages 2. i18n
   const desktopNavBar = (
-    <div className="hidden h-80px w-screen items-center bg-darkGray px-10 py-3 text-white lg:flex">
+    <div className="hidden h-80px w-screen items-center bg-darkPurple px-10 py-3 text-white lg:flex">
       <div className="flex flex-1 space-x-5">
         <Link href="/">
-          <Image src="/logo/bolt_logo.svg" width={155} height={40} alt="bolt_logo" />
+          <Image src="/logo/baifaaa_logo.svg" width={190} height={40} alt="bolt_logo" />
         </Link>
 
         <I18n />
@@ -58,7 +58,7 @@ const NavBar = () => {
 
   // ToDo: (20230614 - Julian) wait for mobile mockup
   const mobileNavBar = (
-    <div className="relative flex h-80px w-screen items-center bg-darkGray px-10 py-3 text-white lg:hidden">
+    <div className="relative flex h-80px w-screen items-center bg-darkPurple px-10 py-3 text-white lg:hidden">
       <div className="flex-1">
         <Link href="/">
           <Image src="/logo/bolt_logo.svg" width={155} height={40} alt="bolt_logo" />
@@ -72,7 +72,7 @@ const NavBar = () => {
       </button>
 
       <div
-        className={`absolute left-0 top-0 mt-20 flex w-full flex-col items-center space-y-5 bg-darkGray py-3 ${
+        className={`bg-darkGray absolute left-0 top-0 mt-20 flex w-full flex-col items-center space-y-5 py-3 ${
           menuOpen ? 'visible h-400px opacity-100' : 'invisible h-0 opacity-0'
         } transition-all duration-300 ease-in-out`}
       >
@@ -98,7 +98,7 @@ const NavBar = () => {
 
   return (
     <>
-      <div className="container fixed inset-x-0 top-0 z-40 mx-auto max-w-full">
+      <div className="container fixed inset-x-0 top-0 z-40 mx-auto max-w-full font-Inter shadow-xl">
         {desktopNavBar}
         {mobileNavBar}
       </div>

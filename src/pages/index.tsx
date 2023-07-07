@@ -6,8 +6,16 @@ const Home = () => {
   return (
     <>
       <Head>
-        <title>BOLT Explorer</title>
-        <link rel="icon" href="/favicon.ico" />
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon/favicon.ico" />
+        <title>BAIFAAA</title>
+        <meta name="description" content="" />
+        <meta name="author" content="CAFECA" />
+        <meta name="keywords" content="區塊鏈,人工智慧" />
+
+        <meta property="og:title" content="BAIFAAA" />
+        <meta property="og:description" content="" />
       </Head>
 
       <NavBar />

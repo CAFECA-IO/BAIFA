@@ -24,7 +24,7 @@ const HomePageBody = () => {
         </div>
       </div>
 
-      <div className="">
+      <div className="mt-12">
         <Footer />
       </div>
     </div>

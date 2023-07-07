@@ -3,6 +3,19 @@ module.exports = {
   content: ['./src/**/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      colors: {
+        darkPurple: '#24274A',
+        darkPurple2: '#2C315B',
+        darkPurple3: '#1F2243',
+
+        lightWhite: '#F2F2F2',
+
+        primaryBlue: '#11FFF5',
+        hoverWhite: '#F0F0F0',
+      },
+      backgroundImage: {
+        purpleLinear: 'linear-gradient(180deg, #3F497A 0%, #313866 100%)',
+      },
       fontSize: {
         '3xs': ['8px', '12px'],
         xxs: ['10px', '12px'],
@@ -259,24 +272,21 @@ module.exports = {
         '1/50': '2%',
         '50px': '50px',
       },
-      colors: {
-        darkGray: '#1C1C1E',
-        darkGray2: '#212124',
-        darkGray3: '#999999',
-
-        lightWhite: '#F2F2F2',
-
-        primaryBlue: '#31D3F5',
-        hoverWhite: '#F0F0F0',
-      },
       dropShadow: {
-        'lg': '0 4px 10px rgba(0,0,0,0.7)',
+        lg: '0 4px 10px rgba(0,0,0,0.7)',
+        xl: '0px 4px 24px 0px rgba(0, 0, 0, 0.40)',
       },
       fontFamily: {
-        barlow: ['Barlow', 'sans-serif', 'ui-sans-serif', 'system-ui'],
+        Inter: ['Inter', 'sans-serif', 'ui-sans-serif', 'system-ui'],
       },
       maxWidth: {
         '160px': '160px',
+      },
+      gridTemplateRows: {
+        0: 'repeat(1, minmax(0px, 0fr))',
+      },
+      transitionProperty: {
+        grid: 'grid-template-rows',
       },
     },
   },

@@ -12,17 +12,26 @@ const I18n = () => {
   const subMenu = (
     // ToDo: (20230614 - Julian) i18n Function
     <div
-      className={`absolute top-12 flex w-full flex-col rounded bg-darkGray2 font-sans ${
-        menuOpen ? 'visible h-140px py-2 opacity-100' : 'invisible h-0 py-0 opacity-0'
+      className={`absolute top-12 grid h-auto w-full grid-cols-1 rounded bg-darkPurple2 font-sans ${
+        menuOpen ? 'visible grid-rows-1 opacity-100' : 'invisible grid-rows-0 opacity-0'
       } drop-shadow-lg transition-all duration-300 ease-in-out`}
     >
-      <div className="px-5 py-2 hover:cursor-pointer" onClick={clickENHandler}>
+      <div
+        className="px-6 py-4 hover:cursor-pointer hover:bg-purpleLinear"
+        onClick={clickENHandler}
+      >
         English
       </div>
-      <div className="px-5 py-2 hover:cursor-pointer" onClick={clickTWHandler}>
+      <div
+        className="px-6 py-4 hover:cursor-pointer hover:bg-purpleLinear"
+        onClick={clickTWHandler}
+      >
         繁體中文
       </div>
-      <div className="px-5 py-2 hover:cursor-pointer" onClick={clickCNHandler}>
+      <div
+        className="px-6 py-4 hover:cursor-pointer hover:bg-purpleLinear"
+        onClick={clickCNHandler}
+      >
         简体中文
       </div>
     </div>
@@ -30,7 +39,7 @@ const I18n = () => {
 
   return (
     <>
-      <div className="relative flex w-140px rounded bg-darkGray" onClick={clickMenuHandler}>
+      <div className="bg-darkGray relative flex w-140px rounded" onClick={clickMenuHandler}>
         <div className="flex w-full items-center px-5 py-2 hover:cursor-pointer">
           <div
             className={`flex-1 transition-all duration-300 ease-in-out ${
