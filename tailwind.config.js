@@ -31,7 +31,8 @@ module.exports = {
         '2xl': ['24px', '32px'],
         '3xl': ['30px', '36px'],
         '4xl': ['36px', '40px'],
-        '5xl': ['48px', 1],
+        '40px': ['40px', '44px'],
+        '5xl': ['42px', 1],
         '6xl': ['56px', 1],
         '7xl': ['72px', 1],
         '8xl': ['96px', 1],
@@ -283,6 +284,7 @@ module.exports = {
       },
       fontFamily: {
         inter: ['Inter', 'sans-serif', 'ui-sans-serif', 'system-ui'],
+        roboto: ['Roboto', 'sans-serif', 'ui-sans-serif', 'system-ui'],
       },
       maxWidth: {
         '160px': '160px',

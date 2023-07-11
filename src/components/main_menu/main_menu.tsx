@@ -1,17 +1,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {mainMenuContents} from '../../constants/config';
+import {mainMenuContent} from '../../constants/config';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 
 const MainMenu = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  const mainMenu = mainMenuContents.map(({title, description, mark, link}) => {
+  const mainMenu = mainMenuContent.map(({icon, title, description, mark, link, alt}) => {
     return (
       <Link href={link} key={title}>
         <div className="flex h-200px w-300px flex-col items-center justify-between rounded-lg border p-6 text-center hover:border-primaryBlue">
-          <Image src="/elements/chain.svg" width={80} height={80} alt="Chains_icon" />
+          <Image src={icon} width={80} height={80} alt={alt} />
           <div className="flex text-3xl font-bold text-primaryBlue">
             {description}
             <span className="self-start text-sm">{mark}</span>
