@@ -6,6 +6,12 @@
     "FAQ": "FAQ",
     "WALLET_CONNECT_BUTTON": "Wallet Connect"
   },
+  "HOME_PAGE": {
+    "CHAINS_TITLE": "Chains",
+    "CRYPTO_TITLE": "Crypto Currencies",
+    "BLACKLIST_TITLE": "Black List",
+    "SEARCH_PLACEHOLDER": "What do you want to know?"
+  },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",
     "ANNOUNCEMENT": "BAIFAAA is a Block Explorer and Analytics Platform for BOLT, a decentralized smart contracts platform."

@@ -6,6 +6,12 @@
     "FAQ": "FAQ",
     "WALLET_CONNECT_BUTTON": "連接錢包"
   },
+  "HOME_PAGE": {
+    "CHAINS_TITLE": "區塊鏈",
+    "CRYPTO_TITLE": "加密貨幣",
+    "BLACKLIST_TITLE": "黑名單用戶",
+    "SEARCH_PLACEHOLDER": "想知道什麼？"
+  },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",
     "ANNOUNCEMENT": "BAIFAAA 是去中心化智能合約平台 BOLT 的區塊瀏覽器和分析平台。"
