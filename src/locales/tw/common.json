@@ -1,0 +1,13 @@
+{
+  "NAV_BAR": {
+    "TRACING_TOOL": "追蹤工具",
+    "AUDITING_TOOL": "審計工具",
+    "RED_FLAG": "警示帳戶",
+    "FAQ": "FAQ",
+    "WALLET_CONNECT_BUTTON": "連接錢包"
+  },
+  "FOOTER": {
+    "POWERED_BY": "Powered by BOLT",
+    "ANNOUNCEMENT": "BAIFAAA 是去中心化智能合約平台 BOLT 的區塊瀏覽器和分析平台。"
+  }
+}

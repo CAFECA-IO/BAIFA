@@ -2,8 +2,12 @@ import {useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import I18n from '../i18n/i18n';
+import {useTranslation} from 'next-i18next';
+import {TranslateFunction} from '../../interfaces/locale';
 
 const NavBar = () => {
+  const {t}: {t: TranslateFunction} = useTranslation('common');
+
   const [isLogin, setIsLogin] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -23,7 +27,7 @@ const NavBar = () => {
       className="rounded bg-primaryBlue px-7 py-2 text-black hover:bg-hoverWhite"
       onClick={loginHandler}
     >
-      wallet connect
+      {t('NAV_BAR.WALLET_CONNECT_BUTTON')}
     </button>
   );
 
@@ -39,16 +43,16 @@ const NavBar = () => {
       </div>
       <div className="flex items-center space-x-10">
         <div className="text-white hover:text-primaryBlue">
-          <Link href="/">Tracing Tool</Link>
+          <Link href="/">{t('NAV_BAR.TRACING_TOOL')}</Link>
         </div>
         <div className="text-white hover:text-primaryBlue">
-          <Link href="/">Auditing Tool</Link>
+          <Link href="/">{t('NAV_BAR.AUDITING_TOOL')}</Link>
         </div>
         <div className="text-white hover:text-primaryBlue">
-          <Link href="/">Red Flag</Link>
+          <Link href="/">{t('NAV_BAR.RED_FLAG')}</Link>
         </div>
         <div className="text-white hover:text-primaryBlue">
-          <Link href="/">FAQ</Link>
+          <Link href="/">{t('NAV_BAR.FAQ')}</Link>
         </div>
 
         {isDisplayedUser}
@@ -61,7 +65,7 @@ const NavBar = () => {
     <div className="relative flex h-80px w-screen items-center bg-darkPurple px-10 py-3 text-white lg:hidden">
       <div className="flex-1">
         <Link href="/">
-          <Image src="/logo/bolt_logo.svg" width={155} height={40} alt="bolt_logo" />
+          <Image src="/logo/baifaaa_logo.svg" width={155} height={40} alt="bolt_logo" />
         </Link>
       </div>
 
@@ -79,16 +83,16 @@ const NavBar = () => {
         <I18n />
 
         <div className="p-2 text-white hover:text-primaryBlue">
-          <Link href="/">Tracing Tool</Link>
+          <Link href="/">{t('NAV_BAR.TRACING_TOOL')}</Link>
         </div>
         <div className="p-2 text-white hover:text-primaryBlue">
-          <Link href="/">Auditing Tool</Link>
+          <Link href="/">{t('NAV_BAR.AUDITING_TOOL')}</Link>
         </div>
         <div className="p-2 text-white hover:text-primaryBlue">
-          <Link href="/">Red Flag</Link>
+          <Link href="/">{t('NAV_BAR.RED_FLAG')}</Link>
         </div>
         <div className="p-2 text-white hover:text-primaryBlue">
-          <Link href="/">FAQ</Link>
+          <Link href="/">{t('NAV_BAR.FAQ')}</Link>
         </div>
 
         {isDisplayedUser}
