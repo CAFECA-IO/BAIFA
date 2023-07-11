@@ -1,13 +1,20 @@
 import Image from 'next/image';
-import Footer from '../footer/footer';
-import {massiveDataContent, toolsContent} from '../../constants/config';
+import Link from 'next/link';
+import {massiveDataContent, toolsContent, copyright} from '../../constants/config';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
+import {
+  BiLogoYoutube,
+  BiLogoTwitter,
+  BiLogoInstagram,
+  BiLogoFacebook,
+  BiLogoLinkedin,
+} from 'react-icons/bi';
 
 const LandingPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  const testList = toolsContent.map(({title, description, image, alt}) => {
+  const toolsList = toolsContent.map(({title, description, image, alt}) => {
     return (
       <div
         className="flex w-full items-center justify-between px-20 py-20 odd:flex-row even:flex-row-reverse"
@@ -67,14 +74,71 @@ const LandingPageBody = () => {
         </div>
       </div>
 
-      <div className="flex flex-col items-center">
-        {/* Info:(20230711 - Julian) Tools Introduction Block */}
-        {testList}
+      {/* Info:(20230711 - Julian) Tools Introduction Block */}
+      <div className="flex flex-col items-center">{toolsList}</div>
+
+      {/* Info:(20230711 - Julian) Download Block */}
+      <div className="flex overflow-hidden pt-20">
+        <div className="flex items-center justify-between rounded-t-full bg-violet px-20 font-roboto">
+          <div className="relative -mb-16 h-600px w-600px">
+            <Image
+              src="/elements/rectangle.png"
+              alt="download"
+              fill
+              sizes="520px,auto"
+              style={{objectFit: 'cover'}}
+            />
+          </div>
+
+          <div className="flex flex-col space-y-16 px-20">
+            <div className="flex flex-col space-y-12">
+              <h2 className="text-6xl font-bold">Download The App</h2>
+              <p className="text-lg">Carry the most useful tool with you</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link href="">
+                <Image
+                  src="/elements/app_store_button.svg"
+                  alt="app_store_download"
+                  width={120}
+                  height={40}
+                />
+              </Link>
+              <Link href="">
+                <Image
+                  src="/elements/google_play_button.svg"
+                  alt="google_play_download"
+                  width={135}
+                  height={40}
+                />
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Info:(20230711 - Julian) Footer */}
-      <div className="mt-12">
-        <Footer />
+      <div className="">
+        <div className="flex flex-col bg-darkPurple px-20 py-12 font-roboto drop-shadow-xlReverse">
+          <div className="flex items-start justify-between">
+            {/* Info:(20230711 - Julian) Company Info */}
+            <p className="text-sm">Company Info</p>
+            {/* Info:(20230711 - Julian) Logo */}
+            <div className="flex flex-col items-center space-y-12 px-12">
+              <Image src="/logo/baifaaa_logo.svg" alt="baifaaa_logo" width={200} height={40} />
+              {/* Info:(20230711 - Julian) Copyright */}
+              <div className="flex justify-center text-sm">{copyright}</div>
+            </div>
+            {/* Info:(20230711 - Julian) Social Media */}
+            <div className="flex items-center space-x-4 text-2xl">
+              <BiLogoYoutube />
+              <BiLogoFacebook />
+              <BiLogoTwitter />
+              <BiLogoInstagram />
+              <BiLogoLinkedin />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

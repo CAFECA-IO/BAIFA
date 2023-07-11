@@ -11,6 +11,7 @@ module.exports = {
         lightWhite: '#F2F2F2',
 
         lilac: '#ABA7BD',
+        violet: '#6857D7',
 
         primaryBlue: '#11FFF5',
         hoverWhite: '#F0F0F0',
@@ -39,22 +40,19 @@ module.exports = {
         '9xl': ['128px', 1],
       },
       screens: {
+        /* Info: (20230627 - Julian) 等同於 @media (min-width: ...px) */
         xxs: '370px',
         xs: '500px',
         sm: '640px',
-        // => @media (min-width: 640px) { ... }
         md: '768px',
-        // => @media (min-width: 768px) { ... }
         lg: '1024px',
-        // => @media (min-width: 1024px) { ... }
         xl: '1280px',
-        // => @media (min-width: 1280px) { ... }
         '2xl': '1536px',
-        // => @media (min-width: 1536px) { ... }
         '3xl': '1600px',
       },
       spacing: {
-        // width / height / padding / margin / top / bottom / right / left
+        /* Info: (20230627 - Julian) 適用範圍
+         * width / height / padding / margin / top / bottom / right / left */
         '1px': '1px',
         '2px': '2px',
         '3px': '3px',

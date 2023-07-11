@@ -1,4 +1,4 @@
-export const copyright = '© Boltchain 2023';
+export const copyright = 'BAIFA @ 2023. All rights reserved.';
 
 /* Info: (20230711 - Julian) ----- Home Page ----- */
 export const mainMenuContent = [
