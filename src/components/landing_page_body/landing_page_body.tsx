@@ -3,13 +3,7 @@ import Link from 'next/link';
 import {massiveDataContent, toolsContent, copyright} from '../../constants/config';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {
-  BiLogoYoutube,
-  BiLogoTwitter,
-  BiLogoInstagram,
-  BiLogoFacebook,
-  BiLogoLinkedin,
-} from 'react-icons/bi';
+import {BiLogoGithub, BiLogoLinkedin} from 'react-icons/bi';
 
 const LandingPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -51,23 +45,25 @@ const LandingPageBody = () => {
 
         {/* Info:(20230711 - Julian) Main Title Block */}
         <div className="relative flex h-screen flex-col items-center justify-center space-y-12 px-10 text-center">
-          <h1 className="text-6xl font-bold">Simplify Financial Investigations with Ease</h1>
-          <h2 className="text-lg font-normal">
-            BAIFA: BOLT AI Forensic Accounting and Auditing is where simplicity meets accuracy in
-            the realm of financial investigations.
-          </h2>
+          <h1 className="text-6xl font-bold">{t('LANDING_PAGE.MAIN_TITLE')}</h1>
+          <h2 className="text-lg font-normal">{t('LANDING_PAGE.MAIN_SUBTITLE')}</h2>
 
           {/* Info:(20230711 - Julian) Arrow */}
-          <div className="absolute bottom-20">
+          <Link href="#Advantages" scroll={false} className="absolute bottom-20">
             <Image src="/animations/arrow_down.gif" alt="scroll arrow" width={50} height={50} />
-          </div>
+          </Link>
         </div>
 
         {/* Info:(20230711 - Julian) Advantages Block */}
-        <div className="flex flex-col items-center space-y-16 px-20 pb-20 text-center font-roboto">
+        <div
+          id="Advantages"
+          className="flex flex-col items-center space-y-16 px-20 py-20 text-center font-roboto"
+        >
           <div className="flex flex-col">
-            <h3 className="text-xl font-bold text-primaryBlue">ADVANTAGES</h3>
-            <h2 className="text-5xl font-bold">Real-time Comparison of Massive Data</h2>
+            <h3 className="text-xl font-bold text-primaryBlue">
+              {t('LANDING_PAGE.ADVANTAGES_SUBTITLE')}
+            </h3>
+            <h2 className="text-5xl font-bold">{t('LANDING_PAGE.ADVANTAGES_TITLE')}</h2>
           </div>
 
           <div className="grid grid-cols-5 gap-x-4">{massiveDataList}</div>
@@ -92,8 +88,8 @@ const LandingPageBody = () => {
 
           <div className="flex flex-col space-y-16 px-20">
             <div className="flex flex-col space-y-12">
-              <h2 className="text-6xl font-bold">Download The App</h2>
-              <p className="text-lg">Carry the most useful tool with you</p>
+              <h2 className="text-6xl font-bold">{t('LANDING_PAGE.DOWNLOAD_TITLE')}</h2>
+              <p className="text-lg">{t('LANDING_PAGE.DOWNLOAD_SUBTITLE')}</p>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="">
@@ -122,7 +118,7 @@ const LandingPageBody = () => {
         <div className="flex flex-col bg-darkPurple px-20 py-12 font-roboto drop-shadow-xlReverse">
           <div className="flex items-start justify-between">
             {/* Info:(20230711 - Julian) Company Info */}
-            <p className="text-sm">Company Info</p>
+            <p className="text-sm opacity-0">{t('FOOTER.COMPANY_INFO')}</p>
             {/* Info:(20230711 - Julian) Logo */}
             <div className="flex flex-col items-center space-y-12 px-12">
               <Image src="/logo/baifaaa_logo.svg" alt="baifaaa_logo" width={200} height={40} />
@@ -131,10 +127,7 @@ const LandingPageBody = () => {
             </div>
             {/* Info:(20230711 - Julian) Social Media */}
             <div className="flex items-center space-x-4 text-2xl">
-              <BiLogoYoutube />
-              <BiLogoFacebook />
-              <BiLogoTwitter />
-              <BiLogoInstagram />
+              <BiLogoGithub />
               <BiLogoLinkedin />
             </div>
           </div>

@@ -32,50 +32,47 @@ export const mainMenuContent = [
 export const massiveDataContent = [
   {
     icon: '/icons/wallet.svg',
-    text: 'Over 200 Million Transaction Addresses',
+    text: 'LANDING_PAGE.MASSIVE_DATA_WALLET',
     alt: 'wallet_icon',
   },
   {
     icon: '/icons/blacklist.svg',
-    text: 'Maintaining Over 5 Million Blacklist',
+    text: 'LANDING_PAGE.MASSIVE_DATA_BLACKLIST',
     alt: 'blacklist_icon',
   },
   {
     icon: '/icons/block.svg',
-    text: 'Monitoring Over 30 Blockchains Transactions',
+    text: 'LANDING_PAGE.MASSIVE_DATA_BLOCK',
     alt: 'block_icon',
   },
   {
     icon: '/icons/transaction.svg',
-    text: 'Observing Over 150,000 Transactions Per Second',
+    text: 'LANDING_PAGE.MASSIVE_DATA_TRANSACTION',
     alt: 'transaction_icon',
   },
   {
     icon: '/icons/evidence.svg',
-    text: 'Instant Audit',
+    text: 'LANDING_PAGE.MASSIVE_DATA_EVIDENCE',
     alt: 'evidence_icon',
   },
 ];
 
 export const toolsContent = [
   {
-    title: 'Tracing Tool',
-    description:
-      'Simplify transaction tracking and analysis on the blockchain. Gain valuable insights, verify transactions, and follow the flow of digital assets effortlessly. Experience transparency and real-time auditing with ease.',
+    title: 'LANDING_PAGE.TOOL_INTRO_1_TITLE',
+    description: 'LANDING_PAGE.TOOL_INTRO_1_DESCRIPTION',
     image: '/elements/tracing_tool_2.png',
     alt: 'tracing_tool',
   },
   {
-    title: 'Auditing Tool',
-    description:
-      'Simplify and streamline the auditing process for financial transactions on the blockchain. With our user-friendly tool, you can ensure the accuracy and integrity of financial records while leveraging the transparency and security of blockchain technology. Gain confidence in your financial audits with efficiency.',
+    title: 'LANDING_PAGE.TOOL_INTRO_2_TITLE',
+    description: 'LANDING_PAGE.TOOL_INTRO_2_DESCRIPTION',
     image: '/elements/auditing_tool_1.png',
     alt: 'auditing_tool',
   },
   {
-    title: 'Generate Reports',
-    description:
-      'Whether you need monthly, quarterly, or annual financial reports, our AI Financial Reports Generator enables you to generate professional and reliable reports with just a few clicks.',
+    title: 'LANDING_PAGE.TOOL_INTRO_3_TITLE',
+    description: 'LANDING_PAGE.TOOL_INTRO_3_DESCRIPTION',
     image: '/elements/document.png',
     alt: 'generate_reports',
   },

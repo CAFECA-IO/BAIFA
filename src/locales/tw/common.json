@@ -12,8 +12,28 @@
     "BLACKLIST_TITLE": "黑名單用戶",
     "SEARCH_PLACEHOLDER": "想知道什麼？"
   },
+  "LANDING_PAGE": {
+    "MAIN_TITLE": "簡化金融調查流程，讓您輕鬆應對",
+    "MAIN_SUBTITLE": "BAIFA：透過 BOLT AI 執行法務會計與審計，將簡易性與準確性完美結合於金融調查領域",
+    "ADVANTAGES_SUBTITLE": "我們的優勢",
+    "ADVANTAGES_TITLE": "龐大數據即時比對",
+    "MASSIVE_DATA_WALLET": "超過 2 億個交易地址",
+    "MASSIVE_DATA_BLACKLIST": "維護超過 500 萬個黑名單",
+    "MASSIVE_DATA_BLOCK": "監控超過 30 個區塊鏈交易",
+    "MASSIVE_DATA_TRANSACTION": "觀察每秒超過 15 萬筆交易",
+    "MASSIVE_DATA_EVIDENCE": "即時審計",
+    "TOOL_INTRO_1_TITLE": "追蹤工具",
+    "TOOL_INTRO_1_DESCRIPTION": "簡化區塊鏈上交易的追蹤與分析：利用追蹤工具，使用者能輕鬆獲取有價值的線索來驗證交易，並追蹤數位資產的流向。不須費力即可體驗交易透明度和即時審計。",
+    "TOOL_INTRO_2_TITLE": "審計工具",
+    "TOOL_INTRO_2_DESCRIPTION": "優化區塊鏈上的財務交易審計流程：透過使用者友善的工具，您可以確保財務記錄的準確性和完整性，同時利用區塊鏈技術的透明度和安全性。以高效率增強您對財務審計的信心。",
+    "TOOL_INTRO_3_TITLE": "報表生成器",
+    "TOOL_INTRO_3_DESCRIPTION": "不論您需要月度、季度還是年度財務報告，只要輕鬆點擊幾下，我們的 AI 財務報告生成器都能立即生成專業可靠的報告給您。",
+    "DOWNLOAD_TITLE": "下載應用程式",
+    "DOWNLOAD_SUBTITLE": "讓最實用的工具與您隨行"
+  },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",
-    "ANNOUNCEMENT": "BAIFAAA 是去中心化智能合約平台 BOLT 的區塊瀏覽器和分析平台。"
+    "ANNOUNCEMENT": "BAIFA 是去中心化智能合約平台 BOLT 的區塊瀏覽器和分析平台。",
+    "COMPANY_INFO": "公司資訊"
   }
 }

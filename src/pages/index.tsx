@@ -11,12 +11,12 @@ const Home = () => {
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon/favicon.ico" />
-        <title>BAIFAAA</title>
+        <title>BAIFA</title>
         <meta name="description" content="" />
         <meta name="author" content="CAFECA" />
         <meta name="keywords" content="區塊鏈,人工智慧" />
 
-        <meta property="og:title" content="BAIFAAA" />
+        <meta property="og:title" content="BAIFA" />
         <meta property="og:description" content="" />
       </Head>
 

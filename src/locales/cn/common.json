@@ -6,8 +6,34 @@
     "FAQ": "FAQ",
     "WALLET_CONNECT_BUTTON": "连接钱包"
   },
+  "HOME_PAGE": {
+    "CHAINS_TITLE": "区块链",
+    "CRYPTO_TITLE": "加密货币",
+    "BLACKLIST_TITLE": "黑名单用户",
+    "SEARCH_PLACEHOLDER": "想知道什么？"
+  },
+  "LANDING_PAGE": {
+    "MAIN_TITLE": "简化金融调查流程，让您轻松应对",
+    "MAIN_SUBTITLE": "BAIFA：透过 BOLT AI 执行法务会计与审计，将简易性与准确性完美结合于金融调查领域",
+    "ADVANTAGES_SUBTITLE": "我们的优势",
+    "ADVANTAGES_TITLE": "庞大数据即时比对",
+    "MASSIVE_DATA_WALLET": "超过 2 亿个交易地址",
+    "MASSIVE_DATA_BLACKLIST": "维护超过 500 万个黑名单",
+    "MASSIVE_DATA_BLOCK": "监控超过 30 个区块链交易",
+    "MASSIVE_DATA_TRANSACTION": "观察每秒超过 15 万笔交易",
+    "MASSIVE_DATA_EVIDENCE": "即时审计",
+    "TOOL_INTRO_1_TITLE": "追踪工具",
+    "TOOL_INTRO_1_DESCRIPTION": "简化区块链上交易的追踪与分析：利用追踪工具，使用者能轻松获取有价值的线索来验证交易，并追踪数位资产的流向。不须费力即可体验交易透明度和即时审计。",
+    "TOOL_INTRO_2_TITLE": "审计工具",
+    "TOOL_INTRO_2_DESCRIPTION": "优化区块链上的财务交易审计流程：透过使用者友善的工具，您可以确保财务记录的准确性和完整性，同时利用区块链技术的透明度和安全性。以高效率增强您对财务审计的信心。",
+    "TOOL_INTRO_3_TITLE": "报表生成器",
+    "TOOL_INTRO_3_DESCRIPTION": "不论您需要月度、季度还是年度财务报告，只要轻松点击几下，我们的 AI 财务报告生成器都能立即生成专业可靠的报告给您。",
+    "DOWNLOAD_TITLE": "下载应用程式",
+    "DOWNLOAD_SUBTITLE": "让最实用的工具与您随行"
+  },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",
-    "ANNOUNCEMENT": "BAIFAAA 是去中心化智能合约平台 BOLT 的区块浏览器和分析平台。"
+    "ANNOUNCEMENT": "BAIFA 是去中心化智能合约平台 BOLT 的区块浏览器和分析平台。",
+    "COMPANY_INFO": "公司资讯"
   }
 }
