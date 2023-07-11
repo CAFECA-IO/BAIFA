@@ -23,7 +23,7 @@ const HomePageBody = () => {
               className="block w-800px rounded-full bg-purpleLinear p-3 pl-4 text-sm text-white drop-shadow-xl focus:border-blue-500 focus:outline-none focus:ring-0 focus:ring-blue-500"
               placeholder={t('HOME_PAGE.SEARCH_PLACEHOLDER')}
             />
-            <FiSearch className="hoverWhite absolute right-4 text-2xl" />
+            <FiSearch className="absolute right-4 text-2xl text-hoverWhite" />
           </div>
         </div>
 

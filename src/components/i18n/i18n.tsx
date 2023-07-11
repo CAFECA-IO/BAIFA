@@ -38,7 +38,7 @@ const I18n = () => {
 
   return (
     <>
-      <div className="bg-darkGray relative flex w-140px rounded">
+      <div className="relative flex w-140px rounded">
         <div
           className="flex w-full items-center px-5 py-2 hover:cursor-pointer"
           onClick={clickMenuHandler}

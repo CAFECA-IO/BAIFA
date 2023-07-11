@@ -76,7 +76,7 @@ const NavBar = () => {
       </button>
 
       <div
-        className={`bg-darkGray absolute left-0 top-0 mt-20 flex w-full flex-col items-center space-y-5 py-3 ${
+        className={`absolute left-0 top-0 mt-20 flex w-full flex-col items-center space-y-5 py-3 ${
           menuOpen ? 'visible h-400px opacity-100' : 'invisible h-0 opacity-0'
         } transition-all duration-300 ease-in-out`}
       >
@@ -102,7 +102,7 @@ const NavBar = () => {
 
   return (
     <>
-      <div className="font-inter container fixed inset-x-0 top-0 z-40 mx-auto max-w-full shadow-xl">
+      <div className="container fixed inset-x-0 top-0 z-40 mx-auto max-w-full font-inter shadow-xl">
         {desktopNavBar}
         {mobileNavBar}
       </div>
