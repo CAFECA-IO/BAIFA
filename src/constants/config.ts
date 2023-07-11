@@ -1,3 +1,5 @@
+export const copyright = '© Boltchain 2023';
+
 export const mainMenuContents = [
   {
     title: 'HOME_PAGE.CHAINS_TITLE',

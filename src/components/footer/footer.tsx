@@ -1,15 +1,17 @@
+import {useTranslation} from 'next-i18next';
+import {TranslateFunction} from '../../interfaces/locale';
+import {copyright} from '../../constants/config';
+
 const Footer = () => {
+  const {t}: {t: TranslateFunction} = useTranslation('common');
+
   return (
     <>
-      {/* ToDo:(20230614 - Julian) i18n */}
-      <footer className="flex flex-col bg-darkGray">
-        <div className="p-4 text-center text-darkGray3">
-          <h2 className="text-sm font-bold leading-8">Powered by BOLT</h2>
-          <p className="text-xs">
-            BOLT Explorer is a Block Explorer and Analytics Platform for BOLT,
-          </p>
-          <p className="text-xs">a decentralized smart contracts platform.</p>
-          <p className="text-xs leading-8">© Boltchain 2023</p>
+      <footer className="flex flex-col bg-darkPurple3 drop-shadow-xlReverse">
+        <div className="p-4 text-center text-lilac">
+          <h2 className="text-sm font-bold leading-8">{t('FOOTER.POWERED_BY')}</h2>
+          <p className="whitespace-pre-line text-xs">{t('FOOTER.ANNOUNCEMENT')}</p>
+          <p className="text-xs leading-8">{copyright}</p>
         </div>
       </footer>
     </>

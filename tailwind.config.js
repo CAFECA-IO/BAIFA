@@ -10,11 +10,15 @@ module.exports = {
 
         lightWhite: '#F2F2F2',
 
+        lilac: '#ABA7BD',
+
         primaryBlue: '#11FFF5',
         hoverWhite: '#F0F0F0',
       },
       backgroundImage: {
         purpleLinear: 'linear-gradient(180deg, #3F497A 0%, #313866 100%)',
+
+        gradient: 'url("/elements/gradients.svg")',
       },
       fontSize: {
         '3xs': ['8px', '12px'],
@@ -28,7 +32,7 @@ module.exports = {
         '3xl': ['30px', '36px'],
         '4xl': ['36px', '40px'],
         '5xl': ['48px', 1],
-        '6xl': ['60px', 1],
+        '6xl': ['56px', 1],
         '7xl': ['72px', 1],
         '8xl': ['96px', 1],
         '9xl': ['128px', 1],
@@ -275,9 +279,10 @@ module.exports = {
       dropShadow: {
         lg: '0 4px 10px rgba(0,0,0,0.7)',
         xl: '0px 4px 24px 0px rgba(0, 0, 0, 0.40)',
+        xlReverse: '0px -4px 24px rgba(0, 0, 0, 0.40)',
       },
       fontFamily: {
-        Inter: ['Inter', 'sans-serif', 'ui-sans-serif', 'system-ui'],
+        inter: ['Inter', 'sans-serif', 'ui-sans-serif', 'system-ui'],
       },
       maxWidth: {
         '160px': '160px',
