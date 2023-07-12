@@ -42,7 +42,7 @@ const LandingNavBar = () => {
     <div className="relative flex h-80px w-screen items-center justify-center bg-darkPurple p-4 text-white shadow-xl lg:hidden">
       {/* Info: (20230712 - Julian) hamburger */}
       <button className="absolute left-4 p-10px" onClick={clickMenuHandler}>
-        <Image src="/elements/hamburger.svg" width={24} height={24} alt="hamburger_icon" />
+        <Image src="/icons/hamburger.svg" width={24} height={24} alt="hamburger_icon" />
       </button>
       <div className="">
         <Link href={BFAURL.LANDING_PAGE}>
