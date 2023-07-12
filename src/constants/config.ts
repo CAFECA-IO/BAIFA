@@ -61,19 +61,22 @@ export const toolsContent = [
   {
     title: 'LANDING_PAGE.TOOL_INTRO_1_TITLE',
     description: 'LANDING_PAGE.TOOL_INTRO_1_DESCRIPTION',
-    image: '/elements/tracing_tool_2.png',
+    desktopImg: '/elements/tracing_tool_2.png',
+    mobileImg: '/elements/tracing_tool.png',
     alt: 'tracing_tool',
   },
   {
     title: 'LANDING_PAGE.TOOL_INTRO_2_TITLE',
     description: 'LANDING_PAGE.TOOL_INTRO_2_DESCRIPTION',
-    image: '/elements/auditing_tool_1.png',
+    desktopImg: '/elements/auditing_tool_1.png',
+    mobileImg: '/elements/auditing_tool.png',
     alt: 'auditing_tool',
   },
   {
     title: 'LANDING_PAGE.TOOL_INTRO_3_TITLE',
     description: 'LANDING_PAGE.TOOL_INTRO_3_DESCRIPTION',
-    image: '/elements/document.png',
+    desktopImg: '/elements/document.png',
+    mobileImg: '/elements/document.png',
     alt: 'generate_reports',
   },
 ];

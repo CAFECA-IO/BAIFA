@@ -4,7 +4,8 @@
     "AUDITING_TOOL": "審計工具",
     "RED_FLAG": "警示帳戶",
     "FAQ": "FAQ",
-    "WALLET_CONNECT_BUTTON": "連接錢包"
+    "WALLET_CONNECT_BUTTON": "連接錢包",
+    "LAUNCH_APP": "啟動應用程式"
   },
   "HOME_PAGE": {
     "CHAINS_TITLE": "區塊鏈",

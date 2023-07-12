@@ -4,7 +4,8 @@
     "AUDITING_TOOL": "Auditing Tool",
     "RED_FLAG": "Red Flag",
     "FAQ": "FAQ",
-    "WALLET_CONNECT_BUTTON": "Wallet Connect"
+    "WALLET_CONNECT_BUTTON": "Wallet Connect",
+    "LAUNCH_APP": "Launch App"
   },
   "HOME_PAGE": {
     "CHAINS_TITLE": "Chains",

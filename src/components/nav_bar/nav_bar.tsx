@@ -4,6 +4,7 @@ import Image from 'next/image';
 import I18n from '../i18n/i18n';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
+import {BFAURL} from '../../constants/url';
 
 const NavBar = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -35,7 +36,7 @@ const NavBar = () => {
   const desktopNavBar = (
     <div className="hidden h-80px w-screen items-center bg-darkPurple px-10 py-3 text-white lg:flex">
       <div className="flex flex-1 space-x-5">
-        <Link href="/">
+        <Link href={BFAURL.HOME}>
           <Image src="/logo/baifaaa_logo.svg" width={190} height={40} alt="bolt_logo" />
         </Link>
 
@@ -43,16 +44,16 @@ const NavBar = () => {
       </div>
       <div className="flex items-center space-x-10">
         <div className="text-white hover:text-primaryBlue">
-          <Link href="/">{t('NAV_BAR.TRACING_TOOL')}</Link>
+          <Link href={BFAURL.TRACING_TOOL}>{t('NAV_BAR.TRACING_TOOL')}</Link>
         </div>
         <div className="text-white hover:text-primaryBlue">
-          <Link href="/">{t('NAV_BAR.AUDITING_TOOL')}</Link>
+          <Link href={BFAURL.AUDITING_TOOL}>{t('NAV_BAR.AUDITING_TOOL')}</Link>
         </div>
         <div className="text-white hover:text-primaryBlue">
-          <Link href="/">{t('NAV_BAR.RED_FLAG')}</Link>
+          <Link href={BFAURL.RED_FLAG}>{t('NAV_BAR.RED_FLAG')}</Link>
         </div>
         <div className="text-white hover:text-primaryBlue">
-          <Link href="/">{t('NAV_BAR.FAQ')}</Link>
+          <Link href={BFAURL.FAQ}>{t('NAV_BAR.FAQ')}</Link>
         </div>
 
         {isDisplayedUser}
@@ -64,7 +65,7 @@ const NavBar = () => {
   const mobileNavBar = (
     <div className="relative flex h-80px w-screen items-center bg-darkPurple px-10 py-3 text-white lg:hidden">
       <div className="flex-1">
-        <Link href="/">
+        <Link href={BFAURL.HOME}>
           <Image src="/logo/baifaaa_logo.svg" width={155} height={40} alt="bolt_logo" />
         </Link>
       </div>
@@ -83,16 +84,16 @@ const NavBar = () => {
         <I18n />
 
         <div className="p-2 text-white hover:text-primaryBlue">
-          <Link href="/">{t('NAV_BAR.TRACING_TOOL')}</Link>
+          <Link href={BFAURL.TRACING_TOOL}>{t('NAV_BAR.TRACING_TOOL')}</Link>
         </div>
         <div className="p-2 text-white hover:text-primaryBlue">
-          <Link href="/">{t('NAV_BAR.AUDITING_TOOL')}</Link>
+          <Link href={BFAURL.AUDITING_TOOL}>{t('NAV_BAR.AUDITING_TOOL')}</Link>
         </div>
         <div className="p-2 text-white hover:text-primaryBlue">
-          <Link href="/">{t('NAV_BAR.RED_FLAG')}</Link>
+          <Link href={BFAURL.RED_FLAG}>{t('NAV_BAR.RED_FLAG')}</Link>
         </div>
         <div className="p-2 text-white hover:text-primaryBlue">
-          <Link href="/">{t('NAV_BAR.FAQ')}</Link>
+          <Link href={BFAURL.FAQ}>{t('NAV_BAR.FAQ')}</Link>
         </div>
 
         {isDisplayedUser}

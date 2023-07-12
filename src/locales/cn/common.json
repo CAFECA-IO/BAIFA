@@ -4,7 +4,8 @@
     "AUDITING_TOOL": "审计工具",
     "RED_FLAG": "警示帐户",
     "FAQ": "FAQ",
-    "WALLET_CONNECT_BUTTON": "连接钱包"
+    "WALLET_CONNECT_BUTTON": "连接钱包",
+    "LAUNCH_APP": "启动应用程式"
   },
   "HOME_PAGE": {
     "CHAINS_TITLE": "区块链",
