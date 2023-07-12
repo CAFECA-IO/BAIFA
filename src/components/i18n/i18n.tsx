@@ -28,6 +28,7 @@ const I18n = () => {
       <li key={index} className="py-2 hover:cursor-pointer hover:bg-purpleLinear">
         <Link
           locale={item.value}
+          scroll={false}
           className="block h-full w-full px-6 py-2"
           href={asPath}
           onClick={clickHandler}
