@@ -40,7 +40,7 @@ const I18n = () => {
 
   /* Info: (20230712 - Julian) Desktop menu */
   const desktopMenu = (
-    <div ref={targetRef} className="relative hidden w-140px rounded lg:flex">
+    <div className="relative hidden w-140px rounded lg:flex">
       <div
         className="flex w-full items-center px-5 py-2 hover:cursor-pointer"
         onClick={clickMenuHandler}
@@ -54,13 +54,15 @@ const I18n = () => {
         </div>
         <span className="-mt-2 h-12px w-12px rotate-45 border-b-2 border-r-2 border-white"></span>
       </div>
-      <ul
-        className={`absolute top-12 grid h-auto w-full grid-cols-1 rounded bg-darkPurple2 font-sans ${
-          componentVisible ? 'visible grid-rows-1 opacity-100' : 'invisible grid-rows-0 opacity-0'
-        } drop-shadow-lg transition-all duration-300 ease-in-out`}
-      >
-        {subMenu}
-      </ul>
+      <div ref={targetRef}>
+        <ul
+          className={`absolute left-0 top-12 grid h-auto w-full grid-cols-1 rounded bg-darkPurple2 font-sans ${
+            componentVisible ? 'visible grid-rows-1 opacity-100' : 'invisible grid-rows-0 opacity-0'
+          } drop-shadow-lg transition-all duration-300 ease-in-out`}
+        >
+          {subMenu}
+        </ul>
+      </div>
     </div>
   );
 
