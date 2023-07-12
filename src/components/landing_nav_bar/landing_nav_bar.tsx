@@ -1,6 +1,6 @@
-import {useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import useOuterClick from '../../lib/hooks/use_outer_click';
 import I18n from '../../components/i18n/i18n';
 import {BFAURL} from '../../constants/url';
 import {useTranslation} from 'next-i18next';
@@ -9,9 +9,10 @@ import {TranslateFunction} from '../../interfaces/locale';
 const LandingNavBar = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  const [menuOpen, setMenuOpen] = useState(false);
+  /* Info: (20230712 - Julian) close menu when click outer */
+  const {targetRef, componentVisible, setComponentVisible} = useOuterClick<HTMLDivElement>(false);
 
-  const clickMenuHandler = () => setMenuOpen(!menuOpen);
+  const clickMenuHandler = () => setComponentVisible(!componentVisible);
 
   /* Info: (20230712 - Julian) desktop navbar */
   const desktopNavBar = (
@@ -39,7 +40,10 @@ const LandingNavBar = () => {
 
   /* Info: (20230712 - Julian) mobile navbar */
   const mobileNavBar = (
-    <div className="relative flex h-80px w-screen items-center justify-center bg-darkPurple p-4 text-white shadow-xl lg:hidden">
+    <div
+      ref={targetRef}
+      className="relative flex h-80px w-screen items-center justify-center bg-darkPurple p-4 text-white shadow-xl lg:hidden"
+    >
       {/* Info: (20230712 - Julian) hamburger */}
       <button className="absolute left-4 p-10px" onClick={clickMenuHandler}>
         <Image src="/icons/hamburger.svg" width={24} height={24} alt="hamburger_icon" />
@@ -51,7 +55,7 @@ const LandingNavBar = () => {
       </div>
       <ul
         className={`absolute left-0 top-0 mt-80px flex h-screen w-80vw flex-col items-center overflow-hidden bg-darkPurple2 px-5 ${
-          menuOpen ? 'visible translate-x-0' : 'invisible -translate-x-full'
+          componentVisible ? 'visible translate-x-0' : 'invisible -translate-x-full'
         } drop-shadow-xlSide transition-all duration-300 ease-in-out`}
       >
         <li className="px-10 py-4">
