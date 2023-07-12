@@ -12,11 +12,23 @@ const NavBar = () => {
 
   const [isLogin, setIsLogin] = useState(false);
 
-  /* Info: (20230712 - Julian) close menu when click outer */
-  const {targetRef, componentVisible, setComponentVisible} = useOuterClick<HTMLDivElement>(false);
+  /* Info: (20230712 - Julian) left menu = hamburger menu */
+  const {
+    targetRef: hamburgerRef,
+    componentVisible: hamburgerVisible,
+    setComponentVisible: setHamburgerVisible,
+  } = useOuterClick<HTMLDivElement>(false);
+
+  /* Info: (20230712 - Julian) right menu = profile menu */
+  const {
+    targetRef: profileRef,
+    componentVisible: profileVisible,
+    setComponentVisible: setProfileVisible,
+  } = useOuterClick<HTMLDivElement>(false);
 
   const loginHandler = () => setIsLogin(!isLogin);
-  const clickMenuHandler = () => setComponentVisible(!componentVisible);
+  const hamburgerClickHandler = () => setHamburgerVisible(!hamburgerVisible);
+  const profileClickHandler = () => setProfileVisible(!profileVisible);
 
   // ToDo: (20230614 - Julian) log in function
   const isDisplayedUser = isLogin ? (
@@ -63,49 +75,79 @@ const NavBar = () => {
     </div>
   );
 
-  const mobileNavBar = (
-    <div
-      ref={targetRef}
-      className="relative flex h-80px w-screen items-center justify-center bg-darkPurple p-4 text-white shadow-xl lg:hidden"
+  const hamburgerMenu = (
+    <ul
+      className={`absolute left-0 top-0 mt-80px flex h-screen w-80vw flex-col items-center overflow-hidden bg-darkPurple2 px-5 ${
+        hamburgerVisible ? 'visible translate-x-0' : 'invisible -translate-x-full'
+      } drop-shadow-xlSide transition-all duration-300 ease-in-out`}
     >
+      <li className="px-10 py-4">
+        <Link href={BFAURL.TRACING_TOOL} className="px-10 py-4">
+          {t('NAV_BAR.TRACING_TOOL')}
+        </Link>
+      </li>
+      <li className="px-10 py-4">
+        <Link href={BFAURL.AUDITING_TOOL} className="px-10 py-4">
+          {t('NAV_BAR.AUDITING_TOOL')}
+        </Link>
+      </li>
+      <li className="px-10 py-4">
+        <Link href={BFAURL.RED_FLAG} className="px-10 py-4">
+          {t('NAV_BAR.RED_FLAG')}
+        </Link>
+      </li>
+      <li className="px-10 py-4">
+        <Link href={BFAURL.FAQ} className="px-10 py-4">
+          {t('NAV_BAR.FAQ')}
+        </Link>
+      </li>
+      <li className="px-10 py-4">
+        <I18n />
+      </li>
+    </ul>
+  );
+
+  // ToDo: (20230614 - Julian) log in menu
+  const profileMenu = (
+    <ul
+      className={`absolute right-0 top-0 mt-80px flex h-screen w-80vw flex-col items-center overflow-hidden bg-darkPurple2 ${
+        profileVisible ? 'visible translate-x-0' : 'invisible translate-x-full'
+      } px-5 py-20 drop-shadow-xlSide transition-all duration-300 ease-in-out`}
+    >
+      <li className="">
+        {/* Info: (20230712 - Julian) wallet connect button */}
+        <button
+          className="rounded bg-primaryBlue px-10 py-3 text-black hover:bg-hoverWhite"
+          onClick={loginHandler}
+        >
+          {t('NAV_BAR.WALLET_CONNECT_BUTTON')}
+        </button>
+      </li>
+    </ul>
+  );
+
+  const mobileNavBar = (
+    <div className="relative flex h-80px w-screen items-center justify-center bg-darkPurple p-4 text-white shadow-xl lg:hidden">
       {/* Info: (20230712 - Julian) hamburger */}
-      <button className="absolute left-4 p-10px" onClick={clickMenuHandler}>
+      <button className="absolute left-4 p-10px" onClick={hamburgerClickHandler}>
         <Image src="/icons/hamburger.svg" width={24} height={24} alt="hamburger_icon" />
       </button>
-      <div className="">
-        <Link href={BFAURL.HOME}>
-          <Image src="/logo/baifa_logo_small.svg" width={44} height={60} alt="bolt_logo" />
-        </Link>
-      </div>
-      <ul
-        className={`absolute left-0 top-0 mt-80px flex h-screen w-80vw flex-col items-center overflow-hidden bg-darkPurple2 px-5 ${
-          componentVisible ? 'visible translate-x-0' : 'invisible -translate-x-full'
-        } drop-shadow-xlSide transition-all duration-300 ease-in-out`}
-      >
-        <li className="px-10 py-4">
-          <Link href={BFAURL.TRACING_TOOL} className="px-10 py-4">
-            {t('NAV_BAR.TRACING_TOOL')}
-          </Link>
-        </li>
-        <li className="px-10 py-4">
-          <Link href={BFAURL.AUDITING_TOOL} className="px-10 py-4">
-            {t('NAV_BAR.AUDITING_TOOL')}
-          </Link>
-        </li>
-        <li className="px-10 py-4">
-          <Link href={BFAURL.RED_FLAG} className="px-10 py-4">
-            {t('NAV_BAR.RED_FLAG')}
-          </Link>
-        </li>
-        <li className="px-10 py-4">
-          <Link href={BFAURL.FAQ} className="px-10 py-4">
-            {t('NAV_BAR.FAQ')}
-          </Link>
-        </li>
-        <li className="px-10 py-4">
-          <I18n />
-        </li>
-      </ul>
+
+      {/* Info: (20230712 - Julian) logo */}
+      <Link href={BFAURL.HOME}>
+        <Image src="/logo/baifa_logo_small.svg" width={44} height={60} alt="bolt_logo" />
+      </Link>
+
+      {/* Info: (20230712 - Julian) profile */}
+      <button className="absolute right-4 p-10px" onClick={profileClickHandler}>
+        <Image src="/icons/profile.svg" width={24} height={24} alt="profile_icon" />
+      </button>
+
+      {/* Info: (20230712 - Julian) hamburger menu */}
+      <div ref={hamburgerRef}>{hamburgerMenu}</div>
+
+      {/* Info: (20230712 - Julian) profile menu */}
+      <div ref={profileRef}>{profileMenu}</div>
     </div>
   );
 
