@@ -32,7 +32,6 @@ const NavBar = () => {
     </button>
   );
 
-  // ToDo: (20230614 - Julian) 1. link to other pages 2. i18n
   const desktopNavBar = (
     <div className="hidden h-80px w-screen items-center bg-darkPurple px-10 py-3 text-white lg:flex">
       <div className="flex flex-1 space-x-5">
@@ -63,6 +62,47 @@ const NavBar = () => {
 
   // ToDo: (20230614 - Julian) wait for mobile mockup
   const mobileNavBar = (
+    <div className="relative flex h-80px w-screen items-center justify-center bg-darkPurple p-4 text-white shadow-xl lg:hidden">
+      {/* Info: (20230712 - Julian) hamburger */}
+      <button className="absolute left-4 p-10px" onClick={clickMenuHandler}>
+        <Image src="/icons/hamburger.svg" width={24} height={24} alt="hamburger_icon" />
+      </button>
+      <div className="">
+        <Link href={BFAURL.LANDING_PAGE}>
+          <Image src="/logo/baifa_logo_small.svg" width={44} height={60} alt="bolt_logo" />
+        </Link>
+      </div>
+      <ul
+        className={`absolute left-0 top-0 mt-80px flex h-screen w-80vw flex-col items-center overflow-hidden bg-darkPurple2 px-5 ${
+          menuOpen ? 'visible translate-x-0' : 'invisible -translate-x-full'
+        } drop-shadow-xlSide transition-all duration-300 ease-in-out`}
+      >
+        <li className="px-10 py-4">
+          <Link href={BFAURL.TRACING_TOOL} className="px-10 py-4">
+            {t('NAV_BAR.TRACING_TOOL')}
+          </Link>
+        </li>
+        <li className="px-10 py-4">
+          <Link href={BFAURL.AUDITING_TOOL} className="px-10 py-4">
+            {t('NAV_BAR.AUDITING_TOOL')}
+          </Link>
+        </li>
+        <li className="px-10 py-4">
+          <Link href={BFAURL.RED_FLAG} className="px-10 py-4">
+            {t('NAV_BAR.RED_FLAG')}
+          </Link>
+        </li>
+        <li className="px-10 py-4">
+          <Link href={BFAURL.FAQ} className="px-10 py-4">
+            {t('NAV_BAR.FAQ')}
+          </Link>
+        </li>
+        <li className="px-10 py-4">
+          <I18n />
+        </li>
+      </ul>
+    </div>
+    /* 
     <div className="relative flex h-80px w-screen items-center bg-darkPurple px-10 py-3 text-white lg:hidden">
       <div className="flex-1">
         <Link href={BFAURL.HOME}>
@@ -70,10 +110,8 @@ const NavBar = () => {
         </Link>
       </div>
 
-      <button className="h-20px w-30px space-y-2" onClick={clickMenuHandler}>
-        <span className="block h-3px rounded-lg bg-lightWhite"></span>
-        <span className="block h-3px rounded-lg bg-lightWhite"></span>
-        <span className="block h-3px rounded-lg bg-lightWhite"></span>
+      <button className="absolute left-4 p-10px" onClick={clickMenuHandler}>
+        <Image src="/icons/hamburger.svg" width={24} height={24} alt="hamburger_icon" />
       </button>
 
       <div
@@ -98,7 +136,7 @@ const NavBar = () => {
 
         {isDisplayedUser}
       </div>
-    </div>
+    </div> */
   );
 
   return (

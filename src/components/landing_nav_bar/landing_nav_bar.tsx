@@ -50,8 +50,8 @@ const LandingNavBar = () => {
         </Link>
       </div>
       <ul
-        className={`absolute left-0 top-0 mt-80px flex h-screen flex-col items-center bg-darkPurple2 px-5 ${
-          menuOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`absolute left-0 top-0 mt-80px flex h-screen w-80vw flex-col items-center overflow-hidden bg-darkPurple2 px-5 ${
+          menuOpen ? 'visible translate-x-0' : 'invisible -translate-x-full'
         } drop-shadow-xlSide transition-all duration-300 ease-in-out`}
       >
         <li className="px-10 py-4">

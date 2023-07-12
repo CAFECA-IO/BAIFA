@@ -301,6 +301,9 @@ module.exports = {
       transitionProperty: {
         grid: 'grid-template-rows',
       },
+      rotate: {
+        '135': '135deg',
+      },
     },
   },
   plugins: [],
