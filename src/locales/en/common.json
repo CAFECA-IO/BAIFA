@@ -1,0 +1,40 @@
+{
+  "NAV_BAR": {
+    "TRACING_TOOL": "Tracing Tool",
+    "AUDITING_TOOL": "Auditing Tool",
+    "RED_FLAG": "Red Flag",
+    "FAQ": "FAQ",
+    "WALLET_CONNECT_BUTTON": "Wallet Connect",
+    "LAUNCH_APP": "Launch App"
+  },
+  "HOME_PAGE": {
+    "CHAINS_TITLE": "Chains",
+    "CRYPTO_TITLE": "Crypto Currencies",
+    "BLACKLIST_TITLE": "Black List",
+    "SEARCH_PLACEHOLDER": "What do you want to know?"
+  },
+  "LANDING_PAGE": {
+    "MAIN_TITLE": "Simplify Financial Investigations with Ease",
+    "MAIN_SUBTITLE": "BAIFA: BOLT AI Forensic Accounting and Auditing is where simplicity meets accuracy in the realm of financial investigations.",
+    "ADVANTAGES_SUBTITLE": "ADVANTAGES",
+    "ADVANTAGES_TITLE": "Real-time Comparison of Massive Data",
+    "MASSIVE_DATA_WALLET": "Over 200 Million Transaction Addresses",
+    "MASSIVE_DATA_BLACKLIST": "Maintaining Over 5 Million Blacklist",
+    "MASSIVE_DATA_BLOCK": "Monitoring Over 30 Blockchains Transactions",
+    "MASSIVE_DATA_TRANSACTION": "Observing Over 150,000 Transactions Per Second",
+    "MASSIVE_DATA_EVIDENCE": "Instant Audit",
+    "TOOL_INTRO_1_TITLE": "Tracing Tool",
+    "TOOL_INTRO_1_DESCRIPTION": "Simplify transaction tracking and analysis on the blockchain. Gain valuable insights, verify transactions, and follow the flow of digital assets effortlessly. Experience transparency and real-time auditing with ease.",
+    "TOOL_INTRO_2_TITLE": "Auditing Tool",
+    "TOOL_INTRO_2_DESCRIPTION": "Simplify and streamline the auditing process for financial transactions on the blockchain. With our user-friendly tool, you can ensure the accuracy and integrity of financial records while leveraging the transparency and security of blockchain technology. Gain confidence in your financial audits with efficiency.",
+    "TOOL_INTRO_3_TITLE": "Generate Reports",
+    "TOOL_INTRO_3_DESCRIPTION": "Whether you need monthly, quarterly, or annual financial reports, our AI Financial Reports Generator enables you to generate professional and reliable reports with just a few clicks.",
+    "DOWNLOAD_TITLE": "Download The App",
+    "DOWNLOAD_SUBTITLE": "Carry the most useful tool with you"
+  },
+  "FOOTER": {
+    "POWERED_BY": "Powered by BOLT",
+    "ANNOUNCEMENT": "BAIFA is a Block Explorer and Analytics Platform for BOLT, \na decentralized smart contracts platform.",
+    "COMPANY_INFO": "Company Info"
+  }
+}

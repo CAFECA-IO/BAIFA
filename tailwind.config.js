@@ -3,6 +3,24 @@ module.exports = {
   content: ['./src/**/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      colors: {
+        darkPurple: '#24274A',
+        darkPurple2: '#2C315B',
+        darkPurple3: '#1F2243',
+
+        lightWhite: '#F2F2F2',
+
+        lilac: '#ABA7BD',
+        violet: '#6857D7',
+
+        primaryBlue: '#11FFF5',
+        hoverWhite: '#F0F0F0',
+      },
+      backgroundImage: {
+        purpleLinear: 'linear-gradient(180deg, #3F497A 0%, #313866 100%)',
+
+        gradient: 'url("/elements/gradients.svg")',
+      },
       fontSize: {
         '3xs': ['8px', '12px'],
         xxs: ['10px', '12px'],
@@ -14,29 +32,28 @@ module.exports = {
         '2xl': ['24px', '32px'],
         '3xl': ['30px', '36px'],
         '4xl': ['36px', '40px'],
-        '5xl': ['48px', 1],
-        '6xl': ['60px', 1],
+        '40px': ['40px', '44px'],
+        '5xl': ['42px', 1],
+        '48px': ['48px', '52px'],
+        '6xl': ['56px', '60px'],
         '7xl': ['72px', 1],
         '8xl': ['96px', 1],
         '9xl': ['128px', 1],
       },
       screens: {
+        /* Info: (20230627 - Julian) 等同於 @media (min-width: ...px) */
         xxs: '370px',
         xs: '500px',
         sm: '640px',
-        // => @media (min-width: 640px) { ... }
         md: '768px',
-        // => @media (min-width: 768px) { ... }
         lg: '1024px',
-        // => @media (min-width: 1024px) { ... }
         xl: '1280px',
-        // => @media (min-width: 1280px) { ... }
         '2xl': '1536px',
-        // => @media (min-width: 1536px) { ... }
         '3xl': '1600px',
       },
       spacing: {
-        // width / height / padding / margin / top / bottom / right / left
+        /* Info: (20230627 - Julian) 適用範圍
+         * width / height / padding / margin / top / bottom / right / left */
         '1px': '1px',
         '2px': '2px',
         '3px': '3px',
@@ -259,24 +276,33 @@ module.exports = {
         '1/50': '2%',
         '50px': '50px',
       },
-      colors: {
-        darkGray: '#1C1C1E',
-        darkGray2: '#212124',
-        darkGray3: '#999999',
-
-        lightWhite: '#F2F2F2',
-
-        primaryBlue: '#31D3F5',
-        hoverWhite: '#F0F0F0',
+      boxShadow: {
+        lg: '0 4px 10px rgba(0,0,0,0.7)',
+        xl: '0 4px 24px rgba(0, 0, 0, 0.40)',
+        xlReverse: '0px -4px 24px rgba(0, 0, 0, 0.40)',
+        xlSide: '4px 0px 24px rgba(0, 0, 0, 0.40)',
       },
       dropShadow: {
-        'lg': '0 4px 10px rgba(0,0,0,0.7)',
+        lg: '0 4px 10px rgba(0,0,0,0.7)',
+        xl: '0px 4px 24px rgba(0, 0, 0, 0.40)',
+        xlReverse: '0px -4px 24px rgba(0, 0, 0, 0.40)',
+        xlSide: '4px 0px 24px rgba(0, 0, 0, 0.40)',
       },
       fontFamily: {
-        barlow: ['Barlow', 'sans-serif', 'ui-sans-serif', 'system-ui'],
+        inter: ['Inter', 'sans-serif', 'ui-sans-serif', 'system-ui'],
+        roboto: ['Roboto', 'sans-serif', 'ui-sans-serif', 'system-ui'],
       },
       maxWidth: {
         '160px': '160px',
+      },
+      gridTemplateRows: {
+        0: 'repeat(1, minmax(0px, 0fr))',
+      },
+      transitionProperty: {
+        grid: 'grid-template-rows',
+      },
+      rotate: {
+        '135': '135deg',
       },
     },
   },

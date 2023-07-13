@@ -1,22 +1,47 @@
 import Head from 'next/head';
-import NavBar from '../components/nav_bar/nav_bar';
-import HomePageBody from '../components/home_page_body/home_page_body';
+import LandingNavBar from '../components/landing_nav_bar/landing_nav_bar';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {ILocale} from '../interfaces/locale';
+import LandingPageBody from '../components/landing_page_body/landing_page_body';
 
-const Home = () => {
+const LandingPage = () => {
   return (
     <>
       <Head>
-        <title>BOLT Explorer</title>
-        <link rel="icon" href="/favicon.ico" />
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon/favicon.ico" />
+        <title>BAIFA</title>
+        <meta
+          name="description"
+          content="BAIFA: BOLT AI Forensic Accounting and Auditing is where simplicity meets accuracy in the realm of financial investigations."
+        />
+        <meta name="author" content="CAFECA" />
+        <meta name="keywords" content="區塊鏈,人工智慧" />
+
+        <meta property="og:title" content="BAIFA" />
+        <meta
+          property="og:description"
+          content="BAIFA: BOLT AI Forensic Accounting and Auditing is where simplicity meets accuracy in the realm of financial investigations."
+        />
       </Head>
 
-      <NavBar />
+      {/*  Info:(20230712 - Julian) Navbar */}
+      <LandingNavBar />
 
       <main>
-        <HomePageBody />
+        <LandingPageBody />
       </main>
     </>
   );
 };
 
-export default Home;
+const getStaticPropsFunction = async ({locale}: ILocale) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'])),
+  },
+});
+
+export const getStaticProps = getStaticPropsFunction;
+
+export default LandingPage;
