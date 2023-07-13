@@ -64,7 +64,7 @@ const LandingPageBody = () => {
         {/* Info:(20230711 - Julian) Advantages Block */}
         <div
           id="Advantages"
-          className="flex flex-col items-center space-y-16 px-4 py-20 text-center font-roboto lg:px-20"
+          className="flex flex-col items-center space-y-16 px-4 py-20 text-center font-roboto lg:h-450px lg:px-20"
         >
           <div className="flex flex-col">
             <h3 className="text-xl font-bold text-primaryBlue">
@@ -94,8 +94,10 @@ const LandingPageBody = () => {
           </div>
 
           <div className="flex w-full flex-col items-center lg:w-auto lg:items-start lg:space-y-16 lg:px-10">
-            <div className="flex flex-col space-y-6 lg:space-y-12">
-              <h2 className="text-2xl font-bold lg:text-6xl">{t('LANDING_PAGE.DOWNLOAD_TITLE')}</h2>
+            <div className="flex flex-col items-center space-y-6 lg:items-start lg:space-y-12">
+              <h2 className="whitespace-nowrap text-2xl font-bold lg:text-6xl">
+                {t('LANDING_PAGE.DOWNLOAD_TITLE')}
+              </h2>
               <p className="text-base lg:text-lg">{t('LANDING_PAGE.DOWNLOAD_SUBTITLE')}</p>
             </div>
             <div className="mt-12 flex items-center space-x-4">
@@ -118,7 +120,7 @@ const LandingPageBody = () => {
             </div>
 
             {/* Info:(20230712 - Julian) Mobile Image */}
-            <div className="relative -mb-16 block h-500px w-full lg:hidden">
+            <div className="relative -mb-16 block h-500px w-400px lg:hidden">
               <Image
                 src="/elements/rectangle.png"
                 alt="baifa_app"
