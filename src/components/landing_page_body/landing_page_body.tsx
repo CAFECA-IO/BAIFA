@@ -1,11 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import LandingFooter from '../landing_footer/landing_footer';
-import {massiveDataContent, toolsContent, copyright} from '../../constants/config';
+import {massiveDataContent, toolsContent} from '../../constants/config';
 import {BFAURL} from '../../constants/url';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {BiLogoGithub, BiLogoLinkedin} from 'react-icons/bi';
 
 const LandingPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

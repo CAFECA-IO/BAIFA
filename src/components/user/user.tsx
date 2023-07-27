@@ -70,7 +70,7 @@ const User = ({isLogin, setIsLogin}: IUserProps) => {
   );
 
   const mobileUser = (
-    <ul className="block flex w-full flex-col items-center lg:hidden">
+    <ul className="flex w-full flex-col items-center lg:hidden">
       {/* ToDo: (20230727 - Julian) page link */}
       <li className="w-full px-8 py-6 text-center hover:cursor-pointer hover:bg-purpleLinear">
         <Link href={BFAURL.COMING_SOON}>{t('USER.MY_ADDRESS')}</Link>
