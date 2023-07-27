@@ -8,6 +8,13 @@
     "WALLET_CONNECT_BUTTON": "連接錢包",
     "LAUNCH_APP": "啟動應用程式"
   },
+  "USER": {
+    "MY_ADDRESS": "我的地址",
+    "FINANCIAL_ANALYSIS": "財務分析",
+    "CLOUD_DRIVE": "雲端硬碟",
+    "AUDITING_HISTORY": "審計歷史記錄",
+    "LOGOUT": "登出"
+  },
   "HOME_PAGE": {
     "CHAINS_TITLE": "區塊鏈",
     "CRYPTO_TITLE": "加密貨幣",

@@ -8,6 +8,13 @@
     "WALLET_CONNECT_BUTTON": "Wallet Connect",
     "LAUNCH_APP": "Launch App"
   },
+  "USER": {
+    "MY_ADDRESS": "My Address page",
+    "FINANCIAL_ANALYSIS": "Financial Analysis",
+    "CLOUD_DRIVE": "Cloud Drive",
+    "AUDITING_HISTORY": "Auditing History",
+    "LOGOUT": "Log out"
+  },
   "HOME_PAGE": {
     "CHAINS_TITLE": "Chains",
     "CRYPTO_TITLE": "Crypto Currencies",

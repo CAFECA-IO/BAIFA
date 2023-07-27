@@ -2,6 +2,7 @@ import {useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import I18n from '../i18n/i18n';
+import User from '../user/user';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -32,15 +33,22 @@ const NavBar = () => {
 
   // ToDo: (20230614 - Julian) log in function
   const isDisplayedUser = isLogin ? (
-    <div
-      className="flex h-60px w-60px items-center justify-center rounded-full bg-primaryBlue text-4xl hover:cursor-pointer"
-      onClick={loginHandler}
-    >
-      J
-    </div>
+    <User isLogin={isLogin} setIsLogin={setIsLogin} />
   ) : (
     <button
       className="rounded bg-primaryBlue px-7 py-2 text-black hover:bg-hoverWhite"
+      onClick={loginHandler}
+    >
+      {t('NAV_BAR.WALLET_CONNECT_BUTTON')}
+    </button>
+  );
+
+  const isDisplayedProfileMenu = isLogin ? (
+    <User isLogin={isLogin} setIsLogin={setIsLogin} />
+  ) : (
+    /* Info: (20230712 - Julian) wallet connect button */
+    <button
+      className="mx-5 my-20 rounded bg-primaryBlue px-10 py-3 text-black hover:bg-hoverWhite"
       onClick={loginHandler}
     >
       {t('NAV_BAR.WALLET_CONNECT_BUTTON')}
@@ -110,21 +118,13 @@ const NavBar = () => {
 
   // ToDo: (20230614 - Julian) log in menu
   const profileMenu = (
-    <ul
-      className={`absolute right-0 top-0 mt-80px flex h-screen w-80vw flex-col items-center overflow-hidden bg-darkPurple2 ${
+    <div
+      className={`absolute right-0 top-0 flex h-screen w-80vw flex-col items-center overflow-hidden bg-darkPurple2 ${
         profileVisible ? 'visible translate-x-0' : 'invisible translate-x-full'
-      } px-5 py-20 drop-shadow-xlSide transition-all duration-300 ease-in-out`}
+      } mt-80px drop-shadow-xlSide transition-all duration-300 ease-in-out`}
     >
-      <li className="">
-        {/* Info: (20230712 - Julian) wallet connect button */}
-        <button
-          className="rounded bg-primaryBlue px-10 py-3 text-black hover:bg-hoverWhite"
-          onClick={loginHandler}
-        >
-          {t('NAV_BAR.WALLET_CONNECT_BUTTON')}
-        </button>
-      </li>
-    </ul>
+      {isDisplayedProfileMenu}
+    </div>
   );
 
   const mobileNavBar = (
