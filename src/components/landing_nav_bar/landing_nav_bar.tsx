@@ -17,14 +17,19 @@ const LandingNavBar = () => {
   /* Info: (20230712 - Julian) desktop navbar */
   const desktopNavBar = (
     <div className="hidden h-80px w-screen items-center bg-darkPurple px-10 py-3 text-white shadow-xl lg:flex">
-      <div className="flex flex-1 space-x-5">
-        <Link href={BFAURL.LANDING_PAGE}>
-          <Image src="/logo/baifaaa_logo.svg" width={190} height={40} alt="bolt_logo" />
-        </Link>
-      </div>
-      <ul className="flex items-center space-x-10">
+      <ul className="flex flex-1 space-x-5">
+        <li>
+          <Link href={BFAURL.LANDING_PAGE}>
+            <Image src="/logo/baifaaa_logo.svg" width={190} height={40} alt="bolt_logo" />
+          </Link>
+        </li>
         <li>
           <I18n />
+        </li>
+      </ul>
+      <ul className="flex items-center space-x-10">
+        <li>
+          <Link href={BFAURL.CONTACT_US}>{t('NAV_BAR.CONTACT_US')}</Link>
         </li>
         <li>
           <Link
