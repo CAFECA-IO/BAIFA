@@ -21,9 +21,8 @@ const ComingSoonPage = () => {
       <main>
         <div className="flex min-h-screen flex-col overflow-hidden font-inter">
           <div className="relative flex h-full w-full flex-1 flex-col items-center justify-center">
-            <div className="absolute -z-10 h-full w-full bg-neon bg-cover bg-no-repeat backdrop-blur-2xl">
-              <div className=""></div>
-            </div>
+            {/* Info: (20230727 - Julian) neon background */}
+            <div className="absolute -z-10 h-full w-full bg-neon bg-cover bg-no-repeat backdrop-blur-2xl"></div>
             <div>
               <Image
                 src="/animations/running.gif"
@@ -32,9 +31,13 @@ const ComingSoonPage = () => {
                 alt="An animation of an astronaut running in space"
               />
             </div>
-            <div className="flex flex-col items-center space-y-8">
-              <h1 className="text-6xl font-bold text-hoverWhite">{t('COMING_SOON_PAGE.TITLE')}</h1>
-              <p className="text-xl text-primaryBlue">{t('COMING_SOON_PAGE.SUBTITLE')}</p>
+            <div className="flex flex-col items-center space-y-8 px-4">
+              <h1 className="text-40px font-bold text-hoverWhite lg:text-6xl">
+                {t('COMING_SOON_PAGE.TITLE')}
+              </h1>
+              <p className="text-center text-base text-primaryBlue lg:text-xl">
+                {t('COMING_SOON_PAGE.SUBTITLE')}
+              </p>
             </div>
           </div>
         </div>
