@@ -4,6 +4,7 @@
     "AUDITING_TOOL": "審計工具",
     "RED_FLAG": "警示帳戶",
     "FAQ": "FAQ",
+    "CONTACT_US": "聯絡我們",
     "WALLET_CONNECT_BUTTON": "連接錢包",
     "LAUNCH_APP": "啟動應用程式"
   },
@@ -31,6 +32,10 @@
     "TOOL_INTRO_3_DESCRIPTION": "不論您需要月度、季度還是年度財務報告，只要輕鬆點擊幾下，我們的 AI 財務報告生成器都能立即生成專業可靠的報告給您。",
     "DOWNLOAD_TITLE": "下載應用程式",
     "DOWNLOAD_SUBTITLE": "讓最實用的工具與您隨行"
+  },
+  "COMING_SOON_PAGE": {
+    "TITLE": "Coming Soon",
+    "SUBTITLE": "我們的秘密計畫即將揭曉！敬請期待！"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",

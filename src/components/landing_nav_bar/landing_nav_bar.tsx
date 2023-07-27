@@ -29,7 +29,8 @@ const LandingNavBar = () => {
       </ul>
       <ul className="flex items-center space-x-10">
         <li>
-          <Link href={BFAURL.CONTACT_US}>{t('NAV_BAR.CONTACT_US')}</Link>
+          {/* ToDo: (20230727 - Julian) contact us page */}
+          <Link href={BFAURL.COMING_SOON}>{t('NAV_BAR.CONTACT_US')}</Link>
         </li>
         <li>
           <Link

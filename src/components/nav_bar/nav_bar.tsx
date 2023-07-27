@@ -57,17 +57,18 @@ const NavBar = () => {
         <I18n />
       </div>
       <div className="flex items-center space-x-10">
+        {/* ToDo: (20230727 - Julian) page link */}
         <div className="text-white hover:text-primaryBlue">
-          <Link href={BFAURL.TRACING_TOOL}>{t('NAV_BAR.TRACING_TOOL')}</Link>
+          <Link href={BFAURL.COMING_SOON}>{t('NAV_BAR.TRACING_TOOL')}</Link>
         </div>
         <div className="text-white hover:text-primaryBlue">
-          <Link href={BFAURL.AUDITING_TOOL}>{t('NAV_BAR.AUDITING_TOOL')}</Link>
+          <Link href={BFAURL.COMING_SOON}>{t('NAV_BAR.AUDITING_TOOL')}</Link>
         </div>
         <div className="text-white hover:text-primaryBlue">
-          <Link href={BFAURL.RED_FLAG}>{t('NAV_BAR.RED_FLAG')}</Link>
+          <Link href={BFAURL.COMING_SOON}>{t('NAV_BAR.RED_FLAG')}</Link>
         </div>
         <div className="text-white hover:text-primaryBlue">
-          <Link href={BFAURL.FAQ}>{t('NAV_BAR.FAQ')}</Link>
+          <Link href={BFAURL.COMING_SOON}>{t('NAV_BAR.FAQ')}</Link>
         </div>
 
         {isDisplayedUser}
