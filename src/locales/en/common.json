@@ -4,8 +4,16 @@
     "AUDITING_TOOL": "Auditing Tool",
     "RED_FLAG": "Red Flag",
     "FAQ": "FAQ",
+    "CONTACT_US": "Contact Us",
     "WALLET_CONNECT_BUTTON": "Wallet Connect",
     "LAUNCH_APP": "Launch App"
+  },
+  "USER": {
+    "MY_ADDRESS": "My Address page",
+    "FINANCIAL_ANALYSIS": "Financial Analysis",
+    "CLOUD_DRIVE": "Cloud Drive",
+    "AUDITING_HISTORY": "Auditing History",
+    "LOGOUT": "Log out"
   },
   "HOME_PAGE": {
     "CHAINS_TITLE": "Chains",
@@ -31,6 +39,10 @@
     "TOOL_INTRO_3_DESCRIPTION": "Whether you need monthly, quarterly, or annual financial reports, our AI Financial Reports Generator enables you to generate professional and reliable reports with just a few clicks.",
     "DOWNLOAD_TITLE": "Download The App",
     "DOWNLOAD_SUBTITLE": "Carry the most useful tool with you"
+  },
+  "COMING_SOON_PAGE": {
+    "TITLE": "Coming Soon",
+    "SUBTITLE": "Our Secret Project is Almost Unveiled.  Stay Tuned for the Big Reveal!"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",

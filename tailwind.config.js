@@ -20,6 +20,7 @@ module.exports = {
         purpleLinear: 'linear-gradient(180deg, #3F497A 0%, #313866 100%)',
 
         gradient: 'url("/elements/gradients.svg")',
+        neon: 'url("/animations/neon.svg")',
       },
       fontSize: {
         '3xs': ['8px', '12px'],

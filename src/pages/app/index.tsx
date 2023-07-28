@@ -8,7 +8,7 @@ const Home = () => {
   return (
     <>
       <Head>
-        <link rel="icon" href="/favicon/favicon.ico" />
+        <link rel="icon" href="/favicon.ico" />
         <title>BAIFA - APP</title>
       </Head>
 

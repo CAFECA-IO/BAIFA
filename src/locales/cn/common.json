@@ -4,8 +4,16 @@
     "AUDITING_TOOL": "审计工具",
     "RED_FLAG": "警示帐户",
     "FAQ": "FAQ",
+    "CONTACT_US": "联络我们",
     "WALLET_CONNECT_BUTTON": "连接钱包",
     "LAUNCH_APP": "启动应用程式"
+  },
+  "USER": {
+    "MY_ADDRESS": "我的地址",
+    "FINANCIAL_ANALYSIS": "财务分析",
+    "CLOUD_DRIVE": "云端硬碟",
+    "AUDITING_HISTORY": "审计历史记录",
+    "LOGOUT": "登出"
   },
   "HOME_PAGE": {
     "CHAINS_TITLE": "区块链",
@@ -31,6 +39,10 @@
     "TOOL_INTRO_3_DESCRIPTION": "不论您需要月度、季度还是年度财务报告，只要轻松点击几下，我们的 AI 财务报告生成器都能立即生成专业可靠的报告给您。",
     "DOWNLOAD_TITLE": "下载应用程式",
     "DOWNLOAD_SUBTITLE": "让最实用的工具与您随行"
+  },
+  "COMING_SOON_PAGE": {
+    "TITLE": "Coming Soon",
+    "SUBTITLE": "我们的秘密计划即将揭晓！敬请期待！"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",
