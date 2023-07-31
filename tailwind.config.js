@@ -291,13 +291,14 @@ module.exports = {
         xlSide: '4px 0px 24px rgba(0, 0, 0, 0.40)',
         purple: '0px 0px 6px 0px #AB50FF',
         violet:
-          '0px 0px 24px 0px rgba(175, 80, 255, 0.30), 0px 0px 24px 0px rgba(175, 80, 255, 0.30) inset',
+          '0px 0px 12px 0px rgba(175, 80, 255, 0.30), 0px 0px 24px 0px rgba(175, 80, 255, 0.30) inset',
       },
       dropShadow: {
         lg: '0 4px 10px rgba(0,0,0,0.7)',
         xl: '0px 4px 24px rgba(0, 0, 0, 0.40)',
         xlReverse: '0px -4px 24px rgba(0, 0, 0, 0.40)',
         xlSide: '4px 0px 24px rgba(0, 0, 0, 0.40)',
+        purple: '0 2px 10px #AB50FF',
       },
       fontFamily: {
         inter: ['Inter', 'sans-serif', 'ui-sans-serif', 'system-ui'],
