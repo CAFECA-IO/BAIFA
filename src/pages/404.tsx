@@ -29,9 +29,9 @@ const Custom404 = () => {
             <p className="text-center text-xl text-hoverWhite">{t('ERROR_PAGE.SUBTITLE')}</p>
           </div>
         </div>
-        {/* Info:(20230731 - Julian) Footer */}
-        <LandingFooter />
       </main>
+      {/* Info:(20230731 - Julian) Footer */}
+      <LandingFooter />
     </>
   );
 };

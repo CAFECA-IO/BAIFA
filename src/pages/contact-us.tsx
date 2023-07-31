@@ -27,7 +27,7 @@ const ContactUsPage = () => {
   const [inputMessage, setInputMessage] = useState('');
 
   // Info: (20230731 - Julian) 驗證信箱格式
-  const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
+  const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*(\.([A-Za-z])+)*$/;
   const emailIsValid = emailRule.test(inputEmail);
 
   // Info: (20230731 - Julian) input change handler
@@ -39,8 +39,11 @@ const ContactUsPage = () => {
   };
   const emailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputEmail(event.target.value);
-    if (emailIsValid) setShowEmailError(false);
-    else setShowEmailError(true);
+    if (emailIsValid) {
+      setShowEmailError(false);
+    } else {
+      setShowEmailError(true);
+    }
   };
   const messageChangeHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputMessage(event.target.value);
@@ -130,7 +133,9 @@ const ContactUsPage = () => {
         showAnim ? 'invisible opacity-0' : 'visible opacity-100'
       } transition-all duration-300 ease-in-out`}
     >
-      <h1 className="w-full text-5xl font-bold drop-shadow-purple">{t('CONTACT_US_PAGE.TITLE')}</h1>
+      <h1 className="w-full text-center text-5xl font-bold drop-shadow-purple lg:text-left">
+        {t('CONTACT_US_PAGE.TITLE')}
+      </h1>
 
       {/* Info:(20230731 - Julian) Input part */}
       <div className="flex flex-col items-center space-y-4">
@@ -164,11 +169,12 @@ const ContactUsPage = () => {
 
         {/* Info:(20230731 - Julian) Email */}
         <div className="flex w-full flex-col items-start space-y-2">
+          {showEmailError ? 'not verify' : 'good'}
           <label className="text-sm">
             {t('CONTACT_US_PAGE.EMAIL')}
             <span
               className={`ml-4 text-xs text-red-300 ${
-                showEmailError ? 'opacity-0' : 'opacity-100'
+                showEmailError ? 'opacity-100' : 'opacity-0'
               }`}
             >
               {t('CONTACT_US_PAGE.EMAIL_VERIFY')}
@@ -200,7 +206,7 @@ const ContactUsPage = () => {
         </div>
       </div>
 
-      <div className="flex w-full justify-end">
+      <div className="flex w-full justify-center sm:justify-end">
         <button
           id="submit"
           type="submit"
@@ -264,14 +270,14 @@ const ContactUsPage = () => {
           <div className="absolute -z-10 h-full w-full bg-bubbleBelow bg-contain bg-left-bottom bg-no-repeat"></div>
 
           {/* Info:(20230731 - Julian) Form */}
-          <div className="relative m-10 h-auto border-2 border-violet bg-purpleLinear2 p-12 shadow-violet backdrop-blur-lg">
+          <div className="relative m-10 h-auto w-90vw border-2 border-violet bg-purpleLinear2 p-5 shadow-violet backdrop-blur-lg sm:w-500px lg:p-12">
             {formPart}
             {animPart}
           </div>
         </div>
-        {/* Info:(20230731 - Julian) Footer */}
-        <LandingFooter />
       </main>
+      {/* Info:(20230731 - Julian) Footer */}
+      <LandingFooter />
     </>
   );
 };

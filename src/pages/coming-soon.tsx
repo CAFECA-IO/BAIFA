@@ -40,9 +40,9 @@ const ComingSoonPage = () => {
             </p>
           </div>
         </div>
-        {/* Info:(20230711 - Julian) Footer */}
-        <LandingFooter />
       </main>
+      {/* Info:(20230711 - Julian) Footer */}
+      <LandingFooter />
     </>
   );
 };
