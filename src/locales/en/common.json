@@ -56,7 +56,11 @@
     "EMAIL_VERIFY": "Please enter a valid email address",
     "MESSAGE": "Message",
     "MESSAGE_PLACEHOLDER": "What do you want to tell us?",
-    "SUBMIT": "Submit"
+    "SUBMIT": "Submit",
+    "SENDING": "Sending...",
+    "SUCCESS": "Sent!",
+    "ERROR": "Something went wrong , Please try again.",
+    "TRY_AGAIN": "Try Again"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",

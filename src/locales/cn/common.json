@@ -56,7 +56,11 @@
     "EMAIL_VERIFY": "请输入有效的电子邮件地址",
     "MESSAGE": "您的讯息",
     "MESSAGE_PLACEHOLDER": "想说的话...",
-    "SUBMIT": "送出"
+    "SUBMIT": "送出",
+    "SENDING": "传送中...",
+    "SUCCESS": "已送出！",
+    "ERROR": "讯息送出失败，请稍后再试",
+    "TRY_AGAIN": "再试一次"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",
