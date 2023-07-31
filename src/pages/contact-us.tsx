@@ -144,7 +144,7 @@ const ContactUsPage = () => {
               type="text"
               onChange={nameChangeHandler}
               value={inputName || ''}
-              className="h-12 border border-violet bg-transparent px-4 py-3 text-base text-white placeholder-lilac placeholder-opacity-90 shadow-purple"
+              className="h-12 border border-violet bg-transparent px-4 py-3 text-base text-white shadow-purple placeholder:text-lilac placeholder:text-opacity-90"
               required
             />
           </div>
@@ -156,7 +156,7 @@ const ContactUsPage = () => {
               type="text"
               onChange={phoneChangeHandler}
               value={inputPhone || ''}
-              className="h-12 border border-violet bg-transparent px-4 py-3 text-base text-white placeholder-lilac placeholder-opacity-90 shadow-purple"
+              className="h-12 border border-violet bg-transparent px-4 py-3 text-base text-white shadow-purple placeholder:text-lilac placeholder:text-opacity-90"
               required
             />
           </div>
@@ -179,7 +179,7 @@ const ContactUsPage = () => {
             type="text"
             onChange={emailChangeHandler}
             value={inputEmail || ''}
-            className="h-12 w-full border border-violet bg-transparent px-4 py-3 text-base text-white placeholder-lilac placeholder-opacity-90 shadow-purple"
+            className="h-12 w-full border border-violet bg-transparent px-4 py-3 text-base text-white shadow-purple placeholder:text-lilac placeholder:text-opacity-90"
             required
           />
         </div>
@@ -193,7 +193,7 @@ const ContactUsPage = () => {
             wrap="soft"
             onChange={messageChangeHandler}
             value={inputMessage || ''}
-            className="w-full border border-violet bg-transparent px-4 py-3 text-base text-white placeholder-lilac placeholder-opacity-90 shadow-purple"
+            className="w-full border border-violet bg-transparent px-4 py-3 text-base text-white shadow-purple placeholder:text-lilac placeholder:text-opacity-90"
             placeholder={t('CONTACT_US_PAGE.MESSAGE_PLACEHOLDER')}
             required
           />
