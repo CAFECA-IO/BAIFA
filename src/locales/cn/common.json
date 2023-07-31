@@ -44,6 +44,10 @@
     "TITLE": "Coming Soon",
     "SUBTITLE": "我们的秘密计划即将揭晓！敬请期待！"
   },
+  "ERROR_PAGE": {
+    "TITLE": "糟糕！",
+    "SUBTITLE": "看来你已经跌入网络空间的深渊了 🕳️"
+  },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",
     "ANNOUNCEMENT": "BAIFA 是去中心化智能合约平台 BOLT 的区块浏览器和分析平台。",
