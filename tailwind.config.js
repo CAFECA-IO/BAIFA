@@ -12,6 +12,7 @@ module.exports = {
 
         lilac: '#ABA7BD',
         violet: '#6857D7',
+        violet2: '#9747FF',
 
         primaryBlue: '#11FFF5',
         hoverWhite: '#F0F0F0',
@@ -27,7 +28,7 @@ module.exports = {
         bubbleAbove: 'url("/elements/bubble_above.svg")',
         bubbleBelow: 'url("/elements/bubble_below.svg")',
 
-        bubbles: 'url("/elements/bubbles.svg")',
+        reportCover: 'url("/documents/cover.svg")',
       },
       fontSize: {
         '3xs': ['8px', '12px'],
@@ -66,6 +67,7 @@ module.exports = {
         '2px': '2px',
         '3px': '3px',
         '5px': '5px',
+        '8px': '8px',
         '10px': '10px',
         '12px': '12px',
         '14px': '14px',
@@ -252,6 +254,10 @@ module.exports = {
         '80vw': '80vw',
         '85vw': '85vw',
         '90vw': '90vw',
+
+        // Info: (20230801- Julian) A4 尺寸
+        'a4-width': '210mm',
+        'a4-height': '297mm',
       },
       margin: {
         '8px': '8px',
@@ -315,6 +321,9 @@ module.exports = {
       },
       rotate: {
         '135': '135deg',
+      },
+      borderWidth: {
+        '3px': '3px',
       },
     },
   },
