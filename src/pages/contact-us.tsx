@@ -138,9 +138,9 @@ const ContactUsPage = () => {
       </h1>
 
       {/* Info:(20230731 - Julian) Input part */}
-      <div className="flex flex-col items-center space-y-4">
+      <div className="flex w-full flex-col items-center space-y-4">
         {/* Info:(20230731 - Julian) Name & Phone */}
-        <div className="flex items-center space-x-4">
+        <div className="grid w-full grid-cols-1 items-center gap-4 lg:grid-cols-2">
           {/* Info:(20230731 - Julian) Name */}
           <div className="flex flex-col items-start space-y-2">
             <label className="text-sm">{t('CONTACT_US_PAGE.NAME')}</label>
@@ -149,7 +149,7 @@ const ContactUsPage = () => {
               type="text"
               onChange={nameChangeHandler}
               value={inputName || ''}
-              className="h-12 border border-violet bg-transparent px-4 py-3 text-base text-white shadow-purple placeholder:text-lilac placeholder:text-opacity-90"
+              className="h-12 w-full border border-violet bg-transparent px-4 py-3 text-base text-white shadow-purple placeholder:text-lilac placeholder:text-opacity-90"
               required
             />
           </div>
@@ -161,7 +161,7 @@ const ContactUsPage = () => {
               type="text"
               onChange={phoneChangeHandler}
               value={inputPhone || ''}
-              className="h-12 border border-violet bg-transparent px-4 py-3 text-base text-white shadow-purple placeholder:text-lilac placeholder:text-opacity-90"
+              className="h-12 w-full border border-violet bg-transparent px-4 py-3 text-base text-white shadow-purple placeholder:text-lilac placeholder:text-opacity-90"
               required
             />
           </div>
@@ -169,7 +169,6 @@ const ContactUsPage = () => {
 
         {/* Info:(20230731 - Julian) Email */}
         <div className="flex w-full flex-col items-start space-y-2">
-          {showEmailError ? 'not verify' : 'good'}
           <label className="text-sm">
             {t('CONTACT_US_PAGE.EMAIL')}
             <span
@@ -194,7 +193,7 @@ const ContactUsPage = () => {
         <div className="flex w-full flex-col items-start space-y-2">
           <label className="text-sm">{t('CONTACT_US_PAGE.MESSAGE')}</label>
           <textarea
-            id="message"
+            id="Message"
             rows={3}
             wrap="soft"
             onChange={messageChangeHandler}
@@ -265,9 +264,9 @@ const ContactUsPage = () => {
       <main className="flex min-h-screen flex-col justify-between">
         <div className="relative mt-80px flex flex-1 flex-col items-center justify-center overflow-hidden font-roboto">
           {/* Info:(20230731 - Julian) Bubble on the top */}
-          <div className="absolute -z-10 h-full w-full bg-bubbleAbove bg-contain bg-right-top bg-no-repeat"></div>
+          <div className="absolute -z-10 h-full w-full bg-bubbleAbove bg-auto bg-right-top bg-no-repeat"></div>
           {/* Info:(20230731 - Julian) Bubble on the bottom */}
-          <div className="absolute -z-10 h-full w-full bg-bubbleBelow bg-contain bg-left-bottom bg-no-repeat"></div>
+          <div className="absolute -z-10 h-full w-full bg-bubbleBelow bg-auto bg-left-bottom bg-no-repeat"></div>
 
           {/* Info:(20230731 - Julian) Form */}
           <div className="relative m-10 h-auto w-90vw border-2 border-violet bg-purpleLinear2 p-5 shadow-violet backdrop-blur-lg sm:w-500px lg:p-12">
