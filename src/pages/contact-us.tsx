@@ -18,8 +18,6 @@ const ContactUsPage = () => {
   // Info: (20230731 - Julian) 是否顯示動畫 & 顯示哪個動畫
   const [showAnim, setShowAnim] = useState(false);
   const [animation, setAnimation] = useState<string>('');
-  // Info: (20230731 - Julian) 是否顯示 Email 格式錯誤的提示
-  const [showEmailError, setShowEmailError] = useState(false);
 
   const [inputName, setInputName] = useState('');
   const [inputPhone, setInputPhone] = useInputNumber('');
@@ -27,7 +25,7 @@ const ContactUsPage = () => {
   const [inputMessage, setInputMessage] = useState('');
 
   // Info: (20230731 - Julian) 驗證信箱格式
-  const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*(\.([A-Za-z])+)*$/;
+  const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
   const emailIsValid = emailRule.test(inputEmail);
 
   // Info: (20230731 - Julian) input change handler
@@ -39,11 +37,6 @@ const ContactUsPage = () => {
   };
   const emailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputEmail(event.target.value);
-    if (emailIsValid) {
-      setShowEmailError(false);
-    } else {
-      setShowEmailError(true);
-    }
   };
   const messageChangeHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputMessage(event.target.value);
@@ -97,13 +90,12 @@ const ContactUsPage = () => {
     }
   };
 
-  // Info: (20230731 - Julian) 點擊 Form submit
+  // Info: (20230731 - Julian) 點擊送出按鈕
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     // Info: (20230731 - Julian) 先驗證信箱格式，不符合就直接 return
-    if (!emailIsValid) {
-      return;
-    }
+    if (!emailIsValid) return;
 
+    // Info: (20230731 - Julian) 顯示 loading 動畫
     setAnimation(FormAnimation.LOADING);
     setShowAnim(true);
 
@@ -115,7 +107,9 @@ const ContactUsPage = () => {
     }
   };
 
+  // Info: (20230731 - Julian) 點擊重試按鈕
   const retryHandler = async () => {
+    // Info: (20230731 - Julian) 顯示 loading 動畫
     setAnimation(FormAnimation.LOADING);
     setShowAnim(true);
 
@@ -173,7 +167,8 @@ const ContactUsPage = () => {
             {t('CONTACT_US_PAGE.EMAIL')}
             <span
               className={`ml-4 text-xs text-red-300 ${
-                showEmailError ? 'opacity-100' : 'opacity-0'
+                // Info:(20230731 - Julian) 信箱不符合格式 && 信箱有輸入內容時，才顯示紅字
+                inputEmail !== '' && !emailIsValid ? 'opacity-100' : 'opacity-0'
               }`}
             >
               {t('CONTACT_US_PAGE.EMAIL_VERIFY')}
