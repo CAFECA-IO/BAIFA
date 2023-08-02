@@ -30,6 +30,7 @@ module.exports = {
 
         reportCover: 'url("/documents/cover.svg")',
         contentBg: 'url("/documents/content_bg.svg"), linear-gradient(#F2F2F2,#F2F2F2)',
+        headerBg: 'url("/documents/header_bg.svg"), linear-gradient(#F2F2F2,#F2F2F2)',
       },
       fontSize: {
         '3xs': ['8px', '12px'],
@@ -144,7 +145,6 @@ module.exports = {
         '130px': '130px',
         '134px': '134px',
         '140px': '140px',
-        '145px': '145px',
         '150px': '150px',
         '158px': '158px',
         '160px': '160px',
@@ -258,8 +258,8 @@ module.exports = {
         '90vw': '90vw',
 
         // Info: (20230801- Julian) A4 尺寸
-        'a4-width': '210mm',
-        'a4-height': '297mm',
+        'a4-width': '595px',
+        'a4-height': '842px',
       },
       margin: {
         '8px': '8px',
