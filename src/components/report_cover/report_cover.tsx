@@ -8,29 +8,56 @@ interface ReportCoverProps {
 }
 
 const ReportCover = ({reportTitle, reportDateStart, reportDateEnd}: ReportCoverProps) => {
-  const reportTitleSrc =
-    reportTitle === BaifaReports.BALANCE_SHEETS
-      ? '/documents/balance_title.svg'
-      : reportTitle === BaifaReports.COMPREHENSIVE_INCOME_STATEMENTS
-      ? '/documents/income_title.svg'
-      : reportTitle === BaifaReports.STATEMENTS_OF_CASH_FLOWS
-      ? '/documents/cashFlow_title.svg'
-      : reportTitle === BaifaReports.STATEMENTS_OF_RED_FLAGS
-      ? '/documents/redFlag_title.svg'
-      : '';
+  const reportTitleImage =
+    reportTitle === BaifaReports.BALANCE_SHEETS ? (
+      <div className="relative my-16px flex h-80px w-full">
+        <Image
+          src={'/documents/balance.svg'}
+          alt={reportTitle}
+          fill
+          style={{objectFit: 'contain', objectPosition: 'left'}}
+        />
+      </div>
+    ) : reportTitle === BaifaReports.COMPREHENSIVE_INCOME_STATEMENTS ? (
+      <div className="relative my-16px flex h-56px w-full">
+        <Image
+          src={'/documents/comprehensive.svg'}
+          alt={reportTitle}
+          fill
+          style={{objectFit: 'contain', objectPosition: 'left'}}
+        />
+      </div>
+    ) : reportTitle === BaifaReports.STATEMENTS_OF_CASH_FLOWS ? (
+      <div className="relative my-12px flex h-70px w-full">
+        <Image
+          src={'/documents/cash_flows.svg'}
+          alt={reportTitle}
+          fill
+          style={{objectFit: 'contain', objectPosition: 'left'}}
+        />
+      </div>
+    ) : reportTitle === BaifaReports.STATEMENTS_OF_RED_FLAGS ? (
+      <div className="relative my-12px flex h-70px w-full">
+        <Image
+          src={'/documents/red_flags.svg'}
+          alt={reportTitle}
+          fill
+          style={{objectFit: 'contain', objectPosition: 'left'}}
+        />
+      </div>
+    ) : (
+      <></>
+    );
 
   return (
     <div className="flex h-a4-height w-a4-width bg-reportCover bg-cover bg-no-repeat">
-      <div className="flex flex-col items-start px-40px py-200px">
+      <div className="flex w-full flex-col items-start px-40px pt-200px">
         <div className="flex items-center space-x-2 text-sm font-bold">
           <p>Powered by</p>
           <Image src="/logo/baifaaa_logo.svg" alt="baifaaa_logo" width={72} height={15} />
         </div>
-        {/* Info: (20230801 - Julian) Title */}
-        {/* ToDo: (20230801 - Julian) Image size */}
-        <div className="relative my-16px">
-          <Image src={reportTitleSrc} alt={reportTitle} width={513} height={46} />
-        </div>
+        {/* Info: (20230801 - Julian) Title Image */}
+        {reportTitleImage}
         <h2 className="border-t-3px border-primaryBlue pt-8px text-base font-bold">
           From <span className="text-primaryBlue">{reportDateStart}</span> To{' '}
           <span className="text-primaryBlue">{reportDateEnd}</span>
