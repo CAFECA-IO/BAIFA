@@ -20,7 +20,7 @@ const I18n = () => {
 
   const subMenu = internationalizationList.map((item, index) => {
     const clickHandler = () => {
-      setComponentVisible(!componentVisible);
+      setComponentVisible(false);
       setCurrentLanguage(item.label);
     };
 

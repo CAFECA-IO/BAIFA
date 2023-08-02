@@ -44,6 +44,24 @@
     "TITLE": "Coming Soon",
     "SUBTITLE": "我們的秘密計畫即將揭曉！敬請期待！"
   },
+  "ERROR_PAGE": {
+    "TITLE": "糟糕！",
+    "SUBTITLE": "看來你已經跌入網絡空間的深淵了 🕳️"
+  },
+  "CONTACT_US_PAGE": {
+    "TITLE": "聯絡我們",
+    "NAME": "姓名",
+    "PHONE": "電話號碼",
+    "EMAIL": "電子郵件",
+    "EMAIL_VERIFY": "請輸入有效的電子郵件地址",
+    "MESSAGE": "您的訊息",
+    "MESSAGE_PLACEHOLDER": "想說的話...",
+    "SUBMIT": "送出",
+    "SENDING": "傳送中...",
+    "SUCCESS": "已送出！",
+    "ERROR": "訊息送出失敗，請稍後再試",
+    "TRY_AGAIN": "再試一次"
+  },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",
     "ANNOUNCEMENT": "BAIFA 是去中心化智能合約平台 BOLT 的區塊瀏覽器和分析平台。",

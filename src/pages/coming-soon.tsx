@@ -16,33 +16,31 @@ const ComingSoonPage = () => {
         <title>BAIFA - Coming Soon</title>
       </Head>
 
+      {/* Info:(20230711 - Julian) Navbar */}
       <LandingNavBar />
 
-      <main>
-        <div className="flex min-h-screen flex-col overflow-hidden font-inter">
-          <div className="relative flex h-full w-full flex-1 flex-col items-center justify-center">
-            {/* Info: (20230727 - Julian) neon background */}
-            <div className="absolute -z-10 h-full w-full bg-neon bg-cover bg-no-repeat backdrop-blur-2xl"></div>
-            <div>
-              <Image
-                src="/animations/running.gif"
-                width={150}
-                height={148}
-                alt="An animation of an astronaut running in space"
-              />
-            </div>
-            <div className="flex flex-col items-center space-y-8 px-4">
-              <h1 className="text-40px font-bold text-hoverWhite lg:text-6xl">
-                {t('COMING_SOON_PAGE.TITLE')}
-              </h1>
-              <p className="text-center text-base text-primaryBlue lg:text-xl">
-                {t('COMING_SOON_PAGE.SUBTITLE')}
-              </p>
-            </div>
+      <main className="flex min-h-screen flex-col justify-between">
+        <div className="relative flex h-full w-full flex-1 flex-col items-center justify-center overflow-hidden font-inter">
+          {/* Info: (20230727 - Julian) neon background */}
+          <div className="absolute -z-10 h-full w-full bg-neon bg-cover bg-no-repeat backdrop-blur-2xl"></div>
+          <div className="mt-20">
+            <Image
+              src="/animations/running.gif"
+              width={150}
+              height={148}
+              alt="An animation of an astronaut running in space"
+            />
+          </div>
+          <div className="flex flex-col items-center space-y-8 px-4">
+            <h1 className="text-40px font-bold text-hoverWhite lg:text-6xl">
+              {t('COMING_SOON_PAGE.TITLE')}
+            </h1>
+            <p className="text-center text-base text-primaryBlue lg:text-xl">
+              {t('COMING_SOON_PAGE.SUBTITLE')}
+            </p>
           </div>
         </div>
       </main>
-
       {/* Info:(20230711 - Julian) Footer */}
       <LandingFooter />
     </>

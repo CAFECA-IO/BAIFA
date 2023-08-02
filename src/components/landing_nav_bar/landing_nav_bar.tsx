@@ -30,7 +30,7 @@ const LandingNavBar = () => {
       <ul className="flex items-center space-x-10">
         <li>
           {/* ToDo: (20230727 - Julian) contact us page */}
-          <Link href={BFAURL.COMING_SOON}>{t('NAV_BAR.CONTACT_US')}</Link>
+          <Link href={BFAURL.CONTACT_US}>{t('NAV_BAR.CONTACT_US')}</Link>
         </li>
         <li>
           <Link
@@ -66,7 +66,7 @@ const LandingNavBar = () => {
       >
         <li className="px-10 py-4">
           {/* ToDo: (20230727 - Julian) contact us page */}
-          <Link href={BFAURL.COMING_SOON} className="px-10 py-4">
+          <Link href={BFAURL.CONTACT_US} className="px-10 py-4">
             {t('NAV_BAR.CONTACT_US')}
           </Link>
         </li>

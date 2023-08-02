@@ -44,6 +44,24 @@
     "TITLE": "Coming Soon",
     "SUBTITLE": "我们的秘密计划即将揭晓！敬请期待！"
   },
+  "ERROR_PAGE": {
+    "TITLE": "糟糕！",
+    "SUBTITLE": "看来你已经跌入网络空间的深渊了 🕳️"
+  },
+  "CONTACT_US_PAGE": {
+    "TITLE": "联络我们",
+    "NAME": "姓名",
+    "PHONE": "电话号码",
+    "EMAIL": "电子邮件",
+    "EMAIL_VERIFY": "请输入有效的电子邮件地址",
+    "MESSAGE": "您的讯息",
+    "MESSAGE_PLACEHOLDER": "想说的话...",
+    "SUBMIT": "送出",
+    "SENDING": "传送中...",
+    "SUCCESS": "已送出！",
+    "ERROR": "讯息送出失败，请稍后再试",
+    "TRY_AGAIN": "再试一次"
+  },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",
     "ANNOUNCEMENT": "BAIFA 是去中心化智能合约平台 BOLT 的区块浏览器和分析平台。",
