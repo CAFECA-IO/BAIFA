@@ -7,7 +7,7 @@ interface ReportPageBodyProps {
 }
 
 const ReportPageBody = ({reportTitle, currentPage, children}: ReportPageBodyProps) => {
-  const displatPage = currentPage < 10 ? `0${currentPage}` : `${currentPage}`;
+  const displayPage = currentPage < 10 ? `0${currentPage}` : `${currentPage}`;
 
   return (
     <div className="flex h-a4-height w-a4-width flex-col bg-lightWhite bg-cover bg-no-repeat">
@@ -23,7 +23,7 @@ const ReportPageBody = ({reportTitle, currentPage, children}: ReportPageBodyProp
         {/* Info: (20230802 - Julian) Page Number */}
         <div className="flex items-center">
           <div className="flex h-40px w-40px items-center justify-center rounded-full bg-violet text-base font-bold">
-            {displatPage}
+            {displayPage}
           </div>
           <p className="ml-8px text-xxs text-lilac">Total 1294 records</p>
         </div>
