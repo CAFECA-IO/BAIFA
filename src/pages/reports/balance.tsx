@@ -370,7 +370,6 @@ const StatementOfRedFlags = () => {
               During the one month ended July 30, 2023, no losses have been incurred in connection
               with customer crypto assets
             </p>
-            {/* <ReportTable /> */}
             <table className="my-5px text-xs">
               <thead className="border border-violet bg-violet font-bold text-white">
                 <tr>
@@ -466,7 +465,8 @@ const StatementOfRedFlags = () => {
             <p>
               As of <span className="font-bold text-violet">July 30, 2023</span>, TideBit DeFi had
               pledged <span className="font-bold text-violet">USDT</span> that served exclusively as
-              collateralfor certain crypto asset borrowings with a fair value of at least 100%
+              collateralfor certain crypto asset borrowings with a fair value of at least 100% of
+              the
             </p>
           </div>
         </ReportPageBody>
@@ -475,7 +475,7 @@ const StatementOfRedFlags = () => {
         {/* Info: (20230802 - Julian) Page 7 */}
         <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={7}>
           <div className="flex flex-col gap-y-15px text-xs leading-5">
-            <p>of the load amount outstanding.</p>
+            <p>load amount outstanding.</p>
             <table className="my-5px text-xs">
               <thead className="border border-violet bg-violet font-bold text-white">
                 <tr>

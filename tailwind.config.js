@@ -315,6 +315,7 @@ module.exports = {
         roboto: ['Roboto', 'sans-serif', 'ui-sans-serif', 'system-ui'],
       },
       maxWidth: {
+        '80px': '80px',
         '160px': '160px',
       },
       gridTemplateRows: {
