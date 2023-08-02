@@ -11,6 +11,7 @@ module.exports = {
         lightWhite: '#F2F2F2',
 
         lilac: '#ABA7BD',
+        lilac2: '#6857d733',
         violet: '#6857D7',
         violet2: '#9747FF',
 
@@ -42,6 +43,7 @@ module.exports = {
         xl: ['20px', '28px'],
         '2xl': ['24px', '32px'],
         '3xl': ['30px', '36px'],
+        '32px': ['32px', '36px'],
         '4xl': ['36px', '40px'],
         '40px': ['40px', '44px'],
         '5xl': ['42px', 1],
