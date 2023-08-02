@@ -29,6 +29,7 @@ module.exports = {
         bubbleBelow: 'url("/elements/bubble_below.svg")',
 
         reportCover: 'url("/documents/cover.svg")',
+        contentBg: 'url("/documents/content_bg.svg"), linear-gradient(#F2F2F2,#F2F2F2)',
       },
       fontSize: {
         '3xs': ['8px', '12px'],
@@ -143,6 +144,7 @@ module.exports = {
         '130px': '130px',
         '134px': '134px',
         '140px': '140px',
+        '145px': '145px',
         '150px': '150px',
         '158px': '158px',
         '160px': '160px',
@@ -324,6 +326,10 @@ module.exports = {
       },
       borderWidth: {
         '3px': '3px',
+        '5px': '5px',
+      },
+      backgroundSize: {
+        '150': '150%',
       },
     },
   },
