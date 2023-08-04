@@ -218,7 +218,7 @@ export const balance_sheets_p8_1: IReportTable = {
       items: ['0', '—', '—', '0'],
     },
     {
-      title: 'Assets Pledged as Collateral',
+      title: 'Crypto assets held',
       items: ['0', '—', '—', '0'],
     },
     {
@@ -236,6 +236,56 @@ export const balance_sheets_p8_1: IReportTable = {
     {
       title: 'Accounts payable',
       items: ['100', '—', '—', '0'],
+    },
+    {
+      title: 'Total liabilities',
+      items: ['$24,278.30', '—', '—', '$24,278.30'],
+    },
+  ],
+};
+
+export const balance_sheets_p9_1: IReportTable = {
+  thead: ['', '*-*', '*-*', '*-*', 'Jul. 1, 2023'],
+  tbody: [
+    {
+      title: 'Assets',
+      items: ['Level 1', 'Level 2', 'Level 3', 'Total'],
+    },
+    {
+      title: 'Customer custodial funds',
+      items: ['$24,467.11', '$ —', '$ —', '$24,467.11'],
+    },
+    {
+      title: 'USDT',
+      items: ['67.21', '—', '—', '67.21'],
+    },
+    {
+      title: 'Account receivable',
+      items: ['100', '', '', '0'],
+    },
+    {
+      title: 'Assets Pledged as Collateral',
+      items: ['500', '—', '—', '0'],
+    },
+    {
+      title: 'Crypto assets held',
+      items: ['2000', '—', '—', '0'],
+    },
+    {
+      title: 'Total assets',
+      items: ['$24,467.11', '—', '—', '$24,534.32'],
+    },
+    {
+      title: `Liabilities and Stockholders' Equity`,
+      items: ['*-*', '*-*', '*-*', '*-*'],
+    },
+    {
+      title: 'Customer custodial cash liabilities',
+      items: ['$24467.11', '—', '—', '$24,467.11'],
+    },
+    {
+      title: 'Accounts payable',
+      items: ['50', '—', '—', '0'],
     },
     {
       title: 'Total liabilities',

@@ -60,8 +60,8 @@ const ReportTable = ({tableData}: IReportTableProps) => {
         ? 'text-lilac'
         : 'text-violet font-bold';
 
-    // Info: (20230802 - Julian) 若 displayRow[0] 為 undefined，則設定 titleColSpan 為 row.items.length + 1(陣列由 0 開始數) + 1(Title 欄位)
-    const titleColSpan = !displayRow[0] ? row.items.length + 2 : 1;
+    // Info: (20230802 - Julian) 若 displayRow[0] 為 undefined，則設定 titleColSpan 為 row.items.length + 1(陣列由 0 開始數)
+    const titleColSpan = !displayRow[0] ? row.items.length + 1 : 1;
 
     return (
       <tr key={index} className={`border-x border-b border-black text-darkPurple3`}>
