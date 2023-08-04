@@ -193,3 +193,53 @@ export const balance_sheets_p7_2: IReportTable = {
     },
   ],
 };
+
+export const balance_sheets_p8_1: IReportTable = {
+  thead: ['', '*-*', '*-*', '*-*', 'Jul. 30, 2023'],
+  tbody: [
+    {
+      title: 'Assets',
+      items: ['Level 1', 'Level 2', 'Level 3', 'Total'],
+    },
+    {
+      title: 'Customer custodial funds',
+      items: ['$24,278.30', '$ —', '$ —', '$24,278.30'],
+    },
+    {
+      title: 'USDT',
+      items: ['349.09', '—', '—', '349.09'],
+    },
+    {
+      title: 'Account receivable',
+      items: ['0', '', '', '0'],
+    },
+    {
+      title: 'Assets Pledged as Collateral',
+      items: ['0', '—', '—', '0'],
+    },
+    {
+      title: 'Assets Pledged as Collateral',
+      items: ['0', '—', '—', '0'],
+    },
+    {
+      title: 'Total assets',
+      items: ['$24,627.39', '—', '—', '$24,627.39'],
+    },
+    {
+      title: `Liabilities and Stockholders' Equity`,
+      items: ['*-*', '*-*', '*-*', '*-*'],
+    },
+    {
+      title: 'Customer custodial cash liabilities',
+      items: ['$24,278.30', '—', '—', '$24,278.30'],
+    },
+    {
+      title: 'Accounts payable',
+      items: ['100', '—', '—', '0'],
+    },
+    {
+      title: 'Total liabilities',
+      items: ['$24,278.30', '—', '—', '$24,278.30'],
+    },
+  ],
+};

@@ -10,6 +10,7 @@ import {
   balance_sheets_p6_2,
   balance_sheets_p7_1,
   balance_sheets_p7_2,
+  balance_sheets_p8_1,
 } from '../../constants/report_table_data';
 
 const StatementOfRedFlags = () => {
@@ -556,6 +557,21 @@ const StatementOfRedFlags = () => {
           </div>
         </ReportPageBody>
         <hr />
+
+        {/* Info: (20230802 - Julian) Page 8 */}
+        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={8}>
+          <div className="flex flex-col gap-y-15px text-xs leading-5">
+            {/* Info: (20230802 - Julian) Note 6 */}
+            <h2 className="font-bold"> 6. FAIR VALUE MEASUREMENTS</h2>
+            <p>
+              The following table sets forth by level, within the fair value hierarchy, the
+              Company’s assets and liabilities measured and recorded at fair value on a recurring
+              basis (in thousands):
+            </p>
+            <ReportTable tableData={balance_sheets_p8_1} />
+            <p className="italic text-lilac">Next Page</p>
+          </div>
+        </ReportPageBody>
       </div>
     </>
   );

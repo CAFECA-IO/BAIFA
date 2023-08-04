@@ -6,8 +6,16 @@ interface IReportTableProps {
 
 const ReportTable = ({tableData}: IReportTableProps) => {
   const displayTh = tableData.thead.map((item, index) => {
-    // Info: (20230802 - Julian) *-* 表示和前一個格子合併
-    const colSpan = tableData.thead[index - 1] === '*-*' ? 1 : 0;
+    let addCol = 0;
+    for (let i = 1; i < tableData.thead.length; i++) {
+      // Info: (20230802 - Julian) *-* 表示和前一個格子合併
+      if (tableData.thead[index - i] === '*-*') {
+        addCol += 1;
+      } else {
+        break;
+      }
+    }
+
     // Info: (20230802 - Julian) 將 th 以 \n 斷行
     const thArr = item.split('\n');
 
@@ -18,7 +26,7 @@ const ReportTable = ({tableData}: IReportTableProps) => {
     });
 
     return (
-      <th key={index} colSpan={1 + colSpan} className="py-10px text-center">
+      <th key={index} colSpan={1 + addCol} className="py-10px text-center">
         {displayThArr}
       </th>
     );
@@ -30,7 +38,7 @@ const ReportTable = ({tableData}: IReportTableProps) => {
     const displayRow = row.items.map((item, index) => {
       const isBold = row.title.match(/^Total/) ? 'font-bold' : '';
       const textStyles =
-        !!!item.match(/[A-Za-z]/) || item === '—'
+        !!!item.match(/[A-Za-z]/) || item.match(/—/)
           ? 'text-darkPurple3 text-right'
           : 'text-lilac text-center';
 
@@ -46,13 +54,11 @@ const ReportTable = ({tableData}: IReportTableProps) => {
     });
 
     const titleStyle =
-      index === 0
-        ? 'text-violet font-bold'
-        : row.title.match(/^Total/) || row.title.match(/:$/)
+      row.title.match(/^Total/) || row.title.match(/:$/)
         ? 'text-darkPurple3 font-bold'
-        : !displayRow[0]
-        ? 'text-violet font-bold'
-        : 'text-lilac';
+        : !!displayRow[0]
+        ? 'text-lilac'
+        : 'text-violet font-bold';
 
     // Info: (20230802 - Julian) 若 displayRow[0] 為 undefined，則設定 titleColSpan 為 row.items.length + 1(陣列由 0 開始數) + 1(Title 欄位)
     const titleColSpan = !displayRow[0] ? row.items.length + 2 : 1;
