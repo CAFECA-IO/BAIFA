@@ -1,6 +1,6 @@
 import {IReportTable} from '../interfaces/report_table';
 
-/* export const balance_sheets_p3_1: IReportTable = {
+export const balance_sheets_p3_1: IReportTable = {
   thead: ['Balance Sheets - USD ($)', 'Jul. 30, 2023', 'Jul. 1, 2023'],
   tbody: [
     {
@@ -28,7 +28,7 @@ import {IReportTable} from '../interfaces/report_table';
       items: ['0', '0'],
     },
     {
-      title: 'Total current assets',
+      title: ' Total current assets',
       items: ['24,627.39', '24,534.32'],
     },
     {
@@ -43,8 +43,52 @@ import {IReportTable} from '../interfaces/report_table';
       title: 'Total assets',
       items: ['$ 24,627.39', '$ 24,534.32'],
     },
+    {
+      title: `Liabilities and Stockholders' Equity`,
+      items: ['*-*', '*-*'],
+    },
+    {
+      title: 'Current liabilities:',
+      items: ['*-*', '*-*'],
+    },
+    {
+      title: 'Customer custodial cash liabilities',
+      items: ['$ 24278.3', '$ 24467.11'],
+    },
+    {
+      title: 'Accounts payable',
+      items: ['0', '0'],
+    },
+    {
+      title: 'Total liabilities',
+      items: ['$ 24,278.30', '$ 24,467.11'],
+    },
+    {
+      title: `Stockholders' equity`,
+      items: ['*-*', '*-*'],
+    },
+    {
+      title: 'Additional paid-in capital',
+      items: ['0', '0'],
+    },
+    {
+      title: 'Accumulated other comprehensive income',
+      items: ['0', '0'],
+    },
+    {
+      title: 'Retained earnings',
+      items: ['349.09', '67.21'],
+    },
+    {
+      title: ` Total stockholders' equity`,
+      items: ['349.09', '67.21'],
+    },
+    {
+      title: `Total liabilities and stockholders' equity`,
+      items: ['$ 24,627.39', '$ 24,534.32'],
+    },
   ],
-}; */
+};
 
 export const balance_sheets_p6_1: IReportTable = {
   thead: ['', 'Jul. 30, 2023', 'Jul. 1, 2023'],

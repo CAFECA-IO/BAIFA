@@ -5,7 +5,7 @@ import ReportPageBody from '../../components/report_page_body/report_page_body';
 import ReportTable from '../../components/report_table/report_table';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {
-  //balance_sheets_p3_1,
+  balance_sheets_p3_1,
   balance_sheets_p6_1,
   balance_sheets_p6_2,
   balance_sheets_p7_1,
@@ -24,8 +24,8 @@ const StatementOfRedFlags = () => {
         {/* Info: (20230801 - Julian) Cover */}
         <ReportCover
           reportTitle={BaifaReports.BALANCE_SHEETS}
-          reportDateStart="2023-06-24"
-          reportDateEnd="2023-07-24"
+          reportDateStart="2023-07-01"
+          reportDateEnd="2023-07-30"
         />
         <hr />
 
@@ -137,7 +137,9 @@ const StatementOfRedFlags = () => {
         {/* Info: (20230802 - Julian) Page 3 */}
         <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={3}>
           <h1 className="mb-16px text-32px font-bold text-violet">{BaifaReports.BALANCE_SHEETS}</h1>
-          <table className="text-xs">
+          <ReportTable tableData={balance_sheets_p3_1} />
+          {/* Till: (20230824 - Julian) old table */}
+          {/* <table className="text-xs">
             <thead className="border border-violet bg-violet font-bold text-white">
               <tr className="py-5px">
                 <th>
@@ -154,7 +156,6 @@ const StatementOfRedFlags = () => {
                   Assets
                 </td>
               </tr>
-              {/* Info: (20230802 - Julian) Current assets */}
               <tr className="border-x border-b border-black font-bold text-darkPurple3">
                 <td colSpan={3} className="p-5px">
                   Current assets:
@@ -185,7 +186,6 @@ const StatementOfRedFlags = () => {
                 <td className="border-l border-black p-5px text-right">3,000</td>
                 <td className="border-l border-black p-5px text-right">3,000</td>
               </tr>
-              {/* Info: (20230802 - Julian) Non-current assets */}
               <tr className="border-x border-b border-black font-bold text-darkPurple3">
                 <td colSpan={3} className="p-5px">
                   Non-current assets:
@@ -196,19 +196,16 @@ const StatementOfRedFlags = () => {
                 <td className="border-l border-black p-5px text-right">2,000</td>
                 <td className="border-l border-black p-5px text-right">2,000</td>
               </tr>
-              {/* Info: (20230802 - Julian) Total assets */}
               <tr className="border-x border-b border-black bg-lilac2 font-bold text-darkPurple3">
                 <td className="p-5px">Total assets:</td>
                 <td className="border-l border-black p-5px text-right">$5,000</td>
                 <td className="border-l border-black p-5px text-right">$5,000</td>
               </tr>
-              {/* Info: (20230802 - Julian) Liabilities and Stockholders' Equity */}
               <tr className="border-x border-b border-black font-bold text-violet">
                 <td colSpan={3} className="p-5px">
                   Liabilities and Stockholders' Equity
                 </td>
               </tr>
-              {/* Info: (20230802 - Julian) Current liabilities */}
               <tr className="border-x border-b border-black font-bold text-darkPurple3">
                 <td colSpan={3} className="p-5px">
                   Current liabilities:
@@ -224,13 +221,11 @@ const StatementOfRedFlags = () => {
                 <td className="border-l border-black p-5px text-right">100</td>
                 <td className="border-l border-black p-5px text-right">50</td>
               </tr>
-              {/* Info: (20230802 - Julian) Total liabilities */}
               <tr className="border-x border-b border-black bg-lilac2 font-bold text-darkPurple3">
                 <td className="p-5px">Total liabilities</td>
                 <td className="border-l border-black p-5px text-right">2,000</td>
                 <td className="border-l border-black p-5px text-right">2,000</td>
               </tr>
-              {/* Info: (20230802 - Julian) Stockholders' equity */}
               <tr className="border-x border-b border-black font-bold text-violet">
                 <td colSpan={3} className="p-5px">
                   Stockholders' equity
@@ -256,20 +251,14 @@ const StatementOfRedFlags = () => {
                 <td className="border-l border-black p-5px text-right">3,000</td>
                 <td className="border-l border-black p-5px text-right">3,000</td>
               </tr>
-              {/* Info: (20230802 - Julian) Total liabilities and stockholders' equity */}
               <tr className="border-x border-b border-black bg-lilac2 font-bold text-darkPurple3">
                 <td className="p-5px">Total liabilities and stockholders' equity</td>
                 <td className="border-l border-black p-5px text-right">$5,000</td>
                 <td className="border-l border-black p-5px text-right">$5,000</td>
               </tr>
             </tbody>
-          </table>
+          </table>  */}
         </ReportPageBody>
-        <hr />
-
-        {/*         <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={0}>
-          <ReportTable tableData={balance_sheets_p3_1} />
-        </ReportPageBody> */}
         <hr />
 
         {/* Info: (20230802 - Julian) Page 4 */}
@@ -348,13 +337,14 @@ const StatementOfRedFlags = () => {
             {/* Info: (20230802 - Julian) Note 3 */}
             <h2 className="font-bold"> 3. CUSTOMER ASSETS AND LIABILITIES</h2>
             <p>
-              TideBit DeFi employs a "P3 (Partial Private-Key Protection)" system of BOLT to
-              safeguard the client's crypto assets, held in digital wallets, alongside essential
-              fragments of cryptographic keys required for accessing these assets on our platform.
-              'P3 (Partial Private-Key Protection)' protocol allows us to safeguard the user's
-              private key. In the event of a loss of the private key, through user authentication, a
-              new set of authorized private key combinations can be reconstituted from other private
-              key fragments, thereby ensuring the retrieval of the user's assets.
+              TideBit DeFi employs a "P3 (Partial Private-Key Protection)" system of{' '}
+              <span className="font-bold text-violet">BOLT</span> to safeguard the client's crypto
+              assets, held in digital wallets, alongside essential fragments of cryptographic keys
+              required for accessing these assets on our platform. 'P3 (Partial Private-Key
+              Protection)' protocol allows us to safeguard the user's private key. In the event of a
+              loss of the private key, through user authentication, a new set of authorized private
+              key combinations can be reconstituted from other private key fragments, thereby
+              ensuring the retrieval of the user's assets.
             </p>
             <p>
               These assets and keys are shielded from loss, theft, or any form of misuse. The Firm

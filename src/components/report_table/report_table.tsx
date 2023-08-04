@@ -25,9 +25,10 @@ const ReportTable = ({tableData}: IReportTableProps) => {
   });
 
   const displayTbody = tableData.tbody.map((row, index) => {
-    const rowStyle = row.title.includes('Total') ? 'bg-lilac2 font-bold' : '';
+    const rowBg = row.title.match(/^Total/) ? 'bg-lilac2' : '';
 
     const displayRow = row.items.map((item, index) => {
+      const isBold = row.title.match(/^Total/) ? 'font-bold' : '';
       const textStyles =
         !!item.match(/[0-9]/) || item === '—'
           ? 'text-darkPurple3 text-right'
@@ -37,7 +38,7 @@ const ReportTable = ({tableData}: IReportTableProps) => {
       return (
         <td
           key={index}
-          className={`max-w-80px border-l border-black p-5px ${rowStyle} ${textStyles}`}
+          className={`max-w-80px border-l border-black p-5px ${isBold} ${rowBg} ${textStyles}`}
         >
           {item}
         </td>
@@ -45,8 +46,8 @@ const ReportTable = ({tableData}: IReportTableProps) => {
     });
 
     const titleStyle =
-      row.title.includes('Total') || row.title.match(/:$/)
-        ? 'text-darkPurple3'
+      row.title.match(/^Total/) || row.title.match(/:$/)
+        ? 'text-darkPurple3 font-bold'
         : !displayRow[0]
         ? 'text-violet font-bold'
         : 'text-lilac';
@@ -56,7 +57,7 @@ const ReportTable = ({tableData}: IReportTableProps) => {
 
     return (
       <tr key={index} className={`border-x border-b border-black text-darkPurple3`}>
-        <td className={`p-5px ${titleStyle} ${rowStyle}`} colSpan={titleColSpan}>
+        <td className={`p-5px ${titleStyle} ${rowBg}`} colSpan={titleColSpan}>
           {row.title}
         </td>
 
