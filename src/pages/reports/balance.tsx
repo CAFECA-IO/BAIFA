@@ -11,6 +11,7 @@ import {
   balance_sheets_p7_1,
   balance_sheets_p7_2,
   balance_sheets_p8_1,
+  balance_sheets_p9_1,
 } from '../../constants/report_table_data';
 
 const StatementOfRedFlags = () => {
@@ -268,7 +269,7 @@ const StatementOfRedFlags = () => {
           <div className="flex flex-col gap-y-15px text-xs leading-5">
             <h1 className="text-lg font-bold text-violet">Notes to Balance Sheets</h1>
             {/* Info: (20230802 - Julian) Note 1 */}
-            <h2 className="font-bold"> 1. NATURE OF OPERATIONS</h2>
+            <h2 className="font-bold uppercase"> 1. NATURE OF OPERATIONS</h2>
             <p>
               TideBit DeFi is a decentralized financial exchange that provides accessible financial
               services to a broad range of users. As a part of the burgeoning decentralized finance
@@ -289,7 +290,7 @@ const StatementOfRedFlags = () => {
               providing users with greater control over their financial destiny.
             </p>
             {/* Info: (20230802 - Julian) Note 2 */}
-            <h2 className="font-bold"> 2. SUMMARY OF SIGNIFICANT ACCOUNTING POLICIES</h2>
+            <h2 className="font-bold uppercase">2. SUMMARY OF SIGNIFICANT ACCOUNTING POLICIES</h2>
             <p className="font-bold">Foundation for Presentation and Consolidation Principles</p>
             <p>
               The attached financial statements of the Company are not audited. These non-audited
@@ -337,7 +338,7 @@ const StatementOfRedFlags = () => {
               liabilities
             </p>
             {/* Info: (20230802 - Julian) Note 3 */}
-            <h2 className="font-bold"> 3. CUSTOMER ASSETS AND LIABILITIES</h2>
+            <h2 className="font-bold uppercase">3. CUSTOMER ASSETS AND LIABILITIES</h2>
             <p>
               TideBit DeFi employs a "P3 (Partial Private-Key Protection)" system of{' '}
               <span className="font-bold text-violet">BOLT</span> to safeguard the client's crypto
@@ -468,7 +469,7 @@ const StatementOfRedFlags = () => {
               </tbody>
             </table> */}
             {/* Info: (20230802 - Julian) Note 4 */}
-            <h2 className="font-bold"> 4. ASSETS PLEDGED AS COLLATERAL</h2>
+            <h2 className="font-bold uppercase">4. ASSETS PLEDGED AS COLLATERAL</h2>
             <p>
               As of <span className="font-bold text-violet">July 30, 2023</span>, TideBit DeFi had
               pledged <span className="font-bold text-violet">USDT</span> that served exclusively as
@@ -537,7 +538,7 @@ const StatementOfRedFlags = () => {
               </tbody>
             </table> */}
             {/* Info: (20230802 - Julian) Note 5 */}
-            <h2 className="font-bold"> 5. CRYPTO ASSETS HELD</h2>
+            <h2 className="font-bold uppercase">5. CRYPTO ASSETS HELD</h2>
             <p>
               As of <span className="font-bold text-violet">July 30, 2023</span> and{' '}
               <span className="font-bold text-violet">July 1, 2023</span>, the cost basis and fair
@@ -562,7 +563,7 @@ const StatementOfRedFlags = () => {
         <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={8}>
           <div className="flex flex-col gap-y-15px text-xs leading-5">
             {/* Info: (20230802 - Julian) Note 6 */}
-            <h2 className="font-bold"> 6. FAIR VALUE MEASUREMENTS</h2>
+            <h2 className="font-bold uppercase">6. FAIR VALUE MEASUREMENTS</h2>
             <p>
               The following table sets forth by level, within the fair value hierarchy, the
               Company’s assets and liabilities measured and recorded at fair value on a recurring
@@ -572,6 +573,48 @@ const StatementOfRedFlags = () => {
             <p className="italic text-lilac">Next Page</p>
           </div>
         </ReportPageBody>
+        <hr />
+
+        {/* Info: (20230802 - Julian) Page 9 */}
+        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={9}>
+          <ReportTable tableData={balance_sheets_p9_1} />
+          <div className="mt-10px flex flex-col gap-y-15px text-xs leading-5">
+            {/* Info: (20230802 - Julian) Note 7 */}
+            <h2 className="font-bold uppercase">7. Market price risk of crypto assets</h2>
+            <p>
+              Our revenue model primarily hinges on transaction fees, which can be a flat fee or
+              calculated as a percentage of the transaction value. The exact fee may fluctuate
+              depending on the payment type and the transaction value.
+            </p>
+            <p>
+              However, it's important to be cognizant of the risks associated with crypto asset
+              price volatility, which could negatively impact our operational results. Market prices
+              of Bitcoin, Ethereum, and other crypto assets play a crucial role in determining our
+              future profitability. These prices have shown significant fluctuation month over
+              month, matching the pattern of our operational results, and there is no certainty that
+              they will follow historical trends.
+            </p>
+            <p>
+              A downturn in the market price of Bitcoin, Ethereum, and other crypto assets could
+              negatively affect our earnings, the carrying value of our crypto assets, and our
+              projected future cash flows. It could also pose a challenge to our liquidity and
+              capability to fulfill
+            </p>
+          </div>
+        </ReportPageBody>
+        <hr />
+
+        {/* Info: (20230802 - Julian) Page 10 */}
+        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={10}>
+          <div className="flex flex-col gap-y-15px text-xs leading-5">
+            <p> ongoing obligations.</p>
+            <p>
+              In terms of accounting procedures, we record impairment charges on our crypto assets
+              when the market prices fall below the assets' carrying value.
+            </p>
+          </div>
+        </ReportPageBody>
+        <hr />
       </div>
     </>
   );

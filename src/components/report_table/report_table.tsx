@@ -36,11 +36,19 @@ const ReportTable = ({tableData}: IReportTableProps) => {
     const rowBg = row.title.match(/^Total/) ? 'bg-lilac2' : '';
 
     const displayRow = row.items.map((item, index) => {
-      const isBold = row.title.match(/^Total/) ? 'font-bold' : '';
+      const isBold =
+        row.title.match(/^Total/) || item.match(/^Level/) || item.match(/^Total/)
+          ? 'font-bold'
+          : '';
       const textStyles =
-        !!!item.match(/[A-Za-z]/) || item.match(/—/)
+        // Info: (20230802 - Julian) 特定關鍵字，粗體黑字中靠
+        item.match(/^Level/) || item.match(/^Total/)
+          ? 'text-darkPurple3 text-center'
+          : // Info: (20230802 - Julian) 數字或 —，黑字右靠
+          !!!item.match(/[A-Za-z]/) || item.match(/—/)
           ? 'text-darkPurple3 text-right'
-          : 'text-lilac text-center';
+          : // Info: (20230802 - Julian) 預設，灰字中靠
+            'text-lilac text-center';
 
       if (item === '*-*') return;
       return (
@@ -54,11 +62,16 @@ const ReportTable = ({tableData}: IReportTableProps) => {
     });
 
     const titleStyle =
-      row.title.match(/^Total/) || row.title.match(/:$/)
+      // Info: (20230802 - Julian) 若第一排的 items 為文字說明，則設定為紫色粗體字
+      index === 0 && row.items[0].match(/[A-Za-z]/)
+        ? 'text-violet font-bold'
+        : // Info: (20230802 - Julian) Total 開頭或 : 結尾，則設定黑色粗體字
+        row.title.match(/^Total/) || row.title.match(/:$/)
         ? 'text-darkPurple3 font-bold'
-        : !!displayRow[0]
-        ? 'text-lilac'
-        : 'text-violet font-bold';
+        : // Info: (20230802 - Julian) 若沒有 displayRow，則設定紫色粗體字
+        !!!displayRow[0]
+        ? 'text-violet font-bold'
+        : 'text-lilac';
 
     // Info: (20230802 - Julian) 若 displayRow[0] 為 undefined，則設定 titleColSpan 為 row.items.length + 1(陣列由 0 開始數)
     const titleColSpan = !displayRow[0] ? row.items.length + 1 : 1;
