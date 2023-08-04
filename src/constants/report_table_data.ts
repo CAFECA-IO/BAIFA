@@ -167,3 +167,29 @@ export const balance_sheets_p7_1: IReportTable = {
     },
   ],
 };
+
+export const balance_sheets_p7_2: IReportTable = {
+  thead: ['', '*-*', 'Jul. 30, 2023', '*-*', 'Jul. 1, 2023'],
+  tbody: [
+    {
+      title: 'Crypto assets held for operating purposes:',
+      items: ['Cost(1)', 'Fair Value(2)', 'Cost(1)', 'Fair Value(2)'],
+    },
+    {
+      title: 'Bitcoin',
+      items: ['—', '—', '—', '—'],
+    },
+    {
+      title: 'Ethereum',
+      items: ['—', '—', '—', '—'],
+    },
+    {
+      title: 'Other',
+      items: ['—', '—', '—', '—'],
+    },
+    {
+      title: 'Total crypto assets held for operating purposes',
+      items: ['—', '—', '—', '—'],
+    },
+  ],
+};

@@ -9,6 +9,7 @@ import {
   balance_sheets_p6_1,
   balance_sheets_p6_2,
   balance_sheets_p7_1,
+  balance_sheets_p7_2,
 } from '../../constants/report_table_data';
 
 const StatementOfRedFlags = () => {
@@ -541,6 +542,17 @@ const StatementOfRedFlags = () => {
               <span className="font-bold text-violet">July 1, 2023</span>, the cost basis and fair
               value of our crypto assets held at impaired cost was as follows:
             </p>
+            {/* ToDo: (20230804 - Julian) (數字)註解 */}
+            <ReportTable tableData={balance_sheets_p7_2} />
+            <div className="-mt-10px flex flex-col text-xxs text-lilac">
+              <p>(1) Cost amounts shown are net of impairment recognized.</p>
+              <p>
+                (2) The fair value of crypto assets held is based on quoted market prices for one
+                unit of each crypto asset reported on our platform at 00:00 am Coordinated Universal
+                Time (UTC) on the last day of the respective period multiplied by the quantity of
+                each crypto asset held.
+              </p>
+            </div>
           </div>
         </ReportPageBody>
         <hr />
