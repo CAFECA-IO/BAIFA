@@ -1,97 +1,66 @@
-// ToDo: (20230802 - Julian) 整理 interface
-const testTable = {
-  thead: ['$ in Thousands', 'Jul. 30, 2023', 'Jul. 1, 2023'],
-  tbody: [
-    {
-      title: 'Customer custodial funds',
-      items: ['$ 24278.3', '$ 24467.11'],
-    },
-    {
-      title: 'Total customer assets',
-      items: ['$ 24278.3', '$ 24467.11'],
-    },
-    {
-      title: 'Customer custodial cash liabilities',
-      items: ['$ 24278.3', '$ 24467.11'],
-    },
-    {
-      title: 'Total customer liaiblities',
-      items: ['$ 24278.3', '$ 24467.11'],
-    },
-  ],
-};
+import {IReportTable} from '../../interfaces/report_table';
 
-const testTable2 = {
-  thead: ['$ in Thousands', '*-*', 'Jul. 30, 2023', '*-*', 'Jul. 1, 2023'],
-  tbody: [
-    {
-      title: '',
-      items: ['Fair Value', 'Percentage of Total', 'Fair Value', 'Percentage of Total'],
-    },
-    {
-      title: 'Bitcoin',
-      items: ['-', '-', '-', '-'],
-    },
-    {
-      title: 'Ethereum',
-      items: ['-', '-', '-', '-'],
-    },
-    {
-      title: 'USDT',
-      items: ['$ 24278.3', '100%', '$ 24467.11', '100%'],
-    },
-    {
-      title: 'Total customer liaiblities',
-      items: ['$ 24278.3', '100%', '$ 24467.11', '100%'],
-    },
-  ],
-};
+interface IReportTableProps {
+  tableData: IReportTable;
+}
 
-const ReportTable = () => {
-  const th = (
-    <tr>
-      <th className="py-10px">$ in Thousands</th>
-      <th className="py-10px" colSpan={2}>
-        Jul. 30, 2023
-      </th>
-      <th className="py-10px" colSpan={2}>
-        Jul. 1, 2023
-      </th>
-    </tr>
-  );
-
-  const displayTh = testTable2.thead.map((item, index) => {
-    // ToDo (20230802 - Julian) 處理 *-* 的 colSpan
-    const colSpan = testTable2.thead[index - 1] === '*-*' ? 1 : 0;
+const ReportTable = ({tableData}: IReportTableProps) => {
+  const displayTh = tableData.thead.map((item, index) => {
+    // Info: (20230802 - Julian) *-* 表示和前一個格子合併
+    const colSpan = tableData.thead[index - 1] === '*-*' ? 1 : 0;
+    // Info: (20230802 - Julian) 將 th 以 \n 斷行
+    const thArr = item.split('\n');
 
     if (item === '*-*') return null;
+
+    const displayThArr = thArr.map((item, index) => {
+      return <p key={index}>{item}</p>;
+    });
+
     return (
-      <th key={index} colSpan={1 + colSpan} className="py-10px">
-        {item}
+      <th key={index} colSpan={1 + colSpan} className="py-10px text-center">
+        {displayThArr}
       </th>
     );
   });
 
-  const displayTbody = testTable2.tbody.map((row, index) => {
+  const displayTbody = tableData.tbody.map((row, index) => {
     const rowStyle = row.title.includes('Total') ? 'bg-lilac2 font-bold' : '';
-    const titleColor = row.title.includes('Total') ? 'text-darkPurple3' : 'text-lilac';
+
+    const displayRow = row.items.map((item, index) => {
+      const textStyles =
+        !!item.match(/[0-9]/) || item === '—'
+          ? 'text-darkPurple3 text-right'
+          : 'text-lilac text-center';
+
+      if (item === '*-*') return;
+      return (
+        <td
+          key={index}
+          className={`max-w-80px border-l border-black p-5px ${rowStyle} ${textStyles}`}
+        >
+          {item}
+        </td>
+      );
+    });
+
+    const titleStyle =
+      row.title.includes('Total') || row.title.match(/:$/)
+        ? 'text-darkPurple3'
+        : !displayRow[0]
+        ? 'text-violet font-bold'
+        : 'text-lilac';
+
+    // Info: (20230802 - Julian) 若 displayRow[0] 為 undefined，則設定 titleColSpan 為 row.items.length + 1(陣列由 0 開始數) + 1(Title 欄位)
+    const titleColSpan = !displayRow[0] ? row.items.length + 2 : 1;
 
     return (
-      <tr key={index} className={`border-x border-b border-black text-darkPurple3 ${rowStyle}`}>
-        <td className={`p-5px ${titleColor}`}>{row.title}</td>
+      <tr key={index} className={`border-x border-b border-black text-darkPurple3`}>
+        <td className={`p-5px ${titleStyle} ${rowStyle}`} colSpan={titleColSpan}>
+          {row.title}
+        </td>
 
-        {row.items.map((item, index) => {
-          const itemStyle =
-            !!item.match(/[0-9]/) || item === '-' ? 'text-darkPurple3' : 'text-lilac';
-          return (
-            <td
-              key={index}
-              className={`max-w-80px border-l border-black ${itemStyle} p-5px text-right`}
-            >
-              {item}
-            </td>
-          );
-        })}
+        {displayRow}
       </tr>
     );
   });

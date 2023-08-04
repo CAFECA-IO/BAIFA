@@ -2,8 +2,14 @@ import Head from 'next/head';
 import ReportCover from '../../components/report_cover/report_cover';
 import ReportContent from '../../components/report_content/report_content';
 import ReportPageBody from '../../components/report_page_body/report_page_body';
-//import ReportTable from '../../components/report_table/report_table';
+import ReportTable from '../../components/report_table/report_table';
 import {BaifaReports} from '../../constants/baifa_reports';
+import {
+  //balance_sheets_p3_1,
+  balance_sheets_p6_1,
+  balance_sheets_p6_2,
+  balance_sheets_p7_1,
+} from '../../constants/report_table_data';
 
 const StatementOfRedFlags = () => {
   const contentList = ['Balance Sheets', 'Note To Balance Sheets'];
@@ -261,6 +267,11 @@ const StatementOfRedFlags = () => {
         </ReportPageBody>
         <hr />
 
+        {/*         <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={0}>
+          <ReportTable tableData={balance_sheets_p3_1} />
+        </ReportPageBody> */}
+        <hr />
+
         {/* Info: (20230802 - Julian) Page 4 */}
         <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={4}>
           <div className="flex flex-col gap-y-15px text-xs leading-5">
@@ -367,10 +378,12 @@ const StatementOfRedFlags = () => {
               clients.
             </p>
             <p>
-              During the one month ended July 30, 2023, no losses have been incurred in connection
-              with customer crypto assets
+              During the <span className="font-bold text-violet">30 days ended July 30, 2023</span>,
+              no losses have been incurred in connection with customer crypto assets
             </p>
-            <table className="my-5px text-xs">
+            <ReportTable tableData={balance_sheets_p6_1} />
+            {/* Till: (20230824 - Julian) old table */}
+            {/* <table className="my-5px text-xs">
               <thead className="border border-violet bg-violet font-bold text-white">
                 <tr>
                   <th className="py-10px">$ in Thousands</th>
@@ -400,13 +413,15 @@ const StatementOfRedFlags = () => {
                   <td className="border-l border-black p-5px text-right">$ 1,000</td>
                 </tr>
               </tbody>
-            </table>
+            </table> */}
             <p>
               The following table sets forth the fair value of customer crypto assets, as shown on
               the condensed consolidated balance sheets, as customer crypto assets and customer
               crypto liabilities (in billions):
             </p>
-            <table className="my-5px text-xs">
+            <ReportTable tableData={balance_sheets_p6_2} />
+            {/* Till: (20230824 - Julian) old table */}
+            {/* <table className="my-5px text-xs">
               <thead className="border border-violet bg-violet font-bold text-white">
                 <tr>
                   <th className="py-10px">$ in Thousands</th>
@@ -459,7 +474,7 @@ const StatementOfRedFlags = () => {
                   <td className="border-l border-black p-5px text-right">100.0%</td>
                 </tr>
               </tbody>
-            </table>
+            </table> */}
             {/* Info: (20230802 - Julian) Note 4 */}
             <h2 className="font-bold"> 4. ASSETS PLEDGED AS COLLATERAL</h2>
             <p>
@@ -476,7 +491,9 @@ const StatementOfRedFlags = () => {
         <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={7}>
           <div className="flex flex-col gap-y-15px text-xs leading-5">
             <p>load amount outstanding.</p>
-            <table className="my-5px text-xs">
+            <ReportTable tableData={balance_sheets_p7_1} />
+            {/* Till: (20230824 - Julian) old table */}
+            {/*<table className="my-5px text-xs">
               <thead className="border border-violet bg-violet font-bold text-white">
                 <tr>
                   <th className="py-10px">$ in Thousands</th>
@@ -526,7 +543,7 @@ const StatementOfRedFlags = () => {
                   <td className="border-l border-black p-5px text-right">—</td>
                 </tr>
               </tbody>
-            </table>
+            </table> */}
             {/* Info: (20230802 - Julian) Note 5 */}
             <h2 className="font-bold"> 5. CRYPTO ASSETS HELD</h2>
             <p>
