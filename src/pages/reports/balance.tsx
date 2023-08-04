@@ -14,7 +14,7 @@ import {
   balance_sheets_p9_1,
 } from '../../constants/report_table_data';
 
-const StatementOfRedFlags = () => {
+const BalanceSheets = () => {
   const contentList = ['Balance Sheets', 'Note To Balance Sheets'];
 
   return (
@@ -620,4 +620,4 @@ const StatementOfRedFlags = () => {
   );
 };
 
-export default StatementOfRedFlags;
+export default BalanceSheets;

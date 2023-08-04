@@ -1,5 +1,6 @@
 import {IReportTable} from '../interfaces/report_table';
 
+/* Balance Sheets table data */
 export const balance_sheets_p3_1: IReportTable = {
   thead: ['Balance Sheets - USD ($)', 'Jul. 30, 2023', 'Jul. 1, 2023'],
   tbody: [
