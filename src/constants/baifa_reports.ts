@@ -1,6 +1,6 @@
 export type IBaifaReports =
   | 'Balance Sheets'
-  | 'Comprehensive Income Statements'
+  | 'Income Statements'
   | 'Statements of Cash Flows'
   | 'Statements of Red Flags';
 
@@ -13,7 +13,7 @@ export type IBaifaReportsConstant = {
 
 export const BaifaReports: IBaifaReportsConstant = {
   BALANCE_SHEETS: 'Balance Sheets',
-  COMPREHENSIVE_INCOME_STATEMENTS: 'Comprehensive Income Statements',
+  COMPREHENSIVE_INCOME_STATEMENTS: 'Income Statements',
   STATEMENTS_OF_CASH_FLOWS: 'Statements of Cash Flows',
   STATEMENTS_OF_RED_FLAGS: 'Statements of Red Flags',
 };

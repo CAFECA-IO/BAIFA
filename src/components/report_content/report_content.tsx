@@ -4,7 +4,7 @@ interface ReportContentProps {
 
 const ReportContent = ({content}: ReportContentProps) => {
   const displayList = content.map((item, index) => (
-    <li key={index} className="mb-30px">
+    <li key={index} className="mb-30px whitespace-nowrap text-base">
       {item}
     </li>
   ));
@@ -19,7 +19,7 @@ const ReportContent = ({content}: ReportContentProps) => {
           </h1>
           <div className="h-full w-105px bg-hoverWhite"></div>
         </div>
-        <ul className="list-decimal px-40px text-base font-bold text-darkPurple3">{displayList}</ul>
+        <ul className="list-decimal pl-40px text-base font-bold text-darkPurple3">{displayList}</ul>
       </div>
     </div>
   );

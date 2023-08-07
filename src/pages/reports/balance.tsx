@@ -3,6 +3,7 @@ import ReportCover from '../../components/report_cover/report_cover';
 import ReportContent from '../../components/report_content/report_content';
 import ReportPageBody from '../../components/report_page_body/report_page_body';
 import ReportTable from '../../components/report_table/report_table';
+import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {
   balance_sheets_p3_1,
@@ -15,18 +16,19 @@ import {
 } from '../../constants/report_table_data';
 
 const BalanceSheets = () => {
+  const reportTitle = BaifaReports.BALANCE_SHEETS;
   const contentList = ['Balance Sheets', 'Note To Balance Sheets'];
 
   return (
     <>
       <Head>
-        <title>BAIFA - {BaifaReports.BALANCE_SHEETS}</title>
+        <title>BAIFA - {reportTitle}</title>
       </Head>
 
       <div className="flex w-screen flex-col items-center font-inter">
         {/* Info: (20230801 - Julian) Cover */}
         <ReportCover
-          reportTitle={BaifaReports.BALANCE_SHEETS}
+          reportTitle={reportTitle}
           reportDateStart="2023-07-01"
           reportDateEnd="2023-07-30"
         />
@@ -36,110 +38,12 @@ const BalanceSheets = () => {
         <ReportContent content={contentList} />
         <hr />
 
-        {/* Info: (20230802 - Julian) Page 1 */}
-        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={1}>
-          <h1 className="text-lg font-bold text-violet">Summary of Risk Factors</h1>
-          <p className="my-4 text-xs leading-5">
-            Our business is subject to various risks and uncertainties, including those detailed
-            below. The most significant risks include:
-          </p>
-          <ul className="my-4 ml-5 list-disc text-xs leading-5">
-            <li>
-              Our total revenue largely depends on the prices of crypto assets and the volume of
-              transactions on our platform. A decline in these could negatively affect our business,
-              operating results, and financial condition.
-            </li>
-            <li>
-              Our net revenue may be concentrated in a few areas. A significant portion comes from
-              transactions in Bitcoin and Ethereum and interest income from USDT. If these revenue
-              sources decline and are not replaced by new demand, our business could be negatively
-              affected.
-            </li>
-            <li>
-              We have formed, and may form in the future, partnerships or strategic alliances with
-              third parties. If these relationships are unsuccessful or these third parties fail to
-              deliver certain services, our business could be negatively affected.
-            </li>
-            <li>Fluctuations in interest rates could have a negative impact on us.</li>
-            <li>
-              The future growth of cryptocurrency is subject to unpredictable factors. If crypto
-              doesn't grow as we expect, our business could be negatively affected.
-            </li>
-            <li>
-              Cyberattacks and security breaches could harm our brand and reputation and negatively
-              affect our business.
-            </li>
-            <li>
-              We operate in a complex and uncertain regulatory landscape. Any adverse changes or
-              failure to comply with laws and regulations could negatively affect our business.
-            </li>
-            <li>
-              We operate in a highly competitive industry and compete against unregulated companies
-              and companies with greater resources. If we can't effectively respond to our
-              competitors, our business could be negatively affected.
-            </li>
-            <li>
-              We compete against a growing number of decentralized and noncustodial platforms.
-              Failure to compete effectively against them could negatively affect our business.
-            </li>
-            <li>
-              As we expand internationally, our obligations to comply with various jurisdictions'
-              laws will increase, and we may be subject to inquiries, investigations, and
-              enforcement actions.
-            </li>
-            <li>
-              We are subject to material litigation, including individual and class action lawsuits,
-              as well as investigations and enforcement actions. These matters can be expensive and
-            </li>
-          </ul>
-        </ReportPageBody>
-        <hr />
-
-        {/* Info: (20230802 - Julian) Page 2 */}
-        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={2}>
-          <ul className="my-4 ml-5 list-disc text-xs leading-5">
-            <p>time-consuming, and if resolved adversely, could harm our business.</p>
-            <li>
-              If we can't keep pace with rapid industry changes to provide new and innovative
-              products and services, our net revenue could decline, negatively impacting our
-              business.
-            </li>
-            <li>
-              The status of a particular crypto asset as a "security" is highly uncertain. If we
-              incorrectly characterize a crypto asset, we may face regulatory scrutiny,
-              investigations, fines, and other penalties.
-            </li>
-            <li>
-              We rely on third-party service providers for certain operations. Any service
-              interruptions from these third parties may impair our ability to support our
-              customers.
-            </li>
-            <li>
-              Loss of a critical banking or insurance relationship could negatively affect our
-              business.
-            </li>
-            <li>
-              Any significant disruption in our products, services, IT systems, or any of the
-              blockchain networks we support could result in a loss of customers or funds and
-              negatively impact our brand and reputation.
-            </li>
-            <li>
-              Our failure to safeguard and manage our and our customers’ fiat currencies and crypto
-              assets could negatively impact our business.
-            </li>
-            <li>
-              The theft, loss, or destruction of private keys required to access any crypto assets
-              held in custody for our own account or for our customers may be irreversible. If we
-              are unable to access our private keys or if we experience a hack or other data loss,
-              it could cause regulatory scrutiny, reputational harm, and other losses.
-            </li>
-          </ul>
-        </ReportPageBody>
-        <hr />
+        {/* Info: (20230807 - Julian) Page 1 & 2 */}
+        <ReportRiskPages reportTitle={reportTitle} />
 
         {/* Info: (20230802 - Julian) Page 3 */}
-        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={3}>
-          <h1 className="mb-16px text-32px font-bold text-violet">{BaifaReports.BALANCE_SHEETS}</h1>
+        <ReportPageBody reportTitle={reportTitle} currentPage={3}>
+          <h1 className="mb-16px text-32px font-bold text-violet">{reportTitle}</h1>
           <ReportTable tableData={balance_sheets_p3_1} />
           {/* Till: (20230824 - Julian) old table */}
           {/* <table className="text-xs">
@@ -265,7 +169,7 @@ const BalanceSheets = () => {
         <hr />
 
         {/* Info: (20230802 - Julian) Page 4 */}
-        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={4}>
+        <ReportPageBody reportTitle={reportTitle} currentPage={4}>
           <div className="flex flex-col gap-y-15px text-xs leading-5">
             <h1 className="text-lg font-bold text-violet">Notes to Balance Sheets</h1>
             {/* Info: (20230802 - Julian) Note 1 */}
@@ -311,7 +215,7 @@ const BalanceSheets = () => {
         <hr />
 
         {/* Info: (20230802 - Julian) Page 5 */}
-        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={5}>
+        <ReportPageBody reportTitle={reportTitle} currentPage={5}>
           <div className="flex flex-col gap-y-15px text-xs leading-5">
             <p>
               to make estimates and assumptions. Significant estimates and assumptions include the
@@ -363,7 +267,7 @@ const BalanceSheets = () => {
         <hr />
 
         {/* Info: (20230802 - Julian) Page 6 */}
-        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={6}>
+        <ReportPageBody reportTitle={reportTitle} currentPage={6}>
           <div className="flex flex-col gap-y-15px text-xs leading-5">
             <p>
               accordance with SAB 121. TideBit DeFi regularly updates and initially recognizes the
@@ -481,7 +385,7 @@ const BalanceSheets = () => {
         <hr />
 
         {/* Info: (20230802 - Julian) Page 7 */}
-        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={7}>
+        <ReportPageBody reportTitle={reportTitle} currentPage={7}>
           <div className="flex flex-col gap-y-15px text-xs leading-5">
             <p>load amount outstanding.</p>
             <ReportTable tableData={balance_sheets_p7_1} />
@@ -560,7 +464,7 @@ const BalanceSheets = () => {
         <hr />
 
         {/* Info: (20230802 - Julian) Page 8 */}
-        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={8}>
+        <ReportPageBody reportTitle={reportTitle} currentPage={8}>
           <div className="flex flex-col gap-y-15px text-xs leading-5">
             {/* Info: (20230802 - Julian) Note 6 */}
             <h2 className="font-bold uppercase">6. FAIR VALUE MEASUREMENTS</h2>
@@ -576,7 +480,7 @@ const BalanceSheets = () => {
         <hr />
 
         {/* Info: (20230802 - Julian) Page 9 */}
-        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={9}>
+        <ReportPageBody reportTitle={reportTitle} currentPage={9}>
           <ReportTable tableData={balance_sheets_p9_1} />
           <div className="mt-10px flex flex-col gap-y-15px text-xs leading-5">
             {/* Info: (20230802 - Julian) Note 7 */}
@@ -605,7 +509,7 @@ const BalanceSheets = () => {
         <hr />
 
         {/* Info: (20230802 - Julian) Page 10 */}
-        <ReportPageBody reportTitle={BaifaReports.BALANCE_SHEETS} currentPage={10}>
+        <ReportPageBody reportTitle={reportTitle} currentPage={10}>
           <div className="flex flex-col gap-y-15px text-xs leading-5">
             <p> ongoing obligations.</p>
             <p>
