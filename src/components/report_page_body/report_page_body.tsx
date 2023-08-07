@@ -17,7 +17,7 @@ const ReportPageBody = ({reportTitle, currentPage, children}: ReportPageBodyProp
         <div className="h-5px w-130px bg-violet"></div>
       </div>
       {/* Info: (20230802 - Julian) Page Content */}
-      <div className="flex flex-1 flex-col px-40px py-16px text-darkPurple3">{children}</div>
+      <div className="flex flex-1 flex-col px-40px text-darkPurple3">{children}</div>
       {/* Info: (20230802 - Julian) Footer */}
       <div className="flex h-80px w-full items-center justify-between px-40px">
         {/* Info: (20230802 - Julian) Page Number */}

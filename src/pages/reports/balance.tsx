@@ -5,8 +5,9 @@ import ReportPageBody from '../../components/report_page_body/report_page_body';
 import ReportTable from '../../components/report_table/report_table';
 import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
 import {BaifaReports} from '../../constants/baifa_reports';
+import ReportTableNew, {RowType} from '../../components/report_table/report_table_new';
 import {
-  balance_sheets_p3_1,
+  //balance_sheets_p3_1,
   balance_sheets_p6_1,
   balance_sheets_p6_2,
   balance_sheets_p7_1,
@@ -14,6 +15,96 @@ import {
   balance_sheets_p8_1,
   balance_sheets_p9_1,
 } from '../../constants/report_table_data';
+
+const balance_sheets_p3_1 = {
+  thead: ['Balance Sheets - USD ($)', 'Jul. 30, 2023', 'Jul. 1, 2023'],
+  tbody: [
+    {
+      rowType: RowType.title,
+      rowData: ['Assets', '*-*', '*-*'],
+    },
+    {
+      rowType: RowType.subtitle,
+      rowData: ['Current assets:', '*-*', '*-*'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Customer custodial funds', '$ 24278.30', '$ 24467.11'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['USDT', '349.09', '67.21'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Account receivable', '0', '0'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Assets pledged as collateral', '0', '0'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Total current assets', '24,627.39', '24,534.32'],
+    },
+    {
+      rowType: RowType.subtitle,
+      rowData: ['Non-current assets:', '*-*', '*-*'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Crypto assets held', '0', '0'],
+    },
+    {
+      rowType: RowType.foot,
+      rowData: ['Total assets', '$ 24,627.39', '$ 24,534.32'],
+    },
+    {
+      rowType: RowType.title,
+      rowData: [`Liabilities and Stockholders' Equity`, '*-*', '*-*'],
+    },
+    {
+      rowType: RowType.subtitle,
+      rowData: ['Current liabilities:', '*-*', '*-*'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Customer custodial cash liabilities', '$ 24278.3', '$ 24467.11'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Accounts payable', '0', '0'],
+    },
+    {
+      rowType: RowType.foot,
+      rowData: ['Total liabilities', '$ 24,278.30', '$ 24,467.11'],
+    },
+    {
+      rowType: RowType.title,
+      rowData: [`Stockholders' equity`, '*-*', '*-*'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Additional paid-in capital', '0', '0'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Accumulated other comprehensive income', '0', '0'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Retained earnings', '349.09', '67.21'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: [`Total stockholders' equity`, '349.09', '67.21'],
+    },
+    {
+      rowType: RowType.foot,
+      rowData: [`Total liabilities and stockholders' equity`, '$ 24,627.39', '$ 24,534.32'],
+    },
+  ],
+};
 
 const BalanceSheets = () => {
   const reportTitle = BaifaReports.BALANCE_SHEETS;
@@ -44,127 +135,11 @@ const BalanceSheets = () => {
         {/* Info: (20230802 - Julian) Page 3 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={3}>
           <h1 className="mb-16px text-32px font-bold text-violet">{reportTitle}</h1>
-          <ReportTable tableData={balance_sheets_p3_1} />
-          {/* Till: (20230824 - Julian) old table */}
-          {/* <table className="text-xs">
-            <thead className="border border-violet bg-violet font-bold text-white">
-              <tr className="py-5px">
-                <th>
-                  <p>Balance Sheets - USD ($)</p>
-                  <p>$ in Thousands</p>
-                </th>
-                <th>Jul. 30, 2023</th>
-                <th>Jul. 1, 2023</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-x border-b border-black font-bold text-violet">
-                <td colSpan={3} className="p-5px">
-                  Assets
-                </td>
-              </tr>
-              <tr className="border-x border-b border-black font-bold text-darkPurple3">
-                <td colSpan={3} className="p-5px">
-                  Current assets:
-                </td>
-              </tr>
-              <tr className="border-x border-b border-black text-darkPurple3">
-                <td className="p-5px text-lilac">Customer custodial funds</td>
-                <td className="border-l border-black p-5px text-right">$ 1,000</td>
-                <td className="border-l border-black p-5px text-right">$ 1,000</td>
-              </tr>
-              <tr className="border-x border-b border-black text-darkPurple3">
-                <td className="p-5px text-lilac">USDT</td>
-                <td className="border-l border-black p-5px text-right">800</td>
-                <td className="border-l border-black p-5px text-right">1,400</td>
-              </tr>
-              <tr className="border-x border-b border-black text-darkPurple3">
-                <td className="p-5px text-lilac">Account receivable</td>
-                <td className="border-l border-black p-5px text-right">200</td>
-                <td className="border-l border-black p-5px text-right">100</td>
-              </tr>
-              <tr className="border-x border-b border-black text-darkPurple3">
-                <td className="p-5px text-lilac">Assets pledged as collateral</td>
-                <td className="border-l border-black p-5px text-right">1,000</td>
-                <td className="border-l border-black p-5px text-right">500</td>
-              </tr>
-              <tr className="border-x border-b border-black text-darkPurple3">
-                <td className="p-5px text-lilac">Total current assets</td>
-                <td className="border-l border-black p-5px text-right">3,000</td>
-                <td className="border-l border-black p-5px text-right">3,000</td>
-              </tr>
-              <tr className="border-x border-b border-black font-bold text-darkPurple3">
-                <td colSpan={3} className="p-5px">
-                  Non-current assets:
-                </td>
-              </tr>
-              <tr className="border-x border-b border-black text-darkPurple3">
-                <td className="p-5px text-lilac">Crypto assets held</td>
-                <td className="border-l border-black p-5px text-right">2,000</td>
-                <td className="border-l border-black p-5px text-right">2,000</td>
-              </tr>
-              <tr className="border-x border-b border-black bg-lilac2 font-bold text-darkPurple3">
-                <td className="p-5px">Total assets:</td>
-                <td className="border-l border-black p-5px text-right">$5,000</td>
-                <td className="border-l border-black p-5px text-right">$5,000</td>
-              </tr>
-              <tr className="border-x border-b border-black font-bold text-violet">
-                <td colSpan={3} className="p-5px">
-                  Liabilities and Stockholders' Equity
-                </td>
-              </tr>
-              <tr className="border-x border-b border-black font-bold text-darkPurple3">
-                <td colSpan={3} className="p-5px">
-                  Current liabilities:
-                </td>
-              </tr>
-              <tr className="border-x border-b border-black text-darkPurple3">
-                <td className="p-5px text-lilac">Customer custodial cash liabilities</td>
-                <td className="border-l border-black p-5px text-right">$ 1,900</td>
-                <td className="border-l border-black p-5px text-right">$ 1,950</td>
-              </tr>
-              <tr className="border-x border-b border-black text-darkPurple3">
-                <td className="p-5px text-lilac">Accounts payable</td>
-                <td className="border-l border-black p-5px text-right">100</td>
-                <td className="border-l border-black p-5px text-right">50</td>
-              </tr>
-              <tr className="border-x border-b border-black bg-lilac2 font-bold text-darkPurple3">
-                <td className="p-5px">Total liabilities</td>
-                <td className="border-l border-black p-5px text-right">2,000</td>
-                <td className="border-l border-black p-5px text-right">2,000</td>
-              </tr>
-              <tr className="border-x border-b border-black font-bold text-violet">
-                <td colSpan={3} className="p-5px">
-                  Stockholders' equity
-                </td>
-              </tr>
-              <tr className="border-x border-b border-black text-darkPurple3">
-                <td className="p-5px text-lilac">Additional paid-in capital</td>
-                <td className="border-l border-black p-5px text-right">1,900</td>
-                <td className="border-l border-black p-5px text-right">2,000</td>
-              </tr>
-              <tr className="border-x border-b border-black text-darkPurple3">
-                <td className="p-5px text-lilac">Accumulated other comprehensive income</td>
-                <td className="border-l border-black p-5px text-right">100</td>
-                <td className="border-l border-black p-5px text-right">0</td>
-              </tr>
-              <tr className="border-x border-b border-black text-darkPurple3">
-                <td className="p-5px text-lilac">Retained earnings</td>
-                <td className="border-l border-black p-5px text-right">1,000</td>
-                <td className="border-l border-black p-5px text-right">1,000</td>
-              </tr>
-              <tr className="border-x border-b border-black text-darkPurple3">
-                <td className="p-5px text-lilac">Total stockholders' equity</td>
-                <td className="border-l border-black p-5px text-right">3,000</td>
-                <td className="border-l border-black p-5px text-right">3,000</td>
-              </tr>
-              <tr className="border-x border-b border-black bg-lilac2 font-bold text-darkPurple3">
-                <td className="p-5px">Total liabilities and stockholders' equity</td>
-                <td className="border-l border-black p-5px text-right">$5,000</td>
-                <td className="border-l border-black p-5px text-right">$5,000</td>
-              </tr>
-            </tbody>
-          </table>  */}
+          {/* <ReportTable tableData={balance_sheets_p3_1} /> */}
+          <ReportTableNew
+            theadData={balance_sheets_p3_1.thead}
+            tbodyData={balance_sheets_p3_1.tbody}
+          />
         </ReportPageBody>
         <hr />
 
@@ -279,99 +254,12 @@ const BalanceSheets = () => {
               no losses have been incurred in connection with customer crypto assets
             </p>
             <ReportTable tableData={balance_sheets_p6_1} />
-            {/* Till: (20230824 - Julian) old table */}
-            {/* <table className="my-5px text-xs">
-              <thead className="border border-violet bg-violet font-bold text-white">
-                <tr>
-                  <th className="py-10px">$ in Thousands</th>
-                  <th>Jul. 30, 2023</th>
-                  <th>Jul. 1, 2023</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-x border-b border-black text-darkPurple3">
-                  <td className="p-5px text-lilac">Customer custodial funds</td>
-                  <td className="border-l border-black p-5px text-right">$ 1,000</td>
-                  <td className="border-l border-black p-5px text-right">$ 1,000</td>
-                </tr>
-                <tr className="border-x border-b border-black bg-lilac2 font-bold text-darkPurple3">
-                  <td className="p-5px">Total customer assets</td>
-                  <td className="border-l border-black p-5px text-right">$ 1,000</td>
-                  <td className="border-l border-black p-5px text-right">$ 1,000</td>
-                </tr>
-                <tr className="border-x border-b border-black text-darkPurple3">
-                  <td className="p-5px text-lilac">Customer custodial cash liabilities</td>
-                  <td className="border-l border-black p-5px text-right">$ 1,000</td>
-                  <td className="border-l border-black p-5px text-right">$ 1,000</td>
-                </tr>
-                <tr className="border-x border-b border-black bg-lilac2 font-bold text-darkPurple3">
-                  <td className="p-5px">Total customer liaiblities</td>
-                  <td className="border-l border-black p-5px text-right">$ 1,000</td>
-                  <td className="border-l border-black p-5px text-right">$ 1,000</td>
-                </tr>
-              </tbody>
-            </table> */}
             <p>
               The following table sets forth the fair value of customer crypto assets, as shown on
               the condensed consolidated balance sheets, as customer crypto assets and customer
               crypto liabilities (in billions):
             </p>
             <ReportTable tableData={balance_sheets_p6_2} />
-            {/* Till: (20230824 - Julian) old table */}
-            {/* <table className="my-5px text-xs">
-              <thead className="border border-violet bg-violet font-bold text-white">
-                <tr>
-                  <th className="py-10px">$ in Thousands</th>
-                  <th colSpan={2}>Jul. 30, 2023</th>
-                  <th colSpan={2}>Jul. 1, 2023</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-x border-b border-black text-darkPurple3">
-                  <td className="p-5px text-lilac"></td>
-                  <td className="w-80px border-l border-black p-5px text-center text-lilac">
-                    Fair Value
-                  </td>
-                  <td className="w-80px border-l border-black p-5px text-center text-lilac">
-                    Percentage of Total
-                  </td>
-                  <td className="w-80px border-l border-black p-5px text-center text-lilac">
-                    Fair Value
-                  </td>
-                  <td className="w-80px border-l border-black p-5px text-center text-lilac">
-                    Percentage of Total
-                  </td>
-                </tr>
-                <tr className="border-x border-b border-black text-darkPurple3">
-                  <td className="p-5px text-lilac">Bitcoin</td>
-                  <td className="border-l border-black p-5px text-right">$ 40.2</td>
-                  <td className="border-l border-black p-5px text-right">49.8%</td>
-                  <td className="border-l border-black p-5px text-right">$ 10.0</td>
-                  <td className="border-l border-black p-5px text-right">16.4%</td>
-                </tr>
-                <tr className="border-x border-b border-black text-darkPurple3">
-                  <td className="p-5px text-lilac">Ethereum</td>
-                  <td className="border-l border-black p-5px text-right">29.5</td>
-                  <td className="border-l border-black p-5px text-right">36.5%</td>
-                  <td className="border-l border-black p-5px text-right">20.8</td>
-                  <td className="border-l border-black p-5px text-right">34.2%</td>
-                </tr>
-                <tr className="border-x border-b border-black text-darkPurple3">
-                  <td className="p-5px text-lilac">USDT</td>
-                  <td className="border-l border-black p-5px text-right">11.1</td>
-                  <td className="border-l border-black p-5px text-right">13.7%</td>
-                  <td className="border-l border-black p-5px text-right">30.0</td>
-                  <td className="border-l border-black p-5px text-right">49.3%</td>
-                </tr>
-                <tr className="border-x border-b border-black bg-lilac2 font-bold text-darkPurple3">
-                  <td className="p-5px">Total customer crypto assets</td>
-                  <td className="border-l border-black p-5px text-right">80.8</td>
-                  <td className="border-l border-black p-5px text-right">100.0%</td>
-                  <td className="border-l border-black p-5px text-right">60.8</td>
-                  <td className="border-l border-black p-5px text-right">100.0%</td>
-                </tr>
-              </tbody>
-            </table> */}
             {/* Info: (20230802 - Julian) Note 4 */}
             <h2 className="font-bold uppercase">4. ASSETS PLEDGED AS COLLATERAL</h2>
             <p>
@@ -389,58 +277,6 @@ const BalanceSheets = () => {
           <div className="flex flex-col gap-y-15px text-xs leading-5">
             <p>load amount outstanding.</p>
             <ReportTable tableData={balance_sheets_p7_1} />
-            {/* Till: (20230824 - Julian) old table */}
-            {/*<table className="my-5px text-xs">
-              <thead className="border border-violet bg-violet font-bold text-white">
-                <tr>
-                  <th className="py-10px">$ in Thousands</th>
-                  <th colSpan={2}>Jul. 30, 2023</th>
-                  <th colSpan={2}>Jul. 1, 2023</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-x border-b border-black text-darkPurple3">
-                  <td className="p-5px text-lilac"></td>
-                  <td className="border-l border-black p-5px text-center text-lilac">Units</td>
-                  <td className="border-l border-black p-5px text-center text-lilac">Fair Value</td>
-                  <td className="border-l border-black p-5px text-center text-lilac">Units</td>
-                  <td className="border-l border-black p-5px text-center text-lilac">Fair Value</td>
-                </tr>
-                <tr className="border-x border-b border-black font-bold text-violet">
-                  <td colSpan={5} className="p-5px">
-                    Assets Pledged as Collateral
-                  </td>
-                </tr>
-                <tr className="border-x border-b border-black text-darkPurple3">
-                  <td className="p-5px text-lilac">USDT</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                </tr>
-                <tr className="border-x border-b border-black text-darkPurple3">
-                  <td className="p-5px text-lilac">Bitcoin</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                </tr>
-                <tr className="border-x border-b border-black text-darkPurple3">
-                  <td className="p-5px text-lilac">Ethereum</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                </tr>
-                <tr className="border-x border-b border-black bg-lilac2 font-bold text-darkPurple3">
-                  <td className="p-5px">Total</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                  <td className="border-l border-black p-5px text-right">—</td>
-                </tr>
-              </tbody>
-            </table> */}
             {/* Info: (20230802 - Julian) Note 5 */}
             <h2 className="font-bold uppercase">5. CRYPTO ASSETS HELD</h2>
             <p>

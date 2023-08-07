@@ -10,6 +10,12 @@ module.exports = {
 
         lightWhite: '#F2F2F2',
 
+        lightGreen: '#3DD08C',
+        lightGreen2: '#21AD6C',
+
+        lightRed: '#FC8181',
+        lightRed2: '#E96C67',
+
         lilac: '#ABA7BD',
         lilac2: '#6857d733',
         violet: '#6857D7',
@@ -35,7 +41,7 @@ module.exports = {
       },
       fontSize: {
         '3xs': ['8px', '12px'],
-        xxs: ['10px', '14px'],
+        xxs: ['10px', '12px'],
         xs: ['12px', '16px'],
         sm: ['14px', '20px'],
         base: ['16px', '24px'],
@@ -316,7 +322,7 @@ module.exports = {
       },
       maxWidth: {
         '80px': '80px',
-        '160px': '160px',
+        '140px': '140px',
       },
       gridTemplateRows: {
         0: 'repeat(1, minmax(0px, 0fr))',
