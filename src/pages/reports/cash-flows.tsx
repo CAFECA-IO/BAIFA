@@ -16,12 +16,12 @@ const StatementsOfCashFlows = () => {
   const endDate = timestampToString(reportsDateSpan.end);
 
   const cash_flows_p3_1 = {
-    subThead: ['', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
-    thead: [
+    subThead: [
       'Statements of Cash Flows - USD ($)',
-      endDate.dateFormatForForm,
-      startDate.dateFormatForForm,
+      `30 Days Ended ${endDate.monthAndDay},`,
+      '*-*',
     ],
+    thead: ['*|*', endDate.dateFormatForForm, startDate.dateFormatForForm],
     tbody: [
       {
         rowType: RowType.title,
@@ -165,7 +165,7 @@ const StatementsOfCashFlows = () => {
 
   const cash_flows_p6_1 = {
     subThead: ['', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
-    thead: ['', '2023', '2022'],
+    thead: ['*|*', '2023', '2022'],
     tbody: [
       {
         rowType: RowType.contentWithMainColumn,

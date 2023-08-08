@@ -165,8 +165,58 @@ const ReportTableNew = ({theadSubLineData, theadData, tbodyData}: IReportTablePr
     );
   };
 
-  const displaySubThead = displayTh(theadSubLineData ?? [], 'text-right font-normal');
-  const displayMainThead = displayTh(theadData ?? [], 'text-center font-bold');
+  const displayThead = !!theadData ? (
+    <thead className={`border border-violet bg-violet text-white`}>
+      {/* Info: (20230808 - Julian) 副標題 */}
+      <tr>
+        {!!theadSubLineData &&
+          theadSubLineData.map((item, index) => {
+            let addThCol = 0;
+            for (let i = 1; i < theadSubLineData.length; i++) {
+              // Info: (20230807 - Julian) *-* 表示和後一個格子合併
+              if (theadSubLineData[index + i] === '*-*') addThCol += 1;
+              else break;
+            }
+            if (item === '*-*') return null;
+            const rowspan = index === 0 ? 2 : 1;
+            const thStyle = index === 0 ? 'text-center font-bold' : 'text-right font-normal';
+            return (
+              <th
+                key={index}
+                colSpan={1 + addThCol}
+                rowSpan={rowspan}
+                className={`max-w-250px whitespace-nowrap px-10px ${thStyle} ${thSize}`}
+              >
+                {item}
+              </th>
+            );
+          })}
+      </tr>
+      {/* Info: (20230808 - Julian) 主標題 */}
+      <tr>
+        {!!theadData &&
+          theadData.map((item, index) => {
+            let addThCol = 0;
+            for (let i = 1; i < theadData.length; i++) {
+              // Info: (20230807 - Julian) *-* 表示和後一個格子合併
+              if (theadData[index + i] === '*-*') addThCol += 1;
+              else break;
+            }
+            if (item === '*-*' || item === '*|*') return null;
+            return (
+              <th
+                key={index}
+                colSpan={1 + addThCol}
+                className={`max-w-250px whitespace-nowrap px-10px text-center font-bold ${thSize}`}
+              >
+                {item}
+              </th>
+            );
+          })}
+      </tr>
+    </thead>
+  ) : null;
+
   const displayTd = tbodyData.map(({rowType, rowData}, index) => (
     <ReportTableRow key={index} rowType={rowType} rowData={rowData} />
   ));
@@ -174,20 +224,9 @@ const ReportTableNew = ({theadSubLineData, theadData, tbodyData}: IReportTablePr
   return (
     <table className="w-full">
       {/* Info: (20230807 - Julian) Table head */}
-      <thead
-        className={`${
-          !displaySubThead && !displayMainThead ? 'hidden' : ''
-        } border border-violet bg-violet text-white`}
-      >
-        {displaySubThead}
-        {displayMainThead}
-      </thead>
+      {displayThead}
       {/* Info: (20230807 - Julian) Table body */}
-      <tbody
-        className={`text-xs ${
-          !displaySubThead && !displayMainThead ? 'border border-darkPurple3' : ''
-        }`}
-      >
+      <tbody className={`text-xs ${!!!displayThead ? 'border border-darkPurple3' : ''}`}>
         {displayTd}
       </tbody>
     </table>
