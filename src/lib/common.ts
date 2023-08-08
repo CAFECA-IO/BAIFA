@@ -5,16 +5,17 @@ export const timestampToString = (timestamp: number) => {
       monthAndDay: '-',
       year: '-',
       dateFormatInUS: '-',
+      dateFormatForForm: '-',
     };
 
   const date = new Date(timestamp * 1000);
 
   const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
 
   const monthIndex = date.getMonth();
-  const monthNames = [
+  const monthNamesInShort = [
     'Jan.',
     'Feb.',
     'Mar.',
@@ -28,13 +29,32 @@ export const timestampToString = (timestamp: number) => {
     'Nov.',
     'Dec.',
   ];
+  const monthNameFull = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
 
-  const monthName = monthNames[monthIndex];
+  const monthNameShort = monthNamesInShort[monthIndex];
+  const monthName = monthNameFull[monthIndex];
+  const dateSrting = `${year}-${month.toString().padStart(2, '0')}-${day
+    .toString()
+    .padStart(2, '0')}`;
 
   return {
-    date: `${year}-${month}-${day}`,
-    monthAndDay: `${monthName} ${day}`,
+    date: dateSrting,
+    monthAndDay: `${monthNameShort} ${day}`,
     year: `${year}`,
     dateFormatInUS: `${monthName} ${day}, ${year}`,
+    dateFormatForForm: `${monthNameShort} ${day}, ${year}`,
   };
 };

@@ -6,219 +6,227 @@ import ReportRiskPages from '../../components/report_risk_pages/report_risk_page
 import ReportTableNew, {RowType} from '../../components/report_table/report_table_new';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
 import {BaifaReports} from '../../constants/baifa_reports';
-import {reportsDateSpanJul} from '../../constants/config';
+import {reportsDateSpan} from '../../constants/report_table_data';
 import {timestampToString} from '../../lib/common';
-
-const cash_flows_p3_1 = {
-  subThead: ['', '30 Days Ended Jul. 30,', '*-*'],
-  thead: ['Statements of Cash Flows - USD ($)', 'Jul. 30, 2023', 'Jul. 1, 2023'],
-  tbody: [
-    {
-      rowType: RowType.title,
-      rowData: ['Cash flows from operating activities:', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Net profit', '$ 349.09', '$ 67.21'],
-    },
-    {
-      rowType: RowType.title,
-      rowData: ['Changes in operating assets and liabilities:', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['USDT', '349.09', '67.21'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Other current and non-current assets', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Other current and non-current liabilities', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Net cash provided by operating activities', '349.09', '67.21'],
-    },
-    {
-      rowType: RowType.title,
-      rowData: ['Cash flows from investing activities', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Purchase of crypto assets held', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Disposal of crypto assets held', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Net cash used in investing activities', '0', '0'],
-    },
-    {
-      rowType: RowType.title,
-      rowData: ['Cash flows from financing activities', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Customer custodial cash liabilities', '10,300', '14,500'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Net cash used in financing activities', '10,300', '14,500'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: [
-        'Net increase in cash, cash equivalents, and restricted cash',
-        '10,649.09',
-        '14,567.21',
-      ],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: [
-        'Effect of exchange rates on cash, cash equivalents, and restricted cash',
-        '0',
-        '0',
-      ],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Cash, cash equivalents, and restricted cash, beginning of period', '1,000', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: [
-        'Cash, cash equivalents, and restricted cash, end of period',
-        '$ 25,216.30',
-        '$ 14,567.21',
-      ],
-    },
-  ],
-};
-
-const cash_flows_p4_1 = {
-  tbody: [
-    {
-      rowType: RowType.title,
-      rowData: [
-        'Cash, cash equivalents, and restricted cash consisted of the following:',
-        '*-*',
-        '*-*',
-      ],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Cash and cash equivalents', '$ 25,216.30', '$ 14,567.21'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Restricted cash', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Customer custodial cash', '24,278.3', '24,467.11'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: ['Total cash, cash equivalents, and restricted cash', '$ 49,494.60', '$ 39,034.32'],
-    },
-    {
-      rowType: RowType.title,
-      rowData: [
-        'Supplemental schedule of non-cash investing and financing activities',
-        '*-*',
-        '*-*',
-      ],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: [
-        'Purchase of crypto assets and investments with non-cash consideration',
-        '$ 0',
-        '$ 0',
-      ],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Disposal of crypto assets for non-cash consideration', '0', '0'],
-    },
-  ],
-};
-
-const cash_flows_p6_1 = {
-  subThead: ['', '30 Days Ended Jul. 30,', '*-*'],
-  thead: ['', '2023', '2022'],
-  tbody: [
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Net cash provided by operating activities', '$ 349.09', '$ 67.21'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Net cash used in investing activities', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Net cash used in financing activities', '10,300', '14,500'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: [
-        'Net increase in cash, cash equivalents, and restricted cash',
-        '$ 10,649.09',
-        '$ 14,567.21',
-      ],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: [
-        'Effect of exchange rates on cash, cash equivalents, and restricted cash',
-        '0',
-        '0',
-      ],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Customer custodial cash', '$ 24,278.3', '$ 24,467.11'],
-    },
-  ],
-};
-
-const cash_flows_p7_1 = {
-  thead: ['', 'Jul. 30, 2023', 'Jul. 1, 2023'],
-  tbody: [
-    {
-      rowType: RowType.title,
-      rowData: ['Cash and cash equivalents:', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Cash and cash equivalents (1)', '$ 25,216.3', '$ 14,567.21'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Restricted cash (2)', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Customer custodial cash', '24,278.3', '24,467.11'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: ['Total cash, cash equivalents, and restricted cash', '$ 49,494.6', '$ 39,034.32'],
-    },
-  ],
-};
 
 const StatementsOfCashFlows = () => {
   const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOWS;
   const contentList = ['Statements of Cash Flows', 'Note To Statements of Cash Flows'];
-  const startDate = timestampToString(reportsDateSpanJul.start);
-  const endDate = timestampToString(reportsDateSpanJul.end);
+  const startDate = timestampToString(reportsDateSpan.start);
+  const endDate = timestampToString(reportsDateSpan.end);
+
+  const cash_flows_p3_1 = {
+    subThead: ['', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
+    thead: [
+      'Statements of Cash Flows - USD ($)',
+      endDate.dateFormatForForm,
+      startDate.dateFormatForForm,
+    ],
+    tbody: [
+      {
+        rowType: RowType.title,
+        rowData: ['Cash flows from operating activities:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Net profit', '$ 349.09', '$ 67.21'],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Changes in operating assets and liabilities:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['USDT', '349.09', '67.21'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Other current and non-current assets', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Other current and non-current liabilities', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Net cash provided by operating activities', '349.09', '67.21'],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Cash flows from investing activities', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Purchase of crypto assets held', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Disposal of crypto assets held', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Net cash used in investing activities', '0', '0'],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Cash flows from financing activities', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Customer custodial cash liabilities', '10,300', '14,500'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Net cash used in financing activities', '10,300', '14,500'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: [
+          'Net increase in cash, cash equivalents, and restricted cash',
+          '10,649.09',
+          '14,567.21',
+        ],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: [
+          'Effect of exchange rates on cash, cash equivalents, and restricted cash',
+          '0',
+          '0',
+        ],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Cash, cash equivalents, and restricted cash, beginning of period', '1,000', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: [
+          'Cash, cash equivalents, and restricted cash, end of period',
+          '$ 25,216.30',
+          '$ 14,567.21',
+        ],
+      },
+    ],
+  };
+
+  const cash_flows_p4_1 = {
+    tbody: [
+      {
+        rowType: RowType.title,
+        rowData: [
+          'Cash, cash equivalents, and restricted cash consisted of the following:',
+          '*-*',
+          '*-*',
+        ],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Cash and cash equivalents', '$ 25,216.30', '$ 14,567.21'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Restricted cash', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Customer custodial cash', '24,278.3', '24,467.11'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: [
+          'Total cash, cash equivalents, and restricted cash',
+          '$ 49,494.60',
+          '$ 39,034.32',
+        ],
+      },
+      {
+        rowType: RowType.title,
+        rowData: [
+          'Supplemental schedule of non-cash investing and financing activities',
+          '*-*',
+          '*-*',
+        ],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: [
+          'Purchase of crypto assets and investments with non-cash consideration',
+          '$ 0',
+          '$ 0',
+        ],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Disposal of crypto assets for non-cash consideration', '0', '0'],
+      },
+    ],
+  };
+
+  const cash_flows_p6_1 = {
+    subThead: ['', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
+    thead: ['', '2023', '2022'],
+    tbody: [
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Net cash provided by operating activities', '$ 349.09', '$ 67.21'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Net cash used in investing activities', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Net cash used in financing activities', '10,300', '14,500'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: [
+          'Net increase in cash, cash equivalents, and restricted cash',
+          '$ 10,649.09',
+          '$ 14,567.21',
+        ],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: [
+          'Effect of exchange rates on cash, cash equivalents, and restricted cash',
+          '0',
+          '0',
+        ],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Customer custodial cash', '$ 24,278.3', '$ 24,467.11'],
+      },
+    ],
+  };
+
+  const cash_flows_p7_1 = {
+    thead: ['', endDate.dateFormatForForm, startDate.dateFormatForForm],
+    tbody: [
+      {
+        rowType: RowType.title,
+        rowData: ['Cash and cash equivalents:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Cash and cash equivalents (1)', '$ 25,216.3', '$ 14,567.21'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Restricted cash (2)', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Customer custodial cash', '24,278.3', '24,467.11'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total cash, cash equivalents, and restricted cash', '$ 49,494.6', '$ 39,034.32'],
+      },
+    ],
+  };
 
   return (
     <>
@@ -296,8 +304,8 @@ const StatementsOfCashFlows = () => {
               In the management's view, they include all necessary adjustments, which are only
               regular, recurring adjustments, for a fair representation of the Company's financial
               statements for the periods shown. The non-audited operational results for the 30 days
-              ending<span className="font-bold text-violet"> July 30, 2023</span>, may not
-              necessarily predict the results for the full year or any other period.
+              ending<span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, may
+              not necessarily predict the results for the full year or any other period.
             </p>
             <p className="font-bold">Use of estimates </p>
           </div>
@@ -327,10 +335,10 @@ const StatementsOfCashFlows = () => {
               custodial funds to meet regulatory requirements and classifies the assets as current
               based on their purpose and availability to fulfill the Company’s direct obligation
               under customer custodial cash liabilities. As of
-              <span className="font-bold text-violet"> July 30, 2023</span> and
-              <span className="font-bold text-violet"> July 1, 2023</span>, the Company’s eligible
-              liquid assets were greater than the aggregate amount of customer custodial cash
-              liabilities
+              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span> and
+              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, the
+              Company’s eligible liquid assets were greater than the aggregate amount of customer
+              custodial cash liabilities
             </p>
             <h2 className="font-bold uppercase">3. Cash flows</h2>
             <ReportTableNew
