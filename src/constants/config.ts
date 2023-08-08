@@ -1,5 +1,10 @@
 export const copyright = 'BAIFA @ 2023. All rights reserved.';
 
+export const reportsDateSpanJul = {
+  start: 1688190893,
+  end: 1690646400,
+};
+
 /* Info: (20230711 - Julian) ----- Home Page ----- */
 export const mainMenuContent = [
   {

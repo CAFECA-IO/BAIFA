@@ -6,179 +6,219 @@ import ReportRiskPages from '../../components/report_risk_pages/report_risk_page
 import ReportTableNew, {RowType} from '../../components/report_table/report_table_new';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
 import {BaifaReports} from '../../constants/baifa_reports';
+import {reportsDateSpanJul} from '../../constants/config';
+import {timestampToString} from '../../lib/common';
 
-const income_statements_p3_1 = {
-  subThead: ['', 'Income Statements - USD ($)', '*-*'],
-  thead: ['Income Statements - USD ($)', 'Jul. 30, 2023', 'Jul. 1, 2023'],
+const cash_flows_p3_1 = {
+  subThead: ['', '30 Days Ended Jul. 30,', '*-*'],
+  thead: ['Statements of Cash Flows - USD ($)', 'Jul. 30, 2023', 'Jul. 1, 2023'],
   tbody: [
     {
       rowType: RowType.title,
-      rowData: ['Revene:', '*-*', '*-*'],
+      rowData: ['Cash flows from operating activities:', '*-*', '*-*'],
     },
     {
       rowType: RowType.contentWithMainColumn,
-      rowData: ['Net revenue:', '$ 349.09', '$ 67.21'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: ['Total revenue', '349.09', '67.21'],
-    },
-    {
-      rowType: RowType.title,
-      rowData: ['Operating expenses:', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Transaction expense', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Total operating expenses', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Operating profit', '349.09', '67.21'],
-    },
-    {
-      rowType: RowType.emptyRow,
-      rowData: ['', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Interest expense', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Profit before income taxes', '349.09', '67.21'],
-    },
-    {
-      rowType: RowType.foot,
       rowData: ['Net profit', '$ 349.09', '$ 67.21'],
     },
-  ],
-};
-
-const income_statements_p3_2 = {
-  subThead: ['', 'Income Statements - USD ($)', '*-*'],
-  thead: ['Comprehensive Income Statements - USD ($)', 'Jul. 30, 2023', 'Jul. 1, 2023'],
-  tbody: [
+    {
+      rowType: RowType.title,
+      rowData: ['Changes in operating assets and liabilities:', '*-*', '*-*'],
+    },
     {
       rowType: RowType.contentWithMainColumn,
-      rowData: ['Net profit', '$ 349.09', '—'],
+      rowData: ['USDT', '349.09', '67.21'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Other current and non-current assets', '0', '0'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Other current and non-current liabilities', '0', '0'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Net cash provided by operating activities', '349.09', '67.21'],
     },
     {
       rowType: RowType.title,
-      rowData: ['Other comprehensive income (loss), net of tax:', '*-*', '*-*'],
+      rowData: ['Cash flows from investing activities', '*-*', '*-*'],
     },
     {
       rowType: RowType.contentWithMainColumn,
-      rowData: ['Foreign currency translation adjustments', '0', '—'],
+      rowData: ['Purchase of crypto assets held', '0', '0'],
     },
     {
       rowType: RowType.contentWithMainColumn,
-      rowData: ['Total other comprehensive income', '0', '—'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: ['Comprehensive income', '$ 349.09', '—'],
-    },
-  ],
-};
-
-const income_statements_p6_1 = {
-  thead: ['', 'Jul. 30, 2023'],
-  tbody: [
-    {
-      rowType: RowType.title,
-      rowData: ['Net profit', '*-*'],
+      rowData: ['Disposal of crypto assets held', '0', '0'],
     },
     {
       rowType: RowType.contentWithMainColumn,
-      rowData: ['Transaction revenue', '$ 349.09'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: ['Total revenue', '$ 349.09'],
-    },
-  ],
-};
-
-const income_statements_p7_1 = {
-  subThead: ['', 'Income Statements - USD ($)', '*-*'],
-  thead: ['Income Statements - USD ($) ', 'Jul. 30, 2023', 'Jul. 1, 2023'],
-  tbody: [
-    {
-      rowType: RowType.title,
-      rowData: ['Revenue:', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Net revenue', '$ 349.09', '$ 67.21'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: ['Total revenue', '349.09', '67.21'],
+      rowData: ['Net cash used in investing activities', '0', '0'],
     },
     {
       rowType: RowType.title,
-      rowData: ['Operating expenses:', '*-*', '*-*'],
+      rowData: ['Cash flows from financing activities', '*-*', '*-*'],
     },
     {
       rowType: RowType.contentWithMainColumn,
-      rowData: ['Transaction expense', '0', '0'],
+      rowData: ['Customer custodial cash liabilities', '10,300', '14,500'],
     },
     {
       rowType: RowType.contentWithMainColumn,
-      rowData: ['Total operating expenses', '0', '0'],
+      rowData: ['Net cash used in financing activities', '10,300', '14,500'],
     },
     {
       rowType: RowType.contentWithMainColumn,
-      rowData: ['Operating profit', '349.09', '67.21'],
-    },
-    {
-      rowType: RowType.emptyRow,
-      rowData: ['', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Interest expense', '0', '0'],
+      rowData: [
+        'Net increase in cash, cash equivalents, and restricted cash',
+        '10,649.09',
+        '14,567.21',
+      ],
     },
     {
       rowType: RowType.contentWithMainColumn,
-      rowData: ['Profit before income taxes', '349.09', '67.21'],
+      rowData: [
+        'Effect of exchange rates on cash, cash equivalents, and restricted cash',
+        '0',
+        '0',
+      ],
     },
     {
-      rowType: RowType.foot,
-      rowData: ['Net profit', '$ 349.09', '$ 67.21'],
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Cash, cash equivalents, and restricted cash, beginning of period', '1,000', '0'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: [
+        'Cash, cash equivalents, and restricted cash, end of period',
+        '$ 25,216.30',
+        '$ 14,567.21',
+      ],
     },
   ],
 };
 
-const income_statements_p7_2 = {
-  subThead: ['', 'Income Statements - USD ($)', '*-*', '*-*'],
-  thead: ['', '2023', '2022', '% Change'],
+const cash_flows_p4_1 = {
   tbody: [
     {
       rowType: RowType.title,
-      rowData: ['Revenue:', '*-*', '*-*'],
+      rowData: [
+        'Cash, cash equivalents, and restricted cash consisted of the following:',
+        '*-*',
+        '*-*',
+      ],
     },
     {
       rowType: RowType.contentWithMainColumn,
-      rowData: ['Net revenue', '$ 349.09', '—', '—'],
+      rowData: ['Cash and cash equivalents', '$ 25,216.30', '$ 14,567.21'],
     },
     {
       rowType: RowType.contentWithMainColumn,
-      rowData: ['Total revenue', '$ 349.09', '—', '—'],
+      rowData: ['Restricted cash', '0', '0'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Customer custodial cash', '24,278.3', '24,467.11'],
+    },
+    {
+      rowType: RowType.foot,
+      rowData: ['Total cash, cash equivalents, and restricted cash', '$ 49,494.60', '$ 39,034.32'],
+    },
+    {
+      rowType: RowType.title,
+      rowData: [
+        'Supplemental schedule of non-cash investing and financing activities',
+        '*-*',
+        '*-*',
+      ],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: [
+        'Purchase of crypto assets and investments with non-cash consideration',
+        '$ 0',
+        '$ 0',
+      ],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Disposal of crypto assets for non-cash consideration', '0', '0'],
     },
   ],
 };
 
-const ComprehensiveIncomeStatements = () => {
-  const reportTitle = BaifaReports.COMPREHENSIVE_INCOME_STATEMENTS;
-  const contentList = [
-    'Comprehensive Income Statements',
-    'Note To Comprehensive Income Statements',
-  ];
+const cash_flows_p6_1 = {
+  subThead: ['', '30 Days Ended Jul. 30,', '*-*'],
+  thead: ['', '2023', '2022'],
+  tbody: [
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Net cash provided by operating activities', '$ 349.09', '$ 67.21'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Net cash used in investing activities', '0', '0'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Net cash used in financing activities', '10,300', '14,500'],
+    },
+    {
+      rowType: RowType.foot,
+      rowData: [
+        'Net increase in cash, cash equivalents, and restricted cash',
+        '$ 10,649.09',
+        '$ 14,567.21',
+      ],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: [
+        'Effect of exchange rates on cash, cash equivalents, and restricted cash',
+        '0',
+        '0',
+      ],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Customer custodial cash', '$ 24,278.3', '$ 24,467.11'],
+    },
+  ],
+};
+
+const cash_flows_p7_1 = {
+  thead: ['', 'Jul. 30, 2023', 'Jul. 1, 2023'],
+  tbody: [
+    {
+      rowType: RowType.title,
+      rowData: ['Cash and cash equivalents:', '*-*', '*-*'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Cash and cash equivalents (1)', '$ 25,216.3', '$ 14,567.21'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Restricted cash (2)', '0', '0'],
+    },
+    {
+      rowType: RowType.contentWithMainColumn,
+      rowData: ['Customer custodial cash', '24,278.3', '24,467.11'],
+    },
+    {
+      rowType: RowType.foot,
+      rowData: ['Total cash, cash equivalents, and restricted cash', '$ 49,494.6', '$ 39,034.32'],
+    },
+  ],
+};
+
+const StatementsOfCashFlows = () => {
+  const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOWS;
+  const contentList = ['Statements of Cash Flows', 'Note To Statements of Cash Flows'];
+  const startDate = timestampToString(reportsDateSpanJul.start);
+  const endDate = timestampToString(reportsDateSpanJul.end);
 
   return (
     <>
@@ -187,36 +227,29 @@ const ComprehensiveIncomeStatements = () => {
       </Head>
 
       <div className="flex w-screen flex-col items-center font-inter">
-        {/* Info: (20230807 - Julian) Cover */}
+        {/* Info: (20230808 - Julian) Cover */}
         <ReportCover
           reportTitle={reportTitle}
-          reportDateStart="2023-07-01"
-          reportDateEnd="2023-07-30"
+          reportDateStart={startDate.date}
+          reportDateEnd={endDate.date}
         />
         <hr />
 
-        {/* Info: (20230807 - Julian) Content */}
+        {/* Info: (20230808 - Julian) Content */}
         <ReportContent content={contentList} />
         <hr />
 
-        {/* Info: (20230807 - Julian) Page 1 & 2 */}
+        {/* Info: (20230808 - Julian) Page 1 & 2 */}
         <ReportRiskPages reportTitle={reportTitle} />
 
         {/* Info: (20230807 - Julian) Page 3 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={3}>
           <div className="flex flex-col gap-y-30px py-16px leading-5">
-            <h1 className="text-2xl font-bold text-violet">{reportTitle}</h1>
+            <h1 className="text-32px font-bold text-violet">{reportTitle}</h1>
             <ReportTableNew
-              theadSubLineData={income_statements_p3_1.subThead}
-              theadData={income_statements_p3_1.thead}
-              tbodyData={income_statements_p3_1.tbody}
-            />
-
-            <h1 className="text-2xl font-bold text-violet">Comprehensive Income Statements</h1>
-            <ReportTableNew
-              theadSubLineData={income_statements_p3_2.subThead}
-              theadData={income_statements_p3_2.thead}
-              tbodyData={income_statements_p3_2.tbody}
+              theadSubLineData={cash_flows_p3_1.subThead}
+              theadData={cash_flows_p3_1.thead}
+              tbodyData={cash_flows_p3_1.tbody}
             />
           </div>
         </ReportPageBody>
@@ -224,10 +257,16 @@ const ComprehensiveIncomeStatements = () => {
 
         {/* Info: (20230807 - Julian) Page 4 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={4}>
+          <div className="py-16px">
+            <ReportTableNew tbodyData={cash_flows_p4_1.tbody} />
+          </div>
+        </ReportPageBody>
+        <hr />
+
+        {/* Info: (20230807 - Julian) Page 5 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={5}>
           <div className="flex flex-col gap-y-15px py-16px text-xs leading-5">
-            <h1 className="text-lg font-bold text-violet">
-              Note To Comprehensive Income Statements
-            </h1>
+            <h1 className="text-lg font-bold text-violet">Note To Statements of Cash Flows</h1>
             <h2 className="font-bold uppercase"> 1. NATURE OF OPERATIONS</h2>
             <p>
               TideBit DeFi is a decentralized financial exchange that provides accessible financial
@@ -256,17 +295,17 @@ const ComprehensiveIncomeStatements = () => {
               Accounting Principles ("GAAP") in the same manner as the audited financial statements.
               In the management's view, they include all necessary adjustments, which are only
               regular, recurring adjustments, for a fair representation of the Company's financial
-              statements for the periods shown. The non-audited operational results for the one
-              month ending <span className="font-bold text-violet">July 30, 2023</span>, may not
+              statements for the periods shown. The non-audited operational results for the 30 days
+              ending<span className="font-bold text-violet"> July 30, 2023</span>, may not
               necessarily predict the results for the full year or any other period.
             </p>
-            <p className="font-bold">Use of estimates</p>
+            <p className="font-bold">Use of estimates </p>
           </div>
         </ReportPageBody>
         <hr />
 
-        {/* Info: (20230807 - Julian) Page 5 */}
-        <ReportPageBody reportTitle={reportTitle} currentPage={5}>
+        {/* Info: (20230807 - Julian) Page 6 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={6}>
           <div className="flex flex-col gap-y-15px py-16px text-xs leading-5">
             <p>
               The creation of these financial statements in accordance with GAAP requires management
@@ -293,98 +332,32 @@ const ComprehensiveIncomeStatements = () => {
               liquid assets were greater than the aggregate amount of customer custodial cash
               liabilities
             </p>
-            <h2 className="font-bold uppercase">3. REVENUE</h2>
-            <p>Revenue recognition</p>
-            <p>
-              The organization establishes the process of acknowledging income from customer
-              contracts through the subsequent stages:
-            </p>
-            <ul className="my-4 ml-5 list-disc text-xs leading-5">
-              <li>Pinpointing the agreement, or agreements, made with the client;</li>
-              <li>Recognizing the duties to be performed as stated in the agreement;</li>
-              <li>Calculating the price of the transaction;</li>
-              <li>
-                Distributing the transaction price to the duties to be performed as per the
-                agreement;
-              </li>
-              <li>
-                Acknowledging the income when the organization fulfills a duty to be performed.
-              </li>
-            </ul>
-            <p>
-              Revenue is recognized when the control of the promised products or services is handed
-              over to the clients, in a quantity that mirrors the payment the organization
-              anticipates to
-            </p>
-          </div>
-        </ReportPageBody>
-        <hr />
-
-        {/* Info: (20230807 - Julian) Page 6 */}
-        <ReportPageBody reportTitle={reportTitle} currentPage={6}>
-          <div className="flex flex-col gap-y-15px py-16px text-xs leading-5">
-            <p>
-              receive in return for those products or services. The organization primarily
-              accumulates income through transaction fees levied on the platform.
-            </p>
-
+            <h2 className="font-bold uppercase">3. Cash flows</h2>
             <ReportTableNew
-              theadData={income_statements_p6_1.thead}
-              tbodyData={income_statements_p6_1.tbody}
+              theadSubLineData={cash_flows_p6_1.subThead}
+              theadData={cash_flows_p6_1.thead}
+              tbodyData={cash_flows_p6_1.tbody}
             />
-
-            <p className="font-bold">Transaction revenue</p>
-            <p>
-              TideBit DeFi provides services centered around Contract for Differences (CFD) and
-              deposit cryptocurrency services. A significant part of our revenue comes from
-              transaction fees collected from customers. However, it's important to note that the
-              price of crypto assets isn't set by the Exchange, as it's a market rate established by
-              the users on the platform. Essentially, the Exchange plays the role of an agent,
-              enabling one customer to purchase crypto assets from another.
-            </p>
-            <p>
-              Our contracts with customers are generally open-ended and either party can terminate
-              them without incurring a termination penalty. Therefore, these contracts are defined
-              at the transaction level and do not extend beyond the service already provided.
-            </p>
-            <p>
-              In certain instances, the transaction fee is collected in the form of crypto assets.
-              In these cases, the revenue is measured based on the amount of crypto assets received
-              and their fair value at the time of the transaction. Once a transaction is processed,
-              TideBit DeFi considers its performance obligation fulfilled and accordingly recognizes
-              the revenue.
-            </p>
-            <h2 className="font-bold uppercase">4. Operating expenses</h2>
-            <p>Operating expenses consist of transaction expense.</p>
           </div>
         </ReportPageBody>
         <hr />
 
         {/* Info: (20230807 - Julian) Page 7 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={7}>
-          <div className="flex flex-col gap-y-15px text-xs leading-5">
-            <p className="font-bold">Transaction expense</p>
-            <p>
-              Transaction expense includes costs incurred to operate our platform and process crypto
-              asset trades. These costs include miner fees to process transactions on blockchain
-              networks, fees paid to other exchanges.
-            </p>
-            <h2 className="font-bold uppercase">5. Results of Operations</h2>
-            <p>The following table summarizes the historical statement of operations data:</p>
-            <ReportTableNew
-              theadSubLineData={income_statements_p7_1.subThead}
-              theadData={income_statements_p7_1.thead}
-              tbodyData={income_statements_p7_1.tbody}
-            />
-            <p>
-              Comparison of the
-              <span className="font-bold text-violet"> 30 days ended July 30, 2023 and 2022</span>
-            </p>
-            <ReportTableNew
-              theadSubLineData={income_statements_p7_2.subThead}
-              theadData={income_statements_p7_2.thead}
-              tbodyData={income_statements_p7_2.tbody}
-            />
+          <div className="flex flex-col gap-y-15px py-16px text-xs leading-5">
+            <h2 className="font-bold uppercase">4. Liquidity and Capital Resources</h2>
+            <ReportTableNew theadData={cash_flows_p7_1.thead} tbodyData={cash_flows_p7_1.tbody} />
+            <div className="-mt-10px flex flex-col text-xxs text-lilac">
+              <p>
+                (1) Cash equivalents consists of USDT and money market funds denominated in U.S.
+                dollars.
+              </p>
+              <p>
+                (2) Restricted cash consists primarily of amounts held in restricted bank accounts
+                at certain third-party banks as security deposits or pledged as collateral to secure
+                letters of credit.
+              </p>
+            </div>
           </div>
         </ReportPageBody>
         <hr />
@@ -411,8 +384,8 @@ const ComprehensiveIncomeStatements = () => {
 
         {/* Info: (20230807 - Julian) Page 9 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={9}>
-          <div className="flex flex-col gap-y-16px py-16px text-xs leading-5">
-            <h2 className="font-bold uppercase">6. Market price risk of crypto assets</h2>
+          <div className="flex flex-col gap-y-10px py-16px text-xs leading-5">
+            <h2 className="font-bold uppercase">5. Market price risk of crypto assets</h2>
             <p>
               Our revenue model primarily hinges on transaction fees, which can be a flat fee or
               calculated as a percentage of the transaction value. The exact fee may fluctuate
@@ -444,4 +417,4 @@ const ComprehensiveIncomeStatements = () => {
   );
 };
 
-export default ComprehensiveIncomeStatements;
+export default StatementsOfCashFlows;

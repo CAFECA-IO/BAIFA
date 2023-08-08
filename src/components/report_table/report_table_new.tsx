@@ -29,7 +29,7 @@ export const RowType: IRowTypeContent = {
 
 interface IReportTableProps {
   theadSubLineData?: string[];
-  theadData: string[];
+  theadData?: string[];
   tbodyData: {
     rowType: IRowType;
     rowData: string[];
@@ -54,7 +54,7 @@ const ReportTableRow = ({rowType, rowData}: IReportTableRowProps) => {
     if (item === '*-*') return null;
 
     return (
-      <td key={index} colSpan={1 + addCol} className="p-5px">
+      <td key={index} colSpan={1 + addCol} className="max-w-250px p-5px">
         {item}
       </td>
     );
@@ -77,9 +77,9 @@ const ReportTableRow = ({rowType, rowData}: IReportTableRowProps) => {
         });
 
         return (
-          <th key={index} colSpan={1 + addCol} className={`text-center`}>
+          <td key={index} colSpan={1 + addCol} className={`max-w-250px text-center`}>
             {displayThArr}
-          </th>
+          </td>
         );
       });
 
@@ -105,14 +105,14 @@ const ReportTableRow = ({rowType, rowData}: IReportTableRowProps) => {
     case RowType.contentWithMainColumn:
       const displayContentWithMainColumn = rowData.slice(1).map((item, index) => {
         return (
-          <td key={index} className="border-l border-black p-5px text-right">
+          <td key={index} className="max-w-250px border-l border-black p-5px text-right">
             {item}
           </td>
         );
       });
       return (
         <tr className="border-x border-b border-black">
-          <td className="border-l border-black p-5px text-lilac">{rowData[0]}</td>
+          <td className="max-w-250px border-l border-black p-5px text-lilac">{rowData[0]}</td>
           {displayContentWithMainColumn}
         </tr>
       );
@@ -120,14 +120,14 @@ const ReportTableRow = ({rowType, rowData}: IReportTableRowProps) => {
     case RowType.foot:
       const displayFoot = rowData.slice(1).map((item, index) => {
         return (
-          <td key={index} className="border-l border-black p-5px text-right">
+          <td key={index} className="max-w-250px border-l border-black p-5px text-right">
             {item}
           </td>
         );
       });
       return (
         <tr className="border-x border-b border-black bg-lilac2 font-bold">
-          <td className="border-l border-black p-5px">{rowData[0]}</td>
+          <td className="max-w-250px border-l border-black p-5px">{rowData[0]}</td>
           {displayFoot}
         </tr>
       );
@@ -137,7 +137,7 @@ const ReportTableRow = ({rowType, rowData}: IReportTableRowProps) => {
 };
 
 const ReportTableNew = ({theadSubLineData, theadData, tbodyData}: IReportTableProps) => {
-  const thSize = theadData.length <= 2 ? 'py-10px text-xs' : 'py-5px text-xxs';
+  const thSize = !!!theadSubLineData ? 'py-10px text-xs' : 'py-5px text-xxs';
 
   const displayTh = (rowData: string[], thStyle: string) => {
     if (!rowData || rowData.length === 0) return null;
@@ -152,7 +152,11 @@ const ReportTableNew = ({theadSubLineData, theadData, tbodyData}: IReportTablePr
           }
           if (item === '*-*') return null;
           return (
-            <th key={index} colSpan={1 + addThCol} className={`${thStyle} px-10px ${thSize}`}>
+            <th
+              key={index}
+              colSpan={1 + addThCol}
+              className={`max-w-250px whitespace-nowrap px-10px ${thStyle} ${thSize}`}
+            >
               {item}
             </th>
           );
@@ -162,20 +166,30 @@ const ReportTableNew = ({theadSubLineData, theadData, tbodyData}: IReportTablePr
   };
 
   const displaySubThead = displayTh(theadSubLineData ?? [], 'text-right font-normal');
-  const displayMainThead = displayTh(theadData, 'text-center  font-bold');
+  const displayMainThead = displayTh(theadData ?? [], 'text-center font-bold');
   const displayTd = tbodyData.map(({rowType, rowData}, index) => (
     <ReportTableRow key={index} rowType={rowType} rowData={rowData} />
   ));
 
   return (
-    <table>
+    <table className="w-full">
       {/* Info: (20230807 - Julian) Table head */}
-      <thead className="border border-violet bg-violet text-white">
+      <thead
+        className={`${
+          !displaySubThead && !displayMainThead ? 'hidden' : ''
+        } border border-violet bg-violet text-white`}
+      >
         {displaySubThead}
         {displayMainThead}
       </thead>
       {/* Info: (20230807 - Julian) Table body */}
-      <tbody className="text-xs">{displayTd}</tbody>
+      <tbody
+        className={`text-xs ${
+          !displaySubThead && !displayMainThead ? 'border border-darkPurple3' : ''
+        }`}
+      >
+        {displayTd}
+      </tbody>
     </table>
   );
 };

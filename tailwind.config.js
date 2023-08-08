@@ -323,6 +323,7 @@ module.exports = {
       maxWidth: {
         '80px': '80px',
         '140px': '140px',
+        '250px': '250px',
       },
       gridTemplateRows: {
         0: 'repeat(1, minmax(0px, 0fr))',
