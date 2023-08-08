@@ -77,7 +77,7 @@ const ReportTableRow = ({rowType, rowData}: IReportTableRowProps) => {
         });
 
         return (
-          <th key={index} colSpan={1 + addCol} className={`text-center `}>
+          <th key={index} colSpan={1 + addCol} className={`text-center`}>
             {displayThArr}
           </th>
         );
@@ -161,8 +161,8 @@ const ReportTableNew = ({theadSubLineData, theadData, tbodyData}: IReportTablePr
     );
   };
 
-  const displaySubThead = displayTh(theadSubLineData ?? [], 'text-right');
-  const displayMainThead = displayTh(theadData, 'text-center');
+  const displaySubThead = displayTh(theadSubLineData ?? [], 'text-right font-normal');
+  const displayMainThead = displayTh(theadData, 'text-center  font-bold');
   const displayTd = tbodyData.map(({rowType, rowData}, index) => (
     <ReportTableRow key={index} rowType={rowType} rowData={rowData} />
   ));
@@ -170,7 +170,7 @@ const ReportTableNew = ({theadSubLineData, theadData, tbodyData}: IReportTablePr
   return (
     <table>
       {/* Info: (20230807 - Julian) Table head */}
-      <thead className="border border-violet bg-violet font-bold text-white">
+      <thead className="border border-violet bg-violet text-white">
         {displaySubThead}
         {displayMainThead}
       </thead>

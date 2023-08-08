@@ -163,7 +163,7 @@ const ComprehensiveIncomeStatements = () => {
 
   const income_statements_p7_2 = {
     subThead: ['', 'Income Statements - USD ($)', '*-*', '*-*'],
-    thead: ['', '2023', '2022', '2023'],
+    thead: ['', '2023', '2022', '% Change'],
     tbody: [
       {
         rowType: RowType.title,
@@ -175,7 +175,7 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.contentWithMainColumn,
-        rowData: ['Total revenue', '349.09', '—', '—'],
+        rowData: ['Total revenue', '$ 349.09', '—', '—'],
       },
     ],
   };

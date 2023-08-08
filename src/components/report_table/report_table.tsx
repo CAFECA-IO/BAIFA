@@ -78,7 +78,7 @@ const ReportTable = ({tableData}: IReportTableProps) => {
 
     return (
       <tr key={index} className={`border-x border-b border-black text-darkPurple3`}>
-        <td className={`max-w-160px p-5px ${titleStyle} ${rowBg}`} colSpan={titleColSpan}>
+        <td className={`p-5px ${titleStyle} ${rowBg}`} colSpan={titleColSpan}>
           {row.title}
         </td>
 
