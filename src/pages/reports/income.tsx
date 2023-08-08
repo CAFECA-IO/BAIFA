@@ -198,8 +198,8 @@ const ComprehensiveIncomeStatements = () => {
         {/* Info: (20230807 - Julian) Cover */}
         <ReportCover
           reportTitle={reportTitle}
-          reportDateStart="2023-07-01"
-          reportDateEnd="2023-07-30"
+          reportDateStart={startDate.date}
+          reportDateEnd={endDate.date}
         />
         <hr />
 

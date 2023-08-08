@@ -165,7 +165,7 @@ const StatementsOfCashFlows = () => {
 
   const cash_flows_p6_1 = {
     subThead: ['', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
-    thead: ['*|*', '2023', '2022'],
+    thead: ['*|*', endDate.year, endDate.lastYear],
     tbody: [
       {
         rowType: RowType.contentWithMainColumn,

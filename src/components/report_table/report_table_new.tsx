@@ -4,7 +4,8 @@ export type IRowType =
   | 'subtitle'
   | 'emptyRow'
   | 'contentWithMainColumn'
-  | 'content'
+  | 'stringRow'
+  | 'titleRow'
   | 'foot';
 
 type IRowTypeContent = {
@@ -13,7 +14,8 @@ type IRowTypeContent = {
   subtitle: IRowType;
   emptyRow: IRowType;
   contentWithMainColumn: IRowType;
-  content: IRowType;
+  stringRow: IRowType;
+  titleRow: IRowType;
   foot: IRowType;
 };
 
@@ -23,7 +25,8 @@ export const RowType: IRowTypeContent = {
   subtitle: 'subtitle',
   emptyRow: 'emptyRow',
   contentWithMainColumn: 'contentWithMainColumn',
-  content: 'content',
+  stringRow: 'stringRow',
+  titleRow: 'titleRow',
   foot: 'foot',
 };
 
@@ -59,6 +62,15 @@ const ReportTableRow = ({rowType, rowData}: IReportTableRowProps) => {
       </td>
     );
   });
+
+  const displayContent = rowData.slice(1).map((item, index) => (
+    <td
+      key={index}
+      className="max-w-250px whitespace-nowrap border-l border-black p-5px text-right"
+    >
+      {item}
+    </td>
+  ));
 
   switch (rowType) {
     case RowType.headline:
@@ -102,35 +114,53 @@ const ReportTableRow = ({rowType, rowData}: IReportTableRowProps) => {
     case RowType.emptyRow:
       return <tr className="h-27px border-x border-b border-black text-white">{displayTitle}</tr>;
 
-    case RowType.contentWithMainColumn:
-      const displayContentWithMainColumn = rowData.slice(1).map((item, index) => {
-        return (
-          <td key={index} className="max-w-250px border-l border-black p-5px text-right">
-            {item}
+    case RowType.stringRow:
+      return (
+        <tr className="border-x border-b border-black">
+          <td className="max-w-250px border-l border-black p-5px text-left font-bold text-violet">
+            {rowData[0]}
           </td>
-        );
-      });
+          {rowData.slice(1).map((item, index) => (
+            <td
+              key={index}
+              className="w-70px max-w-250px border-l border-black p-5px text-center text-lilac"
+            >
+              {item}
+            </td>
+          ))}
+        </tr>
+      );
+
+    case RowType.titleRow:
+      return (
+        <tr className="border-x border-b border-black font-bold">
+          <td className="max-w-250px border-l border-black p-5px text-left text-violet">
+            {rowData[0]}
+          </td>
+          {rowData.slice(1).map((item, index) => (
+            <td key={index} className="w-70px max-w-250px border-l border-black p-5px text-center">
+              {item}
+            </td>
+          ))}
+        </tr>
+      );
+
+    case RowType.contentWithMainColumn:
       return (
         <tr className="border-x border-b border-black">
           <td className="max-w-250px border-l border-black p-5px text-lilac">{rowData[0]}</td>
-          {displayContentWithMainColumn}
+          {displayContent}
         </tr>
       );
 
     case RowType.foot:
-      const displayFoot = rowData.slice(1).map((item, index) => {
-        return (
-          <td key={index} className="max-w-250px border-l border-black p-5px text-right">
-            {item}
-          </td>
-        );
-      });
       return (
         <tr className="border-x border-b border-black bg-lilac2 font-bold">
           <td className="max-w-250px border-l border-black p-5px">{rowData[0]}</td>
-          {displayFoot}
+          {displayContent}
         </tr>
       );
+
     default:
       return <tr></tr>;
   }
