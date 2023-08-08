@@ -6,172 +6,8 @@ import ReportRiskPages from '../../components/report_risk_pages/report_risk_page
 import ReportTableNew, {RowType} from '../../components/report_table/report_table_new';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
 import {BaifaReports} from '../../constants/baifa_reports';
-
-const income_statements_p3_1 = {
-  subThead: ['', 'Income Statements - USD ($)', '*-*'],
-  thead: ['Income Statements - USD ($)', 'Jul. 30, 2023', 'Jul. 1, 2023'],
-  tbody: [
-    {
-      rowType: RowType.title,
-      rowData: ['Revene:', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Net revenue:', '$ 349.09', '$ 67.21'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: ['Total revenue', '349.09', '67.21'],
-    },
-    {
-      rowType: RowType.title,
-      rowData: ['Operating expenses:', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Transaction expense', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Total operating expenses', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Operating profit', '349.09', '67.21'],
-    },
-    {
-      rowType: RowType.emptyRow,
-      rowData: ['', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Interest expense', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Profit before income taxes', '349.09', '67.21'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: ['Net profit', '$ 349.09', '$ 67.21'],
-    },
-  ],
-};
-
-const income_statements_p3_2 = {
-  subThead: ['', 'Income Statements - USD ($)', '*-*'],
-  thead: ['Comprehensive Income Statements - USD ($)', 'Jul. 30, 2023', 'Jul. 1, 2023'],
-  tbody: [
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Net profit', '$ 349.09', '—'],
-    },
-    {
-      rowType: RowType.title,
-      rowData: ['Other comprehensive income (loss), net of tax:', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Foreign currency translation adjustments', '0', '—'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Total other comprehensive income', '0', '—'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: ['Comprehensive income', '$ 349.09', '—'],
-    },
-  ],
-};
-
-const income_statements_p6_1 = {
-  thead: ['', 'Jul. 30, 2023'],
-  tbody: [
-    {
-      rowType: RowType.title,
-      rowData: ['Net profit', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Transaction revenue', '$ 349.09'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: ['Total revenue', '$ 349.09'],
-    },
-  ],
-};
-
-const income_statements_p7_1 = {
-  subThead: ['', 'Income Statements - USD ($)', '*-*'],
-  thead: ['Income Statements - USD ($) ', 'Jul. 30, 2023', 'Jul. 1, 2023'],
-  tbody: [
-    {
-      rowType: RowType.title,
-      rowData: ['Revenue:', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Net revenue', '$ 349.09', '$ 67.21'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: ['Total revenue', '349.09', '67.21'],
-    },
-    {
-      rowType: RowType.title,
-      rowData: ['Operating expenses:', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Transaction expense', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Total operating expenses', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Operating profit', '349.09', '67.21'],
-    },
-    {
-      rowType: RowType.emptyRow,
-      rowData: ['', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Interest expense', '0', '0'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Profit before income taxes', '349.09', '67.21'],
-    },
-    {
-      rowType: RowType.foot,
-      rowData: ['Net profit', '$ 349.09', '$ 67.21'],
-    },
-  ],
-};
-
-const income_statements_p7_2 = {
-  subThead: ['', 'Income Statements - USD ($)', '*-*', '*-*'],
-  thead: ['', '2023', '2022', '% Change'],
-  tbody: [
-    {
-      rowType: RowType.title,
-      rowData: ['Revenue:', '*-*', '*-*'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Net revenue', '$ 349.09', '—', '—'],
-    },
-    {
-      rowType: RowType.contentWithMainColumn,
-      rowData: ['Total revenue', '$ 349.09', '—', '—'],
-    },
-  ],
-};
+import {reportsDateSpan} from '../../constants/report_table_data';
+import {timestampToString} from '../../lib/common';
 
 const ComprehensiveIncomeStatements = () => {
   const reportTitle = BaifaReports.COMPREHENSIVE_INCOME_STATEMENTS;
@@ -179,6 +15,178 @@ const ComprehensiveIncomeStatements = () => {
     'Comprehensive Income Statements',
     'Note To Comprehensive Income Statements',
   ];
+  const startDate = timestampToString(reportsDateSpan.start);
+  const endDate = timestampToString(reportsDateSpan.end);
+
+  const income_statements_p3_1 = {
+    subThead: ['Income Statements - USD ($)', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
+    thead: ['*|*', endDate.dateFormatForForm, startDate.dateFormatForForm],
+    tbody: [
+      {
+        rowType: RowType.title,
+        rowData: ['Revene:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Net revenue:', '$ 349.09', '$ 67.21'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total revenue', '349.09', '67.21'],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Operating expenses:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Transaction expense', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Total operating expenses', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Operating profit', '349.09', '67.21'],
+      },
+      {
+        rowType: RowType.emptyRow,
+        rowData: ['', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Interest expense', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Profit before income taxes', '349.09', '67.21'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Net profit', '$ 349.09', '$ 67.21'],
+      },
+    ],
+  };
+
+  const income_statements_p3_2 = {
+    subThead: [
+      'Comprehensive Income Statements - USD ($)',
+      `30 Days Ended ${endDate.monthAndDay},`,
+      '*-*',
+    ],
+    thead: ['*|*', endDate.dateFormatForForm, startDate.dateFormatForForm],
+    tbody: [
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Net profit', '$ 349.09', '—'],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Other comprehensive income (loss), net of tax:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Foreign currency translation adjustments', '0', '—'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Total other comprehensive income', '0', '—'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Comprehensive income', '$ 349.09', '—'],
+      },
+    ],
+  };
+
+  const income_statements_p6_1 = {
+    thead: ['', endDate.dateFormatForForm],
+    tbody: [
+      {
+        rowType: RowType.title,
+        rowData: ['Net profit', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Transaction revenue', '$ 349.09'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total revenue', '$ 349.09'],
+      },
+    ],
+  };
+
+  const income_statements_p7_1 = {
+    subThead: ['Income Statements - USD ($)', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
+    thead: ['*|*', endDate.dateFormatForForm, startDate.dateFormatForForm],
+    tbody: [
+      {
+        rowType: RowType.title,
+        rowData: ['Revenue:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Net revenue', '$ 349.09', '$ 67.21'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total revenue', '349.09', '67.21'],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Operating expenses:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Transaction expense', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Total operating expenses', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Operating profit', '349.09', '67.21'],
+      },
+      {
+        rowType: RowType.emptyRow,
+        rowData: ['', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Interest expense', '0', '0'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Profit before income taxes', '349.09', '67.21'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Net profit', '$ 349.09', '$ 67.21'],
+      },
+    ],
+  };
+
+  const income_statements_p7_2 = {
+    subThead: ['', `30 Days Ended ${endDate.monthAndDay},`, '*-*', '*-*'],
+    thead: ['*|*', endDate.year, endDate.lastYear, '% Change'],
+    tbody: [
+      {
+        rowType: RowType.title,
+        rowData: ['Revenue:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Net revenue', '$ 349.09', '—', '—'],
+      },
+      {
+        rowType: RowType.contentWithMainColumn,
+        rowData: ['Total revenue', '$ 349.09', '—', '—'],
+      },
+    ],
+  };
 
   return (
     <>
@@ -257,8 +265,8 @@ const ComprehensiveIncomeStatements = () => {
               In the management's view, they include all necessary adjustments, which are only
               regular, recurring adjustments, for a fair representation of the Company's financial
               statements for the periods shown. The non-audited operational results for the one
-              month ending <span className="font-bold text-violet">July 30, 2023</span>, may not
-              necessarily predict the results for the full year or any other period.
+              month ending <span className="font-bold text-violet">{endDate.dateFormatInUS}</span>,
+              may not necessarily predict the results for the full year or any other period.
             </p>
             <p className="font-bold">Use of estimates</p>
           </div>
@@ -288,10 +296,10 @@ const ComprehensiveIncomeStatements = () => {
               custodial funds to meet regulatory requirements and classifies the assets as current
               based on their purpose and availability to fulfill the Company’s direct obligation
               under customer custodial cash liabilities. As of
-              <span className="font-bold text-violet"> July 30, 2023</span> and
-              <span className="font-bold text-violet"> July 1, 2023</span>, the Company’s eligible
-              liquid assets were greater than the aggregate amount of customer custodial cash
-              liabilities
+              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span> and
+              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, the
+              Company’s eligible liquid assets were greater than the aggregate amount of customer
+              custodial cash liabilities
             </p>
             <h2 className="font-bold uppercase">3. REVENUE</h2>
             <p>Revenue recognition</p>
@@ -313,8 +321,6 @@ const ComprehensiveIncomeStatements = () => {
             </ul>
             <p>
               Revenue is recognized when the control of the promised products or services is handed
-              over to the clients, in a quantity that mirrors the payment the organization
-              anticipates to
             </p>
           </div>
         </ReportPageBody>
@@ -324,8 +330,9 @@ const ComprehensiveIncomeStatements = () => {
         <ReportPageBody reportTitle={reportTitle} currentPage={6}>
           <div className="flex flex-col gap-y-15px py-16px text-xs leading-5">
             <p>
-              receive in return for those products or services. The organization primarily
-              accumulates income through transaction fees levied on the platform.
+              over to the clients, in a quantity that mirrors the payment the organization
+              anticipates to receive in return for those products or services. The organization
+              primarily accumulates income through transaction fees levied on the platform.
             </p>
 
             <ReportTableNew
@@ -362,7 +369,7 @@ const ComprehensiveIncomeStatements = () => {
 
         {/* Info: (20230807 - Julian) Page 7 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={7}>
-          <div className="flex flex-col gap-y-15px text-xs leading-5">
+          <div className="flex flex-col gap-y-5px py-16px text-xs leading-5">
             <p className="font-bold">Transaction expense</p>
             <p>
               Transaction expense includes costs incurred to operate our platform and process crypto
@@ -378,7 +385,10 @@ const ComprehensiveIncomeStatements = () => {
             />
             <p>
               Comparison of the
-              <span className="font-bold text-violet"> 30 days ended July 30, 2023 and 2022</span>
+              <span className="font-bold text-violet">
+                {' '}
+                30 days ended {endDate.dateFormatInUS} and {endDate.lastYear}
+              </span>
             </p>
             <ReportTableNew
               theadSubLineData={income_statements_p7_2.subThead}

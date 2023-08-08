@@ -4,6 +4,7 @@ export const timestampToString = (timestamp: number) => {
       date: '-',
       monthAndDay: '-',
       year: '-',
+      lastYear: '-',
       dateFormatInUS: '-',
       dateFormatForForm: '-',
     };
@@ -54,6 +55,7 @@ export const timestampToString = (timestamp: number) => {
     date: dateSrting,
     monthAndDay: `${monthNameShort} ${day}`,
     year: `${year}`,
+    lastYear: `${year - 1}`,
     dateFormatInUS: `${monthName} ${day}, ${year}`,
     dateFormatForForm: `${monthNameShort} ${day}, ${year}`,
   };

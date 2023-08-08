@@ -139,32 +139,6 @@ const ReportTableRow = ({rowType, rowData}: IReportTableRowProps) => {
 const ReportTableNew = ({theadSubLineData, theadData, tbodyData}: IReportTableProps) => {
   const thSize = !!!theadSubLineData ? 'py-10px text-xs' : 'py-5px text-xxs';
 
-  const displayTh = (rowData: string[], thStyle: string) => {
-    if (!rowData || rowData.length === 0) return null;
-    return (
-      <tr>
-        {rowData.map((item, index) => {
-          let addThCol = 0;
-          for (let i = 1; i < rowData.length; i++) {
-            // Info: (20230807 - Julian) *-* 表示和後一個格子合併
-            if (rowData[index + i] === '*-*') addThCol += 1;
-            else break;
-          }
-          if (item === '*-*') return null;
-          return (
-            <th
-              key={index}
-              colSpan={1 + addThCol}
-              className={`max-w-250px whitespace-nowrap px-10px ${thStyle} ${thSize}`}
-            >
-              {item}
-            </th>
-          );
-        })}
-      </tr>
-    );
-  };
-
   const displayThead = !!theadData ? (
     <thead className={`border border-violet bg-violet text-white`}>
       {/* Info: (20230808 - Julian) 副標題 */}
@@ -194,25 +168,24 @@ const ReportTableNew = ({theadSubLineData, theadData, tbodyData}: IReportTablePr
       </tr>
       {/* Info: (20230808 - Julian) 主標題 */}
       <tr>
-        {!!theadData &&
-          theadData.map((item, index) => {
-            let addThCol = 0;
-            for (let i = 1; i < theadData.length; i++) {
-              // Info: (20230807 - Julian) *-* 表示和後一個格子合併
-              if (theadData[index + i] === '*-*') addThCol += 1;
-              else break;
-            }
-            if (item === '*-*' || item === '*|*') return null;
-            return (
-              <th
-                key={index}
-                colSpan={1 + addThCol}
-                className={`max-w-250px whitespace-nowrap px-10px text-center font-bold ${thSize}`}
-              >
-                {item}
-              </th>
-            );
-          })}
+        {theadData.map((item, index) => {
+          let addThCol = 0;
+          for (let i = 1; i < theadData.length; i++) {
+            // Info: (20230807 - Julian) *-* 表示和後一個格子合併
+            if (theadData[index + i] === '*-*') addThCol += 1;
+            else break;
+          }
+          if (item === '*-*' || item === '*|*') return null;
+          return (
+            <th
+              key={index}
+              colSpan={1 + addThCol}
+              className={`max-w-250px whitespace-nowrap px-10px text-center font-bold ${thSize}`}
+            >
+              {item}
+            </th>
+          );
+        })}
       </tr>
     </thead>
   ) : null;
