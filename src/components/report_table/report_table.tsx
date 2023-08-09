@@ -3,9 +3,6 @@ import {RowType} from '../../constants/table_row_type';
 
 interface IReportTable {
   tableData: ITable;
-  // theadSubLineData?: string[];
-  // theadData?: string[];
-  // tbodyData: ITableRows[];
 }
 
 interface IReportTableRow {
@@ -114,6 +111,17 @@ const ReportTableRow = ({row}: IReportTableRow) => {
         </tr>
       );
 
+    case RowType.content:
+      return (
+        <tr className="border-x border-black text-center text-lilac">
+          {rowData.map((item, index) => (
+            <td key={index} className="w-80px border-l border-black p-5px">
+              {item}
+            </td>
+          ))}
+        </tr>
+      );
+
     case RowType.contentWithMainColumn:
       return (
         <tr className="border-x border-b border-black">
@@ -197,7 +205,7 @@ const ReportTableNew = ({tableData}: IReportTable) => {
       {/* Info: (20230807 - Julian) Table head */}
       {displayThead}
       {/* Info: (20230807 - Julian) Table body */}
-      <tbody className={`text-xs ${!!!displayThead ? 'border border-darkPurple3' : ''}`}>
+      <tbody className={`border-b border-darkPurple3 text-xs ${!!!displayThead ? 'border-t' : ''}`}>
         {displayTd}
       </tbody>
     </table>
