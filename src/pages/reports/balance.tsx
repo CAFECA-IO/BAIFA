@@ -6,7 +6,7 @@ import ReportRiskPages from '../../components/report_risk_pages/report_risk_page
 import ReportTableNew from '../../components/report_table/report_table';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {RowType} from '../../constants/table_row_type';
-import {reportsDateSpan} from '../../constants/config';
+import {reportsDateSpan, operationContent} from '../../constants/config';
 import {ITable} from '../../interfaces/report_table';
 import {timestampToString} from '../../lib/common';
 
@@ -316,6 +316,15 @@ const BalanceSheets = () => {
     ],
   };
 
+  const displayOperations = (
+    <>
+      <h2 className="font-bold uppercase"> 1. {operationContent.title}</h2>
+      {operationContent.content.map((item, index) => (
+        <p key={index}>{item}</p>
+      ))}
+    </>
+  );
+
   return (
     <>
       <Head>
@@ -352,26 +361,7 @@ const BalanceSheets = () => {
           <div className="flex flex-col gap-y-15px py-16px text-xs leading-5">
             <h1 className="text-lg font-bold text-violet">Notes to Balance Sheets</h1>
             {/* Info: (20230802 - Julian) Note 1 */}
-            <h2 className="font-bold uppercase"> 1. NATURE OF OPERATIONS</h2>
-            <p>
-              TideBit DeFi is a decentralized financial exchange that provides accessible financial
-              services to a broad range of users. As a part of the burgeoning decentralized finance
-              (DeFi) sector, TideBit DeFi leverages blockchain technology to offer financial
-              services that are open, transparent, and free from the control of traditional
-              financial intermediaries like banks and brokerages.
-            </p>
-            <p>
-              Operating on a global scale, TideBit DeFi's platform allows users to trade a variety
-              of digital assets in a secure and decentralized manner. This means that rather than
-              relying on a central authority to facilitate transactions, trades are executed
-              directly between users through smart contracts on the blockchain. This not only
-              enhances security but also increases transaction speed and reduces costs.
-            </p>
-            <p>
-              By harnessing the power of blockchain technology and the principles of
-              decentralization, TideBit DeFi is democratizing access to financial services and
-              providing users with greater control over their financial destiny.
-            </p>
+            {displayOperations}
             {/* Info: (20230802 - Julian) Note 2 */}
             <h2 className="font-bold uppercase">2. SUMMARY OF SIGNIFICANT ACCOUNTING POLICIES</h2>
             <p className="font-bold">Foundation for Presentation and Consolidation Principles</p>

@@ -3,7 +3,6 @@ import ReportCover from '../../components/report_cover/report_cover';
 import ReportContent from '../../components/report_content/report_content';
 import ReportPageBody from '../../components/report_page_body/report_page_body';
 import ReportTableNew from '../../components/report_table/report_table';
-import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
 import {ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
@@ -170,7 +169,7 @@ const StatementOfRedFlags = () => {
         <ReportContent content={contentList} />
         <hr />
 
-        {/* Info: (20230804 - Julian) Page 1  */}
+        {/* Info: (20230809 - Julian) Page 1  */}
         <ReportPageBody reportTitle={BaifaReports.STATEMENTS_OF_RED_FLAGS} currentPage={1}>
           <div className="flex flex-col gap-y-16px py-16px text-xs leading-5">
             <h1 className="text-lg font-bold text-violet">Summary of Red Flag Analysis</h1>
@@ -233,7 +232,7 @@ const StatementOfRedFlags = () => {
         </ReportPageBody>
         <hr />
 
-        {/* Info: (20230804 - Julian) Page 2  */}
+        {/* Info: (20230809 - Julian) Page 2  */}
         <ReportPageBody reportTitle={BaifaReports.STATEMENTS_OF_RED_FLAGS} currentPage={2}>
           <div className="flex flex-col gap-y-16px py-16px text-xs leading-5">
             <h1 className="text-32px font-bold text-violet">{reportTitle}</h1>
@@ -242,7 +241,7 @@ const StatementOfRedFlags = () => {
         </ReportPageBody>
         <hr />
 
-        {/* Info: (20230804 - Julian) Page 3  */}
+        {/* Info: (20230809 - Julian) Page 3  */}
         <ReportPageBody reportTitle={BaifaReports.STATEMENTS_OF_RED_FLAGS} currentPage={3}>
           <div className="flex flex-col gap-y-16px py-16px text-xs leading-5">
             <h1 className="text-lg font-bold text-violet">Note To Statements of Red Flags</h1>
@@ -256,7 +255,7 @@ const StatementOfRedFlags = () => {
         </ReportPageBody>
         <hr />
 
-        {/* Info: (20230804 - Julian) Page 4  */}
+        {/* Info: (20230809 - Julian) Page 4  */}
         <ReportPageBody reportTitle={BaifaReports.STATEMENTS_OF_RED_FLAGS} currentPage={4}>
           <div className="flex flex-col gap-y-16px py-16px text-xs leading-5">
             <p>
