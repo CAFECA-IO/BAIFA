@@ -39,6 +39,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
   ));
 
   switch (rowType) {
+    // Info: (20230809 - Julian) 和表頭一樣，紫底白字
     case RowType.headline:
       const displayTh = rowData.map((item, index) => {
         for (let i = 1; i < rowData.length; i++) {
@@ -66,20 +67,20 @@ const ReportTableRow = ({row}: IReportTableRow) => {
           {displayTh}
         </tr>
       );
-
+    // Info: (20230809 - Julian) 單格，粗體紫字
     case RowType.title:
       return (
         <tr className="border-x border-b border-black font-bold text-violet">{displayTitle}</tr>
       );
-
+    // Info: (20230809 - Julian) 單格，粗體黑字
     case RowType.subtitle:
       return (
         <tr className="border-x border-b border-black font-bold text-black">{displayTitle}</tr>
       );
-
+    // Info: (20230809 - Julian) 單格，空白行
     case RowType.emptyRow:
       return <tr className="h-27px border-x border-b border-black text-white">{displayTitle}</tr>;
-
+    // Info: (20230809 - Julian) 第一格粗體紫字，其餘置中灰字
     case RowType.stringRow:
       return (
         <tr className="border-x border-b border-black">
@@ -96,7 +97,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
           ))}
         </tr>
       );
-
+    // Info: (20230809 - Julian) 第一格粗體紫字，其餘置中粗體黑字
     case RowType.titleRow:
       return (
         <tr className="border-x border-b border-black font-bold">
@@ -110,7 +111,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
           ))}
         </tr>
       );
-
+    // Info: (20230809 - Julian) 全部置中灰字
     case RowType.content:
       return (
         <tr className="border-x border-black text-center text-lilac">
@@ -121,7 +122,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
           ))}
         </tr>
       );
-
+    // Info: (20230809 - Julian) 第一格灰字，其餘置中黑字
     case RowType.contentWithMainColumn:
       return (
         <tr className="border-x border-b border-black">
@@ -129,7 +130,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
           {displayContent}
         </tr>
       );
-
+    // Info: (20230809 - Julian) 淺紫底色 + 粗體黑字
     case RowType.foot:
       return (
         <tr className="border-x border-b border-black bg-lilac2 font-bold">
@@ -160,6 +161,8 @@ const ReportTableNew = ({tableData}: IReportTable) => {
               else break;
             }
             if (item === '*-*') return null;
+            // Info: (20230809 - Julian) 副標題存在的話，第一格要跨兩列(與下排 '*|*' 合併)
+            // 按照現有的設計，表頭最多只會有兩行，所以這邊直接寫死。如果未來有更多行的表頭則再調整
             const rowspan = index === 0 ? 2 : 1;
             const thStyle = index === 0 ? 'text-center font-bold' : 'text-right font-normal';
             return (
