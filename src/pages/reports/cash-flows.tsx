@@ -3,10 +3,12 @@ import ReportCover from '../../components/report_cover/report_cover';
 import ReportContent from '../../components/report_content/report_content';
 import ReportPageBody from '../../components/report_page_body/report_page_body';
 import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
-import ReportTableNew, {RowType} from '../../components/report_table/report_table_new';
+import ReportTableNew from '../../components/report_table/report_table';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
+import {ITable} from '../../interfaces/report_table';
+import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
-import {reportsDateSpan} from '../../constants/report_table_data';
+import {reportsDateSpan} from '../../constants/config';
 import {timestampToString} from '../../lib/common';
 
 const StatementsOfCashFlows = () => {
@@ -15,7 +17,7 @@ const StatementsOfCashFlows = () => {
   const startDate = timestampToString(reportsDateSpan.start);
   const endDate = timestampToString(reportsDateSpan.end);
 
-  const cash_flows_p3_1 = {
+  const cash_flows_p3_1: ITable = {
     subThead: [
       'Statements of Cash Flows - USD ($)',
       `30 Days Ended ${endDate.monthAndDay},`,
@@ -110,7 +112,7 @@ const StatementsOfCashFlows = () => {
     ],
   };
 
-  const cash_flows_p4_1 = {
+  const cash_flows_p4_1: ITable = {
     tbody: [
       {
         rowType: RowType.title,
@@ -163,7 +165,7 @@ const StatementsOfCashFlows = () => {
     ],
   };
 
-  const cash_flows_p6_1 = {
+  const cash_flows_p6_1: ITable = {
     subThead: ['', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
     thead: ['*|*', endDate.year, endDate.lastYear],
     tbody: [
@@ -202,7 +204,7 @@ const StatementsOfCashFlows = () => {
     ],
   };
 
-  const cash_flows_p7_1 = {
+  const cash_flows_p7_1: ITable = {
     thead: ['', endDate.dateFormatForForm, startDate.dateFormatForForm],
     tbody: [
       {
@@ -254,11 +256,7 @@ const StatementsOfCashFlows = () => {
         <ReportPageBody reportTitle={reportTitle} currentPage={3}>
           <div className="flex flex-col gap-y-30px py-16px leading-5">
             <h1 className="text-32px font-bold text-violet">{reportTitle}</h1>
-            <ReportTableNew
-              theadSubLineData={cash_flows_p3_1.subThead}
-              theadData={cash_flows_p3_1.thead}
-              tbodyData={cash_flows_p3_1.tbody}
-            />
+            <ReportTableNew tableData={cash_flows_p3_1} />
           </div>
         </ReportPageBody>
         <hr />
@@ -266,7 +264,7 @@ const StatementsOfCashFlows = () => {
         {/* Info: (20230807 - Julian) Page 4 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={4}>
           <div className="py-16px">
-            <ReportTableNew tbodyData={cash_flows_p4_1.tbody} />
+            <ReportTableNew tableData={cash_flows_p4_1} />
           </div>
         </ReportPageBody>
         <hr />
@@ -341,11 +339,7 @@ const StatementsOfCashFlows = () => {
               custodial cash liabilities
             </p>
             <h2 className="font-bold uppercase">3. Cash flows</h2>
-            <ReportTableNew
-              theadSubLineData={cash_flows_p6_1.subThead}
-              theadData={cash_flows_p6_1.thead}
-              tbodyData={cash_flows_p6_1.tbody}
-            />
+            <ReportTableNew tableData={cash_flows_p6_1} />
           </div>
         </ReportPageBody>
         <hr />
@@ -354,7 +348,7 @@ const StatementsOfCashFlows = () => {
         <ReportPageBody reportTitle={reportTitle} currentPage={7}>
           <div className="flex flex-col gap-y-15px py-16px text-xs leading-5">
             <h2 className="font-bold uppercase">4. Liquidity and Capital Resources</h2>
-            <ReportTableNew theadData={cash_flows_p7_1.thead} tbodyData={cash_flows_p7_1.tbody} />
+            <ReportTableNew tableData={cash_flows_p7_1} />
             <div className="-mt-10px flex flex-col text-xxs text-lilac">
               <p>
                 (1) Cash equivalents consists of USDT and money market funds denominated in U.S.

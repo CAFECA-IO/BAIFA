@@ -3,10 +3,12 @@ import ReportCover from '../../components/report_cover/report_cover';
 import ReportContent from '../../components/report_content/report_content';
 import ReportPageBody from '../../components/report_page_body/report_page_body';
 import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
-import ReportTableNew, {RowType} from '../../components/report_table/report_table_new';
+import ReportTableNew from '../../components/report_table/report_table';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
+import {ITable} from '../../interfaces/report_table';
+import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
-import {reportsDateSpan} from '../../constants/report_table_data';
+import {reportsDateSpan} from '../../constants/config';
 import {timestampToString} from '../../lib/common';
 
 const ComprehensiveIncomeStatements = () => {
@@ -18,7 +20,7 @@ const ComprehensiveIncomeStatements = () => {
   const startDate = timestampToString(reportsDateSpan.start);
   const endDate = timestampToString(reportsDateSpan.end);
 
-  const income_statements_p3_1 = {
+  const income_statements_p3_1: ITable = {
     subThead: ['Income Statements - USD ($)', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
     thead: ['*|*', endDate.dateFormatForForm, startDate.dateFormatForForm],
     tbody: [
@@ -69,7 +71,7 @@ const ComprehensiveIncomeStatements = () => {
     ],
   };
 
-  const income_statements_p3_2 = {
+  const income_statements_p3_2: ITable = {
     subThead: [
       'Comprehensive Income Statements - USD ($)',
       `30 Days Ended ${endDate.monthAndDay},`,
@@ -100,7 +102,7 @@ const ComprehensiveIncomeStatements = () => {
     ],
   };
 
-  const income_statements_p6_1 = {
+  const income_statements_p6_1: ITable = {
     thead: ['', endDate.dateFormatForForm],
     tbody: [
       {
@@ -118,7 +120,7 @@ const ComprehensiveIncomeStatements = () => {
     ],
   };
 
-  const income_statements_p7_1 = {
+  const income_statements_p7_1: ITable = {
     subThead: ['Income Statements - USD ($)', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
     thead: ['*|*', endDate.dateFormatForForm, startDate.dateFormatForForm],
     tbody: [
@@ -169,7 +171,7 @@ const ComprehensiveIncomeStatements = () => {
     ],
   };
 
-  const income_statements_p7_2 = {
+  const income_statements_p7_2: ITable = {
     subThead: ['', `30 Days Ended ${endDate.monthAndDay},`, '*-*', '*-*'],
     thead: ['*|*', endDate.year, endDate.lastYear, '% Change'],
     tbody: [
@@ -214,18 +216,10 @@ const ComprehensiveIncomeStatements = () => {
         <ReportPageBody reportTitle={reportTitle} currentPage={3}>
           <div className="flex flex-col gap-y-30px py-16px leading-5">
             <h1 className="text-2xl font-bold text-violet">{reportTitle}</h1>
-            <ReportTableNew
-              theadSubLineData={income_statements_p3_1.subThead}
-              theadData={income_statements_p3_1.thead}
-              tbodyData={income_statements_p3_1.tbody}
-            />
+            <ReportTableNew tableData={income_statements_p3_1} />
 
             <h1 className="text-2xl font-bold text-violet">Comprehensive Income Statements</h1>
-            <ReportTableNew
-              theadSubLineData={income_statements_p3_2.subThead}
-              theadData={income_statements_p3_2.thead}
-              tbodyData={income_statements_p3_2.tbody}
-            />
+            <ReportTableNew tableData={income_statements_p3_2} />
           </div>
         </ReportPageBody>
         <hr />
@@ -335,10 +329,7 @@ const ComprehensiveIncomeStatements = () => {
               primarily accumulates income through transaction fees levied on the platform.
             </p>
 
-            <ReportTableNew
-              theadData={income_statements_p6_1.thead}
-              tbodyData={income_statements_p6_1.tbody}
-            />
+            <ReportTableNew tableData={income_statements_p6_1} />
 
             <p className="font-bold">Transaction revenue</p>
             <p>
@@ -369,7 +360,7 @@ const ComprehensiveIncomeStatements = () => {
 
         {/* Info: (20230807 - Julian) Page 7 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={7}>
-          <div className="flex flex-col gap-y-5px py-16px text-xs leading-5">
+          <div className="flex flex-col gap-y-10px py-16px text-xs leading-5">
             <p className="font-bold">Transaction expense</p>
             <p>
               Transaction expense includes costs incurred to operate our platform and process crypto
@@ -378,11 +369,7 @@ const ComprehensiveIncomeStatements = () => {
             </p>
             <h2 className="font-bold uppercase">5. Results of Operations</h2>
             <p>The following table summarizes the historical statement of operations data:</p>
-            <ReportTableNew
-              theadSubLineData={income_statements_p7_1.subThead}
-              theadData={income_statements_p7_1.thead}
-              tbodyData={income_statements_p7_1.tbody}
-            />
+            <ReportTableNew tableData={income_statements_p7_1} />
             <p>
               Comparison of the
               <span className="font-bold text-violet">
@@ -390,11 +377,7 @@ const ComprehensiveIncomeStatements = () => {
                 30 days ended {endDate.dateFormatInUS} and {endDate.lastYear}
               </span>
             </p>
-            <ReportTableNew
-              theadSubLineData={income_statements_p7_2.subThead}
-              theadData={income_statements_p7_2.thead}
-              tbodyData={income_statements_p7_2.tbody}
-            />
+            <ReportTableNew tableData={income_statements_p7_2} />
           </div>
         </ReportPageBody>
         <hr />

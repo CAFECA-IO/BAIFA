@@ -13,9 +13,9 @@ interface IReportTableRow {
 }
 
 const ReportTableRow = ({row}: IReportTableRow) => {
+  const {rowType, rowData} = row;
   let addCol = 0;
 
-  const {rowType, rowData} = row;
   const displayTitle = rowData.map((item, index) => {
     for (let i = 1; i < rowData.length; i++) {
       // Info: (20230807 - Julian) *-* 表示和後一個格子合併
