@@ -1,9 +1,10 @@
-interface IReportTableTbody {
-  title: string;
-  items: string[];
+export interface ITableRows {
+  rowType: string;
+  rowData: string[];
 }
 
-export interface IReportTable {
-  thead: string[];
-  tbody: IReportTableTbody[];
+export interface ITable {
+  subThead?: string[];
+  thead?: string[];
+  tbody: ITableRows[];
 }

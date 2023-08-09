@@ -2,11 +2,12 @@ import Head from 'next/head';
 import ReportCover from '../../components/report_cover/report_cover';
 import ReportContent from '../../components/report_content/report_content';
 import ReportPageBody from '../../components/report_page_body/report_page_body';
-import ReportTable from '../../components/report_table/report_table';
 import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
+import ReportTableNew from '../../components/report_table/report_table';
 import {BaifaReports} from '../../constants/baifa_reports';
-import ReportTableNew, {RowType} from '../../components/report_table/report_table_new';
-import {reportsDateSpan} from '../../constants/report_table_data';
+import {RowType} from '../../constants/table_row_type';
+import {reportsDateSpan} from '../../constants/config';
+import {ITable} from '../../interfaces/report_table';
 import {timestampToString} from '../../lib/common';
 
 const BalanceSheets = () => {
@@ -15,7 +16,7 @@ const BalanceSheets = () => {
   const startDate = timestampToString(reportsDateSpan.start);
   const endDate = timestampToString(reportsDateSpan.end);
 
-  const balance_sheets_p3_1 = {
+  const balance_sheets_p3_1: ITable = {
     thead: ['Balance Sheets - USD ($)', endDate.dateFormatForForm, startDate.dateFormatForForm],
     tbody: [
       {
@@ -105,8 +106,8 @@ const BalanceSheets = () => {
     ],
   };
 
-  const balance_sheets_p6_1 = {
-    thead: ['', 'Jul. 30, 2023', 'Jul. 1, 2023'],
+  const balance_sheets_p6_1: ITable = {
+    thead: ['', endDate.dateFormatForForm, startDate.dateFormatForForm],
     tbody: [
       {
         rowType: RowType.contentWithMainColumn,
@@ -127,8 +128,8 @@ const BalanceSheets = () => {
     ],
   };
 
-  const balance_sheets_p6_2 = {
-    thead: ['', 'Jul. 30, 2023', '*-*', 'Jul. 1, 2023', '*-*'],
+  const balance_sheets_p6_2: ITable = {
+    thead: ['', endDate.dateFormatForForm, '*-*', startDate.dateFormatForForm, '*-*'],
     tbody: [
       {
         rowType: RowType.stringRow,
@@ -153,8 +154,8 @@ const BalanceSheets = () => {
     ],
   };
 
-  const balance_sheets_p7_1 = {
-    thead: ['', 'Jul. 30, 2023', '*-*', 'Jul. 1, 2023', '*-*'],
+  const balance_sheets_p7_1: ITable = {
+    thead: ['', endDate.dateFormatForForm, '*-*', startDate.dateFormatForForm, '*-*'],
     tbody: [
       {
         rowType: RowType.stringRow,
@@ -183,8 +184,8 @@ const BalanceSheets = () => {
     ],
   };
 
-  const balance_sheets_p7_2 = {
-    thead: ['', 'Jul. 30, 2023', '*-*', 'Jul. 1, 2023', '*-*'],
+  const balance_sheets_p7_2: ITable = {
+    thead: ['', endDate.dateFormatForForm, '*-*', startDate.dateFormatForForm, '*-*'],
     tbody: [
       {
         rowType: RowType.stringRow,
@@ -215,8 +216,8 @@ const BalanceSheets = () => {
     ],
   };
 
-  const balance_sheets_p8_1 = {
-    thead: ['', 'Jul. 30, 2023', '*-*', '*-*', '*-*'],
+  const balance_sheets_p8_1: ITable = {
+    thead: ['', endDate.dateFormatForForm, '*-*', '*-*', '*-*'],
     tbody: [
       {
         rowType: RowType.titleRow,
@@ -265,8 +266,8 @@ const BalanceSheets = () => {
     ],
   };
 
-  const balance_sheets_p9_1 = {
-    thead: ['', 'Jul. 1, 2023', '*-*', '*-*', '*-*'],
+  const balance_sheets_p9_1: ITable = {
+    thead: ['', startDate.dateFormatForForm, '*-*', '*-*', '*-*'],
     tbody: [
       {
         rowType: RowType.titleRow,
@@ -339,12 +340,10 @@ const BalanceSheets = () => {
 
         {/* Info: (20230802 - Julian) Page 3 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={3}>
-          <h1 className="mb-16px text-32px font-bold text-violet">{reportTitle}</h1>
-          {/* <ReportTable tableData={balance_sheets_p3_1} /> */}
-          <ReportTableNew
-            theadData={balance_sheets_p3_1.thead}
-            tbodyData={balance_sheets_p3_1.tbody}
-          />
+          <div className="flex flex-col gap-y-15px py-16px leading-5">
+            <h1 className="text-32px font-bold text-violet">{reportTitle}</h1>
+            <ReportTableNew tableData={balance_sheets_p3_1} />
+          </div>
         </ReportPageBody>
         <hr />
 
@@ -383,8 +382,8 @@ const BalanceSheets = () => {
               In the management's view, they include all necessary adjustments, which are only
               regular, recurring adjustments, for a fair representation of the Company's financial
               statements for the periods shown. The non-audited operational results for the 30 days
-              ending <span className="font-bold text-violet">July 30, 2023</span>, may not
-              necessarily predict the results for the full year or any other period.
+              ending <span className="font-bold text-violet">{endDate.dateFormatInUS}</span>, may
+              not necessarily predict the results for the full year or any other period.
             </p>
             <p className="font-bold">Use of estimates</p>
           </div>
@@ -413,11 +412,11 @@ const BalanceSheets = () => {
               withdrawals. The Company restricts the use of the assets underlying the customer
               custodial funds to meet regulatory requirements and classifies the assets as current
               based on their purpose and availability to fulfill the Company’s direct obligation
-              under customer custodial cash liabilities. As of{' '}
-              <span className="font-bold text-violet">July 30, 2023</span> and{' '}
-              <span className="font-bold text-violet">July 1, 2023</span>, the Company’s eligible
-              liquid assets were greater than the aggregate amount of customer custodial cash
-              liabilities
+              under customer custodial cash liabilities. As of
+              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span> and
+              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, the
+              Company’s eligible liquid assets were greater than the aggregate amount of customer
+              custodial cash liabilities
             </p>
             {/* Info: (20230802 - Julian) Note 3 */}
             <h2 className="font-bold uppercase">3. CUSTOMER ASSETS AND LIABILITIES</h2>
@@ -453,27 +452,23 @@ const BalanceSheets = () => {
               clients.
             </p>
             <p>
-              During the <span className="font-bold text-violet">30 days ended July 30, 2023</span>,
-              no losses have been incurred in connection with customer crypto assets
+              During the
+              <span className="font-bold text-violet"> 30 days ended {endDate.dateFormatInUS}</span>
+              , no losses have been incurred in connection with customer crypto assets
             </p>
-            <ReportTableNew
-              theadData={balance_sheets_p6_1.thead}
-              tbodyData={balance_sheets_p6_1.tbody}
-            />
+            <ReportTableNew tableData={balance_sheets_p6_1} />
             <p>
               The following table sets forth the fair value of customer crypto assets, as shown on
               the condensed consolidated balance sheets, as customer crypto assets and customer
               crypto liabilities (in billions):
             </p>
-            <ReportTableNew
-              theadData={balance_sheets_p6_2.thead}
-              tbodyData={balance_sheets_p6_2.tbody}
-            />
+            <ReportTableNew tableData={balance_sheets_p6_2} />
             {/* Info: (20230802 - Julian) Note 4 */}
             <h2 className="font-bold uppercase">4. ASSETS PLEDGED AS COLLATERAL</h2>
             <p>
-              As of <span className="font-bold text-violet">July 30, 2023</span>, TideBit DeFi had
-              pledged <span className="font-bold text-violet">USDT</span> that served exclusively as
+              As of<span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, TideBit
+              DeFi had pledged <span className="font-bold text-violet">USDT</span> that served
+              exclusively as
             </p>
           </div>
         </ReportPageBody>
@@ -486,22 +481,15 @@ const BalanceSheets = () => {
               collateralfor certain crypto asset borrowings with a fair value of at least 100% of
               the load amount outstanding.
             </p>
-            <ReportTableNew
-              theadData={balance_sheets_p7_1.thead}
-              tbodyData={balance_sheets_p7_1.tbody}
-            />
+            <ReportTableNew tableData={balance_sheets_p7_1} />
             {/* Info: (20230802 - Julian) Note 5 */}
             <h2 className="font-bold uppercase">5. CRYPTO ASSETS HELD</h2>
             <p>
-              As of <span className="font-bold text-violet">July 30, 2023</span> and{' '}
-              <span className="font-bold text-violet">July 1, 2023</span>, the cost basis and fair
-              value of our crypto assets held at impaired cost was as follows:
+              As of<span className="font-bold text-violet"> {endDate.dateFormatForForm}</span> and
+              <span className="font-bold text-violet"> {startDate.dateFormatForForm}</span>, the
+              cost basis and fair value of our crypto assets held at impaired cost was as follows:
             </p>
-            {/* ToDo: (20230804 - Julian) (數字)註解 */}
-            <ReportTableNew
-              theadData={balance_sheets_p7_2.thead}
-              tbodyData={balance_sheets_p7_2.tbody}
-            />
+            <ReportTableNew tableData={balance_sheets_p7_2} />
             <div className="-mt-10px flex flex-col text-xxs text-lilac">
               <p>(1) Cost amounts shown are net of impairment recognized.</p>
               <p>
@@ -525,10 +513,7 @@ const BalanceSheets = () => {
               Company’s assets and liabilities measured and recorded at fair value on a recurring
               basis (in thousands):
             </p>
-            <ReportTableNew
-              theadData={balance_sheets_p8_1.thead}
-              tbodyData={balance_sheets_p8_1.tbody}
-            />
+            <ReportTableNew tableData={balance_sheets_p8_1} />
             <p className="italic text-lilac">Next Page</p>
           </div>
         </ReportPageBody>
@@ -537,10 +522,7 @@ const BalanceSheets = () => {
         {/* Info: (20230802 - Julian) Page 9 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={9}>
           <div className="mt-10px flex flex-col gap-y-20px py-16px text-xs leading-5">
-            <ReportTableNew
-              theadData={balance_sheets_p9_1.thead}
-              tbodyData={balance_sheets_p9_1.tbody}
-            />
+            <ReportTableNew tableData={balance_sheets_p9_1} />
             {/* Info: (20230802 - Julian) Note 7 */}
             <h2 className="font-bold uppercase">7. Market price risk of crypto assets</h2>
             <p>
