@@ -1,5 +1,20 @@
 export const copyright = 'BAIFA @ 2023. All rights reserved.';
 
+export const reportsDateSpan = {
+  start: 1688190893,
+  end: 1690646400,
+};
+
+/* Info: (20230809 - Julian) ----- BAIFA Reposts ----- */
+export const operationContent = {
+  title: 'Nature of Operations',
+  content: [
+    'TideBit DeFi is a decentralized financial exchange that provides accessible financial services to a broad range of users. As a part of the burgeoning decentralized finance (DeFi) sector, TideBit DeFi leverages blockchain technology to offer financial services that are open, transparent, and free from the control of traditional financial intermediaries like banks and brokerages.',
+    `Operating on a global scale, TideBit DeFi's platform allows users to trade a variety of digital assets in a secure and decentralized manner. This means that rather than relying on a central authority to facilitate transactions, trades are executed directly between users through smart contracts on the blockchain. This not only enhances security but also increases transaction speed and reduces costs.`,
+    'By harnessing the power of blockchain technology and the principles of decentralization, TideBit DeFi is democratizing access to financial services and providing users with greater control over their financial destiny.',
+  ],
+};
+
 /* Info: (20230711 - Julian) ----- Home Page ----- */
 export const mainMenuContent = [
   {

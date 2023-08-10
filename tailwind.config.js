@@ -10,8 +10,16 @@ module.exports = {
 
         lightWhite: '#F2F2F2',
 
+        lightGreen: '#3DD08C',
+        lightGreen2: '#21AD6C',
+
+        lightRed: '#FC8181',
+        lightRed2: '#E96C67',
+
         lilac: '#ABA7BD',
+        lilac2: '#6857d733',
         violet: '#6857D7',
+        violet2: '#9747FF',
 
         primaryBlue: '#11FFF5',
         hoverWhite: '#F0F0F0',
@@ -27,7 +35,9 @@ module.exports = {
         bubbleAbove: 'url("/elements/bubble_above.svg")',
         bubbleBelow: 'url("/elements/bubble_below.svg")',
 
-        bubbles: 'url("/elements/bubbles.svg")',
+        reportCover: 'url("/documents/cover.svg")',
+        contentBg: 'url("/documents/content_bg.svg"), linear-gradient(#F2F2F2,#F2F2F2)',
+        headerBg: 'url("/documents/header_bg.svg"), linear-gradient(#F2F2F2,#F2F2F2)',
       },
       fontSize: {
         '3xs': ['8px', '12px'],
@@ -39,6 +49,7 @@ module.exports = {
         xl: ['20px', '28px'],
         '2xl': ['24px', '32px'],
         '3xl': ['30px', '36px'],
+        '32px': ['32px', '36px'],
         '4xl': ['36px', '40px'],
         '40px': ['40px', '44px'],
         '5xl': ['42px', 1],
@@ -66,6 +77,7 @@ module.exports = {
         '2px': '2px',
         '3px': '3px',
         '5px': '5px',
+        '8px': '8px',
         '10px': '10px',
         '12px': '12px',
         '14px': '14px',
@@ -252,6 +264,10 @@ module.exports = {
         '80vw': '80vw',
         '85vw': '85vw',
         '90vw': '90vw',
+
+        // Info: (20230801- Julian) A4 尺寸
+        'a4-width': '595px',
+        'a4-height': '842px',
       },
       margin: {
         '8px': '8px',
@@ -305,7 +321,9 @@ module.exports = {
         roboto: ['Roboto', 'sans-serif', 'ui-sans-serif', 'system-ui'],
       },
       maxWidth: {
-        '160px': '160px',
+        '80px': '80px',
+        '140px': '140px',
+        '250px': '250px',
       },
       gridTemplateRows: {
         0: 'repeat(1, minmax(0px, 0fr))',
@@ -315,6 +333,13 @@ module.exports = {
       },
       rotate: {
         '135': '135deg',
+      },
+      borderWidth: {
+        '3px': '3px',
+        '5px': '5px',
+      },
+      backgroundSize: {
+        '150': '150%',
       },
     },
   },
