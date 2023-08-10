@@ -162,7 +162,7 @@ const ReportTableNew = ({tableData}: IReportTable) => {
             }
             if (item === '*-*') return null;
             // Info: (20230809 - Julian) 副標題存在的話，第一格要跨兩列(與下排 '*|*' 合併)
-            // 按照現有的設計，表頭最多只會有兩行，所以這邊直接寫死。如果未來有更多行的表頭則再調整
+            // workaround 按照現有的設計，表頭最多只會有兩行，所以這邊直接寫死。如果未來有更多行的表頭則再調整
             const rowspan = index === 0 ? 2 : 1;
             const thStyle = index === 0 ? 'text-center font-bold' : 'text-right font-normal';
             return (
