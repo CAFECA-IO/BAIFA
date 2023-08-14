@@ -95,3 +95,9 @@ export const toolsContent = [
     alt: 'generate_reports',
   },
 ];
+
+/* Info: (20230814 - Julian) ----- Landing Footer ----- */
+export const baifaAddress = process.env.BAIFA_ADDRESS_IN_ENGLISH;
+export const baifaAddressOnMap = process.env.BAIFA_ADDRESS_ON_GOOGLE_MAP;
+export const baifaPhone = process.env.BAIFA_PHONE_NUMBER;
+export const githubLink = process.env.GITHUB_LINK;

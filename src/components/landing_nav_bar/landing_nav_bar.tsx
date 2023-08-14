@@ -1,3 +1,4 @@
+import {useEffect, useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import useOuterClick from '../../lib/hooks/use_outer_click';
@@ -9,6 +10,23 @@ import {TranslateFunction} from '../../interfaces/locale';
 const LandingNavBar = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
+  /* Info:(20230814 - Julian) Scroll Position */
+  const [scroll, setScroll] = useState(0);
+  const handleScroll = () => {
+    const position = window.scrollY;
+    setScroll(position);
+  };
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, {passive: true});
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  /* Info:(20230814 - Julian) Change Navbar Background Style */
+  const bgStyle = scroll >= 300 ? 'bg-darkPurple shadow-xl' : 'bg-transparent';
+
   /* Info: (20230712 - Julian) close menu when click outer */
   const {targetRef, componentVisible, setComponentVisible} = useOuterClick<HTMLDivElement>(false);
 
@@ -16,7 +34,9 @@ const LandingNavBar = () => {
 
   /* Info: (20230712 - Julian) desktop navbar */
   const desktopNavBar = (
-    <div className="hidden h-80px w-screen items-center bg-darkPurple px-10 py-3 text-white shadow-xl lg:flex">
+    <div
+      className={`hidden h-80px w-screen items-center px-10 py-3 ${bgStyle} text-white transition-all duration-300 ease-in-out lg:flex`}
+    >
       <ul className="flex flex-1 space-x-5">
         <li>
           <Link href={BFAURL.LANDING_PAGE}>
