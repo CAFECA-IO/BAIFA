@@ -51,9 +51,16 @@ const LandingPageBody = () => {
         <div className="absolute -z-10 h-4/5 w-full bg-gradient bg-cover bg-right bg-no-repeat lg:h-full"></div>
 
         {/* Info:(20230711 - Julian) Main Title Block */}
-        <div className="relative flex h-screen w-full flex-col items-center justify-center space-y-12 px-4 py-12 text-center">
-          <h1 className="text-48px font-bold lg:text-6xl">{t('LANDING_PAGE.MAIN_TITLE')}</h1>
-          <h2 className="text-base font-normal lg:text-lg">{t('LANDING_PAGE.MAIN_SUBTITLE')}</h2>
+        <div className="relative flex h-screen w-full flex-col items-center justify-center space-y-10 px-4 py-12 text-center">
+          <h6 className="font-roboto text-6xl font-bold tracking-wider lg:text-7xl">
+            {t('LANDING_PAGE.MAIN_TITLE')}
+          </h6>
+          <h1 className="text-2xl tracking-wide text-hoverWhite lg:text-6xl">
+            {t('LANDING_PAGE.MAIN_SUBTITLE_1')}
+          </h1>
+          <h1 className="text-2xl tracking-wide text-hoverWhite lg:text-6xl">
+            {t('LANDING_PAGE.MAIN_SUBTITLE_2')}
+          </h1>
 
           {/* Info:(20230711 - Julian) Arrow */}
           <Link href="#Advantages" scroll={false} className="absolute bottom-20">
