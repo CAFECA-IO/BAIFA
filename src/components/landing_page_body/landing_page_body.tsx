@@ -198,7 +198,7 @@ const LandingPageBody = () => {
       <div className="flex h-fit w-full flex-col items-center bg-lightBallsReverse bg-cover bg-top bg-no-repeat pb-100px">
         {/* Info:(20230815 - Julian) Services Block */}
         <div className="relative flex w-full flex-col space-y-20 py-20">
-          <div className="flex items-center space-x-20 px-20">
+          <div className="flex items-center justify-center space-x-20 px-20">
             {/* Info:(20230711 - Julian) Services Title */}
             <h2 className="text-center text-2xl font-bold leading-loose lg:text-6xl">
               {t('LANDING_PAGE.SERVICES_TITLE_1')}
@@ -242,7 +242,7 @@ const LandingPageBody = () => {
                 {t('LANDING_PAGE.WHY_BAIFA_TITLE_HIGHLIGHT')}
               </span>
             </h2>
-            <div className="relative h-150px w-full">
+            <div className="relative h-150px w-400px">
               <Image
                 src={'/elements/robot_hand.png'}
                 alt="a robot hand"
