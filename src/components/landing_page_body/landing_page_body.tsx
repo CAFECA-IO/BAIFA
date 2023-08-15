@@ -10,7 +10,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 const LandingPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  let scrl = useRef<HTMLDivElement>(null);
+  const scrl = useRef<HTMLDivElement>(null);
   /* Info:(20230815 - Julian) For detecting scrollX */
   const [scrollX, setscrollX] = useState(0);
 
