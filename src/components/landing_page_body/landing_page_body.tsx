@@ -1,3 +1,4 @@
+import {useRef, useState} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import LandingFooter from '../landing_footer/landing_footer';
@@ -9,6 +10,20 @@ import {TranslateFunction} from '../../interfaces/locale';
 
 const LandingPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+
+  let scrl = useRef<HTMLDivElement>(null);
+  /* Info:(20230815 - Julian) For detecting scrollX */
+  const [scrollX, setscrollX] = useState(0);
+
+  /* Info:(20230815 - Julian) Updates the latest scrolled postion */
+  const slide = (shift: number) => {
+    scrl.current!.scrollLeft += shift;
+    setscrollX(scrollX + shift);
+  };
+
+  /* Info:(20230815 - Julian) Slide Function */
+  const slideLeft = () => slide(-200);
+  const slideRight = () => slide(200);
 
   const massiveDataList = massiveDataContent.map(({icon, text, alt}) => {
     return (
@@ -169,10 +184,10 @@ const LandingPageBody = () => {
         </div>
       </div>
 
-      <div className="flex h-fit w-full flex-col items-center bg-lightBalls bg-cover bg-top bg-no-repeat">
+      <div className="flex h-fit w-full flex-col items-center bg-lightBallsReverse bg-cover bg-top bg-no-repeat">
         {/* Info:(20230815 - Julian) Services Block */}
-        <div className="flex w-full flex-col space-y-20 p-20">
-          <div className="flex items-center space-x-20">
+        <div className="relative flex w-full flex-col space-y-20 py-20">
+          <div className="flex items-center space-x-20 px-20">
             {/* Info:(20230711 - Julian) Services Title */}
             <h2 className="text-6xl font-bold">
               {t('LANDING_PAGE.SERVICES_TITLE_1')}{' '}
@@ -181,18 +196,28 @@ const LandingPageBody = () => {
             </h2>
             {/* Info:(20230711 - Julian) arrow */}
             <div className="flex items-center space-x-6">
-              <div
-                onClick={() => {}}
-                className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:cursor-pointer hover:border-primaryBlue hover:text-primaryBlue"
+              <button
+                onClick={slideLeft}
+                className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:border-primaryBlue hover:text-primaryBlue"
               >
                 <AiOutlineLeft className="text-2xl" />
-              </div>
-              <div className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:cursor-pointer hover:border-primaryBlue hover:text-primaryBlue">
+              </button>
+              <button
+                onClick={slideRight}
+                className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:border-primaryBlue hover:text-primaryBlue"
+              >
                 <AiOutlineRight className="text-2xl" />
-              </div>
+              </button>
             </div>
           </div>
-          <div className="flex items-center space-x-10 overflow-x-auto p-20">{servicesList}</div>
+          {/* Info:(20230815 - Julian) horizontal scroll part */}
+          <div
+            ref={scrl}
+            className="flex items-center space-x-10 overflow-x-auto scroll-smooth px-40 py-20"
+          >
+            <div className="absolute -right-20 top-60 -z-10 h-255px w-700px rounded-2xl bg-101 bg-cover bg-no-repeat"></div>
+            {servicesList}
+          </div>
         </div>
 
         <div className=""></div>

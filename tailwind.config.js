@@ -33,6 +33,7 @@ module.exports = {
         neon: 'url("/animations/neon.svg")',
         101: 'url("/elements/101.png")',
         lightBalls: 'url("/elements/light_balls.svg")',
+        lightBallsReverse: 'url("/elements/light_balls_reverse.svg")',
 
         bubbleAbove: 'url("/elements/bubble_above.svg")',
         bubbleBelow: 'url("/elements/bubble_below.svg")',
