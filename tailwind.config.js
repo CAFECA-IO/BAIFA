@@ -29,8 +29,10 @@ module.exports = {
         purpleLinear2:
           'linear-gradient(315deg, rgba(104, 87, 215, 0.30) 0%, rgba(104, 87, 215, 0.10) 100%);',
 
-        gradient: 'url("/elements/gradients.svg")',
+        pipe: 'url("/elements/pipe.svg")',
         neon: 'url("/animations/neon.svg")',
+        101: 'url("/elements/101.png")',
+        lightBalls: 'url("/elements/light_balls.svg")',
 
         bubbleAbove: 'url("/elements/bubble_above.svg")',
         bubbleBelow: 'url("/elements/bubble_below.svg")',
@@ -260,6 +262,7 @@ module.exports = {
 
         '80vh': '80vh',
         '95vh': '95vh',
+        '120vh': '120vh',
 
         '70vw': '70vw',
         '80vw': '80vw',
@@ -316,6 +319,7 @@ module.exports = {
         xlReverse: '0px -4px 24px rgba(0, 0, 0, 0.40)',
         xlSide: '4px 0px 24px rgba(0, 0, 0, 0.40)',
         purple: '0 2px 10px #AB50FF',
+        101: '0px 4px 70px rgba(0, 0, 0, 0.40)',
       },
       fontFamily: {
         inter: ['Inter', 'sans-serif', 'ui-sans-serif', 'system-ui'],
@@ -341,6 +345,9 @@ module.exports = {
       },
       backgroundSize: {
         '150': '150%',
+      },
+      backgroundPosition: {
+        'top-4': 'center top -2.5rem',
       },
     },
   },
