@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import LandingFooter from '../landing_footer/landing_footer';
-import {massiveDataContent, toolsContent} from '../../constants/config';
+import {massiveDataContent, toolsContent, servicesContent} from '../../constants/config';
 import {BFAURL} from '../../constants/url';
+import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 
@@ -16,6 +17,29 @@ const LandingPageBody = () => {
           <Image src={icon} alt={alt} fill style={{objectFit: 'contain'}} />
         </div>
         <p className="text-base font-normal lg:text-lg">{t(text)}</p>
+      </div>
+    );
+  });
+
+  const servicesList = servicesContent.map(({image, alt, description}, index) => {
+    return (
+      <div
+        key={index}
+        className="relative flex flex-col items-center rounded-2xl bg-purpleLinear p-10 drop-shadow-101"
+      >
+        {/* Info:(20230815 - Julian) Image */}
+        <div className="absolute -top-20 h-220px w-220px">
+          <Image
+            src={image}
+            alt={alt}
+            fill
+            style={{objectFit: 'cover', objectPosition: 'center bottom'}}
+          />
+        </div>
+        {/* Info:(20230815 - Julian) placeholder */}
+        <div className="h-130px"></div>
+        {/* Info:(20230815 - Julian) Description */}
+        <p className="w-220px text-xl">{t(description)}</p>
       </div>
     );
   });
@@ -116,7 +140,7 @@ const LandingPageBody = () => {
         </div>
       </div>
 
-      <div className="flex h-fit w-full flex-col items-center bg-lightBalls bg-cover bg-top bg-no-repeat pb-60">
+      <div className="flex h-fit w-full flex-col items-center bg-lightBalls bg-cover bg-top bg-no-repeat pb-52">
         {/* Info:(20230815 - Julian) Baifa 101 Block */}
         <div id="baifa_101" className="w-full px-20 py-120px">
           <div className="flex items-center space-x-20 rounded-2xl bg-101 bg-cover bg-center bg-no-repeat p-20 drop-shadow-101">
@@ -146,9 +170,32 @@ const LandingPageBody = () => {
       </div>
 
       <div className="flex h-fit w-full flex-col items-center bg-lightBalls bg-cover bg-top bg-no-repeat">
-        <div className="flex flex-col p-20">
-          <h2>Awesome Services We Offer</h2>
+        {/* Info:(20230815 - Julian) Services Block */}
+        <div className="flex w-full flex-col space-y-20 p-20">
+          <div className="flex items-center space-x-20">
+            {/* Info:(20230711 - Julian) Services Title */}
+            <h2 className="text-6xl font-bold">
+              {t('LANDING_PAGE.SERVICES_TITLE_1')}{' '}
+              <span className="text-primaryBlue">{t('LANDING_PAGE.SERVICES_TITLE_HIGHLIGHT')}</span>{' '}
+              {t('LANDING_PAGE.SERVICES_TITLE_2')}
+            </h2>
+            {/* Info:(20230711 - Julian) arrow */}
+            <div className="flex items-center space-x-6">
+              <div
+                onClick={() => {}}
+                className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:cursor-pointer hover:border-primaryBlue hover:text-primaryBlue"
+              >
+                <AiOutlineLeft className="text-2xl" />
+              </div>
+              <div className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:cursor-pointer hover:border-primaryBlue hover:text-primaryBlue">
+                <AiOutlineRight className="text-2xl" />
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center space-x-10 overflow-x-auto p-20">{servicesList}</div>
         </div>
+
+        <div className=""></div>
       </div>
 
       {/* Info:(20230711 - Julian) Footer */}

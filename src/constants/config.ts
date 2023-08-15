@@ -96,6 +96,34 @@ export const toolsContent = [
   },
 ];
 
+export const servicesContent = [
+  {
+    image: '/elements/tracing.png',
+    alt: 'a screenshot of tracing tool',
+    description: 'LANDING_PAGE.SERVICES_DESCRIPTION_1',
+  },
+  {
+    image: '/elements/report.png',
+    alt: 'balance sheet',
+    description: 'LANDING_PAGE.SERVICES_DESCRIPTION_2',
+  },
+  {
+    image: '/elements/law.png',
+    alt: 'a weighing scale',
+    description: 'LANDING_PAGE.SERVICES_DESCRIPTION_3',
+  },
+  {
+    image: '/elements/safety_money.png',
+    alt: 'a shield check image',
+    description: 'LANDING_PAGE.SERVICES_DESCRIPTION_4',
+  },
+  {
+    image: '/elements/smart_contract_1.png',
+    alt: 'contracts image',
+    description: 'LANDING_PAGE.SERVICES_DESCRIPTION_5',
+  },
+];
+
 /* Info: (20230814 - Julian) ----- Landing Footer ----- */
 export const baifaAddress = process.env.BAIFA_ADDRESS_IN_ENGLISH;
 export const baifaAddressOnMap = process.env.BAIFA_ADDRESS_ON_GOOGLE_MAP;
