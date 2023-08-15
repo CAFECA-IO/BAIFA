@@ -2,7 +2,12 @@ import {useRef, useState} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import LandingFooter from '../landing_footer/landing_footer';
-import {massiveDataContent, toolsContent, servicesContent} from '../../constants/config';
+import {
+  massiveDataContent,
+  toolsContent,
+  servicesContent,
+  whyUsContent,
+} from '../../constants/config';
 import {BFAURL} from '../../constants/url';
 import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai';
 import {useTranslation} from 'next-i18next';
@@ -25,9 +30,9 @@ const LandingPageBody = () => {
   const slideLeft = () => slide(-200);
   const slideRight = () => slide(200);
 
-  const massiveDataList = massiveDataContent.map(({icon, text, alt}) => {
+  const massiveDataList = massiveDataContent.map(({icon, text, alt}, index) => {
     return (
-      <div className="flex flex-col items-center space-y-4 px-4" key={alt}>
+      <div key={index} className="flex flex-col items-center space-y-4 px-4">
         <div className="relative h-50px w-50px">
           <Image src={icon} alt={alt} fill style={{objectFit: 'contain'}} />
         </div>
@@ -55,6 +60,15 @@ const LandingPageBody = () => {
         <div className="h-130px"></div>
         {/* Info:(20230815 - Julian) Description */}
         <p className="w-220px text-xl">{t(description)}</p>
+      </div>
+    );
+  });
+
+  const whyUsList = whyUsContent.map(({image, alt, description}, index) => {
+    return (
+      <div key={index} className="flex w-300px flex-col items-center space-y-6 text-center">
+        <Image src={image} alt={alt} width={80} height={80} />
+        <p>{t(description)}</p>
       </div>
     );
   });
@@ -184,14 +198,14 @@ const LandingPageBody = () => {
         </div>
       </div>
 
-      <div className="flex h-fit w-full flex-col items-center bg-lightBallsReverse bg-cover bg-top bg-no-repeat">
+      <div className="flex h-fit w-full flex-col items-center bg-lightBallsReverse bg-cover bg-top bg-no-repeat pb-100px">
         {/* Info:(20230815 - Julian) Services Block */}
         <div className="relative flex w-full flex-col space-y-20 py-20">
           <div className="flex items-center space-x-20 px-20">
             {/* Info:(20230711 - Julian) Services Title */}
             <h2 className="text-6xl font-bold">
-              {t('LANDING_PAGE.SERVICES_TITLE_1')}{' '}
-              <span className="text-primaryBlue">{t('LANDING_PAGE.SERVICES_TITLE_HIGHLIGHT')}</span>{' '}
+              {t('LANDING_PAGE.SERVICES_TITLE_1')}
+              <span className="text-primaryBlue">{t('LANDING_PAGE.SERVICES_TITLE_HIGHLIGHT')}</span>
               {t('LANDING_PAGE.SERVICES_TITLE_2')}
             </h2>
             {/* Info:(20230711 - Julian) arrow */}
@@ -220,7 +234,19 @@ const LandingPageBody = () => {
           </div>
         </div>
 
-        <div className=""></div>
+        {/* Info:(20230815 - Julian) Why BAIFA Block */}
+        <div className="flex w-full items-center py-100px pl-20">
+          <div className="grid flex-1 grid-cols-2 grid-rows-2 gap-10">{whyUsList}</div>
+          <div className="flex flex-col space-y-10">
+            <h2 className="text-6xl font-bold">
+              {t('LANDING_PAGE.WHY_BAIFA_TITLE')}
+              <span className="text-primaryBlue">
+                {t('LANDING_PAGE.WHY_BAIFA_TITLE_HIGHLIGHT')}
+              </span>
+            </h2>
+            <Image src={'/elements/robot_hand.png'} alt="a robot hand" width={500} height={500} />
+          </div>
+        </div>
       </div>
 
       {/* Info:(20230711 - Julian) Footer */}
