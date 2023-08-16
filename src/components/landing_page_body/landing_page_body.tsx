@@ -11,15 +11,17 @@ const LandingPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const scrl = useRef<HTMLDivElement>(null);
   const [scrollLeft, setScrollLeft] = useState(0);
+  /* Info:(20230815 - Julian) 設定邊界 */
+  const scrollEnd = 530;
 
   /* Info:(20230815 - Julian) slide X scroll function */
   const slide = (shift: number) => (scrl.current!.scrollLeft += shift);
 
   useEffect(() => {
-    /* Info:(20230815 - Julian) 設定監聽事件，更新捲軸位置 */
+    /* Info:(20230815 - Julian) 設定監聽事件，將捲軸位置更新到 scrollLeft */
     const onScroll = () => setScrollLeft(scrl.current!.scrollLeft);
-
     scrl.current!.addEventListener('scroll', onScroll);
+
     return () => scrl.current!.removeEventListener('scroll', onScroll);
   }, []);
 
@@ -218,7 +220,7 @@ const LandingPageBody = () => {
                 <AiOutlineLeft className="text-2xl" />
               </button>
               <button
-                disabled={scrollLeft >= 600}
+                disabled={scrollLeft >= scrollEnd}
                 onClick={slideRight}
                 className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:border-primaryBlue hover:text-primaryBlue disabled:opacity-50 disabled:hover:border-hoverWhite disabled:hover:text-hoverWhite"
               >
