@@ -1,133 +1,276 @@
+import {useRef, useState, useEffect} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import LandingFooter from '../landing_footer/landing_footer';
-import {massiveDataContent, toolsContent} from '../../constants/config';
-import {BFAURL} from '../../constants/url';
+import {massiveDataContent, servicesContent, whyUsContent} from '../../constants/config';
+import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 
 const LandingPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const scrl = useRef<HTMLDivElement>(null);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  /* Info:(20230815 - Julian) 設定邊界 */
+  const scrollEnd = 530;
 
-  const toolsList = toolsContent.map(({title, description, desktopImg, mobileImg, alt}) => {
+  /* Info:(20230815 - Julian) slide X scroll function */
+  const slide = (shift: number) => (scrl.current!.scrollLeft += shift);
+
+  useEffect(() => {
+    /* Info:(20230815 - Julian) 設定監聽事件，將捲軸位置更新到 scrollLeft */
+    const onScroll = () => setScrollLeft(scrl.current!.scrollLeft);
+    scrl.current!.addEventListener('scroll', onScroll);
+
+    return () => scrl.current!.removeEventListener('scroll', onScroll);
+  }, []);
+
+  /* Info:(20230815 - Julian) Slide Function */
+  const slideLeft = () => slide(-200);
+  const slideRight = () => slide(200);
+
+  const massiveDataList = massiveDataContent.map(({icon, text, alt}, index) => {
     return (
-      <div
-        className="flex w-full flex-col items-center justify-between space-y-8 px-4 py-12 lg:space-y-0 lg:p-20 lg:odd:flex-row lg:even:flex-row-reverse"
-        key={alt}
-      >
-        {/* Info:(20230712 - Julian) Mobile Image */}
-        <div className="relative block h-300px w-screen lg:hidden">
-          <Image src={mobileImg} alt={alt} fill style={{objectFit: 'contain'}} />
-        </div>
-
-        <div className="flex flex-col space-y-6 lg:mx-10 lg:w-1/2 lg:space-y-12">
-          <h2 className="text-2xl font-bold lg:text-40px">{t(title)}</h2>
-          <p className="text-base lg:text-lg">{t(description)}</p>
-        </div>
-
-        {/* Info:(20230712 - Julian) Desktop Image */}
-        <div className="relative hidden h-400px w-600px lg:block">
-          <Image src={desktopImg} alt={alt} fill style={{objectFit: 'contain'}} />
-        </div>
-      </div>
-    );
-  });
-
-  const massiveDataList = massiveDataContent.map(({icon, text, alt}) => {
-    return (
-      <div className="flex flex-col items-center space-y-4 px-4" key={alt}>
+      <div key={index} className="flex flex-col items-center space-y-4 px-4">
         <div className="relative h-50px w-50px">
           <Image src={icon} alt={alt} fill style={{objectFit: 'contain'}} />
         </div>
-        <p className="text-lg font-normal">{t(text)}</p>
+        <p className="text-base font-normal lg:text-lg">{t(text)}</p>
       </div>
     );
   });
 
+  const servicesList = servicesContent.map(({image, alt, description}, index) => {
+    return (
+      <div
+        key={index}
+        className="relative flex flex-col items-center rounded-2xl bg-purpleLinear p-10 drop-shadow-101"
+      >
+        {/* Info:(20230815 - Julian) Image */}
+        <div className="absolute -top-20 h-220px w-220px">
+          <Image
+            src={image}
+            alt={alt}
+            fill
+            style={{objectFit: 'cover', objectPosition: 'center bottom'}}
+          />
+        </div>
+        {/* Info:(20230815 - Julian) placeholder */}
+        <div className="h-130px"></div>
+        {/* Info:(20230815 - Julian) Description */}
+        <p className="w-220px text-center text-xl">{t(description)}</p>
+      </div>
+    );
+  });
+
+  const whyUsList = whyUsContent.map(({image, alt, description}, index) => {
+    return (
+      <div key={index} className="flex w-300px flex-col items-center space-y-6 text-center">
+        <div className="relative h-80px w-80px">
+          <Image src={image} alt={alt} fill style={{objectFit: 'contain'}} />
+        </div>
+
+        <p>{t(description)}</p>
+      </div>
+    );
+  });
+
+  // Till: (20230830 - Julian)
+  // const toolsList = (
+  //   <div className="flex flex-col items-center">
+  //     {toolsContent.map(({title, description, desktopImg, mobileImg, alt}) => (
+  //       <div
+  //         className="flex w-full flex-col items-center justify-between space-y-8 px-4 py-12 lg:space-y-0 lg:p-20 lg:odd:flex-row lg:even:flex-row-reverse"
+  //         key={alt}
+  //       >
+  //         {/* Info:(20230712 - Julian) Mobile Image */}
+  //         <div className="relative block h-300px w-screen lg:hidden">
+  //           <Image src={mobileImg} alt={alt} fill style={{objectFit: 'contain'}} />
+  //         </div>
+
+  //         <div className="flex flex-col space-y-6 lg:mx-10 lg:w-1/2 lg:space-y-12">
+  //           <h2 className="text-2xl font-bold lg:text-40px">{t(title)}</h2>
+  //           <p className="text-base lg:text-lg">{t(description)}</p>
+  //         </div>
+
+  //         {/* Info:(20230712 - Julian) Desktop Image */}
+  //         <div className="relative hidden h-400px w-600px lg:block">
+  //           <Image src={desktopImg} alt={alt} fill style={{objectFit: 'contain'}} />
+  //         </div>
+  //       </div>
+  //     ))}
+  //   </div>
+  // );
+
+  // const downloadBlock = (
+  //   <div className="flex justify-center overflow-hidden">
+  //     <div className="flex w-full flex-col items-center rounded-t-full bg-violet pt-12 font-roboto lg:flex-row lg:justify-center lg:px-20">
+  //       {/* Info:(20230712 - Julian) Desktop Image */}
+  //       <div className="relative -mb-16 hidden h-600px w-600px lg:block">
+  //         <Image src="/elements/rectangle.png" alt="baifa_app" fill style={{objectFit: 'cover'}} />
+  //       </div>
+
+  //       <div className="flex w-full flex-col items-center lg:w-auto lg:items-start lg:space-y-16 lg:px-10">
+  //         <div className="flex flex-col items-center space-y-6 lg:items-start lg:space-y-12">
+  //           <h2 className="whitespace-nowrap text-2xl font-bold lg:text-6xl">
+  //             {t('LANDING_PAGE.DOWNLOAD_TITLE')}
+  //           </h2>
+  //           <p className="text-base lg:text-lg">{t('LANDING_PAGE.DOWNLOAD_SUBTITLE')}</p>
+  //         </div>
+  //         <div className="mt-12 flex items-center space-x-4">
+  //           <Link href={BFAURL.COMING_SOON}>
+  //             <Image
+  //               src="/elements/app_store_button.svg"
+  //               alt="app_store_download"
+  //               width={120}
+  //               height={40}
+  //             />
+  //           </Link>
+  //           <Link href={BFAURL.COMING_SOON}>
+  //             <Image
+  //               src="/elements/google_play_button.svg"
+  //               alt="google_play_download"
+  //               width={135}
+  //               height={40}
+  //             />
+  //           </Link>
+  //         </div>
+
+  //         {/* Info:(20230712 - Julian) Mobile Image */}
+  //         <div className="relative -mb-16 block h-500px w-400px lg:hidden">
+  //           <Image
+  //             src="/elements/rectangle.png"
+  //             alt="baifa_app"
+  //             fill
+  //             style={{objectFit: 'cover'}}
+  //           />
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
+
   return (
     <div className="flex min-h-screen w-screen flex-col overflow-hidden font-inter">
-      <div className="relative flex h-auto w-full flex-col items-center">
-        {/* Info:(20230711 - Julian) Background Image */}
-        <div className="absolute -z-10 h-4/5 w-full bg-gradient bg-cover bg-right bg-no-repeat lg:h-full"></div>
-
+      {/* Info:(20230815 - Julian) Pipe Background Image */}
+      <div className="relative flex h-120vh w-full flex-col items-center bg-pipe bg-auto bg-right bg-no-repeat lg:bg-cover lg:bg-top-4">
         {/* Info:(20230711 - Julian) Main Title Block */}
-        <div className="relative flex h-screen w-full flex-col items-center justify-center space-y-12 px-4 py-12 text-center">
-          <h1 className="text-48px font-bold lg:text-6xl">{t('LANDING_PAGE.MAIN_TITLE')}</h1>
-          <h2 className="text-base font-normal lg:text-lg">{t('LANDING_PAGE.MAIN_SUBTITLE')}</h2>
-
+        <div className="flex h-screen w-full flex-col items-center justify-center space-y-10 px-4 py-12 text-center">
+          <h6 className="font-roboto text-6xl font-bold tracking-wider lg:text-7xl">
+            {t('LANDING_PAGE.MAIN_TITLE')}
+          </h6>
+          <h1 className="text-2xl font-bold tracking-wide text-hoverWhite lg:text-6xl">
+            {t('LANDING_PAGE.MAIN_SUBTITLE')}
+          </h1>
           {/* Info:(20230711 - Julian) Arrow */}
-          <Link href="#Advantages" scroll={false} className="absolute bottom-20">
+          <Link href="#baifa_101" scroll={false} className="absolute bottom-80 lg:bottom-20">
             <Image src="/animations/arrow_down.gif" alt="scroll arrow" width={50} height={50} />
           </Link>
         </div>
+      </div>
 
-        {/* Info:(20230711 - Julian) Advantages Block */}
-        <div
-          id="Advantages"
-          className="flex flex-col items-center space-y-16 px-4 py-20 text-center font-roboto lg:h-450px lg:px-20"
-        >
+      <div className="flex h-fit w-full flex-col items-center bg-lightBalls bg-cover bg-top bg-no-repeat lg:pb-52">
+        {/* Info:(20230815 - Julian) Baifa 101 Block */}
+        <div id="baifa_101" className="w-full px-4 py-12 lg:px-20 lg:py-120px">
+          <div className="flex flex-col items-center space-y-10 rounded-2xl bg-101 bg-cover bg-center bg-no-repeat px-4 py-12 drop-shadow-101 lg:flex-row lg:space-x-20 lg:space-y-0 lg:p-20">
+            <div className="flex h-full flex-col items-center space-y-10 whitespace-nowrap lg:w-1/2 lg:items-start">
+              <h2 className="text-32px font-bold lg:text-6xl">
+                {t('LANDING_PAGE.BAIFA_101_TITLE')}:
+              </h2>
+              <div className="w-fit rounded-xl bg-darkPurple3 px-5 py-10px text-lg">
+                {t('LANDING_PAGE.BAIFA_101_SUBTITLE')}
+              </div>
+            </div>
+            <div className="lg:w-2/3">
+              <p className="text-base lg:text-xl">{t('LANDING_PAGE.BAIFA_101_CONTENT')}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Info:(20230711 - Julian) Features Block */}
+        <div className="flex flex-col items-center space-y-16 px-4 py-20 text-center font-roboto lg:h-450px lg:px-20">
           <div className="flex flex-col">
             <h3 className="text-xl font-bold text-primaryBlue">
-              {t('LANDING_PAGE.ADVANTAGES_SUBTITLE')}
+              {t('LANDING_PAGE.FEATURES_SUBTITLE')}
             </h3>
-            <h2 className="text-2xl font-bold lg:text-5xl">{t('LANDING_PAGE.ADVANTAGES_TITLE')}</h2>
+            <h2 className="text-2xl font-bold lg:text-5xl">{t('LANDING_PAGE.FEATURES_TITLE')}</h2>
           </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">{massiveDataList}</div>
         </div>
       </div>
 
-      {/* Info:(20230711 - Julian) Tools Introduction Block */}
-      <div className="flex flex-col items-center">{toolsList}</div>
-
-      {/* Info:(20230711 - Julian) Download Block */}
-      <div className="flex justify-center overflow-hidden">
-        <div className="flex w-full flex-col items-center rounded-t-full bg-violet pt-12 font-roboto lg:flex-row lg:justify-center lg:px-20">
-          {/* Info:(20230712 - Julian) Desktop Image */}
-          <div className="relative -mb-16 hidden h-600px w-600px lg:block">
-            <Image
-              src="/elements/rectangle.png"
-              alt="baifa_app"
-              fill
-              style={{objectFit: 'cover'}}
-            />
+      <div className="flex h-fit w-full flex-col items-center bg-lightBallsReverse bg-cover bg-top bg-no-repeat pb-100px">
+        {/* Info:(20230815 - Julian) Services Block */}
+        <div className="relative flex w-full flex-col space-y-20 py-20">
+          <div className="flex items-center justify-center space-x-20 px-20">
+            {/* Info:(20230711 - Julian) Services Title */}
+            <h2 className="text-center text-2xl font-bold leading-loose lg:text-6xl">
+              {t('LANDING_PAGE.SERVICES_TITLE_1')}
+              <span className="text-primaryBlue">{t('LANDING_PAGE.SERVICES_TITLE_HIGHLIGHT')}</span>
+              {t('LANDING_PAGE.SERVICES_TITLE_2')}
+            </h2>
+            {/* Info:(20230711 - Julian) Arrow button, only show on desktop */}
+            <div className="hidden items-center space-x-6 lg:flex">
+              <button
+                disabled={scrollLeft <= 0}
+                onClick={slideLeft}
+                className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:border-primaryBlue hover:text-primaryBlue disabled:opacity-50 disabled:hover:border-hoverWhite disabled:hover:text-hoverWhite"
+              >
+                <AiOutlineLeft className="text-2xl" />
+              </button>
+              <button
+                disabled={scrollLeft >= scrollEnd}
+                onClick={slideRight}
+                className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:border-primaryBlue hover:text-primaryBlue disabled:opacity-50 disabled:hover:border-hoverWhite disabled:hover:text-hoverWhite"
+              >
+                <AiOutlineRight className="text-2xl" />
+              </button>
+            </div>
           </div>
+          {/* Info:(20230815 - Julian) horizontal scroll part */}
+          <div
+            ref={scrl}
+            className="flex flex-col items-center space-y-28 scroll-smooth px-4 lg:flex-row lg:space-x-10 lg:space-y-0 lg:overflow-x-auto lg:px-40 lg:py-20"
+          >
+            {servicesList}
+            {/* Info:(20230815 - Julian) pink background */}
+            <div className="absolute -right-20 top-60 -z-10 hidden h-255px w-700px rounded-2xl bg-101 bg-cover bg-no-repeat lg:block"></div>
+          </div>
+        </div>
 
-          <div className="flex w-full flex-col items-center lg:w-auto lg:items-start lg:space-y-16 lg:px-10">
-            <div className="flex flex-col items-center space-y-6 lg:items-start lg:space-y-12">
-              <h2 className="whitespace-nowrap text-2xl font-bold lg:text-6xl">
-                {t('LANDING_PAGE.DOWNLOAD_TITLE')}
-              </h2>
-              <p className="text-base lg:text-lg">{t('LANDING_PAGE.DOWNLOAD_SUBTITLE')}</p>
-            </div>
-            <div className="mt-12 flex items-center space-x-4">
-              <Link href={BFAURL.COMING_SOON}>
-                <Image
-                  src="/elements/app_store_button.svg"
-                  alt="app_store_download"
-                  width={120}
-                  height={40}
-                />
-              </Link>
-              <Link href={BFAURL.COMING_SOON}>
-                <Image
-                  src="/elements/google_play_button.svg"
-                  alt="google_play_download"
-                  width={135}
-                  height={40}
-                />
-              </Link>
-            </div>
-
-            {/* Info:(20230712 - Julian) Mobile Image */}
-            <div className="relative -mb-16 block h-500px w-400px lg:hidden">
+        {/* Info:(20230815 - Julian) Why BAIFA Block */}
+        <div className="flex w-full flex-col items-center py-100px lg:flex-row lg:pl-20">
+          {/* Info:(20230815 - Julian) Mobile Why BAIFA Title */}
+          <div className="mb-20 flex w-full flex-col items-center space-y-10 lg:hidden">
+            <h2 className="text-2xl font-bold">
+              {t('LANDING_PAGE.WHY_BAIFA_TITLE')}
+              <span className="text-primaryBlue">
+                {t('LANDING_PAGE.WHY_BAIFA_TITLE_HIGHLIGHT')}
+              </span>
+            </h2>
+            <div className="relative h-150px w-400px">
               <Image
-                src="/elements/rectangle.png"
-                alt="baifa_app"
+                src={'/elements/robot_hand.png'}
+                alt="a robot hand"
                 fill
-                style={{objectFit: 'cover'}}
+                style={{objectFit: 'contain', objectPosition: 'right center'}}
               />
             </div>
+          </div>
+          {/* Info:(20230815 - Julian) Why BAIFA List */}
+          <div className="mx-auto grid grid-cols-1 gap-10 lg:flex-1 lg:grid-cols-2">
+            {whyUsList}
+          </div>
+          {/* Info:(20230815 - Julian) Desktop Why BAIFA Title */}
+          <div className="ml-20 hidden flex-col space-y-10 lg:flex">
+            <h2 className="text-6xl font-bold">
+              {t('LANDING_PAGE.WHY_BAIFA_TITLE')}
+              <span className="text-primaryBlue">
+                {t('LANDING_PAGE.WHY_BAIFA_TITLE_HIGHLIGHT')}
+              </span>
+            </h2>
+            <Image src={'/elements/robot_hand.png'} alt="a robot hand" width={500} height={500} />
           </div>
         </div>
       </div>

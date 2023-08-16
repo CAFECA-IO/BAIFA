@@ -95,3 +95,60 @@ export const toolsContent = [
     alt: 'generate_reports',
   },
 ];
+
+export const servicesContent = [
+  {
+    image: '/elements/tracing.png',
+    alt: 'a screenshot of tracing tool',
+    description: 'LANDING_PAGE.SERVICES_DESCRIPTION_1',
+  },
+  {
+    image: '/elements/report.png',
+    alt: 'balance sheet',
+    description: 'LANDING_PAGE.SERVICES_DESCRIPTION_2',
+  },
+  {
+    image: '/elements/law.png',
+    alt: 'a weighing scale',
+    description: 'LANDING_PAGE.SERVICES_DESCRIPTION_3',
+  },
+  {
+    image: '/elements/safety_money.png',
+    alt: 'a shield check image',
+    description: 'LANDING_PAGE.SERVICES_DESCRIPTION_4',
+  },
+  {
+    image: '/elements/smart_contract_1.png',
+    alt: 'contracts image',
+    description: 'LANDING_PAGE.SERVICES_DESCRIPTION_5',
+  },
+];
+
+export const whyUsContent = [
+  {
+    image: '/icons/safety_1.svg',
+    alt: 'safety icon',
+    description: 'LANDING_PAGE.WHY_BAIFA_DESCRIPTION_1',
+  },
+  {
+    image: '/icons/financial_report.svg',
+    alt: 'financial report icon',
+    description: 'LANDING_PAGE.WHY_BAIFA_DESCRIPTION_2',
+  },
+  {
+    image: '/icons/compliance.svg',
+    alt: 'compliance icon',
+    description: 'LANDING_PAGE.WHY_BAIFA_DESCRIPTION_3',
+  },
+  {
+    image: '/icons/accountant.svg',
+    alt: 'accountant icon',
+    description: 'LANDING_PAGE.WHY_BAIFA_DESCRIPTION_4',
+  },
+];
+
+/* Info: (20230814 - Julian) ----- Landing Footer ----- */
+export const baifaAddress = process.env.BAIFA_ADDRESS_IN_ENGLISH;
+export const baifaAddressOnMap = process.env.BAIFA_ADDRESS_ON_GOOGLE_MAP;
+export const baifaPhone = process.env.BAIFA_PHONE_NUMBER;
+export const githubLink = process.env.GITHUB_LINK;
