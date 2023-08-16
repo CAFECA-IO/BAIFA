@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react';
+import {useRef, useState, useEffect} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import LandingFooter from '../landing_footer/landing_footer';
@@ -9,16 +9,19 @@ import {TranslateFunction} from '../../interfaces/locale';
 
 const LandingPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-
   const scrl = useRef<HTMLDivElement>(null);
-  /* Info:(20230815 - Julian) For detecting scrollX */
-  const [scrollX, setscrollX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
-  /* Info:(20230815 - Julian) Updates the latest scrolled postion */
-  const slide = (shift: number) => {
-    scrl.current!.scrollLeft += shift;
-    setscrollX(scrollX + shift);
-  };
+  /* Info:(20230815 - Julian) slide X scroll function */
+  const slide = (shift: number) => (scrl.current!.scrollLeft += shift);
+
+  useEffect(() => {
+    /* Info:(20230815 - Julian) 設定監聽事件，更新捲軸位置 */
+    const onScroll = () => setScrollLeft(scrl.current!.scrollLeft);
+
+    scrl.current!.addEventListener('scroll', onScroll);
+    return () => scrl.current!.removeEventListener('scroll', onScroll);
+  }, []);
 
   /* Info:(20230815 - Julian) Slide Function */
   const slideLeft = () => slide(-200);
@@ -208,14 +211,16 @@ const LandingPageBody = () => {
             {/* Info:(20230711 - Julian) Arrow button, only show on desktop */}
             <div className="hidden items-center space-x-6 lg:flex">
               <button
+                disabled={scrollLeft <= 0}
                 onClick={slideLeft}
-                className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:border-primaryBlue hover:text-primaryBlue"
+                className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:border-primaryBlue hover:text-primaryBlue disabled:opacity-50 disabled:hover:border-hoverWhite disabled:hover:text-hoverWhite"
               >
                 <AiOutlineLeft className="text-2xl" />
               </button>
               <button
+                disabled={scrollLeft >= 600}
                 onClick={slideRight}
-                className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:border-primaryBlue hover:text-primaryBlue"
+                className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:border-primaryBlue hover:text-primaryBlue disabled:opacity-50 disabled:hover:border-hoverWhite disabled:hover:text-hoverWhite"
               >
                 <AiOutlineRight className="text-2xl" />
               </button>
