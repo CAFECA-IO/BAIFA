@@ -44,6 +44,8 @@ export const mainMenuContent = [
 ];
 
 /* Info: (20230711 - Julian) ----- Landing Page ----- */
+export const SCROLL_END = 530;
+
 export const massiveDataContent = [
   {
     icon: '/icons/wallet.svg',

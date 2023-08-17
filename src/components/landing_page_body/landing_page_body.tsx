@@ -2,7 +2,12 @@ import {useRef, useState, useEffect} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import LandingFooter from '../landing_footer/landing_footer';
-import {massiveDataContent, servicesContent, whyUsContent} from '../../constants/config';
+import {
+  SCROLL_END,
+  massiveDataContent,
+  servicesContent,
+  whyUsContent,
+} from '../../constants/config';
 import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -11,8 +16,6 @@ const LandingPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const scrl = useRef<HTMLDivElement>(null);
   const [scrollLeft, setScrollLeft] = useState(0);
-  /* Info:(20230815 - Julian) 設定邊界 */
-  const scrollEnd = 530;
 
   /* Info:(20230815 - Julian) slide X scroll function */
   const slide = (shift: number) => (scrl.current!.scrollLeft += shift);
@@ -220,7 +223,7 @@ const LandingPageBody = () => {
                 <AiOutlineLeft className="text-2xl" />
               </button>
               <button
-                disabled={scrollLeft >= scrollEnd}
+                disabled={scrollLeft >= SCROLL_END}
                 onClick={slideRight}
                 className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:border-primaryBlue hover:text-primaryBlue disabled:opacity-50 disabled:hover:border-hoverWhite disabled:hover:text-hoverWhite"
               >

@@ -11,6 +11,15 @@ body {
   scroll-behavior: smooth;
 }
 
+div {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+div::-webkit-scrollbar {
+  display: none;
+}
+
 h6 {
   -webkit-text-stroke: 1px white;
   color: transparent;
