@@ -39,7 +39,7 @@ const LandingNavBar = () => {
     >
       <ul className="flex flex-1 space-x-5">
         <li>
-          <Link href={BFAURL.LANDING_PAGE}>
+          <Link href={BFAURL.HOME}>
             <Image src="/logo/baifaaa_logo.svg" width={190} height={40} alt="bolt_logo" />
           </Link>
         </li>
@@ -54,7 +54,7 @@ const LandingNavBar = () => {
         </li>
         <li>
           <Link
-            href={BFAURL.HOME}
+            href={BFAURL.APP}
             className="rounded-lg bg-violet px-10 py-3 text-white hover:bg-hoverWhite hover:text-black"
           >
             {t('NAV_BAR.LAUNCH_APP')}
@@ -75,7 +75,7 @@ const LandingNavBar = () => {
         <Image src="/icons/hamburger.svg" width={24} height={24} alt="hamburger_icon" />
       </button>
       <div className="">
-        <Link href={BFAURL.LANDING_PAGE}>
+        <Link href={BFAURL.HOME}>
           <Image src="/logo/baifa_logo_small.svg" width={44} height={60} alt="bolt_logo" />
         </Link>
       </div>
@@ -91,7 +91,7 @@ const LandingNavBar = () => {
           </Link>
         </li>
         <li className="px-10 py-4">
-          <Link href={BFAURL.HOME} className="px-10 py-4">
+          <Link href={BFAURL.APP} className="px-10 py-4">
             {t('NAV_BAR.LAUNCH_APP')}
           </Link>
         </li>
