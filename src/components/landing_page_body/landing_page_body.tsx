@@ -25,8 +25,10 @@ const LandingPageBody = () => {
     const onScroll = () => setScrollLeft(scrl.current!.scrollLeft);
     scrl.current!.addEventListener('scroll', onScroll);
 
-    return () => scrl.current!.removeEventListener('scroll', onScroll);
-  }, []);
+    return () => {
+      if (scrl.current) scrl.current!.removeEventListener('scroll', onScroll);
+    };
+  }, [scrollLeft]);
 
   /* Info:(20230815 - Julian) Slide Function */
   const slideLeft = () => slide(-200);

@@ -58,7 +58,7 @@ const NavBar = () => {
   const desktopNavBar = (
     <div className="hidden h-80px w-screen items-center bg-darkPurple px-10 py-3 text-white lg:flex">
       <div className="flex flex-1 space-x-5">
-        <Link href={BFAURL.HOME}>
+        <Link href={BFAURL.LANDING_PAGE}>
           <Image src="/logo/baifaaa_logo.svg" width={190} height={40} alt="bolt_logo" />
         </Link>
 
