@@ -257,7 +257,7 @@ const ContactUsPage = () => {
       <LandingNavBar />
 
       <main className="flex min-h-screen flex-col justify-between">
-        <div className="relative mt-80px flex flex-1 flex-col items-center justify-center overflow-hidden font-roboto">
+        <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden font-roboto">
           {/* Info:(20230731 - Julian) Bubble on the top */}
           <div className="absolute -z-10 h-full w-full bg-bubbleAbove bg-auto bg-right-top bg-no-repeat"></div>
           {/* Info:(20230731 - Julian) Bubble on the bottom */}
