@@ -21,7 +21,7 @@ const Custom404 = () => {
 
       <main className="flex min-h-screen flex-col justify-between">
         <div className="flex h-full w-full flex-1 flex-col items-center justify-center overflow-hidden font-inter">
-          <div className="mt-20">
+          <div className="">
             <Image src="/animations/404.gif" width={150} height={74} alt="404" />
           </div>
           <div className="flex flex-col items-center space-y-6 px-4 lg:space-y-2">
