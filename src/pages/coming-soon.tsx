@@ -23,7 +23,7 @@ const ComingSoonPage = () => {
         <div className="relative flex h-full w-full flex-1 flex-col items-center justify-center overflow-hidden font-inter">
           {/* Info: (20230727 - Julian) neon background */}
           <div className="absolute -z-10 h-full w-full bg-neon bg-cover bg-no-repeat backdrop-blur-2xl"></div>
-          <div className="mt-20">
+          <div className="">
             <Image
               src="/animations/running.gif"
               width={150}
