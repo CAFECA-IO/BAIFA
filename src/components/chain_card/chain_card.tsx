@@ -20,7 +20,7 @@ const ChainsCard = ({chainId, chainName, icon, blocks, transactions}: IChainCard
     <>
       <Link
         href={`${BFAURL.CHAINS}/${chainId}`}
-        className="flex w-250px flex-col space-y-3 bg-darkPurple p-4 shadow-xl"
+        className="flex w-250px flex-col space-y-3 rounded border border-transparent bg-darkPurple p-4 shadow-xl transition-all duration-150 ease-in-out hover:border-primaryBlue hover:bg-purpleLinear"
       >
         <div className="flex flex-1 items-center space-x-4">
           <Image src={icon} width={60} height={60} alt={`${chainName}_icon`} />

@@ -6,6 +6,30 @@ import {TranslateFunction} from '../../interfaces/locale';
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
+  const dummyChains = [
+    {
+      chainId: 'bolt',
+      chainName: 'BOLT',
+      icon: '/currencies/bolt.svg',
+      blocks: 12093,
+      transactions: 33233,
+    },
+    {
+      chainId: 'eth',
+      chainName: 'Ethereum',
+      icon: '/currencies/ethereum.svg',
+      blocks: 102000,
+      transactions: 891402,
+    },
+    {
+      chainId: 'btc',
+      chainName: 'Bitcoin',
+      icon: '/currencies/bitcoin.svg',
+      blocks: 10053,
+      transactions: 31294,
+    },
+  ];
+
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
       <div className="flex w-full flex-1 flex-col px-20 pt-20 lg:pt-32">
@@ -20,14 +44,17 @@ const AllChainPageBody = () => {
         </div>
 
         {/* Info: (20230829 - Julian) Chain list */}
-        <div className="grid gap-6 pt-5">
-          <ChainsCard
-            chainId="bolt"
-            chainName="BOLT"
-            icon="/currencies/bolt.svg"
-            blocks={12093}
-            transactions={33233}
-          />
+        <div className="mx-auto grid grid-cols-4 gap-6 pt-5">
+          {dummyChains.map((chain, index) => (
+            <ChainsCard
+              key={index}
+              chainId={chain.chainId}
+              chainName={chain.chainName}
+              icon={chain.icon}
+              blocks={chain.blocks}
+              transactions={chain.transactions}
+            />
+          ))}
         </div>
       </div>
 
