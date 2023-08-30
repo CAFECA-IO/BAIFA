@@ -22,6 +22,7 @@ module.exports = {
         violet2: '#9747FF',
 
         primaryBlue: '#11FFF5',
+        'primaryBlue-500': 'rgba(17, 255, 245, 0.5)',
         hoverWhite: '#F0F0F0',
       },
       backgroundImage: {
