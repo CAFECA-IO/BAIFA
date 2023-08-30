@@ -1,5 +1,6 @@
 import Footer from '../footer/footer';
 import ChainsCard from '../chain_card/chain_card';
+import DatePicker from '../date_picker/date_picker';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 
@@ -32,9 +33,12 @@ const AllChainPageBody = () => {
 
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
-      <div className="flex w-full flex-1 flex-col px-20 pt-20 lg:pt-32">
+      <div className="flex w-full flex-1 flex-col px-4 pt-32 lg:px-20">
         <div className="">
           <p>Breadcrumb</p>
+        </div>
+        <div>
+          <DatePicker />
         </div>
         <div className="flex justify-center p-10">
           <h1 className="text-48px font-bold">
@@ -44,7 +48,7 @@ const AllChainPageBody = () => {
         </div>
 
         {/* Info: (20230829 - Julian) Chain list */}
-        <div className="mx-auto grid grid-cols-4 gap-6 pt-5">
+        <div className="mx-auto grid grid-cols-1 gap-6 pt-5 lg:grid-cols-4">
           {dummyChains.map((chain, index) => (
             <ChainsCard
               key={index}

@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {BFAURL} from '../../constants/url';
 import {mainMenuContent} from '../../constants/config';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -11,7 +10,7 @@ const MainMenu = () => {
   const mainMenu = mainMenuContent.map(({icon, title, description, mark, link, alt}) => {
     return (
       /* ToDo: (20230727 - Julian) page link */
-      <Link href={BFAURL.COMING_SOON} key={title}>
+      <Link href={link} key={title}>
         <div className="flex h-200px w-300px flex-col items-center justify-between rounded-lg border border-transparent bg-darkPurple p-6 text-center shadow-xl hover:border-primaryBlue">
           <Image src={icon} width={80} height={80} alt={alt} />
           <div className="flex text-3xl font-bold text-primaryBlue">
