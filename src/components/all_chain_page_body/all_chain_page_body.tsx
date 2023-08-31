@@ -1,35 +1,22 @@
+import {useState} from 'react';
 import Footer from '../footer/footer';
 import ChainsCard from '../chain_card/chain_card';
 import DatePicker from '../date_picker/date_picker';
+import {dummyChains} from '../../constants/config';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
+import {IDatePeriod} from '../../interfaces/date_period';
 
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  const dummyChains = [
-    {
-      chainId: 'bolt',
-      chainName: 'BOLT',
-      icon: '/currencies/bolt.svg',
-      blocks: 12093,
-      transactions: 33233,
-    },
-    {
-      chainId: 'eth',
-      chainName: 'Ethereum',
-      icon: '/currencies/ethereum.svg',
-      blocks: 102000,
-      transactions: 891402,
-    },
-    {
-      chainId: 'btc',
-      chainName: 'Bitcoin',
-      icon: '/currencies/bitcoin.svg',
-      blocks: 10053,
-      transactions: 31294,
-    },
-  ];
+  {
+    /* Till: (20230831 - Julian) Debug 用 */
+  }
+  const [filteredPeriod, setFilteredPeriod] = useState<IDatePeriod>({
+    startTimeStamp: 0,
+    endTimeStamp: 0,
+  });
 
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
@@ -37,8 +24,12 @@ const AllChainPageBody = () => {
         <div className="">
           <p>Breadcrumb</p>
         </div>
-        <div>
-          <DatePicker />
+        {/* Till: (20230831 - Julian) Debug 用 */}
+        <div className="">
+          <p className="text-rose-300">
+            filteredPeriod: {filteredPeriod.startTimeStamp} - {filteredPeriod.endTimeStamp}
+          </p>
+          <DatePicker filteredPeriod={filteredPeriod} setFilteredPeriod={setFilteredPeriod} />
         </div>
         <div className="flex justify-center p-10">
           <h1 className="text-48px font-bold">

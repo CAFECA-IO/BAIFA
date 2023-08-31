@@ -27,12 +27,12 @@ export const WEEK_LIST = [
 
 export const copyright = 'BAIFA @ 2023. All rights reserved.';
 
+/* Info: (20230809 - Julian) ----- BAIFA Reposts ----- */
 export const reportsDateSpan = {
   start: 1688190893,
   end: 1690646400,
 };
 
-/* Info: (20230809 - Julian) ----- BAIFA Reposts ----- */
 export const operationContent = {
   title: 'Nature of Operations',
   content: [
@@ -173,6 +173,31 @@ export const whyUsContent = [
     image: '/icons/accountant.svg',
     alt: 'accountant icon',
     description: 'LANDING_PAGE.WHY_BAIFA_DESCRIPTION_4',
+  },
+];
+
+/* Info: (20230831 - Julian) ----- All Chains Page ----- */
+export const dummyChains = [
+  {
+    chainId: 'bolt',
+    chainName: 'BOLT',
+    icon: '/currencies/bolt.svg',
+    blocks: 12093,
+    transactions: 33233,
+  },
+  {
+    chainId: 'eth',
+    chainName: 'Ethereum',
+    icon: '/currencies/ethereum.svg',
+    blocks: 102000,
+    transactions: 891402,
+  },
+  {
+    chainId: 'btc',
+    chainName: 'Bitcoin',
+    icon: '/currencies/bitcoin.svg',
+    blocks: 10053,
+    transactions: 31294,
   },
 ];
 

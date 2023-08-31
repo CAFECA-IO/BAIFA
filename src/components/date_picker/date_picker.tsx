@@ -1,10 +1,11 @@
 import Image from 'next/image';
-import React, {useCallback, useState, useEffect} from 'react';
+import {useCallback, useState, Dispatch, SetStateAction} from 'react';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai';
 import {MONTH_LIST, WEEK_LIST} from '../../constants/config';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
+import {IDatePeriod} from '../../interfaces/date_period';
 import {timestampToString} from '../../lib/common';
 
 type Dates = {
@@ -23,9 +24,8 @@ interface IPopulateDatesParams {
 }
 
 interface IDatePickerProps {
-  date: Date;
-  maxDate: Date;
-  setDate: (date: Date) => void;
+  filteredPeriod: IDatePeriod;
+  setFilteredPeriod: Dispatch<SetStateAction<IDatePeriod>>;
 }
 
 /* Info:(20230530 - Julian) Safari 只接受 YYYY/MM/DD 格式的日期 */
@@ -86,7 +86,8 @@ const PopulateDates = ({
           // Info: (20230831 - Julian) 如果有已選擇的日期區間，則先清除
           selectDateOne(null);
           selectDateTwo(null);
-        } else if (selectTimeOne === 0) {
+        }
+        if (selectTimeOne === 0) {
           // Info: (20230831 - Julian) 如果第一個日期尚未選擇，則將 el 填入第一個日期
           selectDateOne(el);
         } else if (selectTimeTwo === 0) {
@@ -131,25 +132,19 @@ const PopulateDates = ({
   );
 };
 
-const DatePicker = () => {
+const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const {targetRef, componentVisible, setComponentVisible} = useOuterClick<HTMLDivElement>(false);
 
   const today = new Date();
-
-  const maxDate = new Date();
+  const maxDate = today;
 
   const [dateOne, setDateOne] = useState<Date | null>(null);
   const [dateTwo, setDateTwo] = useState<Date | null>(null);
 
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // 0 (January) to 11 (December).
   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
-
-  useEffect(() => {
-    setDateOne(null);
-    setDateTwo(null);
-  }, []);
 
   // Info: (20230601 - Julian) 取得該月份第一天是星期幾
   const firstDayOfMonth = (year: number, month: number) => {
@@ -209,6 +204,12 @@ const DatePicker = () => {
       let newDate = new Date(el.time);
       newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth()}/${newDate.getDate()}`);
       setDateOne(newDate);
+
+      // Info: (20230831 - Julian) 將 newDate 填入 startTimeStamp
+      setFilteredPeriod({
+        ...filteredPeriod,
+        startTimeStamp: newDate.getTime() / 1000,
+      });
     },
     [maxDate, selectedMonth, selectedYear, dateOne, dateTwo]
   );
@@ -219,6 +220,12 @@ const DatePicker = () => {
       let newDate = new Date(el.time);
       newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth()}/${newDate.getDate()}`);
       setDateTwo(newDate);
+
+      // Info: (20230831 - Julian) 將 newDate 填入 endTimeStamp
+      setFilteredPeriod({
+        ...filteredPeriod,
+        endTimeStamp: newDate.getTime() / 1000,
+      });
     },
     [maxDate, selectedMonth, selectedYear, dateOne, dateTwo]
   );
