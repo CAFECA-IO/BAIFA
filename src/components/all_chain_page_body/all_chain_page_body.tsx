@@ -6,6 +6,7 @@ import {dummyChains} from '../../constants/config';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IDatePeriod} from '../../interfaces/date_period';
+import {timestampToString} from '../../lib/common';
 
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -27,7 +28,8 @@ const AllChainPageBody = () => {
         {/* Till: (20230831 - Julian) Debug 用 */}
         <div className="">
           <p className="text-rose-300">
-            filteredPeriod: {filteredPeriod.startTimeStamp} - {filteredPeriod.endTimeStamp}
+            filteredPeriod: {timestampToString(filteredPeriod.startTimeStamp).date} -{' '}
+            {timestampToString(filteredPeriod.endTimeStamp).date}
           </p>
           <DatePicker filteredPeriod={filteredPeriod} setFilteredPeriod={setFilteredPeriod} />
         </div>

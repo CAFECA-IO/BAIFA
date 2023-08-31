@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import {useCallback, useState, Dispatch, SetStateAction} from 'react';
+import {useCallback, useState, useEffect, Dispatch, SetStateAction} from 'react';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai';
 import {MONTH_LIST, WEEK_LIST} from '../../constants/config';
@@ -146,6 +146,15 @@ const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // 0 (January) to 11 (December).
   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
 
+  useEffect(() => {
+    // Info: (20230831 - Julian) 如果以取得兩個日期，則將日期區間傳回父層
+    if (dateOne && dateTwo)
+      setFilteredPeriod({
+        startTimeStamp: dateOne.getTime() / 1000,
+        endTimeStamp: dateTwo.getTime() / 1000,
+      });
+  }, [dateOne, dateTwo]);
+
   // Info: (20230601 - Julian) 取得該月份第一天是星期幾
   const firstDayOfMonth = (year: number, month: number) => {
     return new Date(`${year}/${month}/01`).getDay();
@@ -204,12 +213,6 @@ const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
       let newDate = new Date(el.time);
       newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth()}/${newDate.getDate()}`);
       setDateOne(newDate);
-
-      // Info: (20230831 - Julian) 將 newDate 填入 startTimeStamp
-      setFilteredPeriod({
-        ...filteredPeriod,
-        startTimeStamp: newDate.getTime() / 1000,
-      });
     },
     [maxDate, selectedMonth, selectedYear, dateOne, dateTwo]
   );
@@ -220,12 +223,6 @@ const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
       let newDate = new Date(el.time);
       newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth()}/${newDate.getDate()}`);
       setDateTwo(newDate);
-
-      // Info: (20230831 - Julian) 將 newDate 填入 endTimeStamp
-      setFilteredPeriod({
-        ...filteredPeriod,
-        endTimeStamp: newDate.getTime() / 1000,
-      });
     },
     [maxDate, selectedMonth, selectedYear, dateOne, dateTwo]
   );
