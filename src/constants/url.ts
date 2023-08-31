@@ -1,6 +1,7 @@
 export const BFAURL = {
   HOME: '/',
   APP: '/app',
+  CHAINS: '/app/chains',
   TRACING_TOOL: '/app/tracing-tool',
   AUDITING_TOOL: '/app/auditing-tool',
   RED_FLAG: '/app/red-flag',

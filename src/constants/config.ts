@@ -1,11 +1,38 @@
+import {BFAURL} from '../constants/url';
+
+export const MONTH_LIST = [
+  'DATE_PICKER.JAN',
+  'DATE_PICKER.FEB',
+  'DATE_PICKER.MAR',
+  'DATE_PICKER.APR',
+  'DATE_PICKER.MAY',
+  'DATE_PICKER.JUN',
+  'DATE_PICKER.JUL',
+  'DATE_PICKER.AUG',
+  'DATE_PICKER.SEP',
+  'DATE_PICKER.OCT',
+  'DATE_PICKER.NOV',
+  'DATE_PICKER.DEC',
+];
+
+export const WEEK_LIST = [
+  'DATE_PICKER.SUN',
+  'DATE_PICKER.MON',
+  'DATE_PICKER.TUE',
+  'DATE_PICKER.WED',
+  'DATE_PICKER.THU',
+  'DATE_PICKER.FRI',
+  'DATE_PICKER.SAT',
+];
+
 export const copyright = 'BAIFA @ 2023. All rights reserved.';
 
+/* Info: (20230809 - Julian) ----- BAIFA Reposts ----- */
 export const reportsDateSpan = {
   start: 1688190893,
   end: 1690646400,
 };
 
-/* Info: (20230809 - Julian) ----- BAIFA Reposts ----- */
 export const operationContent = {
   title: 'Nature of Operations',
   content: [
@@ -22,7 +49,7 @@ export const mainMenuContent = [
     title: 'HOME_PAGE.CHAINS_TITLE',
     description: '30',
     mark: '+',
-    link: '/chains',
+    link: BFAURL.CHAINS,
     alt: 'chain_icon',
   },
   {
@@ -30,7 +57,7 @@ export const mainMenuContent = [
     title: 'HOME_PAGE.CRYPTO_TITLE',
     description: '10000',
     mark: '+',
-    link: '/cryptos',
+    link: BFAURL.COMING_SOON,
     alt: 'coin_icon',
   },
   {
@@ -38,7 +65,7 @@ export const mainMenuContent = [
     title: 'HOME_PAGE.BLACKLIST_TITLE',
     description: '200',
     mark: '+',
-    link: '/blacklist',
+    link: BFAURL.COMING_SOON,
     alt: 'blacklist_icon',
   },
 ];
@@ -146,6 +173,31 @@ export const whyUsContent = [
     image: '/icons/accountant.svg',
     alt: 'accountant icon',
     description: 'LANDING_PAGE.WHY_BAIFA_DESCRIPTION_4',
+  },
+];
+
+/* Info: (20230831 - Julian) ----- All Chains Page ----- */
+export const dummyChains = [
+  {
+    chainId: 'bolt',
+    chainName: 'BOLT',
+    icon: '/currencies/bolt.svg',
+    blocks: 12093,
+    transactions: 33233,
+  },
+  {
+    chainId: 'eth',
+    chainName: 'Ethereum',
+    icon: '/currencies/ethereum.svg',
+    blocks: 102000,
+    transactions: 891402,
+  },
+  {
+    chainId: 'btc',
+    chainName: 'Bitcoin',
+    icon: '/currencies/bitcoin.svg',
+    blocks: 10053,
+    transactions: 31294,
   },
 ];
 

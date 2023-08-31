@@ -62,3 +62,7 @@ export const timestampToString = (timestamp: number) => {
     dateFormatForForm: `${monthNameShort} ${day}, ${year}`,
   };
 };
+
+export const withCommas = (x: number | string) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};

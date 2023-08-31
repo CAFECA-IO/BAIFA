@@ -79,6 +79,37 @@
     "ERROR": "訊息送出失敗，請稍後再試",
     "TRY_AGAIN": "再試一次"
   },
+  "CHAINS_PAGE": {
+    "PAGE_NAME": "區塊鏈",
+    "TITLE": "探索",
+    "TITLE_HIGHLIGHT": "區塊鏈",
+    "BLOCKS": "區塊數",
+    "TRANSACTIONS": "交易量"
+  },
+  "DATE_PICKER": {
+    "SELECT_PERIOD": "選擇日期範圍",
+    "TODAY": "今天",
+    "TO": "至",
+    "JAN": "一月",
+    "FEB": "二月",
+    "MAR": "三月",
+    "APR": "四月",
+    "MAY": "五月",
+    "JUN": "六月",
+    "JUL": "七月",
+    "AUG": "八月",
+    "SEP": "九月",
+    "OCT": "十月",
+    "NOV": "十一月",
+    "DEC": "十二月",
+    "SUN": "日",
+    "MON": "一",
+    "TUE": "二",
+    "WED": "三",
+    "THU": "四",
+    "FRI": "五",
+    "SAT": "六"
+  },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",
     "ANNOUNCEMENT": "BAIFA 是去中心化智能合約平台 BOLT 的區塊瀏覽器和分析平台。",
