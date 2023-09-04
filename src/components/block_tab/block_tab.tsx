@@ -2,14 +2,17 @@ import {useState} from 'react';
 import useStateRef from 'react-usestateref';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import DatePicker from '../date_picker/date_picker';
+import BlockItem from '../block_item/block_item';
 import {FaChevronDown} from 'react-icons/fa';
 import {RiSearchLine} from 'react-icons/ri';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
+import {dummyBlockData, IBlockData} from '../../interfaces/block_data';
 
 const BlockTab = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
+  // ToDo: (20230904 - Julian) filter
   const [search, setSearch, searchRef] = useStateRef('');
   const [filteredPeriod, setFilteredPeriod] = useState({
     startTimeStamp: 0,
@@ -38,6 +41,8 @@ const BlockTab = () => {
     const searchTerm = event.target.value;
     setSearch(searchTerm);
   };
+
+  const blockList = dummyBlockData.map((block, index) => <BlockItem key={index} block={block} />);
 
   const sortingMenu = (
     <div className="relative flex w-full items-center pb-2 text-base lg:w-fit lg:space-x-2 lg:pb-0">
@@ -103,6 +108,8 @@ const BlockTab = () => {
         {/* Info: (20230904 - Julian) Sorting Menu */}
         {sortingMenu}
       </div>
+      {/* Info: (20230904 - Julian) Block List */}
+      <div className="flex w-full flex-col items-center py-10">{blockList}</div>
     </div>
   );
 };
