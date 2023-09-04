@@ -80,9 +80,14 @@
     "TRY_AGAIN": "Try Again"
   },
   "CHAINS_PAGE": {
-    "PAGE_NAME": "Chains",
     "TITLE": "Explore",
     "TITLE_HIGHLIGHT": "Blockchains",
+    "BLOCKS": "Blocks",
+    "TRANSACTIONS": "Transactions"
+  },
+  "BREADCRUMB": {
+    "HOME": "Home",
+    "CHAINS": "Chains",
     "BLOCKS": "Blocks",
     "TRANSACTIONS": "Transactions"
   },

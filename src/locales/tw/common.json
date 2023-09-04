@@ -80,11 +80,16 @@
     "TRY_AGAIN": "再試一次"
   },
   "CHAINS_PAGE": {
-    "PAGE_NAME": "區塊鏈",
     "TITLE": "探索",
     "TITLE_HIGHLIGHT": "區塊鏈",
     "BLOCKS": "區塊數",
     "TRANSACTIONS": "交易量"
+  },
+  "BREADCRUMB": {
+    "HOME": "首頁",
+    "CHAINS": "區塊鏈",
+    "BLOCKS": "區塊",
+    "TRANSACTIONS": "交易"
   },
   "DATE_PICKER": {
     "SELECT_PERIOD": "選擇日期範圍",

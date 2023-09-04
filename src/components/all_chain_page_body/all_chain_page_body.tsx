@@ -2,28 +2,38 @@ import {useState} from 'react';
 import Footer from '../footer/footer';
 import ChainsCard from '../chain_card/chain_card';
 import DatePicker from '../date_picker/date_picker';
+import Breadcrumb from '../../components/breadcrumb/breadcrumb';
 import {dummyChains} from '../../constants/config';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IDatePeriod} from '../../interfaces/date_period';
 import {timestampToString} from '../../lib/common';
+import {BFAURL} from '../../constants/url';
 
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-
-  {
-    /* Till: (20230831 - Julian) Debug 用 */
-  }
+  /* Till: (20230831 - Julian) Debug 用 */
   const [filteredPeriod, setFilteredPeriod] = useState<IDatePeriod>({
     startTimeStamp: 0,
     endTimeStamp: 0,
   });
 
+  const crumbs = [
+    {
+      label: t('BREADCRUMB.HOME'),
+      path: BFAURL.APP,
+    },
+    {
+      label: t('BREADCRUMB.CHAINS'),
+      path: BFAURL.CHAINS,
+    },
+  ];
+
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
       <div className="flex w-full flex-1 flex-col px-4 pt-32 lg:px-20">
         <div className="">
-          <p>Breadcrumb</p>
+          <Breadcrumb crumbs={crumbs} />
         </div>
         {/* Till: (20230831 - Julian) Debug 用 */}
         <div className="">
