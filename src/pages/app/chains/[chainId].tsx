@@ -68,7 +68,7 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
       className={`flex items-center border-b-2 px-3 py-2 text-base ${
         activeTab === 'blocks'
           ? 'border-lightBlue text-primaryBlue'
-          : 'text-lightWhite1 border-darkPurple4'
+          : 'border-darkPurple4 text-hoverWhite'
       } transition-all duration-300 ease-in-out`}
     >
       <button onClick={() => setActiveTab('blocks')}>{t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')}</button>
@@ -80,7 +80,7 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
       className={`flex items-center border-b-2 px-3 py-2 text-base ${
         activeTab === 'transactions'
           ? 'border-lightBlue text-primaryBlue'
-          : 'text-lightWhite1 border-darkPurple4'
+          : 'border-darkPurple4 text-hoverWhite'
       } transition-all duration-300 ease-in-out`}
     >
       <button onClick={() => setActiveTab('transactions')}>

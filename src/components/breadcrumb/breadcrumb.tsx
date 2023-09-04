@@ -23,7 +23,7 @@ const Breadcrumb = ({crumbs}: IBreadcrumbProps) => {
           {isHomeIcon}
           <Link
             href={crumb.path}
-            className="text-lightWhite1 whitespace-nowrap hover:cursor-pointer"
+            className="whitespace-nowrap text-hoverWhite hover:cursor-pointer"
           >
             {crumb.label}
           </Link>
