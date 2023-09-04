@@ -54,7 +54,7 @@ const BlockTab = () => {
         <p
           className={`flex-1 text-left lg:w-60px ${
             sortingVisible ? 'opacity-0' : 'opacity-100'
-          } transition-all duration-500 ease-in-out`}
+          } transition-all duration-300 ease-in-out`}
         >
           {sorting === 'Newest' ? t('SORTING.NEWEST') : t('SORTING.OLDEST')}
         </p>
@@ -66,7 +66,7 @@ const BlockTab = () => {
           sortingVisible
             ? 'visible translate-y-90px grid-rows-1 opacity-100'
             : 'invisible translate-y-12 grid-rows-0 opacity-0'
-        } rounded bg-darkPurple2 text-left text-hoverWhite shadow-xl transition-all duration-500 ease-in-out`}
+        } rounded bg-darkPurple2 text-left text-hoverWhite shadow-xl transition-all duration-300 ease-in-out`}
       >
         <li
           onClick={newestSortClickHandler}
@@ -87,7 +87,7 @@ const BlockTab = () => {
   return (
     <div className="flex w-full flex-col items-center font-inter">
       {/* Info: (20230904 - Julian) Search Bar */}
-      <div className="relative flex w-full items-center justify-center shadow-xl lg:w-7/10">
+      <div className="relative flex w-full items-center justify-center drop-shadow-xl lg:w-7/10">
         <input
           type="search"
           className="w-full items-center rounded-full bg-purpleLinear px-6 py-3 text-base"
