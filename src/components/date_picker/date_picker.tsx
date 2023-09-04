@@ -21,6 +21,7 @@ interface IPopulateDatesParams {
   selectDateOne: (date: Dates | null) => void;
   selectTimeTwo: number;
   selectDateTwo: (date: Dates | null) => void;
+  setComponentVisible: Dispatch<SetStateAction<boolean>>;
 }
 
 interface IDatePickerProps {
@@ -37,6 +38,7 @@ const PopulateDates = ({
   selectDateOne,
   selectTimeTwo,
   selectDateTwo,
+  setComponentVisible,
 }: IPopulateDatesParams) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
@@ -46,7 +48,7 @@ const PopulateDates = ({
 
   // Info: (20230830 - Julian) 顯示星期標題
   const weekNameList = WEEK_LIST.map((week, index) => (
-    <p className="h-24px w-24px" key={index}>
+    <p className="mx-auto h-24px w-24px" key={index}>
       {t(week)}
     </p>
   ));
@@ -61,18 +63,21 @@ const PopulateDates = ({
       selectTimeTwo &&
       date?.getTime() &&
       date?.getTime() >= selectTimeOne &&
-      date?.getTime() <= selectTimeTwo
+      date?.getTime() <= selectTimeTwo &&
+      selectTimeOne !== selectTimeTwo
         ? 'bg-primaryBlue-500'
         : '';
     // Info: (20230831 - Julian) DateOne 和 DateTwo 的樣式
     const isSelectedDateStyle = date?.getTime()
-      ? !selectTimeTwo && date?.getTime() === selectTimeOne
+      ? !selectTimeTwo && date.getTime() === selectTimeOne
         ? 'rounded-full bg-primaryBlue text-darkPurple3'
         : selectTimeOne && selectTimeTwo
-        ? date?.getTime() === selectTimeOne
-          ? `rounded-l-full text-darkPurple3 before:left-0 ${beforeStyle}`
-          : date?.getTime() === selectTimeTwo
-          ? `rounded-r-full text-darkPurple3 before:right-0 ${beforeStyle}`
+        ? date.getTime() === selectTimeOne && date.getTime() === selectTimeTwo
+          ? `rounded-full text-darkPurple3 bg-primaryBlue`
+          : date.getTime() === selectTimeOne
+          ? `rounded-l-full text-darkPurple3 before:left-px ${beforeStyle}`
+          : date.getTime() === selectTimeTwo
+          ? `rounded-r-full text-darkPurple3 before:right-px ${beforeStyle}`
           : ''
         : ''
       : '';
@@ -81,7 +86,7 @@ const PopulateDates = ({
     const dateClickHandler = () => {
       if (el?.date && !el?.disable) {
         // Info: (20230831 - Julian) elTemp 是點擊的日期
-        const elTemp = new Date(`${selectedYear}/${selectedMonth}/${el.date} 00:00:00`).getTime();
+        const elTime = new Date(`${selectedYear}/${selectedMonth}/${el.date} 00:00:00`).getTime();
         if (selectTimeOne !== 0 && selectTimeTwo !== 0) {
           // Info: (20230831 - Julian) 如果有已選擇的日期區間，則先清除
           selectDateOne(null);
@@ -92,15 +97,15 @@ const PopulateDates = ({
           selectDateOne(el);
         } else if (selectTimeTwo === 0) {
           // Info: (20230831 - Julian) 如果第二個日期尚未選擇，則將 el 填入第二個日期
-          if (selectTimeOne > elTemp) {
+          if (selectTimeOne > elTime) {
             // Info: (20230831 - Julian) 檢查 TimeOne 是否大於 TimeTwo，如果是則交換
             const temp = new Date(selectTimeOne);
             selectDateOne(el);
             selectDateTwo({
               date: temp.getDate(),
               time: new Date(
-                // Info: (20230831 - Julian) 這裡的月份要加 2，因為 new Date() 的月份是 0 ~ 11
-                `${temp.getFullYear()}/${temp.getMonth() + 2}/${temp.getDate()}`
+                // Info: (20230831 - Julian) 這裡的月份要加 1，因為 new Date() 的月份是 0 ~ 11
+                `${temp.getFullYear()}/${temp.getMonth() + 1}/${temp.getDate()}`
               ).getTime(),
               disable: true,
             });
@@ -108,6 +113,7 @@ const PopulateDates = ({
             // Info: (20230831 - Julian) 如果 TimeOne 小於 TimeTwo，則直接填入
             selectDateTwo(el);
           }
+          setComponentVisible(false);
         }
       }
     };
@@ -148,11 +154,25 @@ const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
 
   useEffect(() => {
     // Info: (20230831 - Julian) 如果以取得兩個日期，則將日期區間傳回父層
-    if (dateOne && dateTwo)
+    if (dateOne && dateTwo) {
+      if (dateOne.getTime() !== dateTwo.getTime()) {
+        setFilteredPeriod({
+          startTimeStamp: dateOne.getTime() / 1000,
+          endTimeStamp: dateTwo.getTime() / 1000,
+        });
+      } else {
+        // Info: (20230901 - Julian) 如果兩個日期相同，則將日期區間設為當天 00:00:00 ~ 23:59:59
+        setFilteredPeriod({
+          startTimeStamp: dateOne.getTime() / 1000,
+          endTimeStamp: dateTwo.getTime() / 1000 + 86399,
+        });
+      }
+    } else {
       setFilteredPeriod({
-        startTimeStamp: dateOne.getTime() / 1000,
-        endTimeStamp: dateTwo.getTime() / 1000,
+        startTimeStamp: 0,
+        endTimeStamp: 0,
       });
+    }
   }, [dateOne, dateTwo]);
 
   // Info: (20230601 - Julian) 取得該月份第一天是星期幾
@@ -166,10 +186,10 @@ const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
     const dateLength = new Date(year, month, 0).getDate();
     let dates: Dates[] = [];
     for (let i = 0; i < dateLength; i++) {
-      const dateTime = new Date(`${year}/${month + 1}/${i + 1}`).getTime();
+      const dateTime = new Date(`${year}/${month}/${i + 1}`).getTime();
 
       const maxTime = maxDate
-        ? new Date(maxDate.getFullYear(), maxDate.getMonth() + 1, maxDate.getDate()).getTime()
+        ? new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate()).getTime()
         : null;
 
       const date = {
@@ -211,7 +231,7 @@ const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
     (el: Dates | null) => {
       if (!el) return setDateOne(null);
       let newDate = new Date(el.time);
-      newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth()}/${newDate.getDate()}`);
+      newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth() + 1}/${newDate.getDate()}`);
       setDateOne(newDate);
     },
     [maxDate, selectedMonth, selectedYear, dateOne, dateTwo]
@@ -221,7 +241,7 @@ const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
     (el: Dates | null) => {
       if (!el) return setDateTwo(null);
       let newDate = new Date(el.time);
-      newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth()}/${newDate.getDate()}`);
+      newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth() + 1}/${newDate.getDate()}`);
       setDateTwo(newDate);
     },
     [maxDate, selectedMonth, selectedYear, dateOne, dateTwo]
@@ -235,15 +255,12 @@ const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
       `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()} 00:00:00`
     );
 
-    if (!dateOne) {
-      // Info: (20230830 - Julian) 如果第一個日期尚未選擇，則將 dateOfToday 填入第一個日期
-      setDateOne(dateOfToday);
-    } else if (!dateTwo) {
-      // Info: (20230830 - Julian) 如果第二個日期尚未選擇，則將 dateOfToday 填入第二個日期
-      setDateTwo(dateOfToday);
-    }
+    // Info: (20230901 - Julian) 選擇區間改成今天
+    setDateOne(dateOfToday);
+    setDateTwo(dateOfToday);
     setSelectedMonth(today.getMonth() + 1);
     setSelectedYear(today.getFullYear());
+    setComponentVisible(false);
   };
 
   // Info: (20230830 - Julian) 顯示時間區間
@@ -272,11 +289,11 @@ const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
       {/* Info: (20230830 - Julian) Calender part */}
       <div
         ref={targetRef}
-        className={`absolute top-16 grid items-center space-y-4 rounded ${
+        className={`absolute top-16 grid w-300px items-center space-y-4 rounded ${
           componentVisible
             ? 'visible translate-y-0 grid-rows-1 opacity-100'
             : 'invisible -translate-y-10 grid-rows-0 opacity-0'
-        } bg-purpleLinear px-4 py-3 shadow-xl transition-all duration-500 ease-in-out`}
+        } bg-purpleLinear px-10 py-5 shadow-xl transition-all duration-500 ease-in-out`}
       >
         {/* Info: (20230830 - Julian) Today button */}
         <button
@@ -306,6 +323,7 @@ const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
           selectDateOne={selectDateOne}
           selectTimeTwo={dateTwo?.getTime() ?? 0}
           selectDateTwo={selectDateTwo}
+          setComponentVisible={setComponentVisible}
         />
       </div>
     </div>
