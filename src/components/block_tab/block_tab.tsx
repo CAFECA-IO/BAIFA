@@ -41,7 +41,7 @@ const BlockTab = () => {
 
   const sortingMenu = (
     <div className="relative flex w-full items-center pb-2 text-base lg:w-fit lg:space-x-2 lg:pb-0">
-      <p className="hidden text-lilac lg:block">Sort by :</p>
+      <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
       <button
         onClick={() => setSortingVisible(!sortingVisible)}
         className="flex w-full items-center space-x-4 rounded bg-darkPurple px-6 py-4 text-hoverWhite lg:w-140px"
@@ -51,7 +51,7 @@ const BlockTab = () => {
             sortingVisible ? 'opacity-0' : 'opacity-100'
           } transition-all duration-500 ease-in-out`}
         >
-          {sorting}
+          {sorting === 'Newest' ? t('SORTING.NEWEST') : t('SORTING.OLDEST')}
         </p>
         <FaChevronDown />
       </button>
@@ -67,13 +67,13 @@ const BlockTab = () => {
           onClick={newestSortClickHandler}
           className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
         >
-          Newest
+          {t('SORTING.NEWEST')}
         </li>
         <li
           onClick={oldestSortClickHandler}
           className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
         >
-          Oldest
+          {t('SORTING.OLDEST')}
         </li>
       </ul>
     </div>
@@ -86,7 +86,7 @@ const BlockTab = () => {
         <input
           type="search"
           className="w-full items-center rounded-full bg-purpleLinear px-6 py-3 text-base"
-          placeholder={'Search in Block list'}
+          placeholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_BLOCKS')}
           onChange={searchChangeHandler}
         />
         <div className="absolute right-4 text-2xl font-bold hover:cursor-pointer">
@@ -95,7 +95,10 @@ const BlockTab = () => {
       </div>
       <div className="flex w-full flex-col-reverse items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
         {/* Info: (20230904 - Julian) Date Picker */}
-        <DatePicker filteredPeriod={filteredPeriod} setFilteredPeriod={setFilteredPeriod} />
+        <div className="flex w-full items-center text-base lg:w-fit lg:space-x-2">
+          <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
+          <DatePicker setFilteredPeriod={setFilteredPeriod} />
+        </div>
 
         {/* Info: (20230904 - Julian) Sorting Menu */}
         {sortingMenu}

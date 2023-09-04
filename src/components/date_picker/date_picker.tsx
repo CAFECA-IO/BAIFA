@@ -25,7 +25,6 @@ interface IPopulateDatesParams {
 }
 
 interface IDatePickerProps {
-  filteredPeriod: IDatePeriod;
   setFilteredPeriod: Dispatch<SetStateAction<IDatePeriod>>;
 }
 
@@ -138,7 +137,7 @@ const PopulateDates = ({
   );
 };
 
-const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
+const DatePicker = ({setFilteredPeriod}: IDatePickerProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const {targetRef, componentVisible, setComponentVisible} = useOuterClick<HTMLDivElement>(false);

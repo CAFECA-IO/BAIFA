@@ -32,15 +32,18 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
 
   const crumbs = [
     {
-      label: t('BREADCRUMB.HOME'),
+      label: t('HOME_PAGE.BREADCRUMB_TITLE'),
       path: BFAURL.APP,
     },
     {
-      label: t('BREADCRUMB.CHAINS'),
+      label: t('CHAINS_PAGE.BREADCRUMB_TITLE'),
       path: BFAURL.CHAINS,
     },
     {
-      label: activeTab === 'blocks' ? t('BREADCRUMB.BLOCKS') : t('BREADCRUMB.TRANSACTIONS'),
+      label:
+        activeTab === 'blocks'
+          ? t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')
+          : t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB'),
       path: BFAURL.CHAINS + '/' + chainData.chainId,
     },
   ];
@@ -68,7 +71,7 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
           : 'text-lightWhite1 border-darkPurple4'
       } transition-all duration-300 ease-in-out`}
     >
-      <button onClick={() => setActiveTab('blocks')}>{t('BREADCRUMB.BLOCKS')}</button>
+      <button onClick={() => setActiveTab('blocks')}>{t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')}</button>
     </div>
   );
 
@@ -80,7 +83,9 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
           : 'text-lightWhite1 border-darkPurple4'
       } transition-all duration-300 ease-in-out`}
     >
-      <button onClick={() => setActiveTab('transactions')}>{t('BREADCRUMB.TRANSACTIONS')}</button>
+      <button onClick={() => setActiveTab('transactions')}>
+        {t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')}
+      </button>
     </div>
   );
 

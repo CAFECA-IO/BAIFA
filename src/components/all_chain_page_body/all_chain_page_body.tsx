@@ -11,11 +11,11 @@ const AllChainPageBody = () => {
 
   const crumbs = [
     {
-      label: t('BREADCRUMB.HOME'),
+      label: t('HOME_PAGE.BREADCRUMB_TITLE'),
       path: BFAURL.APP,
     },
     {
-      label: t('BREADCRUMB.CHAINS'),
+      label: t('CHAINS_PAGE.BREADCRUMB_TITLE'),
       path: BFAURL.CHAINS,
     },
   ];
