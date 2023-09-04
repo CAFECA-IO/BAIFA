@@ -7,11 +7,14 @@ module.exports = {
         darkPurple: '#24274A',
         darkPurple2: '#2C315B',
         darkPurple3: '#1F2243',
+        darkPurple4: '#3F497A',
 
         lightWhite: '#F2F2F2',
 
         lightGreen: '#3DD08C',
         lightGreen2: '#21AD6C',
+
+        lightBlue: '#31D3F5',
 
         lightRed: '#FC8181',
         lightRed2: '#E96C67',
