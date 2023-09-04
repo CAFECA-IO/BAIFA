@@ -3,7 +3,9 @@ import Image from 'next/image';
 import {useState} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
+import Footer from '../../../components/footer/footer';
 import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
+import BlockTab from '../../../components/block_tab/block_tab';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {dummyChains} from '../../../constants/config';
 import {useTranslation} from 'next-i18next';
@@ -43,8 +45,46 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
     },
   ];
 
-  const blockTabCilckHandler = () => setActiveTab('blocks');
-  const transactionTabCilckHandler = () => setActiveTab('transactions');
+  const mobileTitle = (
+    <div className="flex items-center justify-center space-x-4 text-2xl font-bold lg:hidden">
+      <Image src={chainIcon} alt={`${chainName}_icon`} width={30} height={30} />
+
+      <h1>{chainName}</h1>
+    </div>
+  );
+
+  const desktopTitle = (
+    <div className="hidden items-center justify-center space-x-4 py-5 text-48px font-bold lg:flex">
+      <Image src={chainIcon} alt={`${chainName}_icon`} width={60} height={60} />
+      <h1>{chainName}</h1>
+    </div>
+  );
+
+  const blocksButton = (
+    <div
+      className={`flex items-center border-b-2 px-3 py-2 text-base ${
+        activeTab === 'blocks'
+          ? 'border-lightBlue text-primaryBlue'
+          : 'text-lightWhite1 border-darkPurple4'
+      } transition-all duration-300 ease-in-out`}
+    >
+      <button onClick={() => setActiveTab('blocks')}>{t('BREADCRUMB.BLOCKS')}</button>
+    </div>
+  );
+
+  const transactionsButton = (
+    <div
+      className={`flex items-center border-b-2 px-3 py-2 text-base ${
+        activeTab === 'transactions'
+          ? 'border-lightBlue text-primaryBlue'
+          : 'text-lightWhite1 border-darkPurple4'
+      } transition-all duration-300 ease-in-out`}
+    >
+      <button onClick={() => setActiveTab('transactions')}>{t('BREADCRUMB.TRANSACTIONS')}</button>
+    </div>
+  );
+
+  const tabContent = activeTab === 'blocks' ? <BlockTab /> : <div>Transactions</div>;
 
   return (
     <>
@@ -57,44 +97,28 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
 
       <main>
         <div className="flex min-h-screen flex-col overflow-hidden font-inter">
-          <div className="flex w-full flex-1 flex-col px-4 pt-32 lg:px-20">
+          <div className="flex w-full flex-1 flex-col space-y-14 px-5 pt-28 lg:space-y-0 lg:px-20">
             {/* Info: (20230904 - Julian) Breadcrumb */}
             <div className="">
               <Breadcrumb crumbs={crumbs} />
             </div>
-            <div className="flex flex-col items-center">
-              {/* Info: (20230904 - Julian) Page Title */}
-              <div className="flex items-center space-x-4 py-5 text-48px font-bold">
-                <Image src={chainIcon} alt={`${chainName}_icon`} width={60} height={60} />
-                <h1>{chainName}</h1>
-              </div>
-              {/* Info: (20230904 - Julian) Tabs */}
-              <div className="flex items-center space-x-6 py-10">
-                <div
-                  className={`flex items-center border-b-2 px-3 py-2 text-base ${
-                    activeTab === 'blocks'
-                      ? 'border-lightBlue text-primaryBlue'
-                      : 'text-lightWhite1 border-darkPurple4'
-                  } transition-all duration-300 ease-in-out`}
-                >
-                  <button onClick={blockTabCilckHandler}>{t('BREADCRUMB.BLOCKS')}</button>
-                </div>
-                <div
-                  className={`flex items-center border-b-2 px-3 py-2 text-base ${
-                    activeTab === 'transactions'
-                      ? 'border-lightBlue text-primaryBlue'
-                      : 'text-lightWhite1 border-darkPurple4'
-                  } transition-all duration-300 ease-in-out`}
-                >
-                  <button onClick={transactionTabCilckHandler}>
-                    {t('BREADCRUMB.TRANSACTIONS')}
-                  </button>
-                </div>
-              </div>
+            {/* Info: (20230904 - Julian) Page Title */}
+            {mobileTitle}
+            {desktopTitle}
+            {/* Info: (20230904 - Julian) Tabs */}
+            <div className="flex items-center justify-center space-x-6 lg:py-7">
+              {blocksButton}
+              {transactionsButton}
             </div>
+            {/* Info: (20230904 - Julian) Tab Content */}
+            {tabContent}
           </div>
         </div>
       </main>
+
+      <div className="mt-12">
+        <Footer />
+      </div>
     </>
   );
 };
