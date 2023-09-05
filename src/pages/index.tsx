@@ -17,7 +17,7 @@ const LandingPage = () => {
           content="BAIFA: BOLT AI Forensic Accounting and Auditing is where simplicity meets accuracy in the realm of financial investigations."
         />
         <meta name="author" content="CAFECA" />
-        <meta name="keywords" content="區塊鏈,人工智慧" />
+        <meta name="keywords" content="區塊鏈,人工智慧,會計" />
 
         <meta property="og:title" content="BAIFA" />
         <meta
