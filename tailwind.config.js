@@ -337,6 +337,10 @@ module.exports = {
         '140px': '140px',
         '250px': '250px',
       },
+      minHeight: {
+        'fit': 'fit-content',
+        '320px': '320px',
+      },
       gridTemplateRows: {
         0: 'repeat(1, minmax(0px, 0fr))',
       },

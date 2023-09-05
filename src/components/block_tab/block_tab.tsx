@@ -1,8 +1,8 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import useStateRef from 'react-usestateref';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import DatePicker from '../date_picker/date_picker';
-import BlockItem from '../block_item/block_item';
+import BlockList from '../block_list/block_list';
 import {FaChevronDown} from 'react-icons/fa';
 import {RiSearchLine} from 'react-icons/ri';
 import {useTranslation} from 'next-i18next';
@@ -12,15 +12,15 @@ import {dummyBlockData, IBlockData} from '../../interfaces/block_data';
 const BlockTab = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  // ToDo: (20230904 - Julian) filter
   const [search, setSearch, searchRef] = useStateRef('');
-  const [filteredPeriod, setFilteredPeriod] = useState({
+  const [period, setPeriod] = useState({
     startTimeStamp: 0,
     endTimeStamp: 0,
   });
   const [sorting, setSorting] = useState<'Newest' | 'Oldest'>('Newest');
+  const [filteredBlockData, setFilteredBlockData] = useState<IBlockData[]>(dummyBlockData);
 
-  /* Info: (20230904 - Julian) close sorting menu when click outer */
+  // Info: (20230904 - Julian) close sorting menu when click outer
   const {
     targetRef: sortingRef,
     componentVisible: sortingVisible,
@@ -42,7 +42,40 @@ const BlockTab = () => {
     setSearch(searchTerm);
   };
 
-  const blockList = dummyBlockData.map((block, index) => <BlockItem key={index} block={block} />);
+  useEffect(() => {
+    const searchResult = dummyBlockData
+      // Info: (20230905 - Julian) filter by date range
+      .filter((block: IBlockData) => {
+        const createdTimestamp = block.createdTimestamp;
+        const start = period.startTimeStamp;
+        const end = period.endTimeStamp;
+        // Info: (20230905 - Julian) if start and end are 0, it means that there is no period filter
+        const isCreatedTimestampInRange =
+          start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+        return isCreatedTimestampInRange;
+      })
+      // Info: (20230905 - Julian) filter by search term
+      .filter((block: IBlockData) => {
+        const searchTerm = searchRef.current.toLowerCase();
+        const managementTeam = block.managementTeam.map(team => team.toLowerCase());
+        const stabilityLevel = block.stabilityLevel.toLowerCase();
+        const transactions = block.transactions.toString().toLowerCase();
+        const miner = block.miner.toString().toLowerCase();
+        return searchTerm !== ''
+          ? block.id.toString().includes(searchTerm) ||
+              managementTeam.includes(searchTerm) ||
+              stabilityLevel.includes(searchTerm) ||
+              transactions.toString().includes(searchTerm) ||
+              miner.toString().includes(searchTerm)
+          : true;
+      })
+      .sort((a: IBlockData, b: IBlockData) => {
+        return sorting === 'Newest'
+          ? b.createdTimestamp - a.createdTimestamp
+          : a.createdTimestamp - b.createdTimestamp;
+      });
+    setFilteredBlockData(searchResult);
+  }, [period, search, sorting]);
 
   const sortingMenu = (
     <div className="relative flex w-full items-center pb-2 text-base lg:w-fit lg:space-x-2 lg:pb-0">
@@ -102,14 +135,14 @@ const BlockTab = () => {
         {/* Info: (20230904 - Julian) Date Picker */}
         <div className="flex w-full items-center text-base lg:w-fit lg:space-x-2">
           <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-          <DatePicker setFilteredPeriod={setFilteredPeriod} />
+          <DatePicker setFilteredPeriod={setPeriod} />
         </div>
 
         {/* Info: (20230904 - Julian) Sorting Menu */}
         {sortingMenu}
       </div>
       {/* Info: (20230904 - Julian) Block List */}
-      <div className="flex w-full flex-col items-center py-10">{blockList}</div>
+      <BlockList blockData={filteredBlockData} />
     </div>
   );
 };
