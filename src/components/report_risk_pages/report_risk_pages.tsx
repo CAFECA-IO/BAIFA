@@ -9,7 +9,7 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
     <>
       {/* Info: (20230807 - Julian) Page 1 */}
       <ReportPageBody reportTitle={reportTitle} currentPage={1}>
-        <div className="flex flex-col gap-y-16px py-16px text-xs leading-5">
+        <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
           <h1 className="text-lg font-bold text-violet">Summary of Risk Factors</h1>
           <p>
             Our business is subject to various risks and uncertainties, including those detailed
@@ -17,7 +17,7 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
           </p>
           <ul className="ml-5 list-disc">
             <li>
-              Our total revenue largely depends on the prices of crypto assets and the volume of
+              Our total revenue largely depends on the prices of cryptocurrencies and the volume of
               transactions on our platform. A decline in these could negatively affect our business,
               operating results, and financial condition.
             </li>
@@ -69,7 +69,7 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
       <hr />
       {/* Info: (20230807 - Julian) Page 2 */}
       <ReportPageBody reportTitle={reportTitle} currentPage={2}>
-        <div className="flex flex-col gap-y-16px py-16px text-xs leading-5">
+        <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
           <ul className="ml-5 list-disc">
             <p>time-consuming, and if resolved adversely, could harm our business.</p>
             <li>
@@ -78,8 +78,8 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
               business.
             </li>
             <li>
-              The status of a particular crypto asset as a "security" is highly uncertain. If we
-              incorrectly characterize a crypto asset, we may face regulatory scrutiny,
+              The status of a particular cryptocurrency as a "security" is highly uncertain. If we
+              incorrectly characterize a cryptocurrency, we may face regulatory scrutiny,
               investigations, fines, and other penalties.
             </li>
             <li>
@@ -97,14 +97,15 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
               negatively impact our brand and reputation.
             </li>
             <li>
-              Our failure to safeguard and manage our and our customers’ fiat currencies and crypto
-              assets could negatively impact our business.
+              Our failure to safeguard and manage our and our customers’ fiat currencies and
+              cryptocurrencies could negatively impact our business.
             </li>
             <li>
-              The theft, loss, or destruction of private keys required to access any crypto assets
-              held in custody for our own account or for our customers may be irreversible. If we
-              are unable to access our private keys or if we experience a hack or other data loss,
-              it could cause regulatory scrutiny, reputational harm, and other losses.
+              The theft, loss, or destruction of private keys required to access any
+              cryptocurrencies held in custody for our own account or for our customers may be
+              irreversible. If we are unable to access our private keys or if we experience a hack
+              or other data loss, it could cause regulatory scrutiny, reputational harm, and other
+              losses.
             </li>
           </ul>
         </div>

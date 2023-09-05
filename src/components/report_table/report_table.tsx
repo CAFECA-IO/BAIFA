@@ -1,5 +1,6 @@
 import {ITableRows, ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';
+import {withCommas} from '../../lib/common';
 
 interface IReportTable {
   tableData: ITable;
@@ -11,9 +12,9 @@ interface IReportTableRow {
 
 const ReportTableRow = ({row}: IReportTableRow) => {
   const {rowType, rowData} = row;
-  let addCol = 0;
 
   const displayTitle = rowData.map((item, index) => {
+    let addCol = 0;
     for (let i = 1; i < rowData.length; i++) {
       // Info: (20230807 - Julian) *-* 表示和後一個格子合併
       if (rowData[index + 1] === '*-*') addCol += 1;
@@ -34,13 +35,14 @@ const ReportTableRow = ({row}: IReportTableRow) => {
       key={index}
       className="max-w-250px whitespace-nowrap border-l border-black p-5px text-right"
     >
-      {item}
+      {withCommas(item)}
     </td>
   ));
 
   switch (rowType) {
     // Info: (20230809 - Julian) 和表頭一樣，紫底白字
     case RowType.headline:
+      let addCol = 0;
       const displayTh = rowData.map((item, index) => {
         for (let i = 1; i < rowData.length; i++) {
           // Info: (20230807 - Julian) *-* 表示和後一個格子合併
@@ -122,8 +124,16 @@ const ReportTableRow = ({row}: IReportTableRow) => {
           ))}
         </tr>
       );
-    // Info: (20230809 - Julian) 第一格灰字，其餘置中黑字
+    // To be replace by RowType.bookkeeping
     case RowType.contentWithMainColumn:
+      return (
+        <tr className="border-x border-b border-black">
+          <td className="max-w-250px border-l border-black p-5px text-lilac">{rowData[0]}</td>
+          {displayContent}
+        </tr>
+      );
+    // Info: (20230809 - Julian) 第一格灰字，其餘置中黑字
+    case RowType.bookkeeping:
       return (
         <tr className="border-x border-b border-black">
           <td className="max-w-250px border-l border-black p-5px text-lilac">{rowData[0]}</td>
@@ -144,7 +154,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
   }
 };
 
-const ReportTableNew = ({tableData}: IReportTable) => {
+const ReportTable = ({tableData}: IReportTable) => {
   const {subThead, thead, tbody} = tableData;
   const thSize = !!!subThead ? 'py-10px text-xs' : 'py-5px text-xxs';
 
@@ -161,15 +171,15 @@ const ReportTableNew = ({tableData}: IReportTable) => {
               else break;
             }
             if (item === '*-*') return null;
-            // Info: (20230809 - Julian) 副標題存在的話，第一格要跨兩列(與下排 '*|*' 合併)
+            // Info: (20230809 - Julian) 若副標題存在，且第二行有 *|* ，則副標題的第一格要跨兩行
             // workaround 按照現有的設計，表頭最多只會有兩行，所以這邊直接寫死。如果未來有更多行的表頭則再調整
-            const rowspan = index === 0 ? 2 : 1;
+            const rowSpan = thead.includes('*|*') && index === 0 ? 2 : 1;
             const thStyle = index === 0 ? 'text-center font-bold' : 'text-right font-normal';
             return (
               <th
                 key={index}
                 colSpan={1 + addThCol}
-                rowSpan={rowspan}
+                rowSpan={rowSpan}
                 className={`max-w-250px whitespace-nowrap px-10px ${thStyle} ${thSize}`}
               >
                 {item}
@@ -215,4 +225,4 @@ const ReportTableNew = ({tableData}: IReportTable) => {
   );
 };
 
-export default ReportTableNew;
+export default ReportTable;
