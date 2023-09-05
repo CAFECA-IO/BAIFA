@@ -91,7 +91,8 @@
     "BLOCKS_TAB": "区块",
     "TRANSACTIONS_TAB": "交易",
     "SEARCH_PLACEHOLDER_BLOCKS": "在区块列表中搜寻",
-    "SEARCH_PLACEHOLDER_TRANSACTIONS": "在交易列表中搜寻"
+    "SEARCH_PLACEHOLDER_TRANSACTIONS": "在交易列表中搜寻",
+    "STABILITY": "稳定性"
   },
   "DATE_PICKER": {
     "DATE": "日期",

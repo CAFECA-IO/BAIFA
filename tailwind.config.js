@@ -19,6 +19,8 @@ module.exports = {
         lightRed: '#FC8181',
         lightRed2: '#E96C67',
 
+        darkOrange: '#FFA600',
+
         lilac: '#ABA7BD',
         lilac2: '#6857d733',
         violet: '#6857D7',

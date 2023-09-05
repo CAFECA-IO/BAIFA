@@ -50,4 +50,14 @@ export const dummyBlockData: IBlockData[] = [
     reward: 0.01,
     size: 3.523,
   },
+  {
+    id: 292076,
+    stabilityLevel: 'MEDIUM',
+    createdTimestamp: 168357791,
+    managementTeam: ['Wendy Doe', 'Walter Doe'],
+    transactions: ['0x3849238472', '0x0982348723'],
+    miner: '0x9393075234',
+    reward: 0.01,
+    size: 3.523,
+  },
 ];
