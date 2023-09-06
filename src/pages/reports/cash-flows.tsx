@@ -13,7 +13,7 @@ import {timestampToString} from '../../lib/common';
 
 const StatementsOfCashFlows = () => {
   const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOWS;
-  const contentList = ['Statements of Cash Flows', 'Note To Statements of Cash Flows'];
+  const contentList = [reportTitle, `Note To ${reportTitle}`];
   const startDate = timestampToString(reportsDateSpan.start);
   const endDate = timestampToString(reportsDateSpan.end);
 
