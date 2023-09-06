@@ -201,7 +201,7 @@ const ReportTable = ({tableData}: IReportTable) => {
             <th
               key={index}
               colSpan={1 + addThCol}
-              className={`max-w-250px whitespace-nowrap px-10px text-center font-bold ${thSize}`}
+              className={`max-w-250px whitespace-normal px-10px text-center font-bold ${thSize}`}
             >
               {item}
             </th>
