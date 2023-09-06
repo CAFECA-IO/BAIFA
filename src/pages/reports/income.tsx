@@ -18,7 +18,11 @@ const ComprehensiveIncomeStatements = () => {
   const endDate = timestampToString(reportsDateSpan.end);
 
   const income_statements_p3_1: ITable = {
-    subThead: ['Income Statements - USD ($)', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
+    subThead: [
+      'Comprehensive Income Statements - USD ($)',
+      `30 Days Ended ${endDate.monthAndDay},`,
+      '*-*',
+    ],
     thead: ['$ in Thousands', endDate.dateFormatForForm, startDate.dateFormatForForm],
     tbody: [
       {
@@ -420,6 +424,52 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.bookkeeping,
+        rowData: ['Ethereum', '0', '0', '—', '0.01', '2', '100%'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USDT', '10', '10', '100%', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total guaranteed stop loss fee', '0', '$ 10', '100%', '0', '$ 2', '100%'],
+      },
+    ],
+  };
+
+  const income_statements_p11_1: ITable = {
+    thead: [
+      'Rebate expenses',
+      endDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+      startDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+    ],
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost Value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USD', '0', '$ 0', '—', '0', '$ 0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Bitcoin', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
         rowData: ['Ethereum', '0', '0', '—', '0', '0', '—'],
       },
       {
@@ -428,7 +478,236 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total guaranteed stop loss fee', '0', '$ 0', '—', '0', '$ 0', '—'],
+        rowData: ['Total rebate expenses', '0', '$ 0', '—', '0', '$ 0', '—'],
+      },
+    ],
+  };
+
+  const income_statements_p12_1: ITable = {
+    thead: [
+      'Cryptocurrency forex losses',
+      endDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+      startDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+    ],
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost Value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USD', '0', '$ 0', '—', '0', '$ 0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Bitcoin', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Ethereum', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USDT', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total cryptocurrency forex losses', '0', '$ 0', '—', '0', '$ 0', '—'],
+      },
+    ],
+  };
+
+  const income_statements_p13_1: ITable = {
+    subThead: [
+      'Comprehensive Income Statements - USD ($)',
+      `30 Days Ended ${endDate.monthAndDay},`,
+      '*-*',
+    ],
+    thead: ['shares in Thousands, $ in Thousands', endDate.year, endDate.lastYear],
+    tbody: [
+      {
+        rowType: RowType.title,
+        rowData: ['Revene:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Trading fee', '10', '2'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Spread Fee', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Withdrawal fee', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Deposit fee', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Liquidation fee', '10', '1'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Guaranteed stop loss fee', '10', '2'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total revenue', '$ 30', '$ 5'],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Cost:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Technical supplier costs', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Market data supplier costs', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['New coin listing cost', '0', '0'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total cost', '$ 0', '$ 0'],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Operating expenses:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Employee salaries', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Rent', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Marketing', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Rebate expenses', '0', '0'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total operating expenses', '$ 0', '$ 0'],
+      },
+    ],
+  };
+
+  const income_statements_p14_1: ITable = {
+    tbody: [
+      {
+        rowType: RowType.title,
+        rowData: ['Financial costs:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Interest expense', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Cryptocurrency forex losses', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Fiat to cryptocurrency conversion losses', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Cryptocurrency to fiat conversion losses', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Fiat to fiat conversion losses', '0', '0'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total financial costs', '$ 0', '$ 0'],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Total other gains/losses:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Investment gains', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Forex gains', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Cryptocurrency gains', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Total other gains', '0', '0'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Net profit', '$ 30', '$ 5'],
+      },
+    ],
+  };
+
+  const income_statements_p14_2: ITable = {
+    subThead: ['', `30 Days Ended ${endDate.monthAndDay},`, '*-*', '*-*'],
+    thead: ['', endDate.year, endDate.lastYear, '% Change'],
+    tbody: [
+      {
+        rowType: RowType.headline,
+        rowData: ['', '(in thousands)', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Trading fee', '10', '5', '100%'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Spread Fee', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Withdrawal fee', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Deposit fee', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Liquidation fee', '10', '8', '25%'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Guaranteed stop loss fee', '10', '2', '400%'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total revenue', '$ 30', '$ 15', '100%'],
       },
     ],
   };
@@ -623,7 +902,6 @@ const ComprehensiveIncomeStatements = () => {
               highlighting the amount, cost value, and percentage of total fees for each currency.
             </p>
             <ReportTable tableData={income_statements_p9_1} />
-            <p className="italic text-lilac">Next Page</p>
           </div>
         </ReportPageBody>
         <hr />
@@ -643,52 +921,108 @@ const ComprehensiveIncomeStatements = () => {
         </ReportPageBody>
         <hr />
 
-        {/* Info: (20230807 - Julian) Page 8 */}
-        <ReportPageBody reportTitle={reportTitle} currentPage={8}>
-          <div className="flex flex-col gap-y-10px leading-5">
-            <h1 className="text-lg font-bold text-violet">Exchange rate</h1>
-            <ul className="ml-5 list-disc text-xxs text-lilac">
-              <li>
-                The table represents the exchange rates at 00:00 in the UTC+0 time zone. The
-                exchange rates are used in revenue recognization.
-              </li>
-              <li>
-                Please note that the values are approximate and may vary slightly due to market
-                fluctuations.
-              </li>
-            </ul>
+        {/* Info: (20230906 - Julian) Page 11 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={11}>
+          <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+            <p className="font-bold">Rebate expenses</p>
+            <p>
+              This section offers a comprehensive view of the expenses related to rebates provided
+              to our customers. The table contrasts the figures from
+              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with those
+              from<span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
+            </p>
+            <ReportTable tableData={income_statements_p11_1} />
+          </div>
+        </ReportPageBody>
+        <hr />
+
+        {/* Info: (20230906 - Julian) Page 12 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={12}>
+          <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+            <p className="font-bold">Cryptocurrency forex losses</p>
+            <p>
+              The table below provides insights into the losses incurred from cryptocurrency forex
+              activities. It contrasts the data from
+              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with that of
+              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, showcasing
+              the amount, cost value, and percentage of total losses for each currency.
+            </p>
+            <ReportTable tableData={income_statements_p12_1} />
+          </div>
+        </ReportPageBody>
+        <hr />
+
+        {/* Info: (20230906 - Julian) Page 13 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={13}>
+          <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+            {/* Info: (20230906 - Julian) Note 4 */}
+            <h2 className="font-bold uppercase">4. Results of Operations</h2>
+            <p>The following table summarizes the historical statement of income data:</p>
+            <ReportTable tableData={income_statements_p13_1} />
+          </div>
+        </ReportPageBody>
+        <hr />
+
+        {/* Info: (20230906 - Julian) Page 14 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={14}>
+          <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+            <ReportTable tableData={income_statements_p14_1} />
+            <p>
+              Comparison of the 30 days ended
+              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span> and
+              <span className="font-bold text-violet"> {endDate.lastYear}</span>
+            </p>
+            <ReportTable tableData={income_statements_p14_2} />
+          </div>
+        </ReportPageBody>
+        <hr />
+
+        {/* Info: (20230906 - Julian) Page 15 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={15}>
+          <div className="flex flex-col gap-y-5px text-xs leading-5">
+            {/* Info: (20230906 - Julian) Note 5 */}
+            <h2 className="font-bold uppercase">5. Exchange rate</h2>
+            <p>
+              The table represents the exchange rates at 00:00 in the UTC+0 time zone. The exchange
+              rates are used in revenue recognization.
+            </p>
 
             <ReportExchageRateForm />
           </div>
         </ReportPageBody>
         <hr />
 
-        {/* Info: (20230807 - Julian) Page 9 */}
-        <ReportPageBody reportTitle={reportTitle} currentPage={9}>
-          <div className="flex flex-col gap-y-16px py-16px text-xs leading-5">
-            <h2 className="font-bold uppercase">6. Market price risk of crypto assets</h2>
+        {/* Info: (20230906 - Julian) Page 16 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={16}>
+          <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+            <p>
+              Please note that the values are approximate and may vary slightly due to market
+              fluctuations.
+            </p>
+            {/* Info: (20230906 - Julian) Note 6 */}
+            <h2 className="font-bold uppercase">6. Market price risk of cryptocurrencies</h2>
             <p>
               Our revenue model primarily hinges on transaction fees, which can be a flat fee or
               calculated as a percentage of the transaction value. The exact fee may fluctuate
-              depending on the payment type and the transaction value.
+              depending on the payment type and the transaction value.{' '}
             </p>
             <p>
-              However, it's important to be cognizant of the risks associated with crypto asset
+              However, it's important to be cognizant of the risks associated with cryptocurrency
               price volatility, which could negatively impact our operational results. Market prices
-              of Bitcoin, Ethereum, and other crypto assets play a crucial role in determining our
-              future profitability. These prices have shown significant fluctuation month over
+              of Bitcoin, Ethereum, and other cryptocurrencies play a crucial role in determining
+              our future profitability. These prices have shown significant fluctuation month over
               month, matching the pattern of our operational results, and there is no certainty that
               they will follow historical trends.
             </p>
             <p>
-              A downturn in the market price of Bitcoin, Ethereum, and other crypto assets could
-              negatively affect our earnings, the carrying value of our crypto assets, and our
+              A downturn in the market price of Bitcoin, Ethereum, and other cryptocurrencies could
+              negatively affect our earnings, the carrying value of our cryptocurrencies, and our
               projected future cash flows. It could also pose a challenge to our liquidity and
               capability to fulfill ongoing obligations.
             </p>
             <p>
-              In terms of accounting procedures, we record impairment charges on our crypto assets
-              when the market prices fall below the assets' carrying value.
+              In terms of accounting procedures, we record impairment charges on our
+              cryptocurrencies when the market prices fall below the assets' carrying value.
             </p>
           </div>
         </ReportPageBody>
