@@ -1,8 +1,8 @@
 import Head from 'next/head';
-import NavBar from '../../components/nav_bar/nav_bar';
-import AllChainPageBody from '../../components/all_chain_page_body/all_chain_page_body';
+import NavBar from '../../../components/nav_bar/nav_bar';
+import AllChainPageBody from '../../../components/all_chain_page_body/all_chain_page_body';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {ILocale} from '../../interfaces/locale';
+import {ILocale} from '../../../interfaces/locale';
 
 const ChainsPage = () => {
   return (

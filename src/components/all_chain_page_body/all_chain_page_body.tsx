@@ -1,40 +1,33 @@
-import {useState} from 'react';
 import Footer from '../footer/footer';
 import ChainsCard from '../chain_card/chain_card';
-import DatePicker from '../date_picker/date_picker';
+import Breadcrumb from '../../components/breadcrumb/breadcrumb';
 import {dummyChains} from '../../constants/config';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IDatePeriod} from '../../interfaces/date_period';
-import {timestampToString} from '../../lib/common';
+import {BFAURL} from '../../constants/url';
 
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  {
-    /* Till: (20230831 - Julian) Debug 用 */
-  }
-  const [filteredPeriod, setFilteredPeriod] = useState<IDatePeriod>({
-    startTimeStamp: 0,
-    endTimeStamp: 0,
-  });
+  const crumbs = [
+    {
+      label: t('HOME_PAGE.BREADCRUMB_TITLE'),
+      path: BFAURL.APP,
+    },
+    {
+      label: t('CHAINS_PAGE.BREADCRUMB_TITLE'),
+      path: BFAURL.CHAINS,
+    },
+  ];
 
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
-      <div className="flex w-full flex-1 flex-col px-4 pt-32 lg:px-20">
+      <div className="flex w-full flex-1 flex-col px-5 pt-28 lg:px-20">
         <div className="">
-          <p>Breadcrumb</p>
-        </div>
-        {/* Till: (20230831 - Julian) Debug 用 */}
-        <div className="">
-          <p className="text-rose-300">
-            filteredPeriod: {timestampToString(filteredPeriod.startTimeStamp).date} -{' '}
-            {timestampToString(filteredPeriod.endTimeStamp).date}
-          </p>
-          <DatePicker filteredPeriod={filteredPeriod} setFilteredPeriod={setFilteredPeriod} />
+          <Breadcrumb crumbs={crumbs} />
         </div>
         <div className="flex justify-center p-10">
-          <h1 className="text-48px font-bold">
+          <h1 className="text-2xl font-bold lg:text-48px">
             {t('CHAINS_PAGE.TITLE')}
             <span className="text-primaryBlue"> {t('CHAINS_PAGE.TITLE_HIGHLIGHT')}</span>
           </h1>

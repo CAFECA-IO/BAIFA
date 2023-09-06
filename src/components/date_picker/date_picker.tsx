@@ -25,7 +25,6 @@ interface IPopulateDatesParams {
 }
 
 interface IDatePickerProps {
-  filteredPeriod: IDatePeriod;
   setFilteredPeriod: Dispatch<SetStateAction<IDatePeriod>>;
 }
 
@@ -138,7 +137,7 @@ const PopulateDates = ({
   );
 };
 
-const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
+const DatePicker = ({setFilteredPeriod}: IDatePickerProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const {targetRef, componentVisible, setComponentVisible} = useOuterClick<HTMLDivElement>(false);
@@ -275,12 +274,12 @@ const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
   const displayMonthAndYear = `${t(MONTH_LIST[selectedMonth - 1])} ${selectedYear}`;
 
   return (
-    <div className="relative">
+    <div className="relative flex w-full flex-col items-center lg:w-auto">
       {/* Info: (20230830 - Julian) Select Period button */}
 
       <div
         onClick={openCalendeHandler}
-        className="flex w-300px items-center space-x-3 rounded bg-darkPurple px-6 py-4 font-inter text-hoverWhite hover:cursor-pointer"
+        className="flex w-full items-center space-x-3 rounded bg-darkPurple px-6 py-4 font-inter text-hoverWhite hover:cursor-pointer lg:w-300px"
       >
         <p className="flex-1 whitespace-nowrap text-base">{displayPeriod}</p>
         <Image src="/icons/calender.svg" width={24} height={24} alt="calender_icon" />
@@ -289,7 +288,7 @@ const DatePicker = ({filteredPeriod, setFilteredPeriod}: IDatePickerProps) => {
       {/* Info: (20230830 - Julian) Calender part */}
       <div
         ref={targetRef}
-        className={`absolute top-16 grid w-300px items-center space-y-4 rounded ${
+        className={`absolute top-16 z-20 grid w-300px items-center space-y-4 rounded ${
           componentVisible
             ? 'visible translate-y-0 grid-rows-1 opacity-100'
             : 'invisible -translate-y-10 grid-rows-0 opacity-0'
