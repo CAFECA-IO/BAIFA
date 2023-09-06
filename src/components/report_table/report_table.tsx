@@ -132,7 +132,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
           {displayContent}
         </tr>
       );
-    // Info: (20230809 - Julian) 第一格灰字，其餘置中黑字
+    // Info: (20230809 - Julian) 第一格灰字，其餘置右黑字
     case RowType.bookkeeping:
       return (
         <tr className="border-x border-b border-black">

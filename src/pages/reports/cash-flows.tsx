@@ -956,7 +956,6 @@ const StatementsOfCashFlows = () => {
               .
             </p>
             <ReportTable tableData={cash_flows_p11_1} />
-            <p className="italic text-lilac">Next Page</p>
           </div>
         </ReportPageBody>
         <hr />
@@ -974,7 +973,6 @@ const StatementsOfCashFlows = () => {
               from<span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={cash_flows_p12_1} />
-            <p className="italic text-lilac">Next Page</p>
           </div>
         </ReportPageBody>
         <hr />
@@ -991,7 +989,6 @@ const StatementsOfCashFlows = () => {
               <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={cash_flows_p13_1} />
-            <p className="italic text-lilac">Next Page</p>
           </div>
         </ReportPageBody>
         <hr />
@@ -1007,7 +1004,6 @@ const StatementsOfCashFlows = () => {
               <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={cash_flows_p14_1} />
-            <p className="italic text-lilac">Next Page</p>
           </div>
         </ReportPageBody>
         <hr />
@@ -1023,7 +1019,6 @@ const StatementsOfCashFlows = () => {
               from<span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={cash_flows_p15_1} />
-            <p className="italic text-lilac">Next Page</p>
           </div>
         </ReportPageBody>
         <hr />

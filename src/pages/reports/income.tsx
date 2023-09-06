@@ -3,12 +3,12 @@ import ReportCover from '../../components/report_cover/report_cover';
 import ReportContent from '../../components/report_content/report_content';
 import ReportPageBody from '../../components/report_page_body/report_page_body';
 import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
-import ReportTableNew from '../../components/report_table/report_table';
+import ReportTable from '../../components/report_table/report_table';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
 import {ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
-import {reportsDateSpan, operationContent} from '../../constants/config';
+import {reportsDateSpan} from '../../constants/config';
 import {timestampToString} from '../../lib/common';
 
 const ComprehensiveIncomeStatements = () => {
@@ -19,182 +19,419 @@ const ComprehensiveIncomeStatements = () => {
 
   const income_statements_p3_1: ITable = {
     subThead: ['Income Statements - USD ($)', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
-    thead: ['*|*', endDate.dateFormatForForm, startDate.dateFormatForForm],
+    thead: ['$ in Thousands', endDate.dateFormatForForm, startDate.dateFormatForForm],
     tbody: [
       {
         rowType: RowType.title,
         rowData: ['Revene:', '*-*', '*-*'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Net revenue:', '$ 349.09', '$ 67.21'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Trading fee', '10', '5'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Spread Fee', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Withdrawal fee', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Deposit fee', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Liquidation fee', '10', '8'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Guaranteed stop loss fee', '10', '2'],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total revenue', '349.09', '67.21'],
+        rowData: ['Total revenue', '$30', '$15'],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Cost:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Technical supplier costs', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Market data supplier costs', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['New coin listing cost', '0', '0'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total cost', '$0', '$0'],
       },
       {
         rowType: RowType.title,
         rowData: ['Operating expenses:', '*-*', '*-*'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Transaction expense', '0', '0'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Employee salaries', '0', '0'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Total operating expenses', '0', '0'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Rent', '0', '0'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Operating profit', '349.09', '67.21'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Marketing', '0', '0'],
       },
       {
-        rowType: RowType.emptyRow,
-        rowData: ['', '*-*', '*-*'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Rebate expenses', '0', '0'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.foot,
+        rowData: ['Total operating expenses', '$ 0', '$ 0'],
+      },
+    ],
+  };
+
+  const income_statements_p4_1: ITable = {
+    tbody: [
+      {
+        rowType: RowType.title,
+        rowData: ['Financial costs:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
         rowData: ['Interest expense', '0', '0'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Profit before income taxes', '349.09', '67.21'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Cryptocurrency forex losses', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Fiat to cryptocurrency conversion losses', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Cryptocurrency to fiat conversion losses', '0', '0'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Fiat to fiat conversion losses', '0', '0'],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Net profit', '$ 349.09', '$ 67.21'],
-      },
-    ],
-  };
-
-  const income_statements_p3_2: ITable = {
-    subThead: [
-      'Comprehensive Income Statements - USD ($)',
-      `30 Days Ended ${endDate.monthAndDay},`,
-      '*-*',
-    ],
-    thead: ['*|*', endDate.dateFormatForForm, startDate.dateFormatForForm],
-    tbody: [
-      {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Net profit', '$ 349.09', '—'],
+        rowData: ['Total financial costs', '$ 0', '$ 0'],
       },
       {
         rowType: RowType.title,
-        rowData: ['Other comprehensive income (loss), net of tax:', '*-*', '*-*'],
+        rowData: ['Total other gains/losses:', '*-*', '*-*'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Foreign currency translation adjustments', '0', '—'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Investment gains', '0', '0'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Total other comprehensive income', '0', '—'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Forex gains', '0', '0'],
       },
       {
-        rowType: RowType.foot,
-        rowData: ['Comprehensive income', '$ 349.09', '—'],
-      },
-    ],
-  };
-
-  const income_statements_p6_1: ITable = {
-    thead: ['', endDate.dateFormatForForm],
-    tbody: [
-      {
-        rowType: RowType.title,
-        rowData: ['Net profit', '*-*'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Cryptocurrency gains', '0', '0'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Transaction revenue', '$ 349.09'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Total other gains', '0', '0'],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total revenue', '$ 349.09'],
+        rowData: ['Net profit', '$ 30', '$ 15'],
       },
     ],
   };
 
   const income_statements_p7_1: ITable = {
-    subThead: ['Income Statements - USD ($)', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
-    thead: ['*|*', endDate.dateFormatForForm, startDate.dateFormatForForm],
+    thead: [
+      'Trading fee',
+      endDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+      startDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+    ],
     tbody: [
       {
-        rowType: RowType.title,
-        rowData: ['Revenue:', '*-*', '*-*'],
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost Value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
       },
       {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Net revenue', '$ 349.09', '$ 67.21'],
+        rowType: RowType.bookkeeping,
+        rowData: ['USD', '10', '$ 10', '100%', '$ 5', '$ 5', '100%'],
       },
       {
-        rowType: RowType.foot,
-        rowData: ['Total revenue', '349.09', '67.21'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Bitcoin', '0', '0', '—', '0', '0', '—'],
       },
       {
-        rowType: RowType.title,
-        rowData: ['Operating expenses:', '*-*', '*-*'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Ethereum', '0', '0', '—', '0', '0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Transaction expense', '0', '0'],
-      },
-      {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Total operating expenses', '0', '0'],
-      },
-      {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Operating profit', '349.09', '67.21'],
-      },
-      {
-        rowType: RowType.emptyRow,
-        rowData: ['', '*-*', '*-*'],
-      },
-      {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Interest expense', '0', '0'],
-      },
-      {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Profit before income taxes', '349.09', '67.21'],
+        rowType: RowType.bookkeeping,
+        rowData: ['USDT', '0', '0', '—', '0', '0', '—'],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Net profit', '$ 349.09', '$ 67.21'],
+        rowData: ['Total trading fee', '—', '$ 10', '100%', '—', '$ 5', '100%'],
       },
     ],
   };
 
   const income_statements_p7_2: ITable = {
-    subThead: ['', `30 Days Ended ${endDate.monthAndDay},`, '*-*', '*-*'],
-    thead: ['*|*', endDate.year, endDate.lastYear, '% Change'],
+    thead: [
+      'Spread fee',
+      endDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+      startDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+    ],
     tbody: [
       {
-        rowType: RowType.title,
-        rowData: ['Revenue:', '*-*', '*-*'],
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost Value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
       },
       {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Net revenue', '$ 349.09', '—', '—'],
+        rowType: RowType.bookkeeping,
+        rowData: ['USD', '0', '$ 0', '—', '0', '$ 0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
-        rowData: ['Total revenue', '$ 349.09', '—', '—'],
+        rowType: RowType.bookkeeping,
+        rowData: ['Bitcoin', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Ethereum', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USDT', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total spread fee', '0', '$ 0', '—', '0', '$ 0', '—'],
       },
     ],
   };
 
-  const displayOperations = (
-    <>
-      <h2 className="font-bold uppercase"> 1. {operationContent.title}</h2>
-      {operationContent.content.map((item, index) => (
-        <p key={index}>{item}</p>
-      ))}
-    </>
-  );
+  const income_statements_p8_1: ITable = {
+    thead: [
+      'Withdrawal fee',
+      endDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+      startDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+    ],
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost Value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USD', '0', '$ 0', '—', '0', '$ 0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Bitcoin', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Ethereum', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USDT', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total withdrawal fee', '0', '$ 0', '—', '0', '$ 0', '—'],
+      },
+    ],
+  };
+
+  const income_statements_p8_2: ITable = {
+    thead: [
+      'Deposit fee',
+      endDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+      startDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+    ],
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost Value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USD', '0', '$ 0', '—', '0', '$ 0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Bitcoin', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Ethereum', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USDT', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total deposit fee', '0', '$ 0', '—', '0', '$ 0', '—'],
+      },
+    ],
+  };
+
+  const income_statements_p9_1: ITable = {
+    thead: [
+      'Liquidation fee',
+      endDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+      startDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+    ],
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost Value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USD', '0', '$ 0', '—', '0', '$ 0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Bitcoin', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Ethereum', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USDT', '10', '10', '100%', '8', '8', '100%'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total liquidation fee', '0', '$ 10', '100%', '0', '$ 8', '100%'],
+      },
+    ],
+  };
+
+  const income_statements_p10_1: ITable = {
+    thead: [
+      'Guaranteed stop loss fee',
+      endDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+      startDate.dateFormatForForm,
+      '*-*',
+      '*-*',
+    ],
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost Value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USD', '0', '$ 0', '—', '0', '$ 0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Bitcoin', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Ethereum', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['USDT', '0', '0', '—', '0', '0', '—'],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total guaranteed stop loss fee', '0', '$ 0', '—', '0', '$ 0', '—'],
+      },
+    ],
+  };
 
   return (
     <>
@@ -220,23 +457,49 @@ const ComprehensiveIncomeStatements = () => {
 
         {/* Info: (20230807 - Julian) Page 3 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={3}>
-          <div className="flex flex-col gap-y-30px py-16px leading-5">
+          <div className="flex flex-col gap-y-12px py-16px leading-5">
             <h1 className="text-2xl font-bold text-violet">{reportTitle}</h1>
-            <ReportTableNew tableData={income_statements_p3_1} />
-
-            <h1 className="text-2xl font-bold text-violet">Comprehensive Income Statements</h1>
-            <ReportTableNew tableData={income_statements_p3_2} />
+            <ReportTable tableData={income_statements_p3_1} />
           </div>
         </ReportPageBody>
         <hr />
 
-        {/* Info: (20230807 - Julian) Page 4 */}
+        {/* Info: (20230906 - Julian) Page 4 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={4}>
-          <div className="flex flex-col gap-y-15px py-16px text-xs leading-5">
+          <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+            <ReportTable tableData={income_statements_p4_1} />
+          </div>
+        </ReportPageBody>
+        <hr />
+
+        {/* Info: (20230906 - Julian) Page 5 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={5}>
+          <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
             <h1 className="text-lg font-bold text-violet">
               Note To Comprehensive Income Statements
             </h1>
-            {displayOperations}
+            {/* Info: (20230906 - Julian) Note 1 */}
+            <h2 className="font-bold uppercase"> 1. Nature of Operations</h2>
+            <p>
+              TideBit DeFi is a decentralized financial exchange that provides accessible financial
+              services to a broad range of users. As a part of the burgeoning decentralized finance
+              (DeFi) sector, TideBit DeFi leverages blockchain technology to offer financial
+              services that are open, transparent, and free from the control of traditional
+              financial intermediaries like banks and brokerages.
+            </p>
+            <p>
+              Operating on a global scale, TideBit DeFi's platform allows users to trade a variety
+              of digital assets in a secure and decentralized manner. This means that rather than
+              relying on a central authority to facilitate transactions, trades are executed
+              directly between users through smart contracts on the blockchain. This not only
+              enhances security but also increases transaction speed and reduces costs.
+            </p>
+            <p>
+              By harnessing the power of blockchain technology and the principles of
+              decentralization, TideBit DeFi is democratizing access to financial services and
+              providing users with greater control over their financial destiny.
+            </p>
+            {/* Info: (20230906 - Julian) Note 2 */}
             <h2 className="font-bold uppercase"> 2. SUMMARY OF SIGNIFICANT ACCOUNTING POLICIES</h2>
             <p className="font-bold">Foundation for Presentation and Consolidation Principles </p>
             <p>
@@ -245,50 +508,33 @@ const ComprehensiveIncomeStatements = () => {
               Accounting Principles ("GAAP") in the same manner as the audited financial statements.
               In the management's view, they include all necessary adjustments, which are only
               regular, recurring adjustments, for a fair representation of the Company's financial
-              statements for the periods shown. The non-audited operational results for the one
-              month ending <span className="font-bold text-violet">{endDate.dateFormatInUS}</span>,
-              may not necessarily predict the results for the full year or any other period.
+              statements for the periods shown. The non-audited operational results for the 30 days
+              ending <span className="font-bold text-violet">{endDate.dateFormatInUS}</span>, may
+              not necessarily predict the results for the full year or any other period.
             </p>
             <p className="font-bold">Use of estimates</p>
+            <p>
+              The creation of these financial statements in accordance with GAAP requires management{' '}
+            </p>
           </div>
         </ReportPageBody>
         <hr />
 
-        {/* Info: (20230807 - Julian) Page 5 */}
-        <ReportPageBody reportTitle={reportTitle} currentPage={5}>
-          <div className="flex flex-col gap-y-15px py-16px text-xs leading-5">
+        {/* Info: (20230906 - Julian) Page 6 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={6}>
+          <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
             <p>
-              The creation of these financial statements in accordance with GAAP requires management
               to make estimates and assumptions. Significant estimates and assumptions include the
-              fair value of customer crypto assets and liabilities.
+              fair value of customer cryptocurrencies and liabilities.
             </p>
-            <p className="font-bold">
-              Customer custodial funds and customer custodial cash liabilities
-            </p>
-            <p>
-              Customer custodial funds represent restricted cash and cash equivalents maintained on
-              <span className="font-bold text-violet"> BOLT VAULT</span> that are held for the
-              exclusive benefit of customers and deposits in transit from payment processors and
-              financial institutions. Under GAAP, the balance in these accounts that exceeds
-              customer custodial cash liabilities is presented within cash and cash equivalents.
-              Customer custodial cash liabilities represent the obligation to return crypto asset
-              deposits held by customers on TideBit DeFi and unsettled crypto deposits and
-              withdrawals. The Company restricts the use of the assets underlying the customer
-              custodial funds to meet regulatory requirements and classifies the assets as current
-              based on their purpose and availability to fulfill the Company’s direct obligation
-              under customer custodial cash liabilities. As of
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span> and
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, the
-              Company’s eligible liquid assets were greater than the aggregate amount of customer
-              custodial cash liabilities
-            </p>
-            <h2 className="font-bold uppercase">3. REVENUE</h2>
-            <p>Revenue recognition</p>
+            {/* Info: (20230906 - Julian) Note 3 */}
+            <h2 className="font-bold uppercase">3. REVENUE, EXPENSES AND COSTS ANALYSIS</h2>
+            <p className="font-bold">Revenue recognition</p>
             <p>
               The organization establishes the process of acknowledging income from customer
               contracts through the subsequent stages:
             </p>
-            <ul className="my-4 ml-5 list-disc text-xs leading-5">
+            <ul className="ml-5 list-disc text-xs leading-5">
               <li>Pinpointing the agreement, or agreements, made with the client;</li>
               <li>Recognizing the duties to be performed as stated in the agreement;</li>
               <li>Calculating the price of the transaction;</li>
@@ -302,69 +548,97 @@ const ComprehensiveIncomeStatements = () => {
             </ul>
             <p>
               Revenue is recognized when the control of the promised products or services is handed
-            </p>
-          </div>
-        </ReportPageBody>
-        <hr />
-
-        {/* Info: (20230807 - Julian) Page 6 */}
-        <ReportPageBody reportTitle={reportTitle} currentPage={6}>
-          <div className="flex flex-col gap-y-15px py-16px text-xs leading-5">
-            <p>
               over to the clients, in a quantity that mirrors the payment the organization
-              anticipates to receive in return for those products or services. The organization
-              primarily accumulates income through transaction fees levied on the platform.
-            </p>
-
-            <ReportTableNew tableData={income_statements_p6_1} />
-
-            <p className="font-bold">Transaction revenue</p>
-            <p>
-              TideBit DeFi provides services centered around Contract for Differences (CFD) and
-              deposit cryptocurrency services. A significant part of our revenue comes from
-              transaction fees collected from customers. However, it's important to note that the
-              price of crypto assets isn't set by the Exchange, as it's a market rate established by
-              the users on the platform. Essentially, the Exchange plays the role of an agent,
-              enabling one customer to purchase crypto assets from another.
+              anticipates to receive in return for those products or services.
             </p>
             <p>
-              Our contracts with customers are generally open-ended and either party can terminate
-              them without incurring a termination penalty. Therefore, these contracts are defined
-              at the transaction level and do not extend beyond the service already provided.
+              It is essential to provide our investors with a granular view of our financial
+              activities. By breaking down each revenue and cost category associated with fiat
+              currencies and cryptocurrencies, we aim to offer a comprehensive understanding of our
+              operations and financial health. This detailed approach ensures that our stakeholders
+              can make informed decisions based on a thorough analysis of our income streams and
+              expenditures. Below, you'll find specific breakdowns for each category:
             </p>
+            <p className="font-bold">Trading fee</p>
             <p>
-              In certain instances, the transaction fee is collected in the form of crypto assets.
-              In these cases, the revenue is measured based on the amount of crypto assets received
-              and their fair value at the time of the transaction. Once a transaction is processed,
-              TideBit DeFi considers its performance obligation fulfilled and accordingly recognizes
-              the revenue.
+              The table below provides a detailed breakdown of the trading fees we have collected.
+              It contrasts the data from
+              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with that of
+              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, showcasing
+              the amount, cost value, and percentage of total fees for each currency.
             </p>
-            <h2 className="font-bold uppercase">4. Operating expenses</h2>
-            <p>Operating expenses consist of transaction expense.</p>
           </div>
         </ReportPageBody>
         <hr />
 
-        {/* Info: (20230807 - Julian) Page 7 */}
+        {/* Info: (20230906 - Julian) Page 7 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={7}>
-          <div className="flex flex-col gap-y-10px py-16px text-xs leading-5">
-            <p className="font-bold">Transaction expense</p>
+          <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+            <ReportTable tableData={income_statements_p7_1} />
+            <p className="font-bold">Spread fee</p>
             <p>
-              Transaction expense includes costs incurred to operate our platform and process crypto
-              asset trades. These costs include miner fees to process transactions on blockchain
-              networks, fees paid to other exchanges.
+              The table below provides a detailed breakdown of the spread fees we have collected. It
+              contrasts the data from
+              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with that of
+              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, showcasing
+              the amount, cost value, and percentage of total fees for each currency.
             </p>
-            <h2 className="font-bold uppercase">5. Results of Operations</h2>
-            <p>The following table summarizes the historical statement of operations data:</p>
-            <ReportTableNew tableData={income_statements_p7_1} />
+            <ReportTable tableData={income_statements_p7_2} />
+          </div>
+        </ReportPageBody>
+        <hr />
+
+        {/* Info: (20230906 - Julian) Page 8 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={8}>
+          <div className="flex flex-col gap-y-3px text-xs leading-5">
+            <p className="font-bold">Withdrawal fee</p>
             <p>
-              Comparison of the
-              <span className="font-bold text-violet">
-                {' '}
-                30 days ended {endDate.dateFormatInUS} and {endDate.lastYear}
-              </span>
+              This section offers insights into the fees associated with customer withdrawals. The
+              table compares the withdrawal fee data from
+              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, to that of
+              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
             </p>
-            <ReportTableNew tableData={income_statements_p7_2} />
+            <ReportTable tableData={income_statements_p8_1} />
+            <p className="font-bold">Deposit fee</p>
+            <p>
+              Here, we present a comprehensive overview of the fees collected from customer
+              deposits. The table contrasts the figures from
+              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with those
+              from<span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
+            </p>
+            <ReportTable tableData={income_statements_p8_2} />
+          </div>
+        </ReportPageBody>
+        <hr />
+
+        {/* Info: (20230906 - Julian) Page 9 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={9}>
+          <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+            <p className="font-bold">Liquidation fee</p>
+            <p>
+              This table provides a detailed view of the fees collected from liquidation activities.
+              It compares the data from
+              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, to that of
+              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>,
+              highlighting the amount, cost value, and percentage of total fees for each currency.
+            </p>
+            <ReportTable tableData={income_statements_p9_1} />
+            <p className="italic text-lilac">Next Page</p>
+          </div>
+        </ReportPageBody>
+        <hr />
+
+        {/* Info: (20230906 - Julian) Page 10 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={10}>
+          <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+            <p className="font-bold">Guaranteed stop loss fee</p>
+            <p>
+              Below is a representation of the fees associated with the guaranteed stop loss
+              feature. The table contrasts the data from
+              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with that of
+              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
+            </p>
+            <ReportTable tableData={income_statements_p10_1} />
           </div>
         </ReportPageBody>
         <hr />
