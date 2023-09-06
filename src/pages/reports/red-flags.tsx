@@ -41,51 +41,51 @@ const StatementOfRedFlags = () => {
         rowData: ['Red Flag Type:', '*-*', '*-*', '*-*'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Transactions with Blacklisted Entities', '0', '0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Involvement with Gambling Websites', '0', '0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Frequent Large Transfers', '0', '0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['High-Risk IP Addresses', '0', '0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Connections with Coin Mixers', '0', '0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Multiple Transfers', '0', '0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Involvement with the Dark Web', '0', '0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Large Withdrawals', '0', '0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Large Deposits', '0', '0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Multiple Deposits', '0', '0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Multiple Transfers', '0', '0', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Multiple Withdrawals', '0', '0', '—'],
       },
     ],
@@ -100,51 +100,51 @@ const StatementOfRedFlags = () => {
         rowData: ['Red Flag Type:', '*-*', '*-*', '*-*'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Transactions with Blacklisted Entities', '0', '—', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Involvement with Gambling Websites', '0', '—', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Frequent Large Transfers', '0', '—', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['High-Risk IP Addresses', '0', '—', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Connections with Coin Mixers', '0', '—', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Multiple Transfers', '0', '—', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Involvement with the Dark Web', '0', '—', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Large Withdrawals', '0', '—', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Large Deposits', '0', '—', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Multiple Deposits', '0', '—', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Multiple Transfers', '0', '—', '—'],
       },
       {
-        rowType: RowType.contentWithMainColumn,
+        rowType: RowType.bookkeeping,
         rowData: ['Multiple Withdrawals', '0', '—', '—'],
       },
     ],
