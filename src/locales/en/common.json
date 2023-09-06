@@ -91,7 +91,8 @@
     "BLOCKS_TAB": "Blocks",
     "TRANSACTIONS_TAB": "Transactions",
     "SEARCH_PLACEHOLDER_BLOCKS": "Search in Block list",
-    "SEARCH_PLACEHOLDER_TRANSACTIONS": "Search in Transaction list"
+    "SEARCH_PLACEHOLDER_TRANSACTIONS": "Search in Transaction list",
+    "STABILITY": "Stability"
   },
   "DATE_PICKER": {
     "DATE": "Date",

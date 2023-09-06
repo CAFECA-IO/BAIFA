@@ -129,8 +129,14 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+  const paths = dummyChains
+    .flatMap(chain => {
+      return locales?.map(locale => ({params: {chainId: chain.chainId}, locale}));
+    })
+    .filter((path): path is {params: {chainId: string}; locale: string} => !!path);
+
   return {
-    paths: [{params: {chainId: 'bolt'}}],
+    paths: paths,
     fallback: 'blocking',
   };
 };

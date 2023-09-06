@@ -19,6 +19,8 @@ module.exports = {
         lightRed: '#FC8181',
         lightRed2: '#E96C67',
 
+        darkOrange: '#FFA600',
+
         lilac: '#ABA7BD',
         lilac2: '#6857d733',
         violet: '#6857D7',
@@ -334,6 +336,10 @@ module.exports = {
         '80px': '80px',
         '140px': '140px',
         '250px': '250px',
+      },
+      minHeight: {
+        'fit': 'fit-content',
+        '320px': '320px',
       },
       gridTemplateRows: {
         0: 'repeat(1, minmax(0px, 0fr))',

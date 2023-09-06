@@ -1,3 +1,5 @@
+import {MONTH_LIST} from '../constants/config';
+
 export const timestampToString = (timestamp: number) => {
   if (timestamp === 0)
     return {
@@ -37,7 +39,8 @@ export const timestampToString = (timestamp: number) => {
     'Nov.',
     'Dec.',
   ];
-  const monthNameFull = [
+
+  const monthFullName = [
     'January',
     'February',
     'March',
@@ -53,23 +56,24 @@ export const timestampToString = (timestamp: number) => {
   ];
 
   const monthNameShort = monthNamesInShort[monthIndex];
-  const monthName = monthNameFull[monthIndex];
+  const monthName = monthFullName[monthIndex];
   const dateSrting = `${year}-${month.toString().padStart(2, '0')}-${day
     .toString()
     .padStart(2, '0')}`;
   const dayString = `${day.toString().padStart(2, '0')}`;
+  const monthString = MONTH_LIST[monthIndex];
 
   return {
-    date: dateSrting,
-    day: `${dayString}`,
-    month: `${monthNameShort}`,
-    monthAndDay: `${monthNameShort} ${day}`,
-    year: `${year}`,
-    lastYear: `${year - 1}`,
-    lastYearDate: `${monthName} ${day}, ${year - 1}`,
-    dateFormatInUS: `${monthName} ${day}, ${year}`,
-    dateFormatForForm: `${monthNameShort} ${day}, ${year}`,
-    time: `${hour}:${minute}:${second}`,
+    date: dateSrting, // e.g. 2021-01-01
+    day: `${dayString}`, // e.g. 01
+    month: `${monthString}`, // e.g. January (with i18n)
+    monthAndDay: `${monthNameShort} ${day}`, // e.g. Jan. 01
+    year: `${year}`, // e.g. 2021
+    lastYear: `${year - 1}`, // e.g. 2020
+    lastYearDate: `${monthName} ${day}, ${year - 1}`, // e.g. Jan. 01, 2020
+    dateFormatInUS: `${monthName} ${day}, ${year}`, // e.g. Jan. 01, 2021
+    dateFormatForForm: `${monthNameShort} ${day}, ${year}`, // e.g. Jan. 01, 2021
+    time: `${hour}:${minute}:${second}`, // e.g. 00:00:00
   };
 };
 

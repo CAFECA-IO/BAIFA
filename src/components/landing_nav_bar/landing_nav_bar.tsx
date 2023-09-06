@@ -55,6 +55,7 @@ const LandingNavBar = () => {
         <li>
           <Link
             href={BFAURL.APP}
+            target="_blank"
             className="rounded-lg bg-violet px-10 py-3 text-white hover:bg-hoverWhite hover:text-black"
           >
             {t('NAV_BAR.LAUNCH_APP')}
@@ -91,7 +92,7 @@ const LandingNavBar = () => {
           </Link>
         </li>
         <li className="px-10 py-4">
-          <Link href={BFAURL.APP} className="px-10 py-4">
+          <Link href={BFAURL.APP} target="_blank" className="px-10 py-4">
             {t('NAV_BAR.LAUNCH_APP')}
           </Link>
         </li>
