@@ -3,16 +3,16 @@ import ReportCover from '../../components/report_cover/report_cover';
 import ReportContent from '../../components/report_content/report_content';
 import ReportPageBody from '../../components/report_page_body/report_page_body';
 import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
-import ReportTableNew from '../../components/report_table/report_table';
+import ReportTable from '../../components/report_table/report_table';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {RowType} from '../../constants/table_row_type';
-import {reportsDateSpan, operationContent} from '../../constants/config';
+import {reportsDateSpan} from '../../constants/config';
 import {ITable} from '../../interfaces/report_table';
 import {timestampToString} from '../../lib/common';
 
 const BalanceSheets = () => {
   const reportTitle = BaifaReports.BALANCE_SHEETS;
-  const contentList = ['Balance Sheets', 'Note To Balance Sheets'];
+  const contentList = [reportTitle, `Note To ${reportTitle}`];
   const startDate = timestampToString(reportsDateSpan.start);
   const endDate = timestampToString(reportsDateSpan.end);
 
@@ -225,15 +225,6 @@ const BalanceSheets = () => {
     ],
   };
 
-  const displayOperations = (
-    <>
-      <h2 className="font-bold uppercase"> 1. {operationContent.title}</h2>
-      {operationContent.content.map((item, index) => (
-        <p key={index}>{item}</p>
-      ))}
-    </>
-  );
-
   return (
     <>
       <Head>
@@ -260,7 +251,7 @@ const BalanceSheets = () => {
         <ReportPageBody reportTitle={reportTitle} currentPage={3}>
           <div className="flex flex-col gap-y-12px py-16px leading-5">
             <h1 className="text-32px font-bold text-violet">{reportTitle}</h1>
-            <ReportTableNew tableData={balance_sheets_p3_1} />
+            <ReportTable tableData={balance_sheets_p3_1} />
           </div>
         </ReportPageBody>
         <hr />
@@ -270,7 +261,26 @@ const BalanceSheets = () => {
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
             <h1 className="text-lg font-bold text-violet">Notes to Balance Sheets</h1>
             {/* Info: (20230802 - Julian) Note 1 */}
-            {displayOperations}
+            <h2 className="font-bold uppercase"> 1. Nature of Operations</h2>
+            <p>
+              TideBit DeFi is a decentralized financial exchange that provides accessible financial
+              services to a broad range of users. As a part of the burgeoning decentralized finance
+              (DeFi) sector, TideBit DeFi leverages blockchain technology to offer financial
+              services that are open, transparent, and free from the control of traditional
+              financial intermediaries like banks and brokerages.
+            </p>
+            <p>
+              Operating on a global scale, TideBit DeFi's platform allows users to trade a variety
+              of digital assets in a secure and decentralized manner. This means that rather than
+              relying on a central authority to facilitate transactions, trades are executed
+              directly between users through smart contracts on the blockchain. This not only
+              enhances security but also increases transaction speed and reduces costs.
+            </p>
+            <p>
+              By harnessing the power of blockchain technology and the principles of
+              decentralization, TideBit DeFi is democratizing access to financial services and
+              providing users with greater control over their financial destiny.
+            </p>
             {/* Info: (20230802 - Julian) Note 2 */}
             <h2 className="font-bold uppercase">2. SUMMARY OF SIGNIFICANT ACCOUNTING POLICIES</h2>
             <p className="font-bold">Foundation for Presentation and Consolidation Principles</p>
@@ -354,7 +364,7 @@ const BalanceSheets = () => {
               The following table sets forth the fair value of customer cryptocurrencies, as shown
               on the condensed consolidated balance sheets, as user deposits (in billions):
             </p>
-            <ReportTableNew tableData={balance_sheets_p6_1} />
+            <ReportTable tableData={balance_sheets_p6_1} />
             {/* Info: (20230802 - Julian) Note 4 */}
             <h2 className="font-bold uppercase">4. FAIR VALUE MEASUREMENTS</h2>
             <p>
@@ -370,8 +380,8 @@ const BalanceSheets = () => {
         {/* Info: (20230802 - Julian) Page 7 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={7}>
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
-            <ReportTableNew tableData={balance_sheets_p7_1} />
-            <ReportTableNew tableData={balance_sheets_p7_2} />
+            <ReportTable tableData={balance_sheets_p7_1} />
+            <ReportTable tableData={balance_sheets_p7_2} />
             <p>
               Please note that the values are approximate and may vary slightly due to market
               fluctuations.

@@ -7,6 +7,7 @@ export const timestampToString = (timestamp: number) => {
       day: '-',
       month: '-',
       monthAndDay: '-',
+      monthFullName: '-',
       year: '-',
       lastYear: '-',
       lastYearDate: '-',
@@ -67,6 +68,7 @@ export const timestampToString = (timestamp: number) => {
     date: dateSrting, // e.g. 2021-01-01
     day: `${dayString}`, // e.g. 01
     month: `${monthString}`, // e.g. January (with i18n)
+    monthFullName: `${monthName}`, // e.g. January
     monthAndDay: `${monthNameShort} ${day}`, // e.g. Jan. 01
     year: `${year}`, // e.g. 2021
     lastYear: `${year - 1}`, // e.g. 2020

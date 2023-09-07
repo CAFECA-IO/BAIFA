@@ -3,7 +3,6 @@ export type IRowType =
   | 'title'
   | 'subtitle'
   | 'emptyRow'
-  | 'contentWithMainColumn'
   | 'bookkeeping'
   | 'content'
   | 'stringRow'
@@ -15,7 +14,6 @@ export type IRowTypeContent = {
   title: IRowType;
   subtitle: IRowType;
   emptyRow: IRowType;
-  contentWithMainColumn: IRowType;
   bookkeeping: IRowType;
   content: IRowType;
   stringRow: IRowType;
@@ -28,7 +26,6 @@ export const RowType: IRowTypeContent = {
   title: 'title',
   subtitle: 'subtitle',
   emptyRow: 'emptyRow',
-  contentWithMainColumn: 'contentWithMainColumn',
   bookkeeping: 'bookkeeping',
   content: 'content',
   stringRow: 'stringRow',

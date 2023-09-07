@@ -124,15 +124,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
           ))}
         </tr>
       );
-    // To be replace by RowType.bookkeeping
-    case RowType.contentWithMainColumn:
-      return (
-        <tr className="border-x border-b border-black">
-          <td className="max-w-250px border-l border-black p-5px text-lilac">{rowData[0]}</td>
-          {displayContent}
-        </tr>
-      );
-    // Info: (20230809 - Julian) 第一格灰字，其餘置中黑字
+    // Info: (20230809 - Julian) 第一格灰字，其餘置右黑字
     case RowType.bookkeeping:
       return (
         <tr className="border-x border-b border-black">
@@ -201,7 +193,7 @@ const ReportTable = ({tableData}: IReportTable) => {
             <th
               key={index}
               colSpan={1 + addThCol}
-              className={`max-w-250px whitespace-nowrap px-10px text-center font-bold ${thSize}`}
+              className={`max-w-250px whitespace-normal px-10px text-center font-bold ${thSize}`}
             >
               {item}
             </th>
