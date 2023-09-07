@@ -57,6 +57,7 @@ const Pagination = ({activePage, setActivePage, totalPages}: IPagination) => {
     <input
       name="page"
       type="number"
+      placeholder={`${activePage}`}
       className="flex h-48px w-48px items-center justify-center rounded border border-hoverWhite bg-darkPurple p-3 text-center text-sm text-hoverWhite"
       onChange={pageChangeHandler}
       onKeyDown={handleKeyDown}

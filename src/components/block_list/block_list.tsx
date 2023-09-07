@@ -19,6 +19,10 @@ const BlockList = ({blockData}: IBlockListProps) => {
     setTotalPages(Math.ceil(blockData.length / ITEM_PER_PAGE));
   }, [blockData]);
 
+  useEffect(() => {
+    setActivePage(1);
+  }, [blockData]);
+
   const blockList = blockData
     .map((block, index) => <BlockItem key={index} block={block} />)
     .slice(startIdx, endIdx);

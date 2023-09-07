@@ -24,17 +24,21 @@ const BlockItem = ({block}: IBlockItemProps) => {
 
   return (
     <div className="flex h-60px w-full items-center">
+      {/* Info: (20230907 - Julian) Create Time square */}
       <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-darkPurple">
         <p className="text-xl">{createdStr.day}</p>
         <p className="text-xs">{monthStr}</p>
         <p className="text-xs text-lilac">{createdStr.time}</p>
       </div>
       <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-8">
+        {/* Info: (20230907 - Julian) Block ID */}
         <h2 className="flex-1 text-xl">
           {t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')} <span className="text-primaryBlue">{block.id}</span>
         </h2>
+        {/* Info: (20230907 - Julian) Stability */}
         <div className="flex items-center space-x-2 px-2">
           <p className="text-sm">{t('CHAIN_DETAIL_PAGE.STABILITY')} :</p>
+          {/* Info: (20230907 - Julian) The circle svg */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="15"
