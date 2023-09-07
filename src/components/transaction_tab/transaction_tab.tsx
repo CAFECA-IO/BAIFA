@@ -61,7 +61,7 @@ const TransactionTab = () => {
     <div className="flex w-full flex-col items-center font-inter">
       {/* Info: (20230907 - Julian) Search Filter */}
       <SearchFilter
-        searchBarPlaceholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_BLOCKS')}
+        searchBarPlaceholder={`Search in Transaction list`}
         setSearch={setSearch}
         setPeriod={setPeriod}
         sorting={sorting}
