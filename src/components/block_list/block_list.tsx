@@ -27,9 +27,7 @@ const BlockList = ({blockData}: IBlockListProps) => {
 
   return (
     <div className="flex w-full flex-col items-center">
-      <div className="flex min-h-320px w-full flex-col items-center py-10 lg:min-h-fit">
-        {blockList}
-      </div>
+      <div className="flex min-h-320px w-full flex-col items-center py-10">{blockList}</div>
       <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
     </div>
   );
