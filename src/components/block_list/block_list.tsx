@@ -1,24 +1,22 @@
 import {useState, useEffect} from 'react';
 import BlockItem from '../block_item/block_item';
 import Pagination from '../pagination/pagination';
+import {ITEM_PER_PAGE} from '../../constants/config';
 import {IBlockData} from '../../interfaces/block_data';
 
 export interface IBlockListProps {
   blockData: IBlockData[];
 }
 
-// ToDo: (20230905 - Julian) move PER_PAGE to constants
-const PER_PAGE = 3;
-
 const BlockList = ({blockData}: IBlockListProps) => {
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(blockData.length / PER_PAGE));
+  const [totalPages, setTotalPages] = useState(Math.ceil(blockData.length / ITEM_PER_PAGE));
 
-  const endIdx = activePage * PER_PAGE;
-  const startIdx = endIdx - PER_PAGE;
+  const endIdx = activePage * ITEM_PER_PAGE;
+  const startIdx = endIdx - ITEM_PER_PAGE;
 
   useEffect(() => {
-    setTotalPages(Math.ceil(blockData.length / PER_PAGE));
+    setTotalPages(Math.ceil(blockData.length / ITEM_PER_PAGE));
   }, [blockData]);
 
   const blockList = blockData
