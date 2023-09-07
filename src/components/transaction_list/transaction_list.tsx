@@ -16,11 +16,8 @@ const TransactionList = ({transactions}: ITransactionListProps) => {
   const startIdx = endIdx - ITEM_PER_PAGE;
 
   useEffect(() => {
-    setTotalPages(Math.ceil(transactions.length / ITEM_PER_PAGE));
-  }, [transactions]);
-
-  useEffect(() => {
     setActivePage(1);
+    setTotalPages(Math.ceil(transactions.length / ITEM_PER_PAGE));
   }, [transactions]);
 
   const transactionList = transactions

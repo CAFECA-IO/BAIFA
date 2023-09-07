@@ -16,11 +16,8 @@ const BlockList = ({blockData}: IBlockListProps) => {
   const startIdx = endIdx - ITEM_PER_PAGE;
 
   useEffect(() => {
-    setTotalPages(Math.ceil(blockData.length / ITEM_PER_PAGE));
-  }, [blockData]);
-
-  useEffect(() => {
     setActivePage(1);
+    setTotalPages(Math.ceil(blockData.length / ITEM_PER_PAGE));
   }, [blockData]);
 
   const blockList = blockData
