@@ -25,7 +25,7 @@ export const WEEK_LIST = [
   'DATE_PICKER.SAT',
 ];
 
-export const ITEM_PER_PAGE = 3;
+export const ITEM_PER_PAGE = 10;
 
 export const copyright = 'BAIFA @ 2023. All rights reserved.';
 

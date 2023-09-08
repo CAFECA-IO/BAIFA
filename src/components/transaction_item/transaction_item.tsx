@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import {timestampToString} from '../../lib/common';
 import {ITransactionData} from '../../interfaces/transaction_data';
 import {useTranslation} from 'next-i18next';
@@ -15,7 +16,33 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
   const monthStr =
     t(createdStr.month).length > 3 ? `${t(createdStr.month).slice(0, 3)}.` : t(createdStr.month);
 
-  // ToDo: (20230907 - Julian) i18n
+  // Info: (20230908 - Julian) Type i18n
+  const typeStr =
+    transaction.type === 'Crypto Currency'
+      ? t('CHAIN_DETAIL_PAGE.TYPE_CRYPTO')
+      : transaction.type === 'NFT'
+      ? t('CHAIN_DETAIL_PAGE.TYPE_NFT')
+      : t('CHAIN_DETAIL_PAGE.TYPE_EVIDENCE');
+
+  const statusStyle =
+    transaction.status === 'PROCESSING'
+      ? {
+          str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
+          icon: '/animations/processing_icon.gif',
+          style: 'text-hoverWhite',
+        }
+      : transaction.status === 'SUCCESS'
+      ? {
+          str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
+          icon: '/icons/success_icon.svg',
+          style: 'text-lightGreen',
+        }
+      : {
+          str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
+          icon: '/icons/failed_icon.svg',
+          style: 'text-lightRed',
+        };
+
   return (
     <div className="flex h-60px w-full items-center">
       {/* Info: (20230907 - Julian) Create Time square */}
@@ -28,13 +55,15 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
         {/* Info: (20230907 - Julian) Transaction ID & Type */}
         <div className="inline-flex flex-1 items-baseline space-x-2">
           <h2 className="text-xl">
-            Transaction <span className="text-primaryBlue">{transaction.id}</span>
+            {t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')}{' '}
+            <span className="text-primaryBlue">{transaction.id}</span>
           </h2>
-          <p className="text-sm text-lilac"> - {transaction.type}</p>
+          <p className="text-sm text-lilac"> - {typeStr}</p>
         </div>
         {/* Info: (20230907 - Julian) Status */}
         <div className="flex items-center space-x-2 px-2">
-          <p className="text-sm">Status</p>
+          <Image src={statusStyle.icon} width={16} height={16} alt={`${transaction.type}_icon`} />
+          <p className={`text-sm ${statusStyle.style}`}>{statusStyle.str}</p>
         </div>
       </div>
     </div>

@@ -92,7 +92,13 @@
     "TRANSACTIONS_TAB": "Transactions",
     "SEARCH_PLACEHOLDER_BLOCKS": "Search in Block list",
     "SEARCH_PLACEHOLDER_TRANSACTIONS": "Search in Transaction list",
-    "STABILITY": "Stability"
+    "STABILITY": "Stability",
+    "STATUS_PROCESSING": "Processing",
+    "STATUS_SUCCESS": "Success",
+    "STATUS_FAILED": "Failed",
+    "TYPE_CRYPTO": "Crypto Currency",
+    "TYPE_NFT": "NFT",
+    "TYPE_EVIDENCE": "Evidence"
   },
   "DATE_PICKER": {
     "DATE": "Date",

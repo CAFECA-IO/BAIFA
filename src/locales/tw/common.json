@@ -92,7 +92,13 @@
     "TRANSACTIONS_TAB": "交易",
     "SEARCH_PLACEHOLDER_BLOCKS": "在區塊列表中搜尋",
     "SEARCH_PLACEHOLDER_TRANSACTIONS": "在交易列表中搜尋",
-    "STABILITY": "穩定性"
+    "STABILITY": "穩定性",
+    "STATUS_PROCESSING": "處理中",
+    "STATUS_SUCCESS": "成功",
+    "STATUS_FAILED": "失敗",
+    "TYPE_CRYPTO": "加密貨幣",
+    "TYPE_NFT": "NFT",
+    "TYPE_EVIDENCE": "證據"
   },
   "DATE_PICKER": {
     "DATE": "日期",
