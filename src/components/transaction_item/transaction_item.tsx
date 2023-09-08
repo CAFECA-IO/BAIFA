@@ -1,8 +1,10 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import {timestampToString} from '../../lib/common';
 import {ITransactionData} from '../../interfaces/transaction_data';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
+import {BFAURL} from '../../constants/url';
 
 interface ITransactionItemProps {
   transaction: ITransactionData;
@@ -28,7 +30,7 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
     transaction.status === 'PROCESSING'
       ? {
           str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
-          icon: '/animations/processing_icon.gif',
+          icon: '/animations/trade_processing.gif',
           style: 'text-hoverWhite',
         }
       : transaction.status === 'SUCCESS'
@@ -53,13 +55,16 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
       </div>
       <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-8">
         {/* Info: (20230907 - Julian) Transaction ID & Type */}
-        <div className="inline-flex flex-1 items-baseline space-x-2">
+        <Link
+          href={`${BFAURL.TRANSACTION}/${transaction.id}`}
+          className="inline-flex flex-1 items-baseline space-x-2"
+        >
           <h2 className="text-xl">
             {t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')}{' '}
             <span className="text-primaryBlue">{transaction.id}</span>
           </h2>
           <p className="text-sm text-lilac"> - {typeStr}</p>
-        </div>
+        </Link>
         {/* Info: (20230907 - Julian) Status */}
         <div className="flex items-center space-x-2 px-2">
           <Image src={statusStyle.icon} width={16} height={16} alt={`${transaction.type}_icon`} />
