@@ -248,7 +248,7 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total spread fee', '0', '$ 0', '—', '0', '$ 0', '—'],
+        rowData: ['Total spread fee', '—', '$ 0', '—', '0', '$ 0', '—'],
       },
     ],
   };
@@ -294,7 +294,7 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total withdrawal fee', '0', '$ 0', '—', '0', '$ 0', '—'],
+        rowData: ['Total withdrawal fee', '—', '$ 0', '—', '0', '$ 0', '—'],
       },
     ],
   };
@@ -340,7 +340,7 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total deposit fee', '0', '$ 0', '—', '0', '$ 0', '—'],
+        rowData: ['Total deposit fee', '—', '$ 0', '—', '0', '$ 0', '—'],
       },
     ],
   };
@@ -386,7 +386,7 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total liquidation fee', '0', '$ 10', '100%', '0', '$ 8', '100%'],
+        rowData: ['Total liquidation fee', '—', '$ 10', '100%', '0', '$ 8', '100%'],
       },
     ],
   };
@@ -432,7 +432,7 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total guaranteed stop loss fee', '0', '$ 10', '100%', '0', '$ 2', '100%'],
+        rowData: ['Total guaranteed stop loss fee', '—', '$ 10', '100%', '0', '$ 2', '100%'],
       },
     ],
   };
@@ -478,7 +478,7 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total rebate expenses', '0', '$ 0', '—', '0', '$ 0', '—'],
+        rowData: ['Total rebate expenses', '—', '$ 0', '—', '0', '$ 0', '—'],
       },
     ],
   };
@@ -524,7 +524,7 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total cryptocurrency forex losses', '0', '$ 0', '—', '0', '$ 0', '—'],
+        rowData: ['Total cryptocurrency forex losses', '—', '$ 0', '—', '0', '$ 0', '—'],
       },
     ],
   };
