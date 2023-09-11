@@ -13,12 +13,12 @@ const HomePageBody = () => {
       <div className="flex flex-1 flex-col items-center pt-20 lg:pt-32">
         {/* ToDo: (20230614 - Julian) Global Search */}
         <div className="flex w-full flex-col items-center space-y-4">
-          {/* ToDo: (20230712 - Julian) Desktop Image */}
+          {/* Info: (20230712 - Julian) Desktop Image */}
           <div className="hidden lg:block">
             <Image src="/elements/main_pic_1.svg" width={250} height={250} alt="global" />
           </div>
 
-          {/* ToDo: (20230712 - Julian) Mobile Image */}
+          {/* Info: (20230712 - Julian) Mobile Image */}
           <div className="block p-10 lg:hidden">
             <Image src="/elements/main_pic_1.svg" width={150} height={150} alt="global" />
           </div>

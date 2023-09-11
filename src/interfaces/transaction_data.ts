@@ -1,7 +1,7 @@
 export interface ITransactionData {
   id: number;
   hash: string;
-  status: 'PENDING' | 'FAILED' | 'SUCCESS';
+  status: 'PROCESSING' | 'FAILED' | 'SUCCESS';
   type: 'Crypto Currency' | 'Evidence' | 'NFT';
   blockId: number;
   createdTimestamp: number;
@@ -18,7 +18,7 @@ export const dummyTransactionData: ITransactionData[] = [
     id: 934221,
     hash: '0x1234567890',
     type: 'Crypto Currency',
-    status: 'PENDING',
+    status: 'PROCESSING',
     blockId: 265675,
     createdTimestamp: 1680978900,
     from: '92830',
@@ -32,7 +32,7 @@ export const dummyTransactionData: ITransactionData[] = [
     id: 927413,
     hash: '0x5AbfEc25f74Cd88437631A7731906932776356f1',
     type: 'Evidence',
-    status: 'PENDING',
+    status: 'PROCESSING',
     blockId: 211519,
     createdTimestamp: 1690000902,
     from: '99283',
@@ -65,6 +65,20 @@ export const dummyTransactionData: ITransactionData[] = [
     createdTimestamp: 1692342345,
     from: '92830',
     to: '491739',
+    content: '0x1234567890',
+    value: 0.01,
+    fee: 0.01,
+    flagging: false,
+  },
+  {
+    id: 922371,
+    hash: '0x5AbfEc25f74Cd887731906932776437631A356f9',
+    type: 'Evidence',
+    status: 'SUCCESS',
+    blockId: 287654,
+    createdTimestamp: 1680022345,
+    from: '91290',
+    to: '431716',
     content: '0x1234567890',
     value: 0.01,
     fee: 0.01,
