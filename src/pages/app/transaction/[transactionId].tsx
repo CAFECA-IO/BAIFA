@@ -27,7 +27,7 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col overflow-hidden font-inter">
-          <div className="flex w-full flex-1 flex-col items-center space-y-10 px-20 pt-28">
+          <div className="flex w-full flex-1 flex-col items-center space-y-10 px-20 pb-10 pt-28">
             <div className="flex w-full items-center justify-center py-10 text-32px font-bold">
               {t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')}{' '}
               <span className="ml-2 text-primaryBlue">{transactionId}</span>
