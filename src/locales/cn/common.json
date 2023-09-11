@@ -169,6 +169,10 @@
     "NEWEST": "最新",
     "OLDEST": "最旧"
   },
+  "COMMON": {
+    "NONE": "无",
+    "BACK": "返回"
+  },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",
     "ANNOUNCEMENT": "BAIFA 是去中心化智能合约平台 BOLT 的区块浏览器和分析平台。",

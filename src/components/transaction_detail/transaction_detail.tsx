@@ -43,7 +43,7 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
       {t(flagging)}
     </BoltButton>
   ) : (
-    <p>None</p>
+    <p>{t('COMMON.NONE')}</p>
   );
 
   const displayTime = (

@@ -1,7 +1,9 @@
 import Head from 'next/head';
+import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
 import TransactionDetail from '../../../components/transaction_detail/transaction_detail';
+import BoltButton from '../../../components/bolt_button/bolt_button';
 import Footer from '../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {dummyTransactionData, ITransactionData} from '../../../interfaces/transaction_data';
@@ -16,6 +18,9 @@ interface ITransactionDetailPageProps {
 const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')} ${transactionId} - BAIFA`;
+
+  const router = useRouter();
+  const BackClickHandler = () => router.back();
 
   return (
     <>
@@ -35,6 +40,17 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
 
             {/* Info: (20230907 - Julian) Transaction Detail */}
             <TransactionDetail transactionData={transactionData} />
+
+            <div className="">
+              <BoltButton
+                onClick={BackClickHandler}
+                className="px-12 py-4 font-bold"
+                color="blue"
+                style="hollow"
+              >
+                {t('COMMON.BACK')}
+              </BoltButton>
+            </div>
           </div>
         </div>
       </main>

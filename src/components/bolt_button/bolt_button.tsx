@@ -10,7 +10,9 @@ interface IBoltButtonProps {
 
 const BoltButton = ({children, style, color, className, ...otherProps}: IBoltButtonProps) => {
   const buttonStyle =
-    style === 'hollow' ? 'bg-transparent border hover:border-hoverWhite hover:text-hoverWhite' : '';
+    style === 'hollow'
+      ? 'bg-transparent border text-primaryBlue hover:border-hoverWhite hover:text-hoverWhite'
+      : 'hover:bg-hoverWhite';
   const buttonColor =
     color === 'blue'
       ? 'bg-primaryBlue text-darkPurple3 border-primaryBlue'
@@ -20,7 +22,7 @@ const BoltButton = ({children, style, color, className, ...otherProps}: IBoltBut
 
   return (
     <button
-      className={`${className} ${buttonStyle} ${buttonColor} whitespace-nowrap rounded text-base hover:bg-hoverWhite disabled:bg-lilac`}
+      className={`${className} ${buttonStyle} ${buttonColor} whitespace-nowrap rounded text-base disabled:bg-lilac`}
       {...otherProps}
     >
       {children}
