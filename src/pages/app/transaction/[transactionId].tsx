@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
+import TransactionDetail from '../../../components/transaction_detail/transaction_detail';
 import Footer from '../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {dummyTransactionData, ITransactionData} from '../../../interfaces/transaction_data';
@@ -14,12 +15,13 @@ interface ITransactionDetailPageProps {
 
 const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  // ToDo: (20230908 - Julian) i18n
+  const headTitle = `${t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')} ${transactionId} - BAIFA`;
+
   return (
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>BAIFA - Transaction {transactionId}</title>
+        <title>{headTitle}</title>
       </Head>
 
       <NavBar />
@@ -27,16 +29,12 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
         <div className="flex min-h-screen flex-col overflow-hidden font-inter">
           <div className="flex w-full flex-1 flex-col items-center space-y-10 px-20 pt-28">
             <div className="flex w-full items-center justify-center py-10 text-32px font-bold">
-              Transaction <span className="ml-2 text-primaryBlue">{transactionId}</span>
+              {t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')}{' '}
+              <span className="ml-2 text-primaryBlue">{transactionId}</span>
             </div>
 
             {/* Info: (20230907 - Julian) Transaction Detail */}
-            <div className="flex w-4/5 flex-col rounded-lg bg-darkPurple p-5 shadow-xl">
-              <div className="flex items-center text-base">
-                <p className="w-150px text-lilac">Transaction Hash</p>
-                <p>{transactionData.hash}</p>
-              </div>
-            </div>
+            <TransactionDetail transactionData={transactionData} />
           </div>
         </div>
       </main>

@@ -63,6 +63,7 @@
     "SUBTITLE": "我們的秘密計畫即將揭曉！敬請期待！"
   },
   "ERROR_PAGE": {
+    "HEAD_TITLE": "找不到頁面",
     "TITLE": "糟糕！",
     "SUBTITLE": "看來你已經跌入網絡空間的深淵了 🕳️"
   },
@@ -99,6 +100,31 @@
     "TYPE_CRYPTO": "加密貨幣",
     "TYPE_NFT": "NFT",
     "TYPE_EVIDENCE": "證據"
+  },
+  "BLOCK_DETAIL_PAGE": {
+    "MAIN_TITLE": "區塊"
+  },
+  "TRANSACTION_DETAIL_PAGE": {
+    "MAIN_TITLE": "交易",
+    "HASH": "Hash 值",
+    "STATUS": "狀態",
+    "BLOCK": "所屬區塊",
+    "TIME": "交易時間",
+    "FROM": "寄件者",
+    "TO": "收件者",
+    "CONTENT": "內容",
+    "VALUE": "金額",
+    "FEE": "手續費",
+    "FLAGGING": "警示記錄"
+  },
+  "ADDRESS_DETAIL_PAGE": {
+    "MAIN_TITLE": "地址"
+  },
+  "CONTRACT_DETAIL_PAGE": {
+    "MAIN_TITLE": "合約"
+  },
+  "EVIDENCE_DETAIL_PAGE": {
+    "MAIN_TITLE": "證據"
   },
   "DATE_PICKER": {
     "DATE": "日期",

@@ -63,6 +63,7 @@
     "SUBTITLE": "我们的秘密计划即将揭晓！敬请期待！"
   },
   "ERROR_PAGE": {
+    "HEAD_TITLE": "找不到页面",
     "TITLE": "糟糕！",
     "SUBTITLE": "看来你已经跌入网络空间的深渊了 🕳️"
   },
@@ -99,6 +100,31 @@
     "TYPE_CRYPTO": "加密货币",
     "TYPE_NFT": "NFT",
     "TYPE_EVIDENCE": "证据"
+  },
+  "BLOCK_DETAIL_PAGE": {
+    "MAIN_TITLE": "区块"
+  },
+  "TRANSACTION_DETAIL_PAGE": {
+    "MAIN_TITLE": "交易",
+    "HASH": "Hash 值",
+    "STATUS": "状态",
+    "BLOCK": "所属区块",
+    "TIME": "交易时间",
+    "FROM": "寄件者",
+    "TO": "收件者",
+    "CONTENT": "内容",
+    "VALUE": "金额",
+    "FEE": "手续费",
+    "FLAGGING": "警示记录"
+  },
+  "ADDRESS_DETAIL_PAGE": {
+    "MAIN_TITLE": "地址"
+  },
+  "CONTRACT_DETAIL_PAGE": {
+    "MAIN_TITLE": "合约"
+  },
+  "EVIDENCE_DETAIL_PAGE": {
+    "MAIN_TITLE": "证据"
   },
   "DATE_PICKER": {
     "DATE": "日期",

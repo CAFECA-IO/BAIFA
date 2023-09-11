@@ -63,6 +63,7 @@
     "SUBTITLE": "Our Secret Project is Almost Unveiled.  Stay Tuned for the Big Reveal!"
   },
   "ERROR_PAGE": {
+    "HEAD_TITLE": "Not Found",
     "TITLE": "Oops!",
     "SUBTITLE": "Looks like you've stumbled into the abyss of cyberspace 🕳️"
   },
@@ -99,6 +100,31 @@
     "TYPE_CRYPTO": "Crypto Currency",
     "TYPE_NFT": "NFT",
     "TYPE_EVIDENCE": "Evidence"
+  },
+  "BLOCK_DETAIL_PAGE": {
+    "MAIN_TITLE": "Block"
+  },
+  "TRANSACTION_DETAIL_PAGE": {
+    "MAIN_TITLE": "Transaction",
+    "HASH": "Transaction Hash",
+    "STATUS": "Status",
+    "BLOCK": "In which block",
+    "TIME": "Transaction Time",
+    "FROM": "From",
+    "TO": "To",
+    "CONTENT": "Content",
+    "VALUE": "Value",
+    "FEE": "Transaction Fee",
+    "FLAGGING": "Flagging"
+  },
+  "ADDRESS_DETAIL_PAGE": {
+    "MAIN_TITLE": "Address"
+  },
+  "CONTRACT_DETAIL_PAGE": {
+    "MAIN_TITLE": "Contract"
+  },
+  "EVIDENCE_DETAIL_PAGE": {
+    "MAIN_TITLE": "Evidence"
   },
   "DATE_PICKER": {
     "DATE": "Date",

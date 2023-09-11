@@ -34,7 +34,7 @@ const AllChainPageBody = () => {
         </div>
 
         {/* Info: (20230829 - Julian) Chain list */}
-        <div className="mx-auto grid grid-cols-1 gap-6 pt-5 lg:grid-cols-4">
+        <div className="mx-auto grid grid-cols-1 gap-6 pt-5 lg:grid-cols-2 xl:grid-cols-4">
           {dummyChains.map((chain, index) => (
             <ChainsCard
               key={index}
