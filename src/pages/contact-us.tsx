@@ -11,6 +11,7 @@ import {ILocale, TranslateFunction} from '../interfaces/locale';
 
 const ContactUsPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const headTitle = `${t('CONTACT_US_PAGE.TITLE')} - BAIFA`;
 
   // Info: (20230731 - Julian) 信件送出的時間
   const now = new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
@@ -251,7 +252,7 @@ const ContactUsPage = () => {
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>BAIFA - Contact Us</title>
+        <title>{headTitle}</title>
       </Head>
       {/* Info:(20230731 - Julian) Navbar */}
       <LandingNavBar />

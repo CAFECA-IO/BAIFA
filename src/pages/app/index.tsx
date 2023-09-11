@@ -9,7 +9,7 @@ const Home = () => {
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>BAIFA - APP</title>
+        <title>APP - BAIFA</title>
       </Head>
 
       <NavBar />

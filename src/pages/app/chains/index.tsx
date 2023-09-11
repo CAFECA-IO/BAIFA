@@ -9,7 +9,7 @@ const ChainsPage = () => {
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>BAIFA - Chains</title>
+        <title>Chains - BAIFA</title>
       </Head>
 
       <NavBar />
