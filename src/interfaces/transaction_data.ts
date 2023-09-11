@@ -1,3 +1,5 @@
+import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
+
 export interface ITransactionData {
   id: number;
   hash: string;
@@ -10,7 +12,7 @@ export interface ITransactionData {
   content: string;
   value: number;
   fee: number;
-  flagging: boolean;
+  flagging?: IRedFlagType;
 }
 
 export const dummyTransactionData: ITransactionData[] = [
@@ -26,7 +28,6 @@ export const dummyTransactionData: ITransactionData[] = [
     content: '345690',
     value: 0.01,
     fee: 0.01,
-    flagging: false,
   },
   {
     id: 927413,
@@ -40,7 +41,6 @@ export const dummyTransactionData: ITransactionData[] = [
     content: '340125',
     value: 0.01,
     fee: 0.01,
-    flagging: false,
   },
   {
     id: 928713,
@@ -54,7 +54,7 @@ export const dummyTransactionData: ITransactionData[] = [
     content: '367845',
     value: 0.01,
     fee: 0.01,
-    flagging: true,
+    flagging: RedFlagType.MULTIPLE_TRANSFER,
   },
   {
     id: 922371,
@@ -68,7 +68,7 @@ export const dummyTransactionData: ITransactionData[] = [
     content: '390672',
     value: 0.01,
     fee: 0.01,
-    flagging: false,
+    flagging: RedFlagType.BLACK_LIST,
   },
   {
     id: 922371,
@@ -82,7 +82,6 @@ export const dummyTransactionData: ITransactionData[] = [
     content: '389057',
     value: 0.01,
     fee: 0.01,
-    flagging: false,
   },
   {
     id: 901833,
@@ -96,6 +95,6 @@ export const dummyTransactionData: ITransactionData[] = [
     content: '301458',
     value: 0.01,
     fee: 0.01,
-    flagging: false,
+    flagging: RedFlagType.LARGE_WITHDRAW,
   },
 ];

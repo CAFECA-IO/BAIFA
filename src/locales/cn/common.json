@@ -126,6 +126,19 @@
   "EVIDENCE_DETAIL_PAGE": {
     "MAIN_TITLE": "证据"
   },
+  "RED_FLAG_DETAIL_PAGE": {
+    "MAIN_TITLE": "警示",
+    "FLAG_TYPE_MULTIPLE_RECEIVES": "多次收款",
+    "FLAG_TYPE_MULTIPLE_TRANSFER": "多次转帐",
+    "FLAG_TYPE_LARGE_TRANSFER": "大额转帐",
+    "FLAG_TYPE_LARGE_DEPOSIT": "大额入金",
+    "FLAG_TYPE_MULTIPLE_WITHDRAW": "多次出金",
+    "FLAG_TYPE_LARGE_WITHDRAW": "大额出金",
+    "FLAG_TYPE_MIXING_SERVICE": "使用混合服务",
+    "FLAG_TYPE_GAMBLING_SITE": "与赌博网站有关",
+    "FLAG_TYPE_BLACK_LIST": "列入黑名单",
+    "FLAG_TYPE_DARKNET": "与暗网有关"
+  },
   "DATE_PICKER": {
     "DATE": "日期",
     "SELECT_PERIOD": "选择时间段",

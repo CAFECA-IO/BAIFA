@@ -37,9 +37,10 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
       </div>
     );
 
+  // ToDo: (20230911 - Julian) flagging
   const displayFlagging = !!flagging ? (
     <BoltButton className="px-3 py-1" color="red" style="solid">
-      Multiple Transfer
+      {t(flagging)}
     </BoltButton>
   ) : (
     <p>None</p>
@@ -62,7 +63,7 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
       {/* Info: (20230911 - Julian) Status */}
       <div className="flex items-center px-3 py-4">
         <p className="w-170px font-bold text-lilac">{t('TRANSACTION_DETAIL_PAGE.STATUS')}</p>
-        <p>{displayStatus}</p>
+        {displayStatus}
       </div>
       {/* Info: (20230911 - Julian) Block */}
       <div className="flex items-center px-3 py-4">
@@ -74,7 +75,7 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
       {/* Info: (20230911 - Julian) Time */}
       <div className="flex items-center px-3 py-4">
         <p className="w-170px font-bold text-lilac">{t('TRANSACTION_DETAIL_PAGE.TIME')}</p>
-        <p>{displayTime}</p>
+        {displayTime}
       </div>
       {/* Info: (20230911 - Julian) From */}
       <div className="flex items-center px-3 py-4">
@@ -112,8 +113,7 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
       {/* Info: (20230911 - Julian) Flagging */}
       <div className="flex items-center px-3 py-4">
         <p className="w-170px font-bold text-lilac">{t('TRANSACTION_DETAIL_PAGE.FLAGGING')}</p>
-        {/* ToDo: (20230911 - Julian) Flagging */}
-        <p>{displayFlagging}</p>
+        {displayFlagging}
       </div>
     </div>
   );
