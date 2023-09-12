@@ -1,7 +1,9 @@
+import Link from 'next/link';
 import {timestampToString} from '../../lib/common';
 import {IBlockData} from '../../interfaces/block_data';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
+import {BFAURL} from '../../constants/url';
 
 export interface IBlockItemProps {
   block: IBlockData;
@@ -32,9 +34,11 @@ const BlockItem = ({block}: IBlockItemProps) => {
       </div>
       <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-8">
         {/* Info: (20230907 - Julian) Block ID */}
-        <h2 className="flex-1 text-xl">
-          {t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')} <span className="text-primaryBlue">{block.id}</span>
-        </h2>
+        <Link href={`${BFAURL.BLOCK}/${block.id}`} className="flex-1 text-xl">
+          <h2>
+            {t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')} <span className="text-primaryBlue">{block.id}</span>
+          </h2>
+        </Link>
         {/* Info: (20230907 - Julian) Stability */}
         <div className="flex items-center space-x-2 px-2">
           <p className="text-sm">{t('CHAIN_DETAIL_PAGE.STABILITY')} :</p>

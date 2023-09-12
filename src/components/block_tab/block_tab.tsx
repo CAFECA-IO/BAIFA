@@ -4,9 +4,13 @@ import BlockList from '../block_list/block_list';
 import SearchFilter from '../search_filter/search_filter';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {dummyBlockData, IBlockData} from '../../interfaces/block_data';
+import {IBlockData} from '../../interfaces/block_data';
 
-const BlockTab = () => {
+interface IBlockTabProps {
+  blockList: IBlockData[];
+}
+
+const BlockTab = ({blockList}: IBlockTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [search, setSearch, searchRef] = useStateRef('');
@@ -15,10 +19,10 @@ const BlockTab = () => {
     endTimeStamp: 0,
   });
   const [sorting, setSorting] = useState<'Newest' | 'Oldest'>('Newest');
-  const [filteredBlockData, setFilteredBlockData] = useState<IBlockData[]>(dummyBlockData);
+  const [filteredBlockData, setFilteredBlockData] = useState<IBlockData[]>(blockList);
 
   useEffect(() => {
-    const searchResult = dummyBlockData
+    const searchResult = blockList
       // Info: (20230905 - Julian) filter by date range
       .filter((block: IBlockData) => {
         const createdTimestamp = block.createdTimestamp;

@@ -180,7 +180,8 @@
   },
   "COMMON": {
     "NONE": "無",
-    "BACK": "返回"
+    "BACK": "返回",
+    "AGO": "前"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",

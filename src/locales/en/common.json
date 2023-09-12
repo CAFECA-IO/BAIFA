@@ -180,7 +180,8 @@
   },
   "COMMON": {
     "NONE": "None",
-    "BACK": "Back"
+    "BACK": "Back",
+    "AGO": "ago"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",
