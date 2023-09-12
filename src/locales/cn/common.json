@@ -102,7 +102,16 @@
     "TYPE_EVIDENCE": "证据"
   },
   "BLOCK_DETAIL_PAGE": {
-    "MAIN_TITLE": "区块"
+    "MAIN_TITLE": "区块",
+    "STABILITY": "稳定性等级",
+    "STABILITY_HIGH": "高",
+    "STABILITY_MEDIUM": "中等",
+    "STABILITY_LOW": "低",
+    "TIME": "建立时间",
+    "MANAGEMENT": "管理团队",
+    "CONTENT": "内容",
+    "MINER_REWARD": "矿工 & 报酬",
+    "SIZE": "区块大小"
   },
   "TRANSACTION_DETAIL_PAGE": {
     "MAIN_TITLE": "交易",

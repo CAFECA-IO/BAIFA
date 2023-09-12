@@ -102,7 +102,16 @@
     "TYPE_EVIDENCE": "證據"
   },
   "BLOCK_DETAIL_PAGE": {
-    "MAIN_TITLE": "區塊"
+    "MAIN_TITLE": "區塊",
+    "STABILITY": "穩定性等級",
+    "STABILITY_HIGH": "高",
+    "STABILITY_MEDIUM": "中等",
+    "STABILITY_LOW": "低",
+    "TIME": "建立時間",
+    "MANAGEMENT": "管理團隊",
+    "CONTENT": "內容",
+    "MINER_REWARD": "礦工 & 報酬",
+    "SIZE": "區塊大小"
   },
   "TRANSACTION_DETAIL_PAGE": {
     "MAIN_TITLE": "交易",
