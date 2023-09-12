@@ -1,7 +1,7 @@
 import Footer from '../footer/footer';
 import ChainsCard from '../chain_card/chain_card';
 import Breadcrumb from '../../components/breadcrumb/breadcrumb';
-import {dummyChains} from '../../constants/config';
+import {dummyChains} from '../../interfaces/chain_data';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
@@ -41,8 +41,8 @@ const AllChainPageBody = () => {
               chainId={chain.chainId}
               chainName={chain.chainName}
               icon={chain.icon}
-              blocks={chain.blocks}
-              transactions={chain.transactions}
+              blocks={chain.blocks.length}
+              transactions={chain.transactions.length}
             />
           ))}
         </div>

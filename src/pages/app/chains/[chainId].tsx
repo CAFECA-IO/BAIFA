@@ -8,20 +8,14 @@ import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import BlockTab from '../../../components/block_tab/block_tab';
 import TransactionTab from '../../../components/transaction_tab/transaction_tab';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyChains} from '../../../constants/config';
+import {dummyChains, IChainData} from '../../../interfaces/chain_data';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {BFAURL} from '../../../constants/url';
 
 export interface IChainDetailPageProps {
   chainId: string;
-  chainData: {
-    chainId: string;
-    chainName: string;
-    icon: string;
-    blocks: number;
-    transactions: number;
-  };
+  chainData: IChainData;
 }
 
 const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
@@ -91,7 +85,12 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
     </div>
   );
 
-  const tabContent = activeTab === 'blocks' ? <BlockTab /> : <TransactionTab />;
+  const tabContent =
+    activeTab === 'blocks' ? (
+      <BlockTab blockList={chainData.blocks} />
+    ) : (
+      <TransactionTab transactionList={chainData.transactions} />
+    );
 
   return (
     <>
