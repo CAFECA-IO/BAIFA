@@ -1,5 +1,5 @@
 import {IBlockData, getDummyBlockData} from './block_data';
-import {ITransactionData, getTransactionData} from './transaction_data';
+import {ITransactionData, getDummyTransactionData} from './transaction_data';
 
 export interface IChainData {
   chainId: string;
@@ -13,20 +13,18 @@ export const dummyChains: IChainData[] = [
     chainId: 'bolt',
     chainName: 'BOLT',
     blocks: getDummyBlockData('bolt'),
-    transactions: getTransactionData('bolt'),
+    transactions: getDummyTransactionData('bolt'),
   },
-  // {
-  //   chainId: 'eth',
-  //   chainName: 'Ethereum',
-  //   icon: '/currencies/ethereum.svg',
-  //   blocks: 102000,
-  //   transactions: 891402,
-  // },
-  // {
-  //   chainId: 'btc',
-  //   chainName: 'Bitcoin',
-  //   icon: '/currencies/bitcoin.svg',
-  //   blocks: 10053,
-  //   transactions: 31294,
-  // },
+  {
+    chainId: 'eth',
+    chainName: 'Ethereum',
+    blocks: getDummyBlockData('eth'),
+    transactions: getDummyTransactionData('eth'),
+  },
+  {
+    chainId: 'btc',
+    chainName: 'Bitcoin',
+    blocks: getDummyBlockData('btc'),
+    transactions: getDummyTransactionData('btc'),
+  },
 ];
