@@ -12,6 +12,7 @@ import {dummyChains, IChainData} from '../../../interfaces/chain_data';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {BFAURL} from '../../../constants/url';
+import {getChainIcon} from '../../../lib/common';
 
 export interface IChainDetailPageProps {
   chainId: string;
@@ -21,7 +22,7 @@ export interface IChainDetailPageProps {
 const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const chainName = chainData.chainName;
-  const chainIcon = chainData.icon;
+  const chainIcon = getChainIcon(chainData.chainId).src;
   const headTitle = `${chainName} - BAIFA`;
 
   const [activeTab, setActiveTab] = useState<'blocks' | 'transactions'>('blocks');

@@ -4,7 +4,6 @@ import {ITransactionData, getTransactionData} from './transaction_data';
 export interface IChainData {
   chainId: string;
   chainName: string;
-  icon: string;
   blocks: IBlockData[];
   transactions: ITransactionData[];
 }
@@ -13,7 +12,6 @@ export const dummyChains: IChainData[] = [
   {
     chainId: 'bolt',
     chainName: 'BOLT',
-    icon: '/currencies/bolt.svg',
     blocks: getDummyBlockData('bolt'),
     transactions: getTransactionData('bolt'),
   },

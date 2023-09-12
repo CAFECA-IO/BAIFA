@@ -23,7 +23,7 @@ export const dummyBlockData: IBlockData[] = [
     size: 3.523,
   },
   {
-    id: 265678,
+    id: 265676,
     chainId: 'bolt',
     stabilityLevel: 'HIGH',
     createdTimestamp: 1680998900,

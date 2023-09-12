@@ -111,7 +111,8 @@
     "MANAGEMENT": "管理团队",
     "CONTENT": "内容",
     "MINER_REWARD": "矿工 & 报酬",
-    "SIZE": "区块大小"
+    "SIZE": "区块大小",
+    "TRANSACTIONS_COUNT": "笔交易"
   },
   "TRANSACTION_DETAIL_PAGE": {
     "MAIN_TITLE": "交易",

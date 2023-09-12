@@ -30,7 +30,7 @@ export const dummyTransactionData: ITransactionData[] = [
     content: '367845',
     value: 0.01,
     fee: 0.01,
-    flagging: 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
+    flagging: RedFlagType.MULTIPLE_RECEIVES,
   },
   {
     id: 931221,
@@ -59,7 +59,7 @@ export const dummyTransactionData: ITransactionData[] = [
     content: '312539',
     value: 0.01,
     fee: 0.01,
-    flagging: 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_BLACK_LIST',
+    flagging: RedFlagType.BLACK_LIST,
   },
   {
     id: 931302,
@@ -74,7 +74,7 @@ export const dummyTransactionData: ITransactionData[] = [
     content: '338619',
     value: 0.01,
     fee: 0.01,
-    flagging: 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_GAMBLING_SITE',
+    flagging: RedFlagType.GAMBLING_SITE,
   },
   // {
   //   id: 934221,

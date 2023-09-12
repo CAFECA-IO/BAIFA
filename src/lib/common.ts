@@ -106,3 +106,10 @@ export const getTimeString = (timeSpan: number) => {
 export const withCommas = (x: number | string) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
+
+export const getChainIcon = (chainId: string) => {
+  return {
+    src: `/currencies/${chainId}.svg`,
+    alt: `${chainId}_icon`,
+  };
+};

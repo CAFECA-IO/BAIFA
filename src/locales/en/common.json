@@ -111,7 +111,8 @@
     "MANAGEMENT": "Management Team",
     "CONTENT": "Content",
     "MINER_REWARD": "Miner & Reward",
-    "SIZE": "Size"
+    "SIZE": "Size",
+    "TRANSACTIONS_COUNT": "Transactions"
   },
   "TRANSACTION_DETAIL_PAGE": {
     "MAIN_TITLE": "Transaction",

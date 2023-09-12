@@ -5,6 +5,7 @@ import {dummyChains} from '../../interfaces/chain_data';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
+import {getChainIcon} from '../../lib/common';
 
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -40,7 +41,7 @@ const AllChainPageBody = () => {
               key={index}
               chainId={chain.chainId}
               chainName={chain.chainName}
-              icon={chain.icon}
+              icon={getChainIcon(chain.chainId).src}
               blocks={chain.blocks.length}
               transactions={chain.transactions.length}
             />

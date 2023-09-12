@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
@@ -10,6 +11,7 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {dummyTransactionData, ITransactionData} from '../../../interfaces/transaction_data';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
+import {getChainIcon} from '../../../lib/common';
 
 interface ITransactionDetailPageProps {
   transactionId: string;
@@ -40,8 +42,13 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
                 <BsArrowLeftShort className="text-48px" />
               </button>
               {/* Info: (20230912 -Julian) Transaction Title */}
-              <div className="flex flex-1 justify-center">
-                {/* ToDo: (20230912 -Julian) Blockchain icon */}
+              <div className="flex flex-1 items-center justify-center space-x-2">
+                <Image
+                  src={getChainIcon(transactionData.chainId).src}
+                  alt={getChainIcon(transactionData.chainId).alt}
+                  width={40}
+                  height={40}
+                />
                 <h1 className="text-32px font-bold">
                   {t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')}
                   <span className="ml-2 text-primaryBlue"> {transactionId}</span>

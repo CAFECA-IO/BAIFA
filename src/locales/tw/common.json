@@ -111,7 +111,8 @@
     "MANAGEMENT": "管理團隊",
     "CONTENT": "內容",
     "MINER_REWARD": "礦工 & 報酬",
-    "SIZE": "區塊大小"
+    "SIZE": "區塊大小",
+    "TRANSACTIONS_COUNT": "筆交易"
   },
   "TRANSACTION_DETAIL_PAGE": {
     "MAIN_TITLE": "交易",
