@@ -8,17 +8,65 @@ export interface IBalanceSheet {
       accountsReceivable: {
         totalAmountFairValue: number;
         weightedAverageCost: number;
-        breakdown: {};
+        breakdown: {
+          Bitcoin?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+          Ethereum?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+          USDT?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+        };
       };
       cryptocurrency: {
         totalAmountFairValue: number;
         weightedAverageCost: number;
-        breakdown: {};
+        breakdown: {
+          Bitcoin?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+          Ethereum?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+          USDT?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+        };
       };
       cashAndCashEquivalent: {
         totalAmountFairValue: number;
         weightedAverageCost: number;
-        breakdown: {};
+        breakdown: {
+          Bitcoin?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+          Ethereum?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+          USDT?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+        };
       };
     };
   };
@@ -29,7 +77,23 @@ export interface IBalanceSheet {
       accountsPayable: {
         totalAmountFairValue: number;
         weightedAverageCost: number;
-        breakdown: {};
+        breakdown: {
+          Bitcoin?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+          Ethereum?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+          USDT?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+        };
       };
       userDeposit: {
         totalAmountFairValue: number;
@@ -72,7 +136,23 @@ export interface IBalanceSheet {
       capital: {
         totalAmountFairValue: number;
         weightedAverageCost: number;
-        breakdown: {};
+        breakdown: {
+          Bitcoin?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+          Ethereum?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+          USDT?: {
+            name: string;
+            amount: number;
+            fairValue: number;
+          };
+        };
       };
     };
   };

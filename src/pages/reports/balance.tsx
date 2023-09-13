@@ -41,7 +41,7 @@ const BalanceSheets = () => {
         reportData = result.data as IBalanceSheet;
       }
     } catch (error) {
-      console.log('Get balance sheet error');
+      // console.log('Get balance sheet error');
     }
     return reportData;
   };
