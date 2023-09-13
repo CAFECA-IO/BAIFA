@@ -30,9 +30,12 @@ export const ITEM_PER_PAGE = 10;
 export const copyright = 'BAIFA @ 2023. All rights reserved.';
 
 /* Info: (20230809 - Julian) ----- BAIFA Reposts ----- */
+// ToDo: (202309013 - Julian) 重新計算時間
 export const reportsDateSpan = {
-  start: 1688190893,
-  end: 1690646400,
+  // Info: (20230913 - Julian) Thirty Days Ago
+  start: new Date().setDate(new Date().getDate() - 30) / 1000,
+  // Info: (20230913 - Julian) Today
+  end: new Date().getTime() / 1000,
 };
 
 /* Info: (20230711 - Julian) ----- Home Page ----- */

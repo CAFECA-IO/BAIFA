@@ -1,6 +1,5 @@
 import {ITableRows, ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';
-import {withCommas} from '../../lib/common';
 
 interface IReportTable {
   tableData: ITable;
@@ -35,7 +34,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
       key={index}
       className="max-w-250px whitespace-nowrap border-l border-black p-5px text-right"
     >
-      {withCommas(item)}
+      {item}
     </td>
   ));
 
