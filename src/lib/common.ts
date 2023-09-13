@@ -107,6 +107,15 @@ export const withCommas = (x: number | string) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
+export const roundToDecimal = (x: number, decimal: number) => {
+  if (isNaN(x) || x === 0) return '0';
+  const toDecimal = 10 ^ decimal;
+  return (Math.round(x * toDecimal) / toDecimal).toLocaleString('en-US', {
+    minimumFractionDigits: decimal,
+    maximumFractionDigits: decimal,
+  });
+};
+
 export const getChainIcon = (chainId: string) => {
   return {
     src: `/currencies/${chainId}.svg`,
