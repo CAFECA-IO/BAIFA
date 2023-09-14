@@ -7,20 +7,12 @@ import ReportRiskPages from '../../components/report_risk_pages/report_risk_page
 import ReportTable from '../../components/report_table/report_table';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {RowType} from '../../constants/table_row_type';
-import {ITable} from '../../interfaces/report_table';
-import {timestampToString, roundToDecimal, getReportTimeSpan} from '../../lib/common';
 import {APIURL} from '../../constants/api_request';
-import {
-  IBalanceSheet,
-  defaultCryptoAssets,
-  IAccountingDetail,
-} from '../../interfaces/balance_sheet';
-
-export interface IResult {
-  success: boolean;
-  data?: IBalanceSheet;
-  reason?: string;
-}
+import {timestampToString, roundToDecimal, getReportTimeSpan} from '../../lib/common';
+import {ITable} from '../../interfaces/report_table';
+import {IResult} from '../../interfaces/result';
+import {IBalanceSheet} from '../../interfaces/balance_sheet';
+import {IAccountingDetail, defaultCryptoAssets} from '../../interfaces/accounting_detail';
 
 const BalanceSheets = () => {
   const reportTitle = BaifaReports.BALANCE_SHEETS;
