@@ -49,19 +49,19 @@ const BalanceSheets = () => {
   const getBalanceSheetsData = (data: IBalanceSheet | undefined) => {
     if (!data)
       return {
-        cashAndCashEquivalent: 0,
-        cryptocurrency: 0,
-        accountsReceivable: 0,
-        totalCurrentAssets: 0,
-        totalNonCurrentAssets: 0,
-        totalAssets: 0,
-        userDeposit: 0,
-        accountsPayable: 0,
-        totalLiabilities: 0,
-        capital: 0,
-        retainedEarnings: 0,
-        totalStockholdersEquity: 0,
-        totalLiabilitiesAndStockholders: 0,
+        cashAndCashEquivalent: '0',
+        cryptocurrency: '0',
+        accountsReceivable: '0',
+        totalCurrentAssets: '0',
+        totalNonCurrentAssets: '0',
+        totalAssets: '0',
+        userDeposit: '0',
+        accountsPayable: '0',
+        totalLiabilities: '0',
+        capital: '0',
+        retainedEarnings: '0',
+        totalStockholdersEquity: '0',
+        totalLiabilitiesAndStockholders: '0',
       };
 
     // Info: (20230913 - Julian) ------------- Assets -------------
