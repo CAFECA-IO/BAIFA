@@ -108,9 +108,12 @@ export const withCommas = (x: number | string) => {
 };
 
 export const roundToDecimal = (x: number, decimal: number) => {
-  if (isNaN(x) || x === 0) return '0';
-  const toDecimal = 10 ^ decimal;
-  return (Math.round(x * toDecimal) / toDecimal).toLocaleString('en-US', {
+  // Info: (20230914 - Julian) 如果 x 為 NaN 或是 0 就直接回傳 '0'
+  if (isNaN(x) || x === 0 || x.toString() === '0') return '0';
+
+  const toDecimal = 10 ** decimal;
+  const result = Math.round(x * toDecimal) / toDecimal;
+  return result.toLocaleString('en-US', {
     minimumFractionDigits: decimal,
     maximumFractionDigits: decimal,
   });
