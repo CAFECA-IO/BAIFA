@@ -4,6 +4,7 @@ export const timestampToString = (timestamp: number) => {
   if (timestamp === 0)
     return {
       date: '-',
+      dateOfLastYear: '-',
       day: '-',
       month: '-',
       monthAndDay: '-',
@@ -66,6 +67,9 @@ export const timestampToString = (timestamp: number) => {
 
   return {
     date: dateSrting, // e.g. 2021-01-01
+    dateOfLastYear: `${year - 1}-${month.toString().padStart(2, '0')}-${day
+      .toString()
+      .padStart(2, '0')}`, // e.g. 2020-01-01
     day: `${dayString}`, // e.g. 01
     month: `${monthString}`, // e.g. January (with i18n)
     monthFullName: `${monthName}`, // e.g. January

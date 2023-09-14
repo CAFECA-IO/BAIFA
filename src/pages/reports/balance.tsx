@@ -257,8 +257,8 @@ const BalanceSheets = () => {
 
   const getTotalUserDeposit = (userDeposit: IAccountingDetail | undefined) => {
     const defaultDepositData = {
-      ...defaultCryptoAssets,
       percentage: 0,
+      ...defaultCryptoAssets,
     };
 
     if (!userDeposit) {

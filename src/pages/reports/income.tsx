@@ -1,3 +1,4 @@
+import {useEffect, useState} from 'react';
 import Head from 'next/head';
 import ReportCover from '../../components/report_cover/report_cover';
 import ReportContent from '../../components/report_content/report_content';
@@ -6,10 +7,15 @@ import ReportRiskPages from '../../components/report_risk_pages/report_risk_page
 import ReportTable from '../../components/report_table/report_table';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
 import {ITable} from '../../interfaces/report_table';
+import {IResult} from '../../interfaces/result';
+import {IAccountingDetail, defaultCryptoAssets} from '../../interfaces/accounting_detail';
+import {IComprehensiveIncomeStatements} from '../../interfaces/comprehensive_income_statements';
 import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
-import {timestampToString, getReportTimeSpan} from '../../lib/common';
+import {timestampToString, getReportTimeSpan, roundToDecimal} from '../../lib/common';
+import {APIURL} from '../../constants/api_request';
 
+// ToDo: (20230914 - Julian) 已完成 p3-1, p4-1, p13-1, p14-1
 const ComprehensiveIncomeStatements = () => {
   const reportTitle = BaifaReports.COMPREHENSIVE_INCOME_STATEMENTS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
@@ -17,6 +23,202 @@ const ComprehensiveIncomeStatements = () => {
   // Info: (20230913 - Julian) Get timespan of report
   const startDateStr = timestampToString(getReportTimeSpan().start);
   const endDateStr = timestampToString(getReportTimeSpan().end);
+
+  const [startIncomeData, setStartIncomeData] = useState<IComprehensiveIncomeStatements>();
+  const [endIncomeData, setEndIncomeData] = useState<IComprehensiveIncomeStatements>();
+  const [historicalIncomeData, setHistoricalIncomeData] =
+    useState<IComprehensiveIncomeStatements>();
+
+  const getComprehensiveIncomeStatements = async (date: string) => {
+    let reportData;
+    try {
+      const response = await fetch(`${APIURL.COMPREHENSIVE_INCOME_STATEMENTS}?date=${date}`, {
+        method: 'GET',
+      });
+      const result: IResult = await response.json();
+      if (result.success) {
+        reportData = result.data as IComprehensiveIncomeStatements;
+      }
+    } catch (error) {
+      // console.log('Get balance sheet error');
+    }
+    return reportData;
+  };
+
+  useEffect(() => {
+    getComprehensiveIncomeStatements(startDateStr.date).then(data => setStartIncomeData(data));
+    getComprehensiveIncomeStatements(endDateStr.date).then(data => setEndIncomeData(data));
+    getComprehensiveIncomeStatements(endDateStr.dateOfLastYear).then(data =>
+      setHistoricalIncomeData(data)
+    );
+  }, []);
+
+  const getCISData = (data: IComprehensiveIncomeStatements | undefined) => {
+    if (!data)
+      return {
+        tradingFee: '0',
+        spreadFee: '0',
+        withdrawalFee: '0',
+        depositFee: '0',
+        liquidationFee: '0',
+        guaranteedStopLossFee: '0',
+        totalRevenue: '0',
+        technicalSupplierCost: '0',
+        marketDataSupplierCost: '0',
+        newCoinListingCost: '0',
+        totalCost: '0',
+        employeeSalaries: '0',
+        rent: '0',
+        marketing: '0',
+        rebateExpenses: '0',
+        totalOperatingExpenses: '0',
+        interestExpense: '0',
+        cryptocurrencyForexLosses: '0',
+        fiatToCryptocurrencyConversionLosses: '0',
+        cryptocurrencyToFiatConversionLosses: '0',
+        fiatToFiatConversionLosses: '0',
+        totalFinancialCosts: '0',
+        investmentGains: '0',
+        forexGains: '0',
+        cryptocurrencyGains: '0',
+        totalOtherGains: '0',
+        netProfit: '0',
+      };
+
+    // Info: (20230914 - Julian) ------------- Revene -------------
+    const tradingFee = roundToDecimal(
+      +data.income.details.transactionFee.totalAmountFairValue ?? 0,
+      2
+    );
+    const spreadFee = roundToDecimal(+data.income.details.spreadFee.totalAmountFairValue ?? 0, 2);
+    const withdrawalFee = roundToDecimal(
+      +data.income.details.withdrawalFee.totalAmountFairValue ?? 0,
+      2
+    );
+    const depositFee = roundToDecimal(+data.income.details.depositFee.totalAmountFairValue ?? 0, 2);
+    const liquidationFee = roundToDecimal(
+      +data.income.details.liquidationFee.totalAmountFairValue ?? 0,
+      2
+    );
+    const guaranteedStopLossFee = roundToDecimal(
+      +data.income.details.guaranteedStopFee.totalAmountFairValue ?? 0,
+      2
+    );
+    const totalRevenue = roundToDecimal(
+      +data.income.details.transactionFee.totalAmountFairValue +
+        +data.income.details.spreadFee.totalAmountFairValue +
+        +data.income.details.withdrawalFee.totalAmountFairValue +
+        +data.income.details.depositFee.totalAmountFairValue +
+        +data.income.details.liquidationFee.totalAmountFairValue +
+        +data.income.details.guaranteedStopFee.totalAmountFairValue,
+      2
+    );
+
+    // Info: (20230914 - Julian) ------------- Cost -------------
+    const technicalSupplierCost = roundToDecimal(+data.costs.details.technicalProviderFee ?? 0, 2);
+    const marketDataSupplierCost = roundToDecimal(
+      +data.costs.details.marketDataProviderFee ?? 0,
+      2
+    );
+    const newCoinListingCost = roundToDecimal(+data.costs.details.newCoinListingCost ?? 0, 2);
+    const totalCost = roundToDecimal(
+      +data.costs.details.technicalProviderFee +
+        +data.costs.details.marketDataProviderFee +
+        +data.costs.details.newCoinListingCost,
+      2
+    );
+
+    // Info: (20230914 - Julian) ------------- Operating expenses -------------
+    const employeeSalaries = roundToDecimal(+data.operatingExpenses.details.salaries ?? 0, 2);
+    const rent = roundToDecimal(+data.operatingExpenses.details.rent ?? 0, 2);
+    const marketing = roundToDecimal(+data.operatingExpenses.details.marketing ?? 0, 2);
+    const rebateExpenses = roundToDecimal(
+      +data.operatingExpenses.details.commissionRebates ?? 0,
+      2
+    );
+    const totalOperatingExpenses = roundToDecimal(
+      +data.operatingExpenses.details.salaries +
+        +data.operatingExpenses.details.rent +
+        +data.operatingExpenses.details.marketing +
+        +data.operatingExpenses.details.commissionRebates,
+      2
+    );
+
+    // Info: (20230914 - Julian) ------------- Financial costs -------------
+    const interestExpense = roundToDecimal(+data.financialCosts.details.interestExpense ?? 0, 2);
+    const cryptocurrencyForexLosses = roundToDecimal(
+      +data.financialCosts.details.cryptocurrencyForexLosses ?? 0,
+      2
+    );
+    const fiatToCryptocurrencyConversionLosses = roundToDecimal(
+      +data.financialCosts.details.fiatToCryptocurrencyConversionLosses ?? 0,
+      2
+    );
+    const cryptocurrencyToFiatConversionLosses = roundToDecimal(
+      +data.financialCosts.details.cryptocurrencyToFiatConversionLosses ?? 0,
+      2
+    );
+    const fiatToFiatConversionLosses = roundToDecimal(
+      +data.financialCosts.details.fiatToFiatConversionLosses ?? 0,
+      2
+    );
+    const totalFinancialCosts = roundToDecimal(
+      +data.financialCosts.details.cryptocurrencyForexLosses +
+        +data.financialCosts.details.cryptocurrencyForexLosses +
+        +data.financialCosts.details.fiatToCryptocurrencyConversionLosses +
+        +data.financialCosts.details.cryptocurrencyToFiatConversionLosses +
+        +data.financialCosts.details.fiatToFiatConversionLosses,
+      2
+    );
+
+    // Info: (20230914 - Julian) Total other gains/losses
+    const investmentGains = roundToDecimal(data.otherGainsLosses.details.investmentGains ?? 0, 2);
+    const forexGains = roundToDecimal(data.otherGainsLosses.details.forexGains ?? 0, 2);
+    const cryptocurrencyGains = roundToDecimal(
+      data.otherGainsLosses.details.cryptocurrencyGains.totalAmountFairValue ?? 0,
+      2
+    );
+    const totalOtherGains = roundToDecimal(
+      +data.otherGainsLosses.details.investmentGains +
+        +data.otherGainsLosses.details.forexGains +
+        +data.otherGainsLosses.details.cryptocurrencyGains.totalAmountFairValue,
+      2
+    );
+    const netProfit = roundToDecimal(+data.netProfit ?? 0, 2);
+
+    return {
+      tradingFee,
+      spreadFee,
+      withdrawalFee,
+      depositFee,
+      liquidationFee,
+      guaranteedStopLossFee,
+      totalRevenue,
+      technicalSupplierCost,
+      marketDataSupplierCost,
+      newCoinListingCost,
+      totalCost,
+      employeeSalaries,
+      rent,
+      marketing,
+      rebateExpenses,
+      totalOperatingExpenses,
+      interestExpense,
+      cryptocurrencyForexLosses,
+      fiatToCryptocurrencyConversionLosses,
+      cryptocurrencyToFiatConversionLosses,
+      fiatToFiatConversionLosses,
+      totalFinancialCosts,
+      investmentGains,
+      forexGains,
+      cryptocurrencyGains,
+      totalOtherGains,
+      netProfit,
+    };
+  };
+
+  const startCISData = getCISData(startIncomeData);
+  const endCISData = getCISData(endIncomeData);
 
   const income_statements_p3_1: ITable = {
     subThead: [
@@ -32,31 +234,43 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Trading fee', '10', '5'],
+        rowData: ['Trading fee', `${endCISData.tradingFee}`, `${startCISData.tradingFee}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Spread Fee', '0', '0'],
+        rowData: ['Spread Fee', `${endCISData.spreadFee}`, `${startCISData.spreadFee}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Withdrawal fee', '0', '0'],
+        rowData: ['Withdrawal fee', `${endCISData.withdrawalFee}`, `${startCISData.withdrawalFee}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Deposit fee', '0', '0'],
+        rowData: ['Deposit fee', `${endCISData.depositFee}`, `${startCISData.depositFee}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Liquidation fee', '10', '8'],
+        rowData: [
+          'Liquidation fee',
+          `${endCISData.liquidationFee}`,
+          `${startCISData.liquidationFee}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Guaranteed stop loss fee', '10', '2'],
+        rowData: [
+          'Guaranteed stop loss fee',
+          `${endCISData.guaranteedStopLossFee}`,
+          `${startCISData.guaranteedStopLossFee}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total revenue', '$30', '$15'],
+        rowData: [
+          'Total revenue',
+          `$ ${endCISData.totalRevenue}`,
+          `$ ${startCISData.totalRevenue}`,
+        ],
       },
       {
         rowType: RowType.title,
@@ -64,19 +278,31 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Technical supplier costs', '0', '0'],
+        rowData: [
+          'Technical supplier costs',
+          `${endCISData.technicalSupplierCost}`,
+          `${startCISData.technicalSupplierCost}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Market data supplier costs', '0', '0'],
+        rowData: [
+          'Market data supplier costs',
+          `${endCISData.marketDataSupplierCost}`,
+          `${startCISData.marketDataSupplierCost}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['New coin listing cost', '0', '0'],
+        rowData: [
+          'New coin listing cost',
+          `${endCISData.newCoinListingCost}`,
+          `${startCISData.newCoinListingCost}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total cost', '$0', '$0'],
+        rowData: ['Total cost', `$ ${endCISData.totalCost}`, `$ ${startCISData.totalCost}`],
       },
       {
         rowType: RowType.title,
@@ -84,23 +310,35 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Employee salaries', '0', '0'],
+        rowData: [
+          'Employee salaries',
+          `${endCISData.employeeSalaries}`,
+          `${startCISData.employeeSalaries}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Rent', '0', '0'],
+        rowData: ['Rent', `${endCISData.rent}`, `${startCISData.rent}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Marketing', '0', '0'],
+        rowData: ['Marketing', `${endCISData.marketing}`, `${startCISData.marketing}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Rebate expenses', '0', '0'],
+        rowData: [
+          'Rebate expenses',
+          `${endCISData.rebateExpenses}`,
+          `${startCISData.rebateExpenses}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total operating expenses', '$ 0', '$ 0'],
+        rowData: [
+          'Total operating expenses',
+          `$ ${endCISData.totalOperatingExpenses}`,
+          `$ ${startCISData.totalOperatingExpenses}`,
+        ],
       },
     ],
   };
@@ -113,27 +351,51 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Interest expense', '0', '0'],
+        rowData: [
+          'Interest expense',
+          `${endCISData.interestExpense}`,
+          `${startCISData.interestExpense}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency forex losses', '0', '0'],
+        rowData: [
+          'Cryptocurrency forex losses',
+          `${endCISData.cryptocurrencyForexLosses}`,
+          `${startCISData.cryptocurrencyForexLosses}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Fiat to cryptocurrency conversion losses', '0', '0'],
+        rowData: [
+          'Fiat to cryptocurrency conversion losses',
+          `${endCISData.fiatToCryptocurrencyConversionLosses}`,
+          `${startCISData.fiatToCryptocurrencyConversionLosses}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency to fiat conversion losses', '0', '0'],
+        rowData: [
+          'Cryptocurrency to fiat conversion losses',
+          `${endCISData.cryptocurrencyToFiatConversionLosses}`,
+          `${startCISData.cryptocurrencyToFiatConversionLosses}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Fiat to fiat conversion losses', '0', '0'],
+        rowData: [
+          'Fiat to fiat conversion losses',
+          `${endCISData.fiatToFiatConversionLosses}`,
+          `${startCISData.fiatToFiatConversionLosses}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total financial costs', '$ 0', '$ 0'],
+        rowData: [
+          'Total financial costs',
+          `$ ${endCISData.totalFinancialCosts}`,
+          `$ ${startCISData.totalFinancialCosts}`,
+        ],
       },
       {
         rowType: RowType.title,
@@ -141,25 +403,90 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Investment gains', '0', '0'],
+        rowData: [
+          'Investment gains',
+          `${endCISData.investmentGains}`,
+          `${startCISData.investmentGains}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Forex gains', '0', '0'],
+        rowData: ['Forex gains', `${endCISData.forexGains}`, `${startCISData.forexGains}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency gains', '0', '0'],
+        rowData: [
+          'Cryptocurrency gains',
+          `${endCISData.cryptocurrencyGains}`,
+          `${startCISData.cryptocurrencyGains}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Total other gains', '0', '0'],
+        rowData: [
+          'Total other gains',
+          `${endCISData.totalOtherGains}`,
+          `${startCISData.totalOtherGains}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Net profit', '$ 30', '$ 15'],
+        rowData: ['Net profit', `$ ${endCISData.netProfit}`, `$ ${startCISData.netProfit}`],
       },
     ],
+  };
+
+  // ToDo: (20230914 - Julian) Get revenue data
+  const getRevenue = (data: IAccountingDetail | undefined) => {
+    const defaultRevenue = {
+      percentage: '—',
+      ...defaultCryptoAssets,
+    };
+
+    if (!data)
+      return {
+        usd: defaultRevenue,
+        bit: defaultRevenue,
+        eth: defaultRevenue,
+        usdt: defaultRevenue,
+        total: defaultRevenue,
+      };
+
+    const bit = data.breakdown.BTC;
+    const eth = data.breakdown.ETH;
+    const usdt = data.breakdown.USDT;
+    const total = data.totalAmountFairValue;
+
+    return {
+      usd: {
+        name: 'USD',
+        // ToDo: (20230914 - Julian)
+      },
+      bit: {
+        name: 'Bitcoin',
+        amount: roundToDecimal(bit?.amount ?? 0, 2),
+        costValue: roundToDecimal(bit?.fairValue ?? 0, 2),
+        percentage: '—',
+      },
+      eth: {
+        name: 'Ethereum',
+        amount: roundToDecimal(eth?.amount ?? 0, 2),
+        costValue: roundToDecimal(eth?.fairValue ?? 0, 2),
+        percentage: '—',
+      },
+      usdt: {
+        name: 'USDT',
+        amount: roundToDecimal(usdt?.amount ?? 0, 2),
+        costValue: roundToDecimal(usdt?.fairValue ?? 0, 2),
+        percentage: '—',
+      },
+      total: {
+        name: 'Total',
+        amount: '—',
+        costValue: roundToDecimal(total ?? 0, 2),
+        percentage: '—',
+      },
+    };
   };
 
   const income_statements_p7_1: ITable = {
@@ -530,6 +857,8 @@ const ComprehensiveIncomeStatements = () => {
     ],
   };
 
+  const historicalCISData = getCISData(historicalIncomeData);
+
   const income_statements_p13_1: ITable = {
     subThead: [
       'Comprehensive Income Statements - USD ($)',
@@ -544,31 +873,47 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Trading fee', '10', '2'],
+        rowData: ['Trading fee', `${endCISData.tradingFee}`, `${historicalCISData.tradingFee}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Spread Fee', '0', '0'],
+        rowData: ['Spread Fee', `${endCISData.spreadFee}`, `${historicalCISData.spreadFee}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Withdrawal fee', '0', '0'],
+        rowData: [
+          'Withdrawal fee',
+          `${endCISData.withdrawalFee}`,
+          `${historicalCISData.withdrawalFee}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Deposit fee', '0', '0'],
+        rowData: ['Deposit fee', `${endCISData.depositFee}`, `${historicalCISData.depositFee}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Liquidation fee', '10', '1'],
+        rowData: [
+          'Liquidation fee',
+          `${endCISData.liquidationFee}`,
+          `${historicalCISData.liquidationFee}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Guaranteed stop loss fee', '10', '2'],
+        rowData: [
+          'Guaranteed stop loss fee',
+          `${endCISData.guaranteedStopLossFee}`,
+          `${historicalCISData.guaranteedStopLossFee}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total revenue', '$ 30', '$ 5'],
+        rowData: [
+          'Total revenue',
+          `$ ${endCISData.totalRevenue}`,
+          `$ ${historicalCISData.totalRevenue}`,
+        ],
       },
       {
         rowType: RowType.title,
@@ -576,19 +921,31 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Technical supplier costs', '0', '0'],
+        rowData: [
+          'Technical supplier costs',
+          `${endCISData.technicalSupplierCost}`,
+          `${historicalCISData.technicalSupplierCost}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Market data supplier costs', '0', '0'],
+        rowData: [
+          'Market data supplier costs',
+          `${endCISData.marketDataSupplierCost}`,
+          `${historicalCISData.marketDataSupplierCost}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['New coin listing cost', '0', '0'],
+        rowData: [
+          'New coin listing cost',
+          `${endCISData.newCoinListingCost}`,
+          `${historicalCISData.newCoinListingCost}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total cost', '$ 0', '$ 0'],
+        rowData: ['Total cost', `$ ${endCISData.totalCost}`, `$ ${historicalCISData.totalCost}`],
       },
       {
         rowType: RowType.title,
@@ -596,23 +953,35 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Employee salaries', '0', '0'],
+        rowData: [
+          'Employee salaries',
+          `${endCISData.employeeSalaries}`,
+          `${historicalCISData.employeeSalaries}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Rent', '0', '0'],
+        rowData: ['Rent', `${endCISData.rent}`, `${historicalCISData.rent}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Marketing', '0', '0'],
+        rowData: ['Marketing', `${endCISData.marketing}`, `${historicalCISData.marketing}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Rebate expenses', '0', '0'],
+        rowData: [
+          'Rebate expenses',
+          `${endCISData.rebateExpenses}`,
+          `${historicalCISData.rebateExpenses}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total operating expenses', '$ 0', '$ 0'],
+        rowData: [
+          'Total operating expenses',
+          `$ ${endCISData.totalOperatingExpenses}`,
+          `$ ${historicalCISData.totalOperatingExpenses}`,
+        ],
       },
     ],
   };
@@ -625,27 +994,51 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Interest expense', '0', '0'],
+        rowData: [
+          'Interest expense',
+          `${endCISData.interestExpense}`,
+          `${historicalCISData.interestExpense}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency forex losses', '0', '0'],
+        rowData: [
+          'Cryptocurrency forex losses',
+          `${endCISData.cryptocurrencyForexLosses}`,
+          `${historicalCISData.cryptocurrencyForexLosses}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Fiat to cryptocurrency conversion losses', '0', '0'],
+        rowData: [
+          'Fiat to cryptocurrency conversion losses',
+          `${endCISData.fiatToFiatConversionLosses}`,
+          `${historicalCISData.fiatToFiatConversionLosses}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency to fiat conversion losses', '0', '0'],
+        rowData: [
+          'Cryptocurrency to fiat conversion losses',
+          `${endCISData.cryptocurrencyToFiatConversionLosses}`,
+          `${historicalCISData.cryptocurrencyToFiatConversionLosses}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Fiat to fiat conversion losses', '0', '0'],
+        rowData: [
+          'Fiat to fiat conversion losses',
+          `${endCISData.fiatToFiatConversionLosses}`,
+          `${historicalCISData.fiatToFiatConversionLosses}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total financial costs', '$ 0', '$ 0'],
+        rowData: [
+          'Total financial costs',
+          `$ ${endCISData.totalFinancialCosts}`,
+          `$ ${historicalCISData.totalFinancialCosts}`,
+        ],
       },
       {
         rowType: RowType.title,
@@ -653,23 +1046,35 @@ const ComprehensiveIncomeStatements = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Investment gains', '0', '0'],
+        rowData: [
+          'Investment gains',
+          `${endCISData.investmentGains}`,
+          `${startCISData.investmentGains}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Forex gains', '0', '0'],
+        rowData: ['Forex gains', `${endCISData.forexGains}`, `${startCISData.forexGains}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency gains', '0', '0'],
+        rowData: [
+          'Cryptocurrency gains',
+          `${endCISData.cryptocurrencyGains}`,
+          `${startCISData.cryptocurrencyGains}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Total other gains', '0', '0'],
+        rowData: [
+          'Total other gains',
+          `${endCISData.totalOtherGains}`,
+          `${startCISData.totalOtherGains}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Net profit', '$ 30', '$ 5'],
+        rowData: ['Net profit', `$ ${endCISData.netProfit}`, `$ ${startCISData.netProfit}`],
       },
     ],
   };
