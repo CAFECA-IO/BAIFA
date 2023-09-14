@@ -6,14 +6,15 @@ import ReportTableNew from '../../components/report_table/report_table';
 import {ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
-import {reportsDateSpan} from '../../constants/config';
-import {timestampToString} from '../../lib/common';
+import {timestampToString, getReportTimeSpan} from '../../lib/common';
 
 const StatementOfRedFlags = () => {
   const reportTitle = BaifaReports.STATEMENTS_OF_RED_FLAGS;
   const contentList = ['Statements of Red Flags', 'Note To Statements of Red Flags'];
-  const startDate = timestampToString(reportsDateSpan.start);
-  const endDate = timestampToString(reportsDateSpan.end);
+
+  // Info: (20230913 - Julian) Get timespan of report
+  const startDateStr = timestampToString(getReportTimeSpan().start);
+  const endDateStr = timestampToString(getReportTimeSpan().end);
 
   const red_flags_p2_1: ITable = {
     thead: ['Self-Analysis', '', '', 'Total cases: 0'],
@@ -34,7 +35,7 @@ const StatementOfRedFlags = () => {
   };
 
   const red_flags_p3_1: ITable = {
-    thead: ['', endDate.dateFormatInUS, startDate.dateFormatInUS, '% Change'],
+    thead: ['', endDateStr.dateFormatInUS, startDateStr.dateFormatInUS, '% Change'],
     tbody: [
       {
         rowType: RowType.title,
@@ -92,8 +93,8 @@ const StatementOfRedFlags = () => {
   };
 
   const red_flags_p4_1: ITable = {
-    subThead: ['', `30 Days Ended ${endDate.dateFormatForForm},`, '*-*', '*-*'],
-    thead: ['*|*', endDate.year, startDate.lastYear, '% Change'],
+    subThead: ['', `30 Days Ended ${endDateStr.dateFormatForForm},`, '*-*', '*-*'],
+    thead: ['*|*', endDateStr.year, startDateStr.lastYear, '% Change'],
     tbody: [
       {
         rowType: RowType.title,
@@ -160,8 +161,8 @@ const StatementOfRedFlags = () => {
         {/* Info: (20230801 - Julian) Cover */}
         <ReportCover
           reportTitle={reportTitle}
-          reportDateStart={startDate.date}
-          reportDateEnd={endDate.date}
+          reportDateStart={startDateStr.date}
+          reportDateEnd={endDateStr.date}
         />
         <hr />
 
@@ -246,8 +247,8 @@ const StatementOfRedFlags = () => {
           <div className="flex flex-col gap-y-16px py-16px text-xs leading-5">
             <h1 className="text-lg font-bold text-violet">Note To Statements of Red Flags</h1>
             <p>
-              As of<span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, and
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, the
+              As of<span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, and
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>, the
               statistics for the number of occurrences of separate red flag types were as follows:
             </p>
             <ReportTableNew tableData={red_flags_p3_1} />
@@ -259,9 +260,9 @@ const StatementOfRedFlags = () => {
         <ReportPageBody reportTitle={BaifaReports.STATEMENTS_OF_RED_FLAGS} currentPage={4}>
           <div className="flex flex-col gap-y-16px py-16px text-xs leading-5">
             <p>
-              As of<span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, and
-              <span className="font-bold text-violet"> {endDate.lastYearDate}</span>, the statistics
-              for the number of occurrences of separate red flag types were as follows:
+              As of<span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, and
+              <span className="font-bold text-violet"> {endDateStr.lastYearDate}</span>, the
+              statistics for the number of occurrences of separate red flag types were as follows:
             </p>
             <ReportTableNew tableData={red_flags_p4_1} />
           </div>

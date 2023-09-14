@@ -122,3 +122,14 @@ export const getChainIcon = (chainId: string) => {
     alt: `${chainId}_icon`,
   };
 };
+
+export const getReportTimeSpan = () => {
+  const now = new Date().getTime() / 1000;
+  const yesterday = now - (now % 86400) - 86400;
+  const thirtyDaysAgo = yesterday - 86400 * 30;
+
+  return {
+    start: thirtyDaysAgo,
+    end: yesterday,
+  };
+};

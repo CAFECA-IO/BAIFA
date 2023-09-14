@@ -7,9 +7,8 @@ import ReportRiskPages from '../../components/report_risk_pages/report_risk_page
 import ReportTable from '../../components/report_table/report_table';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {RowType} from '../../constants/table_row_type';
-import {reportsDateSpan} from '../../constants/config';
 import {ITable} from '../../interfaces/report_table';
-import {timestampToString, roundToDecimal} from '../../lib/common';
+import {timestampToString, roundToDecimal, getReportTimeSpan} from '../../lib/common';
 import {APIURL} from '../../constants/api_request';
 import {IBalanceSheet} from '../../interfaces/balance_sheet';
 
@@ -24,8 +23,8 @@ const BalanceSheets = () => {
   const contentList = [reportTitle, `Note To ${reportTitle}`];
 
   // Info: (20230913 - Julian) Get timespan of report
-  const startDate = timestampToString(reportsDateSpan.start);
-  const endDate = timestampToString(reportsDateSpan.end);
+  const startDateStr = timestampToString(getReportTimeSpan().start);
+  const endDateStr = timestampToString(getReportTimeSpan().end);
 
   const [startBalanceData, setStartBalanceData] = useState<IBalanceSheet>();
   const [endBalanceData, setEndBalanceData] = useState<IBalanceSheet>();
@@ -47,8 +46,8 @@ const BalanceSheets = () => {
   };
 
   useEffect(() => {
-    getBalanceSheet(startDate.date).then(data => setStartBalanceData(data));
-    getBalanceSheet(endDate.date).then(data => setEndBalanceData(data));
+    getBalanceSheet(startDateStr.date).then(data => setStartBalanceData(data));
+    getBalanceSheet(endDateStr.date).then(data => setEndBalanceData(data));
   }, []);
 
   const getBalanceSheetsData = (data: IBalanceSheet | undefined) => {
@@ -111,7 +110,7 @@ const BalanceSheets = () => {
 
   const balance_sheets_p3_1: ITable = {
     subThead: ['Balance Sheets - USD ($)', '', ''],
-    thead: ['$ in Thousands', endDate.dateFormatForForm, startDate.dateFormatForForm],
+    thead: ['$ in Thousands', endDateStr.dateFormatForForm, startDateStr.dateFormatForForm],
     tbody: [
       {
         rowType: RowType.title,
@@ -295,7 +294,15 @@ const BalanceSheets = () => {
 
   // ToDo: (20230913 - Julian) 整理格式
   const balance_sheets_p6_1: ITable = {
-    thead: ['', endDate.dateFormatForForm, '*-*', '*-*', startDate.dateFormatForForm, '*-*', '*-*'],
+    thead: [
+      '',
+      endDateStr.dateFormatForForm,
+      '*-*',
+      '*-*',
+      startDateStr.dateFormatForForm,
+      '*-*',
+      '*-*',
+    ],
     tbody: [
       {
         rowType: RowType.stringRow,
@@ -361,7 +368,7 @@ const BalanceSheets = () => {
   };
 
   const balance_sheets_p7_1: ITable = {
-    thead: ['', endDate.dateFormatForForm, '*-*', '*-*', '*-*'],
+    thead: ['', endDateStr.dateFormatForForm, '*-*', '*-*', '*-*'],
     tbody: [
       {
         rowType: RowType.headline,
@@ -407,7 +414,7 @@ const BalanceSheets = () => {
   };
 
   const balance_sheets_p7_2: ITable = {
-    thead: ['', startDate.dateFormatForForm, '*-*', '*-*', '*-*'],
+    thead: ['', startDateStr.dateFormatForForm, '*-*', '*-*', '*-*'],
     tbody: [
       {
         rowType: RowType.headline,
@@ -462,8 +469,8 @@ const BalanceSheets = () => {
         {/* Info: (20230801 - Julian) Cover */}
         <ReportCover
           reportTitle={reportTitle}
-          reportDateStart={startDate.date}
-          reportDateEnd={endDate.date}
+          reportDateStart={startDateStr.date}
+          reportDateEnd={endDateStr.date}
         />
         <hr />
         {/* Info: (20230802 - Julian) Content */}
@@ -517,7 +524,7 @@ const BalanceSheets = () => {
               In the management's view, they include all necessary adjustments, which are only
               regular, recurring adjustments, for a fair representation of the Company's financial
               statements for the periods shown. The non-audited operational results for the 30 days
-              ending <span className="font-bold text-violet">{endDate.dateFormatInUS}</span>, may
+              ending <span className="font-bold text-violet">{endDateStr.dateFormatInUS}</span>, may
               not necessarily predict the results for the full year or any other period.
             </p>
             <p className="font-bold">Use of estimates</p>
@@ -544,8 +551,8 @@ const BalanceSheets = () => {
               user deposits to meet regulatory requirements and classifies the assets as current
               based on their purpose and availability to fulfill the Company’s direct obligation
               under user deposits. As of
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span> and
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, the
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span> and
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>, the
               Company’s eligible liquid assets were greater than the aggregate amount of user
               deposits.
             </p>
@@ -583,7 +590,10 @@ const BalanceSheets = () => {
             </p>
             <p>
               During the
-              <span className="font-bold text-violet"> 30 days ended {endDate.dateFormatInUS}</span>
+              <span className="font-bold text-violet">
+                {' '}
+                30 days ended {endDateStr.dateFormatInUS}
+              </span>
               , no losses have been incurred in connection with customer cryptocurrencies.
             </p>
             <p>
