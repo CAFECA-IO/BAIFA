@@ -19,4 +19,5 @@ export const APIName: IAPINameConstant = {
 export const APIURL = {
   BALANCE_SHEET: 'https://api.tidebit-defi.com/balance-sheet',
   COMPREHENSIVE_INCOME_STATEMENTS: 'https://api.tidebit-defi.com/comprehensive-income',
+  EXCHANGE_RATES: 'https://api.tidebit-defi.com/exchange-rates',
 };
