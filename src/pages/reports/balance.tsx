@@ -12,7 +12,7 @@ import {timestampToString, roundToDecimal, getReportTimeSpan} from '../../lib/co
 import {ITable} from '../../interfaces/report_table';
 import {IResult} from '../../interfaces/result';
 import {IBalanceSheet} from '../../interfaces/balance_sheet';
-import {IAccountingDetail, defaultCryptoAssets} from '../../interfaces/accounting_detail';
+import {IAccountingDetail, defaultCryptoDetail} from '../../interfaces/accounting_detail';
 
 const BalanceSheets = () => {
   const reportTitle = BaifaReports.BALANCE_SHEETS;
@@ -258,7 +258,7 @@ const BalanceSheets = () => {
   const getTotalUserDeposit = (userDeposit: IAccountingDetail | undefined) => {
     const defaultDepositData = {
       percentage: 0,
-      ...defaultCryptoAssets,
+      ...defaultCryptoDetail,
     };
 
     if (!userDeposit) {
