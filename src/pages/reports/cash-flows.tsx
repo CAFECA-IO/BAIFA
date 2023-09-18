@@ -1,3 +1,4 @@
+import {useEffect, useState} from 'react';
 import Head from 'next/head';
 import ReportCover from '../../components/report_cover/report_cover';
 import ReportContent from '../../components/report_content/report_content';
@@ -6,9 +7,12 @@ import ReportRiskPages from '../../components/report_risk_pages/report_risk_page
 import ReportTable from '../../components/report_table/report_table';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
 import {ITable} from '../../interfaces/report_table';
+import {IResult} from '../../interfaces/result';
+import {IStatementsOfCashFlows} from '../../interfaces/statements_of_cash_flows';
 import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
-import {timestampToString, getReportTimeSpan} from '../../lib/common';
+import {timestampToString, roundToDecimal, getReportTimeSpan} from '../../lib/common';
+import {APIURL} from '../../constants/api_request';
 
 const StatementsOfCashFlows = () => {
   const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOWS;
@@ -18,6 +22,192 @@ const StatementsOfCashFlows = () => {
   const startDateStr = timestampToString(getReportTimeSpan().start);
   const endDateStr = timestampToString(getReportTimeSpan().end);
 
+  const [startCashFlowsData, setStartCashFlowsData] = useState<IStatementsOfCashFlows>();
+  const [endCashFlowsData, setEndCashFlowsData] = useState<IStatementsOfCashFlows>();
+
+  const getStatementsOfCashFlows = async (date: string) => {
+    let reportData;
+    try {
+      const response = await fetch(`${APIURL.STATEMENTS_OF_CASH_FLOWS}?date=${date}`, {
+        method: 'GET',
+      });
+      const result: IResult = await response.json();
+      if (result.success) {
+        reportData = result.data as IStatementsOfCashFlows;
+      }
+    } catch (error) {
+      // console.log('Get statements of cash flows error');
+    }
+    return reportData;
+  };
+
+  useEffect(() => {
+    getStatementsOfCashFlows(startDateStr.date).then(data => setStartCashFlowsData(data));
+    getStatementsOfCashFlows(endDateStr.date).then(data => setEndCashFlowsData(data));
+  }, []);
+
+  const getCashFlows = (data: IStatementsOfCashFlows | undefined) => {
+    if (!data)
+      return {
+        cashDepositedByCustomers: 0,
+        cashWithdrawnByCustomers: 0,
+        purchaseOfCryptocurrencies: 0,
+        disposalOfCryptocurrencies: 0,
+        cashReceivedFromCustomersAsTransactionFee: 0,
+        cashReceivedFromCustomersForLiquidationInCFDTrading: 0,
+        cashPaidToCustomersAsRebatesForTransactionFees: 0,
+        cashPaidToSuppliersForExpenses: 0,
+        cashPaidToCustomersForCFDTradingProfits: 0,
+        netCashProvidedByOperatingActivities: 0,
+        netCashProvidedByInvestingActivities: 0,
+        netCashProvidedByFinancingActivities: 0,
+        netIncreaseDecreaseInCryptocurrencies: 0,
+        cashCashEquivalentsAndRestrictedCashBeginningOfPeriod: 0,
+        cashCashEquivalentsAndRestrictedCashEndOfPeriod: 0,
+        cryptocurrenciesDepositedByCustomers: 0,
+        cryptocurrenciesWithdrawnByCustomers: 0,
+        cryptocurrencyInflows: 0,
+        cryptocurrencyOutflows: 0,
+        cryptocurrenciesReceivedFromCustomersAsTransactionFees: 0,
+        cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading: 0,
+        cryptocurrenciesPaidToCustomersForCFDTradingProfits: 0,
+        purchaseOfCryptocurrenciesWithNonCashConsideration: 0,
+        disposalOfCryptocurrenciesForNonCashConsideration: 0,
+        netIncreaseInNonCashOperatingActivities: 0,
+        cryptocurrenciesBeginningOfPeriod: 0,
+        cryptocurrenciesEndOfPeriod: 0,
+      };
+
+    // Info: (20230918 - Julian) Cash flows from operating activities
+    const cashDepositedByCustomers =
+      +data?.operatingActivities.cashDepositedByCustomers.weightedAverageCost ?? 0;
+    const cashWithdrawnByCustomers =
+      +data?.operatingActivities.cashWithdrawnByCustomers.weightedAverageCost ?? 0;
+    const purchaseOfCryptocurrencies =
+      +data?.operatingActivities.purchaseOfCryptocurrencies.weightedAverageCost ?? 0;
+    const disposalOfCryptocurrencies =
+      +data?.operatingActivities.disposalOfCryptocurrencies.weightedAverageCost ?? 0;
+    const cashReceivedFromCustomersAsTransactionFee =
+      +data?.operatingActivities.cashReceivedFromCustomersAsTransactionFee.weightedAverageCost ?? 0;
+    const cashReceivedFromCustomersForLiquidationInCFDTrading =
+      +data?.operatingActivities.cashReceivedFromCustomersForLiquidationInCFDTrading
+        .weightedAverageCost ?? 0;
+    const cashPaidToCustomersAsRebatesForTransactionFees =
+      +data?.operatingActivities.cashPaidToCustomersAsRebatesForTransactionFees
+        .weightedAverageCost ?? 0;
+    const cashPaidToSuppliersForExpenses =
+      +data?.operatingActivities.cashPaidToSuppliersForExpenses.weightedAverageCost ?? 0;
+    const cashPaidToCustomersForCFDTradingProfits =
+      +data?.operatingActivities.cashPaidToCustomersForCFDTradingProfits.weightedAverageCost ?? 0;
+    const netCashProvidedByOperatingActivities =
+      cashDepositedByCustomers +
+      cashWithdrawnByCustomers +
+      purchaseOfCryptocurrencies +
+      disposalOfCryptocurrencies +
+      cashReceivedFromCustomersAsTransactionFee +
+      cashReceivedFromCustomersForLiquidationInCFDTrading +
+      cashPaidToCustomersAsRebatesForTransactionFees +
+      cashPaidToSuppliersForExpenses +
+      cashPaidToCustomersForCFDTradingProfits;
+    // Info: (20230918 - Julian) Cash flows from investing activities
+    const netCashProvidedByInvestingActivities = +data?.investingActivities.details ?? 0;
+    // Info: (20230918 - Julian) Cash flows from financing activities
+    const netCashProvidedByFinancingActivities =
+      (+data.financingActivities.longTermDebt.weightedAverageCost ?? 0) +
+      (+data.financingActivities.paymentsOfDividends.weightedAverageCost ?? 0) +
+      (+data.financingActivities.proceedsFromIssuanceOfCommonStock.weightedAverageCost ?? 0) +
+      (+data.financingActivities.shortTermBorrowings.weightedAverageCost ?? 0) +
+      (+data.financingActivities.treasuryStock.weightedAverageCost ?? 0);
+    const netIncreaseDecreaseInCryptocurrencies =
+      +data?.otherSupplementaryItems.relatedToNonCash.netIncreaseDecreaseInCryptocurrencies
+        .weightedAverageCost ?? 0;
+    const cashCashEquivalentsAndRestrictedCashBeginningOfPeriod =
+      +data.otherSupplementaryItems.relatedToNonCash.cryptocurrenciesBeginningOfPeriod
+        .weightedAverageCost ?? 0;
+    const cashCashEquivalentsAndRestrictedCashEndOfPeriod =
+      +data.otherSupplementaryItems.relatedToNonCash.cryptocurrenciesEndOfPeriod
+        .weightedAverageCost ?? 0;
+
+    // Info: (20230918 - Julian) Supplemental schedule of non-cash operating activities
+    const cryptocurrenciesDepositedByCustomers =
+      +data.supplementalScheduleOfNonCashOperatingActivities.cryptocurrenciesDepositedByCustomers
+        .weightedAverageCost ?? 0;
+    const cryptocurrenciesWithdrawnByCustomers =
+      +data.supplementalScheduleOfNonCashOperatingActivities.cryptocurrenciesWithdrawnByCustomers
+        .weightedAverageCost ?? 0;
+    const cryptocurrencyInflows =
+      +data.supplementalScheduleOfNonCashOperatingActivities.cryptocurrencyInflows
+        .weightedAverageCost ?? 0;
+    const cryptocurrencyOutflows =
+      +data.supplementalScheduleOfNonCashOperatingActivities.cryptocurrencyOutflows
+        .weightedAverageCost ?? 0;
+    const cryptocurrenciesReceivedFromCustomersAsTransactionFees =
+      +data.supplementalScheduleOfNonCashOperatingActivities
+        .cryptocurrenciesReceivedFromCustomersAsTransactionFees.weightedAverageCost ?? 0;
+    const cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading =
+      +data.supplementalScheduleOfNonCashOperatingActivities
+        .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading.weightedAverageCost ?? 0;
+    const cryptocurrenciesPaidToCustomersForCFDTradingProfits =
+      +data.supplementalScheduleOfNonCashOperatingActivities
+        .cryptocurrenciesPaidToCustomersForCFDTradingProfits.weightedAverageCost ?? 0;
+    const purchaseOfCryptocurrenciesWithNonCashConsideration =
+      +data.supplementalScheduleOfNonCashOperatingActivities
+        .purchaseOfCryptocurrenciesWithNonCashConsideration.weightedAverageCost ?? 0;
+    const disposalOfCryptocurrenciesForNonCashConsideration =
+      +data.supplementalScheduleOfNonCashOperatingActivities
+        .disposalOfCryptocurrenciesForNonCashConsideration.weightedAverageCost ?? 0;
+    const netIncreaseInNonCashOperatingActivities =
+      cryptocurrenciesDepositedByCustomers +
+      cryptocurrenciesWithdrawnByCustomers +
+      cryptocurrencyInflows +
+      cryptocurrencyOutflows +
+      cryptocurrenciesReceivedFromCustomersAsTransactionFees +
+      cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading +
+      cryptocurrenciesPaidToCustomersForCFDTradingProfits +
+      purchaseOfCryptocurrenciesWithNonCashConsideration +
+      disposalOfCryptocurrenciesForNonCashConsideration;
+    const cryptocurrenciesBeginningOfPeriod =
+      +data?.otherSupplementaryItems.relatedToNonCash.cryptocurrenciesBeginningOfPeriod
+        .weightedAverageCost ?? 0;
+    const cryptocurrenciesEndOfPeriod =
+      +data?.otherSupplementaryItems.relatedToNonCash.cryptocurrenciesEndOfPeriod
+        .weightedAverageCost ?? 0;
+
+    return {
+      cashDepositedByCustomers,
+      cashWithdrawnByCustomers,
+      purchaseOfCryptocurrencies,
+      disposalOfCryptocurrencies,
+      cashReceivedFromCustomersAsTransactionFee,
+      cashReceivedFromCustomersForLiquidationInCFDTrading,
+      cashPaidToCustomersAsRebatesForTransactionFees,
+      cashPaidToSuppliersForExpenses,
+      cashPaidToCustomersForCFDTradingProfits,
+      netCashProvidedByOperatingActivities,
+      netCashProvidedByInvestingActivities,
+      netCashProvidedByFinancingActivities,
+      netIncreaseDecreaseInCryptocurrencies,
+      cashCashEquivalentsAndRestrictedCashBeginningOfPeriod,
+      cashCashEquivalentsAndRestrictedCashEndOfPeriod,
+      cryptocurrenciesDepositedByCustomers,
+      cryptocurrenciesWithdrawnByCustomers,
+      cryptocurrencyInflows,
+      cryptocurrencyOutflows,
+      cryptocurrenciesReceivedFromCustomersAsTransactionFees,
+      cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading,
+      cryptocurrenciesPaidToCustomersForCFDTradingProfits,
+      purchaseOfCryptocurrenciesWithNonCashConsideration,
+      disposalOfCryptocurrenciesForNonCashConsideration,
+      netIncreaseInNonCashOperatingActivities,
+      cryptocurrenciesBeginningOfPeriod,
+      cryptocurrenciesEndOfPeriod,
+    };
+  };
+
+  const endCashFlows = getCashFlows(endCashFlowsData);
+  const startCashFlows = getCashFlows(startCashFlowsData);
+
+  // Done
   const cash_flows_p3_1: ITable = {
     subThead: [
       'Statements of Cash Flows - USD ($)',
@@ -32,43 +222,86 @@ const StatementsOfCashFlows = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash deposited by customers', '$ 0', '$ 0'],
+        rowData: [
+          'Cash deposited by customers',
+          `$ ${roundToDecimal(endCashFlows.cashDepositedByCustomers, 2)}`,
+          `$ ${roundToDecimal(startCashFlows.cashDepositedByCustomers, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash withdrawn by customers', '0', '0'],
+        rowData: [
+          'Cash withdrawn by customers',
+          `${roundToDecimal(endCashFlows.cashWithdrawnByCustomers, 2)}`,
+          `${roundToDecimal(startCashFlows.cashWithdrawnByCustomers, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Purchase of cryptocurrencies', '0', '0'],
+        rowData: [
+          'Purchase of cryptocurrencies',
+          `${roundToDecimal(endCashFlows.purchaseOfCryptocurrencies, 2)}`,
+          `${roundToDecimal(startCashFlows.purchaseOfCryptocurrencies, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Disposal of cryptocurrencies', '0', '0'],
+        rowData: [
+          'Disposal of cryptocurrencies',
+          `${roundToDecimal(endCashFlows.disposalOfCryptocurrencies, 2)}`,
+          `${roundToDecimal(startCashFlows.disposalOfCryptocurrencies, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash received from customers as transaction fee', '0', '0'],
+        rowData: [
+          'Cash received from customers as transaction fee',
+          `${roundToDecimal(endCashFlows.cashReceivedFromCustomersAsTransactionFee, 2)}`,
+          `${roundToDecimal(startCashFlows.cashReceivedFromCustomersAsTransactionFee, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash received from customers for liquidation in CFD trading', '0', '0'],
+        rowData: [
+          'Cash received from customers for liquidation in CFD trading',
+          `${roundToDecimal(endCashFlows.cashReceivedFromCustomersForLiquidationInCFDTrading, 2)}`,
+          `${roundToDecimal(
+            startCashFlows.cashReceivedFromCustomersForLiquidationInCFDTrading,
+            2
+          )}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash paid to customers as rebates for transaction fees', '0', '0'],
+        rowData: [
+          'Cash paid to customers as rebates for transaction fees',
+          `${roundToDecimal(endCashFlows.cashPaidToCustomersAsRebatesForTransactionFees, 2)}`,
+          `${roundToDecimal(startCashFlows.cashPaidToCustomersAsRebatesForTransactionFees, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash paid to suppliers for expenses', '0', '0'],
+        rowData: [
+          'Cash paid to suppliers for expenses',
+          `${roundToDecimal(endCashFlows.cashPaidToSuppliersForExpenses, 2)}`,
+          `${roundToDecimal(startCashFlows.cashPaidToSuppliersForExpenses, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash paid to customers for CFD trading profits', '0', '0'],
+        rowData: [
+          'Cash paid to customers for CFD trading profits',
+          `${roundToDecimal(endCashFlows.cashPaidToCustomersForCFDTradingProfits, 2)}`,
+          `${roundToDecimal(startCashFlows.cashPaidToCustomersForCFDTradingProfits, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net cash provided by operating activities', '0', '0'],
+        rowData: [
+          'Net cash provided by operating activities',
+          `${roundToDecimal(endCashFlows.netCashProvidedByOperatingActivities, 2)}`,
+          `${roundToDecimal(startCashFlows.netCashProvidedByOperatingActivities, 2)}`,
+        ],
       },
       {
         rowType: RowType.title,
@@ -76,7 +309,11 @@ const StatementsOfCashFlows = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net cash provided by investing activities', '0', '0'],
+        rowData: [
+          'Net cash provided by investing activities',
+          `${roundToDecimal(endCashFlows.netCashProvidedByInvestingActivities, 2)}`,
+          `${roundToDecimal(startCashFlows.netCashProvidedByInvestingActivities, 2)}`,
+        ],
       },
       {
         rowType: RowType.title,
@@ -84,23 +321,45 @@ const StatementsOfCashFlows = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net cash used in financing activities', '0', '0'],
+        rowData: [
+          'Net cash used in financing activities',
+          `${roundToDecimal(endCashFlows.netCashProvidedByFinancingActivities, 2)}`,
+          `${roundToDecimal(startCashFlows.netCashProvidedByFinancingActivities, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net increase in cash, cash equivalents, and restricted cash', '0', '0'],
+        rowData: [
+          'Net increase in cash, cash equivalents, and restricted cash',
+          `${roundToDecimal(endCashFlows.netIncreaseDecreaseInCryptocurrencies ?? 0, 2)}`,
+          `${roundToDecimal(startCashFlows.netIncreaseDecreaseInCryptocurrencies ?? 0, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash, cash equivalents, and restricted cash, beginning of period', '0', '0'],
+        rowData: [
+          'Cash, cash equivalents, and restricted cash, beginning of period',
+          `${roundToDecimal(
+            endCashFlows.cashCashEquivalentsAndRestrictedCashBeginningOfPeriod ?? 0,
+            2
+          )}`,
+          `${roundToDecimal(
+            startCashFlows.cashCashEquivalentsAndRestrictedCashBeginningOfPeriod ?? 0,
+            2
+          )}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Cash, cash equivalents, and restricted cash, end of period', '$ 0', '$ 0'],
+        rowData: [
+          'Cash, cash equivalents, and restricted cash, end of period',
+          `$ ${roundToDecimal(endCashFlows.cashCashEquivalentsAndRestrictedCashEndOfPeriod, 2)}`,
+          `$ ${roundToDecimal(startCashFlows.cashCashEquivalentsAndRestrictedCashEndOfPeriod, 2)}`,
+        ],
       },
     ],
   };
-
+  // Done
   const cash_flows_p4_1: ITable = {
     tbody: [
       {
@@ -109,55 +368,114 @@ const StatementsOfCashFlows = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrencies deposited by customers', '$ 30', '$ 50'],
+        rowData: [
+          'Cryptocurrencies deposited by customers',
+          `$ ${roundToDecimal(endCashFlows.cryptocurrenciesDepositedByCustomers, 2)}`,
+          `$ ${roundToDecimal(startCashFlows.cryptocurrenciesDepositedByCustomers, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrencies withdrawn by customers', '(70)', '(20)'],
+        rowData: [
+          'Cryptocurrencies withdrawn by customers',
+          `(${roundToDecimal(endCashFlows.cryptocurrenciesWithdrawnByCustomers, 2)})`,
+          `(${roundToDecimal(startCashFlows.cryptocurrenciesWithdrawnByCustomers, 2)})`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency inflows', '0', '0'],
+        rowData: [
+          'Cryptocurrency inflows',
+          `${roundToDecimal(endCashFlows.cryptocurrencyInflows, 2)}`,
+          `${roundToDecimal(startCashFlows.cryptocurrencyInflows, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency outflows', '0', '0'],
+        rowData: [
+          'Cryptocurrency outflows',
+          `${roundToDecimal(endCashFlows.cryptocurrencyOutflows, 2)}`,
+          `${roundToDecimal(startCashFlows.cryptocurrencyOutflows, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrencies received from customers as transaction fees', '0', '0'],
+        rowData: [
+          'Cryptocurrencies received from customers as transaction fees',
+          `${roundToDecimal(
+            endCashFlows.cryptocurrenciesReceivedFromCustomersAsTransactionFees,
+            2
+          )}`,
+          `${roundToDecimal(
+            startCashFlows.cryptocurrenciesReceivedFromCustomersAsTransactionFees,
+            2
+          )}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Cryptocurrencies received from customers for liquidation in CFD trading',
-          '1000',
-          '10',
+          `${roundToDecimal(
+            endCashFlows.cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading,
+            2
+          )}`,
+          `${roundToDecimal(
+            startCashFlows.cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading,
+            2
+          )}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrencies paid to customers for CFD trading profits', '0', '0'],
+        rowData: [
+          'Cryptocurrencies paid to customers for CFD trading profits',
+          `${roundToDecimal(endCashFlows.cryptocurrenciesPaidToCustomersForCFDTradingProfits, 2)}`,
+          `${roundToDecimal(
+            startCashFlows.cryptocurrenciesPaidToCustomersForCFDTradingProfits,
+            2
+          )}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Purchase of cryptocurrencies with non-cash consideration', '0', '0'],
+        rowData: [
+          'Purchase of cryptocurrencies with non-cash consideration',
+          `${roundToDecimal(endCashFlows.purchaseOfCryptocurrenciesWithNonCashConsideration, 2)}`,
+          `${roundToDecimal(startCashFlows.purchaseOfCryptocurrenciesWithNonCashConsideration, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Disposal of cryptocurrencies for non-cash consideration', '0', '0'],
+        rowData: [
+          'Disposal of cryptocurrencies for non-cash consideration',
+          `${roundToDecimal(endCashFlows.disposalOfCryptocurrenciesForNonCashConsideration, 2)}`,
+          `${roundToDecimal(startCashFlows.disposalOfCryptocurrenciesForNonCashConsideration, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net increase in non-cash operating activities', '1000', '20'],
+        rowData: [
+          'Net increase in non-cash operating activities',
+          `${roundToDecimal(endCashFlows.netIncreaseInNonCashOperatingActivities, 2)}`,
+          `${roundToDecimal(startCashFlows.netIncreaseInNonCashOperatingActivities, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrencies, beginning of period', '50', '0'],
+        rowData: [
+          'Cryptocurrencies, beginning of period',
+          `${roundToDecimal(endCashFlows.cryptocurrenciesBeginningOfPeriod, 2)}`,
+          `${roundToDecimal(startCashFlows.cryptocurrenciesBeginningOfPeriod, 2)}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Cryptocurrencies, end of period', '$ 1000', '$ 50'],
+        rowData: [
+          'Cryptocurrencies, end of period',
+          `$ ${roundToDecimal(endCashFlows.cryptocurrenciesEndOfPeriod, 2)}`,
+          `$ ${roundToDecimal(startCashFlows.cryptocurrenciesEndOfPeriod, 2)}`,
+        ],
       },
     ],
   };

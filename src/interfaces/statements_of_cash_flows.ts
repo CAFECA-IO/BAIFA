@@ -1,28 +1,12 @@
+import {IStatementCurrencyDetail} from './currency_detail';
+
 interface ICashFlowsAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
-    USD: {
-      currencyType: 'FIAT';
-      name: 'USD';
-      amount: number;
-      fairValue: number;
-      weightedAverageCost: number;
-    };
-    TWD: {
-      currencyType: 'FIAT';
-      name: 'TWD';
-      amount: number;
-      fairValue: number;
-      weightedAverageCost: number;
-    };
-    HKD: {
-      currencyType: 'FIAT';
-      name: 'HKD';
-      amount: number;
-      fairValue: number;
-      weightedAverageCost: number;
-    };
+    USD: IStatementCurrencyDetail;
+    TWD: IStatementCurrencyDetail;
+    HKD: IStatementCurrencyDetail;
   };
 }
 
@@ -30,27 +14,9 @@ interface INonCashAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
-    ETH: {
-      currencyType: 'CRYPTOCURRENCY';
-      name: 'ETH';
-      amount: number;
-      fairValue: number;
-      weightedAverageCost: number;
-    };
-    BTC: {
-      currencyType: 'CRYPTOCURRENCY';
-      name: 'BTC';
-      amount: number;
-      fairValue: number;
-      weightedAverageCost: number;
-    };
-    USDT: {
-      currencyType: 'CRYPTOCURRENCY';
-      name: 'USDT';
-      amount: number;
-      fairValue: number;
-      weightedAverageCost: number;
-    };
+    ETH: IStatementCurrencyDetail;
+    BTC: IStatementCurrencyDetail;
+    USDT: IStatementCurrencyDetail;
   };
 }
 
@@ -109,22 +75,22 @@ export interface IStatementsOfCashFlows {
     treasuryStock: ICashFlowsAccountingDetail;
   };
   supplementalScheduleOfNonCashOperatingActivities: {
-    cryptocurrenciesDepositedByCustomers: ICashFlowsAccountingDetail;
-    cryptocurrenciesWithdrawnByCustomers: ICashFlowsAccountingDetail;
-    cryptocurrencyInflows: ICashFlowsAccountingDetail;
-    cryptocurrencyOutflows: ICashFlowsAccountingDetail;
+    cryptocurrenciesDepositedByCustomers: INonCashAccountingDetail;
+    cryptocurrenciesWithdrawnByCustomers: INonCashAccountingDetail;
+    cryptocurrencyInflows: INonCashAccountingDetail;
+    cryptocurrencyOutflows: INonCashAccountingDetail;
     purchaseOfCryptocurrenciesWithNonCashConsideration: IDisposalCryptoItem;
     disposalOfCryptocurrenciesForNonCashConsideration: IDisposalCryptoItem;
-    cryptocurrenciesReceivedFromCustomersAsTransactionFees: ICashFlowsAccountingDetail;
-    cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading: ICashFlowsAccountingDetail;
-    cryptocurrenciesPaidToCustomersAsRebatesForTransactionFees: ICashFlowsAccountingDetail;
-    cryptocurrenciesPaidToSuppliersForExpenses: ICashFlowsAccountingDetail;
-    cryptocurrenciesPaidToCustomersForCFDTradingProfits: ICashFlowsAccountingDetail;
-    insuranceFundForPerpetualContractsWithNonCashConsideration: ICashFlowsAccountingDetail;
-    cryptocurrenciesReceivedFromCustomersForLiquidationInPerpetualContract: ICashFlowsAccountingDetail;
-    cryptocurrenciesPaidToCustomersForPerpetualContractProfits: ICashFlowsAccountingDetail;
-    cryptocurrenciesPaidToCustomersForFundingRatesInPerpetualContract: ICashFlowsAccountingDetail;
-    cryptocurrenciesPaidToCustomersForProfitsInPerpetualContract: ICashFlowsAccountingDetail;
+    cryptocurrenciesReceivedFromCustomersAsTransactionFees: INonCashAccountingDetail;
+    cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading: INonCashAccountingDetail;
+    cryptocurrenciesPaidToCustomersAsRebatesForTransactionFees: INonCashAccountingDetail;
+    cryptocurrenciesPaidToSuppliersForExpenses: INonCashAccountingDetail;
+    cryptocurrenciesPaidToCustomersForCFDTradingProfits: INonCashAccountingDetail;
+    insuranceFundForPerpetualContractsWithNonCashConsideration: INonCashAccountingDetail;
+    cryptocurrenciesReceivedFromCustomersForLiquidationInPerpetualContract: INonCashAccountingDetail;
+    cryptocurrenciesPaidToCustomersForPerpetualContractProfits: INonCashAccountingDetail;
+    cryptocurrenciesPaidToCustomersForFundingRatesInPerpetualContract: INonCashAccountingDetail;
+    cryptocurrenciesPaidToCustomersForProfitsInPerpetualContract: INonCashAccountingDetail;
   };
   otherSupplementaryItems: {
     relatedToCash: {
