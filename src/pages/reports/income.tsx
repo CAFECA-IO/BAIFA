@@ -39,7 +39,7 @@ const ComprehensiveIncomeStatements = () => {
         reportData = result.data as IComprehensiveIncomeStatements;
       }
     } catch (error) {
-      // console.log('Get balance sheet error');
+      // console.log('Get comprehensive income statements error');
     }
     return reportData;
   };
