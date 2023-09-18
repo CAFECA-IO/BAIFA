@@ -8,8 +8,11 @@ import ReportTable from '../../components/report_table/report_table';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
 import {ITable} from '../../interfaces/report_table';
 import {IResult} from '../../interfaces/result';
-import {IAccountingDetail, defaultCryptoDetail} from '../../interfaces/accounting_detail';
-import {IComprehensiveIncomeStatements} from '../../interfaces/comprehensive_income_statements';
+import {defaultStatementCurrencyDetail} from '../../interfaces/currency_detail';
+import {
+  IComprehensiveIncomeStatements,
+  IIncomeAccountingDetail,
+} from '../../interfaces/comprehensive_income_statements';
 import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {timestampToString, getReportTimeSpan, roundToDecimal} from '../../lib/common';
@@ -436,7 +439,7 @@ const ComprehensiveIncomeStatements = () => {
   };
 
   // ToDo: (20230914 - Julian) Get revenue data
-  const getRevenue = (data: IAccountingDetail | undefined) => {
+  const getRevenue = (data: IIncomeAccountingDetail | undefined) => {
     const defaultRevenue = {
       amount: '—',
       costValue: '—',
@@ -467,10 +470,10 @@ const ComprehensiveIncomeStatements = () => {
         },
       };
 
-    const usdData = data.breakdown.USDC ?? defaultCryptoDetail;
-    const bitData = data.breakdown.BTC ?? defaultCryptoDetail;
-    const ethData = data.breakdown.ETH ?? defaultCryptoDetail;
-    const usdtData = data.breakdown.USDT ?? defaultCryptoDetail;
+    const usdData = data.breakdown.USD ?? defaultStatementCurrencyDetail;
+    const bitData = data.breakdown.BTC ?? defaultStatementCurrencyDetail;
+    const ethData = data.breakdown.ETH ?? defaultStatementCurrencyDetail;
+    const usdtData = data.breakdown.USDT ?? defaultStatementCurrencyDetail;
     const totalData = data.totalAmountFairValue;
 
     const usdPer = roundToDecimal((usdData.fairValue / totalData) * 100, 1);

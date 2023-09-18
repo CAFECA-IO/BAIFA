@@ -1,24 +1,15 @@
-interface IBalanceAccountingDetail {
+import {ICurrencyDetail} from './currency_detail';
+
+export interface IBalanceAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
-    BTC: {
-      name: 'BTC';
-      amount: number;
-      fairValue: number;
-    };
-    ETH: {
-      name: 'ETH';
-      amount: number;
-      fairValue: number;
-    };
-    USDT: {
-      name: 'USDT';
-      amount: number;
-      fairValue: number;
-    };
+    BTC: ICurrencyDetail;
+    ETH: ICurrencyDetail;
+    USDT: ICurrencyDetail;
   };
 }
+
 export interface IBalanceSheet {
   id: string;
   date: string;

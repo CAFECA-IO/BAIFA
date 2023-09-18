@@ -1,35 +1,13 @@
-interface IIncomeAccountingDetail {
+import {IStatementCurrencyDetail} from './currency_detail';
+
+export interface IIncomeAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
-    BTC: {
-      currencyType: 'CRYPTOCURRENCY';
-      name: 'BTC';
-      amount: number;
-      fairValue: number;
-      weightedAverageCost: number;
-    };
-    ETH: {
-      currencyType: 'CRYPTOCURRENCY';
-      name: 'ETH';
-      amount: number;
-      fairValue: number;
-      weightedAverageCost: number;
-    };
-    USDT: {
-      currencyType: 'CRYPTOCURRENCY';
-      name: 'USDT';
-      amount: number;
-      fairValue: number;
-      weightedAverageCost: number;
-    };
-    USD: {
-      currencyType: 'FIAT';
-      name: 'USD';
-      amount: number;
-      fairValue: number;
-      weightedAverageCost: number;
-    };
+    BTC: IStatementCurrencyDetail;
+    ETH: IStatementCurrencyDetail;
+    USDT: IStatementCurrencyDetail;
+    USD: IStatementCurrencyDetail;
   };
 }
 
