@@ -1,4 +1,37 @@
-import {IAccountingDetail} from './accounting_detail';
+interface IIncomeAccountingDetail {
+  totalAmountFairValue: number;
+  weightedAverageCost: number;
+  breakdown: {
+    BTC: {
+      currencyType: 'CRYPTOCURRENCY';
+      name: 'BTC';
+      amount: number;
+      fairValue: number;
+      weightedAverageCost: number;
+    };
+    ETH: {
+      currencyType: 'CRYPTOCURRENCY';
+      name: 'ETH';
+      amount: number;
+      fairValue: number;
+      weightedAverageCost: number;
+    };
+    USDT: {
+      currencyType: 'CRYPTOCURRENCY';
+      name: 'USDT';
+      amount: number;
+      fairValue: number;
+      weightedAverageCost: number;
+    };
+    USD: {
+      currencyType: 'FIAT';
+      name: 'USD';
+      amount: number;
+      fairValue: number;
+      weightedAverageCost: number;
+    };
+  };
+}
 
 export interface IComprehensiveIncomeStatements {
   id: string;
@@ -7,12 +40,12 @@ export interface IComprehensiveIncomeStatements {
   income: {
     weightedAverageCost: number;
     details: {
-      transactionFee: IAccountingDetail;
-      spreadFee: IAccountingDetail;
-      guaranteedStopFee: IAccountingDetail;
-      liquidationFee: IAccountingDetail;
-      withdrawalFee: IAccountingDetail;
-      depositFee: IAccountingDetail;
+      transactionFee: IIncomeAccountingDetail;
+      spreadFee: IIncomeAccountingDetail;
+      guaranteedStopFee: IIncomeAccountingDetail;
+      liquidationFee: IIncomeAccountingDetail;
+      withdrawalFee: IIncomeAccountingDetail;
+      depositFee: IIncomeAccountingDetail;
     };
   };
   costs: {
@@ -29,7 +62,7 @@ export interface IComprehensiveIncomeStatements {
       salaries: number;
       rent: number;
       marketing: number;
-      commissionRebates: IAccountingDetail;
+      commissionRebates: IIncomeAccountingDetail;
     };
   };
   financialCosts: {
@@ -47,7 +80,7 @@ export interface IComprehensiveIncomeStatements {
     details: {
       investmentGains: number;
       forexGains: number;
-      cryptocurrencyGains: IAccountingDetail;
+      cryptocurrencyGains: IIncomeAccountingDetail;
     };
   };
   netProfit: number;
