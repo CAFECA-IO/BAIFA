@@ -54,7 +54,7 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
   );
 
   return (
-    <div className="flex w-4/5 flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
+    <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
       {/* Info: (20230911 - Julian) Hash */}
       <div className="flex items-center px-3 py-4">
         <p className="w-170px font-bold text-lilac">{t('TRANSACTION_DETAIL_PAGE.HASH')}</p>

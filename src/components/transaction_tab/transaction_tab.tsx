@@ -4,9 +4,13 @@ import TransactionList from '../transaction_list/transaction_list';
 import SearchFilter from '../search_filter/search_filter';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {dummyTransactionData, ITransactionData} from '../../interfaces/transaction_data';
+import {ITransactionData} from '../../interfaces/transaction_data';
 
-const TransactionTab = () => {
+interface ITransactionTabProps {
+  transactionList: ITransactionData[];
+}
+
+const TransactionTab = ({transactionList}: ITransactionTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [search, setSearch, searchRef] = useStateRef('');
@@ -16,10 +20,10 @@ const TransactionTab = () => {
   });
   const [sorting, setSorting] = useState<'Newest' | 'Oldest'>('Newest');
   const [filteredTransactions, setFilteredTransactions] =
-    useState<ITransactionData[]>(dummyTransactionData);
+    useState<ITransactionData[]>(transactionList);
 
   useEffect(() => {
-    const searchResult = dummyTransactionData
+    const searchResult = transactionList
       // Info: (20230905 - Julian) filter by date range
       .filter((transaction: ITransactionData) => {
         const createdTimestamp = transaction.createdTimestamp;

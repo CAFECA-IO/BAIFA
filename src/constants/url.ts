@@ -9,5 +9,6 @@ export const BFAURL = {
   RED_FLAG: '/app/red-flag',
   FAQ: '/app/faq',
 
+  BLOCK: '/app/block',
   TRANSACTION: '/app/transaction',
 };

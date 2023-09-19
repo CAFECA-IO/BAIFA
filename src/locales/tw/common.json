@@ -102,7 +102,17 @@
     "TYPE_EVIDENCE": "證據"
   },
   "BLOCK_DETAIL_PAGE": {
-    "MAIN_TITLE": "區塊"
+    "MAIN_TITLE": "區塊",
+    "STABILITY": "穩定性等級",
+    "STABILITY_HIGH": "高",
+    "STABILITY_MEDIUM": "中等",
+    "STABILITY_LOW": "低",
+    "TIME": "建立時間",
+    "MANAGEMENT": "管理團隊",
+    "CONTENT": "內容",
+    "MINER_REWARD": "礦工 & 報酬",
+    "SIZE": "區塊大小",
+    "TRANSACTIONS_COUNT": "筆交易"
   },
   "TRANSACTION_DETAIL_PAGE": {
     "MAIN_TITLE": "交易",
@@ -171,7 +181,8 @@
   },
   "COMMON": {
     "NONE": "無",
-    "BACK": "返回"
+    "BACK": "返回",
+    "AGO": "前"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",

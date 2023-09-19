@@ -102,7 +102,17 @@
     "TYPE_EVIDENCE": "Evidence"
   },
   "BLOCK_DETAIL_PAGE": {
-    "MAIN_TITLE": "Block"
+    "MAIN_TITLE": "Block",
+    "STABILITY": "Stability level",
+    "STABILITY_HIGH": "High",
+    "STABILITY_MEDIUM": "Medium",
+    "STABILITY_LOW": "Low",
+    "TIME": "Created Time",
+    "MANAGEMENT": "Management Team",
+    "CONTENT": "Content",
+    "MINER_REWARD": "Miner & Reward",
+    "SIZE": "Size",
+    "TRANSACTIONS_COUNT": "Transactions"
   },
   "TRANSACTION_DETAIL_PAGE": {
     "MAIN_TITLE": "Transaction",
@@ -171,7 +181,8 @@
   },
   "COMMON": {
     "NONE": "None",
-    "BACK": "Back"
+    "BACK": "Back",
+    "AGO": "ago"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",

@@ -2,25 +2,25 @@ import Head from 'next/head';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import NavBar from '../../../components/nav_bar/nav_bar';
-import TransactionDetail from '../../../components/transaction_detail/transaction_detail';
-import BoltButton from '../../../components/bolt_button/bolt_button';
-import Footer from '../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
+import NavBar from '../../../components/nav_bar/nav_bar';
+import BoltButton from '../../../components/bolt_button/bolt_button';
+import BlockDetail from '../../../components/block_detail/block_detail';
+import Footer from '../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyTransactionData, ITransactionData} from '../../../interfaces/transaction_data';
+import {dummyBlockData, IBlockData} from '../../../interfaces/block_data';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {getChainIcon} from '../../../lib/common';
 
-interface ITransactionDetailPageProps {
-  transactionId: string;
-  transactionData: ITransactionData;
+interface IBlockDetailPageProps {
+  blockId: string;
+  blockData: IBlockData;
 }
 
-const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDetailPageProps) => {
+const BlockDetailPage = ({blockId, blockData}: IBlockDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const headTitle = `${t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')} ${transactionId} - BAIFA`;
+  const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
 
   const router = useRouter();
   const backClickHandler = () => router.back();
@@ -44,20 +44,20 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
               {/* Info: (20230912 -Julian) Transaction Title */}
               <div className="flex flex-1 items-center justify-center space-x-2">
                 <Image
-                  src={getChainIcon(transactionData.chainId).src}
-                  alt={getChainIcon(transactionData.chainId).alt}
+                  src={getChainIcon(blockData.chainId).src}
+                  alt={getChainIcon(blockData.chainId).alt}
                   width={40}
                   height={40}
                 />
                 <h1 className="text-32px font-bold">
-                  {t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')}
-                  <span className="ml-2 text-primaryBlue"> {transactionId}</span>
+                  {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')}
+                  <span className="ml-2 text-primaryBlue"> {blockId}</span>
                 </h1>
               </div>
             </div>
 
-            {/* Info: (20230907 - Julian) Transaction Detail */}
-            <TransactionDetail transactionData={transactionData} />
+            {/* Info: (20230912 - Julian) Block Detail */}
+            <BlockDetail blockData={blockData} />
 
             <div className="pt-10">
               <BoltButton
@@ -81,11 +81,11 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyTransactionData
-    .flatMap(transaction => {
-      return locales?.map(locale => ({params: {transactionId: `${transaction.id}`}, locale}));
+  const paths = dummyBlockData
+    .flatMap(block => {
+      return locales?.map(locale => ({params: {blockId: `${block.id}`}, locale}));
     })
-    .filter((path): path is {params: {transactionId: string}; locale: string} => !!path);
+    .filter((path): path is {params: {blockId: string}; locale: string} => !!path);
 
   return {
     paths: paths,
@@ -94,17 +94,15 @@ export const getStaticPaths: GetStaticPaths = async ({locales}) => {
 };
 
 export const getStaticProps: GetStaticProps = async ({params, locale}) => {
-  if (!params || !params.transactionId || typeof params.transactionId !== 'string') {
+  if (!params || !params.blockId || typeof params.blockId !== 'string') {
     return {
       notFound: true,
     };
   }
 
-  const transactionData = dummyTransactionData.find(
-    transaction => `${transaction.id}` === params.transactionId
-  );
+  const blockData = dummyBlockData.find(block => `${block.id}` === params.blockId);
 
-  if (!transactionData) {
+  if (!blockData) {
     return {
       notFound: true,
     };
@@ -112,11 +110,11 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
 
   return {
     props: {
-      transactionId: params.transactionId,
-      transactionData: transactionData,
+      blockId: params.blockId,
+      blockData: blockData,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };
 };
 
-export default TransactionDetailPage;
+export default BlockDetailPage;

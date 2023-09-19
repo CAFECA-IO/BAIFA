@@ -169,31 +169,6 @@ export const whyUsContent = [
   },
 ];
 
-/* Info: (20230831 - Julian) ----- All Chains Page ----- */
-export const dummyChains = [
-  {
-    chainId: 'bolt',
-    chainName: 'BOLT',
-    icon: '/currencies/bolt.svg',
-    blocks: 12093,
-    transactions: 33233,
-  },
-  {
-    chainId: 'eth',
-    chainName: 'Ethereum',
-    icon: '/currencies/ethereum.svg',
-    blocks: 102000,
-    transactions: 891402,
-  },
-  {
-    chainId: 'btc',
-    chainName: 'Bitcoin',
-    icon: '/currencies/bitcoin.svg',
-    blocks: 10053,
-    transactions: 31294,
-  },
-];
-
 /* Info: (20230814 - Julian) ----- Landing Footer ----- */
 export const baifaAddress = process.env.BAIFA_ADDRESS_IN_ENGLISH;
 export const baifaAddressOnMap = process.env.BAIFA_ADDRESS_ON_GOOGLE_MAP;
