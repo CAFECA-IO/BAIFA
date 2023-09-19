@@ -1,3 +1,4 @@
+import {useEffect, useState} from 'react';
 import Head from 'next/head';
 import ReportCover from '../../components/report_cover/report_cover';
 import ReportContent from '../../components/report_content/report_content';
@@ -6,19 +7,134 @@ import ReportRiskPages from '../../components/report_risk_pages/report_risk_page
 import ReportTable from '../../components/report_table/report_table';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {RowType} from '../../constants/table_row_type';
-import {reportsDateSpan} from '../../constants/config';
 import {ITable} from '../../interfaces/report_table';
-import {timestampToString} from '../../lib/common';
+import {timestampToString, roundToDecimal, getReportTimeSpan} from '../../lib/common';
+import {APIURL} from '../../constants/api_request';
+import {
+  IBalanceSheet,
+  defaultCryptoAssets,
+  IAccountingDetail,
+} from '../../interfaces/balance_sheet';
+
+export interface IResult {
+  success: boolean;
+  data?: IBalanceSheet;
+  reason?: string;
+}
 
 const BalanceSheets = () => {
   const reportTitle = BaifaReports.BALANCE_SHEETS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
-  const startDate = timestampToString(reportsDateSpan.start);
-  const endDate = timestampToString(reportsDateSpan.end);
+
+  // Info: (20230913 - Julian) Get timespan of report
+  const startDateStr = timestampToString(getReportTimeSpan().start);
+  const endDateStr = timestampToString(getReportTimeSpan().end);
+
+  const [startBalanceData, setStartBalanceData] = useState<IBalanceSheet>();
+  const [endBalanceData, setEndBalanceData] = useState<IBalanceSheet>();
+
+  const getBalanceSheet = async (date: string) => {
+    let reportData;
+    try {
+      const response = await fetch(`${APIURL.BALANCE_SHEET}?date=${date}`, {
+        method: 'GET',
+      });
+      const result: IResult = await response.json();
+      if (result.success) {
+        reportData = result.data as IBalanceSheet;
+      }
+    } catch (error) {
+      // console.log('Get balance sheet error');
+    }
+    return reportData;
+  };
+
+  useEffect(() => {
+    getBalanceSheet(startDateStr.date).then(data => setStartBalanceData(data));
+    getBalanceSheet(endDateStr.date).then(data => setEndBalanceData(data));
+  }, []);
+
+  const getBalanceSheetsData = (data: IBalanceSheet | undefined) => {
+    if (!data)
+      return {
+        cashAndCashEquivalent: 0,
+        cryptocurrency: 0,
+        accountsReceivable: 0,
+        totalCurrentAssets: 0,
+        totalNonCurrentAssets: 0,
+        totalAssets: 0,
+        userDeposit: 0,
+        accountsPayable: 0,
+        totalLiabilities: 0,
+        capital: 0,
+        retainedEarnings: 0,
+        totalStockholdersEquity: 0,
+        totalLiabilitiesAndStockholders: 0,
+      };
+
+    // Info: (20230913 - Julian) ------------- Assets -------------
+    const cashAndCashEquivalent = roundToDecimal(
+      +data.assets.details.cashAndCashEquivalent.totalAmountFairValue ?? 0,
+      2
+    );
+    const cryptocurrency = roundToDecimal(
+      +data.assets.details.cryptocurrency.totalAmountFairValue ?? 0,
+      2
+    );
+    const accountsReceivable = roundToDecimal(
+      +data.assets.details.accountsReceivable.totalAmountFairValue ?? 0,
+      2
+    );
+    const totalCurrentAssets = roundToDecimal(+data.assets.totalAmountFairValue ?? 0, 2);
+    const totalNonCurrentAssets = roundToDecimal(+data.nonAssets.totalAmountFairValue ?? 0, 2);
+    const totalAssets = roundToDecimal(+totalCurrentAssets + +totalNonCurrentAssets, 2);
+
+    // Info: (20230913 - Julian) ------------- Liability -------------
+    const userDeposit = roundToDecimal(
+      +data.liabilities.details.userDeposit.totalAmountFairValue ?? 0,
+      2
+    );
+    const accountsPayable = roundToDecimal(
+      +data.liabilities.details.accountsPayable.totalAmountFairValue ?? 0,
+      2
+    );
+    const totalLiabilities = roundToDecimal(+data.liabilities.totalAmountFairValue ?? 0, 2);
+
+    // Info: (20230913 - Julian) ------------- Stockholders' Equity -------------
+    const capital = roundToDecimal(+data.equity.details.capital.totalAmountFairValue ?? 0, 2);
+    const retainedEarnings = roundToDecimal(
+      +data.equity.details.retainedEarnings.totalAmountFairValue ?? 0,
+      2
+    );
+    const totalStockholdersEquity = roundToDecimal(+data.equity.totalAmountFairValue ?? 0, 2);
+    const totalLiabilitiesAndStockholders = roundToDecimal(
+      +totalLiabilities + +totalStockholdersEquity,
+      2
+    );
+
+    return {
+      cashAndCashEquivalent,
+      cryptocurrency,
+      accountsReceivable,
+      totalCurrentAssets,
+      totalNonCurrentAssets,
+      totalAssets,
+      userDeposit,
+      accountsPayable,
+      totalLiabilities,
+      capital,
+      retainedEarnings,
+      totalStockholdersEquity,
+      totalLiabilitiesAndStockholders,
+    };
+  };
+
+  const startBalanceSheets = getBalanceSheetsData(startBalanceData);
+  const endBalanceSheets = getBalanceSheetsData(endBalanceData);
 
   const balance_sheets_p3_1: ITable = {
     subThead: ['Balance Sheets - USD ($)', '', ''],
-    thead: ['$ in Thousands', endDate.dateFormatForForm, startDate.dateFormatForForm],
+    thead: ['$ in Thousands', endDateStr.dateFormatForForm, startDateStr.dateFormatForForm],
     tbody: [
       {
         rowType: RowType.title,
@@ -30,19 +146,35 @@ const BalanceSheets = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash and cash equivalents', '$ 0', '$ 0'],
+        rowData: [
+          'Cash and cash equivalents',
+          `$ ${endBalanceSheets.cashAndCashEquivalent}`,
+          `$ ${startBalanceSheets.cashAndCashEquivalent}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrencies', '4800', '4900'],
+        rowData: [
+          'Cryptocurrencies',
+          `${endBalanceSheets.cryptocurrency}`,
+          `${startBalanceSheets.cryptocurrency}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Account receivable', '200', '100'],
+        rowData: [
+          'Account receivable',
+          `${endBalanceSheets.accountsReceivable}`,
+          `${startBalanceSheets.accountsReceivable}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Total current assets', '5000', '5000'],
+        rowData: [
+          'Total current assets',
+          `${endBalanceSheets.totalCurrentAssets}`,
+          `${startBalanceSheets.totalCurrentAssets}`,
+        ],
       },
       {
         rowType: RowType.subtitle,
@@ -50,11 +182,19 @@ const BalanceSheets = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Total non-current assets', '0', '0'],
+        rowData: [
+          'Total non-current assets',
+          `${endBalanceSheets.totalNonCurrentAssets}`,
+          `${startBalanceSheets.totalNonCurrentAssets}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total assets', '$ 5000', '$ 5000'],
+        rowData: [
+          'Total assets',
+          `$ ${endBalanceSheets.totalAssets}`,
+          `$ ${startBalanceSheets.totalAssets}`,
+        ],
       },
       {
         rowType: RowType.title,
@@ -66,15 +206,27 @@ const BalanceSheets = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['User deposits', '1900', '1950'],
+        rowData: [
+          'User deposits',
+          `${endBalanceSheets.userDeposit}`,
+          `${startBalanceSheets.userDeposit}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Accounts payable', '100', '50'],
+        rowData: [
+          'Accounts payable',
+          `${endBalanceSheets.accountsPayable}`,
+          `${startBalanceSheets.accountsPayable}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total liabilities', '2000', '2000'],
+        rowData: [
+          'Total liabilities',
+          `${endBalanceSheets.totalLiabilities}`,
+          `${startBalanceSheets.totalLiabilities}`,
+        ],
       },
       {
         rowType: RowType.title,
@@ -82,25 +234,105 @@ const BalanceSheets = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Capital', '2000', '2000'],
+        rowData: ['Capital', `${endBalanceSheets.capital}`, `${startBalanceSheets.capital}`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Retained earnings', '1000', '1000'],
+        rowData: [
+          'Retained earnings',
+          `${endBalanceSheets.retainedEarnings}`,
+          `${startBalanceSheets.retainedEarnings}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`Total stockholders' equity`, '3000', '3000'],
+        rowData: [
+          `Total stockholders' equity`,
+          `${endBalanceSheets.totalStockholdersEquity}`,
+          `${startBalanceSheets.totalStockholdersEquity}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: [`Total liabilities and stockholders' equity`, '$ 5000', '$ 5000'],
+        rowData: [
+          `Total liabilities and stockholders' equity`,
+          `$ ${endBalanceSheets.totalLiabilitiesAndStockholders}`,
+          `$ ${startBalanceSheets.totalLiabilitiesAndStockholders}`,
+        ],
       },
     ],
   };
 
+  const getTotalUserDeposit = (userDeposit: IAccountingDetail | undefined) => {
+    const defaultDepositData = {
+      ...defaultCryptoAssets,
+      percentage: 0,
+    };
+
+    if (!userDeposit) {
+      return {
+        btc: defaultDepositData,
+        eth: defaultDepositData,
+        usdt: defaultDepositData,
+        total: defaultDepositData,
+      };
+    }
+
+    const btc = userDeposit.breakdown.BTC ?? defaultDepositData;
+    const eth = userDeposit.breakdown.ETH ?? defaultDepositData;
+    const usdt = userDeposit.breakdown.USDT ?? defaultDepositData;
+
+    const totalFairValue = userDeposit.totalAmountFairValue;
+
+    const perBit = roundToDecimal((btc.fairValue / totalFairValue) * 100, 1);
+    const perEth = roundToDecimal((eth.fairValue / totalFairValue) * 100, 1);
+    const perUsdt = roundToDecimal((usdt.fairValue / totalFairValue) * 100, 1);
+    const perTotal = roundToDecimal(
+      ((+btc.fairValue + +eth.fairValue + +usdt.fairValue) / totalFairValue) * 100,
+      1
+    );
+
+    return {
+      btc: {
+        name: 'Bitcoin',
+        amount: roundToDecimal(+btc.amount, 2),
+        fairValue: roundToDecimal(+btc.fairValue, 2),
+        percentage: perBit,
+      },
+      eth: {
+        name: 'Ethereum',
+        amount: roundToDecimal(+eth.amount, 2),
+        fairValue: roundToDecimal(+eth.fairValue, 2),
+        percentage: perEth,
+      },
+      usdt: {
+        name: 'USDT',
+        amount: roundToDecimal(+usdt.amount, 2),
+        fairValue: roundToDecimal(+usdt.fairValue, 2),
+        percentage: perUsdt,
+      },
+      total: {
+        name: 'Total',
+        amount: '—',
+        fairValue: roundToDecimal(+totalFairValue, 2),
+        percentage: perTotal,
+      },
+    };
+  };
+
+  const startUserDeposit = getTotalUserDeposit(startBalanceData?.liabilities.details.userDeposit);
+  const endUserDeposit = getTotalUserDeposit(endBalanceData?.liabilities.details.userDeposit);
+
   const balance_sheets_p6_1: ITable = {
-    thead: ['', endDate.dateFormatForForm, '*-*', '*-*', startDate.dateFormatForForm, '*-*', '*-*'],
+    thead: [
+      '',
+      endDateStr.dateFormatForForm,
+      '*-*',
+      '*-*',
+      startDateStr.dateFormatForForm,
+      '*-*',
+      '*-*',
+    ],
     tbody: [
       {
         rowType: RowType.stringRow,
@@ -116,25 +348,119 @@ const BalanceSheets = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Bitcoin', '10', '$ 40.2', '49.8%', '5', '$ 10.0', '16.4%'],
+        rowData: [
+          'Bitcoin',
+          `${endUserDeposit.btc.amount}`,
+          `$ ${endUserDeposit.btc.fairValue}`,
+          `${endUserDeposit.btc.percentage}%`,
+          `${startUserDeposit.btc.amount}`,
+          `$ ${startUserDeposit.btc.fairValue}`,
+          `${startUserDeposit.btc.percentage}%`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Ethereum', '2.2', '29.5', '36.5%', '3.9', '20.8', '34.2%'],
+        rowData: [
+          'Ethereum',
+          `${endUserDeposit.eth.amount}`,
+          `${endUserDeposit.eth.fairValue}`,
+          `${endUserDeposit.eth.percentage}%`,
+          `${startUserDeposit.eth.amount}`,
+          `${startUserDeposit.eth.fairValue}`,
+          `${startUserDeposit.eth.percentage}%`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['USDT', '10000', '11.1', '13.7%', '33000', '30.0', '49.3%'],
+        rowData: [
+          'USDT',
+          `${endUserDeposit.usdt.amount}`,
+          `${endUserDeposit.usdt.fairValue}`,
+          `${endUserDeposit.usdt.percentage}%`,
+          `${startUserDeposit.usdt.amount}`,
+          `${startUserDeposit.usdt.fairValue}`,
+          `${startUserDeposit.usdt.percentage}%`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total user deposits', '—', '$ 80.8', '100.0%', '—', '$ 60.8', '100.0%'],
+        rowData: [
+          'Total user deposits',
+          `${endUserDeposit.total.amount}`,
+          `$ ${endUserDeposit.total.fairValue}`,
+          `${endUserDeposit.total.percentage}%`,
+          `${startUserDeposit.total.amount}`,
+          `$ ${startUserDeposit.total.fairValue}`,
+          `${startUserDeposit.total.percentage}%`,
+        ],
       },
     ],
   };
+
+  const getFairValue = (data: IBalanceSheet | undefined) => {
+    const defaultData = {
+      total: '0',
+      weighted: '0',
+    };
+
+    if (!data)
+      return {
+        cashAndCashEquivalents: defaultData,
+        cryptocurrency: defaultData,
+        accountsReceivable: defaultData,
+        totalAssets: defaultData,
+        userDeposit: defaultData,
+        accountsPayable: defaultData,
+        totalLiabilities: defaultData,
+      };
+
+    // Info: (20230914 - Julian) ------------- Assets -------------
+    const cashAndCashEquivalents = {
+      total: roundToDecimal(+data.assets.details.cashAndCashEquivalent.totalAmountFairValue, 2),
+      weighted: roundToDecimal(+data.assets.details.cashAndCashEquivalent.weightedAverageCost, 2),
+    };
+    const cryptocurrency = {
+      total: roundToDecimal(+data.assets.details.cryptocurrency.totalAmountFairValue, 2),
+      weighted: roundToDecimal(+data.assets.details.cryptocurrency.weightedAverageCost, 2),
+    };
+    const accountsReceivable = {
+      total: roundToDecimal(+data.assets.details.accountsReceivable.totalAmountFairValue, 2),
+      weighted: roundToDecimal(+data.assets.details.accountsReceivable.weightedAverageCost, 2),
+    };
+    const totalAssets = {
+      total: roundToDecimal(+data.assets.totalAmountFairValue, 2),
+      weighted: roundToDecimal(+data.assets.weightedAverageCost, 2),
+    };
+
+    // Info: (20230914 - Julian) ------------- Liabilities -------------
+    const userDeposit = {
+      total: roundToDecimal(+data.liabilities.details.userDeposit.totalAmountFairValue, 2),
+      weighted: roundToDecimal(+data.liabilities.details.userDeposit.weightedAverageCost, 2),
+    };
+    const accountsPayable = {
+      total: roundToDecimal(+data.liabilities.details.accountsPayable.totalAmountFairValue, 2),
+      weighted: roundToDecimal(+data.liabilities.details.accountsPayable.weightedAverageCost, 2),
+    };
+    const totalLiabilities = {
+      total: roundToDecimal(+data.liabilities.totalAmountFairValue, 2),
+      weighted: roundToDecimal(+data.liabilities.weightedAverageCost, 2),
+    };
+
+    return {
+      cashAndCashEquivalents,
+      cryptocurrency,
+      accountsReceivable,
+      totalAssets,
+      userDeposit,
+      accountsPayable,
+      totalLiabilities,
+    };
+  };
+
+  const endFairValue = getFairValue(endBalanceData);
 
   const balance_sheets_p7_1: ITable = {
-    thead: ['', endDate.dateFormatForForm, '*-*', '*-*', '*-*'],
+    thead: ['', endDateStr.dateFormatForForm, '*-*', '*-*', '*-*'],
     tbody: [
       {
         rowType: RowType.headline,
@@ -146,19 +472,43 @@ const BalanceSheets = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash and cash equivalents', '$ 0', '—', '—', '$ 0'],
+        rowData: [
+          'Cash and cash equivalents',
+          `$ ${endFairValue.cashAndCashEquivalents.weighted}`,
+          '—',
+          '—',
+          `$ ${endFairValue.cashAndCashEquivalents.total}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency', '4800', '—', '—', '4800'],
+        rowData: [
+          'Cryptocurrency',
+          `${endFairValue.cryptocurrency.weighted}`,
+          '—',
+          '—',
+          `${endFairValue.cryptocurrency.total}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Account receivable', '200', '—', '—', '200'],
+        rowData: [
+          'Account receivable',
+          `${endFairValue.accountsReceivable.weighted}`,
+          '—',
+          '—',
+          `${endFairValue.accountsReceivable.total}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total assets', '$ 5000', '—', '—', '$ 5000'],
+        rowData: [
+          'Total assets',
+          `$ ${endFairValue.totalAssets.weighted}`,
+          '—',
+          '—',
+          `$ ${endFairValue.totalAssets.total}`,
+        ],
       },
       {
         rowType: RowType.title,
@@ -166,21 +516,41 @@ const BalanceSheets = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['User deposits', '$ 1900.00', '—', '—', '$ 1900.00'],
+        rowData: [
+          'User deposits',
+          `$ ${endFairValue.userDeposit.weighted}`,
+          '—',
+          '—',
+          `$ ${endFairValue.totalAssets.total}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Accounts payable', '100', '—', '—', '100'],
+        rowData: [
+          'Accounts payable',
+          `${endFairValue.accountsPayable.weighted}`,
+          '—',
+          '—',
+          `${endFairValue.accountsPayable.total}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total liabilities', '$ 2000', '—', '—', '$ 2000'],
+        rowData: [
+          'Total liabilities',
+          `$ ${endFairValue.totalLiabilities.weighted}`,
+          '—',
+          '—',
+          `$ ${endFairValue.totalLiabilities.total}`,
+        ],
       },
     ],
   };
 
+  const startFairValue = getFairValue(startBalanceData);
+
   const balance_sheets_p7_2: ITable = {
-    thead: ['', startDate.dateFormatForForm, '*-*', '*-*', '*-*'],
+    thead: ['', startDateStr.dateFormatForForm, '*-*', '*-*', '*-*'],
     tbody: [
       {
         rowType: RowType.headline,
@@ -192,19 +562,43 @@ const BalanceSheets = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash and cash equivalents', '$ 0', '—', '—', '$ 0'],
+        rowData: [
+          'Cash and cash equivalents',
+          `$ ${startFairValue.cashAndCashEquivalents.weighted}`,
+          '—',
+          '—',
+          `$ ${startFairValue.cashAndCashEquivalents.total}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency', '4900', '—', '—', '4900'],
+        rowData: [
+          'Cryptocurrency',
+          `${startFairValue.cryptocurrency.weighted}`,
+          '—',
+          '—',
+          `${startFairValue.cryptocurrency.total}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Account receivable', '100', '—', '—', '100'],
+        rowData: [
+          'Account receivable',
+          `${startFairValue.accountsReceivable.weighted}`,
+          '—',
+          '—',
+          `${startFairValue.accountsReceivable.total}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total assets', '$ 5000', '—', '—', '$ 5000'],
+        rowData: [
+          'Total assets',
+          `$ ${startFairValue.totalAssets.weighted}`,
+          '—',
+          '—',
+          `$ ${startFairValue.totalAssets.total}`,
+        ],
       },
       {
         rowType: RowType.title,
@@ -212,15 +606,33 @@ const BalanceSheets = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['User deposits', '$ 1900.00', '—', '—', '$ 1900.00'],
+        rowData: [
+          'User deposits',
+          `$ ${startFairValue.userDeposit.weighted}`,
+          '—',
+          '—',
+          `$ ${startFairValue.userDeposit.total}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Accounts payable', '100', '—', '—', '100'],
+        rowData: [
+          'Accounts payable',
+          `${startFairValue.accountsPayable.weighted}`,
+          '—',
+          '—',
+          `${startFairValue.accountsPayable.total}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total liabilities', '$ 2000', '—', '—', '$ 2000'],
+        rowData: [
+          'Total liabilities',
+          `$ ${startFairValue.totalLiabilities.weighted}`,
+          '—',
+          '—',
+          `$ ${startFairValue.totalLiabilities.total}`,
+        ],
       },
     ],
   };
@@ -228,18 +640,17 @@ const BalanceSheets = () => {
   return (
     <>
       <Head>
-        <title>BAIFA - {reportTitle}</title>
+        <title>{reportTitle} - BAIFA</title>
       </Head>
 
       <div className="flex w-screen flex-col items-center font-inter">
         {/* Info: (20230801 - Julian) Cover */}
         <ReportCover
           reportTitle={reportTitle}
-          reportDateStart={startDate.date}
-          reportDateEnd={endDate.date}
+          reportDateStart={startDateStr.date}
+          reportDateEnd={endDateStr.date}
         />
         <hr />
-
         {/* Info: (20230802 - Julian) Content */}
         <ReportContent content={contentList} />
         <hr />
@@ -291,7 +702,7 @@ const BalanceSheets = () => {
               In the management's view, they include all necessary adjustments, which are only
               regular, recurring adjustments, for a fair representation of the Company's financial
               statements for the periods shown. The non-audited operational results for the 30 days
-              ending <span className="font-bold text-violet">{endDate.dateFormatInUS}</span>, may
+              ending <span className="font-bold text-violet">{endDateStr.dateFormatInUS}</span>, may
               not necessarily predict the results for the full year or any other period.
             </p>
             <p className="font-bold">Use of estimates</p>
@@ -318,8 +729,8 @@ const BalanceSheets = () => {
               user deposits to meet regulatory requirements and classifies the assets as current
               based on their purpose and availability to fulfill the Company’s direct obligation
               under user deposits. As of
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span> and
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, the
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span> and
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>, the
               Company’s eligible liquid assets were greater than the aggregate amount of user
               deposits.
             </p>
@@ -357,7 +768,10 @@ const BalanceSheets = () => {
             </p>
             <p>
               During the
-              <span className="font-bold text-violet"> 30 days ended {endDate.dateFormatInUS}</span>
+              <span className="font-bold text-violet">
+                {' '}
+                30 days ended {endDateStr.dateFormatInUS}
+              </span>
               , no losses have been incurred in connection with customer cryptocurrencies.
             </p>
             <p>

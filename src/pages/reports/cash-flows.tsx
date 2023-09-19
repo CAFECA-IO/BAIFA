@@ -8,22 +8,23 @@ import ReportExchageRateForm from '../../components/report_exchage_rate_form/rep
 import {ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
-import {reportsDateSpan} from '../../constants/config';
-import {timestampToString} from '../../lib/common';
+import {timestampToString, getReportTimeSpan} from '../../lib/common';
 
 const StatementsOfCashFlows = () => {
   const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOWS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
-  const startDate = timestampToString(reportsDateSpan.start);
-  const endDate = timestampToString(reportsDateSpan.end);
+
+  // Info: (20230913 - Julian) Get timespan of report
+  const startDateStr = timestampToString(getReportTimeSpan().start);
+  const endDateStr = timestampToString(getReportTimeSpan().end);
 
   const cash_flows_p3_1: ITable = {
     subThead: [
       'Statements of Cash Flows - USD ($)',
-      `30 Days Ended ${endDate.monthAndDay},`,
+      `30 Days Ended ${endDateStr.monthAndDay},`,
       '*-*',
     ],
-    thead: ['$ in Thousands', endDate.dateFormatForForm, startDate.dateFormatForForm],
+    thead: ['$ in Thousands', endDateStr.dateFormatForForm, startDateStr.dateFormatForForm],
     tbody: [
       {
         rowType: RowType.title,
@@ -162,8 +163,8 @@ const StatementsOfCashFlows = () => {
   };
 
   const cash_flows_p8_1: ITable = {
-    subThead: ['', `30 Days Ended ${endDate.monthAndDay},`, '*-*'],
-    thead: ['*|*', endDate.year, endDate.lastYear],
+    subThead: ['', `30 Days Ended ${endDateStr.monthAndDay},`, '*-*'],
+    thead: ['*|*', endDateStr.year, endDateStr.lastYear],
     tbody: [
       {
         rowType: RowType.headline,
@@ -195,10 +196,10 @@ const StatementsOfCashFlows = () => {
   const cash_flows_p9_1: ITable = {
     thead: [
       'Cryptocurrencies deposited by customers',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -245,10 +246,10 @@ const StatementsOfCashFlows = () => {
   const cash_flows_p9_2: ITable = {
     thead: [
       'Cryptocurrencies withdrawn by customers',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -295,10 +296,10 @@ const StatementsOfCashFlows = () => {
   const cash_flows_p10_1: ITable = {
     thead: [
       'Cryptocurrency inflows',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -337,10 +338,10 @@ const StatementsOfCashFlows = () => {
   const cash_flows_p10_2: ITable = {
     thead: [
       'Cryptocurrency outflows',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -379,10 +380,10 @@ const StatementsOfCashFlows = () => {
   const cash_flows_p11_1: ITable = {
     thead: [
       'Cryptocurrencies received from customers as transaction fees',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -429,10 +430,10 @@ const StatementsOfCashFlows = () => {
   const cash_flows_p12_1: ITable = {
     thead: [
       'Cryptocurrencies received from customers for liquidation in CFD trading',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -479,10 +480,10 @@ const StatementsOfCashFlows = () => {
   const cash_flows_p13_1: ITable = {
     thead: [
       'Cryptocurrencies paid to customers for CFD trading profits',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -529,10 +530,10 @@ const StatementsOfCashFlows = () => {
   const cash_flows_p14_1: ITable = {
     thead: [
       'Purchase of cryptocurrencies with non-cash consideration',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -579,10 +580,10 @@ const StatementsOfCashFlows = () => {
   const cash_flows_p15_1: ITable = {
     thead: [
       'Disposal of cryptocurrencies for non-cash consideration',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -636,8 +637,8 @@ const StatementsOfCashFlows = () => {
         {/* Info: (20230808 - Julian) Cover */}
         <ReportCover
           reportTitle={reportTitle}
-          reportDateStart={startDate.date}
-          reportDateEnd={endDate.date}
+          reportDateStart={startDateStr.date}
+          reportDateEnd={endDateStr.date}
         />
         <hr />
 
@@ -794,7 +795,7 @@ const StatementsOfCashFlows = () => {
               In the management's view, they include all necessary adjustments, which are only
               regular, recurring adjustments, for a fair representation of the Company's financial
               statements for the periods shown. The non-audited operational results for the 30 days
-              ending<span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, may
+              ending<span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, may
               not necessarily predict the results for the full year or any other period.
             </p>
             <p className="font-bold">Use of estimates</p>
@@ -823,8 +824,8 @@ const StatementsOfCashFlows = () => {
               user deposits to meet regulatory requirements and classifies the assets as current
               based on their purpose and availability to fulfill the Company’s direct obligation
               under user deposits. As of{' '}
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span> and
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, the
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span> and
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>, the
               Company’s eligible liquid assets were greater than the aggregate amount of user
               deposits.
             </p>
@@ -865,11 +866,11 @@ const StatementsOfCashFlows = () => {
               ending
               <span className="font-bold text-violet">
                 {' '}
-                {endDate.monthFullName} {endDate.day}
+                {endDateStr.monthFullName} {endDateStr.day}
               </span>{' '}
               in both
-              <span className="font-bold text-violet"> {endDate.year}</span> and
-              <span className="font-bold text-violet"> {endDate.lastYear}</span>. This table
+              <span className="font-bold text-violet"> {endDateStr.year}</span> and
+              <span className="font-bold text-violet"> {endDateStr.lastYear}</span>. This table
               provides insights into the net cash generated from operating activities, the cash
               utilized in investing and financing activities, as well as the net increase in both
               cash and non-cash operating activities.
@@ -890,9 +891,11 @@ const StatementsOfCashFlows = () => {
             <p>
               The following table provides a detailed breakdown of the cryptocurrencies deposited by
               our customers. It compares the data from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, to that of
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, showcasing
-              the amount, cost value, and percentage of total deposits for each cryptocurrency.
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, to that
+              of
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>,
+              showcasing the amount, cost value, and percentage of total deposits for each
+              cryptocurrency.
             </p>
           </div>
         </ReportPageBody>
@@ -906,8 +909,9 @@ const StatementsOfCashFlows = () => {
             <p>
               This table illustrates the cryptocurrencies that have been withdrawn by our customers.
               It contrasts the figures from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with those
-              from<span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>,
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, with
+              those from
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>,
               highlighting the amount, cost value, and percentage of total withdrawals for each
               cryptocurrency.
             </p>
@@ -923,8 +927,9 @@ const StatementsOfCashFlows = () => {
             <p>
               Here, we present the increases of cryptocurrencies for the specified dates. This table
               compares the inflow data from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, to that of
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, to that
+              of
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={cash_flows_p10_1} />
             <p className="font-bold">Cryptocurrency outflows</p>
@@ -933,7 +938,7 @@ const StatementsOfCashFlows = () => {
               the data from
               <span className="font-bold text-violet">
                 {' '}
-                {endDate.dateFormatInUS}, and {startDate.dateFormatInUS}
+                {endDateStr.dateFormatInUS}, and {startDateStr.dateFormatInUS}
               </span>
               .
             </p>
@@ -951,9 +956,9 @@ const StatementsOfCashFlows = () => {
             <p>
               Below is a representation of the cryptocurrencies we received as transaction fees from
               our customers. The data from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, is compared
-              with that of<span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>
-              .
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, is
+              compared with that of
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={cash_flows_p11_1} />
           </div>
@@ -969,8 +974,9 @@ const StatementsOfCashFlows = () => {
             <p>
               This table showcases the cryptocurrencies we received from our customers for
               liquidation in CFD trading. It contrasts the figures from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with those
-              from<span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, with
+              those from
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={cash_flows_p12_1} />
           </div>
@@ -984,9 +990,9 @@ const StatementsOfCashFlows = () => {
             <p>
               Here, we detail the cryptocurrencies we paid to our customers as profits from CFD
               trading. The data from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, is
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, is
               juxtaposed with that of
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={cash_flows_p13_1} />
           </div>
@@ -1000,8 +1006,9 @@ const StatementsOfCashFlows = () => {
             <p>
               The following table provides insights into the cryptocurrencies we purchased using
               non-cash considerations. It compares the data from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, to that of
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, to that
+              of
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={cash_flows_p14_1} />
           </div>
@@ -1015,8 +1022,9 @@ const StatementsOfCashFlows = () => {
             <p>
               This table illustrates the cryptocurrencies we disposed of in exchange for non-cash
               considerations. It contrasts the figures from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with those
-              from<span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, with
+              those from
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={cash_flows_p15_1} />
           </div>

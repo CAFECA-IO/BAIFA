@@ -8,22 +8,23 @@ import ReportExchageRateForm from '../../components/report_exchage_rate_form/rep
 import {ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
-import {reportsDateSpan} from '../../constants/config';
-import {timestampToString} from '../../lib/common';
+import {timestampToString, getReportTimeSpan} from '../../lib/common';
 
 const ComprehensiveIncomeStatements = () => {
   const reportTitle = BaifaReports.COMPREHENSIVE_INCOME_STATEMENTS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
-  const startDate = timestampToString(reportsDateSpan.start);
-  const endDate = timestampToString(reportsDateSpan.end);
+
+  // Info: (20230913 - Julian) Get timespan of report
+  const startDateStr = timestampToString(getReportTimeSpan().start);
+  const endDateStr = timestampToString(getReportTimeSpan().end);
 
   const income_statements_p3_1: ITable = {
     subThead: [
       'Comprehensive Income Statements - USD ($)',
-      `30 Days Ended ${endDate.monthAndDay},`,
+      `30 Days Ended ${endDateStr.monthAndDay},`,
       '*-*',
     ],
-    thead: ['$ in Thousands', endDate.dateFormatForForm, startDate.dateFormatForForm],
+    thead: ['$ in Thousands', endDateStr.dateFormatForForm, startDateStr.dateFormatForForm],
     tbody: [
       {
         rowType: RowType.title,
@@ -164,10 +165,10 @@ const ComprehensiveIncomeStatements = () => {
   const income_statements_p7_1: ITable = {
     thead: [
       'Trading fee',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -210,10 +211,10 @@ const ComprehensiveIncomeStatements = () => {
   const income_statements_p7_2: ITable = {
     thead: [
       'Spread fee',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -256,10 +257,10 @@ const ComprehensiveIncomeStatements = () => {
   const income_statements_p8_1: ITable = {
     thead: [
       'Withdrawal fee',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -302,10 +303,10 @@ const ComprehensiveIncomeStatements = () => {
   const income_statements_p8_2: ITable = {
     thead: [
       'Deposit fee',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -348,10 +349,10 @@ const ComprehensiveIncomeStatements = () => {
   const income_statements_p9_1: ITable = {
     thead: [
       'Liquidation fee',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -394,10 +395,10 @@ const ComprehensiveIncomeStatements = () => {
   const income_statements_p10_1: ITable = {
     thead: [
       'Guaranteed stop loss fee',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -440,10 +441,10 @@ const ComprehensiveIncomeStatements = () => {
   const income_statements_p11_1: ITable = {
     thead: [
       'Rebate expenses',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -486,10 +487,10 @@ const ComprehensiveIncomeStatements = () => {
   const income_statements_p12_1: ITable = {
     thead: [
       'Cryptocurrency forex losses',
-      endDate.dateFormatForForm,
+      endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-      startDate.dateFormatForForm,
+      startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
     ],
@@ -532,10 +533,10 @@ const ComprehensiveIncomeStatements = () => {
   const income_statements_p13_1: ITable = {
     subThead: [
       'Comprehensive Income Statements - USD ($)',
-      `30 Days Ended ${endDate.monthAndDay},`,
+      `30 Days Ended ${endDateStr.monthAndDay},`,
       '*-*',
     ],
-    thead: ['shares in Thousands, $ in Thousands', endDate.year, endDate.lastYear],
+    thead: ['shares in Thousands, $ in Thousands', endDateStr.year, endDateStr.lastYear],
     tbody: [
       {
         rowType: RowType.title,
@@ -674,8 +675,8 @@ const ComprehensiveIncomeStatements = () => {
   };
 
   const income_statements_p14_2: ITable = {
-    subThead: ['', `30 Days Ended ${endDate.monthAndDay},`, '*-*', '*-*'],
-    thead: ['', endDate.year, endDate.lastYear, '% Change'],
+    subThead: ['', `30 Days Ended ${endDateStr.monthAndDay},`, '*-*', '*-*'],
+    thead: ['', endDateStr.year, endDateStr.lastYear, '% Change'],
     tbody: [
       {
         rowType: RowType.headline,
@@ -722,8 +723,8 @@ const ComprehensiveIncomeStatements = () => {
         {/* Info: (20230807 - Julian) Cover */}
         <ReportCover
           reportTitle={reportTitle}
-          reportDateStart={startDate.date}
-          reportDateEnd={endDate.date}
+          reportDateStart={startDateStr.date}
+          reportDateEnd={endDateStr.date}
         />
         <hr />
 
@@ -788,7 +789,7 @@ const ComprehensiveIncomeStatements = () => {
               In the management's view, they include all necessary adjustments, which are only
               regular, recurring adjustments, for a fair representation of the Company's financial
               statements for the periods shown. The non-audited operational results for the 30 days
-              ending <span className="font-bold text-violet">{endDate.dateFormatInUS}</span>, may
+              ending <span className="font-bold text-violet">{endDateStr.dateFormatInUS}</span>, may
               not necessarily predict the results for the full year or any other period.
             </p>
             <p className="font-bold">Use of estimates</p>
@@ -842,9 +843,10 @@ const ComprehensiveIncomeStatements = () => {
             <p>
               The table below provides a detailed breakdown of the trading fees we have collected.
               It contrasts the data from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with that of
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, showcasing
-              the amount, cost value, and percentage of total fees for each currency.
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, with that
+              of
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>,
+              showcasing the amount, cost value, and percentage of total fees for each currency.
             </p>
           </div>
         </ReportPageBody>
@@ -858,9 +860,10 @@ const ComprehensiveIncomeStatements = () => {
             <p>
               The table below provides a detailed breakdown of the spread fees we have collected. It
               contrasts the data from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with that of
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, showcasing
-              the amount, cost value, and percentage of total fees for each currency.
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, with that
+              of
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>,
+              showcasing the amount, cost value, and percentage of total fees for each currency.
             </p>
             <ReportTable tableData={income_statements_p7_2} />
           </div>
@@ -874,16 +877,18 @@ const ComprehensiveIncomeStatements = () => {
             <p>
               This section offers insights into the fees associated with customer withdrawals. The
               table compares the withdrawal fee data from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, to that of
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, to that
+              of
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={income_statements_p8_1} />
             <p className="font-bold">Deposit fee</p>
             <p>
               Here, we present a comprehensive overview of the fees collected from customer
               deposits. The table contrasts the figures from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with those
-              from<span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, with
+              those from
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={income_statements_p8_2} />
           </div>
@@ -897,8 +902,9 @@ const ComprehensiveIncomeStatements = () => {
             <p>
               This table provides a detailed view of the fees collected from liquidation activities.
               It compares the data from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, to that of
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>,
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, to that
+              of
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>,
               highlighting the amount, cost value, and percentage of total fees for each currency.
             </p>
             <ReportTable tableData={income_statements_p9_1} />
@@ -913,8 +919,9 @@ const ComprehensiveIncomeStatements = () => {
             <p>
               Below is a representation of the fees associated with the guaranteed stop loss
               feature. The table contrasts the data from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with that of
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, with that
+              of
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={income_statements_p10_1} />
           </div>
@@ -928,8 +935,9 @@ const ComprehensiveIncomeStatements = () => {
             <p>
               This section offers a comprehensive view of the expenses related to rebates provided
               to our customers. The table contrasts the figures from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with those
-              from<span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>.
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, with
+              those from
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
             <ReportTable tableData={income_statements_p11_1} />
           </div>
@@ -943,9 +951,10 @@ const ComprehensiveIncomeStatements = () => {
             <p>
               The table below provides insights into the losses incurred from cryptocurrency forex
               activities. It contrasts the data from
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span>, with that of
-              <span className="font-bold text-violet"> {startDate.dateFormatInUS}</span>, showcasing
-              the amount, cost value, and percentage of total losses for each currency.
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, with that
+              of
+              <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>,
+              showcasing the amount, cost value, and percentage of total losses for each currency.
             </p>
             <ReportTable tableData={income_statements_p12_1} />
           </div>
@@ -969,8 +978,8 @@ const ComprehensiveIncomeStatements = () => {
             <ReportTable tableData={income_statements_p14_1} />
             <p>
               Comparison of the 30 days ended
-              <span className="font-bold text-violet"> {endDate.dateFormatInUS}</span> and
-              <span className="font-bold text-violet"> {endDate.lastYear}</span>
+              <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span> and
+              <span className="font-bold text-violet"> {endDateStr.lastYear}</span>
             </p>
             <ReportTable tableData={income_statements_p14_2} />
           </div>

@@ -107,9 +107,32 @@ export const withCommas = (x: number | string) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
+export const roundToDecimal = (x: number, decimal: number) => {
+  // Info: (20230914 - Julian) 如果 x 為 NaN 或是 0 就直接回傳 '0'
+  if (isNaN(x) || x === 0 || x.toString() === '0') return '0';
+
+  const toDecimal = 10 ** decimal;
+  const result = Math.round(x * toDecimal) / toDecimal;
+  return result.toLocaleString('en-US', {
+    minimumFractionDigits: decimal,
+    maximumFractionDigits: decimal,
+  });
+};
+
 export const getChainIcon = (chainId: string) => {
   return {
     src: `/currencies/${chainId}.svg`,
     alt: `${chainId}_icon`,
+  };
+};
+
+export const getReportTimeSpan = () => {
+  const now = new Date().getTime() / 1000;
+  const yesterday = now - (now % 86400) - 86400;
+  const thirtyDaysAgo = yesterday - 86400 * 30;
+
+  return {
+    start: thirtyDaysAgo,
+    end: yesterday,
   };
 };

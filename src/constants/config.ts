@@ -29,12 +29,6 @@ export const ITEM_PER_PAGE = 10;
 
 export const copyright = 'BAIFA @ 2023. All rights reserved.';
 
-/* Info: (20230809 - Julian) ----- BAIFA Reposts ----- */
-export const reportsDateSpan = {
-  start: 1688190893,
-  end: 1690646400,
-};
-
 /* Info: (20230711 - Julian) ----- Home Page ----- */
 export const mainMenuContent = [
   {
