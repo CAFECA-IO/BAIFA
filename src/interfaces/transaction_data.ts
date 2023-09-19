@@ -1,3 +1,5 @@
+import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
+
 export interface ITransactionData {
   id: number;
   hash: string;
@@ -10,7 +12,7 @@ export interface ITransactionData {
   content: string;
   value: number;
   fee: number;
-  flagging: boolean;
+  flagging?: IRedFlagType;
 }
 
 export const dummyTransactionData: ITransactionData[] = [
@@ -23,10 +25,9 @@ export const dummyTransactionData: ITransactionData[] = [
     createdTimestamp: 1680978900,
     from: '92830',
     to: '491739',
-    content: '0x1234567890',
+    content: '345690',
     value: 0.01,
     fee: 0.01,
-    flagging: false,
   },
   {
     id: 927413,
@@ -37,10 +38,9 @@ export const dummyTransactionData: ITransactionData[] = [
     createdTimestamp: 1690000902,
     from: '99283',
     to: '402839',
-    content: '0x1234567890',
+    content: '340125',
     value: 0.01,
     fee: 0.01,
-    flagging: false,
   },
   {
     id: 928713,
@@ -51,10 +51,10 @@ export const dummyTransactionData: ITransactionData[] = [
     createdTimestamp: 1688342795,
     from: '91123',
     to: '412938',
-    content: '0x1234567890',
+    content: '367845',
     value: 0.01,
     fee: 0.01,
-    flagging: true,
+    flagging: RedFlagType.MULTIPLE_TRANSFER,
   },
   {
     id: 922371,
@@ -65,10 +65,10 @@ export const dummyTransactionData: ITransactionData[] = [
     createdTimestamp: 1692342345,
     from: '92830',
     to: '491739',
-    content: '0x1234567890',
+    content: '390672',
     value: 0.01,
     fee: 0.01,
-    flagging: false,
+    flagging: RedFlagType.BLACK_LIST,
   },
   {
     id: 922371,
@@ -79,10 +79,9 @@ export const dummyTransactionData: ITransactionData[] = [
     createdTimestamp: 1680022345,
     from: '91290',
     to: '431716',
-    content: '0x1234567890',
+    content: '389057',
     value: 0.01,
     fee: 0.01,
-    flagging: false,
   },
   {
     id: 901833,
@@ -93,9 +92,9 @@ export const dummyTransactionData: ITransactionData[] = [
     createdTimestamp: 1688312795,
     from: '91103',
     to: '412931',
-    content: '0x1234567890',
+    content: '301458',
     value: 0.01,
     fee: 0.01,
-    flagging: false,
+    flagging: RedFlagType.LARGE_WITHDRAW,
   },
 ];

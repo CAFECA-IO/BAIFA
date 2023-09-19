@@ -63,6 +63,7 @@
     "SUBTITLE": "我们的秘密计划即将揭晓！敬请期待！"
   },
   "ERROR_PAGE": {
+    "HEAD_TITLE": "找不到页面",
     "TITLE": "糟糕！",
     "SUBTITLE": "看来你已经跌入网络空间的深渊了 🕳️"
   },
@@ -100,6 +101,44 @@
     "TYPE_NFT": "NFT",
     "TYPE_EVIDENCE": "证据"
   },
+  "BLOCK_DETAIL_PAGE": {
+    "MAIN_TITLE": "区块"
+  },
+  "TRANSACTION_DETAIL_PAGE": {
+    "MAIN_TITLE": "交易",
+    "HASH": "Hash 值",
+    "STATUS": "状态",
+    "BLOCK": "所属区块",
+    "TIME": "交易时间",
+    "FROM": "寄件者",
+    "TO": "收件者",
+    "CONTENT": "内容",
+    "VALUE": "金额",
+    "FEE": "手续费",
+    "FLAGGING": "警示记录"
+  },
+  "ADDRESS_DETAIL_PAGE": {
+    "MAIN_TITLE": "地址"
+  },
+  "CONTRACT_DETAIL_PAGE": {
+    "MAIN_TITLE": "合约"
+  },
+  "EVIDENCE_DETAIL_PAGE": {
+    "MAIN_TITLE": "证据"
+  },
+  "RED_FLAG_DETAIL_PAGE": {
+    "MAIN_TITLE": "警示",
+    "FLAG_TYPE_MULTIPLE_RECEIVES": "多次收款",
+    "FLAG_TYPE_MULTIPLE_TRANSFER": "多次转帐",
+    "FLAG_TYPE_LARGE_TRANSFER": "大额转帐",
+    "FLAG_TYPE_LARGE_DEPOSIT": "大额入金",
+    "FLAG_TYPE_MULTIPLE_WITHDRAW": "多次出金",
+    "FLAG_TYPE_LARGE_WITHDRAW": "大额出金",
+    "FLAG_TYPE_MIXING_SERVICE": "使用混合服务",
+    "FLAG_TYPE_GAMBLING_SITE": "与赌博网站有关",
+    "FLAG_TYPE_BLACK_LIST": "列入黑名单",
+    "FLAG_TYPE_DARKNET": "与暗网有关"
+  },
   "DATE_PICKER": {
     "DATE": "日期",
     "SELECT_PERIOD": "选择时间段",
@@ -129,6 +168,10 @@
     "SORT_BY": "排序方式",
     "NEWEST": "最新",
     "OLDEST": "最旧"
+  },
+  "COMMON": {
+    "NONE": "无",
+    "BACK": "返回"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",

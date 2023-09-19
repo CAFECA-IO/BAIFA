@@ -13,7 +13,7 @@ const ComingSoonPage = () => {
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>BAIFA - Coming Soon</title>
+        <title>Coming Soon - BAIFA</title>
       </Head>
 
       {/* Info:(20230711 - Julian) Navbar */}

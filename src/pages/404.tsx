@@ -8,12 +8,13 @@ import {ILocale, TranslateFunction} from '../interfaces/locale';
 
 const Custom404 = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const headTitle = `${t('ERROR_PAGE.HEAD_TITLE')} - BAIFA`;
 
   return (
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>BAIFA - Not Found</title>
+        <title>{headTitle}</title>
       </Head>
 
       {/* Info:(20230731 - Julian) Navbar */}

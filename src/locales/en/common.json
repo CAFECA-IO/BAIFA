@@ -63,6 +63,7 @@
     "SUBTITLE": "Our Secret Project is Almost Unveiled.  Stay Tuned for the Big Reveal!"
   },
   "ERROR_PAGE": {
+    "HEAD_TITLE": "Not Found",
     "TITLE": "Oops!",
     "SUBTITLE": "Looks like you've stumbled into the abyss of cyberspace 🕳️"
   },
@@ -100,6 +101,44 @@
     "TYPE_NFT": "NFT",
     "TYPE_EVIDENCE": "Evidence"
   },
+  "BLOCK_DETAIL_PAGE": {
+    "MAIN_TITLE": "Block"
+  },
+  "TRANSACTION_DETAIL_PAGE": {
+    "MAIN_TITLE": "Transaction",
+    "HASH": "Transaction Hash",
+    "STATUS": "Status",
+    "BLOCK": "In which block",
+    "TIME": "Transaction Time",
+    "FROM": "From",
+    "TO": "To",
+    "CONTENT": "Content",
+    "VALUE": "Value",
+    "FEE": "Transaction Fee",
+    "FLAGGING": "Flagging"
+  },
+  "ADDRESS_DETAIL_PAGE": {
+    "MAIN_TITLE": "Address"
+  },
+  "CONTRACT_DETAIL_PAGE": {
+    "MAIN_TITLE": "Contract"
+  },
+  "EVIDENCE_DETAIL_PAGE": {
+    "MAIN_TITLE": "Evidence"
+  },
+  "RED_FLAG_DETAIL_PAGE": {
+    "MAIN_TITLE": "Red Flag",
+    "FLAG_TYPE_MULTIPLE_RECEIVES": "Multiple Receives",
+    "FLAG_TYPE_MULTIPLE_TRANSFER": "Multiple Transfer",
+    "FLAG_TYPE_LARGE_TRANSFER": "Large Transfer",
+    "FLAG_TYPE_LARGE_DEPOSIT": "Large Deposit",
+    "FLAG_TYPE_MULTIPLE_WITHDRAW": "Multiple Withdraw",
+    "FLAG_TYPE_LARGE_WITHDRAW": "Large Withdraw",
+    "FLAG_TYPE_MIXING_SERVICE": "With Mixing Service",
+    "FLAG_TYPE_GAMBLING_SITE": "With Gambling Site",
+    "FLAG_TYPE_BLACK_LIST": "With Black List",
+    "FLAG_TYPE_DARKNET": "With Darknet"
+  },
   "DATE_PICKER": {
     "DATE": "Date",
     "SELECT_PERIOD": "Select Period",
@@ -129,6 +168,10 @@
     "SORT_BY": "Sort By",
     "NEWEST": "Newest",
     "OLDEST": "Oldest"
+  },
+  "COMMON": {
+    "NONE": "None",
+    "BACK": "Back"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BOLT",

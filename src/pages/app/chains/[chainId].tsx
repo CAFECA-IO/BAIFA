@@ -28,6 +28,7 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const chainName = chainData.chainName;
   const chainIcon = chainData.icon;
+  const headTitle = `${chainName} - BAIFA`;
 
   const [activeTab, setActiveTab] = useState<'blocks' | 'transactions'>('blocks');
 
@@ -96,7 +97,7 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>BAIFA - {chainName}</title>
+        <title>{headTitle}</title>
       </Head>
 
       <NavBar />
