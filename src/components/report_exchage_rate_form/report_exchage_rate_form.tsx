@@ -1,5 +1,38 @@
+import {useEffect, useState} from 'react';
+import {timestampToString, getReportTimeSpan, roundToDecimal} from '../../lib/common';
+import {APIURL} from '../../constants/api_request';
+import {IResult} from '../../interfaces/result';
+import {IExchangeRates} from '../../interfaces/exchange_rates';
+
 const ReportExchageRateForm = () => {
   const colStyle = 'border-darkPurple3 border py-3px';
+  const [exchangeRatesData, setExchangeRatesData] = useState<IExchangeRates>();
+  // Info: (20230913 - Julian) Get timespan of report
+  const startDate = timestampToString(getReportTimeSpan().start).date;
+  const endDate = timestampToString(getReportTimeSpan().end).date;
+
+  const getExchangeRate = async () => {
+    let reportData;
+    try {
+      const response = await fetch(
+        `${APIURL.EXCHANGE_RATES}?startDate=${startDate}&endDate=${endDate}`,
+        {
+          method: 'GET',
+        }
+      );
+      const result: IResult = await response.json();
+      if (result.success) {
+        reportData = result.data as IExchangeRates;
+      }
+    } catch (error) {
+      // console.log('Get balance sheet error');
+    }
+    return reportData;
+  };
+
+  useEffect(() => {
+    //getExchangeRate().then(data => setExchangeRatesData(data));
+  }, []);
 
   const data = [
     {

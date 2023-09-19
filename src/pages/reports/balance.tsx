@@ -7,20 +7,12 @@ import ReportRiskPages from '../../components/report_risk_pages/report_risk_page
 import ReportTable from '../../components/report_table/report_table';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {RowType} from '../../constants/table_row_type';
-import {ITable} from '../../interfaces/report_table';
-import {timestampToString, roundToDecimal, getReportTimeSpan} from '../../lib/common';
 import {APIURL} from '../../constants/api_request';
-import {
-  IBalanceSheet,
-  defaultCryptoAssets,
-  IAccountingDetail,
-} from '../../interfaces/balance_sheet';
-
-export interface IResult {
-  success: boolean;
-  data?: IBalanceSheet;
-  reason?: string;
-}
+import {timestampToString, roundToDecimal, getReportTimeSpan} from '../../lib/common';
+import {ITable} from '../../interfaces/report_table';
+import {IResult} from '../../interfaces/result';
+import {IBalanceSheet} from '../../interfaces/balance_sheet';
+import {IAccountingDetail, defaultCryptoDetail} from '../../interfaces/accounting_detail';
 
 const BalanceSheets = () => {
   const reportTitle = BaifaReports.BALANCE_SHEETS;
@@ -57,19 +49,19 @@ const BalanceSheets = () => {
   const getBalanceSheetsData = (data: IBalanceSheet | undefined) => {
     if (!data)
       return {
-        cashAndCashEquivalent: 0,
-        cryptocurrency: 0,
-        accountsReceivable: 0,
-        totalCurrentAssets: 0,
-        totalNonCurrentAssets: 0,
-        totalAssets: 0,
-        userDeposit: 0,
-        accountsPayable: 0,
-        totalLiabilities: 0,
-        capital: 0,
-        retainedEarnings: 0,
-        totalStockholdersEquity: 0,
-        totalLiabilitiesAndStockholders: 0,
+        cashAndCashEquivalent: '0',
+        cryptocurrency: '0',
+        accountsReceivable: '0',
+        totalCurrentAssets: '0',
+        totalNonCurrentAssets: '0',
+        totalAssets: '0',
+        userDeposit: '0',
+        accountsPayable: '0',
+        totalLiabilities: '0',
+        capital: '0',
+        retainedEarnings: '0',
+        totalStockholdersEquity: '0',
+        totalLiabilitiesAndStockholders: '0',
       };
 
     // Info: (20230913 - Julian) ------------- Assets -------------
@@ -265,8 +257,8 @@ const BalanceSheets = () => {
 
   const getTotalUserDeposit = (userDeposit: IAccountingDetail | undefined) => {
     const defaultDepositData = {
-      ...defaultCryptoAssets,
       percentage: 0,
+      ...defaultCryptoDetail,
     };
 
     if (!userDeposit) {
