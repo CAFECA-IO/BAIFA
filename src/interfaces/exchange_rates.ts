@@ -1,14 +1,15 @@
 export interface IExchangeRateInfo {
-  date: string;
-  timestamp: number;
+  id: string;
+  currency: string;
   buyPrice: number;
   sellPrice: number;
   fairValue: number;
+  timestamp: number;
+  date: string;
 }
 
 export interface IExchangeRates {
-  BTC: IExchangeRateInfo[];
   ETH: IExchangeRateInfo[];
+  BTC: IExchangeRateInfo[];
   USDT: IExchangeRateInfo[];
-  USDC: IExchangeRateInfo[];
 }
