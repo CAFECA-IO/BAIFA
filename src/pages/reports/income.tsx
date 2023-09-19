@@ -89,30 +89,30 @@ const ComprehensiveIncomeStatements = () => {
 
     // Info: (20230914 - Julian) ------------- Revene -------------
     const tradingFee = roundToDecimal(
-      +data.income.details.transactionFee.totalAmountFairValue ?? 0,
+      +data.income.details.transactionFee.weightedAverageCost ?? 0,
       2
     );
-    const spreadFee = roundToDecimal(+data.income.details.spreadFee.totalAmountFairValue ?? 0, 2);
+    const spreadFee = roundToDecimal(+data.income.details.spreadFee.weightedAverageCost ?? 0, 2);
     const withdrawalFee = roundToDecimal(
-      +data.income.details.withdrawalFee.totalAmountFairValue ?? 0,
+      +data.income.details.withdrawalFee.weightedAverageCost ?? 0,
       2
     );
-    const depositFee = roundToDecimal(+data.income.details.depositFee.totalAmountFairValue ?? 0, 2);
+    const depositFee = roundToDecimal(+data.income.details.depositFee.weightedAverageCost ?? 0, 2);
     const liquidationFee = roundToDecimal(
-      +data.income.details.liquidationFee.totalAmountFairValue ?? 0,
+      +data.income.details.liquidationFee.weightedAverageCost ?? 0,
       2
     );
     const guaranteedStopLossFee = roundToDecimal(
-      +data.income.details.guaranteedStopFee.totalAmountFairValue ?? 0,
+      +data.income.details.guaranteedStopFee.weightedAverageCost ?? 0,
       2
     );
     const totalRevenue = roundToDecimal(
-      +data.income.details.transactionFee.totalAmountFairValue +
-        +data.income.details.spreadFee.totalAmountFairValue +
-        +data.income.details.withdrawalFee.totalAmountFairValue +
-        +data.income.details.depositFee.totalAmountFairValue +
-        +data.income.details.liquidationFee.totalAmountFairValue +
-        +data.income.details.guaranteedStopFee.totalAmountFairValue,
+      +data.income.details.transactionFee.weightedAverageCost +
+        +data.income.details.spreadFee.weightedAverageCost +
+        +data.income.details.withdrawalFee.weightedAverageCost +
+        +data.income.details.depositFee.weightedAverageCost +
+        +data.income.details.liquidationFee.weightedAverageCost +
+        +data.income.details.guaranteedStopFee.weightedAverageCost,
       2
     );
 
@@ -177,13 +177,13 @@ const ComprehensiveIncomeStatements = () => {
     const investmentGains = roundToDecimal(data.otherGainsLosses.details.investmentGains ?? 0, 2);
     const forexGains = roundToDecimal(data.otherGainsLosses.details.forexGains ?? 0, 2);
     const cryptocurrencyGains = roundToDecimal(
-      data.otherGainsLosses.details.cryptocurrencyGains.totalAmountFairValue ?? 0,
+      data.otherGainsLosses.details.cryptocurrencyGains.weightedAverageCost ?? 0,
       2
     );
     const totalOtherGains = roundToDecimal(
       +data.otherGainsLosses.details.investmentGains +
         +data.otherGainsLosses.details.forexGains +
-        +data.otherGainsLosses.details.cryptocurrencyGains.totalAmountFairValue,
+        +data.otherGainsLosses.details.cryptocurrencyGains.weightedAverageCost,
       2
     );
     const netProfit = roundToDecimal(+data.netProfit ?? 0, 2);
@@ -474,36 +474,36 @@ const ComprehensiveIncomeStatements = () => {
     const bitData = data.breakdown.BTC ?? defaultStatementCurrencyDetail;
     const ethData = data.breakdown.ETH ?? defaultStatementCurrencyDetail;
     const usdtData = data.breakdown.USDT ?? defaultStatementCurrencyDetail;
-    const totalData = data.totalAmountFairValue;
+    const totalData = data.weightedAverageCost;
 
-    const usdPer = roundToDecimal((usdData.fairValue / totalData) * 100, 1);
-    const bitPer = roundToDecimal((bitData.fairValue / totalData) * 100, 1);
-    const ethPer = roundToDecimal((ethData.fairValue / totalData) * 100, 1);
-    const usdtPer = roundToDecimal((usdtData.fairValue / totalData) * 100, 1);
+    const usdPer = roundToDecimal((usdData.weightedAverageCost / totalData) * 100, 1);
+    const bitPer = roundToDecimal((bitData.weightedAverageCost / totalData) * 100, 1);
+    const ethPer = roundToDecimal((ethData.weightedAverageCost / totalData) * 100, 1);
+    const usdtPer = roundToDecimal((usdtData.weightedAverageCost / totalData) * 100, 1);
 
     return {
       usd: {
         name: 'USD',
         amount: roundToDecimal(+usdData.amount ?? 0, 2),
-        costValue: roundToDecimal(usdData.fairValue ?? 0, 2),
+        costValue: roundToDecimal(usdData.weightedAverageCost ?? 0, 2),
         percentage: usdPer,
       },
       bit: {
         name: 'Bitcoin',
         amount: roundToDecimal(+bitData.amount ?? 0, 2),
-        costValue: roundToDecimal(+bitData.fairValue ?? 0, 2),
+        costValue: roundToDecimal(+bitData.weightedAverageCost ?? 0, 2),
         percentage: bitPer,
       },
       eth: {
         name: 'Ethereum',
         amount: roundToDecimal(+ethData.amount ?? 0, 2),
-        costValue: roundToDecimal(+ethData.fairValue ?? 0, 2),
+        costValue: roundToDecimal(+ethData.weightedAverageCost ?? 0, 2),
         percentage: ethPer,
       },
       usdt: {
         name: 'USDT',
         amount: roundToDecimal(+usdtData.amount ?? 0, 2),
-        costValue: roundToDecimal(+usdtData.fairValue ?? 0, 2),
+        costValue: roundToDecimal(+usdtData.weightedAverageCost ?? 0, 2),
         percentage: usdtPer,
       },
       total: {
@@ -528,16 +528,16 @@ const ComprehensiveIncomeStatements = () => {
   //   rowData: [
   //     'USD',
   //     `${endTradingFeeTest?.breakdown.USDC?.amount ?? 0}`,
-  //     `$ ${endTradingFeeTest?.breakdown.USDC?.fairValue??0}`,
+  //     `$ ${endTradingFeeTest?.breakdown.USDC?.weightedAverageCost??0}`,
   //     `${
-  //       (endTradingFeeTest?.breakdown.USDC?.fairValue ?? 0) /
-  //       (endTradingFeeTest?.totalAmountFairValue ?? 1)
+  //       (endTradingFeeTest?.breakdown.USDC?.weightedAverageCost ?? 0) /
+  //       (endTradingFeeTest?.weightedAverageCost ?? 1)
   //     } %`,
   //     `${startTradingFeeTest?.breakdown.USDC?.amount}`,
-  //     `$ ${startTradingFeeTest?.breakdown.USDC?.fairValue}`,
+  //     `$ ${startTradingFeeTest?.breakdown.USDC?.weightedAverageCost}`,
   //     `${
-  //       (startTradingFeeTest?.breakdown.USDC?.fairValue ?? 0) /
-  //       (startTradingFeeTest?.totalAmountFairValue ?? 1)
+  //       (startTradingFeeTest?.breakdown.USDC?.weightedAverageCost ?? 0) /
+  //       (startTradingFeeTest?.weightedAverageCost ?? 1)
   //     } %`,
   //   ],
   // };
