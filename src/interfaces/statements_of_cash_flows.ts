@@ -10,7 +10,7 @@ interface ICashFlowsAccountingDetail {
   };
 }
 
-interface INonCashAccountingDetail {
+export interface INonCashAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
@@ -28,22 +28,22 @@ interface IDisposalCryptoItem {
   type: string;
   weightedAverageCost: number;
   totalAmountFairValue: number;
-  details: [/* {
-      from: {
-        currencyType: 'FIAT';
-        name: 'USD';
-        amount: number;
-        weightedAverageCost: number;
-        fairValue: number;
-      };
-      to: {
-        currencyType: 'CRYPTOCURRENCY';
-        name: 'BTC';
-        amount: number;
-        weightedAverageCost: number;
-        fairValue: number;
-      };
-    }*/];
+  details: {
+    from: {
+      currencyType: 'FIAT';
+      name: 'USD';
+      amount: number;
+      weightedAverageCost: number;
+      fairValue: number;
+    };
+    to: {
+      currencyType: 'CRYPTOCURRENCY';
+      name: 'BTC';
+      amount: number;
+      weightedAverageCost: number;
+      fairValue: number;
+    };
+  }[];
 }
 
 export interface IStatementsOfCashFlows {

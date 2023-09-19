@@ -8,7 +8,10 @@ import ReportTable from '../../components/report_table/report_table';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
 import {ITable} from '../../interfaces/report_table';
 import {IResult} from '../../interfaces/result';
-import {IStatementsOfCashFlows} from '../../interfaces/statements_of_cash_flows';
+import {
+  IStatementsOfCashFlows,
+  INonCashAccountingDetail,
+} from '../../interfaces/statements_of_cash_flows';
 import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {timestampToString, roundToDecimal, getReportTimeSpan} from '../../lib/common';
@@ -24,6 +27,7 @@ const StatementsOfCashFlows = () => {
 
   const [startCashFlowsData, setStartCashFlowsData] = useState<IStatementsOfCashFlows>();
   const [endCashFlowsData, setEndCashFlowsData] = useState<IStatementsOfCashFlows>();
+  const [historicalCashFlowsData, setHistoricalCashFlowsData] = useState<IStatementsOfCashFlows>();
 
   const getStatementsOfCashFlows = async (date: string) => {
     let reportData;
@@ -44,6 +48,9 @@ const StatementsOfCashFlows = () => {
   useEffect(() => {
     getStatementsOfCashFlows(startDateStr.date).then(data => setStartCashFlowsData(data));
     getStatementsOfCashFlows(endDateStr.date).then(data => setEndCashFlowsData(data));
+    getStatementsOfCashFlows(endDateStr.dateOfLastYear).then(data =>
+      setHistoricalCashFlowsData(data)
+    );
   }, []);
 
   const getCashFlows = (data: IStatementsOfCashFlows | undefined) => {
@@ -206,8 +213,8 @@ const StatementsOfCashFlows = () => {
 
   const endCashFlows = getCashFlows(endCashFlowsData);
   const startCashFlows = getCashFlows(startCashFlowsData);
+  const historicalCashFlows = getCashFlows(historicalCashFlowsData);
 
-  // Done
   const cash_flows_p3_1: ITable = {
     subThead: [
       'Statements of Cash Flows - USD ($)',
@@ -359,7 +366,7 @@ const StatementsOfCashFlows = () => {
       },
     ],
   };
-  // Done
+
   const cash_flows_p4_1: ITable = {
     tbody: [
       {
@@ -490,26 +497,101 @@ const StatementsOfCashFlows = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net cash provided by operating activities', '$ 0', '$ 0'],
+        rowData: [
+          'Net cash provided by operating activities',
+          `$ ${roundToDecimal(endCashFlows.netCashProvidedByOperatingActivities, 2)}`,
+          `$ ${roundToDecimal(historicalCashFlows.netCashProvidedByOperatingActivities, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net cash used in investing activities', '0', '0'],
+        rowData: [
+          'Net cash used in investing activities',
+          `${roundToDecimal(endCashFlows.netCashProvidedByInvestingActivities, 2)}`,
+          `${roundToDecimal(historicalCashFlows.netCashProvidedByInvestingActivities, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net cash used in financing activities', '0', '0'],
+        rowData: [
+          'Net cash used in financing activities',
+          `${roundToDecimal(endCashFlows.netCashProvidedByFinancingActivities, 2)}`,
+          `${roundToDecimal(historicalCashFlows.netCashProvidedByFinancingActivities, 2)}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Net increase in cash, cash equivalents, and restricted cash', '$ 0', '$ 0'],
+        rowData: [
+          'Net increase in cash, cash equivalents, and restricted cash',
+          `$ ${roundToDecimal(endCashFlows.netIncreaseDecreaseInCryptocurrencies ?? 0, 2)}`,
+          `$ ${roundToDecimal(historicalCashFlows.netIncreaseDecreaseInCryptocurrencies ?? 0, 2)}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net increase in non-cash operating activities', '$ 1000', '$ 1000'],
+        rowData: [
+          'Net increase in non-cash operating activities',
+          `$ ${roundToDecimal(endCashFlows.netIncreaseInNonCashOperatingActivities, 2)}`,
+          `$ ${roundToDecimal(historicalCashFlows.netIncreaseInNonCashOperatingActivities, 2)}`,
+        ],
       },
     ],
   };
+
+  const getActivitiesAnalysis = (data: INonCashAccountingDetail | undefined) => {
+    if (!data)
+      return {
+        totalAmount: '—',
+        totalCost: 0,
+        totalPercentage: 0,
+        btcAmount: 0,
+        btcCost: 0,
+        btcPercentage: 0,
+        ethAmount: 0,
+        ethCost: 0,
+        ethPercentage: 0,
+        usdtAmount: 0,
+        usdtCost: 0,
+        usdtPercentage: 0,
+      };
+
+    const totalCost = +data?.weightedAverageCost ?? 0;
+    const btcAmount = +data.breakdown.BTC.amount ?? 0;
+    const btcCost = +data.breakdown.BTC.weightedAverageCost ?? 0;
+    const ethAmount = +data.breakdown.ETH.amount ?? 0;
+    const ethCost = +data.breakdown.ETH.weightedAverageCost ?? 0;
+    const usdtAmount = +data.breakdown.USDT.amount ?? 0;
+    const usdtCost = +data.breakdown.USDT.weightedAverageCost ?? 0;
+
+    const btcPercentage = (btcCost / (btcCost + ethCost + usdtCost)) * 100;
+    const ethPercentage = (ethCost / (btcCost + ethCost + usdtCost)) * 100;
+    const usdtPercentage = (usdtCost / (btcCost + ethCost + usdtCost)) * 100;
+    const totalPercentage = btcPercentage + ethPercentage + usdtPercentage;
+
+    return {
+      totalAmount: '—',
+      totalCost: roundToDecimal(totalCost, 2),
+      totalPercentage: `${roundToDecimal(totalPercentage, 1)} %`,
+      btcAmount: roundToDecimal(btcAmount, 2),
+      btcCost: `$ ${roundToDecimal(btcCost, 2)}`,
+      btcPercentage: `${roundToDecimal(btcPercentage, 1)} %`,
+      ethAmount: roundToDecimal(ethAmount, 2),
+      ethCost: roundToDecimal(ethCost, 2),
+      ethPercentage: `${roundToDecimal(ethPercentage, 1)} %`,
+      usdtAmount: roundToDecimal(usdtAmount, 2),
+      usdtCost: roundToDecimal(usdtCost, 2),
+      usdtPercentage: `${roundToDecimal(usdtPercentage, 1)} %`,
+    };
+  };
+
+  const endDepositedAnalysis = getActivitiesAnalysis(
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+      .cryptocurrenciesDepositedByCustomers
+  );
+  const startDepositedAnalysis = getActivitiesAnalysis(
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+      .cryptocurrenciesDepositedByCustomers
+  );
 
   const cash_flows_p9_1: ITable = {
     thead: [
@@ -536,30 +618,63 @@ const StatementsOfCashFlows = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Bitcoin', '2', '$ 10', '33.3%', '5', '$ 10', '50%'],
+        rowData: [
+          'Bitcoin',
+          `${endDepositedAnalysis.btcAmount}`,
+          `${endDepositedAnalysis.btcCost}`,
+          `${endDepositedAnalysis.btcPercentage}`,
+          `${startDepositedAnalysis.btcAmount}`,
+          `${startDepositedAnalysis.btcCost}`,
+          `${startDepositedAnalysis.btcPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Ethereum', '5', '10', '33.3%', '3.9', '5', '25%'],
+        rowData: [
+          'Ethereum',
+          `${endDepositedAnalysis.ethAmount}`,
+          `${endDepositedAnalysis.ethCost}`,
+          `${endDepositedAnalysis.ethPercentage}`,
+          `${startDepositedAnalysis.ethAmount}`,
+          `${startDepositedAnalysis.ethCost}`,
+          `${startDepositedAnalysis.ethPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['USDT', '10000', '10', '33.3%', '33000', '5', '25%'],
+        rowData: [
+          'USDT',
+          `${endDepositedAnalysis.usdtAmount}`,
+          `${endDepositedAnalysis.usdtCost}`,
+          `${endDepositedAnalysis.usdtPercentage}`,
+          `${startDepositedAnalysis.usdtAmount}`,
+          `${startDepositedAnalysis.usdtCost}`,
+          `${startDepositedAnalysis.usdtPercentage}`,
+        ],
       },
       {
         rowType: RowType.foot,
         rowData: [
           'Total cryptocurrencies deposited by customers',
-          '—',
-          '$ 30',
-          '99.9%',
-          '—',
-          '$ 20',
-          '100.0%',
+          `${endDepositedAnalysis.totalAmount}`,
+          `${endDepositedAnalysis.totalCost}`,
+          `${endDepositedAnalysis.totalPercentage}`,
+          `${startDepositedAnalysis.totalAmount}`,
+          `${startDepositedAnalysis.totalCost}`,
+          `${startDepositedAnalysis.totalPercentage}`,
         ],
       },
     ],
   };
+
+  const endWithdrawnAnalysis = getActivitiesAnalysis(
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+      .cryptocurrenciesWithdrawnByCustomers
+  );
+  const startWithdrawnAnalysis = getActivitiesAnalysis(
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+      .cryptocurrenciesWithdrawnByCustomers
+  );
 
   const cash_flows_p9_2: ITable = {
     thead: [
@@ -586,30 +701,61 @@ const StatementsOfCashFlows = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Bitcoin', '2', '$ 20', '28.6%', '5', '$ 10', '16.4%'],
+        rowData: [
+          'Bitcoin',
+          `${endWithdrawnAnalysis.btcAmount}`,
+          `${endWithdrawnAnalysis.btcCost}`,
+          `${endWithdrawnAnalysis.btcPercentage}`,
+          `${startWithdrawnAnalysis.btcAmount}`,
+          `${startWithdrawnAnalysis.btcCost}`,
+          `${startWithdrawnAnalysis.btcPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Ethereum', '5', '20', '28.6%', '3.9', '20', '34.2%'],
+        rowData: [
+          'Ethereum',
+          `${endWithdrawnAnalysis.ethAmount}`,
+          `${endWithdrawnAnalysis.ethCost}`,
+          `${endWithdrawnAnalysis.ethPercentage}`,
+          `${startWithdrawnAnalysis.ethAmount}`,
+          `${startWithdrawnAnalysis.ethCost}`,
+          `${startWithdrawnAnalysis.ethPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['USDT', '10000', '30', '42.8%', '33000', '20', '49.3%'],
+        rowData: [
+          'USDT',
+          `${endWithdrawnAnalysis.usdtAmount}`,
+          `${endWithdrawnAnalysis.usdtCost}`,
+          `${endWithdrawnAnalysis.usdtPercentage}`,
+          `${startWithdrawnAnalysis.usdtAmount}`,
+          `${startWithdrawnAnalysis.usdtCost}`,
+          `${startWithdrawnAnalysis.usdtPercentage}`,
+        ],
       },
       {
         rowType: RowType.foot,
         rowData: [
           'Total cryptocurrencies withdrawn by customers',
-          '—',
-          '$ 70',
-          '100%',
-          '—',
-          '$ 50',
-          '100.0%',
+          `${endWithdrawnAnalysis.totalAmount}`,
+          `${endWithdrawnAnalysis.totalCost}`,
+          `${endWithdrawnAnalysis.totalPercentage}`,
+          `${startWithdrawnAnalysis.totalAmount}`,
+          `${startWithdrawnAnalysis.totalCost}`,
+          `${startWithdrawnAnalysis.totalPercentage}`,
         ],
       },
     ],
   };
+
+  const endInflowsAnalysis = getActivitiesAnalysis(
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.cryptocurrencyInflows
+  );
+  const startInflowsAnalysis = getActivitiesAnalysis(
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.cryptocurrencyInflows
+  );
 
   const cash_flows_p10_1: ITable = {
     thead: [
@@ -636,22 +782,61 @@ const StatementsOfCashFlows = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Bitcoin', '0', '$ 0', '—', '0', '$ 0', '—'],
+        rowData: [
+          'Bitcoin',
+          `${endInflowsAnalysis.btcAmount}`,
+          `${endInflowsAnalysis.btcCost}`,
+          `${endInflowsAnalysis.btcPercentage}`,
+          `${startInflowsAnalysis.btcAmount}`,
+          `${startInflowsAnalysis.btcCost}`,
+          `${startInflowsAnalysis.btcPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Ethereum', '0', '0', '—', '0', '0', '—'],
+        rowData: [
+          'Ethereum',
+          `${endInflowsAnalysis.ethAmount}`,
+          `${endInflowsAnalysis.ethCost}`,
+          `${endInflowsAnalysis.ethPercentage}`,
+          `${startInflowsAnalysis.ethAmount}`,
+          `${startInflowsAnalysis.ethCost}`,
+          `${startInflowsAnalysis.ethPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['USDT', '0', '0', '—', '0', '0', '—'],
+        rowData: [
+          'USDT',
+          `${endInflowsAnalysis.usdtAmount}`,
+          `${endInflowsAnalysis.usdtCost}`,
+          `${endInflowsAnalysis.usdtPercentage}`,
+          `${startInflowsAnalysis.usdtAmount}`,
+          `${startInflowsAnalysis.usdtCost}`,
+          `${startInflowsAnalysis.usdtPercentage}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total cryptocurrency inflows', '—', '$ 0', '—', '—', '$ 0', '—'],
+        rowData: [
+          'Total cryptocurrency inflows',
+          `${endInflowsAnalysis.totalAmount}`,
+          `${endInflowsAnalysis.totalCost}`,
+          `${endInflowsAnalysis.totalPercentage}`,
+          `${startInflowsAnalysis.totalAmount}`,
+          `${startInflowsAnalysis.totalCost}`,
+          `${startInflowsAnalysis.totalPercentage}`,
+        ],
       },
     ],
   };
+
+  const endOutflowsAnalysis = getActivitiesAnalysis(
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.cryptocurrencyOutflows
+  );
+  const startOutflowsAnalysis = getActivitiesAnalysis(
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.cryptocurrencyOutflows
+  );
 
   const cash_flows_p10_2: ITable = {
     thead: [
@@ -678,22 +863,63 @@ const StatementsOfCashFlows = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Bitcoin', '0', '$ 0', '—', '0', '$ 0', '—'],
+        rowData: [
+          'Bitcoin',
+          `${endOutflowsAnalysis.btcAmount}`,
+          `${endOutflowsAnalysis.btcCost}`,
+          `${endOutflowsAnalysis.btcPercentage}`,
+          `${startOutflowsAnalysis.btcAmount}`,
+          `${startOutflowsAnalysis.btcCost}`,
+          `${startOutflowsAnalysis.btcPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Ethereum', '0', '0', '—', '0', '0', '—'],
+        rowData: [
+          'Ethereum',
+          `${endOutflowsAnalysis.ethAmount}`,
+          `${endOutflowsAnalysis.ethCost}`,
+          `${endOutflowsAnalysis.ethPercentage}`,
+          `${startOutflowsAnalysis.ethAmount}`,
+          `${startOutflowsAnalysis.ethCost}`,
+          `${startOutflowsAnalysis.ethPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['USDT', '0', '0', '—', '0', '0', '—'],
+        rowData: [
+          'USDT',
+          `${endOutflowsAnalysis.usdtAmount}`,
+          `${endOutflowsAnalysis.usdtCost}`,
+          `${endOutflowsAnalysis.usdtPercentage}`,
+          `${startOutflowsAnalysis.usdtAmount}`,
+          `${startOutflowsAnalysis.usdtCost}`,
+          `${startOutflowsAnalysis.usdtPercentage}`,
+        ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total cryptocurrency outflows', '—', '$ 0', '—', '—', '$ 0', '—'],
+        rowData: [
+          'Total cryptocurrency outflows',
+          `${endOutflowsAnalysis.totalAmount}`,
+          `${endOutflowsAnalysis.totalCost}`,
+          `${endOutflowsAnalysis.totalPercentage}`,
+          `${startOutflowsAnalysis.totalAmount}`,
+          `${startOutflowsAnalysis.totalCost}`,
+          `${startOutflowsAnalysis.totalPercentage}`,
+        ],
       },
     ],
   };
+
+  const endFeesAnalysis = getActivitiesAnalysis(
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+      .cryptocurrenciesReceivedFromCustomersAsTransactionFees
+  );
+  const startFeesAnalysis = getActivitiesAnalysis(
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+      .cryptocurrenciesReceivedFromCustomersAsTransactionFees
+  );
 
   const cash_flows_p11_1: ITable = {
     thead: [
@@ -720,30 +946,63 @@ const StatementsOfCashFlows = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Bitcoin', '0', '$ 0', '—', '0', '$ 0', '—'],
+        rowData: [
+          'Bitcoin',
+          `${endFeesAnalysis.btcAmount}`,
+          `${endFeesAnalysis.btcCost}`,
+          `${endFeesAnalysis.btcPercentage}`,
+          `${startFeesAnalysis.btcAmount}`,
+          `${startFeesAnalysis.btcCost}`,
+          `${startFeesAnalysis.btcPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Ethereum', '0', '0', '—', '0', '0', '—'],
+        rowData: [
+          'Ethereum',
+          `${endFeesAnalysis.ethAmount}`,
+          `${endFeesAnalysis.ethCost}`,
+          `${endFeesAnalysis.ethPercentage}`,
+          `${startFeesAnalysis.ethAmount}`,
+          `${startFeesAnalysis.ethCost}`,
+          `${startFeesAnalysis.ethPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['USDT', '0', '0', '—', '0', '0', '—'],
+        rowData: [
+          'USDT',
+          `${endFeesAnalysis.usdtAmount}`,
+          `${endFeesAnalysis.usdtCost}`,
+          `${endFeesAnalysis.usdtPercentage}`,
+          `${startFeesAnalysis.usdtAmount}`,
+          `${startFeesAnalysis.usdtCost}`,
+          `${startFeesAnalysis.usdtPercentage}`,
+        ],
       },
       {
         rowType: RowType.foot,
         rowData: [
           'Total cryptocurrencies received from customers as transaction fees',
-          '—',
-          '$ 0',
-          '—',
-          '—',
-          '$ 0',
-          '—',
+          `${endFeesAnalysis.totalAmount}`,
+          `${endFeesAnalysis.totalCost}`,
+          `${endFeesAnalysis.totalPercentage}`,
+          `${startFeesAnalysis.totalAmount}`,
+          `${startFeesAnalysis.totalCost}`,
+          `${startFeesAnalysis.totalPercentage}`,
         ],
       },
     ],
   };
+
+  const endLiquidationAnalysis = getActivitiesAnalysis(
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+      .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading
+  );
+  const startLiquidationAnalysis = getActivitiesAnalysis(
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+      .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading
+  );
 
   const cash_flows_p12_1: ITable = {
     thead: [
@@ -770,30 +1029,63 @@ const StatementsOfCashFlows = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Bitcoin', '2', '$ 3000', '30.0%', '0.2', '$ 3', '30.0%'],
+        rowData: [
+          'Bitcoin',
+          `${endLiquidationAnalysis.btcAmount}`,
+          `${endLiquidationAnalysis.btcCost}`,
+          `${endLiquidationAnalysis.btcPercentage}`,
+          `${startLiquidationAnalysis.btcAmount}`,
+          `${startLiquidationAnalysis.btcCost}`,
+          `${startLiquidationAnalysis.btcPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Ethereum', '5', '2000', '20.0%', '2.1', '2', '20.0%'],
+        rowData: [
+          'Ethereum',
+          `${endLiquidationAnalysis.ethAmount}`,
+          `${endLiquidationAnalysis.ethCost}`,
+          `${endLiquidationAnalysis.ethPercentage}`,
+          `${startLiquidationAnalysis.ethAmount}`,
+          `${startLiquidationAnalysis.ethCost}`,
+          `${startLiquidationAnalysis.ethPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['USDT', '5000000', '5000', '50.0%', '5000', '5', '50.0%'],
+        rowData: [
+          'USDT',
+          `${endLiquidationAnalysis.usdtAmount}`,
+          `${endLiquidationAnalysis.usdtCost}`,
+          `${endLiquidationAnalysis.usdtPercentage}`,
+          `${startLiquidationAnalysis.usdtAmount}`,
+          `${startLiquidationAnalysis.usdtCost}`,
+          `${startLiquidationAnalysis.usdtPercentage}`,
+        ],
       },
       {
         rowType: RowType.foot,
         rowData: [
           'Total cryptocurrencies received from customers for liquidation in CFD trading',
-          '—',
-          '$ 1000',
-          '100.0%',
-          '—',
-          '$ 10',
-          '100.0%',
+          `${endLiquidationAnalysis.totalAmount}`,
+          `${endLiquidationAnalysis.totalCost}`,
+          `${endLiquidationAnalysis.totalPercentage}`,
+          `${startLiquidationAnalysis.totalAmount}`,
+          `${startLiquidationAnalysis.totalCost}`,
+          `${startLiquidationAnalysis.totalPercentage}`,
         ],
       },
     ],
   };
+
+  const endProfitsAnalysis = getActivitiesAnalysis(
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+      .cryptocurrenciesPaidToCustomersForCFDTradingProfits
+  );
+  const startProfitsAnalysis = getActivitiesAnalysis(
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+      .cryptocurrenciesPaidToCustomersForCFDTradingProfits
+  );
 
   const cash_flows_p13_1: ITable = {
     thead: [
@@ -820,31 +1112,55 @@ const StatementsOfCashFlows = () => {
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Bitcoin', '0', '$ 0', '—', '0', '$ 0', '—'],
+        rowData: [
+          'Bitcoin',
+          `${endProfitsAnalysis.btcAmount}`,
+          `${endProfitsAnalysis.btcCost}`,
+          `${endProfitsAnalysis.btcPercentage}`,
+          `${startProfitsAnalysis.btcAmount}`,
+          `${startProfitsAnalysis.btcCost}`,
+          `${startProfitsAnalysis.btcPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Ethereum', '0', '0', '—', '0', '0', '—'],
+        rowData: [
+          'Ethereum',
+          `${endProfitsAnalysis.ethAmount}`,
+          `${endProfitsAnalysis.ethCost}`,
+          `${endProfitsAnalysis.ethPercentage}`,
+          `${startProfitsAnalysis.ethAmount}`,
+          `${startProfitsAnalysis.ethCost}`,
+          `${startProfitsAnalysis.ethPercentage}`,
+        ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['USDT', '0', '0', '—', '0', '0', '—'],
+        rowData: [
+          'USDT',
+          `${endProfitsAnalysis.usdtAmount}`,
+          `${endProfitsAnalysis.usdtCost}`,
+          `${endProfitsAnalysis.usdtPercentage}`,
+          `${startProfitsAnalysis.usdtAmount}`,
+          `${startProfitsAnalysis.usdtCost}`,
+          `${startProfitsAnalysis.usdtPercentage}`,
+        ],
       },
       {
         rowType: RowType.foot,
         rowData: [
           'Total cryptocurrencies paid to customers for CFD trading profits',
-          '—',
-          '$ 0',
-          '—',
-          '—',
-          '$ 0',
-          '—',
+          `${endProfitsAnalysis.totalAmount}`,
+          `${endProfitsAnalysis.totalCost}`,
+          `${endProfitsAnalysis.totalPercentage}`,
+          `${startProfitsAnalysis.totalAmount}`,
+          `${startProfitsAnalysis.totalCost}`,
+          `${startProfitsAnalysis.totalPercentage}`,
         ],
       },
     ],
   };
-
+  // --------------------------------------------------------- ??
   const cash_flows_p14_1: ITable = {
     thead: [
       'Purchase of cryptocurrencies with non-cash consideration',
@@ -894,7 +1210,7 @@ const StatementsOfCashFlows = () => {
       },
     ],
   };
-
+  // --------------------------------------------------------- ??
   const cash_flows_p15_1: ITable = {
     thead: [
       'Disposal of cryptocurrencies for non-cash consideration',
