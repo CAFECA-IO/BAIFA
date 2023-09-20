@@ -15,10 +15,8 @@ const ReportExchageRateForm = () => {
   const getExchangeRate = async () => {
     let reportData;
     try {
-      /* Info: (20230919 - Julian) 由於 /exchange_rates API 取得的時間區段是 start date 00:00:00 ~ end date 00:00:00，
-       * 所以要取得 end date 下午收盤的資料，必須將範圍再加一天 */
       const response = await fetch(
-        `${APIURL.EXCHANGE_RATES}?startDate=${startDateStr.date}&endDate=${endDateStr.tomorrow}`,
+        `${APIURL.EXCHANGE_RATES}?startDate=${startDateStr.date}&endDate=${endDateStr.date}`,
         {
           method: 'GET',
         }

@@ -365,11 +365,11 @@ const StatementsOfCashFlows = () => {
   };
 
   const endDepositedAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesDepositedByCustomers
   );
   const startDepositedAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesDepositedByCustomers
   );
 
@@ -448,11 +448,11 @@ const StatementsOfCashFlows = () => {
   };
 
   const endWithdrawnAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesWithdrawnByCustomers
   );
   const startWithdrawnAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesWithdrawnByCustomers
   );
 
@@ -531,10 +531,11 @@ const StatementsOfCashFlows = () => {
   };
 
   const endInflowsAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.cryptocurrencyInflows
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInflows
   );
   const startInflowsAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.cryptocurrencyInflows
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrencyInflows
   );
 
   const cash_flows_p10_1: ITable = {
@@ -612,10 +613,12 @@ const StatementsOfCashFlows = () => {
   };
 
   const endOutflowsAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.cryptocurrencyOutflows
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrencyOutflows
   );
   const startOutflowsAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.cryptocurrencyOutflows
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrencyOutflows
   );
 
   const cash_flows_p10_2: ITable = {
@@ -693,11 +696,11 @@ const StatementsOfCashFlows = () => {
   };
 
   const endFeesAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersAsTransactionFees
   );
   const startFeesAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersAsTransactionFees
   );
 
@@ -776,11 +779,11 @@ const StatementsOfCashFlows = () => {
   };
 
   const endLiquidationAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading
   );
   const startLiquidationAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading
   );
 
@@ -859,11 +862,11 @@ const StatementsOfCashFlows = () => {
   };
 
   const endProfitsAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesPaidToCustomersForCFDTradingProfits
   );
   const startProfitsAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities
+    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesPaidToCustomersForCFDTradingProfits
   );
 
@@ -940,6 +943,11 @@ const StatementsOfCashFlows = () => {
       },
     ],
   };
+
+  const data =
+    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .purchaseOfCryptocurrenciesWithNonCashConsideration.details;
+
   // --------------------------------------------------------- 未完成
   const cash_flows_p14_1: ITable = {
     thead: [

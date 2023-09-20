@@ -58,97 +58,77 @@ export const getCashFlowsTable = (data: IStatementsOfCashFlows | undefined) => {
 
   // Info: (20230918 - Julian) Cash flows from operating activities
   const cashDepositedByCustomers =
-    +data?.operatingActivities.cashDepositedByCustomers.weightedAverageCost ?? 0;
+    +data.operatingActivities.details.cashDepositedByCustomers.weightedAverageCost ?? 0;
   const cashWithdrawnByCustomers =
-    +data?.operatingActivities.cashWithdrawnByCustomers.weightedAverageCost ?? 0;
+    +data.operatingActivities.details.cashWithdrawnByCustomers.weightedAverageCost ?? 0;
   const purchaseOfCryptocurrencies =
-    +data?.operatingActivities.purchaseOfCryptocurrencies.weightedAverageCost ?? 0;
+    +data.operatingActivities.details.purchaseOfCryptocurrencies.weightedAverageCost ?? 0;
   const disposalOfCryptocurrencies =
-    +data?.operatingActivities.disposalOfCryptocurrencies.weightedAverageCost ?? 0;
+    +data.operatingActivities.details.disposalOfCryptocurrencies.weightedAverageCost ?? 0;
   const cashReceivedFromCustomersAsTransactionFee =
-    +data?.operatingActivities.cashReceivedFromCustomersAsTransactionFee.weightedAverageCost ?? 0;
+    +data.operatingActivities.details.cashReceivedFromCustomersAsTransactionFee
+      .weightedAverageCost ?? 0;
   const cashReceivedFromCustomersForLiquidationInCFDTrading =
-    +data?.operatingActivities.cashReceivedFromCustomersForLiquidationInCFDTrading
+    +data.operatingActivities.details.cashReceivedFromCustomersForLiquidationInCFDTrading
       .weightedAverageCost ?? 0;
   const cashPaidToCustomersAsRebatesForTransactionFees =
-    +data?.operatingActivities.cashPaidToCustomersAsRebatesForTransactionFees.weightedAverageCost ??
-    0;
+    +data.operatingActivities.details.cashPaidToCustomersAsRebatesForTransactionFees
+      .weightedAverageCost ?? 0;
   const cashPaidToSuppliersForExpenses =
-    +data?.operatingActivities.cashPaidToSuppliersForExpenses.weightedAverageCost ?? 0;
+    +data.operatingActivities.details.cashPaidToSuppliersForExpenses.weightedAverageCost ?? 0;
   const cashPaidToCustomersForCFDTradingProfits =
-    +data?.operatingActivities.cashPaidToCustomersForCFDTradingProfits.weightedAverageCost ?? 0;
-  const netCashProvidedByOperatingActivities =
-    cashDepositedByCustomers +
-    cashWithdrawnByCustomers +
-    purchaseOfCryptocurrencies +
-    disposalOfCryptocurrencies +
-    cashReceivedFromCustomersAsTransactionFee +
-    cashReceivedFromCustomersForLiquidationInCFDTrading +
-    cashPaidToCustomersAsRebatesForTransactionFees +
-    cashPaidToSuppliersForExpenses +
-    cashPaidToCustomersForCFDTradingProfits;
+    +data.operatingActivities.details.cashPaidToCustomersForCFDTradingProfits.weightedAverageCost ??
+    0;
+  const netCashProvidedByOperatingActivities = +data.operatingActivities.weightedAverageCost ?? 0;
   // Info: (20230918 - Julian) Cash flows from investing activities
-  const netCashProvidedByInvestingActivities = +data?.investingActivities.details ?? 0;
+  const netCashProvidedByInvestingActivities = +data.investingActivities.weightedAverageCost;
   // Info: (20230918 - Julian) Cash flows from financing activities
-  const netCashProvidedByFinancingActivities =
-    (+data.financingActivities.longTermDebt.weightedAverageCost ?? 0) +
-    (+data.financingActivities.paymentsOfDividends.weightedAverageCost ?? 0) +
-    (+data.financingActivities.proceedsFromIssuanceOfCommonStock.weightedAverageCost ?? 0) +
-    (+data.financingActivities.shortTermBorrowings.weightedAverageCost ?? 0) +
-    (+data.financingActivities.treasuryStock.weightedAverageCost ?? 0);
+  const netCashProvidedByFinancingActivities = +data.financingActivities.weightedAverageCost ?? 0;
   const netIncreaseDecreaseInCryptocurrencies =
-    +data?.otherSupplementaryItems.relatedToNonCash.netIncreaseDecreaseInCryptocurrencies
+    +data.otherSupplementaryItems.details.relatedToNonCash.netIncreaseDecreaseInCryptocurrencies
       .weightedAverageCost ?? 0;
   const cashCashEquivalentsAndRestrictedCashBeginningOfPeriod =
-    +data.otherSupplementaryItems.relatedToNonCash.cryptocurrenciesBeginningOfPeriod
+    +data.otherSupplementaryItems.details.relatedToNonCash.cryptocurrenciesBeginningOfPeriod
       .weightedAverageCost ?? 0;
   const cashCashEquivalentsAndRestrictedCashEndOfPeriod =
-    +data.otherSupplementaryItems.relatedToNonCash.cryptocurrenciesEndOfPeriod
+    +data.otherSupplementaryItems.details.relatedToNonCash.cryptocurrenciesEndOfPeriod
       .weightedAverageCost ?? 0;
 
   // Info: (20230918 - Julian) Supplemental schedule of non-cash operating activities
   const cryptocurrenciesDepositedByCustomers =
-    +data.supplementalScheduleOfNonCashOperatingActivities.cryptocurrenciesDepositedByCustomers
-      .weightedAverageCost ?? 0;
+    +data.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrenciesDepositedByCustomers.weightedAverageCost ?? 0;
   const cryptocurrenciesWithdrawnByCustomers =
-    +data.supplementalScheduleOfNonCashOperatingActivities.cryptocurrenciesWithdrawnByCustomers
-      .weightedAverageCost ?? 0;
+    +data.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrenciesWithdrawnByCustomers.weightedAverageCost ?? 0;
   const cryptocurrencyInflows =
-    +data.supplementalScheduleOfNonCashOperatingActivities.cryptocurrencyInflows
+    +data.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInflows
       .weightedAverageCost ?? 0;
   const cryptocurrencyOutflows =
-    +data.supplementalScheduleOfNonCashOperatingActivities.cryptocurrencyOutflows
+    +data.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyOutflows
       .weightedAverageCost ?? 0;
   const cryptocurrenciesReceivedFromCustomersAsTransactionFees =
-    +data.supplementalScheduleOfNonCashOperatingActivities
+    +data.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersAsTransactionFees.weightedAverageCost ?? 0;
   const cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading =
-    +data.supplementalScheduleOfNonCashOperatingActivities
+    +data.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading.weightedAverageCost ?? 0;
   const cryptocurrenciesPaidToCustomersForCFDTradingProfits =
-    +data.supplementalScheduleOfNonCashOperatingActivities
+    +data.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesPaidToCustomersForCFDTradingProfits.weightedAverageCost ?? 0;
   const purchaseOfCryptocurrenciesWithNonCashConsideration =
-    +data.supplementalScheduleOfNonCashOperatingActivities
+    +data.supplementalScheduleOfNonCashOperatingActivities.details
       .purchaseOfCryptocurrenciesWithNonCashConsideration.weightedAverageCost ?? 0;
   const disposalOfCryptocurrenciesForNonCashConsideration =
-    +data.supplementalScheduleOfNonCashOperatingActivities
+    +data.supplementalScheduleOfNonCashOperatingActivities.details
       .disposalOfCryptocurrenciesForNonCashConsideration.weightedAverageCost ?? 0;
   const netIncreaseInNonCashOperatingActivities =
-    cryptocurrenciesDepositedByCustomers +
-    cryptocurrenciesWithdrawnByCustomers +
-    cryptocurrencyInflows +
-    cryptocurrencyOutflows +
-    cryptocurrenciesReceivedFromCustomersAsTransactionFees +
-    cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading +
-    cryptocurrenciesPaidToCustomersForCFDTradingProfits +
-    purchaseOfCryptocurrenciesWithNonCashConsideration +
-    disposalOfCryptocurrenciesForNonCashConsideration;
+    +data.supplementalScheduleOfNonCashOperatingActivities.weightedAverageCost ?? 0;
   const cryptocurrenciesBeginningOfPeriod =
-    +data?.otherSupplementaryItems.relatedToNonCash.cryptocurrenciesBeginningOfPeriod
+    +data.otherSupplementaryItems.details.relatedToNonCash.cryptocurrenciesBeginningOfPeriod
       .weightedAverageCost ?? 0;
   const cryptocurrenciesEndOfPeriod =
-    +data?.otherSupplementaryItems.relatedToNonCash.cryptocurrenciesEndOfPeriod
+    +data.otherSupplementaryItems.details.relatedToNonCash.cryptocurrenciesEndOfPeriod
       .weightedAverageCost ?? 0;
 
   return {
@@ -200,7 +180,7 @@ export const getActivitiesAnalysis = (data: INonCashAccountingDetail | undefined
       usdtPercentage: 0,
     };
 
-  const totalCost = +data?.weightedAverageCost ?? 0;
+  const totalCost = +data.weightedAverageCost ?? 0;
   const btcAmount = +data.breakdown.BTC.amount ?? 0;
   const btcCost = +data.breakdown.BTC.weightedAverageCost ?? 0;
   const ethAmount = +data.breakdown.ETH.amount ?? 0;

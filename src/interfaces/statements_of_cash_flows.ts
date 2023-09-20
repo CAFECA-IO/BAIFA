@@ -48,62 +48,76 @@ interface IDisposalCryptoItem {
 
 export interface IStatementsOfCashFlows {
   id: string;
-  date: string;
+  startDate: string;
+  endDate: string;
   operatingActivities: {
-    cashDepositedByCustomers: ICashFlowsAccountingDetail;
-    cashWithdrawnByCustomers: ICashFlowsAccountingDetail;
-    purchaseOfCryptocurrencies: IDisposalCryptoItem;
-    disposalOfCryptocurrencies: IDisposalCryptoItem;
-    cashPaidToSuppliersForExpenses: ICashFlowsAccountingDetail;
-    cashReceivedFromCustomersAsTransactionFee: ICashFlowsAccountingDetail;
-    cashReceivedFromCustomersForLiquidationInCFDTrading: ICashFlowsAccountingDetail;
-    cashPaidToCustomersAsRebatesForTransactionFees: ICashFlowsAccountingDetail;
-    cashPaidToCustomersForCFDTradingProfits: ICashFlowsAccountingDetail;
-    insuranceFundForPerpetualContracts: ICashFlowsAccountingDetail;
-    cashPaidToCustomersForFundingRatesInPerpetualContract: ICashFlowsAccountingDetail;
-    cashPaidToCustomersForPerpetualContractProfits: ICashFlowsAccountingDetail;
-    cashReceivedFromCustomersForLiquidationInPerpetualContract: ICashFlowsAccountingDetail;
+    weightedAverageCost: number;
+    details: {
+      cashDepositedByCustomers: ICashFlowsAccountingDetail;
+      cashWithdrawnByCustomers: ICashFlowsAccountingDetail;
+      purchaseOfCryptocurrencies: IDisposalCryptoItem;
+      disposalOfCryptocurrencies: IDisposalCryptoItem;
+      cashPaidToSuppliersForExpenses: ICashFlowsAccountingDetail;
+      cashReceivedFromCustomersAsTransactionFee: ICashFlowsAccountingDetail;
+      cashReceivedFromCustomersForLiquidationInCFDTrading: ICashFlowsAccountingDetail;
+      cashPaidToCustomersAsRebatesForTransactionFees: ICashFlowsAccountingDetail;
+      cashPaidToCustomersForCFDTradingProfits: ICashFlowsAccountingDetail;
+      insuranceFundForPerpetualContracts: ICashFlowsAccountingDetail;
+      cashPaidToCustomersForFundingRatesInPerpetualContract: ICashFlowsAccountingDetail;
+      cashPaidToCustomersForPerpetualContractProfits: ICashFlowsAccountingDetail;
+      cashReceivedFromCustomersForLiquidationInPerpetualContract: ICashFlowsAccountingDetail;
+    };
   };
   investingActivities: {
+    weightedAverageCost: number;
     details: string;
   };
   financingActivities: {
-    proceedsFromIssuanceOfCommonStock: ICashFlowsAccountingDetail;
-    longTermDebt: ICashFlowsAccountingDetail;
-    shortTermBorrowings: ICashFlowsAccountingDetail;
-    paymentsOfDividends: ICashFlowsAccountingDetail;
-    treasuryStock: ICashFlowsAccountingDetail;
+    weightedAverageCost: number;
+    details: {
+      proceedsFromIssuanceOfCommonStock: ICashFlowsAccountingDetail;
+      longTermDebt: ICashFlowsAccountingDetail;
+      shortTermBorrowings: ICashFlowsAccountingDetail;
+      paymentsOfDividends: ICashFlowsAccountingDetail;
+      treasuryStock: ICashFlowsAccountingDetail;
+    };
   };
   supplementalScheduleOfNonCashOperatingActivities: {
-    cryptocurrenciesDepositedByCustomers: INonCashAccountingDetail;
-    cryptocurrenciesWithdrawnByCustomers: INonCashAccountingDetail;
-    cryptocurrencyInflows: INonCashAccountingDetail;
-    cryptocurrencyOutflows: INonCashAccountingDetail;
-    purchaseOfCryptocurrenciesWithNonCashConsideration: IDisposalCryptoItem;
-    disposalOfCryptocurrenciesForNonCashConsideration: IDisposalCryptoItem;
-    cryptocurrenciesReceivedFromCustomersAsTransactionFees: INonCashAccountingDetail;
-    cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading: INonCashAccountingDetail;
-    cryptocurrenciesPaidToCustomersAsRebatesForTransactionFees: INonCashAccountingDetail;
-    cryptocurrenciesPaidToSuppliersForExpenses: INonCashAccountingDetail;
-    cryptocurrenciesPaidToCustomersForCFDTradingProfits: INonCashAccountingDetail;
-    insuranceFundForPerpetualContractsWithNonCashConsideration: INonCashAccountingDetail;
-    cryptocurrenciesReceivedFromCustomersForLiquidationInPerpetualContract: INonCashAccountingDetail;
-    cryptocurrenciesPaidToCustomersForPerpetualContractProfits: INonCashAccountingDetail;
-    cryptocurrenciesPaidToCustomersForFundingRatesInPerpetualContract: INonCashAccountingDetail;
-    cryptocurrenciesPaidToCustomersForProfitsInPerpetualContract: INonCashAccountingDetail;
+    weightedAverageCost: number;
+    details: {
+      cryptocurrenciesDepositedByCustomers: INonCashAccountingDetail;
+      cryptocurrenciesWithdrawnByCustomers: INonCashAccountingDetail;
+      cryptocurrencyInflows: INonCashAccountingDetail;
+      cryptocurrencyOutflows: INonCashAccountingDetail;
+      purchaseOfCryptocurrenciesWithNonCashConsideration: IDisposalCryptoItem;
+      disposalOfCryptocurrenciesForNonCashConsideration: IDisposalCryptoItem;
+      cryptocurrenciesReceivedFromCustomersAsTransactionFees: INonCashAccountingDetail;
+      cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading: INonCashAccountingDetail;
+      cryptocurrenciesPaidToCustomersAsRebatesForTransactionFees: INonCashAccountingDetail;
+      cryptocurrenciesPaidToSuppliersForExpenses: INonCashAccountingDetail;
+      cryptocurrenciesPaidToCustomersForCFDTradingProfits: INonCashAccountingDetail;
+      insuranceFundForPerpetualContractsWithNonCashConsideration: INonCashAccountingDetail;
+      cryptocurrenciesReceivedFromCustomersForLiquidationInPerpetualContract: INonCashAccountingDetail;
+      cryptocurrenciesPaidToCustomersForPerpetualContractProfits: INonCashAccountingDetail;
+      cryptocurrenciesPaidToCustomersForFundingRatesInPerpetualContract: INonCashAccountingDetail;
+      cryptocurrenciesPaidToCustomersForProfitsInPerpetualContract: INonCashAccountingDetail;
+    };
   };
   otherSupplementaryItems: {
-    relatedToCash: {
-      effectOfExchangeRatesOnCash: ICashFlowsAccountingDetail;
-      cashCashEquivalentsAndRestrictedCashBeginningOfPeriod: ICashFlowsAccountingDetail;
-      cashCashEquivalentsAndRestrictedCashEndOfPeriod: ICashFlowsAccountingDetail;
-      netIncreaseDecreaseInCashCashEquivalentsAndRestrictedCash: ICashFlowsAccountingDetail;
-    };
-    relatedToNonCash: {
-      valuationAdjustmentForCryptocurrencies: INonCashAccountingDetail;
-      cryptocurrenciesBeginningOfPeriod: INonCashAccountingDetail;
-      cryptocurrenciesEndOfPeriod: INonCashAccountingDetail;
-      netIncreaseDecreaseInCryptocurrencies: INonCashAccountingDetail;
+    weightedAverageCost: number;
+    details: {
+      relatedToCash: {
+        effectOfExchangeRatesOnCash: ICashFlowsAccountingDetail;
+        cashCashEquivalentsAndRestrictedCashBeginningOfPeriod: ICashFlowsAccountingDetail;
+        cashCashEquivalentsAndRestrictedCashEndOfPeriod: ICashFlowsAccountingDetail;
+        netIncreaseDecreaseInCashCashEquivalentsAndRestrictedCash: ICashFlowsAccountingDetail;
+      };
+      relatedToNonCash: {
+        valuationAdjustmentForCryptocurrencies: INonCashAccountingDetail;
+        cryptocurrenciesBeginningOfPeriod: INonCashAccountingDetail;
+        cryptocurrenciesEndOfPeriod: INonCashAccountingDetail;
+        netIncreaseDecreaseInCryptocurrencies: INonCashAccountingDetail;
+      };
     };
   };
 }
