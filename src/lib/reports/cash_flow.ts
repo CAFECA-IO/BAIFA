@@ -1,30 +1,30 @@
 import {IResult} from '../../interfaces/result';
 import {APIURL} from '../../constants/api_request';
 import {
-  IStatementsOfCashFlows,
+  IStatementsOfCashFlow,
   INonCashAccountingDetail,
-} from '../../interfaces/statements_of_cash_flows';
+} from '../../interfaces/statements_of_cash_flow';
 import {roundToDecimal} from '../common';
 
 // Info: (20230919 - Julian) Get data from API
-export const getStatementsOfCashFlows = async (date: string) => {
+export const getStatementsOfCashFlow = async (date: string) => {
   let reportData;
   try {
-    const response = await fetch(`${APIURL.STATEMENTS_OF_CASH_FLOWS}?date=${date}`, {
+    const response = await fetch(`${APIURL.STATEMENTS_OF_CASH_FLOW}?date=${date}`, {
       method: 'GET',
     });
     const result: IResult = await response.json();
     if (result.success) {
-      reportData = result.data as IStatementsOfCashFlows;
+      reportData = result.data as IStatementsOfCashFlow;
     }
   } catch (error) {
-    // console.log('Get statements of cash flows error');
+    // console.log('Get statements of cash Flow error');
   }
   return reportData;
 };
 
 // Info: (20230919 - Julian) Simplify table data
-export const getCashFlowsTable = (data: IStatementsOfCashFlows | undefined) => {
+export const getCashFlowTable = (data: IStatementsOfCashFlow | undefined) => {
   if (!data)
     return {
       cashDepositedByCustomers: 0,
@@ -44,8 +44,8 @@ export const getCashFlowsTable = (data: IStatementsOfCashFlows | undefined) => {
       cashCashEquivalentsAndRestrictedCashEndOfPeriod: 0,
       cryptocurrenciesDepositedByCustomers: 0,
       cryptocurrenciesWithdrawnByCustomers: 0,
-      cryptocurrencyInflows: 0,
-      cryptocurrencyOutflows: 0,
+      cryptocurrencyInFlow: 0,
+      cryptocurrencyOutFlow: 0,
       cryptocurrenciesReceivedFromCustomersAsTransactionFees: 0,
       cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading: 0,
       cryptocurrenciesPaidToCustomersForCFDTradingProfits: 0,
@@ -56,7 +56,7 @@ export const getCashFlowsTable = (data: IStatementsOfCashFlows | undefined) => {
       cryptocurrenciesEndOfPeriod: 0,
     };
 
-  // Info: (20230918 - Julian) Cash flows from operating activities
+  // Info: (20230918 - Julian) Cash Flow from operating activities
   const cashDepositedByCustomers =
     +data.operatingActivities.details.cashDepositedByCustomers.weightedAverageCost ?? 0;
   const cashWithdrawnByCustomers =
@@ -80,9 +80,9 @@ export const getCashFlowsTable = (data: IStatementsOfCashFlows | undefined) => {
     +data.operatingActivities.details.cashPaidToCustomersForCFDTradingProfits.weightedAverageCost ??
     0;
   const netCashProvidedByOperatingActivities = +data.operatingActivities.weightedAverageCost ?? 0;
-  // Info: (20230918 - Julian) Cash flows from investing activities
+  // Info: (20230918 - Julian) Cash Flow from investing activities
   const netCashProvidedByInvestingActivities = +data.investingActivities.weightedAverageCost;
-  // Info: (20230918 - Julian) Cash flows from financing activities
+  // Info: (20230918 - Julian) Cash Flow from financing activities
   const netCashProvidedByFinancingActivities = +data.financingActivities.weightedAverageCost ?? 0;
   const netIncreaseDecreaseInCryptocurrencies =
     +data.otherSupplementaryItems.details.relatedToNonCash.netIncreaseDecreaseInCryptocurrencies
@@ -101,11 +101,11 @@ export const getCashFlowsTable = (data: IStatementsOfCashFlows | undefined) => {
   const cryptocurrenciesWithdrawnByCustomers =
     +data.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesWithdrawnByCustomers.weightedAverageCost ?? 0;
-  const cryptocurrencyInflows =
-    +data.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInflows
+  const cryptocurrencyInFlow =
+    +data.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInFlow
       .weightedAverageCost ?? 0;
-  const cryptocurrencyOutflows =
-    +data.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyOutflows
+  const cryptocurrencyOutFlow =
+    +data.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyOutFlow
       .weightedAverageCost ?? 0;
   const cryptocurrenciesReceivedFromCustomersAsTransactionFees =
     +data.supplementalScheduleOfNonCashOperatingActivities.details
@@ -149,8 +149,8 @@ export const getCashFlowsTable = (data: IStatementsOfCashFlows | undefined) => {
     cashCashEquivalentsAndRestrictedCashEndOfPeriod,
     cryptocurrenciesDepositedByCustomers,
     cryptocurrenciesWithdrawnByCustomers,
-    cryptocurrencyInflows,
-    cryptocurrencyOutflows,
+    cryptocurrencyInFlow,
+    cryptocurrencyOutFlow,
     cryptocurrenciesReceivedFromCustomersAsTransactionFees,
     cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading,
     cryptocurrenciesPaidToCustomersForCFDTradingProfits,

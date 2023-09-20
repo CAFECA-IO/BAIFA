@@ -7,43 +7,43 @@ import ReportRiskPages from '../../components/report_risk_pages/report_risk_page
 import ReportTable from '../../components/report_table/report_table';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
 import {ITable} from '../../interfaces/report_table';
-import {IStatementsOfCashFlows} from '../../interfaces/statements_of_cash_flows';
+import {IStatementsOfCashFlow} from '../../interfaces/statements_of_cash_flow';
 import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {timestampToString, roundToDecimal, getReportTimeSpan} from '../../lib/common';
 import {
-  getStatementsOfCashFlows,
-  getCashFlowsTable,
+  getStatementsOfCashFlow,
+  getCashFlowTable,
   getActivitiesAnalysis,
-} from '../../lib/reports/cash_flows';
+} from '../../lib/reports/cash_flow';
 
-const StatementsOfCashFlows = () => {
-  const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOWS;
+const StatementsOfCashFlow = () => {
+  const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOW;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
 
   // Info: (20230913 - Julian) Get timespan of report
   const startDateStr = timestampToString(getReportTimeSpan().start);
   const endDateStr = timestampToString(getReportTimeSpan().end);
 
-  const [startCashFlowsData, setStartCashFlowsData] = useState<IStatementsOfCashFlows>();
-  const [endCashFlowsData, setEndCashFlowsData] = useState<IStatementsOfCashFlows>();
-  const [historicalCashFlowsData, setHistoricalCashFlowsData] = useState<IStatementsOfCashFlows>();
+  const [startCashFlowData, setStartCashFlowData] = useState<IStatementsOfCashFlow>();
+  const [endCashFlowData, setEndCashFlowData] = useState<IStatementsOfCashFlow>();
+  const [historicalCashFlowData, setHistoricalCashFlowData] = useState<IStatementsOfCashFlow>();
 
   useEffect(() => {
-    getStatementsOfCashFlows(startDateStr.date).then(data => setStartCashFlowsData(data));
-    getStatementsOfCashFlows(endDateStr.date).then(data => setEndCashFlowsData(data));
-    getStatementsOfCashFlows(endDateStr.dateOfLastYear).then(data =>
-      setHistoricalCashFlowsData(data)
+    getStatementsOfCashFlow(startDateStr.date).then(data => setStartCashFlowData(data));
+    getStatementsOfCashFlow(endDateStr.date).then(data => setEndCashFlowData(data));
+    getStatementsOfCashFlow(endDateStr.dateOfLastYear).then(data =>
+      setHistoricalCashFlowData(data)
     );
   }, []);
 
-  const endCashFlows = getCashFlowsTable(endCashFlowsData);
-  const startCashFlows = getCashFlowsTable(startCashFlowsData);
-  const historicalCashFlows = getCashFlowsTable(historicalCashFlowsData);
+  const endCashFlow = getCashFlowTable(endCashFlowData);
+  const startCashFlow = getCashFlowTable(startCashFlowData);
+  const historicalCashFlow = getCashFlowTable(historicalCashFlowData);
 
-  const cash_flows_p3_1: ITable = {
+  const cash_flow_p3_1: ITable = {
     subThead: [
-      'Statements of Cash Flows - USD ($)',
+      'Statements of Cash Flow - USD ($)',
       `30 Days Ended ${endDateStr.monthAndDay},`,
       '*-*',
     ],
@@ -51,121 +51,118 @@ const StatementsOfCashFlows = () => {
     tbody: [
       {
         rowType: RowType.title,
-        rowData: ['Cash flows from operating activities', '*-*', '*-*'],
+        rowData: ['Cash flow from operating activities', '*-*', '*-*'],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Cash deposited by customers',
-          `$ ${roundToDecimal(endCashFlows.cashDepositedByCustomers, 2)}`,
-          `$ ${roundToDecimal(startCashFlows.cashDepositedByCustomers, 2)}`,
+          `$ ${roundToDecimal(endCashFlow.cashDepositedByCustomers, 2)}`,
+          `$ ${roundToDecimal(startCashFlow.cashDepositedByCustomers, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Cash withdrawn by customers',
-          `${roundToDecimal(endCashFlows.cashWithdrawnByCustomers, 2)}`,
-          `${roundToDecimal(startCashFlows.cashWithdrawnByCustomers, 2)}`,
+          `${roundToDecimal(endCashFlow.cashWithdrawnByCustomers, 2)}`,
+          `${roundToDecimal(startCashFlow.cashWithdrawnByCustomers, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Purchase of cryptocurrencies',
-          `${roundToDecimal(endCashFlows.purchaseOfCryptocurrencies, 2)}`,
-          `${roundToDecimal(startCashFlows.purchaseOfCryptocurrencies, 2)}`,
+          `${roundToDecimal(endCashFlow.purchaseOfCryptocurrencies, 2)}`,
+          `${roundToDecimal(startCashFlow.purchaseOfCryptocurrencies, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Disposal of cryptocurrencies',
-          `${roundToDecimal(endCashFlows.disposalOfCryptocurrencies, 2)}`,
-          `${roundToDecimal(startCashFlows.disposalOfCryptocurrencies, 2)}`,
+          `${roundToDecimal(endCashFlow.disposalOfCryptocurrencies, 2)}`,
+          `${roundToDecimal(startCashFlow.disposalOfCryptocurrencies, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Cash received from customers as transaction fee',
-          `${roundToDecimal(endCashFlows.cashReceivedFromCustomersAsTransactionFee, 2)}`,
-          `${roundToDecimal(startCashFlows.cashReceivedFromCustomersAsTransactionFee, 2)}`,
+          `${roundToDecimal(endCashFlow.cashReceivedFromCustomersAsTransactionFee, 2)}`,
+          `${roundToDecimal(startCashFlow.cashReceivedFromCustomersAsTransactionFee, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Cash received from customers for liquidation in CFD trading',
-          `${roundToDecimal(endCashFlows.cashReceivedFromCustomersForLiquidationInCFDTrading, 2)}`,
-          `${roundToDecimal(
-            startCashFlows.cashReceivedFromCustomersForLiquidationInCFDTrading,
-            2
-          )}`,
+          `${roundToDecimal(endCashFlow.cashReceivedFromCustomersForLiquidationInCFDTrading, 2)}`,
+          `${roundToDecimal(startCashFlow.cashReceivedFromCustomersForLiquidationInCFDTrading, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Cash paid to customers as rebates for transaction fees',
-          `${roundToDecimal(endCashFlows.cashPaidToCustomersAsRebatesForTransactionFees, 2)}`,
-          `${roundToDecimal(startCashFlows.cashPaidToCustomersAsRebatesForTransactionFees, 2)}`,
+          `${roundToDecimal(endCashFlow.cashPaidToCustomersAsRebatesForTransactionFees, 2)}`,
+          `${roundToDecimal(startCashFlow.cashPaidToCustomersAsRebatesForTransactionFees, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Cash paid to suppliers for expenses',
-          `${roundToDecimal(endCashFlows.cashPaidToSuppliersForExpenses, 2)}`,
-          `${roundToDecimal(startCashFlows.cashPaidToSuppliersForExpenses, 2)}`,
+          `${roundToDecimal(endCashFlow.cashPaidToSuppliersForExpenses, 2)}`,
+          `${roundToDecimal(startCashFlow.cashPaidToSuppliersForExpenses, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Cash paid to customers for CFD trading profits',
-          `${roundToDecimal(endCashFlows.cashPaidToCustomersForCFDTradingProfits, 2)}`,
-          `${roundToDecimal(startCashFlows.cashPaidToCustomersForCFDTradingProfits, 2)}`,
+          `${roundToDecimal(endCashFlow.cashPaidToCustomersForCFDTradingProfits, 2)}`,
+          `${roundToDecimal(startCashFlow.cashPaidToCustomersForCFDTradingProfits, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Net cash provided by operating activities',
-          `${roundToDecimal(endCashFlows.netCashProvidedByOperatingActivities, 2)}`,
-          `${roundToDecimal(startCashFlows.netCashProvidedByOperatingActivities, 2)}`,
+          `${roundToDecimal(endCashFlow.netCashProvidedByOperatingActivities, 2)}`,
+          `${roundToDecimal(startCashFlow.netCashProvidedByOperatingActivities, 2)}`,
         ],
       },
       {
         rowType: RowType.title,
-        rowData: ['Cash flows from investing activities', '*-*', '*-*'],
+        rowData: ['Cash flow from investing activities', '*-*', '*-*'],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Net cash provided by investing activities',
-          `${roundToDecimal(endCashFlows.netCashProvidedByInvestingActivities, 2)}`,
-          `${roundToDecimal(startCashFlows.netCashProvidedByInvestingActivities, 2)}`,
+          `${roundToDecimal(endCashFlow.netCashProvidedByInvestingActivities, 2)}`,
+          `${roundToDecimal(startCashFlow.netCashProvidedByInvestingActivities, 2)}`,
         ],
       },
       {
         rowType: RowType.title,
-        rowData: ['Cash flows from financing activities', '*-*', '*-*'],
+        rowData: ['Cash flow from financing activities', '*-*', '*-*'],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Net cash used in financing activities',
-          `${roundToDecimal(endCashFlows.netCashProvidedByFinancingActivities, 2)}`,
-          `${roundToDecimal(startCashFlows.netCashProvidedByFinancingActivities, 2)}`,
+          `${roundToDecimal(endCashFlow.netCashProvidedByFinancingActivities, 2)}`,
+          `${roundToDecimal(startCashFlow.netCashProvidedByFinancingActivities, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Net increase in cash, cash equivalents, and restricted cash',
-          `${roundToDecimal(endCashFlows.netIncreaseDecreaseInCryptocurrencies ?? 0, 2)}`,
-          `${roundToDecimal(startCashFlows.netIncreaseDecreaseInCryptocurrencies ?? 0, 2)}`,
+          `${roundToDecimal(endCashFlow.netIncreaseDecreaseInCryptocurrencies ?? 0, 2)}`,
+          `${roundToDecimal(startCashFlow.netIncreaseDecreaseInCryptocurrencies ?? 0, 2)}`,
         ],
       },
       {
@@ -173,11 +170,11 @@ const StatementsOfCashFlows = () => {
         rowData: [
           'Cash, cash equivalents, and restricted cash, beginning of period',
           `${roundToDecimal(
-            endCashFlows.cashCashEquivalentsAndRestrictedCashBeginningOfPeriod ?? 0,
+            endCashFlow.cashCashEquivalentsAndRestrictedCashBeginningOfPeriod ?? 0,
             2
           )}`,
           `${roundToDecimal(
-            startCashFlows.cashCashEquivalentsAndRestrictedCashBeginningOfPeriod ?? 0,
+            startCashFlow.cashCashEquivalentsAndRestrictedCashBeginningOfPeriod ?? 0,
             2
           )}`,
         ],
@@ -186,14 +183,14 @@ const StatementsOfCashFlows = () => {
         rowType: RowType.foot,
         rowData: [
           'Cash, cash equivalents, and restricted cash, end of period',
-          `$ ${roundToDecimal(endCashFlows.cashCashEquivalentsAndRestrictedCashEndOfPeriod, 2)}`,
-          `$ ${roundToDecimal(startCashFlows.cashCashEquivalentsAndRestrictedCashEndOfPeriod, 2)}`,
+          `$ ${roundToDecimal(endCashFlow.cashCashEquivalentsAndRestrictedCashEndOfPeriod, 2)}`,
+          `$ ${roundToDecimal(startCashFlow.cashCashEquivalentsAndRestrictedCashEndOfPeriod, 2)}`,
         ],
       },
     ],
   };
 
-  const cash_flows_p4_1: ITable = {
+  const cash_flow_p4_1: ITable = {
     tbody: [
       {
         rowType: RowType.title,
@@ -203,32 +200,32 @@ const StatementsOfCashFlows = () => {
         rowType: RowType.bookkeeping,
         rowData: [
           'Cryptocurrencies deposited by customers',
-          `$ ${roundToDecimal(endCashFlows.cryptocurrenciesDepositedByCustomers, 2)}`,
-          `$ ${roundToDecimal(startCashFlows.cryptocurrenciesDepositedByCustomers, 2)}`,
+          `$ ${roundToDecimal(endCashFlow.cryptocurrenciesDepositedByCustomers, 2)}`,
+          `$ ${roundToDecimal(startCashFlow.cryptocurrenciesDepositedByCustomers, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Cryptocurrencies withdrawn by customers',
-          `(${roundToDecimal(endCashFlows.cryptocurrenciesWithdrawnByCustomers, 2)})`,
-          `(${roundToDecimal(startCashFlows.cryptocurrenciesWithdrawnByCustomers, 2)})`,
+          `(${roundToDecimal(endCashFlow.cryptocurrenciesWithdrawnByCustomers, 2)})`,
+          `(${roundToDecimal(startCashFlow.cryptocurrenciesWithdrawnByCustomers, 2)})`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cryptocurrency inflows',
-          `${roundToDecimal(endCashFlows.cryptocurrencyInflows, 2)}`,
-          `${roundToDecimal(startCashFlows.cryptocurrencyInflows, 2)}`,
+          'Cryptocurrency inflow',
+          `${roundToDecimal(endCashFlow.cryptocurrencyInFlow, 2)}`,
+          `${roundToDecimal(startCashFlow.cryptocurrencyInFlow, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cryptocurrency outflows',
-          `${roundToDecimal(endCashFlows.cryptocurrencyOutflows, 2)}`,
-          `${roundToDecimal(startCashFlows.cryptocurrencyOutflows, 2)}`,
+          'Cryptocurrency outflow',
+          `${roundToDecimal(endCashFlow.cryptocurrencyOutFlow, 2)}`,
+          `${roundToDecimal(startCashFlow.cryptocurrencyOutFlow, 2)}`,
         ],
       },
       {
@@ -236,11 +233,11 @@ const StatementsOfCashFlows = () => {
         rowData: [
           'Cryptocurrencies received from customers as transaction fees',
           `${roundToDecimal(
-            endCashFlows.cryptocurrenciesReceivedFromCustomersAsTransactionFees,
+            endCashFlow.cryptocurrenciesReceivedFromCustomersAsTransactionFees,
             2
           )}`,
           `${roundToDecimal(
-            startCashFlows.cryptocurrenciesReceivedFromCustomersAsTransactionFees,
+            startCashFlow.cryptocurrenciesReceivedFromCustomersAsTransactionFees,
             2
           )}`,
         ],
@@ -250,11 +247,11 @@ const StatementsOfCashFlows = () => {
         rowData: [
           'Cryptocurrencies received from customers for liquidation in CFD trading',
           `${roundToDecimal(
-            endCashFlows.cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading,
+            endCashFlow.cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading,
             2
           )}`,
           `${roundToDecimal(
-            startCashFlows.cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading,
+            startCashFlow.cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading,
             2
           )}`,
         ],
@@ -263,57 +260,54 @@ const StatementsOfCashFlows = () => {
         rowType: RowType.bookkeeping,
         rowData: [
           'Cryptocurrencies paid to customers for CFD trading profits',
-          `${roundToDecimal(endCashFlows.cryptocurrenciesPaidToCustomersForCFDTradingProfits, 2)}`,
-          `${roundToDecimal(
-            startCashFlows.cryptocurrenciesPaidToCustomersForCFDTradingProfits,
-            2
-          )}`,
+          `${roundToDecimal(endCashFlow.cryptocurrenciesPaidToCustomersForCFDTradingProfits, 2)}`,
+          `${roundToDecimal(startCashFlow.cryptocurrenciesPaidToCustomersForCFDTradingProfits, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Purchase of cryptocurrencies with non-cash consideration',
-          `${roundToDecimal(endCashFlows.purchaseOfCryptocurrenciesWithNonCashConsideration, 2)}`,
-          `${roundToDecimal(startCashFlows.purchaseOfCryptocurrenciesWithNonCashConsideration, 2)}`,
+          `${roundToDecimal(endCashFlow.purchaseOfCryptocurrenciesWithNonCashConsideration, 2)}`,
+          `${roundToDecimal(startCashFlow.purchaseOfCryptocurrenciesWithNonCashConsideration, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Disposal of cryptocurrencies for non-cash consideration',
-          `${roundToDecimal(endCashFlows.disposalOfCryptocurrenciesForNonCashConsideration, 2)}`,
-          `${roundToDecimal(startCashFlows.disposalOfCryptocurrenciesForNonCashConsideration, 2)}`,
+          `${roundToDecimal(endCashFlow.disposalOfCryptocurrenciesForNonCashConsideration, 2)}`,
+          `${roundToDecimal(startCashFlow.disposalOfCryptocurrenciesForNonCashConsideration, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Net increase in non-cash operating activities',
-          `${roundToDecimal(endCashFlows.netIncreaseInNonCashOperatingActivities, 2)}`,
-          `${roundToDecimal(startCashFlows.netIncreaseInNonCashOperatingActivities, 2)}`,
+          `${roundToDecimal(endCashFlow.netIncreaseInNonCashOperatingActivities, 2)}`,
+          `${roundToDecimal(startCashFlow.netIncreaseInNonCashOperatingActivities, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Cryptocurrencies, beginning of period',
-          `${roundToDecimal(endCashFlows.cryptocurrenciesBeginningOfPeriod, 2)}`,
-          `${roundToDecimal(startCashFlows.cryptocurrenciesBeginningOfPeriod, 2)}`,
+          `${roundToDecimal(endCashFlow.cryptocurrenciesBeginningOfPeriod, 2)}`,
+          `${roundToDecimal(startCashFlow.cryptocurrenciesBeginningOfPeriod, 2)}`,
         ],
       },
       {
         rowType: RowType.foot,
         rowData: [
           'Cryptocurrencies, end of period',
-          `$ ${roundToDecimal(endCashFlows.cryptocurrenciesEndOfPeriod, 2)}`,
-          `$ ${roundToDecimal(startCashFlows.cryptocurrenciesEndOfPeriod, 2)}`,
+          `$ ${roundToDecimal(endCashFlow.cryptocurrenciesEndOfPeriod, 2)}`,
+          `$ ${roundToDecimal(startCashFlow.cryptocurrenciesEndOfPeriod, 2)}`,
         ],
       },
     ],
   };
 
-  const cash_flows_p8_1: ITable = {
+  const cash_flow_p8_1: ITable = {
     subThead: ['', `30 Days Ended ${endDateStr.monthAndDay},`, '*-*'],
     thead: ['*|*', endDateStr.year, endDateStr.lastYear],
     tbody: [
@@ -325,55 +319,55 @@ const StatementsOfCashFlows = () => {
         rowType: RowType.bookkeeping,
         rowData: [
           'Net cash provided by operating activities',
-          `$ ${roundToDecimal(endCashFlows.netCashProvidedByOperatingActivities, 2)}`,
-          `$ ${roundToDecimal(historicalCashFlows.netCashProvidedByOperatingActivities, 2)}`,
+          `$ ${roundToDecimal(endCashFlow.netCashProvidedByOperatingActivities, 2)}`,
+          `$ ${roundToDecimal(historicalCashFlow.netCashProvidedByOperatingActivities, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Net cash used in investing activities',
-          `${roundToDecimal(endCashFlows.netCashProvidedByInvestingActivities, 2)}`,
-          `${roundToDecimal(historicalCashFlows.netCashProvidedByInvestingActivities, 2)}`,
+          `${roundToDecimal(endCashFlow.netCashProvidedByInvestingActivities, 2)}`,
+          `${roundToDecimal(historicalCashFlow.netCashProvidedByInvestingActivities, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Net cash used in financing activities',
-          `${roundToDecimal(endCashFlows.netCashProvidedByFinancingActivities, 2)}`,
-          `${roundToDecimal(historicalCashFlows.netCashProvidedByFinancingActivities, 2)}`,
+          `${roundToDecimal(endCashFlow.netCashProvidedByFinancingActivities, 2)}`,
+          `${roundToDecimal(historicalCashFlow.netCashProvidedByFinancingActivities, 2)}`,
         ],
       },
       {
         rowType: RowType.foot,
         rowData: [
           'Net increase in cash, cash equivalents, and restricted cash',
-          `$ ${roundToDecimal(endCashFlows.netIncreaseDecreaseInCryptocurrencies ?? 0, 2)}`,
-          `$ ${roundToDecimal(historicalCashFlows.netIncreaseDecreaseInCryptocurrencies ?? 0, 2)}`,
+          `$ ${roundToDecimal(endCashFlow.netIncreaseDecreaseInCryptocurrencies ?? 0, 2)}`,
+          `$ ${roundToDecimal(historicalCashFlow.netIncreaseDecreaseInCryptocurrencies ?? 0, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Net increase in non-cash operating activities',
-          `$ ${roundToDecimal(endCashFlows.netIncreaseInNonCashOperatingActivities, 2)}`,
-          `$ ${roundToDecimal(historicalCashFlows.netIncreaseInNonCashOperatingActivities, 2)}`,
+          `$ ${roundToDecimal(endCashFlow.netIncreaseInNonCashOperatingActivities, 2)}`,
+          `$ ${roundToDecimal(historicalCashFlow.netIncreaseInNonCashOperatingActivities, 2)}`,
         ],
       },
     ],
   };
 
   const endDepositedAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesDepositedByCustomers
   );
   const startDepositedAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+    startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesDepositedByCustomers
   );
 
-  const cash_flows_p9_1: ITable = {
+  const cash_flow_p9_1: ITable = {
     thead: [
       'Cryptocurrencies deposited by customers',
       endDateStr.dateFormatForForm,
@@ -448,15 +442,15 @@ const StatementsOfCashFlows = () => {
   };
 
   const endWithdrawnAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesWithdrawnByCustomers
   );
   const startWithdrawnAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+    startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesWithdrawnByCustomers
   );
 
-  const cash_flows_p9_2: ITable = {
+  const cash_flow_p9_2: ITable = {
     thead: [
       'Cryptocurrencies withdrawn by customers',
       endDateStr.dateFormatForForm,
@@ -530,17 +524,16 @@ const StatementsOfCashFlows = () => {
     ],
   };
 
-  const endInflowsAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInflows
+  const endInflowAnalysis = getActivitiesAnalysis(
+    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInFlow
   );
-  const startInflowsAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
-      .cryptocurrencyInflows
+  const startInflowAnalysis = getActivitiesAnalysis(
+    startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInFlow
   );
 
-  const cash_flows_p10_1: ITable = {
+  const cash_flow_p10_1: ITable = {
     thead: [
-      'Cryptocurrency inflows',
+      'Cryptocurrency inflow',
       endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
@@ -565,65 +558,64 @@ const StatementsOfCashFlows = () => {
         rowType: RowType.bookkeeping,
         rowData: [
           'Bitcoin',
-          `${endInflowsAnalysis.btcAmount}`,
-          `${endInflowsAnalysis.btcCost}`,
-          `${endInflowsAnalysis.btcPercentage}`,
-          `${startInflowsAnalysis.btcAmount}`,
-          `${startInflowsAnalysis.btcCost}`,
-          `${startInflowsAnalysis.btcPercentage}`,
+          `${endInflowAnalysis.btcAmount}`,
+          `${endInflowAnalysis.btcCost}`,
+          `${endInflowAnalysis.btcPercentage}`,
+          `${startInflowAnalysis.btcAmount}`,
+          `${startInflowAnalysis.btcCost}`,
+          `${startInflowAnalysis.btcPercentage}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Ethereum',
-          `${endInflowsAnalysis.ethAmount}`,
-          `${endInflowsAnalysis.ethCost}`,
-          `${endInflowsAnalysis.ethPercentage}`,
-          `${startInflowsAnalysis.ethAmount}`,
-          `${startInflowsAnalysis.ethCost}`,
-          `${startInflowsAnalysis.ethPercentage}`,
+          `${endInflowAnalysis.ethAmount}`,
+          `${endInflowAnalysis.ethCost}`,
+          `${endInflowAnalysis.ethPercentage}`,
+          `${startInflowAnalysis.ethAmount}`,
+          `${startInflowAnalysis.ethCost}`,
+          `${startInflowAnalysis.ethPercentage}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'USDT',
-          `${endInflowsAnalysis.usdtAmount}`,
-          `${endInflowsAnalysis.usdtCost}`,
-          `${endInflowsAnalysis.usdtPercentage}`,
-          `${startInflowsAnalysis.usdtAmount}`,
-          `${startInflowsAnalysis.usdtCost}`,
-          `${startInflowsAnalysis.usdtPercentage}`,
+          `${endInflowAnalysis.usdtAmount}`,
+          `${endInflowAnalysis.usdtCost}`,
+          `${endInflowAnalysis.usdtPercentage}`,
+          `${startInflowAnalysis.usdtAmount}`,
+          `${startInflowAnalysis.usdtCost}`,
+          `${startInflowAnalysis.usdtPercentage}`,
         ],
       },
       {
         rowType: RowType.foot,
         rowData: [
-          'Total cryptocurrency inflows',
-          `${endInflowsAnalysis.totalAmount}`,
-          `${endInflowsAnalysis.totalCost}`,
-          `${endInflowsAnalysis.totalPercentage}`,
-          `${startInflowsAnalysis.totalAmount}`,
-          `${startInflowsAnalysis.totalCost}`,
-          `${startInflowsAnalysis.totalPercentage}`,
+          'Total cryptocurrency inflow',
+          `${endInflowAnalysis.totalAmount}`,
+          `${endInflowAnalysis.totalCost}`,
+          `${endInflowAnalysis.totalPercentage}`,
+          `${startInflowAnalysis.totalAmount}`,
+          `${startInflowAnalysis.totalCost}`,
+          `${startInflowAnalysis.totalPercentage}`,
         ],
       },
     ],
   };
 
-  const endOutflowsAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
-      .cryptocurrencyOutflows
+  const endOutflowAnalysis = getActivitiesAnalysis(
+    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyOutFlow
   );
-  const startOutflowsAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
-      .cryptocurrencyOutflows
+  const startOutflowAnalysis = getActivitiesAnalysis(
+    startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrencyOutFlow
   );
 
-  const cash_flows_p10_2: ITable = {
+  const cash_flow_p10_2: ITable = {
     thead: [
-      'Cryptocurrency outflows',
+      'Cryptocurrency outflow',
       endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
@@ -648,63 +640,63 @@ const StatementsOfCashFlows = () => {
         rowType: RowType.bookkeeping,
         rowData: [
           'Bitcoin',
-          `${endOutflowsAnalysis.btcAmount}`,
-          `${endOutflowsAnalysis.btcCost}`,
-          `${endOutflowsAnalysis.btcPercentage}`,
-          `${startOutflowsAnalysis.btcAmount}`,
-          `${startOutflowsAnalysis.btcCost}`,
-          `${startOutflowsAnalysis.btcPercentage}`,
+          `${endOutflowAnalysis.btcAmount}`,
+          `${endOutflowAnalysis.btcCost}`,
+          `${endOutflowAnalysis.btcPercentage}`,
+          `${startOutflowAnalysis.btcAmount}`,
+          `${startOutflowAnalysis.btcCost}`,
+          `${startOutflowAnalysis.btcPercentage}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'Ethereum',
-          `${endOutflowsAnalysis.ethAmount}`,
-          `${endOutflowsAnalysis.ethCost}`,
-          `${endOutflowsAnalysis.ethPercentage}`,
-          `${startOutflowsAnalysis.ethAmount}`,
-          `${startOutflowsAnalysis.ethCost}`,
-          `${startOutflowsAnalysis.ethPercentage}`,
+          `${endOutflowAnalysis.ethAmount}`,
+          `${endOutflowAnalysis.ethCost}`,
+          `${endOutflowAnalysis.ethPercentage}`,
+          `${startOutflowAnalysis.ethAmount}`,
+          `${startOutflowAnalysis.ethCost}`,
+          `${startOutflowAnalysis.ethPercentage}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'USDT',
-          `${endOutflowsAnalysis.usdtAmount}`,
-          `${endOutflowsAnalysis.usdtCost}`,
-          `${endOutflowsAnalysis.usdtPercentage}`,
-          `${startOutflowsAnalysis.usdtAmount}`,
-          `${startOutflowsAnalysis.usdtCost}`,
-          `${startOutflowsAnalysis.usdtPercentage}`,
+          `${endOutflowAnalysis.usdtAmount}`,
+          `${endOutflowAnalysis.usdtCost}`,
+          `${endOutflowAnalysis.usdtPercentage}`,
+          `${startOutflowAnalysis.usdtAmount}`,
+          `${startOutflowAnalysis.usdtCost}`,
+          `${startOutflowAnalysis.usdtPercentage}`,
         ],
       },
       {
         rowType: RowType.foot,
         rowData: [
-          'Total cryptocurrency outflows',
-          `${endOutflowsAnalysis.totalAmount}`,
-          `${endOutflowsAnalysis.totalCost}`,
-          `${endOutflowsAnalysis.totalPercentage}`,
-          `${startOutflowsAnalysis.totalAmount}`,
-          `${startOutflowsAnalysis.totalCost}`,
-          `${startOutflowsAnalysis.totalPercentage}`,
+          'Total cryptocurrency outflow',
+          `${endOutflowAnalysis.totalAmount}`,
+          `${endOutflowAnalysis.totalCost}`,
+          `${endOutflowAnalysis.totalPercentage}`,
+          `${startOutflowAnalysis.totalAmount}`,
+          `${startOutflowAnalysis.totalCost}`,
+          `${startOutflowAnalysis.totalPercentage}`,
         ],
       },
     ],
   };
 
   const endFeesAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersAsTransactionFees
   );
   const startFeesAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+    startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersAsTransactionFees
   );
 
-  const cash_flows_p11_1: ITable = {
+  const cash_flow_p11_1: ITable = {
     thead: [
       'Cryptocurrencies received from customers as transaction fees',
       endDateStr.dateFormatForForm,
@@ -779,15 +771,15 @@ const StatementsOfCashFlows = () => {
   };
 
   const endLiquidationAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading
   );
   const startLiquidationAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+    startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading
   );
 
-  const cash_flows_p12_1: ITable = {
+  const cash_flow_p12_1: ITable = {
     thead: [
       'Cryptocurrencies received from customers for liquidation in CFD trading',
       endDateStr.dateFormatForForm,
@@ -862,15 +854,15 @@ const StatementsOfCashFlows = () => {
   };
 
   const endProfitsAnalysis = getActivitiesAnalysis(
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesPaidToCustomersForCFDTradingProfits
   );
   const startProfitsAnalysis = getActivitiesAnalysis(
-    startCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
+    startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesPaidToCustomersForCFDTradingProfits
   );
 
-  const cash_flows_p13_1: ITable = {
+  const cash_flow_p13_1: ITable = {
     thead: [
       'Cryptocurrencies paid to customers for CFD trading profits',
       endDateStr.dateFormatForForm,
@@ -944,12 +936,20 @@ const StatementsOfCashFlows = () => {
     ],
   };
 
-  const data =
-    endCashFlowsData?.supplementalScheduleOfNonCashOperatingActivities.details
-      .purchaseOfCryptocurrenciesWithNonCashConsideration.details;
+  const getNonCashData = (data: IStatementsOfCashFlow | undefined) => {
+    const purchaseData =
+      endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+        .purchaseOfCryptocurrenciesWithNonCashConsideration.details;
+    const purchaseBTCData = purchaseData?.filter(item => item.to.name === 'BTC');
+
+    return {
+      //purchase:,
+      //disposal:
+    };
+  };
 
   // --------------------------------------------------------- 未完成
-  const cash_flows_p14_1: ITable = {
+  const cash_flow_p14_1: ITable = {
     thead: [
       'Purchase of cryptocurrencies with non-cash consideration',
       endDateStr.dateFormatForForm,
@@ -999,7 +999,7 @@ const StatementsOfCashFlows = () => {
     ],
   };
   // --------------------------------------------------------- 未完成
-  const cash_flows_p15_1: ITable = {
+  const cash_flow_p15_1: ITable = {
     thead: [
       'Disposal of cryptocurrencies for non-cash consideration',
       endDateStr.dateFormatForForm,
@@ -1075,7 +1075,7 @@ const StatementsOfCashFlows = () => {
         <ReportPageBody reportTitle={reportTitle} currentPage={3}>
           <div className="flex flex-col gap-y-12px py-10px leading-5">
             <h1 className="text-32px font-bold text-violet">{reportTitle}</h1>
-            <ReportTable tableData={cash_flows_p3_1} />
+            <ReportTable tableData={cash_flow_p3_1} />
           </div>
         </ReportPageBody>
         <hr />
@@ -1083,7 +1083,7 @@ const StatementsOfCashFlows = () => {
         {/* Info: (20230807 - Julian) Page 4 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={4}>
           <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
-            <ReportTable tableData={cash_flows_p4_1} />
+            <ReportTable tableData={cash_flow_p4_1} />
             <p>
               For a crypto exchange, the distinction between cash and non-cash activities by
               cryptocurrencies in its cash flow statement isn't just a matter of accounting
@@ -1185,7 +1185,7 @@ const StatementsOfCashFlows = () => {
         {/* Info: (20230807 - Julian) Page 6 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={6}>
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
-            <h1 className="text-lg font-bold text-violet">Note To Statements of Cash Flows</h1>
+            <h1 className="text-lg font-bold text-violet">Note To Statements of Cash Flow</h1>
             {/* Info: (20230906 - Julian) Note 1 */}
             <h2 className="font-bold uppercase"> 1. Nature of Operations</h2>
             <p>
@@ -1282,7 +1282,7 @@ const StatementsOfCashFlows = () => {
         <ReportPageBody reportTitle={reportTitle} currentPage={8}>
           <div className="flex flex-col gap-y-15px py-16px text-xs leading-5">
             {/* Info: (20230906 - Julian) Note 4 */}
-            <h2 className="font-bold uppercase">4. Cash Flows</h2>
+            <h2 className="font-bold uppercase">4. Cash Flow</h2>
             <p>
               Below is a comprehensive overview of our cash flow activities for the 30-day periods
               ending
@@ -1297,7 +1297,7 @@ const StatementsOfCashFlows = () => {
               utilized in investing and financing activities, as well as the net increase in both
               cash and non-cash operating activities.
             </p>
-            <ReportTable tableData={cash_flows_p8_1} />
+            <ReportTable tableData={cash_flow_p8_1} />
             {/* Info: (20230906 - Julian) Note 5 */}
             <h2 className="font-bold uppercase"> 5. ACTIVITIES ANALYSIS</h2>
             <p>
@@ -1326,7 +1326,7 @@ const StatementsOfCashFlows = () => {
         {/* Info: (20230807 - Julian) Page 9 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={9}>
           <div className="flex flex-col gap-y-10px py-16px text-xs leading-5">
-            <ReportTable tableData={cash_flows_p9_1} />
+            <ReportTable tableData={cash_flow_p9_1} />
             <p className="font-bold">Cryptocurrencies withdrawn by customers</p>
             <p>
               This table illustrates the cryptocurrencies that have been withdrawn by our customers.
@@ -1337,7 +1337,7 @@ const StatementsOfCashFlows = () => {
               highlighting the amount, cost value, and percentage of total withdrawals for each
               cryptocurrency.
             </p>
-            <ReportTable tableData={cash_flows_p9_2} />
+            <ReportTable tableData={cash_flow_p9_2} />
           </div>
         </ReportPageBody>
         <hr />
@@ -1345,7 +1345,7 @@ const StatementsOfCashFlows = () => {
         {/* Info: (20230807 - Julian) Page 10 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={10}>
           <div className="flex flex-col gap-y-10px py-16px text-xs leading-5">
-            <p className="font-bold">Cryptocurrency inflows</p>
+            <p className="font-bold">Cryptocurrency inflow</p>
             <p>
               Here, we present the increases of cryptocurrencies for the specified dates. This table
               compares the inflow data from
@@ -1353,8 +1353,8 @@ const StatementsOfCashFlows = () => {
               of
               <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
-            <ReportTable tableData={cash_flows_p10_1} />
-            <p className="font-bold">Cryptocurrency outflows</p>
+            <ReportTable tableData={cash_flow_p10_1} />
+            <p className="font-bold">Cryptocurrency outflow</p>
             <p>
               This table depicts the decreases of cryptocurrencies. It provides a comparison between
               the data from
@@ -1364,7 +1364,7 @@ const StatementsOfCashFlows = () => {
               </span>
               .
             </p>
-            <ReportTable tableData={cash_flows_p10_2} />
+            <ReportTable tableData={cash_flow_p10_2} />
           </div>
         </ReportPageBody>
         <hr />
@@ -1382,7 +1382,7 @@ const StatementsOfCashFlows = () => {
               compared with that of
               <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
-            <ReportTable tableData={cash_flows_p11_1} />
+            <ReportTable tableData={cash_flow_p11_1} />
           </div>
         </ReportPageBody>
         <hr />
@@ -1400,7 +1400,7 @@ const StatementsOfCashFlows = () => {
               those from
               <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
-            <ReportTable tableData={cash_flows_p12_1} />
+            <ReportTable tableData={cash_flow_p12_1} />
           </div>
         </ReportPageBody>
         <hr />
@@ -1416,7 +1416,7 @@ const StatementsOfCashFlows = () => {
               juxtaposed with that of
               <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
-            <ReportTable tableData={cash_flows_p13_1} />
+            <ReportTable tableData={cash_flow_p13_1} />
           </div>
         </ReportPageBody>
         <hr />
@@ -1432,7 +1432,7 @@ const StatementsOfCashFlows = () => {
               of
               <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
-            <ReportTable tableData={cash_flows_p14_1} />
+            <ReportTable tableData={cash_flow_p14_1} />
           </div>
         </ReportPageBody>
         <hr />
@@ -1448,7 +1448,7 @@ const StatementsOfCashFlows = () => {
               those from
               <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
             </p>
-            <ReportTable tableData={cash_flows_p15_1} />
+            <ReportTable tableData={cash_flow_p15_1} />
           </div>
         </ReportPageBody>
         <hr />
@@ -1492,7 +1492,7 @@ const StatementsOfCashFlows = () => {
             <p>
               A downturn in the market price of Bitcoin, Ethereum, and other cryptocurrencies could
               negatively affect our earnings, the carrying value of our cryptocurrencies, and our
-              projected future cash flows. It could also pose a challenge to our liquidity and
+              projected future cash flow. It could also pose a challenge to our liquidity and
               capability to fulfill ongoing obligations.
             </p>
             <p>
@@ -1507,4 +1507,4 @@ const StatementsOfCashFlows = () => {
   );
 };
 
-export default StatementsOfCashFlows;
+export default StatementsOfCashFlow;

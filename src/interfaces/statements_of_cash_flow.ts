@@ -1,6 +1,7 @@
 import {IStatementCurrencyDetail} from './currency_detail';
+import {ICurrencyType} from './currency_detail';
 
-interface ICashFlowsAccountingDetail {
+interface ICashFlowAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
@@ -30,15 +31,15 @@ interface IDisposalCryptoItem {
   totalAmountFairValue: number;
   details: {
     from: {
-      currencyType: 'FIAT';
-      name: 'USD';
+      currencyType: ICurrencyType;
+      name: string;
       amount: number;
       weightedAverageCost: number;
       fairValue: number;
     };
     to: {
-      currencyType: 'CRYPTOCURRENCY';
-      name: 'BTC';
+      currencyType: ICurrencyType;
+      name: string;
       amount: number;
       weightedAverageCost: number;
       fairValue: number;
@@ -46,26 +47,26 @@ interface IDisposalCryptoItem {
   }[];
 }
 
-export interface IStatementsOfCashFlows {
+export interface IStatementsOfCashFlow {
   id: string;
   startDate: string;
   endDate: string;
   operatingActivities: {
     weightedAverageCost: number;
     details: {
-      cashDepositedByCustomers: ICashFlowsAccountingDetail;
-      cashWithdrawnByCustomers: ICashFlowsAccountingDetail;
+      cashDepositedByCustomers: ICashFlowAccountingDetail;
+      cashWithdrawnByCustomers: ICashFlowAccountingDetail;
       purchaseOfCryptocurrencies: IDisposalCryptoItem;
       disposalOfCryptocurrencies: IDisposalCryptoItem;
-      cashPaidToSuppliersForExpenses: ICashFlowsAccountingDetail;
-      cashReceivedFromCustomersAsTransactionFee: ICashFlowsAccountingDetail;
-      cashReceivedFromCustomersForLiquidationInCFDTrading: ICashFlowsAccountingDetail;
-      cashPaidToCustomersAsRebatesForTransactionFees: ICashFlowsAccountingDetail;
-      cashPaidToCustomersForCFDTradingProfits: ICashFlowsAccountingDetail;
-      insuranceFundForPerpetualContracts: ICashFlowsAccountingDetail;
-      cashPaidToCustomersForFundingRatesInPerpetualContract: ICashFlowsAccountingDetail;
-      cashPaidToCustomersForPerpetualContractProfits: ICashFlowsAccountingDetail;
-      cashReceivedFromCustomersForLiquidationInPerpetualContract: ICashFlowsAccountingDetail;
+      cashPaidToSuppliersForExpenses: ICashFlowAccountingDetail;
+      cashReceivedFromCustomersAsTransactionFee: ICashFlowAccountingDetail;
+      cashReceivedFromCustomersForLiquidationInCFDTrading: ICashFlowAccountingDetail;
+      cashPaidToCustomersAsRebatesForTransactionFees: ICashFlowAccountingDetail;
+      cashPaidToCustomersForCFDTradingProfits: ICashFlowAccountingDetail;
+      insuranceFundForPerpetualContracts: ICashFlowAccountingDetail;
+      cashPaidToCustomersForFundingRatesInPerpetualContract: ICashFlowAccountingDetail;
+      cashPaidToCustomersForPerpetualContractProfits: ICashFlowAccountingDetail;
+      cashReceivedFromCustomersForLiquidationInPerpetualContract: ICashFlowAccountingDetail;
     };
   };
   investingActivities: {
@@ -75,11 +76,11 @@ export interface IStatementsOfCashFlows {
   financingActivities: {
     weightedAverageCost: number;
     details: {
-      proceedsFromIssuanceOfCommonStock: ICashFlowsAccountingDetail;
-      longTermDebt: ICashFlowsAccountingDetail;
-      shortTermBorrowings: ICashFlowsAccountingDetail;
-      paymentsOfDividends: ICashFlowsAccountingDetail;
-      treasuryStock: ICashFlowsAccountingDetail;
+      proceedsFromIssuanceOfCommonStock: ICashFlowAccountingDetail;
+      longTermDebt: ICashFlowAccountingDetail;
+      shortTermBorrowings: ICashFlowAccountingDetail;
+      paymentsOfDividends: ICashFlowAccountingDetail;
+      treasuryStock: ICashFlowAccountingDetail;
     };
   };
   supplementalScheduleOfNonCashOperatingActivities: {
@@ -87,8 +88,8 @@ export interface IStatementsOfCashFlows {
     details: {
       cryptocurrenciesDepositedByCustomers: INonCashAccountingDetail;
       cryptocurrenciesWithdrawnByCustomers: INonCashAccountingDetail;
-      cryptocurrencyInflows: INonCashAccountingDetail;
-      cryptocurrencyOutflows: INonCashAccountingDetail;
+      cryptocurrencyInFlow: INonCashAccountingDetail;
+      cryptocurrencyOutFlow: INonCashAccountingDetail;
       purchaseOfCryptocurrenciesWithNonCashConsideration: IDisposalCryptoItem;
       disposalOfCryptocurrenciesForNonCashConsideration: IDisposalCryptoItem;
       cryptocurrenciesReceivedFromCustomersAsTransactionFees: INonCashAccountingDetail;
@@ -107,10 +108,10 @@ export interface IStatementsOfCashFlows {
     weightedAverageCost: number;
     details: {
       relatedToCash: {
-        effectOfExchangeRatesOnCash: ICashFlowsAccountingDetail;
-        cashCashEquivalentsAndRestrictedCashBeginningOfPeriod: ICashFlowsAccountingDetail;
-        cashCashEquivalentsAndRestrictedCashEndOfPeriod: ICashFlowsAccountingDetail;
-        netIncreaseDecreaseInCashCashEquivalentsAndRestrictedCash: ICashFlowsAccountingDetail;
+        effectOfExchangeRatesOnCash: ICashFlowAccountingDetail;
+        cashCashEquivalentsAndRestrictedCashBeginningOfPeriod: ICashFlowAccountingDetail;
+        cashCashEquivalentsAndRestrictedCashEndOfPeriod: ICashFlowAccountingDetail;
+        netIncreaseDecreaseInCashCashEquivalentsAndRestrictedCash: ICashFlowAccountingDetail;
       };
       relatedToNonCash: {
         valuationAdjustmentForCryptocurrencies: INonCashAccountingDetail;
