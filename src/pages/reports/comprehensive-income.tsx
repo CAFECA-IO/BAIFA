@@ -6,11 +6,14 @@ import ReportPageBody from '../../components/report_page_body/report_page_body';
 import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
 import ReportTable from '../../components/report_table/report_table';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
-import {ITable} from '../../interfaces/report_table';
-import {IComprehensiveIncomeStatements} from '../../interfaces/comprehensive_income_statements';
+import {ITable, ITableRows} from '../../interfaces/report_table';
+import {
+  IComprehensiveIncomeStatements,
+  IIncomeAccountingDetail,
+} from '../../interfaces/comprehensive_income_statements';
 import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
-import {timestampToString, getReportTimeSpan} from '../../lib/common';
+import {timestampToString, getReportTimeSpan, roundToDecimal} from '../../lib/common';
 import {
   getComprehensiveIncomeStatements,
   getCISData,
@@ -263,105 +266,8 @@ const ComprehensiveIncomeStatements = () => {
   const endTradingFee = getRevenue(endIncomeData?.income.details.transactionFee);
 
   // ToDo: (20230919 - Julian) 縮減程式碼
-  /*   const createTable = (
-    title: string,
-    startData: IIncomeAccountingDetail | undefined,
-    endData: IIncomeAccountingDetail | undefined
-  ) => {
-    const table: ITable = {
-      thead: [
-        `${title}`,
-        endDateStr.dateFormatForForm,
-        '*-*',
-        '*-*',
-        startDateStr.dateFormatForForm,
-        '*-*',
-        '*-*',
-      ],
-      tbody: [
-        {
-          rowType: RowType.stringRow,
-          rowData: [
-            '(Cost Value in thousands)',
-            'Amount',
-            'Cost Value',
-            'Percentage of Total',
-            'Amount',
-            'Cost Value',
-            'Percentage of Total',
-          ],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: [
-            'USD',
-            `${getRevenue(endData).usdAmount}`,
-            `$ ${getRevenue(endData).usdCostValue}`,
-            `${getRevenue(endData).usdPercentage} %`,
-            `${getRevenue(startData).usdAmount}`,
-            `$ ${getRevenue(startData).usdCostValue}`,
-            `${getRevenue(startData).usdPercentage} %`,
-          ],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: [
-            'Bitcoin',
-            `${getRevenue(endData).bitAmount}`,
-            `${getRevenue(endData).bitCostValue}`,
-            `${getRevenue(endData).bitPercentage} %`,
-            `${getRevenue(startData).bitAmount}`,
-            `${getRevenue(startData).bitCostValue}`,
-            `${getRevenue(startData).bitPercentage} %`,
-          ],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: [
-            'Ethereum',
-            `${getRevenue(endData).ethAmount}`,
-            `${getRevenue(endData).ethCostValue}`,
-            `${getRevenue(endData).ethPercentage} %`,
-            `${getRevenue(startData).ethAmount}`,
-            `${getRevenue(startData).ethCostValue}`,
-            `${getRevenue(startData).ethPercentage} %`,
-          ],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: [
-            'USDT',
-            `${getRevenue(endData).usdtAmount}`,
-            `${getRevenue(endData).usdtCostValue}`,
-            `${getRevenue(endData).usdtPercentage} %`,
-            `${getRevenue(startData).usdtAmount}`,
-            `${getRevenue(startData).usdtCostValue}`,
-            `${getRevenue(startData).usdtPercentage} %`,
-          ],
-        },
-        {
-          rowType: RowType.foot,
-          rowData: [
-            'Total trading fee',
-            `${getRevenue(endData).totalAmount}`,
-            `$ ${getRevenue(endData).totalCostValue}`,
-            `${getRevenue(endData).totalPercentage} %`,
-            `${getRevenue(startData).totalAmount}`,
-            `$ ${getRevenue(startData).totalCostValue}`,
-            `${getRevenue(startData).totalPercentage} %`,
-          ],
-        },
-      ],
-    };
-    return table;
-  };
 
-  const income_statements_p7_1 = createTable(
-    'Trading fee',
-    startIncomeData?.income.details.transactionFee,
-    endIncomeData?.income.details.transactionFee
-  ); */
-  const income_statements_p7_1: ITable = {
+  /*   const income_statements_p7_1: ITable = {
     thead: [
       'Trading fee',
       endDateStr.dateFormatForForm,
@@ -445,7 +351,7 @@ const ComprehensiveIncomeStatements = () => {
         ],
       },
     ],
-  };
+  }; */
 
   // Info: (20230915 - Julian) Spread Fee
   const startSpreadFee = getRevenue(startIncomeData?.income.details.spreadFee);
@@ -469,46 +375,101 @@ const ComprehensiveIncomeStatements = () => {
     totalPercentage: string;
   }
 
-  const tableForm = (title: string, endData: ITableForm, startData: ITableForm) => {
-    const subtitle = ['Bitcoin', 'Ethereum', 'USDT', 'Total'];
-    return {
-      thead: [
-        `${title}`,
-        endDateStr.dateFormatForForm,
-        '*-*',
-        '*-*',
-        startDateStr.dateFormatForForm,
-        '*-*',
-        '*-*',
-      ],
-      tbody: [
-        {
-          rowType: RowType.stringRow,
-          rowData: [
-            '(Cost Value in thousands)',
-            'Amount',
-            'Cost Value',
-            'Percentage of Total',
-            'Amount',
-            'Cost Value',
-            'Percentage of Total',
-          ],
-        },
-      ],
-    };
-  };
-
-  const income_statements_p7_2: ITable = {
-    thead: [
-      'Spread fee',
+  const createRevenueTable = (
+    title: string,
+    endData: IIncomeAccountingDetail | undefined,
+    startData: IIncomeAccountingDetail | undefined
+  ) => {
+    const thead = [
+      `${title}`,
       endDateStr.dateFormatForForm,
       '*-*',
       '*-*',
       startDateStr.dateFormatForForm,
       '*-*',
       '*-*',
-    ],
-    tbody: [
+    ];
+
+    if (!endData || !startData)
+      return {
+        thead,
+        // Info: (20230915 - Julian) Default table
+        tbody: [
+          {
+            rowType: RowType.stringRow,
+            rowData: [
+              '(Cost Value in thousands)',
+              'Amount',
+              'Cost Value',
+              'Percentage of Total',
+              'Amount',
+              'Cost Value',
+              'Percentage of Total',
+            ],
+          },
+          {
+            rowType: RowType.bookkeeping,
+            rowData: [`USD`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
+          },
+          {
+            rowType: RowType.bookkeeping,
+            rowData: [`Bitcoin`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+          },
+          {
+            rowType: RowType.bookkeeping,
+            rowData: [`Ethereum`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+          },
+          {
+            rowType: RowType.bookkeeping,
+            rowData: [`USDT`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+          },
+          {
+            rowType: RowType.foot,
+            rowData: [`Total ${title}`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
+          },
+        ],
+      };
+
+    // Info: (20230921 - Julian) USD
+    const endUsd = endData.breakdown.USD;
+    const startUsd = startData.breakdown.USD;
+
+    // Info: (20230921 - Julian) Bitcoin
+    const endBit = endData.breakdown.BTC;
+    const startBit = startData.breakdown.BTC;
+
+    // Info: (20230921 - Julian) Ethereum
+    const endEth = endData.breakdown.ETH;
+    const startEth = startData.breakdown.ETH;
+
+    // Info: (20230921 - Julian) USDT
+    const endUsdt = endData.breakdown.USDT;
+    const startUsdt = startData.breakdown.USDT;
+
+    // Info: (20230921 - Julian) Total
+    const totalAmount = '—';
+    const endTotalCost = endData.weightedAverageCost;
+    const startTotalCost = startData.weightedAverageCost;
+
+    // Info: (20230921 - Julian) Percentage
+    const endUsdPercentage = (endUsd.weightedAverageCost / endTotalCost) * 100;
+    const startUsdPercentage = (startUsd.weightedAverageCost / startTotalCost) * 100;
+
+    const endBitPercentage = (endBit.weightedAverageCost / endTotalCost) * 100;
+    const startBitPercentage = (startBit.weightedAverageCost / startTotalCost) * 100;
+
+    const endEthPercentage = (endEth.weightedAverageCost / endTotalCost) * 100;
+    const startEthPercentage = (startEth.weightedAverageCost / startTotalCost) * 100;
+
+    const endUsdtPercentage = (endUsdt.weightedAverageCost / endTotalCost) * 100;
+    const startUsdtPercentage = (startUsdt.weightedAverageCost / startTotalCost) * 100;
+
+    const endTotalPercentage =
+      endUsdPercentage + endBitPercentage + endEthPercentage + endUsdtPercentage;
+    const startTotalPercentage =
+      startUsdPercentage + startBitPercentage + startEthPercentage + startUsdtPercentage;
+
+    const tbody = [
       {
         rowType: RowType.stringRow,
         rowData: [
@@ -524,65 +485,169 @@ const ComprehensiveIncomeStatements = () => {
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'USD',
-          `${endSpreadFee.usdAmount}`,
-          `$ ${endSpreadFee.usdCostValue}`,
-          `${endSpreadFee.usdPercentage} %`,
-          `${startSpreadFee.usdAmount}`,
-          `$ ${startSpreadFee.usdCostValue}`,
-          `${startSpreadFee.usdPercentage} %`,
+          `USD`,
+          `${roundToDecimal(endUsd.amount, 2)}`,
+          `$ ${roundToDecimal(endUsd.weightedAverageCost, 2)}`,
+          `${roundToDecimal(endUsdPercentage, 1)} %`,
+          `${roundToDecimal(startUsd.amount, 2)}`,
+          `$ ${roundToDecimal(startUsd.weightedAverageCost, 2)}`,
+          `${roundToDecimal(startUsdPercentage, 1)} %`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Bitcoin',
-          `${endSpreadFee.bitAmount}`,
-          `${endSpreadFee.bitCostValue}`,
-          `${endSpreadFee.bitPercentage} %`,
-          `${startSpreadFee.bitAmount}`,
-          `${startSpreadFee.bitCostValue}`,
-          `${startSpreadFee.bitPercentage} %`,
+          `Bitcoin`,
+          `${roundToDecimal(endBit.amount, 2)}`,
+          `${roundToDecimal(endBit.weightedAverageCost, 2)}`,
+          `${roundToDecimal(endBitPercentage, 1)} %`,
+          `${roundToDecimal(startBit.amount, 2)}`,
+          `${roundToDecimal(startBit.weightedAverageCost, 2)}`,
+          `${roundToDecimal(startBitPercentage, 1)} %`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Ethereum',
-          `${endSpreadFee.ethAmount}`,
-          `${endSpreadFee.ethCostValue}`,
-          `${endSpreadFee.ethPercentage} %`,
-          `${startSpreadFee.ethAmount}`,
-          `${startSpreadFee.ethCostValue}`,
-          `${startSpreadFee.ethPercentage} %`,
+          `Ethereum`,
+          `${roundToDecimal(endEth.amount, 2)}`,
+          `${roundToDecimal(endEth.weightedAverageCost, 2)}`,
+          `${roundToDecimal(endEthPercentage, 1)} %`,
+          `${roundToDecimal(startEth.amount, 2)}`,
+          `${roundToDecimal(startEth.weightedAverageCost, 2)}`,
+          `${roundToDecimal(startEthPercentage, 1)} %`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'USDT',
-          `${endSpreadFee.usdtAmount}`,
-          `${endSpreadFee.usdtCostValue}`,
-          `${endSpreadFee.usdtPercentage} %`,
-          `${startSpreadFee.usdtAmount}`,
-          `${startSpreadFee.usdtCostValue}`,
-          `${startSpreadFee.usdtPercentage} %`,
+          `USDT`,
+          `${roundToDecimal(endUsdt.amount, 2)}`,
+          `${roundToDecimal(endUsdt.weightedAverageCost, 2)}`,
+          `${roundToDecimal(endUsdtPercentage, 1)} %`,
+          `${roundToDecimal(startUsdt.amount, 2)}`,
+          `${roundToDecimal(startUsdt.weightedAverageCost, 2)}`,
+          `${roundToDecimal(startUsdtPercentage, 1)} %`,
         ],
       },
       {
         rowType: RowType.foot,
         rowData: [
-          'Total spread fee',
-          `${endSpreadFee.totalAmount}`,
-          `$ ${endSpreadFee.totalCostValue}`,
-          `${endSpreadFee.totalPercentage} %`,
-          `${startSpreadFee.totalAmount}`,
-          `$ ${startSpreadFee.totalCostValue}`,
-          `${startSpreadFee.totalPercentage} %`,
+          `Total ${title}`,
+          `${totalAmount}`,
+          `$ ${roundToDecimal(endTotalCost, 2)}`,
+          `${roundToDecimal(endTotalPercentage, 1)} %`,
+          `${totalAmount}`,
+          `$ ${roundToDecimal(startTotalCost, 2)}`,
+          `${roundToDecimal(startTotalPercentage, 1)} %`,
         ],
       },
-    ],
+    ];
+
+    const result: ITable = {
+      thead,
+      tbody,
+    };
+    return result;
   };
+
+  const income_statements_p7_1 = createRevenueTable(
+    'Trading fee',
+    endIncomeData?.income.details.transactionFee,
+    startIncomeData?.income.details.transactionFee
+  );
+
+  const income_statements_p7_2 = createRevenueTable(
+    'Spread fee',
+    endIncomeData?.income.details.spreadFee,
+    startIncomeData?.income.details.spreadFee
+  );
+
+  // const income_statements_p7_2: ITable = {
+  //   thead: [
+  //     'Spread fee',
+  //     endDateStr.dateFormatForForm,
+  //     '*-*',
+  //     '*-*',
+  //     startDateStr.dateFormatForForm,
+  //     '*-*',
+  //     '*-*',
+  //   ],
+  //   tbody: [
+  //     {
+  //       rowType: RowType.stringRow,
+  //       rowData: [
+  //         '(Cost Value in thousands)',
+  //         'Amount',
+  //         'Cost Value',
+  //         'Percentage of Total',
+  //         'Amount',
+  //         'Cost Value',
+  //         'Percentage of Total',
+  //       ],
+  //     },
+  //     {
+  //       rowType: RowType.bookkeeping,
+  //       rowData: [
+  //         'USD',
+  //         `${endSpreadFee.usdAmount}`,
+  //         `$ ${endSpreadFee.usdCostValue}`,
+  //         `${endSpreadFee.usdPercentage} %`,
+  //         `${startSpreadFee.usdAmount}`,
+  //         `$ ${startSpreadFee.usdCostValue}`,
+  //         `${startSpreadFee.usdPercentage} %`,
+  //       ],
+  //     },
+  //     {
+  //       rowType: RowType.bookkeeping,
+  //       rowData: [
+  //         'Bitcoin',
+  //         `${endSpreadFee.bitAmount}`,
+  //         `${endSpreadFee.bitCostValue}`,
+  //         `${endSpreadFee.bitPercentage} %`,
+  //         `${startSpreadFee.bitAmount}`,
+  //         `${startSpreadFee.bitCostValue}`,
+  //         `${startSpreadFee.bitPercentage} %`,
+  //       ],
+  //     },
+  //     {
+  //       rowType: RowType.bookkeeping,
+  //       rowData: [
+  //         'Ethereum',
+  //         `${endSpreadFee.ethAmount}`,
+  //         `${endSpreadFee.ethCostValue}`,
+  //         `${endSpreadFee.ethPercentage} %`,
+  //         `${startSpreadFee.ethAmount}`,
+  //         `${startSpreadFee.ethCostValue}`,
+  //         `${startSpreadFee.ethPercentage} %`,
+  //       ],
+  //     },
+  //     {
+  //       rowType: RowType.bookkeeping,
+  //       rowData: [
+  //         'USDT',
+  //         `${endSpreadFee.usdtAmount}`,
+  //         `${endSpreadFee.usdtCostValue}`,
+  //         `${endSpreadFee.usdtPercentage} %`,
+  //         `${startSpreadFee.usdtAmount}`,
+  //         `${startSpreadFee.usdtCostValue}`,
+  //         `${startSpreadFee.usdtPercentage} %`,
+  //       ],
+  //     },
+  //     {
+  //       rowType: RowType.foot,
+  //       rowData: [
+  //         'Total spread fee',
+  //         `${endSpreadFee.totalAmount}`,
+  //         `$ ${endSpreadFee.totalCostValue}`,
+  //         `${endSpreadFee.totalPercentage} %`,
+  //         `${startSpreadFee.totalAmount}`,
+  //         `$ ${startSpreadFee.totalCostValue}`,
+  //         `${startSpreadFee.totalPercentage} %`,
+  //       ],
+  //     },
+  //   ],
+  // };
 
   // Info: (20230915 - Julian) Withdrawal Fee
   const startWithdrawalFee = getRevenue(startIncomeData?.income.details.withdrawalFee);
