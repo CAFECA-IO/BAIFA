@@ -44,8 +44,8 @@ export const getCashFlowTable = (data: IStatementsOfCashFlow | undefined) => {
       cashCashEquivalentsAndRestrictedCashEndOfPeriod: 0,
       cryptocurrenciesDepositedByCustomers: 0,
       cryptocurrenciesWithdrawnByCustomers: 0,
-      cryptocurrencyInFlow: 0,
-      cryptocurrencyOutFlow: 0,
+      cryptocurrencyInflows: 0,
+      cryptocurrencyOutflows: 0,
       cryptocurrenciesReceivedFromCustomersAsTransactionFees: 0,
       cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading: 0,
       cryptocurrenciesPaidToCustomersForCFDTradingProfits: 0,
@@ -101,11 +101,11 @@ export const getCashFlowTable = (data: IStatementsOfCashFlow | undefined) => {
   const cryptocurrenciesWithdrawnByCustomers =
     +data.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesWithdrawnByCustomers.weightedAverageCost ?? 0;
-  const cryptocurrencyInFlow =
-    +data.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInFlow
+  const cryptocurrencyInflows =
+    +data.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInflows
       .weightedAverageCost ?? 0;
-  const cryptocurrencyOutFlow =
-    +data.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyOutFlow
+  const cryptocurrencyOutflows =
+    +data.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyOutflows
       .weightedAverageCost ?? 0;
   const cryptocurrenciesReceivedFromCustomersAsTransactionFees =
     +data.supplementalScheduleOfNonCashOperatingActivities.details
@@ -149,8 +149,8 @@ export const getCashFlowTable = (data: IStatementsOfCashFlow | undefined) => {
     cashCashEquivalentsAndRestrictedCashEndOfPeriod,
     cryptocurrenciesDepositedByCustomers,
     cryptocurrenciesWithdrawnByCustomers,
-    cryptocurrencyInFlow,
-    cryptocurrencyOutFlow,
+    cryptocurrencyInflows,
+    cryptocurrencyOutflows,
     cryptocurrenciesReceivedFromCustomersAsTransactionFees,
     cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading,
     cryptocurrenciesPaidToCustomersForCFDTradingProfits,
@@ -206,5 +206,163 @@ export const getActivitiesAnalysis = (data: INonCashAccountingDetail | undefined
     usdtAmount: roundToDecimal(usdtAmount, 2),
     usdtCost: roundToDecimal(usdtCost, 2),
     usdtPercentage: `${roundToDecimal(usdtPercentage, 1)} %`,
+  };
+};
+
+export const getNonCashPurchaseData = (data: IStatementsOfCashFlow | undefined) => {
+  if (!data)
+    return {
+      btcAmount: 0,
+      btcCostValue: 0,
+      btcPercentage: 0,
+      ethAmount: 0,
+      ethCostValue: 0,
+      ethPercentage: 0,
+      usdtAmount: 0,
+      usdtCostValue: 0,
+      usdtPercentage: 0,
+      totalAmount: '—',
+      totalCostValue: 0,
+      totalPercentage: 0,
+    };
+
+  const purchaseData =
+    data?.supplementalScheduleOfNonCashOperatingActivities.details
+      .purchaseOfCryptocurrenciesWithNonCashConsideration;
+
+  // Info: (20230920 - Julian) ------------ BTC ------------
+  const btcPurchaseData =
+    purchaseData?.details
+      // Info: (20230920 - Julian) 找出買入(to) BTC 的資料
+      .filter(item => item.to.name === 'BTC') ?? [];
+
+  // Info: (20230920 - Julian) 將 amount 加總
+  const btcAmount = btcPurchaseData.reduce((acc, cur) => acc + cur.to.amount, 0) ?? 0;
+  // Info: (20230920 - Julian) 將所花費的(from) USDT 加總
+  const btcCostValue =
+    btcPurchaseData.reduce((acc, cur) => acc + cur.from.weightedAverageCost, 0) ?? 0;
+
+  // Info: (20230920 - Julian) ------------ ETH ------------
+  const ethPurchaseData =
+    purchaseData?.details
+      // Info: (20230920 - Julian) 找出買入(to) ETH 的資料
+      .filter(item => item.to.name === 'ETH') ?? [];
+
+  const ethAmount = ethPurchaseData.reduce((acc, cur) => acc + cur.to.amount, 0) ?? 0;
+  const ethCostValue =
+    // Info: (20230920 - Julian) 將所花費的(from) USDT 加總
+    ethPurchaseData.reduce((acc, cur) => acc + cur.from.weightedAverageCost, 0) ?? 0;
+
+  // Info: (20230920 - Julian) ------------ USDT ------------
+  const usdtPurchaseData =
+    purchaseData?.details
+      // Info: (20230920 - Julian) 找出買入(to) USDT 的資料
+      .filter(item => item.to.name === 'USDT') ?? [];
+  const usdtAmount = usdtPurchaseData.reduce((acc, cur) => acc + cur.to.amount, 0) ?? 0;
+  const usdtCostValue =
+    usdtPurchaseData
+      // Info: (20230920 - Julian) 將所花費的(from) USDT 加總
+      .reduce((acc, cur) => acc + cur.from.weightedAverageCost, 0) ?? 0;
+
+  // Info: (20230920 - Julian) ------------ Total ------------
+  const totalCostValue = purchaseData?.weightedAverageCost ?? 0;
+
+  const btcPercentage = (btcCostValue / totalCostValue) * 100;
+  const ethPercentage = (ethCostValue / totalCostValue) * 100;
+  const usdtPercentage = (usdtCostValue / totalCostValue) * 100;
+  const totalPercentage = btcPercentage + ethPercentage + usdtPercentage;
+
+  return {
+    btcAmount: `${roundToDecimal(btcAmount, 2)}`,
+    btcCostValue: `$ ${roundToDecimal(btcCostValue, 2)}`,
+    btcPercentage: `${roundToDecimal(btcPercentage, 1)} %`,
+    ethAmount: `${roundToDecimal(ethAmount, 2)}`,
+    ethCostValue: `${roundToDecimal(ethCostValue, 2)}`,
+    ethPercentage: `${roundToDecimal(ethPercentage, 1)} %`,
+    usdtAmount: `${roundToDecimal(usdtAmount, 2)}`,
+    usdtCostValue: `${roundToDecimal(usdtCostValue, 2)}`,
+    usdtPercentage: `${roundToDecimal(usdtPercentage, 1)} %`,
+    totalAmount: '—',
+    totalCostValue: `$ ${roundToDecimal(totalCostValue, 2)}`,
+    totalPercentage: `${roundToDecimal(totalPercentage, 1)} %`,
+  };
+};
+
+export const getNonCashDisposalData = (data: IStatementsOfCashFlow | undefined) => {
+  if (!data)
+    return {
+      btcAmount: 0,
+      btcCostValue: 0,
+      btcPercentage: 0,
+      ethAmount: 0,
+      ethCostValue: 0,
+      ethPercentage: 0,
+      usdtAmount: 0,
+      usdtCostValue: 0,
+      usdtPercentage: 0,
+      totalAmount: '—',
+      totalCostValue: 0,
+      totalPercentage: 0,
+    };
+
+  const disposalData =
+    data?.supplementalScheduleOfNonCashOperatingActivities.details
+      .disposalOfCryptocurrenciesForNonCashConsideration;
+
+  // Info: (20230920 - Julian) ------------ BTC ------------
+  const btcDisposalData =
+    disposalData?.details
+      // Info: (20230920 - Julian) 找出賣出(from) BTC 的資料
+      .filter(item => item.from.name === 'BTC') ?? [];
+
+  // Info: (20230920 - Julian) 將 amount 加總
+  const btcAmount = btcDisposalData.reduce((acc, cur) => acc + cur.from.amount, 0) ?? 0;
+  // Info: (20230920 - Julian) 將得到的(to) USDT 加總
+  const btcCostValue =
+    btcDisposalData.reduce((acc, cur) => acc + cur.to.weightedAverageCost, 0) ?? 0;
+
+  // Info: (20230920 - Julian) ------------ ETH ------------
+  const ethDisposalData =
+    disposalData?.details
+      // Info: (20230920 - Julian) 找出賣出(from) ETH 的資料
+      .filter(item => item.from.name === 'ETH') ?? [];
+
+  const ethAmount = ethDisposalData.reduce((acc, cur) => acc + cur.from.amount, 0) ?? 0;
+  const ethCostValue =
+    // Info: (20230920 - Julian) 將得到的(to) USDT 加總
+    ethDisposalData.reduce((acc, cur) => acc + cur.to.weightedAverageCost, 0) ?? 0;
+
+  // Info: (20230920 - Julian) ------------ USDT ------------
+  const usdtPurchaseData =
+    disposalData?.details
+      // Info: (20230920 - Julian) 找出賣出(from) USDT 的資料
+      .filter(item => item.from.name === 'USDT') ?? [];
+  const usdtAmount = usdtPurchaseData.reduce((acc, cur) => acc + cur.from.amount, 0) ?? 0;
+  const usdtCostValue =
+    usdtPurchaseData
+      // Info: (20230920 - Julian) 將得到的(to) USDT 加總
+      .reduce((acc, cur) => acc + cur.to.weightedAverageCost, 0) ?? 0;
+
+  // Info: (20230920 - Julian) ------------ Total ------------
+  const totalCostValue = disposalData?.weightedAverageCost ?? 0;
+
+  const btcPercentage = (btcCostValue / totalCostValue) * 100;
+  const ethPercentage = (ethCostValue / totalCostValue) * 100;
+  const usdtPercentage = (usdtCostValue / totalCostValue) * 100;
+  const totalPercentage = btcPercentage + ethPercentage + usdtPercentage;
+
+  return {
+    btcAmount: `${roundToDecimal(btcAmount, 2)}`,
+    btcCostValue: `$ ${roundToDecimal(btcCostValue, 2)}`,
+    btcPercentage: `${roundToDecimal(btcPercentage, 1)} %`,
+    ethAmount: `${roundToDecimal(ethAmount, 2)}`,
+    ethCostValue: `${roundToDecimal(ethCostValue, 2)}`,
+    ethPercentage: `${roundToDecimal(ethPercentage, 1)} %`,
+    usdtAmount: `${roundToDecimal(usdtAmount, 2)}`,
+    usdtCostValue: `${roundToDecimal(usdtCostValue, 2)}`,
+    usdtPercentage: `${roundToDecimal(usdtPercentage, 1)} %`,
+    totalAmount: '—',
+    totalCostValue: `$ ${roundToDecimal(totalCostValue, 2)}`,
+    totalPercentage: `${roundToDecimal(totalPercentage, 1)} %`,
   };
 };

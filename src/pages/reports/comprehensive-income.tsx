@@ -7,10 +7,7 @@ import ReportRiskPages from '../../components/report_risk_pages/report_risk_page
 import ReportTable from '../../components/report_table/report_table';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
 import {ITable} from '../../interfaces/report_table';
-import {
-  IComprehensiveIncomeStatements,
-  IIncomeAccountingDetail,
-} from '../../interfaces/comprehensive_income_statements';
+import {IComprehensiveIncomeStatements} from '../../interfaces/comprehensive_income_statements';
 import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {timestampToString, getReportTimeSpan} from '../../lib/common';
@@ -453,6 +450,53 @@ const ComprehensiveIncomeStatements = () => {
   // Info: (20230915 - Julian) Spread Fee
   const startSpreadFee = getRevenue(startIncomeData?.income.details.spreadFee);
   const endSpreadFee = getRevenue(endIncomeData?.income.details.spreadFee);
+
+  interface ITableForm {
+    usdAmount: string;
+    usdCostValue: string;
+    usdPercentage: string;
+    bitAmount: string;
+    bitCostValue: string;
+    bitPercentage: string;
+    ethAmount: string;
+    ethCostValue: string;
+    ethPercentage: string;
+    usdtAmount: string;
+    usdtCostValue: string;
+    usdtPercentage: string;
+    totalAmount: string;
+    totalCostValue: string;
+    totalPercentage: string;
+  }
+
+  const tableForm = (title: string, endData: ITableForm, startData: ITableForm) => {
+    const subtitle = ['Bitcoin', 'Ethereum', 'USDT', 'Total'];
+    return {
+      thead: [
+        `${title}`,
+        endDateStr.dateFormatForForm,
+        '*-*',
+        '*-*',
+        startDateStr.dateFormatForForm,
+        '*-*',
+        '*-*',
+      ],
+      tbody: [
+        {
+          rowType: RowType.stringRow,
+          rowData: [
+            '(Cost Value in thousands)',
+            'Amount',
+            'Cost Value',
+            'Percentage of Total',
+            'Amount',
+            'Cost Value',
+            'Percentage of Total',
+          ],
+        },
+      ],
+    };
+  };
 
   const income_statements_p7_2: ITable = {
     thead: [
@@ -1696,7 +1740,7 @@ const ComprehensiveIncomeStatements = () => {
             <p>
               A downturn in the market price of Bitcoin, Ethereum, and other cryptocurrencies could
               negatively affect our earnings, the carrying value of our cryptocurrencies, and our
-              projected future cash flows. It could also pose a challenge to our liquidity and
+              projected future cash flow. It could also pose a challenge to our liquidity and
               capability to fulfill ongoing obligations.
             </p>
             <p>

@@ -88,8 +88,8 @@ export interface IStatementsOfCashFlow {
     details: {
       cryptocurrenciesDepositedByCustomers: INonCashAccountingDetail;
       cryptocurrenciesWithdrawnByCustomers: INonCashAccountingDetail;
-      cryptocurrencyInFlow: INonCashAccountingDetail;
-      cryptocurrencyOutFlow: INonCashAccountingDetail;
+      cryptocurrencyInflows: INonCashAccountingDetail;
+      cryptocurrencyOutflows: INonCashAccountingDetail;
       purchaseOfCryptocurrenciesWithNonCashConsideration: IDisposalCryptoItem;
       disposalOfCryptocurrenciesForNonCashConsideration: IDisposalCryptoItem;
       cryptocurrenciesReceivedFromCustomersAsTransactionFees: INonCashAccountingDetail;
