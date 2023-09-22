@@ -1,4 +1,15 @@
-import {IAccountingDetail} from './accounting_detail';
+import {IStatementCurrencyDetail} from './currency_detail';
+
+export interface IIncomeAccountingDetail {
+  totalAmountFairValue: number;
+  weightedAverageCost: number;
+  breakdown: {
+    BTC: IStatementCurrencyDetail;
+    ETH: IStatementCurrencyDetail;
+    USDT: IStatementCurrencyDetail;
+    USD: IStatementCurrencyDetail;
+  };
+}
 
 export interface IComprehensiveIncomeStatements {
   id: string;
@@ -7,12 +18,12 @@ export interface IComprehensiveIncomeStatements {
   income: {
     weightedAverageCost: number;
     details: {
-      transactionFee: IAccountingDetail;
-      spreadFee: IAccountingDetail;
-      guaranteedStopFee: IAccountingDetail;
-      liquidationFee: IAccountingDetail;
-      withdrawalFee: IAccountingDetail;
-      depositFee: IAccountingDetail;
+      transactionFee: IIncomeAccountingDetail;
+      spreadFee: IIncomeAccountingDetail;
+      guaranteedStopFee: IIncomeAccountingDetail;
+      liquidationFee: IIncomeAccountingDetail;
+      withdrawalFee: IIncomeAccountingDetail;
+      depositFee: IIncomeAccountingDetail;
     };
   };
   costs: {
@@ -29,7 +40,7 @@ export interface IComprehensiveIncomeStatements {
       salaries: number;
       rent: number;
       marketing: number;
-      commissionRebates: IAccountingDetail;
+      commissionRebates: IIncomeAccountingDetail;
     };
   };
   financialCosts: {
@@ -47,7 +58,7 @@ export interface IComprehensiveIncomeStatements {
     details: {
       investmentGains: number;
       forexGains: number;
-      cryptocurrencyGains: IAccountingDetail;
+      cryptocurrencyGains: IIncomeAccountingDetail;
     };
   };
   netProfit: number;

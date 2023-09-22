@@ -6,6 +6,7 @@ export const timestampToString = (timestamp: number) => {
       date: '-',
       dateOfLastYear: '-',
       day: '-',
+      tomorrow: '-',
       month: '-',
       monthAndDay: '-',
       monthFullName: '-',
@@ -71,6 +72,9 @@ export const timestampToString = (timestamp: number) => {
       .toString()
       .padStart(2, '0')}`, // e.g. 2020-01-01
     day: `${dayString}`, // e.g. 01
+    tomorrow: `${year}-${month.toString().padStart(2, '0')}-${(day + 1)
+      .toString()
+      .padStart(2, '0')}`, // e.g. 2021-01-02
     month: `${monthString}`, // e.g. January (with i18n)
     monthFullName: `${monthName}`, // e.g. January
     monthAndDay: `${monthNameShort} ${day}`, // e.g. Jan. 01
@@ -134,7 +138,7 @@ export const getChainIcon = (chainId: string) => {
 export const getReportTimeSpan = () => {
   const now = new Date().getTime() / 1000;
   const yesterday = now - (now % 86400) - 86400;
-  const thirtyDaysAgo = yesterday - 86400 * 30;
+  const thirtyDaysAgo = yesterday - 86400 * 29;
 
   return {
     start: thirtyDaysAgo,

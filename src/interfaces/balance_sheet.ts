@@ -1,4 +1,15 @@
-import {IAccountingDetail} from './accounting_detail';
+import {ICurrencyDetail} from './currency_detail';
+
+export interface IBalanceAccountingDetail {
+  totalAmountFairValue: number;
+  weightedAverageCost: number;
+  breakdown: {
+    BTC: ICurrencyDetail;
+    ETH: ICurrencyDetail;
+    USDT: ICurrencyDetail;
+  };
+}
+
 export interface IBalanceSheet {
   id: string;
   date: string;
@@ -6,33 +17,33 @@ export interface IBalanceSheet {
     totalAmountFairValue: number;
     weightedAverageCost: number;
     details: {
-      accountsReceivable: IAccountingDetail;
-      cryptocurrency: IAccountingDetail;
-      cashAndCashEquivalent: IAccountingDetail;
+      accountsReceivable: IBalanceAccountingDetail;
+      cryptocurrency: IBalanceAccountingDetail;
+      cashAndCashEquivalent: IBalanceAccountingDetail;
     };
   };
   nonAssets: {
     totalAmountFairValue: number;
     weightedAverageCost: number;
     details: {
-      accountsReceivable: IAccountingDetail;
-      cashAndCashEquivalent: IAccountingDetail;
+      accountsReceivable: IBalanceAccountingDetail;
+      cashAndCashEquivalent: IBalanceAccountingDetail;
     };
   };
   liabilities: {
     totalAmountFairValue: number;
     weightedAverageCost: number;
     details: {
-      accountsPayable: IAccountingDetail;
-      userDeposit: IAccountingDetail;
+      accountsPayable: IBalanceAccountingDetail;
+      userDeposit: IBalanceAccountingDetail;
     };
   };
   equity: {
     totalAmountFairValue: number;
     weightedAverageCost: number;
     details: {
-      retainedEarnings: IAccountingDetail;
-      capital: IAccountingDetail;
+      retainedEarnings: IBalanceAccountingDetail;
+      capital: IBalanceAccountingDetail;
     };
   };
 }
