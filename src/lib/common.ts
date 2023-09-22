@@ -145,3 +145,8 @@ export const getReportTimeSpan = () => {
     end: yesterday,
   };
 };
+
+export const getChange = (current: number, previous: number) => {
+  if (previous === 0) return 0;
+  return (current - previous) / previous;
+};

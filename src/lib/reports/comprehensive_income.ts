@@ -4,7 +4,7 @@ import {
   IComprehensiveIncomeStatements,
   IIncomeAccountingDetail,
 } from '../../interfaces/comprehensive_income_statements';
-import {roundToDecimal} from '../../lib/common';
+import {roundToDecimal, getChange} from '../../lib/common';
 import {ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';
 
@@ -22,164 +22,6 @@ export const getComprehensiveIncomeStatements = async (date: string) => {
     // console.log('Get comprehensive income statements error');
   }
   return reportData;
-};
-
-export const getCISData = (data: IComprehensiveIncomeStatements | undefined) => {
-  if (!data)
-    return {
-      tradingFee: '0',
-      spreadFee: '0',
-      withdrawalFee: '0',
-      depositFee: '0',
-      liquidationFee: '0',
-      guaranteedStopLossFee: '0',
-      totalRevenue: '0',
-      technicalSupplierCost: '0',
-      marketDataSupplierCost: '0',
-      newCoinListingCost: '0',
-      totalCost: '0',
-      employeeSalaries: '0',
-      rent: '0',
-      marketing: '0',
-      rebateExpenses: '0',
-      totalOperatingExpenses: '0',
-      interestExpense: '0',
-      cryptocurrencyForexLosses: '0',
-      fiatToCryptocurrencyConversionLosses: '0',
-      cryptocurrencyToFiatConversionLosses: '0',
-      fiatToFiatConversionLosses: '0',
-      totalFinancialCosts: '0',
-      investmentGains: '0',
-      forexGains: '0',
-      cryptocurrencyGains: '0',
-      totalOtherGains: '0',
-      netProfit: '0',
-    };
-
-  // Info: (20230914 - Julian) ------------- Revene -------------
-  const tradingFee = roundToDecimal(
-    +data.income.details.transactionFee.weightedAverageCost ?? 0,
-    2
-  );
-  const spreadFee = roundToDecimal(+data.income.details.spreadFee.weightedAverageCost ?? 0, 2);
-  const withdrawalFee = roundToDecimal(
-    +data.income.details.withdrawalFee.weightedAverageCost ?? 0,
-    2
-  );
-  const depositFee = roundToDecimal(+data.income.details.depositFee.weightedAverageCost ?? 0, 2);
-  const liquidationFee = roundToDecimal(
-    +data.income.details.liquidationFee.weightedAverageCost ?? 0,
-    2
-  );
-  const guaranteedStopLossFee = roundToDecimal(
-    +data.income.details.guaranteedStopFee.weightedAverageCost ?? 0,
-    2
-  );
-  const totalRevenue = roundToDecimal(
-    +data.income.details.transactionFee.weightedAverageCost +
-      +data.income.details.spreadFee.weightedAverageCost +
-      +data.income.details.withdrawalFee.weightedAverageCost +
-      +data.income.details.depositFee.weightedAverageCost +
-      +data.income.details.liquidationFee.weightedAverageCost +
-      +data.income.details.guaranteedStopFee.weightedAverageCost,
-    2
-  );
-
-  // Info: (20230914 - Julian) ------------- Cost -------------
-  const technicalSupplierCost = roundToDecimal(+data.costs.details.technicalProviderFee ?? 0, 2);
-  const marketDataSupplierCost = roundToDecimal(+data.costs.details.marketDataProviderFee ?? 0, 2);
-  const newCoinListingCost = roundToDecimal(+data.costs.details.newCoinListingCost ?? 0, 2);
-  const totalCost = roundToDecimal(
-    +data.costs.details.technicalProviderFee +
-      +data.costs.details.marketDataProviderFee +
-      +data.costs.details.newCoinListingCost,
-    2
-  );
-
-  // Info: (20230914 - Julian) ------------- Operating expenses -------------
-  const employeeSalaries = roundToDecimal(+data.operatingExpenses.details.salaries ?? 0, 2);
-  const rent = roundToDecimal(+data.operatingExpenses.details.rent ?? 0, 2);
-  const marketing = roundToDecimal(+data.operatingExpenses.details.marketing ?? 0, 2);
-  const rebateExpenses = roundToDecimal(+data.operatingExpenses.details.commissionRebates ?? 0, 2);
-  const totalOperatingExpenses = roundToDecimal(
-    +data.operatingExpenses.details.salaries +
-      +data.operatingExpenses.details.rent +
-      +data.operatingExpenses.details.marketing +
-      +data.operatingExpenses.details.commissionRebates,
-    2
-  );
-
-  // Info: (20230914 - Julian) ------------- Financial costs -------------
-  const interestExpense = roundToDecimal(+data.financialCosts.details.interestExpense ?? 0, 2);
-  const cryptocurrencyForexLosses = roundToDecimal(
-    +data.financialCosts.details.cryptocurrencyForexLosses ?? 0,
-    2
-  );
-  const fiatToCryptocurrencyConversionLosses = roundToDecimal(
-    +data.financialCosts.details.fiatToCryptocurrencyConversionLosses ?? 0,
-    2
-  );
-  const cryptocurrencyToFiatConversionLosses = roundToDecimal(
-    +data.financialCosts.details.cryptocurrencyToFiatConversionLosses ?? 0,
-    2
-  );
-  const fiatToFiatConversionLosses = roundToDecimal(
-    +data.financialCosts.details.fiatToFiatConversionLosses ?? 0,
-    2
-  );
-  const totalFinancialCosts = roundToDecimal(
-    +data.financialCosts.details.cryptocurrencyForexLosses +
-      +data.financialCosts.details.cryptocurrencyForexLosses +
-      +data.financialCosts.details.fiatToCryptocurrencyConversionLosses +
-      +data.financialCosts.details.cryptocurrencyToFiatConversionLosses +
-      +data.financialCosts.details.fiatToFiatConversionLosses,
-    2
-  );
-
-  // Info: (20230914 - Julian) Total other gains/losses
-  const investmentGains = roundToDecimal(data.otherGainsLosses.details.investmentGains ?? 0, 2);
-  const forexGains = roundToDecimal(data.otherGainsLosses.details.forexGains ?? 0, 2);
-  const cryptocurrencyGains = roundToDecimal(
-    data.otherGainsLosses.details.cryptocurrencyGains.weightedAverageCost ?? 0,
-    2
-  );
-  const totalOtherGains = roundToDecimal(
-    +data.otherGainsLosses.details.investmentGains +
-      +data.otherGainsLosses.details.forexGains +
-      +data.otherGainsLosses.details.cryptocurrencyGains.weightedAverageCost,
-    2
-  );
-  const netProfit = roundToDecimal(+data.netProfit ?? 0, 2);
-
-  return {
-    tradingFee,
-    spreadFee,
-    withdrawalFee,
-    depositFee,
-    liquidationFee,
-    guaranteedStopLossFee,
-    totalRevenue,
-    technicalSupplierCost,
-    marketDataSupplierCost,
-    newCoinListingCost,
-    totalCost,
-    employeeSalaries,
-    rent,
-    marketing,
-    rebateExpenses,
-    totalOperatingExpenses,
-    interestExpense,
-    cryptocurrencyForexLosses,
-    fiatToCryptocurrencyConversionLosses,
-    cryptocurrencyToFiatConversionLosses,
-    fiatToFiatConversionLosses,
-    totalFinancialCosts,
-    investmentGains,
-    forexGains,
-    cryptocurrencyGains,
-    totalOtherGains,
-    netProfit,
-  };
 };
 
 export const createCISFirstPart = (
@@ -464,63 +306,63 @@ export const createCISLastPart = (
   dataA: IComprehensiveIncomeStatements | undefined,
   dataB: IComprehensiveIncomeStatements | undefined
 ) => {
-  if (!dataA || !dataB)
-    return {
-      tbody: [
-        {
-          rowType: RowType.title,
-          rowData: ['Financial costs:', '*-*', '*-*'],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: ['Interest expense', `—`, `—`],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: ['Cryptocurrency forex losses', `—`, `—`],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: ['Fiat to cryptocurrency conversion losses', `—`, `—`],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: ['Cryptocurrency to fiat conversion losses', `—`, `—`],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: ['Fiat to fiat conversion losses', `—`, `—`],
-        },
-        {
-          rowType: RowType.foot,
-          rowData: ['Total financial costs', `$ —`, `$ —`],
-        },
-        {
-          rowType: RowType.title,
-          rowData: ['Total other gains/losses:', '*-*', '*-*'],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: ['Investment gains', `—`, `—`],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: ['Forex gains', `—`, `—`],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: ['Cryptocurrency gains', `—`, `—`],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: ['Total other gains', `—`, `—`],
-        },
-        {
-          rowType: RowType.foot,
-          rowData: ['Net profit', `$ —`, `$ —`],
-        },
-      ],
-    };
+  const defaultTable: ITable = {
+    tbody: [
+      {
+        rowType: RowType.title,
+        rowData: ['Financial costs:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Interest expense', `—`, `—`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Cryptocurrency forex losses', `—`, `—`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Fiat to cryptocurrency conversion losses', `—`, `—`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Cryptocurrency to fiat conversion losses', `—`, `—`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Fiat to fiat conversion losses', `—`, `—`],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total financial costs', `$ —`, `$ —`],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Total other gains/losses:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Investment gains', `—`, `—`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Forex gains', `—`, `—`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Cryptocurrency gains', `—`, `—`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Total other gains', `—`, `—`],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Net profit', `$ —`, `$ —`],
+      },
+    ],
+  };
+  if (!dataA || !dataB) return defaultTable;
 
   const totalFinancialCostsA =
     +dataA.financialCosts.details.interestExpense +
@@ -667,89 +509,79 @@ export const createCISLastPart = (
 export const createRevenueTable = (
   title: string,
   date: string[],
-  endData: IIncomeAccountingDetail | undefined,
-  startData: IIncomeAccountingDetail | undefined
+  dataA: IIncomeAccountingDetail | undefined,
+  dataB: IIncomeAccountingDetail | undefined
 ) => {
   const thead = [`${title}`, date[0], '*-*', '*-*', date[1], '*-*', '*-*'];
+  const defaultTable: ITable = {
+    thead,
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost Value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [`USD`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [`Bitcoin`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [`Ethereum`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [`USDT`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: [`Total ${title}`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
+      },
+    ],
+  };
+  if (!dataA || !dataB) return defaultTable;
 
-  if (!endData || !startData)
-    return {
-      thead,
-      // Info: (20230915 - Julian) Default table
-      tbody: [
-        {
-          rowType: RowType.stringRow,
-          rowData: [
-            '(Cost Value in thousands)',
-            'Amount',
-            'Cost Value',
-            'Percentage of Total',
-            'Amount',
-            'Cost Value',
-            'Percentage of Total',
-          ],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: [`USD`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: [`Bitcoin`, `—`, `—`, `— %`, `—`, `—`, `— %`],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: [`Ethereum`, `—`, `—`, `— %`, `—`, `—`, `— %`],
-        },
-        {
-          rowType: RowType.bookkeeping,
-          rowData: [`USDT`, `—`, `—`, `— %`, `—`, `—`, `— %`],
-        },
-        {
-          rowType: RowType.foot,
-          rowData: [`Total ${title}`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
-        },
-      ],
-    };
+  const usdA = dataA.breakdown.USD;
+  const usdB = dataB.breakdown.USD;
 
-  // Info: (20230921 - Julian) USD
-  const endUsd = endData.breakdown.USD;
-  const startUsd = startData.breakdown.USD;
+  const bitA = dataA.breakdown.BTC;
+  const bitB = dataB.breakdown.BTC;
 
-  // Info: (20230921 - Julian) Bitcoin
-  const endBit = endData.breakdown.BTC;
-  const startBit = startData.breakdown.BTC;
+  const ethA = dataA.breakdown.ETH;
+  const ethB = dataB.breakdown.ETH;
 
-  // Info: (20230921 - Julian) Ethereum
-  const endEth = endData.breakdown.ETH;
-  const startEth = startData.breakdown.ETH;
+  const usdtA = dataA.breakdown.USDT;
+  const usdtB = dataB.breakdown.USDT;
 
-  // Info: (20230921 - Julian) USDT
-  const endUsdt = endData.breakdown.USDT;
-  const startUsdt = startData.breakdown.USDT;
-
-  // Info: (20230921 - Julian) Total
-  const totalAmount = '—';
-  const endTotalCost = +endData.weightedAverageCost;
-  const startTotalCost = +startData.weightedAverageCost;
+  const totalCostA = +dataA.weightedAverageCost;
+  const totalCostB = +dataB.weightedAverageCost;
 
   // Info: (20230921 - Julian) Percentage
-  const endUsdPercentage = (+endUsd.weightedAverageCost / endTotalCost) * 100;
-  const startUsdPercentage = (+startUsd.weightedAverageCost / startTotalCost) * 100;
+  const usdPerA = (+usdA.weightedAverageCost / totalCostA) * 100;
+  const usdPerB = (+usdB.weightedAverageCost / totalCostB) * 100;
 
-  const endBitPercentage = (+endBit.weightedAverageCost / endTotalCost) * 100;
-  const startBitPercentage = (+startBit.weightedAverageCost / startTotalCost) * 100;
+  const bitPerA = (+bitA.weightedAverageCost / totalCostA) * 100;
+  const bitPerB = (+bitB.weightedAverageCost / totalCostB) * 100;
 
-  const endEthPercentage = (+endEth.weightedAverageCost / endTotalCost) * 100;
-  const startEthPercentage = (+startEth.weightedAverageCost / startTotalCost) * 100;
+  const ethPerA = (+ethA.weightedAverageCost / totalCostA) * 100;
+  const ethPerB = (+ethB.weightedAverageCost / totalCostB) * 100;
 
-  const endUsdtPercentage = (+endUsdt.weightedAverageCost / endTotalCost) * 100;
-  const startUsdtPercentage = (+startUsdt.weightedAverageCost / startTotalCost) * 100;
+  const usdtPerA = (+usdtA.weightedAverageCost / totalCostA) * 100;
+  const usdtPerB = (+usdtB.weightedAverageCost / totalCostB) * 100;
 
-  const endTotalPercentage =
-    endUsdPercentage + endBitPercentage + endEthPercentage + endUsdtPercentage;
-  const startTotalPercentage =
-    startUsdPercentage + startBitPercentage + startEthPercentage + startUsdtPercentage;
+  const totalPerA = usdPerA + bitPerA + ethPerA + usdtPerA;
+  const totalPerB = usdPerB + bitPerB + ethPerB + usdtPerB;
 
   const tbody = [
     {
@@ -768,60 +600,60 @@ export const createRevenueTable = (
       rowType: RowType.bookkeeping,
       rowData: [
         `USD`,
-        `${roundToDecimal(+endUsd.amount, 2)}`,
-        `$ ${roundToDecimal(+endUsd.weightedAverageCost, 2)}`,
-        `${roundToDecimal(endUsdPercentage, 1)} %`,
-        `${roundToDecimal(+startUsd.amount, 2)}`,
-        `$ ${roundToDecimal(+startUsd.weightedAverageCost, 2)}`,
-        `${roundToDecimal(startUsdPercentage, 1)} %`,
+        `${roundToDecimal(+usdA.amount, 2)}`,
+        `$ ${roundToDecimal(+usdA.weightedAverageCost, 2)}`,
+        `${roundToDecimal(usdPerA, 1)} %`,
+        `${roundToDecimal(+usdB.amount, 2)}`,
+        `$ ${roundToDecimal(+usdB.weightedAverageCost, 2)}`,
+        `${roundToDecimal(usdPerB, 1)} %`,
       ],
     },
     {
       rowType: RowType.bookkeeping,
       rowData: [
         `Bitcoin`,
-        `${roundToDecimal(+endBit.amount, 2)}`,
-        `${roundToDecimal(+endBit.weightedAverageCost, 2)}`,
-        `${roundToDecimal(endBitPercentage, 1)} %`,
-        `${roundToDecimal(+startBit.amount, 2)}`,
-        `${roundToDecimal(+startBit.weightedAverageCost, 2)}`,
-        `${roundToDecimal(startBitPercentage, 1)} %`,
+        `${roundToDecimal(+bitA.amount, 2)}`,
+        `${roundToDecimal(+bitA.weightedAverageCost, 2)}`,
+        `${roundToDecimal(bitPerA, 1)} %`,
+        `${roundToDecimal(+bitB.amount, 2)}`,
+        `${roundToDecimal(+bitB.weightedAverageCost, 2)}`,
+        `${roundToDecimal(bitPerB, 1)} %`,
       ],
     },
     {
       rowType: RowType.bookkeeping,
       rowData: [
         `Ethereum`,
-        `${roundToDecimal(+endEth.amount, 2)}`,
-        `${roundToDecimal(+endEth.weightedAverageCost, 2)}`,
-        `${roundToDecimal(endEthPercentage, 1)} %`,
-        `${roundToDecimal(+startEth.amount, 2)}`,
-        `${roundToDecimal(+startEth.weightedAverageCost, 2)}`,
-        `${roundToDecimal(startEthPercentage, 1)} %`,
+        `${roundToDecimal(+ethA.amount, 2)}`,
+        `${roundToDecimal(+ethA.weightedAverageCost, 2)}`,
+        `${roundToDecimal(ethPerA, 1)} %`,
+        `${roundToDecimal(+ethB.amount, 2)}`,
+        `${roundToDecimal(+ethB.weightedAverageCost, 2)}`,
+        `${roundToDecimal(ethPerB, 1)} %`,
       ],
     },
     {
       rowType: RowType.bookkeeping,
       rowData: [
         `USDT`,
-        `${roundToDecimal(+endUsdt.amount, 2)}`,
-        `${roundToDecimal(+endUsdt.weightedAverageCost, 2)}`,
-        `${roundToDecimal(endUsdtPercentage, 1)} %`,
-        `${roundToDecimal(+startUsdt.amount, 2)}`,
-        `${roundToDecimal(+startUsdt.weightedAverageCost, 2)}`,
-        `${roundToDecimal(startUsdtPercentage, 1)} %`,
+        `${roundToDecimal(+usdtA.amount, 2)}`,
+        `${roundToDecimal(+usdtA.weightedAverageCost, 2)}`,
+        `${roundToDecimal(usdtPerA, 1)} %`,
+        `${roundToDecimal(+usdtB.amount, 2)}`,
+        `${roundToDecimal(+usdtB.weightedAverageCost, 2)}`,
+        `${roundToDecimal(usdtPerB, 1)} %`,
       ],
     },
     {
       rowType: RowType.foot,
       rowData: [
         `Total ${title}`,
-        `${totalAmount}`,
-        `$ ${roundToDecimal(+endTotalCost, 2)}`,
-        `${roundToDecimal(endTotalPercentage, 1)} %`,
-        `${totalAmount}`,
-        `$ ${roundToDecimal(+startTotalCost, 2)}`,
-        `${roundToDecimal(startTotalPercentage, 1)} %`,
+        `—`,
+        `$ ${roundToDecimal(+totalCostA, 2)}`,
+        `${roundToDecimal(totalPerA, 1)} %`,
+        `—`,
+        `$ ${roundToDecimal(+totalCostB, 2)}`,
+        `${roundToDecimal(totalPerB, 1)} %`,
       ],
     },
   ];
@@ -833,7 +665,169 @@ export const createRevenueTable = (
   return result;
 };
 
-export const getRevenueChange = (thisYear: number, lastYear: number) => {
-  const percentage = ((thisYear - lastYear) / lastYear) * 100;
-  return roundToDecimal(percentage, 2);
+export const createRevenueChangeTable = (
+  endedDate: string,
+  TheadDates: string[],
+  thisYearData: IComprehensiveIncomeStatements | undefined,
+  lastYearData: IComprehensiveIncomeStatements | undefined
+) => {
+  const subThead = ['', `30 Days Ended ${endedDate},`, '*-*', '*-*'];
+  const thead = ['', TheadDates[0], TheadDates[1], '% Change'];
+  const defaultTable: ITable = {
+    subThead,
+    thead,
+    tbody: [
+      {
+        rowType: RowType.headline,
+        rowData: ['', '(in thousands)', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Trading fee', `—`, `—`, `— %`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Spread Fee', `—`, `—`, `— %`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Withdrawal fee', `—`, `—`, `— %`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Deposit fee', `—`, `—`, `— %`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Liquidation fee', `—`, `—`, `— %`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['Guaranteed stop loss fee', `—`, `—`, `— %`],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['Total revenue', `$ —`, `$ —`, `— %`],
+      },
+    ],
+  };
+  if (!thisYearData || !lastYearData) return defaultTable;
+
+  const thisYearTradingFee = +thisYearData.income.details.transactionFee.weightedAverageCost;
+  const lastYearTradingFee = +lastYearData.income.details.transactionFee.weightedAverageCost;
+  const tradingFeeChange = getChange(thisYearTradingFee, lastYearTradingFee) * 100;
+
+  const thisYearSpreadFee = +thisYearData.income.details.spreadFee.weightedAverageCost;
+  const lastYearSpreadFee = +lastYearData.income.details.spreadFee.weightedAverageCost;
+  const spreadFeeChange = getChange(thisYearSpreadFee, lastYearSpreadFee) * 100;
+
+  const thisYearWithdrawalFee = +thisYearData.income.details.withdrawalFee.weightedAverageCost;
+  const lastYearWithdrawalFee = +lastYearData.income.details.withdrawalFee.weightedAverageCost;
+  const withdrawalFeeChange = getChange(thisYearWithdrawalFee, lastYearWithdrawalFee) * 100;
+
+  const thisYearDepositFee = +thisYearData.income.details.depositFee.weightedAverageCost;
+  const lastYearDepositFee = +lastYearData.income.details.depositFee.weightedAverageCost;
+  const depositFeeChange = getChange(thisYearDepositFee, lastYearDepositFee) * 100;
+
+  const thisYearLiquidationFee = +thisYearData.income.details.liquidationFee.weightedAverageCost;
+  const lastYearLiquidationFee = +lastYearData.income.details.liquidationFee.weightedAverageCost;
+  const liquidationFeeChange = getChange(thisYearLiquidationFee, lastYearLiquidationFee) * 100;
+
+  const thisYearGuaranteedStopLossFee =
+    +thisYearData.income.details.guaranteedStopFee.weightedAverageCost;
+  const lastYearGuaranteedStopLossFee =
+    +lastYearData.income.details.guaranteedStopFee.weightedAverageCost;
+  const guaranteedStopLossFeeChange =
+    getChange(thisYearGuaranteedStopLossFee, lastYearGuaranteedStopLossFee) * 100;
+
+  const thisYearTotalRevenue =
+    thisYearTradingFee +
+    thisYearSpreadFee +
+    thisYearWithdrawalFee +
+    thisYearDepositFee +
+    thisYearLiquidationFee +
+    thisYearGuaranteedStopLossFee;
+  const lastYearTotalRevenue =
+    lastYearTradingFee +
+    lastYearSpreadFee +
+    lastYearWithdrawalFee +
+    lastYearDepositFee +
+    lastYearLiquidationFee +
+    lastYearGuaranteedStopLossFee;
+  const totalRevenueChange = getChange(thisYearTotalRevenue, lastYearTotalRevenue) * 100;
+
+  const result: ITable = {
+    subThead,
+    thead,
+    tbody: [
+      {
+        rowType: RowType.headline,
+        rowData: ['', '(in thousands)', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'Trading fee',
+          `${roundToDecimal(thisYearTradingFee, 2)}`,
+          `${roundToDecimal(lastYearTradingFee, 2)}`,
+          `${roundToDecimal(tradingFeeChange, 1)} %`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'Spread Fee',
+          `${roundToDecimal(thisYearSpreadFee, 2)}`,
+          `${roundToDecimal(lastYearSpreadFee, 2)}`,
+          `${roundToDecimal(spreadFeeChange, 1)} %`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'Withdrawal fee',
+          `${roundToDecimal(thisYearWithdrawalFee, 2)}`,
+          `${roundToDecimal(lastYearWithdrawalFee, 2)}`,
+          `${roundToDecimal(withdrawalFeeChange, 1)} %`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'Deposit fee',
+          `${roundToDecimal(thisYearDepositFee, 2)}`,
+          `${roundToDecimal(lastYearDepositFee, 2)}`,
+          `${roundToDecimal(depositFeeChange, 1)} %`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'Liquidation fee',
+          `${roundToDecimal(thisYearLiquidationFee, 2)}`,
+          `${roundToDecimal(lastYearLiquidationFee, 2)}`,
+          `${roundToDecimal(liquidationFeeChange, 1)} %`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'Guaranteed stop loss fee',
+          `${roundToDecimal(thisYearGuaranteedStopLossFee, 2)}`,
+          `${roundToDecimal(lastYearGuaranteedStopLossFee, 2)}`,
+          `${roundToDecimal(guaranteedStopLossFeeChange, 1)} %`,
+        ],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: [
+          'Total revenue',
+          `$ ${roundToDecimal(thisYearTotalRevenue, 2)}`,
+          `$ ${roundToDecimal(lastYearTotalRevenue, 2)}`,
+          `${roundToDecimal(totalRevenueChange, 1)} %`,
+        ],
+      },
+    ],
+  };
+  return result;
 };

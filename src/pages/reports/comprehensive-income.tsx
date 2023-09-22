@@ -6,18 +6,15 @@ import ReportPageBody from '../../components/report_page_body/report_page_body';
 import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
 import ReportTable from '../../components/report_table/report_table';
 import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
-import {ITable} from '../../interfaces/report_table';
 import {IComprehensiveIncomeStatements} from '../../interfaces/comprehensive_income_statements';
-import {RowType} from '../../constants/table_row_type';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {timestampToString, getReportTimeSpan} from '../../lib/common';
 import {
   getComprehensiveIncomeStatements,
-  getCISData,
   createCISFirstPart,
   createCISLastPart,
   createRevenueTable,
-  getRevenueChange,
+  createRevenueChangeTable,
 } from '../../lib/reports/comprehensive_income';
 
 const ComprehensiveIncomeStatements = () => {
@@ -41,8 +38,7 @@ const ComprehensiveIncomeStatements = () => {
     );
   }, []);
 
-  const endCISData = getCISData(endIncomeData);
-
+  // Info: (20230922 - Julian) ------------ Comprehensive Income Statements Data ------------
   const mainTableThead = [
     '$ in Thousands',
     endDateStr.dateFormatForForm,
@@ -125,7 +121,7 @@ const ComprehensiveIncomeStatements = () => {
     startIncomeData?.otherGainsLosses.details.cryptocurrencyGains
   );
 
-  const historicalCISData = getCISData(historicalIncomeData);
+  // Info: (20230922 - Julian) ------------ Comprehensive Income Statements(this year vs last year) Data ------------
   const historicalTableThead = ['$ in Thousands', endDateStr.year, endDateStr.lastYear];
 
   const income_statements_p13_1 = createCISFirstPart(
@@ -137,82 +133,13 @@ const ComprehensiveIncomeStatements = () => {
 
   const income_statements_p14_1 = createCISLastPart(endIncomeData, historicalIncomeData);
 
-  const income_statements_p14_2: ITable = {
-    subThead: ['', `30 Days Ended ${endDateStr.monthAndDay},`, '*-*', '*-*'],
-    thead: ['', endDateStr.year, endDateStr.lastYear, '% Change'],
-    tbody: [
-      {
-        rowType: RowType.headline,
-        rowData: ['', '(in thousands)', '*-*', '*-*'],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Trading fee',
-          `${endCISData.tradingFee}`,
-          `${historicalCISData.tradingFee}`,
-          `${getRevenueChange(+endCISData.tradingFee, +historicalCISData.tradingFee)} %`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Spread Fee',
-          `${endCISData.spreadFee}`,
-          `${historicalCISData.spreadFee}`,
-          `${getRevenueChange(+endCISData.spreadFee, +historicalCISData.spreadFee)} %`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Withdrawal fee',
-          `${endCISData.withdrawalFee}`,
-          `${historicalCISData.withdrawalFee}`,
-          `${getRevenueChange(+endCISData.withdrawalFee, +historicalCISData.withdrawalFee)} %`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Deposit fee',
-          `${endCISData.depositFee}`,
-          `${historicalCISData.depositFee}`,
-          `${getRevenueChange(+endCISData.depositFee, +historicalCISData.depositFee)} %`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Liquidation fee',
-          `${endCISData.liquidationFee}`,
-          `${historicalCISData.liquidationFee}`,
-          `${getRevenueChange(+endCISData.liquidationFee, +historicalCISData.liquidationFee)} %`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Guaranteed stop loss fee',
-          `${endCISData.guaranteedStopLossFee}`,
-          `${historicalCISData.guaranteedStopLossFee}`,
-          `${getRevenueChange(
-            +endCISData.guaranteedStopLossFee,
-            +historicalCISData.guaranteedStopLossFee
-          )} %`,
-        ],
-      },
-      {
-        rowType: RowType.foot,
-        rowData: [
-          'Total revenue',
-          `$ ${endCISData.totalRevenue}`,
-          `$ ${historicalCISData.totalRevenue}`,
-          `${getRevenueChange(+endCISData.totalRevenue, +historicalCISData.totalRevenue)} %`,
-        ],
-      },
-    ],
-  };
+  // Info: (20230922 - Julian) ------------ Revenue Change Table Data ------------
+  const income_statements_p14_2 = createRevenueChangeTable(
+    endDateStr.monthAndDay,
+    [endDateStr.year, endDateStr.lastYear],
+    endIncomeData,
+    historicalIncomeData
+  );
 
   return (
     <>
