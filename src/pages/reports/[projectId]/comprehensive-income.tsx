@@ -11,12 +11,13 @@ import {IComprehensiveIncomeStatements} from '../../../interfaces/comprehensive_
 import {BaifaReports} from '../../../constants/baifa_reports';
 import {timestampToString, getReportTimeSpan} from '../../../lib/common';
 import {
-  getComprehensiveIncomeStatements,
   createCISFirstPart,
   createCISLastPart,
   createRevenueTable,
   createRevenueChangeTable,
 } from '../../../lib/reports/comprehensive_income';
+import {APIURL} from '../../../constants/api_request';
+import {IResult} from '../../../interfaces/result';
 
 interface IComprehensiveIncomeStatementsProps {
   projectId: string;
@@ -35,6 +36,23 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   const [endIncomeData, setEndIncomeData] = useState<IComprehensiveIncomeStatements>();
   const [historicalIncomeData, setHistoricalIncomeData] =
     useState<IComprehensiveIncomeStatements>();
+
+  // Info: (20230923 - Julian) Get data from API
+  const getComprehensiveIncomeStatements = async (date: string) => {
+    let reportData;
+    try {
+      const response = await fetch(`${APIURL.COMPREHENSIVE_INCOME_STATEMENTS}?date=${date}`, {
+        method: 'GET',
+      });
+      const result: IResult = await response.json();
+      if (result.success) {
+        reportData = result.data as IComprehensiveIncomeStatements;
+      }
+    } catch (error) {
+      // console.log('Get comprehensive income statements error');
+    }
+    return reportData;
+  };
 
   useEffect(() => {
     getComprehensiveIncomeStatements(startDateStr.date).then(data => setStartIncomeData(data));

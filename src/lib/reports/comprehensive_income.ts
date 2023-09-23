@@ -1,5 +1,3 @@
-import {APIURL} from '../../constants/api_request';
-import {IResult} from '../../interfaces/result';
 import {
   IComprehensiveIncomeStatements,
   IIncomeAccountingDetail,
@@ -7,22 +5,6 @@ import {
 import {roundToDecimal, getChange} from '../../lib/common';
 import {ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';
-
-export const getComprehensiveIncomeStatements = async (date: string) => {
-  let reportData;
-  try {
-    const response = await fetch(`${APIURL.COMPREHENSIVE_INCOME_STATEMENTS}?date=${date}`, {
-      method: 'GET',
-    });
-    const result: IResult = await response.json();
-    if (result.success) {
-      reportData = result.data as IComprehensiveIncomeStatements;
-    }
-  } catch (error) {
-    // console.log('Get comprehensive income statements error');
-  }
-  return reportData;
-};
 
 export const createCISFirstPart = (
   thead: string[],

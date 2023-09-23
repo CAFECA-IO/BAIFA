@@ -35,7 +35,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
   const [startBalanceData, setStartBalanceData] = useState<IBalanceSheet>();
   const [endBalanceData, setEndBalanceData] = useState<IBalanceSheet>();
 
-  // Info: (20230923 - Julian) Get API data
+  // Info: (20230923 - Julian) Get data from API
   const getBalanceSheet = async (date: string) => {
     let reportData;
     try {

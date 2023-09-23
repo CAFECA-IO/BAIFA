@@ -11,14 +11,14 @@ import {IStatementsOfCashFlow} from '../../../interfaces/statements_of_cash_flow
 import {BaifaReports} from '../../../constants/baifa_reports';
 import {timestampToString, getReportTimeSpan} from '../../../lib/common';
 import {
-  getStatementsOfCashFlow,
   createCashFlowFirstPart,
   createCashFlowLastPart,
   createHistoricalCashFlowTable,
   createActivitiesAnalysis,
   createNonCashConsideration,
 } from '../../../lib/reports/cash_flow';
-
+import {IResult} from '../../../interfaces/result';
+import {APIURL} from '../../../constants/api_request';
 interface IStatementsOfCashFlowProps {
   projectId: string;
 }
@@ -35,6 +35,23 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
   const [startCashFlowData, setStartCashFlowData] = useState<IStatementsOfCashFlow>();
   const [endCashFlowData, setEndCashFlowData] = useState<IStatementsOfCashFlow>();
   const [historicalCashFlowData, setHistoricalCashFlowData] = useState<IStatementsOfCashFlow>();
+
+  // Info: (20230923 - Julian) Get data from API
+  const getStatementsOfCashFlow = async (date: string) => {
+    let reportData;
+    try {
+      const response = await fetch(`${APIURL.STATEMENTS_OF_CASH_FLOW}?date=${date}`, {
+        method: 'GET',
+      });
+      const result: IResult = await response.json();
+      if (result.success) {
+        reportData = result.data as IStatementsOfCashFlow;
+      }
+    } catch (error) {
+      // console.log('Get statements of cash Flow error');
+    }
+    return reportData;
+  };
 
   useEffect(() => {
     getStatementsOfCashFlow(startDateStr.date).then(data => setStartCashFlowData(data));
