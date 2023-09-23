@@ -1,14 +1,15 @@
 import {useEffect, useState} from 'react';
 import Head from 'next/head';
-import ReportCover from '../../components/report_cover/report_cover';
-import ReportContent from '../../components/report_content/report_content';
-import ReportPageBody from '../../components/report_page_body/report_page_body';
-import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
-import ReportTable from '../../components/report_table/report_table';
-import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
-import {IStatementsOfCashFlow} from '../../interfaces/statements_of_cash_flow';
-import {BaifaReports} from '../../constants/baifa_reports';
-import {timestampToString, getReportTimeSpan} from '../../lib/common';
+import {GetStaticPaths, GetStaticProps} from 'next';
+import ReportCover from '../../../components/report_cover/report_cover';
+import ReportContent from '../../../components/report_content/report_content';
+import ReportPageBody from '../../../components/report_page_body/report_page_body';
+import ReportRiskPages from '../../../components/report_risk_pages/report_risk_pages';
+import ReportTable from '../../../components/report_table/report_table';
+import ReportExchageRateForm from '../../../components/report_exchage_rate_form/report_exchage_rate_form';
+import {IStatementsOfCashFlow} from '../../../interfaces/statements_of_cash_flow';
+import {BaifaReports} from '../../../constants/baifa_reports';
+import {timestampToString, getReportTimeSpan} from '../../../lib/common';
 import {
   getStatementsOfCashFlow,
   createCashFlowFirstPart,
@@ -16,11 +17,16 @@ import {
   createHistoricalCashFlowTable,
   createActivitiesAnalysis,
   createNonCashConsideration,
-} from '../../lib/reports/cash_flow';
+} from '../../../lib/reports/cash_flow';
 
-const StatementsOfCashFlow = () => {
+interface IStatementsOfCashFlowProps {
+  projectId: string;
+}
+
+const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
   const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOW;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
+  const projectName = projectId;
 
   // Info: (20230913 - Julian) Get timespan of report
   const startDateStr = timestampToString(getReportTimeSpan().start);
@@ -149,7 +155,9 @@ const StatementsOfCashFlow = () => {
   return (
     <>
       <Head>
-        <title>BAIFA - {reportTitle}</title>
+        <title>
+          {reportTitle} of {projectName} - BAIFA
+        </title>
       </Head>
 
       <div className="flex w-screen flex-col items-center font-inter">
@@ -602,6 +610,31 @@ const StatementsOfCashFlow = () => {
       </div>
     </>
   );
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {projectId: '1'},
+      },
+    ],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({params}) => {
+  if (!params || !params.projectId || typeof params.projectId !== 'string') {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      projectId: params.projectId,
+    },
+  };
 };
 
 export default StatementsOfCashFlow;

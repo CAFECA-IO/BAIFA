@@ -1,16 +1,21 @@
 import Head from 'next/head';
-import ReportCover from '../../components/report_cover/report_cover';
-import ReportContent from '../../components/report_content/report_content';
-import ReportPageBody from '../../components/report_page_body/report_page_body';
-import ReportTableNew from '../../components/report_table/report_table';
-import {ITable} from '../../interfaces/report_table';
-import {RowType} from '../../constants/table_row_type';
-import {BaifaReports} from '../../constants/baifa_reports';
-import {timestampToString, getReportTimeSpan} from '../../lib/common';
+import {GetStaticPaths, GetStaticProps} from 'next';
+import ReportCover from '../../../components/report_cover/report_cover';
+import ReportContent from '../../../components/report_content/report_content';
+import ReportPageBody from '../../../components/report_page_body/report_page_body';
+import ReportTableNew from '../../../components/report_table/report_table';
+import {ITable} from '../../../interfaces/report_table';
+import {RowType} from '../../../constants/table_row_type';
+import {BaifaReports} from '../../../constants/baifa_reports';
+import {timestampToString, getReportTimeSpan} from '../../../lib/common';
 
-const StatementOfRedFlags = () => {
+interface IStatementOfRedFlagsProps {
+  projectId: string;
+}
+
+const StatementOfRedFlags = ({projectId}: IStatementOfRedFlagsProps) => {
   const reportTitle = BaifaReports.STATEMENTS_OF_RED_FLAGS;
-  const contentList = ['Statements of Red Flags', 'Note To Statements of Red Flags'];
+  const contentList = [reportTitle, `Note To ${reportTitle}`];
 
   // Info: (20230913 - Julian) Get timespan of report
   const startDateStr = timestampToString(getReportTimeSpan().start);
@@ -154,7 +159,9 @@ const StatementOfRedFlags = () => {
   return (
     <>
       <Head>
-        <title>BAIFA - {reportTitle}</title>
+        <title>
+          {reportTitle} of {projectId} - BAIFA
+        </title>
       </Head>
 
       <div className="flex w-screen flex-col items-center font-inter">
@@ -271,6 +278,31 @@ const StatementOfRedFlags = () => {
       </div>
     </>
   );
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {projectId: '1'},
+      },
+    ],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({params}) => {
+  if (!params || !params.projectId || typeof params.projectId !== 'string') {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      projectId: params.projectId,
+    },
+  };
 };
 
 export default StatementOfRedFlags;

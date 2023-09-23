@@ -1,25 +1,32 @@
 import {useEffect, useState} from 'react';
 import Head from 'next/head';
-import ReportCover from '../../components/report_cover/report_cover';
-import ReportContent from '../../components/report_content/report_content';
-import ReportPageBody from '../../components/report_page_body/report_page_body';
-import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
-import ReportTable from '../../components/report_table/report_table';
-import {BaifaReports} from '../../constants/baifa_reports';
-import {RowType} from '../../constants/table_row_type';
-import {timestampToString, getReportTimeSpan} from '../../lib/common';
-import {ITable} from '../../interfaces/report_table';
-import {IBalanceSheet} from '../../interfaces/balance_sheet';
+import {GetStaticPaths, GetStaticProps} from 'next';
+import ReportCover from '../../../components/report_cover/report_cover';
+import ReportContent from '../../../components/report_content/report_content';
+import ReportPageBody from '../../../components/report_page_body/report_page_body';
+import ReportRiskPages from '../../../components/report_risk_pages/report_risk_pages';
+import ReportTable from '../../../components/report_table/report_table';
+import {BaifaReports} from '../../../constants/baifa_reports';
+import {RowType} from '../../../constants/table_row_type';
+import {timestampToString, getReportTimeSpan} from '../../../lib/common';
+import {ITable} from '../../../interfaces/report_table';
+import {IBalanceSheet} from '../../../interfaces/balance_sheet';
 import {
-  getBalanceSheet,
   getBalanceSheetsTable,
   getTotalUserDeposit,
   getFairValue,
-} from '../../lib/reports/balance_sheet';
+} from '../../../lib/reports/balance_sheet';
+import {IResult} from '../../../interfaces/result';
+import {APIURL} from '../../../constants/api_request';
 
-const BalanceSheets = () => {
+interface IBalanceSheetsProps {
+  projectId: string;
+}
+
+const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
   const reportTitle = BaifaReports.BALANCE_SHEETS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
+  const projectName = projectId;
 
   // Info: (20230913 - Julian) Get timespan of report
   const startDateStr = timestampToString(getReportTimeSpan().start);
@@ -27,6 +34,23 @@ const BalanceSheets = () => {
 
   const [startBalanceData, setStartBalanceData] = useState<IBalanceSheet>();
   const [endBalanceData, setEndBalanceData] = useState<IBalanceSheet>();
+
+  // Info: (20230923 - Julian) Get API data
+  const getBalanceSheet = async (date: string) => {
+    let reportData;
+    try {
+      const response = await fetch(`${APIURL.BALANCE_SHEET}?date=${date}`, {
+        method: 'GET',
+      });
+      const result: IResult = await response.json();
+      if (result.success) {
+        reportData = result.data as IBalanceSheet;
+      }
+    } catch (error) {
+      // console.log('Get balance sheet error');
+    }
+    return reportData;
+  };
 
   useEffect(() => {
     getBalanceSheet(startDateStr.date).then(data => setStartBalanceData(data));
@@ -427,7 +451,9 @@ const BalanceSheets = () => {
   return (
     <>
       <Head>
-        <title>{reportTitle} - BAIFA</title>
+        <title>
+          {reportTitle} of {projectName} - BAIFA
+        </title>
       </Head>
 
       <div className="flex w-screen flex-col items-center font-inter">
@@ -441,10 +467,8 @@ const BalanceSheets = () => {
         {/* Info: (20230802 - Julian) Content */}
         <ReportContent content={contentList} />
         <hr />
-
         {/* Info: (20230807 - Julian) Page 1 & 2 */}
         <ReportRiskPages reportTitle={reportTitle} />
-
         {/* Info: (20230802 - Julian) Page 3 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={3}>
           <div className="flex flex-col gap-y-12px py-16px leading-5">
@@ -453,7 +477,6 @@ const BalanceSheets = () => {
           </div>
         </ReportPageBody>
         <hr />
-
         {/* Info: (20230802 - Julian) Page 4 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={4}>
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
@@ -496,7 +519,6 @@ const BalanceSheets = () => {
           </div>
         </ReportPageBody>
         <hr />
-
         {/* Info: (20230802 - Julian) Page 5 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={5}>
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
@@ -546,7 +568,6 @@ const BalanceSheets = () => {
           </div>
         </ReportPageBody>
         <hr />
-
         {/* Info: (20230802 - Julian) Page 6 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={6}>
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
@@ -577,7 +598,6 @@ const BalanceSheets = () => {
           </div>
         </ReportPageBody>
         <hr />
-
         {/* Info: (20230802 - Julian) Page 7 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={7}>
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
@@ -590,7 +610,6 @@ const BalanceSheets = () => {
           </div>
         </ReportPageBody>
         <hr />
-
         {/* Info: (20230802 - Julian) Page 8 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={8}>
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
@@ -625,6 +644,31 @@ const BalanceSheets = () => {
       </div>
     </>
   );
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {projectId: '1'},
+      },
+    ],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({params}) => {
+  if (!params || !params.projectId || typeof params.projectId !== 'string') {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      projectId: params.projectId,
+    },
+  };
 };
 
 export default BalanceSheets;

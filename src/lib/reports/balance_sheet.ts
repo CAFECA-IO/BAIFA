@@ -1,24 +1,6 @@
-import {IResult} from '../../interfaces/result';
-import {APIURL} from '../../constants/api_request';
 import {IBalanceSheet, IBalanceAccountingDetail} from '../../interfaces/balance_sheet';
 import {roundToDecimal} from '../../lib/common';
 import {defaultCurrencyDetail} from '../../interfaces/currency_detail';
-
-export const getBalanceSheet = async (date: string) => {
-  let reportData;
-  try {
-    const response = await fetch(`${APIURL.BALANCE_SHEET}?date=${date}`, {
-      method: 'GET',
-    });
-    const result: IResult = await response.json();
-    if (result.success) {
-      reportData = result.data as IBalanceSheet;
-    }
-  } catch (error) {
-    // console.log('Get balance sheet error');
-  }
-  return reportData;
-};
 
 export const getBalanceSheetsTable = (data: IBalanceSheet | undefined) => {
   if (!data)
