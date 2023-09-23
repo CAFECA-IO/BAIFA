@@ -1,26 +1,32 @@
 import {useEffect, useState} from 'react';
 import Head from 'next/head';
-import ReportCover from '../../components/report_cover/report_cover';
-import ReportContent from '../../components/report_content/report_content';
-import ReportPageBody from '../../components/report_page_body/report_page_body';
-import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
-import ReportTable from '../../components/report_table/report_table';
-import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
-import {IStatementsOfCashFlow} from '../../interfaces/statements_of_cash_flow';
-import {BaifaReports} from '../../constants/baifa_reports';
-import {timestampToString, getReportTimeSpan} from '../../lib/common';
+import {GetStaticPaths, GetStaticProps} from 'next';
+import ReportCover from '../../../components/report_cover/report_cover';
+import ReportContent from '../../../components/report_content/report_content';
+import ReportPageBody from '../../../components/report_page_body/report_page_body';
+import ReportRiskPages from '../../../components/report_risk_pages/report_risk_pages';
+import ReportTable from '../../../components/report_table/report_table';
+import ReportExchageRateForm from '../../../components/report_exchage_rate_form/report_exchage_rate_form';
+import {IStatementsOfCashFlow} from '../../../interfaces/statements_of_cash_flow';
+import {BaifaReports} from '../../../constants/baifa_reports';
+import {timestampToString, getReportTimeSpan} from '../../../lib/common';
 import {
-  getStatementsOfCashFlow,
   createCashFlowFirstPart,
   createCashFlowLastPart,
   createHistoricalCashFlowTable,
   createActivitiesAnalysis,
   createNonCashConsideration,
-} from '../../lib/reports/cash_flow';
+} from '../../../lib/reports/cash_flow';
+import {IResult} from '../../../interfaces/result';
+import {APIURL} from '../../../constants/api_request';
+interface IStatementsOfCashFlowProps {
+  projectId: string;
+}
 
-const StatementsOfCashFlow = () => {
+const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
   const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOW;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
+  const projectName = projectId;
 
   // Info: (20230913 - Julian) Get timespan of report
   const startDateStr = timestampToString(getReportTimeSpan().start);
@@ -29,6 +35,23 @@ const StatementsOfCashFlow = () => {
   const [startCashFlowData, setStartCashFlowData] = useState<IStatementsOfCashFlow>();
   const [endCashFlowData, setEndCashFlowData] = useState<IStatementsOfCashFlow>();
   const [historicalCashFlowData, setHistoricalCashFlowData] = useState<IStatementsOfCashFlow>();
+
+  // Info: (20230923 - Julian) Get data from API
+  const getStatementsOfCashFlow = async (date: string) => {
+    let reportData;
+    try {
+      const response = await fetch(`${APIURL.STATEMENTS_OF_CASH_FLOW}?date=${date}`, {
+        method: 'GET',
+      });
+      const result: IResult = await response.json();
+      if (result.success) {
+        reportData = result.data as IStatementsOfCashFlow;
+      }
+    } catch (error) {
+      // console.log('Get statements of cash Flow error');
+    }
+    return reportData;
+  };
 
   useEffect(() => {
     getStatementsOfCashFlow(startDateStr.date).then(data => setStartCashFlowData(data));
@@ -149,7 +172,9 @@ const StatementsOfCashFlow = () => {
   return (
     <>
       <Head>
-        <title>BAIFA - {reportTitle}</title>
+        <title>
+          {reportTitle} of {projectName} - BAIFA
+        </title>
       </Head>
 
       <div className="flex w-screen flex-col items-center font-inter">
@@ -602,6 +627,31 @@ const StatementsOfCashFlow = () => {
       </div>
     </>
   );
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {projectId: '1'},
+      },
+    ],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({params}) => {
+  if (!params || !params.projectId || typeof params.projectId !== 'string') {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      projectId: params.projectId,
+    },
+  };
 };
 
 export default StatementsOfCashFlow;

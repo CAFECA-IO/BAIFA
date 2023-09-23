@@ -1,25 +1,32 @@
 import {useEffect, useState} from 'react';
 import Head from 'next/head';
-import ReportCover from '../../components/report_cover/report_cover';
-import ReportContent from '../../components/report_content/report_content';
-import ReportPageBody from '../../components/report_page_body/report_page_body';
-import ReportRiskPages from '../../components/report_risk_pages/report_risk_pages';
-import ReportTable from '../../components/report_table/report_table';
-import ReportExchageRateForm from '../../components/report_exchage_rate_form/report_exchage_rate_form';
-import {IComprehensiveIncomeStatements} from '../../interfaces/comprehensive_income_statements';
-import {BaifaReports} from '../../constants/baifa_reports';
-import {timestampToString, getReportTimeSpan} from '../../lib/common';
+import {GetStaticPaths, GetStaticProps} from 'next';
+import ReportCover from '../../../components/report_cover/report_cover';
+import ReportContent from '../../../components/report_content/report_content';
+import ReportPageBody from '../../../components/report_page_body/report_page_body';
+import ReportRiskPages from '../../../components/report_risk_pages/report_risk_pages';
+import ReportTable from '../../../components/report_table/report_table';
+import ReportExchageRateForm from '../../../components/report_exchage_rate_form/report_exchage_rate_form';
+import {IComprehensiveIncomeStatements} from '../../../interfaces/comprehensive_income_statements';
+import {BaifaReports} from '../../../constants/baifa_reports';
+import {timestampToString, getReportTimeSpan} from '../../../lib/common';
 import {
-  getComprehensiveIncomeStatements,
   createCISFirstPart,
   createCISLastPart,
   createRevenueTable,
   createRevenueChangeTable,
-} from '../../lib/reports/comprehensive_income';
+} from '../../../lib/reports/comprehensive_income';
+import {APIURL} from '../../../constants/api_request';
+import {IResult} from '../../../interfaces/result';
 
-const ComprehensiveIncomeStatements = () => {
+interface IComprehensiveIncomeStatementsProps {
+  projectId: string;
+}
+
+const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatementsProps) => {
   const reportTitle = BaifaReports.COMPREHENSIVE_INCOME_STATEMENTS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
+  const projectName = projectId;
 
   // Info: (20230913 - Julian) Get timespan of report
   const startDateStr = timestampToString(getReportTimeSpan().start);
@@ -29,6 +36,23 @@ const ComprehensiveIncomeStatements = () => {
   const [endIncomeData, setEndIncomeData] = useState<IComprehensiveIncomeStatements>();
   const [historicalIncomeData, setHistoricalIncomeData] =
     useState<IComprehensiveIncomeStatements>();
+
+  // Info: (20230923 - Julian) Get data from API
+  const getComprehensiveIncomeStatements = async (date: string) => {
+    let reportData;
+    try {
+      const response = await fetch(`${APIURL.COMPREHENSIVE_INCOME_STATEMENTS}?date=${date}`, {
+        method: 'GET',
+      });
+      const result: IResult = await response.json();
+      if (result.success) {
+        reportData = result.data as IComprehensiveIncomeStatements;
+      }
+    } catch (error) {
+      // console.log('Get comprehensive income statements error');
+    }
+    return reportData;
+  };
 
   useEffect(() => {
     getComprehensiveIncomeStatements(startDateStr.date).then(data => setStartIncomeData(data));
@@ -144,7 +168,9 @@ const ComprehensiveIncomeStatements = () => {
   return (
     <>
       <Head>
-        <title>BAIFA - {reportTitle}</title>
+        <title>
+          {reportTitle} of {projectName} - BAIFA
+        </title>
       </Head>
 
       <div className="flex w-screen flex-col items-center font-inter">
@@ -467,6 +493,31 @@ const ComprehensiveIncomeStatements = () => {
       </div>
     </>
   );
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {projectId: '1'},
+      },
+    ],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({params}) => {
+  if (!params || !params.projectId || typeof params.projectId !== 'string') {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      projectId: params.projectId,
+    },
+  };
 };
 
 export default ComprehensiveIncomeStatements;

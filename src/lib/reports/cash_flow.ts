@@ -1,5 +1,3 @@
-import {IResult} from '../../interfaces/result';
-import {APIURL} from '../../constants/api_request';
 import {
   IStatementsOfCashFlow,
   INonCashAccountingDetail,
@@ -8,23 +6,6 @@ import {
 import {roundToDecimal} from '../common';
 import {ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';
-
-// Info: (20230919 - Julian) Get data from API
-export const getStatementsOfCashFlow = async (date: string) => {
-  let reportData;
-  try {
-    const response = await fetch(`${APIURL.STATEMENTS_OF_CASH_FLOW}?date=${date}`, {
-      method: 'GET',
-    });
-    const result: IResult = await response.json();
-    if (result.success) {
-      reportData = result.data as IStatementsOfCashFlow;
-    }
-  } catch (error) {
-    // console.log('Get statements of cash Flow error');
-  }
-  return reportData;
-};
 
 export const createCashFlowFirstPart = (
   endedDate: string,

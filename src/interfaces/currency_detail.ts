@@ -11,12 +11,6 @@ export interface IStatementCurrencyDetail extends ICurrencyDetail {
   weightedAverageCost: number;
 }
 
-export const defaultCurrencyDetail: ICurrencyDetail = {
-  name: 'None',
-  amount: 0,
-  fairValue: 0,
-};
-
 export const defaultStatementCurrencyDetail: IStatementCurrencyDetail = {
   currencyType: 'CRYPTOCURRENCY',
   name: 'None',
