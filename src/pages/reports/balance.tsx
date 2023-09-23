@@ -612,7 +612,7 @@ const BalanceSheets = () => {
             <p>
               A downturn in the market price of Bitcoin, Ethereum, and other cryptocurrencies could
               negatively affect our earnings, the carrying value of our cryptocurrencies, and our
-              projected future cash flows. It could also pose a challenge to our liquidity and
+              projected future cash flow. It could also pose a challenge to our liquidity and
               capability to fulfill ongoing obligations.
             </p>
             <p>

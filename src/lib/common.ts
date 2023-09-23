@@ -19,7 +19,7 @@ export const timestampToString = (timestamp: number) => {
     };
 
   const date = new Date(timestamp * 1000);
-
+  // 設定時區
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
@@ -144,4 +144,9 @@ export const getReportTimeSpan = () => {
     start: thirtyDaysAgo,
     end: yesterday,
   };
+};
+
+export const getChange = (current: number, previous: number) => {
+  if (previous === 0) return 0;
+  return (current - previous) / previous;
 };
