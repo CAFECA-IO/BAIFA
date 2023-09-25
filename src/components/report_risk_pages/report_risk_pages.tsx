@@ -66,7 +66,7 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
           </ul>
         </div>
       </ReportPageBody>
-      <hr />
+      <hr className="break-before-page" />
       {/* Info: (20230807 - Julian) Page 2 */}
       <ReportPageBody reportTitle={reportTitle} currentPage={2}>
         <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
@@ -110,7 +110,7 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
           </ul>
         </div>
       </ReportPageBody>
-      <hr />
+      <hr className="break-before-page" />
     </>
   );
 };

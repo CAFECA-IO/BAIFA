@@ -38,6 +38,16 @@ a {
 
 * {
   box-sizing: border-box;
+  -webkit-print-color-adjust: exact !important;
+}
+
+.noPrint {
+  display: none;
+}
+
+@page {
+  size: 595px 842px;
+  margin: 0cm;
 }
 
 @media (prefers-color-scheme: dark) {

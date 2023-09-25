@@ -14,10 +14,10 @@ const ReportContent = ({content}: ReportContentProps) => {
       <div className="flex h-full w-full px-40px pt-160px">
         {/* Info: (20230801 - Julian) Content Title & Border Line */}
         <div className="relative block w-110px bg-purpleLinear">
-          <h1 className="absolute -left-24 top-28 -rotate-90 text-6xl font-bold text-violet">
+          <h1 className="absolute -left-24 top-28 z-10 -rotate-90 text-6xl font-bold text-violet">
             CONTENT
           </h1>
-          <div className="h-full w-105px bg-hoverWhite"></div>
+          <div className="absolute bottom-0 right-1 h-700px w-110px bg-lightWhite"></div>
         </div>
         <ul className="list-decimal pl-40px text-base font-bold text-darkPurple3">{displayList}</ul>
       </div>

@@ -89,10 +89,10 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
           reportDateStart={startDateStr.date}
           reportDateEnd={endDateStr.date}
         />
-        <hr />
+        <hr className="break-before-page" />
         {/* Info: (20230802 - Julian) Content */}
         <ReportContent content={contentList} />
-        <hr />
+        <hr className="break-before-page" />
         {/* Info: (20230807 - Julian) Page 1 & 2 */}
         <ReportRiskPages reportTitle={reportTitle} />
         {/* Info: (20230802 - Julian) Page 3 */}
@@ -102,7 +102,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
             <ReportTable tableData={balance_sheets_p3_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
         {/* Info: (20230802 - Julian) Page 4 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={4}>
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
@@ -144,7 +144,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
             <p className="font-bold">Use of estimates</p>
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
         {/* Info: (20230802 - Julian) Page 5 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={5}>
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
@@ -193,7 +193,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
             </p>
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
         {/* Info: (20230802 - Julian) Page 6 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={6}>
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
@@ -223,7 +223,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
             <p className="italic text-lilac">Next Page</p>
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
         {/* Info: (20230802 - Julian) Page 7 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={7}>
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
@@ -235,7 +235,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
             </p>
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
         {/* Info: (20230802 - Julian) Page 8 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={8}>
           <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
@@ -266,7 +266,6 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
             </p>
           </div>
         </ReportPageBody>
-        <hr />
       </div>
     </>
   );
