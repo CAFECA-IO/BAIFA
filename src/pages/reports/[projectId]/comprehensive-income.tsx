@@ -180,11 +180,11 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
           reportDateStart={startDateStr.date}
           reportDateEnd={endDateStr.date}
         />
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Content */}
         <ReportContent content={contentList} />
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 1 & 2 */}
         <ReportRiskPages reportTitle={reportTitle} />
@@ -196,7 +196,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             <ReportTable tableData={income_statements_p3_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 4 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={4}>
@@ -204,7 +204,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             <ReportTable tableData={income_statements_p4_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 5 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={5}>
@@ -252,7 +252,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             </p>
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 6 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={6}>
@@ -304,7 +304,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             </p>
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 7 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={7}>
@@ -322,7 +322,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             <ReportTable tableData={income_statements_p7_2} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 8 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={8}>
@@ -347,7 +347,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             <ReportTable tableData={income_statements_p8_2} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 9 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={9}>
@@ -364,7 +364,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             <ReportTable tableData={income_statements_p9_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 10 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={10}>
@@ -380,7 +380,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             <ReportTable tableData={income_statements_p10_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 11 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={11}>
@@ -396,7 +396,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             <ReportTable tableData={income_statements_p11_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 12 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={12}>
@@ -413,7 +413,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             <ReportTable tableData={income_statements_p12_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 13 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={13}>
@@ -424,7 +424,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             <ReportTable tableData={income_statements_p13_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 14 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={14}>
@@ -438,7 +438,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             <ReportTable tableData={income_statements_p14_2} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 15 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={15}>
@@ -453,7 +453,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             <ReportExchageRateForm />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230906 - Julian) Page 16 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={16}>
@@ -489,7 +489,6 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
             </p>
           </div>
         </ReportPageBody>
-        <hr />
       </div>
     </>
   );

@@ -184,11 +184,11 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           reportDateStart={startDateStr.date}
           reportDateEnd={endDateStr.date}
         />
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230808 - Julian) Content */}
         <ReportContent content={contentList} />
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230808 - Julian) Page 1 & 2 */}
         <ReportRiskPages reportTitle={reportTitle} />
@@ -200,7 +200,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             <ReportTable tableData={cash_flow_p3_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 4 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={4}>
@@ -212,6 +212,13 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
               formality; it's a reflection of its operational, regulatory, and strategic
               imperatives. Here are the reasons why this distinction is crucial:
             </p>
+          </div>
+        </ReportPageBody>
+        <hr className="break-before-page" />
+
+        {/* Info: (20230807 - Julian) Page 5 */}
+        <ReportPageBody reportTitle={reportTitle} currentPage={5}>
+          <div className="flex flex-col gap-y-15px py-16px text-xs leading-5">
             <ol className="ml-5 list-decimal font-bold">
               <li>
                 <h2>Nature of Assets:</h2>
@@ -237,15 +244,6 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
                   </li>
                 </ul>
               </li>
-            </ol>
-          </div>
-        </ReportPageBody>
-        <hr />
-
-        {/* Info: (20230807 - Julian) Page 5 */}
-        <ReportPageBody reportTitle={reportTitle} currentPage={5}>
-          <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
-            <ol start={2} className="ml-5 list-decimal font-bold">
               <li>
                 <h2>Regulatory and Reporting Requirements:</h2>
                 <ul className="my-1 ml-5 list-disc">
@@ -302,7 +300,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             </ol>
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 6 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={6}>
@@ -348,7 +346,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             </p>
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 7 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={7}>
@@ -398,7 +396,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             </p>
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 8 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={8}>
@@ -443,7 +441,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             </p>
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 9 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={9}>
@@ -462,7 +460,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             <ReportTable tableData={cash_flow_p9_2} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 10 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={10}>
@@ -489,7 +487,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             <ReportTable tableData={cash_flow_p10_2} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 11 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={11}>
@@ -507,7 +505,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             <ReportTable tableData={cash_flow_p11_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 12 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={12}>
@@ -525,7 +523,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             <ReportTable tableData={cash_flow_p12_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 13 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={13}>
@@ -541,7 +539,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             <ReportTable tableData={cash_flow_p13_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 14 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={14}>
@@ -557,7 +555,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             <ReportTable tableData={cash_flow_p14_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 15 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={15}>
@@ -573,7 +571,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             <ReportTable tableData={cash_flow_p15_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 16 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={16}>
@@ -587,7 +585,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             <ReportExchageRateForm />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230807 - Julian) Page 17 */}
         <ReportPageBody reportTitle={reportTitle} currentPage={17}>
@@ -623,7 +621,6 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
             </p>
           </div>
         </ReportPageBody>
-        <hr />
       </div>
     </>
   );

@@ -171,11 +171,11 @@ const StatementOfRedFlags = ({projectId}: IStatementOfRedFlagsProps) => {
           reportDateStart={startDateStr.date}
           reportDateEnd={endDateStr.date}
         />
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230804 - Julian) Content */}
         <ReportContent content={contentList} />
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230809 - Julian) Page 1  */}
         <ReportPageBody reportTitle={BaifaReports.STATEMENTS_OF_RED_FLAGS} currentPage={1}>
@@ -238,7 +238,7 @@ const StatementOfRedFlags = ({projectId}: IStatementOfRedFlagsProps) => {
             </p>
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230809 - Julian) Page 2  */}
         <ReportPageBody reportTitle={BaifaReports.STATEMENTS_OF_RED_FLAGS} currentPage={2}>
@@ -247,7 +247,7 @@ const StatementOfRedFlags = ({projectId}: IStatementOfRedFlagsProps) => {
             <ReportTableNew tableData={red_flags_p2_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230809 - Julian) Page 3  */}
         <ReportPageBody reportTitle={BaifaReports.STATEMENTS_OF_RED_FLAGS} currentPage={3}>
@@ -261,7 +261,7 @@ const StatementOfRedFlags = ({projectId}: IStatementOfRedFlagsProps) => {
             <ReportTableNew tableData={red_flags_p3_1} />
           </div>
         </ReportPageBody>
-        <hr />
+        <hr className="break-before-page" />
 
         {/* Info: (20230809 - Julian) Page 4  */}
         <ReportPageBody reportTitle={BaifaReports.STATEMENTS_OF_RED_FLAGS} currentPage={4}>
@@ -274,7 +274,6 @@ const StatementOfRedFlags = ({projectId}: IStatementOfRedFlagsProps) => {
             <ReportTableNew tableData={red_flags_p4_1} />
           </div>
         </ReportPageBody>
-        <hr />
       </div>
     </>
   );
