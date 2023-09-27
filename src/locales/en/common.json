@@ -101,6 +101,14 @@
     "TYPE_NFT": "NFT",
     "TYPE_EVIDENCE": "Evidence"
   },
+  "CURRENCIES_PAGE": {
+    "BREADCRUMB_TITLE": "Currency List",
+    "TITLE_HIGHLIGHT": "Currency",
+    "TITLE": "List",
+    "RISK_HIGH": "High Risk",
+    "RISK_MEDIUM": "Medium Risk",
+    "RISK_LOW": "Low Risk"
+  },
   "BLOCK_DETAIL_PAGE": {
     "MAIN_TITLE": "Block",
     "STABILITY": "Stability level",

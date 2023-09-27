@@ -101,6 +101,14 @@
     "TYPE_NFT": "NFT",
     "TYPE_EVIDENCE": "證據"
   },
+  "CURRENCIES_PAGE": {
+    "BREADCRUMB_TITLE": "貨幣列表",
+    "TITLE_HIGHLIGHT": "貨幣",
+    "TITLE": "列表",
+    "RISK_HIGH": "高風險",
+    "RISK_MEDIUM": "中等風險",
+    "RISK_LOW": "低風險"
+  },
   "BLOCK_DETAIL_PAGE": {
     "MAIN_TITLE": "區塊",
     "STABILITY": "穩定性等級",
