@@ -13,3 +13,11 @@ export const BFAURL = {
   BLOCK: '/app/block',
   TRANSACTION: '/app/transaction',
 };
+
+export const REPORT_PATH = {
+  REPORTS: '/reports',
+  BALANCE_SHEETS: 'balance',
+  INCOME_STATEMENTS: 'comprehensive-income',
+  CASH_FLOW_STATEMENTS: 'cash-flow',
+  RED_FLAGS: 'red-flags',
+};

@@ -1,4 +1,4 @@
-import {BFAURL} from '../constants/url';
+import {REPORT_PATH, BFAURL} from '../constants/url';
 
 export const MONTH_LIST = [
   'DATE_PICKER.JAN',
@@ -171,3 +171,26 @@ export const githubLink = process.env.GITHUB_LINK;
 
 /* Info: (20230814 - Julian) ----- Reports ----- */
 export const CLOSING_TIME = 57600;
+
+export const pluginReportsList = [
+  {
+    name: 'PLUGIN.COMPREHENSIVE_INCOME_STATEMENT',
+    imageSrc: '/icons/income_statement_icon.svg',
+    linkPath: `${REPORT_PATH.INCOME_STATEMENTS}`,
+  },
+  {
+    name: 'PLUGIN.BALANCE_SHEET',
+    imageSrc: '/icons/balance_sheet_icon.svg',
+    linkPath: `${REPORT_PATH.BALANCE_SHEETS}`,
+  },
+  {
+    name: 'PLUGIN.CASH_FLOW_STATEMENT',
+    imageSrc: '/icons/cash_flow_statement_icon.svg',
+    linkPath: `${REPORT_PATH.CASH_FLOW_STATEMENTS}`,
+  },
+  {
+    name: 'PLUGIN.RED_FLAG_ANALYSIS',
+    imageSrc: '/icons/red_flags_icon.svg',
+    linkPath: `${REPORT_PATH.RED_FLAGS}`,
+  },
+];

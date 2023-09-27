@@ -13,6 +13,7 @@ module.exports = {
 
         lightGreen: '#3DD08C',
         lightGreen2: '#21AD6C',
+        lightGreen3: '#53AE94',
 
         lightBlue: '#31D3F5',
 
