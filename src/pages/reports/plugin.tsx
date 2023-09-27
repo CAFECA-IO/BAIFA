@@ -55,7 +55,7 @@ const BaifaPlugin = () => {
     getWebsiteReserve().then(websiteReserve => {
       setReserveRatio(websiteReserve);
     });
-  });
+  }, []);
 
   // ToDo: (20230927 - Julian) Replace with real data
   const projectId = 'tbd';
@@ -125,11 +125,11 @@ const BaifaPlugin = () => {
           <ReserveCard
             name="USDT"
             color="text-lightGreen3"
-            ratio="100" //{usdtReserveRatio}
+            ratio={`${USDT.reserveRatio}`}
             icon={getChainIcon('usdt').src}
             link="/"
-            userHoldings="100" //{usdtUserHolding}
-            walletAssets="100" //{usdtReserve}
+            userHoldings={`${USDT.usersHolding}`}
+            walletAssets={`${USDT.tidebitReserve}`}
           />
         </div>
       </section>
