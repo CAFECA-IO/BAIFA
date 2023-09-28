@@ -129,7 +129,7 @@ const BaifaPlugin = ({projectId}: IBaifaPluginProps) => {
       </Head>
 
       {/* Info: (20230927 - Julian) Latest reserve ratio */}
-      <section className="py-10 font-inter">
+      <section className="pb-10 pt-20 font-inter">
         {/* Info: (20230927 - Julian) Reserve Ratio Title */}
         <div className="flex items-center justify-center text-2xl text-white xs:text-3xl sm:text-4xl lg:mb-10">
           <span className="my-auto h-px w-1/10 rounded bg-white/50 xs:inline-block lg:w-full xl:mx-2"></span>
@@ -165,7 +165,7 @@ const BaifaPlugin = ({projectId}: IBaifaPluginProps) => {
       </section>
 
       {/* Info: (20230927 - Julian) AI Supervision Reports */}
-      <section className="py-10 font-inter">
+      <section className="pb-20 pt-10 font-inter">
         {/* Info: (20230927 - Julian) AI Title */}
         <div className="flex items-center justify-center text-2xl text-white xs:text-3xl sm:text-4xl lg:mb-10">
           <span className="my-auto h-px w-1/10 rounded bg-white/50 xs:inline-block lg:w-full xl:mx-2"></span>
