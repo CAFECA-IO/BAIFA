@@ -28,11 +28,13 @@ const ReserveCard = ({
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   return (
-    <div className="flex h-auto w-350px flex-col rounded-lg bg-darkPurple p-8 font-inter">
+    <div className="flex h-auto w-350px flex-col rounded-lg bg-darkPurple p-8 font-inter shadow-xl">
       <div className="mb-3 flex items-center">
+        {/* Info: (20230928 - Julian) Icon */}
         <div className="mr-3 inline-flex shrink-0 items-center justify-center rounded-full">
           <Image src={icon} width={50} height={50} alt={`${name}_icon`} />
         </div>
+        {/* Info: (20230928 - Julian) Title */}
         <div className="flex flex-col">
           <h2 className={`text-3xl font-medium ${color}`}>{name}</h2>
           <p> {t('PLUGIN.RESERVE_RATIO_BLOCK_CARD')}</p>
@@ -50,9 +52,13 @@ const ReserveCard = ({
           <BoltButton
             style="solid"
             color="purple"
-            className="rounded-full px-3 py-1 font-bold transition-all duration-300 ease-in-out"
+            className="rounded-full px-3 py-1 transition-all duration-300 ease-in-out"
           >
-            <Link href={link} target="_blank" className="flex space-x-2 whitespace-nowrap">
+            <Link
+              href={link}
+              target="_blank"
+              className="flex items-center space-x-2 whitespace-nowrap"
+            >
               <p> {t('PLUGIN.RESERVE_RATIO_BLOCK_CARD_2')}</p>
               <BiLinkAlt size={20} />
             </Link>
@@ -60,14 +66,12 @@ const ReserveCard = ({
         </div>
 
         <div className="my-5 flex flex-col space-y-2">
-          <div className="text-base text-lilac">{t('PLUGIN.RESERVE_RATIO_BLOCK_DESCRIPTION')}</div>
-          <div>{userHoldings}</div>
+          <p className="text-base text-lilac">{t('PLUGIN.RESERVE_RATIO_BLOCK_DESCRIPTION')}</p>
+          <p>{userHoldings}</p>
         </div>
         <div className="flex flex-col space-y-2">
-          <div className="text-base text-lilac">
-            {t('PLUGIN.RESERVE_RATIO_BLOCK_DESCRIPTION_2')}
-          </div>
-          <div>{walletAssets}</div>
+          <p className="text-base text-lilac">{t('PLUGIN.RESERVE_RATIO_BLOCK_DESCRIPTION_2')}</p>
+          <p>{walletAssets}</p>
         </div>
       </div>
     </div>

@@ -1,27 +1,33 @@
 import {useEffect, useState} from 'react';
+import {GetStaticPaths, GetStaticProps} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import NavBar from '../../components/nav_bar/nav_bar';
-import BoltButton from '../../components/bolt_button/bolt_button';
-import ReserveCard from '../../components/reserve_card/reserve_card';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction, ILocale} from '../../interfaces/locale';
-import {IResult} from '../../interfaces/result';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {timestampToString, getReportTimeSpan, getChainIcon} from '../../lib/common';
-import {REPORT_PATH, BFAURL} from '../../constants/url';
-import {pluginReportsList} from '../../constants/config';
-import {APIURL} from '../../constants/api_request';
+import BoltButton from '../../../components/bolt_button/bolt_button';
+import ReserveCard from '../../../components/reserve_card/reserve_card';
+import {TranslateFunction} from '../../../interfaces/locale';
+import {IResult} from '../../../interfaces/result';
 import {
-  dummyWebsiteReserve,
-  isIWebsiteReserve,
-  IWebsiteReserve,
-} from '../../interfaces/website_reserve';
+  timestampToString,
+  getReportTimeSpan,
+  getChainIcon,
+  withCommas,
+  roundToDecimal,
+} from '../../../lib/common';
+import {REPORT_PATH, BFAURL} from '../../../constants/url';
+import {pluginReportsList} from '../../../constants/config';
+import {APIURL} from '../../../constants/api_request';
+import {dummyWebsiteReserve, IWebsiteReserve} from '../../../interfaces/website_reserve';
 import {BiLinkAlt} from 'react-icons/bi';
 import {FiDownload} from 'react-icons/fi';
 
-const BaifaPlugin = () => {
+interface IBaifaPluginProps {
+  projectId: string;
+}
+
+const BaifaPlugin = ({projectId}: IBaifaPluginProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const reportEndDate = timestampToString(getReportTimeSpan().end);
   const lastUpdatedText = `${t(reportEndDate.month)} ${reportEndDate.day}, ${reportEndDate.year}`;
@@ -37,13 +43,7 @@ const BaifaPlugin = () => {
       });
       const result: IResult = await response.json();
       if (result.success) {
-        const vaild = isIWebsiteReserve(result.data);
-        if (!vaild) {
-          //console.error(`getWebsiteReserve invalid data interface`);
-          reserveRatio = dummyWebsiteReserve;
-        } else {
-          reserveRatio = result.data as IWebsiteReserve;
-        }
+        reserveRatio = result.data as IWebsiteReserve;
       }
     } catch (error) {
       // console.log('getWebsiteReserve error');
@@ -58,12 +58,47 @@ const BaifaPlugin = () => {
   }, []);
 
   // ToDo: (20230927 - Julian) Replace with real data
-  const projectId = 'tbd';
   const certificateImageSrc = '/certificate/3-v.png';
 
   const reportUrl = `${REPORT_PATH.REPORTS}/${projectId}`;
   const reserveData = reserveRatio ?? dummyWebsiteReserve;
   const {BTC, ETH, USDT} = reserveData;
+
+  const usdtData = {
+    color: 'text-lightGreen3',
+    icon: getChainIcon('usdt').src,
+    link: '/',
+    ...USDT,
+  };
+
+  const ethData = {
+    color: 'text-bluePurple',
+    icon: getChainIcon('eth').src,
+    link: '/',
+    ...ETH,
+  };
+
+  const btcData = {
+    color: 'text-lightOrange',
+    icon: getChainIcon('btc').src,
+    link: '/',
+    ...BTC,
+  };
+
+  const displayReserveRatio = [usdtData, ethData, btcData].map((reserve, index) => {
+    return (
+      <ReserveCard
+        key={index}
+        name={reserve.currency}
+        color={reserve.color}
+        ratio={`${+reserve.reserveRatio}`}
+        icon={reserve.icon}
+        link={reserve.link}
+        userHoldings={`${withCommas(roundToDecimal(+reserve.usersHolding, 2))}`}
+        walletAssets={`${withCommas(roundToDecimal(+reserve.tidebitReserve, 2))}`}
+      />
+    );
+  });
 
   const displayReportsList = pluginReportsList.map((report, index) => {
     return (
@@ -92,45 +127,40 @@ const BaifaPlugin = () => {
         <link rel="icon" href="/favicon.ico" />
         <title>Plugin - BAIFA</title>
       </Head>
-      <NavBar />
-      <div className="h-100px"></div>
 
-      {/* Info: (20230927 - Julian) Latest reserve ratio of TideBit holdings */}
+      {/* Info: (20230927 - Julian) Latest reserve ratio */}
       <section className="py-10 font-inter">
         {/* Info: (20230927 - Julian) Reserve Ratio Title */}
         <div className="flex items-center justify-center text-2xl text-white xs:text-3xl sm:text-4xl lg:mb-10">
-          <span className="my-auto h-px w-full rounded bg-white/50 xs:inline-block xl:mx-2"></span>
-          <h1 className="mx-3 whitespace-nowrap text-center">
-            Latest
-            <span className="text-primaryBlue"> reserve ratio </span>
-            of TideBit holdings
+          <span className="my-auto h-px w-1/10 rounded bg-white/50 xs:inline-block lg:w-full xl:mx-2"></span>
+          <h1 className="mx-3 w-90vw text-center lg:whitespace-nowrap">
+            {t('PLUGIN.RESERVE_RATIO_BLOCK_TITLE')}
+            <span className="text-primaryBlue">
+              {t('PLUGIN.RESERVE_RATIO_BLOCK_TITLE_HIGHLIGHT')}
+            </span>
+            {t('PLUGIN.RESERVE_RATIO_BLOCK_TITLE_2')}
           </h1>
-          <span className="my-auto h-px w-full rounded bg-white/50 xs:inline-block xl:mx-2"></span>
+          <span className="my-auto h-px w-1/10 rounded bg-white/50 xs:inline-block lg:w-full xl:mx-2"></span>
         </div>
 
         {/* Info: (20230927 - Julian) Report Download */}
-        <Link
-          locale={false}
-          // TODO: Report updated from context (20230619 - Shirley)
-          href={`https://www.tidebit-defi.com/whitepaper/tidebit_tech_whitepaper_v2.0.4_en.pdf`}
-          download
-          target="_blank"
-          className="flex w-full justify-center space-x-2 transition-all duration-150 hover:text-primaryBlue lg:justify-end lg:pr-1/8 2xl:pr-1/5"
-        >
-          <p className="text-sm">Download Report</p>
-          <FiDownload size={20} />
-        </Link>
+        <div className="my-5 flex w-full justify-center lg:justify-end lg:pr-1/8 2xl:pr-1/5">
+          <Link
+            locale={false}
+            // TODO: Report updated from context (20230619 - Shirley)
+            href={`https://www.tidebit-defi.com/whitepaper/tidebit_tech_whitepaper_v2.0.4_en.pdf`}
+            download
+            target="_blank"
+            className="flex space-x-2 transition-all duration-150 hover:text-primaryBlue"
+          >
+            <p className="text-sm">{t('PLUGIN.DOWNLOAD_REPORT')}</p>
+            <FiDownload size={20} />
+          </Link>
+        </div>
 
-        <div className="mx-auto flex w-full flex-col items-center justify-center bg-center pb-20 lg:flex-row">
-          <ReserveCard
-            name="USDT"
-            color="text-lightGreen3"
-            ratio={`${USDT.reserveRatio}`}
-            icon={getChainIcon('usdt').src}
-            link="/"
-            userHoldings={`${USDT.usersHolding}`}
-            walletAssets={`${USDT.tidebitReserve}`}
-          />
+        {/* Info: (20230928 - Julian) Reserve Ratio List */}
+        <div className="mx-auto flex w-full flex-col items-center justify-center gap-10 lg:flex-row">
+          {displayReserveRatio}
         </div>
       </section>
 
@@ -138,12 +168,12 @@ const BaifaPlugin = () => {
       <section className="py-10 font-inter">
         {/* Info: (20230927 - Julian) AI Title */}
         <div className="flex items-center justify-center text-2xl text-white xs:text-3xl sm:text-4xl lg:mb-10">
-          <span className="my-auto h-px w-full rounded bg-white/50 xs:inline-block xl:mx-2"></span>
-          <h1 className="mx-3 whitespace-nowrap text-center">
+          <span className="my-auto h-px w-1/10 rounded bg-white/50 xs:inline-block lg:w-full xl:mx-2"></span>
+          <h1 className="mx-3 w-90vw text-center lg:whitespace-nowrap">
             <span className="text-primaryBlue">{t('PLUGIN.SMART')} </span>
             {t('PLUGIN.AUDITING_REPORTS')}
           </h1>
-          <span className="my-auto h-px w-full rounded bg-white/50 xs:inline-block xl:mx-2"></span>
+          <span className="my-auto h-px w-1/10 rounded bg-white/50 xs:inline-block lg:w-full xl:mx-2"></span>
         </div>
 
         {/* Info: (20230927 - Julian) AI Content */}
@@ -185,12 +215,30 @@ const BaifaPlugin = () => {
   );
 };
 
-const getStaticPropsFunction = async ({locale}: ILocale) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['common'])),
-  },
-});
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {projectId: '1'},
+      },
+    ],
+    fallback: 'blocking',
+  };
+};
 
-export const getStaticProps = getStaticPropsFunction;
+export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+  if (!params || !params.projectId || typeof params.projectId !== 'string') {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      projectId: params.projectId,
+      ...(await serverSideTranslations(locale as string, ['common'])),
+    },
+  };
+};
 
 export default BaifaPlugin;

@@ -198,6 +198,9 @@
     "COMPANY_INFO": "Company Info"
   },
   "PLUGIN": {
+    "RESERVE_RATIO_BLOCK_TITLE": "Latest",
+    "RESERVE_RATIO_BLOCK_TITLE_HIGHLIGHT": " reserve ratio ",
+    "RESERVE_RATIO_BLOCK_TITLE_2": "of TideBit holdings",
     "DOWNLOAD_REPORT": "Download Report",
     "RESERVE_RATIO_BLOCK_CARD": "reserve ratio",
     "RESERVE_RATIO_BLOCK_CARD_2": "Blockchain",

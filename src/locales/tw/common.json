@@ -198,6 +198,9 @@
     "COMPANY_INFO": "公司資訊"
   },
   "PLUGIN": {
+    "RESERVE_RATIO_BLOCK_TITLE": "最新的 TideBit ",
+    "RESERVE_RATIO_BLOCK_TITLE_HIGHLIGHT": "儲備金比例",
+    "RESERVE_RATIO_BLOCK_TITLE_2": "",
     "DOWNLOAD_REPORT": "下載報告",
     "RESERVE_RATIO_BLOCK_CARD": "儲備金比例",
     "RESERVE_RATIO_BLOCK_CARD_2": "區塊鏈",
