@@ -1,10 +1,16 @@
 import Head from 'next/head';
+import {useEffect} from 'react';
 import LandingNavBar from '../components/landing_nav_bar/landing_nav_bar';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ILocale} from '../interfaces/locale';
 import LandingPageBody from '../components/landing_page_body/landing_page_body';
+import reportWebVitals from '../reportWebVitals';
 
 const LandingPage = () => {
+  useEffect(() => {
+    reportWebVitals(console.log);
+  }, []);
+
   return (
     <>
       <Head>

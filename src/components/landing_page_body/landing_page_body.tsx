@@ -57,6 +57,7 @@ const LandingPageBody = () => {
             src={image}
             alt={alt}
             fill
+            sizes="(max-width: 1024px) 220px, 220px"
             style={{objectFit: 'cover', objectPosition: 'center bottom'}}
           />
         </div>
@@ -93,7 +94,7 @@ const LandingPageBody = () => {
             {t('LANDING_PAGE.MAIN_SUBTITLE')}
           </h1>
           {/* Info:(20230711 - Julian) Arrow */}
-          <Link href="#baifa_101" scroll={false} className="absolute bottom-80 lg:bottom-20">
+          <Link href="/#baifa_101" scroll={false} className="absolute bottom-80 lg:bottom-20">
             <Image src="/animations/arrow_down.gif" alt="scroll arrow" width={50} height={50} />
           </Link>
         </div>
