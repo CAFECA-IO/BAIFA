@@ -8,6 +8,8 @@ import reportWebVitals from '../reportWebVitals';
 
 const LandingPage = () => {
   useEffect(() => {
+    // Deprecated: for test (20230928 - Julian)
+    // eslint-disable-next-line no-console
     reportWebVitals(console.log);
   }, []);
 
