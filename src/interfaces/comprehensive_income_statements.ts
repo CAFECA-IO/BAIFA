@@ -1,4 +1,4 @@
-import {IStatementCurrencyDetail} from './currency_detail';
+import {IStatementCurrencyDetail} from './report_currency_detail';
 
 export interface IIncomeAccountingDetail {
   totalAmountFairValue: number;

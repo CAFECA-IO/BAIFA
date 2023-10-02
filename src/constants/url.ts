@@ -4,6 +4,7 @@ export const BFAURL = {
   CONTACT_US: '/contact-us',
   APP: '/app',
   CHAINS: '/app/chains',
+  CURRENCIES: '/app/currencies',
   TRACING_TOOL: '/app/tracing-tool',
   AUDITING_TOOL: '/app/auditing-tool',
   RED_FLAG: '/app/red-flag',
@@ -11,4 +12,12 @@ export const BFAURL = {
 
   BLOCK: '/app/block',
   TRANSACTION: '/app/transaction',
+};
+
+export const REPORT_PATH = {
+  REPORTS: '/reports',
+  BALANCE_SHEETS: 'balance',
+  INCOME_STATEMENTS: 'comprehensive-income',
+  CASH_FLOW_STATEMENTS: 'cash-flow',
+  RED_FLAGS: 'red-flags',
 };

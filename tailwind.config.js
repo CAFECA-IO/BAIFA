@@ -13,12 +13,14 @@ module.exports = {
 
         lightGreen: '#3DD08C',
         lightGreen2: '#21AD6C',
+        lightGreen3: '#53AE94',
 
         lightBlue: '#31D3F5',
 
         lightRed: '#FC8181',
         lightRed2: '#E96C67',
 
+        lightOrange: '#F7931A',
         darkOrange: '#FFA600',
 
         lilac: '#ABA7BD',
@@ -26,6 +28,7 @@ module.exports = {
         violet: '#6857D7',
         violet2: '#9747FF',
 
+        bluePurple: '#627EEA',
         primaryBlue: '#11FFF5',
         'primaryBlue-500': 'rgba(17, 255, 245, 0.5)',
         hoverWhite: '#F0F0F0',
