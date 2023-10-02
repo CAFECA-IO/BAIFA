@@ -40,7 +40,7 @@ const LandingNavBar = () => {
       <ul className="flex flex-1 space-x-5">
         <li>
           <Link href={BFAURL.HOME}>
-            <Image src="/logo/baifaaa_logo.svg" width={190} height={40} alt="bolt_logo" />
+            <Image src="/logo/baifaaa_logo.svg" width={190} height={40} alt="BAIFA_logo" />
           </Link>
         </li>
         <li>
@@ -77,7 +77,7 @@ const LandingNavBar = () => {
       </button>
       <div className="">
         <Link href={BFAURL.HOME}>
-          <Image src="/logo/baifa_logo_small.svg" width={44} height={60} alt="bolt_logo" />
+          <Image src="/logo/baifa_logo_small.svg" width={44} height={60} alt="BAIFA_logo" />
         </Link>
       </div>
       <ul

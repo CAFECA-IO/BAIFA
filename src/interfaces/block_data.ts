@@ -13,7 +13,7 @@ export interface IBlockData {
 export const dummyBlockData: IBlockData[] = [
   {
     id: 265675,
-    chainId: 'bolt',
+    chainId: 'isun',
     stabilityLevel: 'MEDIUM',
     createdTimestamp: 1680978900,
     managementTeam: ['John', 'Jane', 'Jack'],
@@ -24,7 +24,7 @@ export const dummyBlockData: IBlockData[] = [
   },
   {
     id: 265676,
-    chainId: 'bolt',
+    chainId: 'isun',
     stabilityLevel: 'HIGH',
     createdTimestamp: 1680998900,
     managementTeam: ['Linda', 'Liam'],

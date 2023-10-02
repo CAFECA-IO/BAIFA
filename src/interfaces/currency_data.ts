@@ -37,8 +37,8 @@ export const dummyCurrencyData: ICurrencyData[] = [
     stabilityLevel: 'MEDIUM_RISK',
   },
   {
-    currencyId: 'bolt',
-    currencyName: 'BOLT',
+    currencyId: 'isun',
+    currencyName: 'iSunCloud',
     price: 500.0,
     volumeIn24h: 105,
     unit: 'BOLT',

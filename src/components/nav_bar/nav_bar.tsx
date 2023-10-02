@@ -59,7 +59,7 @@ const NavBar = () => {
     <div className="hidden h-80px w-screen items-center bg-darkPurple px-10 py-3 text-white lg:flex">
       <div className="flex flex-1 space-x-5">
         <Link href={BFAURL.APP}>
-          <Image src="/logo/baifaaa_logo.svg" width={190} height={40} alt="bolt_logo" />
+          <Image src="/logo/baifaaa_logo.svg" width={190} height={40} alt="BAIFA_logo" />
         </Link>
 
         <I18n />
@@ -136,7 +136,7 @@ const NavBar = () => {
 
       {/* Info: (20230712 - Julian) logo */}
       <Link href={BFAURL.APP}>
-        <Image src="/logo/baifa_logo_small.svg" width={44} height={60} alt="bolt_logo" />
+        <Image src="/logo/baifa_logo_small.svg" width={44} height={60} alt="BAIFA_logo" />
       </Link>
 
       {/* Info: (20230712 - Julian) profile */}
