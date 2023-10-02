@@ -70,7 +70,7 @@ const LandingPageBody = () => {
 
   const whyUsList = whyUsContent.map(({image, alt, description}, index) => {
     return (
-      <div key={index} className="flex w-300px flex-col items-center space-y-6 text-center">
+      <div key={index} className="flex flex-col items-center space-y-6 text-center">
         <div className="relative h-80px w-80px">
           <Image src={image} alt={alt} fill style={{objectFit: 'contain'}} />
         </div>

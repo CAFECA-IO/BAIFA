@@ -193,8 +193,8 @@
     "AGO": "ago"
   },
   "FOOTER": {
-    "POWERED_BY": "Powered by BOLT",
-    "ANNOUNCEMENT": "BAIFA is a Block Explorer and Analytics Platform for BOLT, \na decentralized smart contracts platform.",
+    "POWERED_BY": "Powered by BAIFA",
+    "ANNOUNCEMENT": "BAIFA: Blockchain AI Forensic Accounting and Auditing\nis a Block Explorer and Analytics Platform ",
     "COMPANY_INFO": "Company Info"
   },
   "PLUGIN": {

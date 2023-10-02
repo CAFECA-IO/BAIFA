@@ -51,7 +51,7 @@ const ReportCover = ({reportTitle, reportDateStart, reportDateEnd}: ReportCoverP
 
   return (
     <div className="flex h-a4-height w-a4-width bg-reportCover bg-cover bg-no-repeat">
-      <div className="flex w-full flex-col items-start px-40px pt-200px">
+      <div className="flex h-full w-full flex-col items-start px-40px pt-200px">
         <div className="flex items-center space-x-2 text-sm font-bold">
           <p>Powered by</p>
           <Image src="/logo/baifaaa_logo.svg" alt="baifaaa_logo" width={72} height={15} />

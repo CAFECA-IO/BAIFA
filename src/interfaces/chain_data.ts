@@ -10,10 +10,10 @@ export interface IChainData {
 
 export const dummyChains: IChainData[] = [
   {
-    chainId: 'bolt',
-    chainName: 'BOLT',
-    blocks: getDummyBlockData('bolt'),
-    transactions: getDummyTransactionData('bolt'),
+    chainId: 'isun',
+    chainName: 'iSunCloud',
+    blocks: getDummyBlockData('isun'),
+    transactions: getDummyTransactionData('isun'),
   },
   {
     chainId: 'eth',

@@ -75,6 +75,7 @@ module.exports = {
         /* Info: (20230627 - Julian) 等同於 @media (min-width: ...px) */
         xxs: '370px',
         xs: '500px',
+        a4: '595px',
         sm: '640px',
         md: '768px',
         lg: '1024px',
@@ -161,6 +162,7 @@ module.exports = {
         '120px': '120px',
         '122px': '122px',
         '125px': '125px',
+        '128px': '128px',
         '130px': '130px',
         '134px': '134px',
         '140px': '140px',
@@ -281,6 +283,12 @@ module.exports = {
         // Info: (20230801- Julian) A4 尺寸
         'a4-width': '595px',
         'a4-height': '842px',
+
+        // Info: (20231002 - Julian) Reports Mobile
+        'balance-mobile': '4650px',
+        'income-mobile': '8350px',
+        'cashflow-mobile': '8850px',
+        'redflags-mobile': '2800px',
       },
       margin: {
         '8px': '8px',
