@@ -28,8 +28,8 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
   const contentList = [reportTitle, `Note To ${reportTitle}`];
   const projectName = projectId;
 
+  // Info: (20231002 - Julian) Set scale for mobile view
   const pageRef = useRef<HTMLDivElement>(null);
-
   const {width: windowWidth} = useWindowSize();
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
         </title>
       </Head>
 
-      <div className="flex h-balance-mobile flex-col items-center ">
+      <div className="flex h-balance-mobile flex-col items-center a4:h-auto">
         <div ref={pageRef} className="flex w-full origin-top flex-col items-center font-inter">
           {/* Info: (20230801 - Julian) Cover */}
           <ReportCover

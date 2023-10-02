@@ -286,6 +286,9 @@ module.exports = {
 
         // Info: (20231002 - Julian) Reports Mobile
         'balance-mobile': '4650px',
+        'income-mobile': '8350px',
+        'cashflow-mobile': '8850px',
+        'redflags-mobile': '2800px',
       },
       margin: {
         '8px': '8px',
