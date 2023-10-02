@@ -7,12 +7,10 @@ const Footer = () => {
 
   return (
     <>
-      <footer className="flex flex-col bg-darkPurple3 drop-shadow-xlReverse">
-        <div className="p-4 text-center text-lilac">
-          <h2 className="text-sm font-bold leading-8">{t('FOOTER.POWERED_BY')}</h2>
-          <p className="whitespace-pre-line text-xs">{t('FOOTER.ANNOUNCEMENT')}</p>
-          <p className="text-xs leading-8">{copyright}</p>
-        </div>
+      <footer className="flex flex-col bg-darkPurple3 p-4 text-center text-lilac drop-shadow-xlReverse lg:h-128px">
+        <h2 className="text-sm font-bold leading-8">{t('FOOTER.POWERED_BY')}</h2>
+        <p className="flex-1 whitespace-pre-line text-xs">{t('FOOTER.ANNOUNCEMENT')}</p>
+        <p className="text-xs leading-8">{copyright}</p>
       </footer>
     </>
   );
