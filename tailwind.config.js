@@ -72,6 +72,7 @@ module.exports = {
         /* Info: (20230627 - Julian) 等同於 @media (min-width: ...px) */
         xxs: '370px',
         xs: '500px',
+        a4: '595px',
         sm: '640px',
         md: '768px',
         lg: '1024px',
@@ -279,6 +280,9 @@ module.exports = {
         // Info: (20230801- Julian) A4 尺寸
         'a4-width': '595px',
         'a4-height': '842px',
+
+        // Info: (20231002 - Julian) Reports Mobile
+        'balance-mobile': '4650px',
       },
       margin: {
         '8px': '8px',

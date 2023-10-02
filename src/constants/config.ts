@@ -171,3 +171,7 @@ export const githubLink = process.env.GITHUB_LINK;
 
 /* Info: (20230814 - Julian) ----- Reports ----- */
 export const CLOSING_TIME = 57600;
+export const A4_SIZE = {
+  WIDTH: 595,
+  HEIGHT: 842,
+};
