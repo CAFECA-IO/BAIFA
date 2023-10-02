@@ -196,5 +196,23 @@
     "POWERED_BY": "Powered by BAIFA",
     "ANNOUNCEMENT": "BAIFA: Blockchain AI Forensic Accounting and Auditing\nis a Block Explorer and Analytics Platform ",
     "COMPANY_INFO": "Company Info"
+  },
+  "PLUGIN": {
+    "RESERVE_RATIO_BLOCK_TITLE": "Latest",
+    "RESERVE_RATIO_BLOCK_TITLE_HIGHLIGHT": " reserve ratio ",
+    "RESERVE_RATIO_BLOCK_TITLE_2": "of TideBit holdings",
+    "DOWNLOAD_REPORT": "Download Report",
+    "RESERVE_RATIO_BLOCK_CARD": "reserve ratio",
+    "RESERVE_RATIO_BLOCK_CARD_2": "Blockchain",
+    "RESERVE_RATIO_BLOCK_DESCRIPTION": "TideBit user asset holdings",
+    "RESERVE_RATIO_BLOCK_DESCRIPTION_2": "TideBit wallet assets",
+    "SMART": "AI",
+    "AUDITING_REPORTS": "Supervision Reports",
+    "LAST_UPDATED": "Last Updated",
+    "COMPREHENSIVE_INCOME_STATEMENT": "Comprehensive Income Statement",
+    "BALANCE_SHEET": "Balance Sheet",
+    "CASH_FLOW_STATEMENT": "Cash Flow Statement",
+    "RED_FLAG_ANALYSIS": "Red Flag Analysis",
+    "POWERED_BY": "Powered by"
   }
 }

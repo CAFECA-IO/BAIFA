@@ -25,4 +25,6 @@ export const APIURL = {
   COMPREHENSIVE_INCOME_STATEMENTS: 'https://api.tidebit-defi.com/comprehensive-income',
   STATEMENTS_OF_CASH_FLOW: 'https://api.tidebit-defi.com/cash-flow',
   EXCHANGE_RATES: 'https://api.tidebit-defi.com/exchange-rates',
+
+  WEBSITE_RESERVE: 'https://api.tidebit-defi.com/public/reserve',
 };
