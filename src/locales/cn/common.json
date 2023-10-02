@@ -3,7 +3,7 @@
     "TRACING_TOOL": "追踪工具",
     "AUDITING_TOOL": "审计工具",
     "RED_FLAG": "警示帐户",
-    "FAQ": "FAQ",
+    "FAQ": "常见问题",
     "CONTACT_US": "联络我们",
     "WALLET_CONNECT_BUTTON": "连接钱包",
     "LAUNCH_APP": "启动应用程式"
@@ -35,7 +35,6 @@
     "MASSIVE_DATA_BLOCK": "监控超过 30 个区块链",
     "MASSIVE_DATA_TRANSACTION": "观察每秒超过 15 万笔交易",
     "MASSIVE_DATA_EVIDENCE": "在二十四小时内完成审计",
-    "TOOL_INTRO_1_TITLE": "追踪工具",
     "SERVICES_TITLE_1": "我们的",
     "SERVICES_TITLE_HIGHLIGHT": "服务",
     "SERVICES_TITLE_2": "",
@@ -50,6 +49,7 @@
     "WHY_BAIFA_DESCRIPTION_2": "当您的公司投资于虚拟货币资产时，应该如何进行管理和核算？",
     "WHY_BAIFA_DESCRIPTION_3": "金融科技初创如何确保合规？",
     "WHY_BAIFA_DESCRIPTION_4": "您的会计师是否足够迅速，以满足香港证监会将会计周期缩短至一个月的要求？",
+    "TOOL_INTRO_1_TITLE": "追踪工具",
     "TOOL_INTRO_1_DESCRIPTION": "简化区块链上交易的追踪与分析：利用追踪工具，使用者能轻松获取有价值的线索来验证交易，并追踪数位资产的流向。不须费力即可体验交易透明度和即时审计。",
     "TOOL_INTRO_2_TITLE": "审计工具",
     "TOOL_INTRO_2_DESCRIPTION": "优化区块链上的财务交易审计流程：透过使用者友善的工具，您可以确保财务记录的准确性和完整性，同时利用区块链技术的透明度和安全性。以高效率增强您对财务审计的信心。",
@@ -159,7 +159,7 @@
   },
   "DATE_PICKER": {
     "DATE": "日期",
-    "SELECT_PERIOD": "选择时间段",
+    "SELECT_PERIOD": "选择日期范围",
     "TODAY": "今天",
     "TO": "至",
     "JAN": "一月",
@@ -193,8 +193,8 @@
     "AGO": "前"
   },
   "FOOTER": {
-    "POWERED_BY": "Powered by BOLT",
-    "ANNOUNCEMENT": "BAIFA 是去中心化智能合约平台 BOLT 的区块浏览器和分析平台。",
+    "POWERED_BY": "技术支持 稗法",
+    "ANNOUNCEMENT": "稗法：区块链探索器和分析平台，提供人工智慧审计与审核",
     "COMPANY_INFO": "公司资讯"
   }
 }
