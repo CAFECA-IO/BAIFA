@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import {timestampToString} from '../../lib/common';
-import {ITransactionData} from '../../interfaces/transaction_data';
+import {ITransaction} from '../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
 
 interface ITransactionItemProps {
-  transaction: ITransactionData;
+  transaction: ITransaction;
 }
 
 const TransactionItem = ({transaction}: ITransactionItemProps) => {

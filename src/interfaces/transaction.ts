@@ -1,6 +1,6 @@
 import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
 
-export interface ITransactionData {
+export interface ITransaction {
   id: number;
   hash: string;
   status: 'PROCESSING' | 'FAILED' | 'SUCCESS';
@@ -16,7 +16,7 @@ export interface ITransactionData {
   flagging?: IRedFlagType;
 }
 
-export const dummyTransactionData: ITransactionData[] = [
+export const dummyTransactionData: ITransaction[] = [
   {
     id: 934221,
     hash: '0xE47Dcf8aF9829AD3c4E31409eB6ECfecd046d1BD',
@@ -263,6 +263,6 @@ export const dummyTransactionData: ITransactionData[] = [
   },
 ];
 
-export const getDummyTransactionData = (chainId: string): ITransactionData[] => {
+export const getDummyTransactionData = (chainId: string): ITransaction[] => {
   return dummyTransactionData.filter(data => data.chainId === chainId);
 };

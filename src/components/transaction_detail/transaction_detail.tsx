@@ -3,10 +3,10 @@ import BoltButton from '../bolt_button/bolt_button';
 import {timestampToString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {ITransactionData} from '../../interfaces/transaction_data';
+import {ITransaction} from '../../interfaces/transaction';
 
 interface ITransactionDetailProps {
-  transactionData: ITransactionData;
+  transactionData: ITransaction;
 }
 
 const TransactionDetail = (transactionData: ITransactionDetailProps) => {

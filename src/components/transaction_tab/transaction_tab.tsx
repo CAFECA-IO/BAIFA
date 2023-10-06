@@ -4,10 +4,10 @@ import TransactionList from '../transaction_list/transaction_list';
 import SearchFilter from '../search_filter/search_filter';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {ITransactionData} from '../../interfaces/transaction_data';
+import {ITransaction} from '../../interfaces/transaction';
 
 interface ITransactionTabProps {
-  transactionList: ITransactionData[];
+  transactionList: ITransaction[];
 }
 
 const TransactionTab = ({transactionList}: ITransactionTabProps) => {
@@ -19,13 +19,12 @@ const TransactionTab = ({transactionList}: ITransactionTabProps) => {
     endTimeStamp: 0,
   });
   const [sorting, setSorting] = useState<'Newest' | 'Oldest'>('Newest');
-  const [filteredTransactions, setFilteredTransactions] =
-    useState<ITransactionData[]>(transactionList);
+  const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactionList);
 
   useEffect(() => {
     const searchResult = transactionList
       // Info: (20230905 - Julian) filter by date range
-      .filter((transaction: ITransactionData) => {
+      .filter((transaction: ITransaction) => {
         const createdTimestamp = transaction.createdTimestamp;
         const start = period.startTimeStamp;
         const end = period.endTimeStamp;
@@ -35,7 +34,7 @@ const TransactionTab = ({transactionList}: ITransactionTabProps) => {
         return isCreatedTimestampInRange;
       })
       // Info: (20230905 - Julian) filter by search term
-      .filter((transaction: ITransactionData) => {
+      .filter((transaction: ITransaction) => {
         const searchTerm = searchRef.current.toLowerCase();
         const transactionId = transaction.id.toString().toLowerCase();
         const status = transaction.status.toLowerCase();
@@ -53,7 +52,7 @@ const TransactionTab = ({transactionList}: ITransactionTabProps) => {
               content.includes(searchTerm)
           : true;
       })
-      .sort((a: ITransactionData, b: ITransactionData) => {
+      .sort((a: ITransaction, b: ITransaction) => {
         return sorting === 'Newest'
           ? b.createdTimestamp - a.createdTimestamp
           : a.createdTimestamp - b.createdTimestamp;
