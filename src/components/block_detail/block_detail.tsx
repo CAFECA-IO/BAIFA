@@ -4,10 +4,10 @@ import BoltButton from '../bolt_button/bolt_button';
 import {timestampToString, getTimeString, getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IBlockData} from '../../interfaces/block_data';
+import {IBlock} from '../../interfaces/block';
 
 interface IBlockDetailProps {
-  blockData: IBlockData;
+  blockData: IBlock;
 }
 
 const BlockDetail = (blockData: IBlockDetailProps) => {

@@ -1,4 +1,4 @@
-export interface IBlockData {
+export interface IBlock {
   id: number;
   chainId: string;
   stabilityLevel: 'MEDIUM' | 'HIGH' | 'LOW';
@@ -10,7 +10,7 @@ export interface IBlockData {
   size: number;
 }
 
-export const dummyBlockData: IBlockData[] = [
+export const dummyBlockData: IBlock[] = [
   {
     id: 265675,
     chainId: 'isun',
@@ -112,6 +112,6 @@ export const dummyBlockData: IBlockData[] = [
   },
 ];
 
-export const getDummyBlockData = (chainId: string): IBlockData[] => {
+export const getDummyBlockData = (chainId: string): IBlock[] => {
   return dummyBlockData.filter(block => block.chainId === chainId);
 };

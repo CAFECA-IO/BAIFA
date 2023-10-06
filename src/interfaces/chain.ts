@@ -1,14 +1,14 @@
-import {IBlockData, getDummyBlockData} from './block_data';
+import {IBlock, getDummyBlockData} from './block';
 import {ITransactionData, getDummyTransactionData} from './transaction_data';
 
-export interface IChainData {
+export interface IChain {
   chainId: string;
   chainName: string;
-  blocks: IBlockData[];
+  blocks: IBlock[];
   transactions: ITransactionData[];
 }
 
-export const dummyChains: IChainData[] = [
+export const dummyChains: IChain[] = [
   {
     chainId: 'isun',
     chainName: 'iSunCloud',

@@ -8,7 +8,7 @@ import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import BlockTab from '../../../components/block_tab/block_tab';
 import TransactionTab from '../../../components/transaction_tab/transaction_tab';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyChains, IChainData} from '../../../interfaces/chain_data';
+import {dummyChains, IChain} from '../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {BFAURL} from '../../../constants/url';
@@ -16,7 +16,7 @@ import {getChainIcon} from '../../../lib/common';
 
 export interface IChainDetailPageProps {
   chainId: string;
-  chainData: IChainData;
+  chainData: IChain;
 }
 
 const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {

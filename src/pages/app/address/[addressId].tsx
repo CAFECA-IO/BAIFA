@@ -5,7 +5,6 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../components/bolt_button/bolt_button';
-import BlockDetail from '../../../components/block_detail/block_detail';
 import Footer from '../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {dummyBlockData, IBlock} from '../../../interfaces/block';
@@ -18,7 +17,7 @@ interface IBlockDetailPageProps {
   blockData: IBlock;
 }
 
-const BlockDetailPage = ({blockId, blockData}: IBlockDetailPageProps) => {
+const AddressDetailPage = ({blockId, blockData}: IBlockDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
 
@@ -41,7 +40,7 @@ const BlockDetailPage = ({blockId, blockData}: IBlockDetailPageProps) => {
               <button onClick={backClickHandler}>
                 <BsArrowLeftShort className="text-48px" />
               </button>
-              {/* Info: (20230912 -Julian) Block Title */}
+              {/* Info: (20230912 -Julian) Address Title */}
               <div className="flex flex-1 items-center justify-center space-x-2">
                 <Image
                   src={getChainIcon(blockData.chainId).src}
@@ -56,9 +55,7 @@ const BlockDetailPage = ({blockId, blockData}: IBlockDetailPageProps) => {
               </div>
             </div>
 
-            {/* Info: (20230912 - Julian) Block Detail */}
-            <BlockDetail blockData={blockData} />
-
+            {/* Info: (20231006 - Julian) Back button */}
             <div className="pt-10">
               <BoltButton
                 onClick={backClickHandler}
@@ -117,4 +114,4 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
   };
 };
 
-export default BlockDetailPage;
+export default AddressDetailPage;

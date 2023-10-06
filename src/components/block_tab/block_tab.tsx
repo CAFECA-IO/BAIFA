@@ -4,10 +4,10 @@ import BlockList from '../block_list/block_list';
 import SearchFilter from '../search_filter/search_filter';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IBlockData} from '../../interfaces/block_data';
+import {IBlock} from '../../interfaces/block';
 
 interface IBlockTabProps {
-  blockList: IBlockData[];
+  blockList: IBlock[];
 }
 
 const BlockTab = ({blockList}: IBlockTabProps) => {
@@ -19,12 +19,12 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
     endTimeStamp: 0,
   });
   const [sorting, setSorting] = useState<'Newest' | 'Oldest'>('Newest');
-  const [filteredBlockData, setFilteredBlockData] = useState<IBlockData[]>(blockList);
+  const [filteredBlockData, setFilteredBlockData] = useState<IBlock[]>(blockList);
 
   useEffect(() => {
     const searchResult = blockList
       // Info: (20230905 - Julian) filter by date range
-      .filter((block: IBlockData) => {
+      .filter((block: IBlock) => {
         const createdTimestamp = block.createdTimestamp;
         const start = period.startTimeStamp;
         const end = period.endTimeStamp;
@@ -34,7 +34,7 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
         return isCreatedTimestampInRange;
       })
       // Info: (20230905 - Julian) filter by search term
-      .filter((block: IBlockData) => {
+      .filter((block: IBlock) => {
         const searchTerm = searchRef.current.toLowerCase();
         const managementTeam = block.managementTeam.map(team => team.toLowerCase());
         const stabilityLevel = block.stabilityLevel.toLowerCase();
@@ -48,7 +48,7 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
               miner.toString().includes(searchTerm)
           : true;
       })
-      .sort((a: IBlockData, b: IBlockData) => {
+      .sort((a: IBlock, b: IBlock) => {
         return sorting === 'Newest'
           ? b.createdTimestamp - a.createdTimestamp
           : a.createdTimestamp - b.createdTimestamp;
