@@ -2,10 +2,10 @@ import {useState, useEffect} from 'react';
 import TransactionItem from '../transaction_item/transaction_item';
 import Pagination from '../pagination/pagination';
 import {ITEM_PER_PAGE} from '../../constants/config';
-import {ITransactionData} from '../../interfaces/transaction_data';
+import {ITransaction} from '../../interfaces/transaction';
 
 export interface ITransactionListProps {
-  transactions: ITransactionData[];
+  transactions: ITransaction[];
 }
 
 const TransactionList = ({transactions}: ITransactionListProps) => {

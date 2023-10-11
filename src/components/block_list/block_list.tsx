@@ -2,10 +2,10 @@ import {useState, useEffect} from 'react';
 import BlockItem from '../block_item/block_item';
 import Pagination from '../pagination/pagination';
 import {ITEM_PER_PAGE} from '../../constants/config';
-import {IBlockData} from '../../interfaces/block_data';
+import {IBlock} from '../../interfaces/block';
 
 export interface IBlockListProps {
-  blockData: IBlockData[];
+  blockData: IBlock[];
 }
 
 const BlockList = ({blockData}: IBlockListProps) => {

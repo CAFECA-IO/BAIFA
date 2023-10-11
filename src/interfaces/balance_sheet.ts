@@ -7,12 +7,15 @@ export interface IBalanceAccountingDetail {
     BTC: ICurrencyDetail;
     ETH: ICurrencyDetail;
     USDT: ICurrencyDetail;
+    USD: ICurrencyDetail;
   };
 }
 
 export interface IBalanceSheet {
   id: string;
   date: string;
+  totalAssetsFairValue: number;
+  totalLiabilitiesAndEquityFairValue: number;
   assets: {
     totalAmountFairValue: number;
     weightedAverageCost: number;

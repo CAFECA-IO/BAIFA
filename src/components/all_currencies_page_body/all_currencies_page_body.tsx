@@ -4,7 +4,7 @@ import CurrencyItem from '../currency_item/currency_item';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
-import {dummyCurrencyData} from '../../interfaces/currency_data';
+import {dummyCurrencyData} from '../../interfaces/currency';
 
 const AllCurrenciesPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

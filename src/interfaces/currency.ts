@@ -1,4 +1,4 @@
-export interface ICurrencyData {
+export interface ICurrency {
   currencyId: string;
   currencyName: string;
   price: number;
@@ -11,7 +11,7 @@ export interface ICurrencyData {
   stabilityLevel: 'MEDIUM_RISK' | 'HIGH_RISK' | 'LOW_RISK';
 }
 
-export const dummyCurrencyData: ICurrencyData[] = [
+export const dummyCurrencyData: ICurrency[] = [
   {
     currencyId: 'btc',
     currencyName: 'Bitcoin',

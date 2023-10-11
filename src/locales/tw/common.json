@@ -152,10 +152,12 @@
     "FLAG_TYPE_LARGE_DEPOSIT": "大額入金",
     "FLAG_TYPE_MULTIPLE_WITHDRAW": "多次出金",
     "FLAG_TYPE_LARGE_WITHDRAW": "大額出金",
-    "FLAG_TYPE_MIXING_SERVICE": "使用混合服務",
+    "FLAG_TYPE_MIXING_SERVICE": "使用混幣器",
     "FLAG_TYPE_GAMBLING_SITE": "與賭博網站有關",
     "FLAG_TYPE_BLACK_LIST": "列入黑名單",
-    "FLAG_TYPE_DARKNET": "與暗網有關"
+    "FLAG_TYPE_DARKNET": "與暗網有關",
+    "FLAG_TYPE_HIGH_RISK_LOCATION": "高風險地區",
+    "FLAG_TYPE_PRIVACY_COINS": "使用隱私幣交易"
   },
   "DATE_PICKER": {
     "DATE": "日期",

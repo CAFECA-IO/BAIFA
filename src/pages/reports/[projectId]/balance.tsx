@@ -12,7 +12,7 @@ import {timestampToString, getReportTimeSpan} from '../../../lib/common';
 import {IBalanceSheet} from '../../../interfaces/balance_sheet';
 import {
   createBalanceSheetsTable,
-  createUserDepositTable,
+  createSummaryTable,
   createFairValueTable,
 } from '../../../lib/reports/balance_sheet';
 import {IResult} from '../../../interfaces/result';
@@ -74,16 +74,31 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
   // Info: (20230923 - Julian) ------- Main Balance Sheets -------
   const balance_sheets_p3_1 = createBalanceSheetsTable(theadDate, endBalanceData, startBalanceData);
 
-  // Info: (20230923 - Julian) ------- User Deposits -------
-  const balance_sheets_p6_1 = createUserDepositTable(
+  // Info: (20231011 - Julian) ------- Cryptocurrencies -------
+  const balance_sheets_p6_1 = createSummaryTable(
+    'cryptocurrencies',
     theadDate,
-    endBalanceData?.liabilities.details.userDeposit,
-    startBalanceData?.liabilities.details.userDeposit
+    endBalanceData?.assets.details.cryptocurrency,
+    startBalanceData?.assets.details.cryptocurrency
+  );
+  // Info: (20231011 - Julian) ------- Accounts Receivable -------
+  const balance_sheets_p7_1 = createSummaryTable(
+    'accounts receivable',
+    theadDate,
+    endBalanceData?.assets.details.accountsReceivable,
+    startBalanceData?.assets.details.accountsReceivable
+  );
+  // Info: (20231011 - Julian) ------- Accounts payable -------
+  const balance_sheets_p7_2 = createSummaryTable(
+    'accounts payable',
+    theadDate,
+    endBalanceData?.liabilities.details.accountsPayable,
+    startBalanceData?.liabilities.details.accountsPayable
   );
 
   // Info: (20230923 - Julian) ------- Fair Value Measurements -------
-  const balance_sheets_p7_1 = createFairValueTable(endDateStr.dateFormatForForm, endBalanceData);
-  const balance_sheets_p7_2 = createFairValueTable(
+  const balance_sheets_p8_1 = createFairValueTable(endDateStr.dateFormatForForm, endBalanceData);
+  const balance_sheets_p8_2 = createFairValueTable(
     startDateStr.dateFormatForForm,
     startBalanceData
   );
@@ -205,7 +220,8 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
                 backup keys, managed on behalf of clients on our platform. Cryptocurrencies for
                 which the TideBit DeFi can't recover a client's access to, are not recorded , as
                 there is no related safeguarding obligation in accordance with SAB 121. TideBit DeFi
-                regularly updates and initially recognizes the assets
+                regularly updates and initially recognizes the assets and liabilities at the fair
+                value of the cryptocurrencies safeguarded for our clients.
               </p>
             </div>
           </ReportPageBody>
@@ -213,10 +229,6 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
           {/* Info: (20230802 - Julian) Page 6 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={6}>
             <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
-              <p>
-                and liabilities at the fair value of the cryptocurrencies safeguarded for our
-                clients.
-              </p>
               <p>
                 During the
                 <span className="font-bold text-violet">
@@ -227,35 +239,61 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
               </p>
               <p>
                 The following table sets forth the fair value of customer cryptocurrencies, as shown
-                on the condensed consolidated balance sheets, as user deposits (in billions):
+                on the condensed consolidated balance sheets, as user deposits (
+                <span className="font-bold">in billions</span>):
+              </p>
+              <p className="font-bold">Cryptocurrencies</p>
+              <p>
+                The following table sets forth the fair value of cryptocurrencies, as shown on the
+                condensed consolidated balance sheets (
+                <span className="font-bold">in billions</span>):
               </p>
               <ReportTable tableData={balance_sheets_p6_1} />
-              {/* Info: (20230802 - Julian) Note 4 */}
-              <h2 className="font-bold uppercase">4. FAIR VALUE MEASUREMENTS</h2>
-              <p>
-                The following table sets forth by level, within the fair value hierarchy, the
-                Company’s assets and liabilities measured and recorded at fair value on a recurring
-                basis (in thousands):
-              </p>
-              <p className="italic text-lilac">Next Page</p>
             </div>
           </ReportPageBody>
           <hr className="break-before-page" />
           {/* Info: (20230802 - Julian) Page 7 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={7}>
-            <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
-              <ReportTable tableData={balance_sheets_p7_1} />
-              <ReportTable tableData={balance_sheets_p7_2} />
+            <div className="flex flex-col gap-y-2 py-12px text-xs leading-5">
+              <p className="font-bold">Accounts receivable</p>
               <p>
-                Please note that the values are approximate and may vary slightly due to market
-                fluctuations.
+                The following table sets forth the fair value of accounts receivable, as shown on
+                the condensed consolidated balance sheets (
+                <span className="font-bold">in billions</span>):
               </p>
+              <ReportTable tableData={balance_sheets_p7_1} />
+              <p className="font-bold">Accounts payable</p>
+              <p>
+                The following table sets forth the fair value of accounts payable, as shown on the
+                condensed consolidated balance sheets (
+                <span className="font-bold">in billions</span>):
+              </p>
+              <ReportTable tableData={balance_sheets_p7_2} />
             </div>
           </ReportPageBody>
           <hr className="break-before-page" />
           {/* Info: (20230802 - Julian) Page 8 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={8}>
+            <div className="flex flex-col gap-y-1 py-1 text-xs leading-5">
+              {/* Info: (20230802 - Julian) Note 4 */}
+              <h2 className="font-bold uppercase">4. FAIR VALUE MEASUREMENTS</h2>
+              <p>
+                The following table sets forth by level, within the fair value hierarchy, the
+                Company’s assets and liabilities measured and recorded at fair value on a recurring
+                basis (<span className="font-bold">in billions</span>):
+              </p>
+              <ReportTable tableData={balance_sheets_p8_1} />
+              <ReportTable tableData={balance_sheets_p8_2} />
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+          {/* Info: (20230802 - Julian) Page 9 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={9}>
             <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+              <p>
+                Please note that the values are approximate and may vary slightly due to market
+                fluctuations.
+              </p>
               {/* Info: (20230802 - Julian) Note 5 */}
               <h2 className="font-bold uppercase">5. Market price risk of cryptocurrencies</h2>
               <p>

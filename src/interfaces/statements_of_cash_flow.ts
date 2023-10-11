@@ -1,12 +1,12 @@
-import {IStatementCurrencyDetail, ICurrencyType} from './report_currency_detail';
+import {ICurrencyDetail, ICurrencyType} from './report_currency_detail';
 
 interface ICashFlowAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
-    USD: IStatementCurrencyDetail;
-    TWD: IStatementCurrencyDetail;
-    HKD: IStatementCurrencyDetail;
+    USD: ICurrencyDetail;
+    TWD: ICurrencyDetail;
+    HKD: ICurrencyDetail;
   };
 }
 
@@ -14,9 +14,9 @@ export interface INonCashAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
-    ETH: IStatementCurrencyDetail;
-    BTC: IStatementCurrencyDetail;
-    USDT: IStatementCurrencyDetail;
+    ETH: ICurrencyDetail;
+    BTC: ICurrencyDetail;
+    USDT: ICurrencyDetail;
   };
 }
 

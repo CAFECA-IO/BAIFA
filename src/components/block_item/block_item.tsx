@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import {timestampToString} from '../../lib/common';
-import {IBlockData} from '../../interfaces/block_data';
+import {IBlock} from '../../interfaces/block';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
 
 export interface IBlockItemProps {
-  block: IBlockData;
+  block: IBlock;
 }
 
 const BlockItem = ({block}: IBlockItemProps) => {

@@ -8,14 +8,14 @@ import BoltButton from '../../../components/bolt_button/bolt_button';
 import Footer from '../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyTransactionData, ITransactionData} from '../../../interfaces/transaction_data';
+import {dummyTransactionData, ITransaction} from '../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {getChainIcon} from '../../../lib/common';
 
 interface ITransactionDetailPageProps {
   transactionId: string;
-  transactionData: ITransactionData;
+  transactionData: ITransaction;
 }
 
 const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDetailPageProps) => {
