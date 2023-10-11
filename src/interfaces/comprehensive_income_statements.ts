@@ -1,13 +1,13 @@
-import {IStatementCurrencyDetail} from './report_currency_detail';
+import {ICurrencyDetail} from './report_currency_detail';
 
 export interface IIncomeAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
-    BTC: IStatementCurrencyDetail;
-    ETH: IStatementCurrencyDetail;
-    USDT: IStatementCurrencyDetail;
-    USD: IStatementCurrencyDetail;
+    BTC: ICurrencyDetail;
+    ETH: ICurrencyDetail;
+    USDT: ICurrencyDetail;
+    USD: ICurrencyDetail;
   };
 }
 
