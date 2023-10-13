@@ -52,7 +52,6 @@ module.exports = {
         headerBg: 'url("/documents/header_bg.svg"), linear-gradient(#F2F2F2,#F2F2F2)',
       },
       fontSize: {
-        '3xs': ['8px', '12px'],
         xxs: ['10px', '12px'],
         xs: ['12px', '16px'],
         sm: ['14px', '20px'],

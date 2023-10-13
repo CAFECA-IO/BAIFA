@@ -228,6 +228,66 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
     nemuroOfRebates
   );
 
+  // Info: (20231013 - Julian) Cryptocurrencies paid to suppliers for expenses
+  const nemuroOfExpenses = ['C012', '(C108, C109)', '(C013, C014)', '(C106, C107)'];
+  const cash_flow_p20_1 = createActivitiesAnalysis(
+    'Cryptocurrencies paid to suppliers for expenses',
+    cashFlowDates,
+    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrenciesPaidToSuppliersForExpenses,
+    startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrenciesPaidToSuppliersForExpenses,
+    nemuroOfExpenses
+  );
+
+  // Info: (20231013 - Julian) Insurance fund for perpetual contracts with non-cash consideration
+  const nemuroOfInsuranceFund = ['C019', '(C112, C113)', '(C110, C111)', '(C114, C115)'];
+  const cash_flow_p21_1 = createActivitiesAnalysis(
+    'Insurance fund for perpetual contracts with non-cash consideration',
+    cashFlowDates,
+    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .insuranceFundForPerpetualContractsWithNonCashConsideration,
+    startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .insuranceFundForPerpetualContractsWithNonCashConsideration,
+    nemuroOfInsuranceFund
+  );
+
+  // Info: (20231013 - Julian) Cryptocurrencies received from customers for liquidation in perpetual contract
+  const nemuroOfLiquidation = ['C020', '(C118, C119)', '(C116, C117)', '(C120, C121)'];
+  const cash_flow_p22_1 = createActivitiesAnalysis(
+    'Cryptocurrencies received from customers for liquidation in perpetual contract',
+    cashFlowDates,
+    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrenciesReceivedFromCustomersForLiquidationInPerpetualContract,
+    startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrenciesReceivedFromCustomersForLiquidationInPerpetualContract,
+    nemuroOfLiquidation
+  );
+
+  // Info: (20231013 - Julian) Cryptocurrencies paid to customers for funding rates in perpetual contract
+  const nemuroOfFundingRates = ['C021', '(C124, C125)', '(C122, C123)', '(C126, C127)'];
+  const cash_flow_p23_1 = createActivitiesAnalysis(
+    'Cryptocurrencies paid to customers for funding rates in perpetual contract',
+    cashFlowDates,
+    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrenciesPaidToCustomersForFundingRatesInPerpetualContract,
+    startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrenciesPaidToCustomersForFundingRatesInPerpetualContract,
+    nemuroOfFundingRates
+  );
+
+  // Info: (20231013 - Julian) Cryptocurrencies paid to customers for profits in perpetual contract
+  const nemuroOfProfits = ['C022', '(C130, C131)', '(C128, C129)', '(C132, C133)'];
+  const cash_flow_p24_1 = createActivitiesAnalysis(
+    'Cryptocurrencies paid to customers for profits in perpetual contract',
+    cashFlowDates,
+    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrenciesPaidToCustomersForProfitsInPerpetualContract,
+    startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrenciesPaidToCustomersForProfitsInPerpetualContract,
+    nemuroOfProfits
+  );
+
   return (
     <>
       <Head>
@@ -235,7 +295,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           {reportTitle} of {projectName} - BAIFA
         </title>
       </Head>
-      <div className="flex h-cashflow-mobile flex-col items-center a4:h-auto">
+      <div className="flex h-1000px flex-col items-center a4:h-auto">
         <div ref={pageRef} className="flex w-full origin-top flex-col items-center font-inter">
           {/* Info: (20230808 - Julian) Cover */}
           <ReportCover
@@ -269,7 +329,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 5 */}
+          {/* Info: (20231012 - Julian) Page 5 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={5}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <ReportTable tableData={cash_flow_p5_1} />
@@ -284,7 +344,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 6 */}
+          {/* Info: (20231012 - Julian) Page 6 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={6}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <ol className="ml-5 list-decimal font-bold">
@@ -370,7 +430,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 7 */}
+          {/* Info: (20231012 - Julian) Page 7 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={7}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <h1 className="text-lg font-bold text-violet">Note To Statements of Cash Flow</h1>
@@ -422,7 +482,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 8 */}
+          {/* Info: (20231012 - Julian) Page 8 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={8}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p>fair value of customer cryptocurrencies and liabilities.</p>
@@ -469,7 +529,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 9 */}
+          {/* Info: (20231012 - Julian) Page 9 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={9}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               {/* Info: (20230906 - Julian) Note 4 */}
@@ -505,7 +565,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 10 */}
+          {/* Info: (20231012 - Julian) Page 10 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={10}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p className="font-bold">Cryptocurrencies deposited by customers</p>
@@ -524,7 +584,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 11 */}
+          {/* Info: (20231012 - Julian) Page 11 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={11}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p className="font-bold">Cryptocurrencies withdrawn by customers</p>
@@ -543,7 +603,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 12 */}
+          {/* Info: (20231012 - Julian) Page 12 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={12}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p className="font-bold">Cryptocurrency inflow</p>
@@ -560,7 +620,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 13 */}
+          {/* Info: (20231012 - Julian) Page 13 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={13}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p className="font-bold">Cryptocurrency outflow</p>
@@ -579,7 +639,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 14 */}
+          {/* Info: (20231012 - Julian) Page 14 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={14}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p className="font-bold">
@@ -598,7 +658,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 15 */}
+          {/* Info: (20231012 - Julian) Page 15 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={15}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p className="font-bold">
@@ -636,7 +696,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 17 */}
+          {/* Info: (20231012 - Julian) Page 17 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={17}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p className="font-bold">Purchase of cryptocurrencies with non-cash consideration</p>
@@ -649,18 +709,11 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
               </p>
               <ReportTable tableData={cash_flow_p17_1} />
               <p className="italic text-lilac">Next Page</p>
-              {/* Info: (20230906 - Julian) Note 6 */}
-              {/*               <h2 className="font-bold uppercase">6. Exchange rate</h2>
-              <p>
-                The table represents the exchange rates at 00:00 in the UTC+0 time zone. The
-                exchange rates are used in revenue recognization.
-              </p>
-              <ReportExchageRateForm /> */}
             </div>
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 18 */}
+          {/* Info: (20231012 - Julian) Page 18 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={18}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p className="font-bold">Disposal of cryptocurrencies for non-cash consideration</p>
@@ -677,7 +730,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230807 - Julian) Page 19 */}
+          {/* Info: (20231012 - Julian) Page 19 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={19}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p className="font-bold">
@@ -686,18 +739,132 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
               <p>
                 This section provides a comprehensive breakdown of the cryptocurrencies we paid to
                 our customers as rebates for transaction fees. The data from
-                <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, with ,
-                is juxtaposed with that of
+                <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, is
+                juxtaposed with that of
                 <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
               </p>
               <ReportTable tableData={cash_flow_p19_1} />
               <p className="italic text-lilac">Next Page</p>
-              {/*               <p>
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+
+          {/* Info: (20231013 - Julian) Page 20 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={20}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <p className="font-bold">Cryptocurrencies paid to suppliers for expenses</p>
+              <p>
+                Below is a detailed table showcasing the cryptocurrencies we paid to our suppliers
+                for various expenses. It compares the data from
+                <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, to that
+                of
+                <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
+              </p>
+              <ReportTable tableData={cash_flow_p20_1} />
+              <p className="italic text-lilac">Next Page</p>
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+
+          {/* Info: (20231013 - Julian) Page 21 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={21}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <p className="font-bold">
+                Insurance fund for perpetual contracts with non-cash consideration
+              </p>
+              <p>
+                This table illustrates the insurance fund we maintain for perpetual contracts using
+                non-cash consideration. It contrasts the figures from
+                <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, with
+                those from
+                <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
+              </p>
+              <ReportTable tableData={cash_flow_p21_1} />
+              <p className="italic text-lilac">Next Page</p>
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+
+          {/* Info: (20231013 - Julian) Page 22 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={22}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <p className="font-bold">
+                Cryptocurrencies received from customers for liquidation in perpetual contract
+              </p>
+              <p>
+                Here, we detail the cryptocurrencies we received from our customers for liquidation
+                in perpetual contracts. The data from
+                <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, is
+                juxtaposed with that of
+                <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
+              </p>
+              <ReportTable tableData={cash_flow_p22_1} />
+              <p className="italic text-lilac">Next Page</p>
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+
+          {/* Info: (20231013 - Julian) Page 23 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={23}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <p className="font-bold">
+                Cryptocurrencies paid to customers for funding rates in perpetual contract
+              </p>
+              <p>
+                The following table provides insights into the cryptocurrencies we paid to our
+                customers for funding rates in perpetual contract. It compares the data from
+                <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, to that
+                of
+                <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
+              </p>
+              <ReportTable tableData={cash_flow_p23_1} />
+              <p className="italic text-lilac">Next Page</p>
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+
+          {/* Info: (20231013 - Julian) Page 24 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={24}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <p className="font-bold">
+                Cryptocurrencies paid to customers for profits in perpetual contract
+              </p>
+              <p>
+                This section showcases the cryptocurrencies we paid to our customers as profits from
+                perpetual contract. The data from
+                <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, is
+                juxtaposed with that of
+                <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>.
+              </p>
+              <ReportTable tableData={cash_flow_p24_1} />
+              <p className="italic text-lilac">Next Page</p>
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+
+          {/* Info: (20231013 - Julian) Page 25 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={25}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              {/* Info: (20230906 - Julian) Note 6 */}
+              <h2 className="font-bold uppercase">6. Exchange rate</h2>
+              <p>
+                The table represents the exchange rates at 00:00 in the UTC+0 time zone. The
+                exchange rates are used in revenue recognization.
+              </p>
+              <ReportExchageRateForm />
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+
+          {/* Info: (20231013 - Julian) Page 26 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={26}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <p>
                 Please note that the values are approximate and may vary slightly due to market
                 fluctuations.
-              </p> */}
+              </p>
               {/* Info: (20230906 - Julian) Note 7 */}
-              {/*               <h2 className="font-bold uppercase">7. Market price risk of cryptocurrencies</h2>
+              <h2 className="font-bold uppercase">7. Market price risk of cryptocurrencies</h2>
               <p>
                 Our revenue model primarily hinges on transaction fees, which can be a flat fee or
                 calculated as a percentage of the transaction value. The exact fee may fluctuate
@@ -720,10 +887,9 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
               <p>
                 In terms of accounting procedures, we record impairment charges on our
                 cryptocurrencies when the market prices fall below the assets' carrying value.
-              </p> */}
+              </p>
             </div>
           </ReportPageBody>
-          <hr className="break-before-page" />
         </div>
       </div>
     </>
