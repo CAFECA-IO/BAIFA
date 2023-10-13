@@ -986,15 +986,15 @@ export const createActivitiesAnalysis = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`Bitcoin ${numero[1]}`, `—`, `$ —`, `—`, `—`, `$ —`, `—`],
+        rowData: [`Bitcoin (${numero[1]})`, `—`, `$ —`, `—`, `—`, `$ —`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`Ethereum ${numero[2]}`, `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`Ethereum (${numero[2]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`USDT ${numero[3]}`, `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`USDT (${numero[3]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
         rowType: RowType.foot,
@@ -1041,7 +1041,7 @@ export const createActivitiesAnalysis = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          `Bitcoin ${numero[1]}`,
+          `Bitcoin (${numero[1]})`,
           `${roundToDecimal(+btcA.amount, 2)}`,
           `$ ${roundToDecimal(+btcA.weightedAverageCost, 2)}`,
           `${roundToDecimal(btcPerA, 1)} %`,
@@ -1053,7 +1053,7 @@ export const createActivitiesAnalysis = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          `Ethereum ${numero[2]}`,
+          `Ethereum (${numero[2]})`,
           `${roundToDecimal(+ethA.amount, 2)}`,
           `${roundToDecimal(+ethA.weightedAverageCost, 2)}`,
           `${roundToDecimal(ethPerA, 1)} %`,
@@ -1065,7 +1065,7 @@ export const createActivitiesAnalysis = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          `USDT ${numero[3]}`,
+          `USDT (${numero[3]})`,
           `${roundToDecimal(+usdtA.amount, 2)}`,
           `${roundToDecimal(+usdtA.weightedAverageCost, 2)}`,
           `${roundToDecimal(usdtPerA, 1)} %`,
@@ -1140,15 +1140,15 @@ export const createNonCashConsideration = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`Bitcoin ${numero[1]}`, `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`Bitcoin (${numero[1]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`Ethereum ${numero[2]}`, `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`Ethereum (${numero[2]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`USDT ${numero[3]}`, `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`USDT (${numero[3]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
         rowType: RowType.foot,
@@ -1208,7 +1208,7 @@ export const createNonCashConsideration = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          `Bitcoin ${numero[1]}`,
+          `Bitcoin (${numero[1]})`,
           `${roundToDecimal(btcDataA.amount, 2)}`,
           `$ ${roundToDecimal(btcDataA.costValue, 2)}`,
           `${roundToDecimal(btcPerA, 1)} %`,
@@ -1220,7 +1220,7 @@ export const createNonCashConsideration = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          `Ethereum ${numero[2]}`,
+          `Ethereum (${numero[2]})`,
           `${roundToDecimal(ethDataA.amount, 2)}`,
           `${roundToDecimal(ethDataA.costValue, 2)}`,
           `${roundToDecimal(ethPerA, 1)} %`,
@@ -1232,7 +1232,7 @@ export const createNonCashConsideration = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          `USDT ${numero[3]}`,
+          `USDT (${numero[3]})`,
           `${roundToDecimal(usdtDataA.amount, 2)}`,
           `${roundToDecimal(usdtDataA.costValue, 2)}`,
           `${roundToDecimal(usdtPerA, 1)} %`,
