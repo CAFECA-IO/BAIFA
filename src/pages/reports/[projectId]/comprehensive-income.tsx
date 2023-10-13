@@ -232,7 +232,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
         </title>
       </Head>
 
-      <div className="flex h-income-mobile flex-col items-center a4:h-auto">
+      <div className="flex h-1000px flex-col items-center a4:h-auto">
         <div ref={pageRef} className="flex w-full origin-top flex-col items-center font-inter">
           {/* Info: (20230807 - Julian) Cover */}
           <ReportCover

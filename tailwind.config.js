@@ -282,12 +282,6 @@ module.exports = {
         // Info: (20230801- Julian) A4 尺寸
         'a4-width': '595px',
         'a4-height': '842px',
-
-        // Info: (20231002 - Julian) Reports Mobile
-        'balance-mobile': '4650px',
-        'income-mobile': '8350px',
-        'cashflow-mobile': '8850px',
-        'redflags-mobile': '2800px',
       },
       margin: {
         '8px': '8px',
