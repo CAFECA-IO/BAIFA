@@ -75,25 +75,38 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
   const balance_sheets_p3_1 = createBalanceSheetsTable(theadDate, endBalanceData, startBalanceData);
 
   // Info: (20231011 - Julian) ------- Cryptocurrencies -------
+  // numero: 0. Total, 1. Bitcoin, 2. Ethereum, 3. USDT, 4. USD
+  const numeroOfCryptocurrencies = ['A001', 'A046, A047', 'A015, A016', 'A002, A003', ''];
   const balance_sheets_p6_1 = createSummaryTable(
     'cryptocurrencies',
     theadDate,
     endBalanceData?.assets.details.cryptocurrency,
-    startBalanceData?.assets.details.cryptocurrency
+    startBalanceData?.assets.details.cryptocurrency,
+    numeroOfCryptocurrencies
   );
   // Info: (20231011 - Julian) ------- Accounts Receivable -------
+  const numeroOfAccountsReceivable = [
+    'A020',
+    'A027, A028',
+    'A029, A030',
+    'A025, A026',
+    'A023, A024',
+  ];
   const balance_sheets_p7_1 = createSummaryTable(
     'accounts receivable',
     theadDate,
     endBalanceData?.assets.details.accountsReceivable,
-    startBalanceData?.assets.details.accountsReceivable
+    startBalanceData?.assets.details.accountsReceivable,
+    numeroOfAccountsReceivable
   );
   // Info: (20231011 - Julian) ------- Accounts payable -------
+  const numeroOfAccountsPayable = ['A031', 'A027, A028', 'A029, A030', 'A025, A026', 'A032, A033'];
   const balance_sheets_p7_2 = createSummaryTable(
     'accounts payable',
     theadDate,
     endBalanceData?.liabilities.details.accountsPayable,
-    startBalanceData?.liabilities.details.accountsPayable
+    startBalanceData?.liabilities.details.accountsPayable,
+    numeroOfAccountsPayable
   );
 
   // Info: (20230923 - Julian) ------- Fair Value Measurements -------
@@ -111,7 +124,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
         </title>
       </Head>
 
-      <div className="flex h-balance-mobile flex-col items-center a4:h-auto">
+      <div className="flex h-1000px flex-col items-center a4:h-auto">
         <div ref={pageRef} className="flex w-full origin-top flex-col items-center font-inter">
           {/* Info: (20230801 - Julian) Cover */}
           <ReportCover
