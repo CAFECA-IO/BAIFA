@@ -74,10 +74,20 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
   // Info: (20230923 - Julian) ------- Main Balance Sheets -------
   const balance_sheets_p3_1 = createBalanceSheetsTable(theadDate, endBalanceData, startBalanceData);
 
-  // Info: (20231011 - Julian) ------- Cryptocurrencies -------
+  // Info: (20231013 - Julian) ------- User Deposits -------
   // numero: 0. Total, 1. Bitcoin, 2. Ethereum, 3. USDT, 4. USD
-  const numeroOfCryptocurrencies = ['A001', 'A046, A047', 'A015, A016', 'A002, A003', ''];
+  const numeroOfUserDeposit = ['A006', 'A044, A045', 'A044, A045', 'A007, A008', 'A040, A041'];
   const balance_sheets_p6_1 = createSummaryTable(
+    'user deposits',
+    theadDate,
+    endBalanceData?.liabilities.details.userDeposit,
+    startBalanceData?.liabilities.details.userDeposit,
+    numeroOfUserDeposit
+  );
+
+  // Info: (20231011 - Julian) ------- Cryptocurrencies -------
+  const numeroOfCryptocurrencies = ['A001', 'A046, A047', 'A015, A016', 'A002, A003', ''];
+  const balance_sheets_p7_1 = createSummaryTable(
     'cryptocurrencies',
     theadDate,
     endBalanceData?.assets.details.cryptocurrency,
@@ -92,16 +102,16 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
     'A025, A026',
     'A023, A024',
   ];
-  const balance_sheets_p7_1 = createSummaryTable(
+  const balance_sheets_p8_1 = createSummaryTable(
     'accounts receivable',
     theadDate,
     endBalanceData?.assets.details.accountsReceivable,
     startBalanceData?.assets.details.accountsReceivable,
     numeroOfAccountsReceivable
   );
-  // Info: (20231011 - Julian) ------- Accounts payable -------
+  // Info: (20231011 - Julian) ------- Accounts Payable -------
   const numeroOfAccountsPayable = ['A031', 'A027, A028', 'A029, A030', 'A025, A026', 'A032, A033'];
-  const balance_sheets_p7_2 = createSummaryTable(
+  const balance_sheets_p9_1 = createSummaryTable(
     'accounts payable',
     theadDate,
     endBalanceData?.liabilities.details.accountsPayable,
@@ -109,9 +119,19 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
     numeroOfAccountsPayable
   );
 
+  // Info: (20231013 - Julian) ------- Retained Earnings -------
+  const numeroOfRetainedEarnings = ['A010', 'A048, A049', 'A017, A018', 'A011, A012', 'A050, A051'];
+  const balance_sheets_p10_1 = createSummaryTable(
+    'retained earnings',
+    theadDate,
+    endBalanceData?.equity.details.retainedEarnings,
+    startBalanceData?.equity.details.retainedEarnings,
+    numeroOfRetainedEarnings
+  );
+
   // Info: (20230923 - Julian) ------- Fair Value Measurements -------
-  const balance_sheets_p8_1 = createFairValueTable(endDateStr.dateFormatForForm, endBalanceData);
-  const balance_sheets_p8_2 = createFairValueTable(
+  const balance_sheets_p11_1 = createFairValueTable(endDateStr.dateFormatForForm, endBalanceData);
+  const balance_sheets_p11_2 = createFairValueTable(
     startDateStr.dateFormatForForm,
     startBalanceData
   );
@@ -140,7 +160,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
           <ReportRiskPages reportTitle={reportTitle} />
           {/* Info: (20230802 - Julian) Page 3 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={3}>
-            <div className="flex flex-col gap-y-12px py-16px leading-5">
+            <div className="flex flex-col gap-y-12px py-8px leading-5">
               <h1 className="text-32px font-bold text-violet">{reportTitle}</h1>
               <ReportTable tableData={balance_sheets_p3_1} />
             </div>
@@ -148,7 +168,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
           <hr className="break-before-page" />
           {/* Info: (20230802 - Julian) Page 4 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={4}>
-            <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <h1 className="text-lg font-bold text-violet">Notes to Balance Sheets</h1>
               {/* Info: (20230802 - Julian) Note 1 */}
               <h2 className="font-bold uppercase"> 1. Nature of Operations</h2>
@@ -186,17 +206,18 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
                 necessarily predict the results for the full year or any other period.
               </p>
               <p className="font-bold">Use of estimates</p>
+              <p>
+                The creation of these financial statements in accordance with GAAP requires
+                management to make estimates and assumptions. Significant estimates and assumptions
+                include the
+              </p>
             </div>
           </ReportPageBody>
           <hr className="break-before-page" />
           {/* Info: (20230802 - Julian) Page 5 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={5}>
-            <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
-              <p>
-                The creation of these financial statements in accordance with GAAP requires
-                management to make estimates and assumptions. Significant estimates and assumptions
-                include the fair value of customer cryptocurrencies and liabilities.
-              </p>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <p>fair value of customer cryptocurrencies and liabilities.</p>
               <p className="font-bold">User deposits</p>
               <p>
                 User deposits represent cryptocurrencies maintained on
@@ -236,12 +257,6 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
                 regularly updates and initially recognizes the assets and liabilities at the fair
                 value of the cryptocurrencies safeguarded for our clients.
               </p>
-            </div>
-          </ReportPageBody>
-          <hr className="break-before-page" />
-          {/* Info: (20230802 - Julian) Page 6 */}
-          <ReportPageBody reportTitle={reportTitle} currentPage={6}>
-            <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
               <p>
                 During the
                 <span className="font-bold text-violet">
@@ -250,59 +265,98 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
                 </span>
                 , no losses have been incurred in connection with customer cryptocurrencies.
               </p>
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+          {/* Info: (20231013 - Julian) Page 6 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={6}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <p className="font-bold">User deposits</p>
               <p>
                 The following table sets forth the fair value of customer cryptocurrencies, as shown
                 on the condensed consolidated balance sheets, as user deposits (
                 <span className="font-bold">in billions</span>):
               </p>
+              <ReportTable tableData={balance_sheets_p6_1} />
+              <p className="italic text-lilac">Next Page</p>
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+          {/* Info: (20230802 - Julian) Page 7 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={7}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p className="font-bold">Cryptocurrencies</p>
               <p>
                 The following table sets forth the fair value of cryptocurrencies, as shown on the
                 condensed consolidated balance sheets (
                 <span className="font-bold">in billions</span>):
               </p>
-              <ReportTable tableData={balance_sheets_p6_1} />
+              <ReportTable tableData={balance_sheets_p7_1} />
+              <p className="italic text-lilac">Next Page</p>
             </div>
           </ReportPageBody>
           <hr className="break-before-page" />
-          {/* Info: (20230802 - Julian) Page 7 */}
-          <ReportPageBody reportTitle={reportTitle} currentPage={7}>
-            <div className="flex flex-col gap-y-2 py-12px text-xs leading-5">
+          {/* Info: (20230802 - Julian) Page 8 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={8}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p className="font-bold">Accounts receivable</p>
               <p>
                 The following table sets forth the fair value of accounts receivable, as shown on
                 the condensed consolidated balance sheets (
                 <span className="font-bold">in billions</span>):
               </p>
-              <ReportTable tableData={balance_sheets_p7_1} />
+              <ReportTable tableData={balance_sheets_p8_1} />
+              <p className="italic text-lilac">Next Page</p>
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+          {/* Info: (20230802 - Julian) Page 9 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={9}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p className="font-bold">Accounts payable</p>
               <p>
                 The following table sets forth the fair value of accounts payable, as shown on the
                 condensed consolidated balance sheets (
                 <span className="font-bold">in billions</span>):
               </p>
-              <ReportTable tableData={balance_sheets_p7_2} />
+              <ReportTable tableData={balance_sheets_p9_1} />
+              <p className="italic text-lilac">Next Page</p>
             </div>
           </ReportPageBody>
           <hr className="break-before-page" />
-          {/* Info: (20230802 - Julian) Page 8 */}
-          <ReportPageBody reportTitle={reportTitle} currentPage={8}>
-            <div className="flex flex-col gap-y-1 py-1 text-xs leading-5">
+          {/* Info: (20231013 - Julian) Page 10 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={10}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <p className="font-bold">Retained earnings</p>
+              <p>
+                The following table sets forth the fair value of accounts payable, as shown on the
+                condensed consolidated balance sheets (
+                <span className="font-bold">in billions</span>):
+              </p>
+              <ReportTable tableData={balance_sheets_p10_1} />
+              <p className="italic text-lilac">Next Page</p>
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+          {/* Info: (20231013 - Julian) Page 11 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={11}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               {/* Info: (20230802 - Julian) Note 4 */}
               <h2 className="font-bold uppercase">4. FAIR VALUE MEASUREMENTS</h2>
               <p>
                 The following table sets forth by level, within the fair value hierarchy, the
                 Company’s assets and liabilities measured and recorded at fair value on a recurring
-                basis (<span className="font-bold">in billions</span>):
+                basis (<span className="font-bold">in thousands</span>):
               </p>
-              <ReportTable tableData={balance_sheets_p8_1} />
-              <ReportTable tableData={balance_sheets_p8_2} />
+              <ReportTable tableData={balance_sheets_p11_1} />
+              <p className="italic text-lilac">Next Page</p>
             </div>
           </ReportPageBody>
           <hr className="break-before-page" />
-          {/* Info: (20230802 - Julian) Page 9 */}
-          <ReportPageBody reportTitle={reportTitle} currentPage={9}>
-            <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+          {/* Info: (20231013 - Julian) Page 12 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={12}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <ReportTable tableData={balance_sheets_p11_2} />
               <p>
                 Please note that the values are approximate and may vary slightly due to market
                 fluctuations.
@@ -324,10 +378,17 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
               </p>
               <p>
                 A downturn in the market price of Bitcoin, Ethereum, and other cryptocurrencies
-                could negatively affect our earnings, the carrying value of our cryptocurrencies,
-                and our projected future cash flow. It could also pose a challenge to our liquidity
-                and capability to fulfill ongoing obligations.
+                could negatively affect our earnings, the carrying value of ourcryptocurrencies, and
+                our projected future cash flow. It could also pose a challenge to our liquidity and
+                capability to
               </p>
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+          {/* Info: (20231013 - Julian) Page 13 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={13}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <p>fulfill ongoing obligations.</p>
               <p>
                 In terms of accounting procedures, we record impairment charges on our
                 cryptocurrencies when the market prices fall below the assets' carrying value.

@@ -417,19 +417,19 @@ export const createFairValueTable = (dateStr: string, data: IBalanceSheet | unde
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash and cash equivalents', `$ —`, '—', '—', `$ —`],
+        rowData: ['A019 Cash and cash equivalents', `$ —`, '—', '—', `$ —`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency', `—`, '—', '—', `—`],
+        rowData: ['A001 Cryptocurrencies', `—`, '—', '—', `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Account receivable', `—`, '—', '—', `—`],
+        rowData: ['A020 Account receivable', `—`, '—', '—', `—`],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total assets', `$ —`, '—', '—', `$ —`],
+        rowData: ['A005 Total assets', `$ —`, '—', '—', `$ —`],
       },
       {
         rowType: RowType.title,
@@ -437,15 +437,15 @@ export const createFairValueTable = (dateStr: string, data: IBalanceSheet | unde
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['User deposits', `$ —`, '—', '—', `$ —`],
+        rowData: ['A006 User deposits', `$ —`, '—', '—', `$ —`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Accounts payable', `—`, '—', '—', `—`],
+        rowData: ['A031 Accounts payable', `—`, '—', '—', `—`],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total liabilities', `$ —`, '—', '—', `$ —`],
+        rowData: ['A009 Total liabilities', `$ —`, '—', '—', `$ —`],
       },
     ],
   };
@@ -465,7 +465,7 @@ export const createFairValueTable = (dateStr: string, data: IBalanceSheet | unde
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cash and cash equivalents',
+          'A019 Cash and cash equivalents',
           `$ ${roundToDecimal(+data.assets.details.cashAndCashEquivalent.weightedAverageCost, 2)}`,
           '—',
           '—',
@@ -475,7 +475,7 @@ export const createFairValueTable = (dateStr: string, data: IBalanceSheet | unde
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cryptocurrency',
+          'A001 Cryptocurrencies',
           `${roundToDecimal(+data.assets.details.cryptocurrency.weightedAverageCost, 2)}`,
           '—',
           '—',
@@ -485,7 +485,7 @@ export const createFairValueTable = (dateStr: string, data: IBalanceSheet | unde
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Account receivable',
+          'A020 Account receivable',
           `${roundToDecimal(+data.assets.details.accountsReceivable.weightedAverageCost, 2)}`,
           '—',
           '—',
@@ -495,7 +495,7 @@ export const createFairValueTable = (dateStr: string, data: IBalanceSheet | unde
       {
         rowType: RowType.foot,
         rowData: [
-          'Total assets',
+          'A005 Total assets',
           `$ ${roundToDecimal(+data.assets.weightedAverageCost, 2)}`,
           '—',
           '—',
@@ -509,7 +509,7 @@ export const createFairValueTable = (dateStr: string, data: IBalanceSheet | unde
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'User deposits',
+          'A006 User deposits',
           `$ ${roundToDecimal(+data.liabilities.details.userDeposit.weightedAverageCost, 2)}`,
           '—',
           '—',
@@ -519,7 +519,7 @@ export const createFairValueTable = (dateStr: string, data: IBalanceSheet | unde
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Accounts payable',
+          'A031 Accounts payable',
           `${roundToDecimal(+data.liabilities.details.accountsPayable.weightedAverageCost, 2)}`,
           '—',
           '—',
@@ -529,7 +529,7 @@ export const createFairValueTable = (dateStr: string, data: IBalanceSheet | unde
       {
         rowType: RowType.foot,
         rowData: [
-          'Total liabilities',
+          'A009 Total liabilities',
           `$ ${roundToDecimal(+data.liabilities.weightedAverageCost, 2)}`,
           '—',
           '—',
