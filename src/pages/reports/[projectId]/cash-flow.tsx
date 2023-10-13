@@ -207,7 +207,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
   );
 
   // Info: (20231012 - Julian) Cryptocurrencies paid to customers as rebates for transaction fees
-  const nemuroOfRebates = ['C018', 'C102, C103', 'C100, C101', 'C104, C105'];
+  const numeroOfRebates = ['C018', 'C102, C103', 'C100, C101', 'C104, C105'];
   const cash_flow_p19_1 = createActivitiesAnalysis(
     'Cryptocurrencies paid to customers as rebates for transaction fees',
     cashFlowDates,
@@ -215,11 +215,11 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
       .cryptocurrenciesPaidToCustomersAsRebatesForTransactionFees,
     startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesPaidToCustomersAsRebatesForTransactionFees,
-    nemuroOfRebates
+    numeroOfRebates
   );
 
   // Info: (20231013 - Julian) Cryptocurrencies paid to suppliers for expenses
-  const nemuroOfExpenses = ['C012', 'C108, C109', 'C013, C014', 'C106, C107'];
+  const numeroOfExpenses = ['C012', 'C108, C109', 'C013, C014', 'C106, C107'];
   const cash_flow_p20_1 = createActivitiesAnalysis(
     'Cryptocurrencies paid to suppliers for expenses',
     cashFlowDates,
@@ -227,11 +227,11 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
       .cryptocurrenciesPaidToSuppliersForExpenses,
     startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesPaidToSuppliersForExpenses,
-    nemuroOfExpenses
+    numeroOfExpenses
   );
 
   // Info: (20231013 - Julian) Insurance fund for perpetual contracts with non-cash consideration
-  const nemuroOfInsuranceFund = ['C019', 'C112, C113', 'C110, C111', 'C114, C115'];
+  const numeroOfInsuranceFund = ['C019', 'C112, C113', 'C110, C111', 'C114, C115'];
   const cash_flow_p21_1 = createActivitiesAnalysis(
     'Insurance fund for perpetual contracts with non-cash consideration',
     cashFlowDates,
@@ -239,11 +239,11 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
       .insuranceFundForPerpetualContractsWithNonCashConsideration,
     startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .insuranceFundForPerpetualContractsWithNonCashConsideration,
-    nemuroOfInsuranceFund
+    numeroOfInsuranceFund
   );
 
   // Info: (20231013 - Julian) Cryptocurrencies received from customers for liquidation in perpetual contract
-  const nemuroOfLiquidation = ['C020', 'C118, C119', 'C116, C117', 'C120, C121'];
+  const numeroOfLiquidationInPerpetual = ['C020', 'C118, C119', 'C116, C117', 'C120, C121'];
   const cash_flow_p22_1 = createActivitiesAnalysis(
     'Cryptocurrencies received from customers for liquidation in perpetual contract',
     cashFlowDates,
@@ -251,11 +251,11 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
       .cryptocurrenciesReceivedFromCustomersForLiquidationInPerpetualContract,
     startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersForLiquidationInPerpetualContract,
-    nemuroOfLiquidation
+    numeroOfLiquidationInPerpetual
   );
 
   // Info: (20231013 - Julian) Cryptocurrencies paid to customers for funding rates in perpetual contract
-  const nemuroOfFundingRates = ['C021', 'C124, C125', 'C122, C123', 'C126, C127'];
+  const numeroOfFundingRates = ['C021', 'C124, C125', 'C122, C123', 'C126, C127'];
   const cash_flow_p23_1 = createActivitiesAnalysis(
     'Cryptocurrencies paid to customers for funding rates in perpetual contract',
     cashFlowDates,
@@ -263,11 +263,11 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
       .cryptocurrenciesPaidToCustomersForFundingRatesInPerpetualContract,
     startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesPaidToCustomersForFundingRatesInPerpetualContract,
-    nemuroOfFundingRates
+    numeroOfFundingRates
   );
 
   // Info: (20231013 - Julian) Cryptocurrencies paid to customers for profits in perpetual contract
-  const nemuroOfProfits = ['C022', 'C130, C131', 'C128, C129', 'C132, C133'];
+  const numeroOfProfits = ['C022', 'C130, C131', 'C128, C129', 'C132, C133'];
   const cash_flow_p24_1 = createActivitiesAnalysis(
     'Cryptocurrencies paid to customers for profits in perpetual contract',
     cashFlowDates,
@@ -275,7 +275,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
       .cryptocurrenciesPaidToCustomersForProfitsInPerpetualContract,
     startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesPaidToCustomersForProfitsInPerpetualContract,
-    nemuroOfProfits
+    numeroOfProfits
   );
 
   return (
