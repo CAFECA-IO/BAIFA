@@ -25,71 +25,71 @@ export const createCashFlowFirstPart = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash deposited by customers', `$ -`, `$ -`],
+        rowData: ['C027 Cash deposited by customers', `$ -`, `$ -`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash withdrawn by customers', `-`, `-`],
+        rowData: ['C028 Cash withdrawn by customers', `-`, `-`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Purchase of cryptocurrencies', `-`, `-`],
+        rowData: ['C029 Purchase of cryptocurrencies', `-`, `-`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Disposal of cryptocurrencies', `-`, `-`],
+        rowData: ['C030 Disposal of cryptocurrencies', `-`, `-`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash received from customers as transaction fee', `-`, `-`],
+        rowData: ['C031 Cash received from customers as transaction fee', `-`, `-`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash received from customers for liquidation in CFD trading', `-`, `-`],
+        rowData: ['C032 Cash received from customers for liquidation in CFD trading', `-`, `-`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash paid to customers as rebates for transaction fees', `-`, `-`],
+        rowData: ['C033 Cash paid to customers as rebates for transaction fees', `-`, `-`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash paid to suppliers for expenses', `-`, `-`],
+        rowData: ['C034 Cash paid to suppliers for expenses', `-`, `-`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cash paid to customers for CFD trading profits', `-`, `-`],
+        rowData: ['C036 Cash paid to customers for CFD trading profits', `-`, `-`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net cash provided by operating activities', `-`, `-`],
+        rowData: ['C037 Insurance fund for perpetual contracts', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C038 Cash paid to customers for funding rates in perpetual contract', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C039 Cash paid to customers for profits in perpetual contract', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C040 Cash received from customers for liquidation in perpetual contract',
+          `-`,
+          `-`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C041 Net cash provided by operating activities', `-`, `-`],
       },
       {
         rowType: RowType.title,
-        rowData: ['Cash flow from investing activities', '*-*', '*-*'],
+        rowData: ['Cash flows from investing activities', '*-*', '*-*'],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net cash provided by investing activities', `-`, `-`],
-      },
-      {
-        rowType: RowType.title,
-        rowData: ['Cash flow from financing activities', '*-*', '*-*'],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Net cash used in financing activities', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Net increase in cash, cash equivalents, and restricted cash', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Cash, cash equivalents, and restricted cash, beginning of period', `-`, `-`],
-      },
-      {
-        rowType: RowType.foot,
-        rowData: ['Cash, cash equivalents, and restricted cash, end of period', `$ -`, `$ -`],
+        rowData: ['C042 Net cash provided by investing activities', `-`, `-`],
       },
     ],
   };
@@ -106,7 +106,7 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cash deposited by customers',
+          'C027 Cash deposited by customers',
           `$ ${roundToDecimal(
             +dataA.operatingActivities.details.cashDepositedByCustomers.weightedAverageCost,
             2
@@ -120,7 +120,7 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cash withdrawn by customers',
+          'C028 Cash withdrawn by customers',
           `${roundToDecimal(
             +dataA.operatingActivities.details.cashWithdrawnByCustomers.weightedAverageCost,
             2
@@ -134,7 +134,7 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Purchase of cryptocurrencies',
+          'C029 Purchase of cryptocurrencies',
           `${roundToDecimal(
             +dataA.operatingActivities.details.purchaseOfCryptocurrencies.weightedAverageCost,
             2
@@ -148,7 +148,7 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Disposal of cryptocurrencies',
+          'C030 Disposal of cryptocurrencies',
           `${roundToDecimal(
             +dataA.operatingActivities.details.disposalOfCryptocurrencies.weightedAverageCost,
             2
@@ -162,7 +162,7 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cash received from customers as transaction fee',
+          'C031 Cash received from customers as transaction fee',
           `${roundToDecimal(
             +dataA.operatingActivities.details.cashReceivedFromCustomersAsTransactionFee
               .weightedAverageCost,
@@ -178,7 +178,7 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cash received from customers for liquidation in CFD trading',
+          'C032 Cash received from customers for liquidation in CFD trading',
           `${roundToDecimal(
             +dataA.operatingActivities.details.cashReceivedFromCustomersForLiquidationInCFDTrading
               .weightedAverageCost,
@@ -194,7 +194,7 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cash paid to customers as rebates for transaction fees',
+          'C033 Cash paid to customers as rebates for transaction fees',
           `${roundToDecimal(
             +dataA.operatingActivities.details.cashPaidToCustomersAsRebatesForTransactionFees
               .weightedAverageCost,
@@ -210,7 +210,7 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cash paid to suppliers for expenses',
+          'C034 Cash paid to suppliers for expenses',
           `${roundToDecimal(
             +dataA.operatingActivities.details.cashPaidToSuppliersForExpenses.weightedAverageCost,
             2
@@ -224,7 +224,7 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cash paid to customers for CFD trading profits',
+          'C036 Cash paid to customers for CFD trading profits',
           `${roundToDecimal(
             +dataA.operatingActivities.details.cashPaidToCustomersForCFDTradingProfits
               .weightedAverageCost,
@@ -240,31 +240,276 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Net cash provided by operating activities',
+          'C037 Insurance fund for perpetual contracts',
+          `${roundToDecimal(
+            +dataA.operatingActivities.details.insuranceFundForPerpetualContracts
+              .weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.operatingActivities.details.insuranceFundForPerpetualContracts
+              .weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C038 Cash paid to customers for funding rates in perpetual contract',
+          `${roundToDecimal(
+            +dataA.operatingActivities.details.cashPaidToCustomersForFundingRatesInPerpetualContract
+              .weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.operatingActivities.details.cashPaidToCustomersForFundingRatesInPerpetualContract
+              .weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C039 Cash paid to customers for profits in perpetual contract',
+          `${roundToDecimal(
+            +dataA.operatingActivities.details.cashPaidToCustomersForPerpetualContractProfits
+              .weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.operatingActivities.details.cashPaidToCustomersForPerpetualContractProfits
+              .weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C040 Cash received from customers for liquidation in perpetual contract',
+          `${roundToDecimal(
+            +dataA.operatingActivities.details
+              .cashReceivedFromCustomersForLiquidationInPerpetualContract.weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.operatingActivities.details
+              .cashReceivedFromCustomersForLiquidationInPerpetualContract.weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C041 Net cash provided by operating activities',
           `${roundToDecimal(+dataA.operatingActivities.weightedAverageCost, 2)}`,
           `${roundToDecimal(+dataB.operatingActivities.weightedAverageCost, 2)}`,
         ],
       },
       {
         rowType: RowType.title,
-        rowData: ['Cash flow from investing activities', '*-*', '*-*'],
+        rowData: ['Cash flows from investing activities', '*-*', '*-*'],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Net cash provided by investing activities',
+          'C042 Net cash provided by investing activities',
           `${roundToDecimal(+dataA.investingActivities.weightedAverageCost, 2)}`,
           `${roundToDecimal(+dataB.investingActivities.weightedAverageCost, 2)}`,
         ],
       },
+    ],
+  };
+  return result;
+};
+
+export const createCashFlowSecondPart = (
+  dataA: IStatementsOfCashFlow | undefined,
+  dataB: IStatementsOfCashFlow | undefined
+) => {
+  const defaultTable: ITable = {
+    tbody: [
       {
         rowType: RowType.title,
-        rowData: ['Cash flow from financing activities', '*-*', '*-*'],
+        rowData: ['Cash flows from financing activities', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C043 Proceeds from issuance of common stock', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C044 Long-term debt', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C045 Short-term borrowings', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C046 Payments of dividends', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C047 Treasury Stock', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C048 Net cash used in financing activities', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C049 Net increase in cash, cash equivalents, and restricted cash', `-`, `-`],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Net cash used in financing activities',
+          'C050 Cash, cash equivalents, and restricted cash, beginning of period',
+          `-`,
+          `-`,
+        ],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['C051 Cash, cash equivalents, and restricted cash, end of period', `-`, `-`],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Supplemental schedule of non-cash operating activities', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C001 Cryptocurrencies deposited by customers', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C009 Cryptocurrencies withdrawn by customers', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C015 Cryptocurrency inflows', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C016 Cryptocurrency outflows', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C004 Cryptocurrencies received from customers as transaction fees', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C017 Cryptocurrencies received from customers for liquidation in CFD trading',
+          `-`,
+          `-`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C018 Cryptocurrencies paid to customers as rebates for transaction fees',
+          `-`,
+          `-`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C012 Cryptocurrencies paid to suppliers for expenses', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C026 Cryptocurrencies paid to customers for CFD trading profits', `-`, `-`],
+      },
+    ],
+  };
+  if (!dataA || !dataB) return defaultTable;
+
+  const result: ITable = {
+    tbody: [
+      {
+        rowType: RowType.title,
+        rowData: ['Cash flows from financing activities', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C043 Proceeds from issuance of common stock',
+          `${roundToDecimal(
+            +dataA.financingActivities.details.proceedsFromIssuanceOfCommonStock
+              .weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.financingActivities.details.proceedsFromIssuanceOfCommonStock
+              .weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C044 Long-term debt',
+          `${roundToDecimal(
+            +dataA.financingActivities.details.longTermDebt.weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.financingActivities.details.longTermDebt.weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C045 Short-term borrowings',
+          `${roundToDecimal(
+            +dataA.financingActivities.details.shortTermBorrowings.weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.financingActivities.details.shortTermBorrowings.weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C046 Payments of dividends',
+          `${roundToDecimal(
+            +dataA.financingActivities.details.paymentsOfDividends.weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.financingActivities.details.paymentsOfDividends.weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C047 Treasury Stock',
+          `${roundToDecimal(
+            +dataA.financingActivities.details.treasuryStock.weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.financingActivities.details.treasuryStock.weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C048 Net cash used in financing activities',
           `${roundToDecimal(+dataA.financingActivities.weightedAverageCost, 2)}`,
           `${roundToDecimal(+dataB.financingActivities.weightedAverageCost, 2)}`,
         ],
@@ -272,15 +517,15 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Net increase in cash, cash equivalents, and restricted cash',
+          'C049 Net increase in cash, cash equivalents, and restricted cash',
           `${roundToDecimal(
-            +dataA.operatingActivities.details.cashPaidToCustomersForCFDTradingProfits
-              .weightedAverageCost,
+            +dataA.otherSupplementaryItems.details.relatedToNonCash
+              .netIncreaseDecreaseInCryptocurrencies.weightedAverageCost,
             2
           )}`,
           `${roundToDecimal(
-            +dataB.operatingActivities.details.cashPaidToCustomersForCFDTradingProfits
-              .weightedAverageCost,
+            +dataB.otherSupplementaryItems.details.relatedToNonCash
+              .netIncreaseDecreaseInCryptocurrencies.weightedAverageCost,
             2
           )}`,
         ],
@@ -288,7 +533,7 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cash, cash equivalents, and restricted cash, beginning of period',
+          'C050 Cash, cash equivalents, and restricted cash, beginning of period',
           `${roundToDecimal(
             +dataA.otherSupplementaryItems.details.relatedToNonCash
               .cryptocurrenciesBeginningOfPeriod.weightedAverageCost,
@@ -304,7 +549,7 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.foot,
         rowData: [
-          'Cash, cash equivalents, and restricted cash, end of period',
+          'C051 Cash, cash equivalents, and restricted cash, end of period',
           `$ ${roundToDecimal(
             +dataA.otherSupplementaryItems.details.relatedToNonCash.cryptocurrenciesEndOfPeriod
               .weightedAverageCost,
@@ -313,6 +558,154 @@ export const createCashFlowFirstPart = (
           `$ ${roundToDecimal(
             +dataB.otherSupplementaryItems.details.relatedToNonCash.cryptocurrenciesEndOfPeriod
               .weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Supplemental schedule of non-cash operating activities', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C001 Cryptocurrencies deposited by customers',
+          `$ ${roundToDecimal(
+            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesDepositedByCustomers.weightedAverageCost,
+            2
+          )}`,
+          `$ ${roundToDecimal(
+            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesDepositedByCustomers.weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C009 Cryptocurrencies withdrawn by customers',
+          `(${roundToDecimal(
+            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesWithdrawnByCustomers.weightedAverageCost,
+            2
+          )})`,
+          `(${roundToDecimal(
+            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesWithdrawnByCustomers.weightedAverageCost,
+            2
+          )})`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C015 Cryptocurrency inflows',
+          `${roundToDecimal(
+            +dataA.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInflows
+              .weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInflows
+              .weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C016 Cryptocurrency outflows',
+          `${roundToDecimal(
+            +dataA.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyOutflows
+              .weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyOutflows
+              .weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C004 Cryptocurrencies received from customers as transaction fees',
+          `${roundToDecimal(
+            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesReceivedFromCustomersAsTransactionFees.weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesReceivedFromCustomersAsTransactionFees.weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C017 Cryptocurrencies received from customers for liquidation in CFD trading',
+          `${roundToDecimal(
+            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading.weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading.weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C018 Cryptocurrencies paid to customers as rebates for transaction fees',
+          `${roundToDecimal(
+            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesPaidToCustomersAsRebatesForTransactionFees.weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesPaidToCustomersAsRebatesForTransactionFees.weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C012 Cryptocurrencies paid to suppliers for expenses',
+          `${roundToDecimal(
+            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesPaidToSuppliersForExpenses.weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesPaidToSuppliersForExpenses.weightedAverageCost,
+            2
+          )}`,
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C026 Cryptocurrencies paid to customers for CFD trading profits',
+          `${roundToDecimal(
+            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesPaidToCustomersForCFDTradingProfits.weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
+              .cryptocurrenciesPaidToCustomersForCFDTradingProfits.weightedAverageCost,
             2
           )}`,
         ],
@@ -329,60 +722,32 @@ export const createCashFlowLastPart = (
   const defaultTable: ITable = {
     tbody: [
       {
-        rowType: RowType.title,
-        rowData: ['Supplemental schedule of non-cash operating activities', '*-*', '*-*'],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrencies deposited by customers', `$ -`, `$ -`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrencies withdrawn by customers', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency inflow', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency outflow', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrencies received from customers as transaction fees', `-`, `-`],
-      },
-      {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cryptocurrencies received from customers for liquidation in CFD trading',
+          'C022 Cryptocurrencies paid to customers for profits in perpetual contract',
           `-`,
           `-`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrencies paid to customers for CFD trading profits', `-`, `-`],
+        rowData: ['C023 Purchase of cryptocurrencies with non-cash consideration', `-`, `-`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Purchase of cryptocurrencies with non-cash consideration', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Disposal of cryptocurrencies for non-cash consideration', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Net increase in non-cash operating activities', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrencies, beginning of period', `-`, `-`],
+        rowData: ['C024 Disposal of cryptocurrencies for non-cash consideration', `-`, `-`],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Cryptocurrencies, end of period', `$ -`, `$ -`],
+        rowData: ['C007 Net increase in non-cash operating activities', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C025 Cryptocurrencies, beginning of period', `-`, `-`],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['C008 Cryptocurrencies, end of period', `$ -`, `$ -`],
       },
     ],
   };
@@ -391,85 +756,17 @@ export const createCashFlowLastPart = (
   const result: ITable = {
     tbody: [
       {
-        rowType: RowType.title,
-        rowData: ['Supplemental schedule of non-cash operating activities', '*-*', '*-*'],
-      },
-      {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cryptocurrencies deposited by customers',
-          `$ ${roundToDecimal(
-            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesDepositedByCustomers.weightedAverageCost,
-            2
-          )}`,
-          `$ ${roundToDecimal(
-            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesDepositedByCustomers.weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Cryptocurrencies withdrawn by customers',
-          `(${roundToDecimal(
-            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesWithdrawnByCustomers.weightedAverageCost,
-            2
-          )})`,
-          `(${roundToDecimal(
-            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesWithdrawnByCustomers.weightedAverageCost,
-            2
-          )})`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Cryptocurrency inflow',
-          `${roundToDecimal(
-            +dataA.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInflows
-              .weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInflows
-              .weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Cryptocurrency outflow',
-          `${roundToDecimal(
-            +dataA.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyOutflows
-              .weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyOutflows
-              .weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Cryptocurrencies received from customers as transaction fees',
+          'C022 Cryptocurrencies paid to customers for profits in perpetual contract',
           `${roundToDecimal(
             +dataA.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesReceivedFromCustomersAsTransactionFees.weightedAverageCost,
+              .cryptocurrenciesPaidToCustomersForProfitsInPerpetualContract.weightedAverageCost,
             2
           )}`,
           `${roundToDecimal(
             +dataB.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesReceivedFromCustomersAsTransactionFees.weightedAverageCost,
+              .cryptocurrenciesPaidToCustomersForProfitsInPerpetualContract.weightedAverageCost,
             2
           )}`,
         ],
@@ -477,39 +774,7 @@ export const createCashFlowLastPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cryptocurrencies received from customers for liquidation in CFD trading',
-          `${roundToDecimal(
-            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading.weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading.weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Cryptocurrencies paid to customers for CFD trading profits',
-          `${roundToDecimal(
-            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesPaidToCustomersForCFDTradingProfits.weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesPaidToCustomersForCFDTradingProfits.weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Purchase of cryptocurrencies with non-cash consideration',
+          'C023 Purchase of cryptocurrencies with non-cash consideration',
           `${roundToDecimal(
             +dataA.supplementalScheduleOfNonCashOperatingActivities.details
               .purchaseOfCryptocurrenciesWithNonCashConsideration.weightedAverageCost,
@@ -525,7 +790,7 @@ export const createCashFlowLastPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Disposal of cryptocurrencies for non-cash consideration',
+          'C024 Disposal of cryptocurrencies for non-cash consideration',
           `${roundToDecimal(
             +dataA.supplementalScheduleOfNonCashOperatingActivities.details
               .disposalOfCryptocurrenciesForNonCashConsideration.weightedAverageCost,
@@ -539,9 +804,9 @@ export const createCashFlowLastPart = (
         ],
       },
       {
-        rowType: RowType.bookkeeping,
+        rowType: RowType.foot,
         rowData: [
-          'Net increase in non-cash operating activities',
+          'C007 Net increase in non-cash operating activities',
           `${roundToDecimal(
             +dataA.supplementalScheduleOfNonCashOperatingActivities.weightedAverageCost,
             2
@@ -555,7 +820,7 @@ export const createCashFlowLastPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cryptocurrencies, beginning of period',
+          'C025 Cryptocurrencies, beginning of period',
           `${roundToDecimal(
             +dataA.otherSupplementaryItems.details.relatedToNonCash
               .cryptocurrenciesBeginningOfPeriod.weightedAverageCost,
@@ -571,13 +836,13 @@ export const createCashFlowLastPart = (
       {
         rowType: RowType.foot,
         rowData: [
-          'Cryptocurrencies, end of period',
-          `$ ${roundToDecimal(
+          'C008 Cryptocurrencies, end of period',
+          `${roundToDecimal(
             +dataA.otherSupplementaryItems.details.relatedToNonCash.cryptocurrenciesEndOfPeriod
               .weightedAverageCost,
             2
           )}`,
-          `$ ${roundToDecimal(
+          `${roundToDecimal(
             +dataB.otherSupplementaryItems.details.relatedToNonCash.cryptocurrenciesEndOfPeriod
               .weightedAverageCost,
             2
@@ -607,23 +872,23 @@ export const createHistoricalCashFlowTable = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net cash provided by operating activities', `$ —`, `$ —`],
+        rowData: ['C041 Net cash provided by operating activities', `$ —`, `$ —`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net cash used in investing activities', `-`, `-`],
+        rowData: ['C042 Net cash used in investing activities', `-`, `-`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net cash used in financing activities', `-`, `-`],
+        rowData: ['C048 Net cash used in financing activities', `-`, `-`],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Net increase in cash, cash equivalents, and restricted cash', `$ —`, `$ —`],
+        rowData: ['C049 Net increase in cash, cash equivalents, and restricted cash', `$ —`, `$ —`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Net increase in non-cash operating activities', `$ —`, `$ —`],
+        rowData: ['C007 Net increase in non-cash operating activities', `$ —`, `$ —`],
       },
     ],
   };
@@ -640,7 +905,7 @@ export const createHistoricalCashFlowTable = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Net cash provided by operating activities',
+          'C041 Net cash provided by operating activities',
           `$ ${roundToDecimal(+dataA.operatingActivities.weightedAverageCost, 2)}`,
           `$ ${roundToDecimal(+dataB.operatingActivities.weightedAverageCost, 2)}`,
         ],
@@ -648,7 +913,7 @@ export const createHistoricalCashFlowTable = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Net cash used in investing activities',
+          'C042 Net cash used in investing activities',
           `${roundToDecimal(+dataA.investingActivities.weightedAverageCost, 2)}`,
           `${roundToDecimal(+dataB.investingActivities.weightedAverageCost, 2)}`,
         ],
@@ -656,7 +921,7 @@ export const createHistoricalCashFlowTable = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Net cash used in financing activities',
+          'C048 Net cash used in financing activities',
           `${roundToDecimal(+dataA.financingActivities.weightedAverageCost, 2)}`,
           `${roundToDecimal(+dataB.financingActivities.weightedAverageCost, 2)}`,
         ],
@@ -664,7 +929,7 @@ export const createHistoricalCashFlowTable = (
       {
         rowType: RowType.foot,
         rowData: [
-          'Net increase in cash, cash equivalents, and restricted cash',
+          'C049 Net increase in cash, cash equivalents, and restricted cash',
           `$ ${roundToDecimal(
             +dataA.otherSupplementaryItems.details.relatedToNonCash
               .netIncreaseDecreaseInCryptocurrencies.weightedAverageCost,
@@ -680,7 +945,7 @@ export const createHistoricalCashFlowTable = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Net increase in non-cash operating activities',
+          'C007 Net increase in non-cash operating activities',
           `$ ${roundToDecimal(
             +dataA.supplementalScheduleOfNonCashOperatingActivities.weightedAverageCost,
             2
@@ -700,9 +965,10 @@ export const createActivitiesAnalysis = (
   title: string,
   dates: string[],
   dataA: INonCashAccountingDetail | undefined,
-  dataB: INonCashAccountingDetail | undefined
+  dataB: INonCashAccountingDetail | undefined,
+  numero: string[]
 ) => {
-  const thead = [`${title}`, dates[0], '*-*', '*-*', dates[1], '*-*', '*-*'];
+  const thead = [`${numero[0]} ${title}`, dates[0], '*-*', '*-*', dates[1], '*-*', '*-*'];
   const defaultTable: ITable = {
     thead,
     tbody: [
@@ -720,19 +986,19 @@ export const createActivitiesAnalysis = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Bitcoin', `—`, `$ —`, `—`, `—`, `$ —`, `—`],
+        rowData: [`Bitcoin (${numero[1]})`, `—`, `$ —`, `—`, `—`, `$ —`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Ethereum', `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`Ethereum (${numero[2]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['USDT', `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`USDT (${numero[3]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total cryptocurrencies deposited by customers', `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`Total ${title}`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
     ],
   };
@@ -775,7 +1041,7 @@ export const createActivitiesAnalysis = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Bitcoin',
+          `Bitcoin (${numero[1]})`,
           `${roundToDecimal(+btcA.amount, 2)}`,
           `$ ${roundToDecimal(+btcA.weightedAverageCost, 2)}`,
           `${roundToDecimal(btcPerA, 1)} %`,
@@ -787,7 +1053,7 @@ export const createActivitiesAnalysis = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Ethereum',
+          `Ethereum (${numero[2]})`,
           `${roundToDecimal(+ethA.amount, 2)}`,
           `${roundToDecimal(+ethA.weightedAverageCost, 2)}`,
           `${roundToDecimal(ethPerA, 1)} %`,
@@ -799,7 +1065,7 @@ export const createActivitiesAnalysis = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'USDT',
+          `USDT (${numero[3]})`,
           `${roundToDecimal(+usdtA.amount, 2)}`,
           `${roundToDecimal(+usdtA.weightedAverageCost, 2)}`,
           `${roundToDecimal(usdtPerA, 1)} %`,
@@ -853,9 +1119,10 @@ export const createNonCashConsideration = (
   title: string,
   dates: string[],
   dataA: INonCashConsiderationDetail | undefined,
-  dataB: INonCashConsiderationDetail | undefined
+  dataB: INonCashConsiderationDetail | undefined,
+  numero: string[]
 ) => {
-  const thead = [`${title}`, dates[0], '*-*', '*-*', dates[1], '*-*', '*-*'];
+  const thead = [`${numero[0]} ${title}`, dates[0], '*-*', '*-*', dates[1], '*-*', '*-*'];
   const defaultTable: ITable = {
     thead,
     tbody: [
@@ -873,15 +1140,15 @@ export const createNonCashConsideration = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Bitcoin', `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`Bitcoin (${numero[1]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Ethereum', `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`Ethereum (${numero[2]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['USDT', `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`USDT (${numero[3]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
         rowType: RowType.foot,
@@ -941,7 +1208,7 @@ export const createNonCashConsideration = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Bitcoin',
+          `Bitcoin (${numero[1]})`,
           `${roundToDecimal(btcDataA.amount, 2)}`,
           `$ ${roundToDecimal(btcDataA.costValue, 2)}`,
           `${roundToDecimal(btcPerA, 1)} %`,
@@ -953,7 +1220,7 @@ export const createNonCashConsideration = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Ethereum',
+          `Ethereum (${numero[2]})`,
           `${roundToDecimal(ethDataA.amount, 2)}`,
           `${roundToDecimal(ethDataA.costValue, 2)}`,
           `${roundToDecimal(ethPerA, 1)} %`,
@@ -965,7 +1232,7 @@ export const createNonCashConsideration = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'USDT',
+          `USDT (${numero[3]})`,
           `${roundToDecimal(usdtDataA.amount, 2)}`,
           `${roundToDecimal(usdtDataA.costValue, 2)}`,
           `${roundToDecimal(usdtPerA, 1)} %`,

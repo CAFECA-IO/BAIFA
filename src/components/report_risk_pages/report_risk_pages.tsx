@@ -9,7 +9,7 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
     <>
       {/* Info: (20230807 - Julian) Page 1 */}
       <ReportPageBody reportTitle={reportTitle} currentPage={1}>
-        <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+        <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
           <h1 className="text-lg font-bold text-violet">Summary of Risk Factors</h1>
           <p>
             Our business is subject to various risks and uncertainties, including those detailed
@@ -62,6 +62,7 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
             <li>
               We are subject to material litigation, including individual and class action lawsuits,
               as well as investigations and enforcement actions. These matters can be expensive and
+              time-consuming, and if resolved adversely, could harm our business.
             </li>
           </ul>
         </div>
@@ -69,9 +70,8 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
       <hr className="break-before-page" />
       {/* Info: (20230807 - Julian) Page 2 */}
       <ReportPageBody reportTitle={reportTitle} currentPage={2}>
-        <div className="flex flex-col gap-y-12px py-16px text-xs leading-5">
+        <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
           <ul className="ml-5 list-disc">
-            <p>time-consuming, and if resolved adversely, could harm our business.</p>
             <li>
               If we can't keep pace with rapid industry changes to provide new and innovative
               products and services, our net revenue could decline, negatively impacting our

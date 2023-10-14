@@ -27,31 +27,31 @@ export const createCISFirstPart = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Trading fee', `—`, `—`],
+        rowData: ['B011 Trading fee', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Spread Fee', `—`, `—`],
+        rowData: ['B012 Spread Fee', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Withdrawal fee', `—`, `—`],
+        rowData: ['B005 Withdrawal fee', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Deposit fee', `—`, `—`],
+        rowData: ['B001 Deposit fee', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Liquidation fee', `—`, `—`],
+        rowData: ['B013 Liquidation fee', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Guaranteed stop loss fee', `—`, `—`],
+        rowData: ['B014 Guaranteed stop loss fee', `—`, `—`],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total revenue', `$ —`, `$ —`],
+        rowData: ['B029 Total revenue', `$ —`, `$ —`],
       },
       {
         rowType: RowType.title,
@@ -59,19 +59,19 @@ export const createCISFirstPart = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Technical supplier costs', `—`, `—`],
+        rowData: ['B008 Technical supplier costs', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Market data supplier costs', `—`, `—`],
+        rowData: ['B015 Market data supplier costs', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['New coin listing cost', `—`, `—`],
+        rowData: ['B016 New coin listing cost', `—`, `—`],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total cost', `$ —`, `$ —`],
+        rowData: ['B030 Total cost', `$ —`, `$ —`],
       },
       {
         rowType: RowType.title,
@@ -79,65 +79,35 @@ export const createCISFirstPart = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Employee salaries', `—`, `—`],
+        rowData: ['B017 Employee salaries', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Rent', `—`, `—`],
+        rowData: ['B018 Rent', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Marketing', `—`, `—`],
+        rowData: ['B019 Marketing', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Rebate expenses', `—`, `—`],
+        rowData: ['B020 Rebate expenses', `—`, `—`],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total operating expenses', `$ —`, `$ —`],
+        rowData: ['B031 Total operating expenses', `$ —`, `$ —`],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Financial costs:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['B021 Interest expense', `—`, `—`],
       },
     ],
   };
   if (!dataA || !dataB) return defaultTable;
-
-  // Info: (20230921 - Julian) total revenue
-  const totalRevenueA =
-    +dataA.income.details.transactionFee.weightedAverageCost +
-    +dataA.income.details.spreadFee.weightedAverageCost +
-    +dataA.income.details.withdrawalFee.weightedAverageCost +
-    +dataA.income.details.depositFee.weightedAverageCost +
-    +dataA.income.details.liquidationFee.weightedAverageCost +
-    +dataA.income.details.guaranteedStopFee.weightedAverageCost;
-  const totalRevenueB =
-    +dataB.income.details.transactionFee.weightedAverageCost +
-    +dataB.income.details.spreadFee.weightedAverageCost +
-    +dataB.income.details.withdrawalFee.weightedAverageCost +
-    +dataB.income.details.depositFee.weightedAverageCost +
-    +dataB.income.details.liquidationFee.weightedAverageCost +
-    +dataB.income.details.guaranteedStopFee.weightedAverageCost;
-
-  // Info: (20230921 - Julian) total cost
-  const totalCostA =
-    +dataA.costs.details.technicalProviderFee +
-    +dataA.costs.details.marketDataProviderFee +
-    +dataA.costs.details.newCoinListingCost;
-  const totalCostB =
-    +dataB.costs.details.technicalProviderFee +
-    +dataB.costs.details.marketDataProviderFee +
-    +dataB.costs.details.newCoinListingCost;
-
-  // Info: (20230921 - Julian) total operating expenses
-  const totalOperatingExpensesA =
-    +dataA.operatingExpenses.details.salaries +
-    +dataA.operatingExpenses.details.rent +
-    +dataA.operatingExpenses.details.marketing +
-    +dataA.operatingExpenses.details.commissionRebates;
-  const totalOperatingExpensesB =
-    +dataB.operatingExpenses.details.salaries +
-    +dataB.operatingExpenses.details.rent +
-    +dataB.operatingExpenses.details.marketing +
-    +dataB.operatingExpenses.details.commissionRebates;
 
   const result: ITable = {
     subThead,
@@ -150,7 +120,7 @@ export const createCISFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Trading fee',
+          'B011 Trading fee',
           `${roundToDecimal(+dataA.income.details.transactionFee.weightedAverageCost, 2)}`,
           `${roundToDecimal(+dataB.income.details.transactionFee.weightedAverageCost, 2)}`,
         ],
@@ -158,7 +128,7 @@ export const createCISFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Spread Fee',
+          'B012 Spread Fee',
           `${roundToDecimal(+dataA.income.details.spreadFee.weightedAverageCost, 2)}`,
           `${roundToDecimal(+dataB.income.details.spreadFee.weightedAverageCost, 2)}`,
         ],
@@ -166,7 +136,7 @@ export const createCISFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Withdrawal fee',
+          'B005 Withdrawal fee',
           `${roundToDecimal(+dataA.income.details.withdrawalFee.weightedAverageCost, 2)}`,
           `${roundToDecimal(+dataB.income.details.withdrawalFee.weightedAverageCost, 2)}`,
         ],
@@ -174,7 +144,7 @@ export const createCISFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Deposit fee',
+          'B001 Deposit fee',
           `${roundToDecimal(+dataA.income.details.depositFee.weightedAverageCost, 2)}`,
           `${roundToDecimal(+dataB.income.details.depositFee.weightedAverageCost, 2)}`,
         ],
@@ -182,7 +152,7 @@ export const createCISFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Liquidation fee',
+          'B013 Liquidation fee',
           `${roundToDecimal(+dataA.income.details.liquidationFee.weightedAverageCost, 2)}`,
           `${roundToDecimal(+dataB.income.details.liquidationFee.weightedAverageCost, 2)}`,
         ],
@@ -190,7 +160,7 @@ export const createCISFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Guaranteed stop loss fee',
+          'B014 Guaranteed stop loss fee',
           `${roundToDecimal(+dataA.income.details.guaranteedStopFee.weightedAverageCost, 2)}`,
           `${roundToDecimal(+dataB.income.details.guaranteedStopFee.weightedAverageCost, 2)}`,
         ],
@@ -198,9 +168,9 @@ export const createCISFirstPart = (
       {
         rowType: RowType.foot,
         rowData: [
-          'Total revenue',
-          `$ ${roundToDecimal(totalRevenueA, 2)}`,
-          `$ ${roundToDecimal(totalRevenueB, 2)}`,
+          'B029 Total revenue',
+          `$ ${roundToDecimal(+dataA.income.weightedAverageCost, 2)}`,
+          `$ ${roundToDecimal(+dataB.income.weightedAverageCost, 2)}`,
         ],
       },
       {
@@ -210,30 +180,34 @@ export const createCISFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Technical supplier costs',
-          `${roundToDecimal(+dataA.costs.details.technicalProviderFee, 2)}`,
-          `${roundToDecimal(+dataB.costs.details.technicalProviderFee, 2)}`,
+          'B008 Technical supplier costs',
+          `${roundToDecimal(+dataA.costs.details.technicalProviderFee.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+dataB.costs.details.technicalProviderFee.weightedAverageCost, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Market data supplier costs',
-          `${roundToDecimal(+dataA.costs.details.marketDataProviderFee, 2)}`,
-          `${roundToDecimal(+dataB.costs.details.marketDataProviderFee, 2)}`,
+          'B015 Market data supplier costs',
+          `${roundToDecimal(+dataA.costs.details.marketDataProviderFee.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+dataB.costs.details.marketDataProviderFee.weightedAverageCost, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'New coin listing cost',
-          `${roundToDecimal(+dataA.costs.details.newCoinListingCost, 2)}`,
-          `${roundToDecimal(+dataB.costs.details.newCoinListingCost, 2)}`,
+          'B016 New coin listing cost',
+          `${roundToDecimal(+dataA.costs.details.newCoinListingCost.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+dataB.costs.details.newCoinListingCost.weightedAverageCost, 2)}`,
         ],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total cost', `$ ${totalCostA}`, `$ ${totalCostB}`],
+        rowData: [
+          'B030 Total cost',
+          `$ ${roundToDecimal(+dataA.costs.weightedAverageCost, 2)}`,
+          `$ ${roundToDecimal(+dataB.costs.weightedAverageCost, 2)}`,
+        ],
       },
       {
         rowType: RowType.title,
@@ -242,7 +216,7 @@ export const createCISFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Employee salaries',
+          'B017 Employee salaries',
           `${roundToDecimal(+dataA.operatingExpenses.details.salaries, 2)}`,
           `${roundToDecimal(+dataB.operatingExpenses.details.salaries, 2)}`,
         ],
@@ -250,7 +224,7 @@ export const createCISFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Rent',
+          'B018 Rent',
           `${roundToDecimal(+dataA.operatingExpenses.details.rent, 2)}`,
           `${roundToDecimal(+dataB.operatingExpenses.details.rent, 2)}`,
         ],
@@ -258,7 +232,7 @@ export const createCISFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Marketing',
+          'B019 Marketing',
           `${roundToDecimal(+dataA.operatingExpenses.details.marketing, 2)}`,
           `${roundToDecimal(+dataB.operatingExpenses.details.marketing, 2)}`,
         ],
@@ -266,17 +240,35 @@ export const createCISFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Rebate expenses',
-          `${roundToDecimal(+dataA.operatingExpenses.details.commissionRebates, 2)}`,
-          `${roundToDecimal(+dataB.operatingExpenses.details.commissionRebates, 2)}`,
+          'B020 Rebate expenses',
+          `${roundToDecimal(
+            +dataA.operatingExpenses.details.commissionRebates.weightedAverageCost,
+            2
+          )}`,
+          `${roundToDecimal(
+            +dataB.operatingExpenses.details.commissionRebates.weightedAverageCost,
+            2
+          )}`,
         ],
       },
       {
         rowType: RowType.foot,
         rowData: [
-          'Total operating expenses',
-          `$ ${roundToDecimal(totalOperatingExpensesA, 2)}`,
-          `$ ${roundToDecimal(totalOperatingExpensesB, 2)}`,
+          'B031 Total operating expenses',
+          `$ ${roundToDecimal(+dataA.operatingExpenses.weightedAverageCost, 2)}`,
+          `$ ${roundToDecimal(+dataB.operatingExpenses.weightedAverageCost, 2)}`,
+        ],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Financial costs:', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'B021 Interest expense',
+          `${roundToDecimal(+dataA.financialCosts.details.interestExpense, 2)}`,
+          `${roundToDecimal(+dataB.financialCosts.details.interestExpense, 2)}`,
         ],
       },
     ],
@@ -291,32 +283,24 @@ export const createCISLastPart = (
   const defaultTable: ITable = {
     tbody: [
       {
-        rowType: RowType.title,
-        rowData: ['Financial costs:', '*-*', '*-*'],
+        rowType: RowType.bookkeeping,
+        rowData: ['B022 Cryptocurrency forex losses', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Interest expense', `—`, `—`],
+        rowData: ['B023 Fiat to cryptocurrency conversion losses', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency forex losses', `—`, `—`],
+        rowData: ['B024 Cryptocurrency to fiat conversion losses', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Fiat to cryptocurrency conversion losses', `—`, `—`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency to fiat conversion losses', `—`, `—`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Fiat to fiat conversion losses', `—`, `—`],
+        rowData: ['B025 Fiat to fiat conversion losses', `—`, `—`],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total financial costs', `$ —`, `$ —`],
+        rowData: ['B032 Total financial costs', `$ —`, `$ —`],
       },
       {
         rowType: RowType.title,
@@ -324,68 +308,49 @@ export const createCISLastPart = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Investment gains', `—`, `—`],
+        rowData: ['B026 Investment gains', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Forex gains', `—`, `—`],
+        rowData: ['B027 Forex gains', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Cryptocurrency gains', `—`, `—`],
+        rowData: ['B028 Cryptocurrency gains', `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Total other gains', `—`, `—`],
+        rowData: ['B033 Total other gains', `—`, `—`],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Net profit', `$ —`, `$ —`],
+        rowData: ['B004 Net profit', `$ —`, `$ —`],
       },
     ],
   };
   if (!dataA || !dataB) return defaultTable;
 
-  const totalFinancialCostsA =
-    +dataA.financialCosts.details.interestExpense +
-    +dataA.financialCosts.details.cryptocurrencyForexLosses +
-    +dataA.financialCosts.details.fiatToCryptocurrencyConversionLosses +
-    +dataA.financialCosts.details.cryptocurrencyToFiatConversionLosses +
-    +dataA.financialCosts.details.fiatToFiatConversionLosses;
-  const totalFinancialCostsB =
-    +dataB.financialCosts.details.interestExpense +
-    +dataB.financialCosts.details.cryptocurrencyForexLosses +
-    +dataB.financialCosts.details.fiatToCryptocurrencyConversionLosses +
-    +dataB.financialCosts.details.cryptocurrencyToFiatConversionLosses +
-    +dataB.financialCosts.details.fiatToFiatConversionLosses;
-
-  const totalOtherGainsA =
-    +dataA.otherGainsLosses.details.investmentGains +
-    +dataA.otherGainsLosses.details.forexGains +
-    +dataA.otherGainsLosses.details.cryptocurrencyGains.weightedAverageCost;
-  const totalOtherGainsB =
-    +dataB.otherGainsLosses.details.investmentGains +
-    +dataB.otherGainsLosses.details.forexGains +
-    +dataB.otherGainsLosses.details.cryptocurrencyGains.weightedAverageCost;
+  const b026ItemTitle =
+    +dataA.otherGainsLosses.details.investmentGains >= 0
+      ? 'B026 Investment gains'
+      : 'B026 Investment losses';
+  const b027ItemTitle =
+    +dataA.otherGainsLosses.details.forexGains >= 0 ? 'B027 Forex gains' : 'B027 Forex losses';
+  const b028ItemTitle =
+    +dataA.otherGainsLosses.details.cryptocurrencyGains.weightedAverageCost >= 0
+      ? 'B028 Cryptocurrency gains'
+      : 'B028 Cryptocurrency losses';
+  const b033ItemTitle =
+    +dataA.otherGainsLosses.weightedAverageCost >= 0
+      ? 'B033 Total other gains'
+      : 'B033 Total other losses';
 
   return {
     tbody: [
       {
-        rowType: RowType.title,
-        rowData: ['Financial costs:', '*-*', '*-*'],
-      },
-      {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Interest expense',
-          `${roundToDecimal(+dataA.financialCosts.details.interestExpense, 2)}`,
-          `${roundToDecimal(+dataB.financialCosts.details.interestExpense, 2)}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'Cryptocurrency forex losses',
+          'B022 Cryptocurrency forex losses',
           `${roundToDecimal(+dataA.financialCosts.details.cryptocurrencyForexLosses, 2)}`,
           `${roundToDecimal(+dataB.financialCosts.details.cryptocurrencyForexLosses, 2)}`,
         ],
@@ -393,7 +358,7 @@ export const createCISLastPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Fiat to cryptocurrency conversion losses',
+          'B023 Fiat to cryptocurrency conversion losses',
           `${roundToDecimal(
             +dataA.financialCosts.details.fiatToCryptocurrencyConversionLosses,
             2
@@ -407,7 +372,7 @@ export const createCISLastPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cryptocurrency to fiat conversion losses',
+          'B024 Cryptocurrency to fiat conversion losses',
           `${roundToDecimal(
             +dataA.financialCosts.details.cryptocurrencyToFiatConversionLosses,
             2
@@ -421,7 +386,7 @@ export const createCISLastPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Fiat to fiat conversion losses',
+          'B025 Fiat to fiat conversion losses',
           `${roundToDecimal(+dataA.financialCosts.details.fiatToFiatConversionLosses, 2)}`,
           `${roundToDecimal(+dataB.financialCosts.details.fiatToFiatConversionLosses, 2)}`,
         ],
@@ -429,9 +394,9 @@ export const createCISLastPart = (
       {
         rowType: RowType.foot,
         rowData: [
-          'Total financial costs',
-          `$ ${totalFinancialCostsA}`,
-          `$ ${totalFinancialCostsB}`,
+          'B032 Total financial costs',
+          `$ ${roundToDecimal(+dataA.financialCosts.weightedAverageCost, 2)}`,
+          `$ ${roundToDecimal(+dataB.financialCosts.weightedAverageCost, 2)}`,
         ],
       },
       {
@@ -441,7 +406,7 @@ export const createCISLastPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Investment gains',
+          b026ItemTitle,
           `${roundToDecimal(+dataA.otherGainsLosses.details.investmentGains, 2)}`,
           `${roundToDecimal(+dataB.otherGainsLosses.details.investmentGains, 2)}`,
         ],
@@ -449,7 +414,7 @@ export const createCISLastPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Forex gains',
+          b027ItemTitle,
           `${roundToDecimal(+dataA.otherGainsLosses.details.forexGains, 2)}`,
           `${roundToDecimal(+dataB.otherGainsLosses.details.forexGains, 2)}`,
         ],
@@ -457,7 +422,7 @@ export const createCISLastPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Cryptocurrency gains',
+          b028ItemTitle,
           `${roundToDecimal(
             +dataA.otherGainsLosses.details.cryptocurrencyGains.weightedAverageCost,
             2
@@ -471,15 +436,15 @@ export const createCISLastPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Total other gains',
-          `${roundToDecimal(totalOtherGainsA, 2)}`,
-          `${roundToDecimal(totalOtherGainsB, 2)}`,
+          b033ItemTitle,
+          `${roundToDecimal(+dataA.otherGainsLosses.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+dataB.otherGainsLosses.weightedAverageCost, 2)}`,
         ],
       },
       {
         rowType: RowType.foot,
         rowData: [
-          'Net profit',
+          'B004 Net profit',
           `$ ${roundToDecimal(+dataA.netProfit, 2)}`,
           `$ ${roundToDecimal(+dataB.netProfit, 2)}`,
         ],
@@ -492,9 +457,10 @@ export const createRevenueTable = (
   title: string,
   date: string[],
   dataA: IIncomeAccountingDetail | undefined,
-  dataB: IIncomeAccountingDetail | undefined
+  dataB: IIncomeAccountingDetail | undefined,
+  numero: string[]
 ) => {
-  const thead = [`${title}`, date[0], '*-*', '*-*', date[1], '*-*', '*-*'];
+  const thead = [`${numero[0]} ${title}`, date[0], '*-*', '*-*', date[1], '*-*', '*-*'];
   const defaultTable: ITable = {
     thead,
     tbody: [
@@ -512,19 +478,19 @@ export const createRevenueTable = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`USD`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
+        rowData: [`USD (${numero[4]})`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`Bitcoin`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+        rowData: [`Bitcoin (${numero[1]})`, `—`, `—`, `— %`, `—`, `—`, `— %`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`Ethereum`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+        rowData: [`Ethereum (${numero[2]})`, `—`, `—`, `— %`, `—`, `—`, `— %`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`USDT`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+        rowData: [`USDT (${numero[3]})`, `—`, `—`, `— %`, `—`, `—`, `— %`],
       },
       {
         rowType: RowType.foot,
@@ -581,7 +547,7 @@ export const createRevenueTable = (
     {
       rowType: RowType.bookkeeping,
       rowData: [
-        `USD`,
+        `USD (${numero[4]})`,
         `${roundToDecimal(+usdA.amount, 2)}`,
         `$ ${roundToDecimal(+usdA.weightedAverageCost, 2)}`,
         `${roundToDecimal(usdPerA, 1)} %`,
@@ -593,7 +559,7 @@ export const createRevenueTable = (
     {
       rowType: RowType.bookkeeping,
       rowData: [
-        `Bitcoin`,
+        `Bitcoin (${numero[1]})`,
         `${roundToDecimal(+bitA.amount, 2)}`,
         `${roundToDecimal(+bitA.weightedAverageCost, 2)}`,
         `${roundToDecimal(bitPerA, 1)} %`,
@@ -605,7 +571,7 @@ export const createRevenueTable = (
     {
       rowType: RowType.bookkeeping,
       rowData: [
-        `Ethereum`,
+        `Ethereum (${numero[2]})`,
         `${roundToDecimal(+ethA.amount, 2)}`,
         `${roundToDecimal(+ethA.weightedAverageCost, 2)}`,
         `${roundToDecimal(ethPerA, 1)} %`,
@@ -617,7 +583,7 @@ export const createRevenueTable = (
     {
       rowType: RowType.bookkeeping,
       rowData: [
-        `USDT`,
+        `USDT (${numero[3]})`,
         `${roundToDecimal(+usdtA.amount, 2)}`,
         `${roundToDecimal(+usdtA.weightedAverageCost, 2)}`,
         `${roundToDecimal(usdtPerA, 1)} %`,
@@ -661,35 +627,35 @@ export const createRevenueChangeTable = (
     tbody: [
       {
         rowType: RowType.headline,
-        rowData: ['', '(in thousands)', '*-*', '*-*'],
+        rowData: ['Net revenue', '(in thousands)', '*-*', ''],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Trading fee', `—`, `—`, `— %`],
+        rowData: ['B011 Trading fee', `—`, `—`, `— %`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Spread Fee', `—`, `—`, `— %`],
+        rowData: ['B012 Spread Fee', `—`, `—`, `— %`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Withdrawal fee', `—`, `—`, `— %`],
+        rowData: ['B005 Withdrawal fee', `—`, `—`, `— %`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Deposit fee', `—`, `—`, `— %`],
+        rowData: ['B001 Deposit fee', `—`, `—`, `— %`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Liquidation fee', `—`, `—`, `— %`],
+        rowData: ['B001 Liquidation fee', `—`, `—`, `— %`],
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['Guaranteed stop loss fee', `—`, `—`, `— %`],
+        rowData: ['B014 Guaranteed stop loss fee', `—`, `—`, `— %`],
       },
       {
         rowType: RowType.foot,
-        rowData: ['Total revenue', `$ —`, `$ —`, `— %`],
+        rowData: ['B029 Total revenue', `$ —`, `$ —`, `— %`],
       },
     ],
   };
@@ -744,12 +710,12 @@ export const createRevenueChangeTable = (
     tbody: [
       {
         rowType: RowType.headline,
-        rowData: ['', '(in thousands)', '*-*', '*-*'],
+        rowData: ['Net revenue', '(in thousands)', '*-*', ''],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Trading fee',
+          'B011 Trading fee',
           `${roundToDecimal(thisYearTradingFee, 2)}`,
           `${roundToDecimal(lastYearTradingFee, 2)}`,
           `${roundToDecimal(tradingFeeChange, 1)} %`,
@@ -758,7 +724,7 @@ export const createRevenueChangeTable = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Spread Fee',
+          'B012 Spread Fee',
           `${roundToDecimal(thisYearSpreadFee, 2)}`,
           `${roundToDecimal(lastYearSpreadFee, 2)}`,
           `${roundToDecimal(spreadFeeChange, 1)} %`,
@@ -767,7 +733,7 @@ export const createRevenueChangeTable = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Withdrawal fee',
+          'B005 Withdrawal fee',
           `${roundToDecimal(thisYearWithdrawalFee, 2)}`,
           `${roundToDecimal(lastYearWithdrawalFee, 2)}`,
           `${roundToDecimal(withdrawalFeeChange, 1)} %`,
@@ -776,7 +742,7 @@ export const createRevenueChangeTable = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Deposit fee',
+          'B001 Deposit fee',
           `${roundToDecimal(thisYearDepositFee, 2)}`,
           `${roundToDecimal(lastYearDepositFee, 2)}`,
           `${roundToDecimal(depositFeeChange, 1)} %`,
@@ -785,7 +751,7 @@ export const createRevenueChangeTable = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Liquidation fee',
+          'B001 Liquidation fee',
           `${roundToDecimal(thisYearLiquidationFee, 2)}`,
           `${roundToDecimal(lastYearLiquidationFee, 2)}`,
           `${roundToDecimal(liquidationFeeChange, 1)} %`,
@@ -794,7 +760,7 @@ export const createRevenueChangeTable = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'Guaranteed stop loss fee',
+          'B014 Guaranteed stop loss fee',
           `${roundToDecimal(thisYearGuaranteedStopLossFee, 2)}`,
           `${roundToDecimal(lastYearGuaranteedStopLossFee, 2)}`,
           `${roundToDecimal(guaranteedStopLossFeeChange, 1)} %`,
@@ -803,7 +769,7 @@ export const createRevenueChangeTable = (
       {
         rowType: RowType.foot,
         rowData: [
-          'Total revenue',
+          'B029 Total revenue',
           `$ ${roundToDecimal(thisYearTotalRevenue, 2)}`,
           `$ ${roundToDecimal(lastYearTotalRevenue, 2)}`,
           `${roundToDecimal(totalRevenueChange, 1)} %`,

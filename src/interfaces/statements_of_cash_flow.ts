@@ -1,4 +1,4 @@
-import {ICurrencyDetail, ICurrencyType} from './report_currency_detail';
+import {ICurrencyDetail} from './report_currency_detail';
 
 interface ICashFlowAccountingDetail {
   totalAmountFairValue: number;
@@ -29,20 +29,8 @@ export interface INonCashConsiderationDetail {
   weightedAverageCost: number;
   totalAmountFairValue: number;
   details: {
-    from: {
-      currencyType: ICurrencyType;
-      name: string;
-      amount: number;
-      weightedAverageCost: number;
-      fairValue: number;
-    };
-    to: {
-      currencyType: ICurrencyType;
-      name: string;
-      amount: number;
-      weightedAverageCost: number;
-      fairValue: number;
-    };
+    from: ICurrencyDetail;
+    to: ICurrencyDetail;
   }[];
 }
 

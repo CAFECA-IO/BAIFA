@@ -29,9 +29,9 @@ export interface IComprehensiveIncomeStatements {
   costs: {
     weightedAverageCost: number;
     details: {
-      technicalProviderFee: number;
-      marketDataProviderFee: number;
-      newCoinListingCost: number;
+      technicalProviderFee: IIncomeAccountingDetail;
+      marketDataProviderFee: IIncomeAccountingDetail;
+      newCoinListingCost: IIncomeAccountingDetail;
     };
   };
   operatingExpenses: {

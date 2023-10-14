@@ -179,7 +179,7 @@ const StatementOfRedFlags = ({projectId}: IStatementOfRedFlagsProps) => {
         </title>
       </Head>
 
-      <div className="h-redflags-mobile flex flex-col items-center a4:h-auto">
+      <div className="flex h-1000px flex-col items-center a4:h-auto">
         <div ref={pageRef} className="flex w-full origin-top flex-col items-center font-inter">
           {/* Info: (20230801 - Julian) Cover */}
           <ReportCover
