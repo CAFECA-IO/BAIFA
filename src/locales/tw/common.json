@@ -135,6 +135,10 @@
     "FEE": "手續費",
     "FLAGGING": "警示記錄"
   },
+  "TRANSACTION_LIST_PAGE": {
+    "MAIN_TITLE_HIGHLIGHT": "交易",
+    "MAIN_TITLE": "列表"
+  },
   "ADDRESS_DETAIL_PAGE": {
     "MAIN_TITLE": "地址"
   },

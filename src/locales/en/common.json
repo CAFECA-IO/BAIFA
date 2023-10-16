@@ -135,6 +135,10 @@
     "FEE": "Transaction Fee",
     "FLAGGING": "Flagging"
   },
+  "TRANSACTION_LIST_PAGE": {
+    "MAIN_TITLE_HIGHLIGHT": "Transaction",
+    "MAIN_TITLE": "List"
+  },
   "ADDRESS_DETAIL_PAGE": {
     "MAIN_TITLE": "Address"
   },

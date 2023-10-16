@@ -12,6 +12,7 @@ export const BFAURL = {
 
   BLOCK: '/app/block',
   TRANSACTION: '/app/transaction',
+  TRANSACTION_LIST: '/app/transaction-list',
 };
 
 export const REPORT_PATH = {

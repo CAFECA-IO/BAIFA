@@ -59,16 +59,16 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
           href={`${BFAURL.TRANSACTION}/${transaction.id}`}
           className="inline-flex flex-1 items-baseline space-x-2"
         >
-          <h2 className="text-xl">
+          <h2 className="text-sm lg:text-xl">
             {t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')}{' '}
             <span className="text-primaryBlue">{transaction.id}</span>
           </h2>
-          <p className="text-sm text-lilac"> - {typeStr}</p>
+          <p className="hidden text-sm text-lilac lg:block"> - {typeStr}</p>
         </Link>
         {/* Info: (20230907 - Julian) Status */}
         <div className="flex items-center space-x-2 px-2">
           <Image src={statusStyle.icon} width={16} height={16} alt={`${transaction.type}_icon`} />
-          <p className={`text-sm ${statusStyle.style}`}>{statusStyle.str}</p>
+          <p className={`hidden text-sm lg:block ${statusStyle.style}`}>{statusStyle.str}</p>
         </div>
       </div>
     </div>
