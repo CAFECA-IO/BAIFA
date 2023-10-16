@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import Link from 'next/link';
+import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../components/nav_bar/nav_bar';
@@ -12,7 +12,6 @@ import {dummyBlockData, IBlock} from '../../../interfaces/block';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {getChainIcon} from '../../../lib/common';
-import {BFAURL} from '../../../constants/url';
 
 interface IBlockDetailPageProps {
   blockId: string;
@@ -22,6 +21,9 @@ interface IBlockDetailPageProps {
 const BlockDetailPage = ({blockId, blockData}: IBlockDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
+
+  const router = useRouter();
+  const backClickHandler = () => router.back();
 
   return (
     <>
@@ -36,11 +38,9 @@ const BlockDetailPage = ({blockId, blockData}: IBlockDetailPageProps) => {
           <div className="flex w-full flex-1 flex-col items-center space-y-10 px-5 pb-10 pt-28 lg:px-20">
             <div className="flex w-full items-center justify-start py-10">
               {/* Info: (20230912 -Julian) Back Arrow Button */}
-              <Link href={BFAURL.CHAINS}>
-                <button className="hidden lg:block">
-                  <BsArrowLeftShort className="text-48px" />
-                </button>
-              </Link>
+              <button onClick={backClickHandler} className="hidden lg:block">
+                <BsArrowLeftShort className="text-48px" />
+              </button>
               {/* Info: (20230912 -Julian) Block Title */}
               <div className="flex flex-1 items-center justify-center space-x-2">
                 <Image
@@ -58,13 +58,15 @@ const BlockDetailPage = ({blockId, blockData}: IBlockDetailPageProps) => {
 
             {/* Info: (20230912 - Julian) Block Detail */}
             <BlockDetail blockData={blockData} />
-
             <div className="pt-10">
-              <Link href={BFAURL.CHAINS}>
-                <BoltButton className="px-12 py-4 font-bold" color="blue" style="hollow">
-                  {t('COMMON.BACK')}
-                </BoltButton>
-              </Link>
+              <BoltButton
+                onClick={backClickHandler}
+                className="px-12 py-4 font-bold"
+                color="blue"
+                style="hollow"
+              >
+                {t('COMMON.BACK')}
+              </BoltButton>
             </div>
           </div>
         </div>

@@ -92,18 +92,22 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
 
   const displayTeam = managementTeam.map((team, index) => {
     return (
-      <BoltButton className="px-3 py-1" color="blue" style="solid" key={index}>
-        {team}
-      </BoltButton>
+      <Link href={BFAURL.COMING_SOON}>
+        <BoltButton className="px-3 py-1" color="blue" style="solid" key={index}>
+          {team}
+        </BoltButton>
+      </Link>
     );
   });
 
   const displayMinerAndReward = (
     <div className="flex items-center space-x-3">
       {/* Info: (20230912 - Julian) Miner */}
-      <BoltButton className="px-3 py-1" color="blue" style="solid">
-        {miner}
-      </BoltButton>
+      <Link href={BFAURL.COMING_SOON}>
+        <BoltButton className="px-3 py-1" color="blue" style="solid">
+          {miner}
+        </BoltButton>
+      </Link>
       <p>+</p>
       {/* Info: (20230912 - Julian) Reward */}
       <div className="flex items-center space-x-2">

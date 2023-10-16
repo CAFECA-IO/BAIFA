@@ -35,10 +35,10 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
-          <div className="flex w-4/5 flex-1 flex-col items-center space-y-10 px-20 pb-10 pt-28">
+          <div className="flex w-full flex-1 flex-col items-center space-y-10 px-5 pb-10 pt-28 lg:px-20">
             <div className="flex w-full items-center justify-start py-10">
               {/* Info: (20230912 -Julian) Back Arrow Button */}
-              <button onClick={backClickHandler}>
+              <button onClick={backClickHandler} className="hidden lg:block">
                 <BsArrowLeftShort className="text-48px" />
               </button>
               {/* Info: (20230912 -Julian) Transaction Title */}
@@ -49,7 +49,7 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
                   width={40}
                   height={40}
                 />
-                <h1 className="text-32px font-bold">
+                <h1 className="text-2xl font-bold lg:text-32px">
                   {t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')}
                   <span className="ml-2 text-primaryBlue"> {transactionId}</span>
                 </h1>
