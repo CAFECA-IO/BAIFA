@@ -53,7 +53,7 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
         <p className="text-xs">{monthStr}</p>
         <p className="text-xs text-lilac">{createdStr.time}</p>
       </div>
-      <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-8">
+      <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
         {/* Info: (20230907 - Julian) Transaction ID & Type */}
         <Link
           href={`${BFAURL.TRANSACTION}/${transaction.id}`}
