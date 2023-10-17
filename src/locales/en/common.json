@@ -133,7 +133,8 @@
     "CONTENT": "Content",
     "VALUE": "Value",
     "FEE": "Transaction Fee",
-    "FLAGGING": "Flagging"
+    "FLAGGING": "Flagging",
+    "TRACING_TOOL_BUTTON": "Add in Tracing Tool"
   },
   "TRANSACTION_LIST_PAGE": {
     "MAIN_TITLE_HIGHLIGHT": "Transaction",

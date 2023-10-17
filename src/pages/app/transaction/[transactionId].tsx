@@ -24,6 +24,8 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
 
   const router = useRouter();
   const backClickHandler = () => router.back();
+  // Info: (20231017 - Julian) 有 flagging 的話就顯示 Add in Tracing Tool 按鈕
+  const isAddInTracingTool = !!transactionData.flagging ? 'block' : 'hidden';
 
   return (
     <>
@@ -35,8 +37,9 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
-          <div className="flex w-full flex-1 flex-col items-center space-y-10 px-5 pb-10 pt-28 lg:px-20">
-            <div className="flex w-full items-center justify-start py-10">
+          <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-20 lg:pt-40">
+            {/* Info: (20231017 - Julian) Header */}
+            <div className="relative flex w-full flex-col items-center justify-start lg:flex-row">
               {/* Info: (20230912 -Julian) Back Arrow Button */}
               <button onClick={backClickHandler} className="hidden lg:block">
                 <BsArrowLeftShort className="text-48px" />
@@ -54,12 +57,27 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
                   <span className="ml-2 text-primaryBlue"> {transactionId}</span>
                 </h1>
               </div>
+
+              {/* Info: (20231017 - Julian) Tracing Tool Button */}
+              <div className={`relative right-0 mt-6 lg:absolute lg:mt-0 ${isAddInTracingTool}`}>
+                <BoltButton
+                  className="flex items-center space-x-4 px-6 py-4"
+                  color="purple"
+                  style="solid"
+                >
+                  <Image src="/icons/tracing.svg" alt="" width={24} height={24} />
+                  <p>{t('TRANSACTION_DETAIL_PAGE.TRACING_TOOL_BUTTON')}</p>
+                </BoltButton>
+              </div>
             </div>
 
             {/* Info: (20230907 - Julian) Transaction Detail */}
-            <TransactionDetail transactionData={transactionData} />
+            <div className="my-10 w-full">
+              <TransactionDetail transactionData={transactionData} />
+            </div>
 
-            <div className="pt-10">
+            {/* Info: (20231017 - Julian) Back Button */}
+            <div className="mt-10">
               <BoltButton
                 onClick={backClickHandler}
                 className="px-12 py-4 font-bold"

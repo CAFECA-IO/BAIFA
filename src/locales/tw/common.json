@@ -133,7 +133,8 @@
     "CONTENT": "內容",
     "VALUE": "金額",
     "FEE": "手續費",
-    "FLAGGING": "警示記錄"
+    "FLAGGING": "警示記錄",
+    "TRACING_TOOL_BUTTON": "加入追蹤工具"
   },
   "TRANSACTION_LIST_PAGE": {
     "MAIN_TITLE_HIGHLIGHT": "交易",

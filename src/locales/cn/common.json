@@ -133,7 +133,8 @@
     "CONTENT": "内容",
     "VALUE": "金额",
     "FEE": "手续费",
-    "FLAGGING": "警示记录"
+    "FLAGGING": "警示记录",
+    "TRACING_TOOL_BUTTON": "加入追踪工具"
   },
   "TRANSACTION_LIST_PAGE": {
     "MAIN_TITLE_HIGHLIGHT": "交易",
