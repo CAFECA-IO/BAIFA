@@ -36,7 +36,7 @@ export const mainMenuContent = [
     title: 'HOME_PAGE.CHAINS_TITLE',
     description: '30',
     mark: '+',
-    link: BFAURL.COMING_SOON,
+    link: BFAURL.CHAINS,
     alt: 'chain_icon',
   },
   {

@@ -199,7 +199,8 @@
     "BACK": "返回",
     "AGO": "前",
     "PRIVATE_NOTE_TITLE": "私人笔记",
-    "PRIVATE_NOTE_PLACEHOLDER": "在此输入笔记..."
+    "PRIVATE_NOTE_PLACEHOLDER": "在此输入笔记...",
+    "LOG_IN_ONLY": "请先登入"
   },
   "FOOTER": {
     "POWERED_BY": "技术支持 稗法",

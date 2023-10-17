@@ -199,7 +199,8 @@
     "BACK": "Back",
     "AGO": "ago",
     "PRIVATE_NOTE_TITLE": "Private Note",
-    "PRIVATE_NOTE_PLACEHOLDER": "Type your note here..."
+    "PRIVATE_NOTE_PLACEHOLDER": "Type your note here...",
+    "LOG_IN_ONLY": "LOG IN ONLY"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

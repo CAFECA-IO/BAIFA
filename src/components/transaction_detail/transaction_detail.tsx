@@ -136,7 +136,9 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
           {t('TRANSACTION_DETAIL_PAGE.VALUE')}
         </p>
         {/* ToDo: (20230911 - Julian) log in button */}
-        <p className="text-primaryBlue underline underline-offset-2">LOG IN ONLY</p>
+        <Link href={BFAURL.COMING_SOON}>
+          <p className="text-primaryBlue underline underline-offset-2">{t('COMMON.LOG_IN_ONLY')}</p>
+        </Link>
       </div>
       {/* Info: (20230911 - Julian) Fee */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

@@ -13,6 +13,8 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {getChainIcon} from '../../../lib/common';
 import PrivateNoteSection from '../../../components/private_note_section/private_note_section';
+import Link from 'next/link';
+import {BFAURL} from '../../../constants/url';
 
 interface ITransactionDetailPageProps {
   transactionId: string;
@@ -61,14 +63,16 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
 
               {/* Info: (20231017 - Julian) Tracing Tool Button */}
               <div className={`relative right-0 mt-6 lg:absolute lg:mt-0 ${isAddInTracingTool}`}>
-                <BoltButton
-                  className="flex items-center space-x-4 px-6 py-4"
-                  color="purple"
-                  style="solid"
-                >
-                  <Image src="/icons/tracing.svg" alt="" width={24} height={24} />
-                  <p>{t('TRANSACTION_DETAIL_PAGE.TRACING_TOOL_BUTTON')}</p>
-                </BoltButton>
+                <Link href={BFAURL.COMING_SOON}>
+                  <BoltButton
+                    className="flex items-center space-x-4 px-6 py-4"
+                    color="purple"
+                    style="solid"
+                  >
+                    <Image src="/icons/tracing.svg" alt="" width={24} height={24} />
+                    <p>{t('TRANSACTION_DETAIL_PAGE.TRACING_TOOL_BUTTON')}</p>
+                  </BoltButton>
+                </Link>
               </div>
             </div>
 
