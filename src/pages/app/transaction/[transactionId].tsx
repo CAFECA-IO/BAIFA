@@ -70,7 +70,7 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
                     style="solid"
                   >
                     <Image src="/icons/tracing.svg" alt="" width={24} height={24} />
-                    <p>{t('TRANSACTION_DETAIL_PAGE.TRACING_TOOL_BUTTON')}</p>
+                    <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
                   </BoltButton>
                 </Link>
               </div>

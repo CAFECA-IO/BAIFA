@@ -104,10 +104,7 @@
   "CURRENCIES_PAGE": {
     "BREADCRUMB_TITLE": "Currency List",
     "TITLE_HIGHLIGHT": "Currency",
-    "TITLE": "List",
-    "RISK_HIGH": "High Risk",
-    "RISK_MEDIUM": "Medium Risk",
-    "RISK_LOW": "Low Risk"
+    "TITLE": "List"
   },
   "BLOCK_DETAIL_PAGE": {
     "MAIN_TITLE": "Block",
@@ -133,15 +130,23 @@
     "CONTENT": "Content",
     "VALUE": "Value",
     "FEE": "Transaction Fee",
-    "FLAGGING": "Flagging",
-    "TRACING_TOOL_BUTTON": "Add in Tracing Tool"
+    "FLAGGING": "Flagging"
   },
   "TRANSACTION_LIST_PAGE": {
     "MAIN_TITLE_HIGHLIGHT": "Transaction",
     "MAIN_TITLE": "List"
   },
   "ADDRESS_DETAIL_PAGE": {
-    "MAIN_TITLE": "Address"
+    "MAIN_TITLE": "Address",
+    "ADDRESS_ID": "Address",
+    "SIGN_UP_TIME": "Sign Up Time",
+    "LATEST_ACTIVE_TIME": "Latest Active Time",
+    "RELATED_ADDRESS": "Related Addresses",
+    "INTERACTED_WITH": "Interacted With",
+    "RED_FLAG": "Red Flag",
+    "BALANCE": "Balance",
+    "TOTAL_SENT": "Total Sent",
+    "TOTAL_RECEIVED": "Total Received"
   },
   "CONTRACT_DETAIL_PAGE": {
     "MAIN_TITLE": "Contract"
@@ -200,7 +205,15 @@
     "AGO": "ago",
     "PRIVATE_NOTE_TITLE": "Private Note",
     "PRIVATE_NOTE_PLACEHOLDER": "Type your note here...",
-    "LOG_IN_ONLY": "LOG IN ONLY"
+    "TRACING_TOOL_BUTTON": "Add in Tracing Tool",
+    "LOG_IN_ONLY": "LOG IN ONLY",
+    "RISK_HIGH": "High Risk",
+    "RISK_MEDIUM": "Medium Risk",
+    "RISK_LOW": "Low Risk",
+    "ADDRESSES": "Addresses",
+    "CONTRACTS": "Contracts",
+    "TIMES": "Times",
+    "CONTENT_ENCRYPTED": "Content Encrypted"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

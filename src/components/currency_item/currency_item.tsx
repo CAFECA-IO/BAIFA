@@ -23,10 +23,10 @@ const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItem
       : '#3DD08C';
   const riskText =
     riskLevel === RiskLevel.HIGH_RISK
-      ? t('CURRENCIES_PAGE.RISK_HIGH')
+      ? t('COMMON.RISK_HIGH')
       : riskLevel === RiskLevel.MEDIUM_RISK
-      ? t('CURRENCIES_PAGE.RISK_MEDIUM')
-      : t('CURRENCIES_PAGE.RISK_LOW');
+      ? t('COMMON.RISK_MEDIUM')
+      : t('COMMON.RISK_LOW');
 
   // ToDo: (20230927 - Julian) Add link to currency detail page
   return (
@@ -38,7 +38,7 @@ const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItem
         <Image src={chainIcon.src} width={30} height={30} alt={chainIcon.alt} />
         <p className="text-xl font-semibold">{currencyName}</p>
       </div>
-      {/* Info: (20230907 - Julian) Stability */}
+      {/* Info: (20230907 - Julian) Risk */}
       <div className="flex items-center space-x-2 px-2">
         {/* Info: (20230907 - Julian) The circle svg */}
         <svg
