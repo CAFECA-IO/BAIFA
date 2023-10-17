@@ -1,7 +1,9 @@
+import {IStabilityLevel, StabilityLevel} from '../constants/stability_level';
+
 export interface IBlock {
   id: number;
   chainId: string;
-  stabilityLevel: 'MEDIUM' | 'HIGH' | 'LOW';
+  stabilityLevel: IStabilityLevel;
   createdTimestamp: number;
   managementTeam: string[];
   transactions: number[];
@@ -14,7 +16,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: 265675,
     chainId: 'isun',
-    stabilityLevel: 'MEDIUM',
+    stabilityLevel: StabilityLevel.MEDIUM,
     createdTimestamp: 1680978900,
     managementTeam: ['John', 'Jane', 'Jack'],
     transactions: [934221, 931221],
@@ -25,7 +27,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: 265676,
     chainId: 'isun',
-    stabilityLevel: 'HIGH',
+    stabilityLevel: StabilityLevel.HIGH,
     createdTimestamp: 1680998900,
     managementTeam: ['Linda', 'Liam'],
     transactions: [900291],
@@ -36,7 +38,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: 287654,
     chainId: 'eth',
-    stabilityLevel: 'MEDIUM',
+    stabilityLevel: StabilityLevel.MEDIUM,
     createdTimestamp: 16943492374,
     managementTeam: ['Diana', 'Dennis', 'Dylan'],
     transactions: [922372],
@@ -47,7 +49,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: 287655,
     chainId: 'eth',
-    stabilityLevel: 'LOW',
+    stabilityLevel: StabilityLevel.LOW,
     createdTimestamp: 1692860902,
     managementTeam: ['Xavier', 'Xena'],
     transactions: [921372, 922372],
@@ -58,7 +60,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: 287656,
     chainId: 'eth',
-    stabilityLevel: 'HIGH',
+    stabilityLevel: StabilityLevel.HIGH,
     createdTimestamp: 1690000902,
     managementTeam: ['Gina', 'Galo'],
     transactions: [928713, 928728],
@@ -69,7 +71,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: 287326,
     chainId: 'btc',
-    stabilityLevel: 'LOW',
+    stabilityLevel: StabilityLevel.LOW,
     createdTimestamp: 1688734427,
     managementTeam: ['Yolanda', 'Yoda'],
     transactions: [983201],
@@ -80,7 +82,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: 287327,
     chainId: 'btc',
-    stabilityLevel: 'HIGH',
+    stabilityLevel: StabilityLevel.HIGH,
     createdTimestamp: 1688442795,
     managementTeam: ['Sam', 'Sally', 'Simon'],
     transactions: [983210, 983211],
@@ -91,7 +93,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: 287328,
     chainId: 'btc',
-    stabilityLevel: 'MEDIUM',
+    stabilityLevel: StabilityLevel.MEDIUM,
     createdTimestamp: 1689567791,
     managementTeam: ['Wendy', 'Walter', 'Weston'],
     transactions: [984024, 984025, 984082],
@@ -102,7 +104,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: 287329,
     chainId: 'btc',
-    stabilityLevel: 'LOW',
+    stabilityLevel: StabilityLevel.LOW,
     createdTimestamp: 1689940795,
     managementTeam: ['Quinn', 'Quincy'],
     transactions: [983298],

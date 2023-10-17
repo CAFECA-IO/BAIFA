@@ -4,6 +4,7 @@ import {IBlock} from '../../interfaces/block';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
+import {StabilityLevel} from '../../constants/stability_level';
 
 export interface IBlockItemProps {
   block: IBlock;
@@ -13,9 +14,9 @@ const BlockItem = ({block}: IBlockItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const stabilityColor =
-    block.stabilityLevel === 'LOW'
+    block.stabilityLevel === StabilityLevel.LOW
       ? '#FC8181'
-      : block.stabilityLevel === 'MEDIUM'
+      : block.stabilityLevel === StabilityLevel.MEDIUM
       ? '#FFA600'
       : '#3DD08C';
 
