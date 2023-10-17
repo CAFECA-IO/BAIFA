@@ -92,8 +92,8 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
 
   const displayTeam = managementTeam.map((team, index) => {
     return (
-      <Link href={BFAURL.COMING_SOON}>
-        <BoltButton className="px-3 py-1" color="blue" style="solid" key={index}>
+      <Link href={BFAURL.COMING_SOON} key={index}>
+        <BoltButton className="px-3 py-1" color="blue" style="solid">
           {team}
         </BoltButton>
       </Link>

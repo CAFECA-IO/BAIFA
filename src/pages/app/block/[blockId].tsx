@@ -3,6 +3,7 @@ import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
+import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
 import NavBar from '../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../components/bolt_button/bolt_button';
 import BlockDetail from '../../../components/block_detail/block_detail';
@@ -16,14 +17,29 @@ import {getChainIcon} from '../../../lib/common';
 interface IBlockDetailPageProps {
   blockId: string;
   blockData: IBlock;
+  previousBlockId?: number;
+  nextBlockId?: number;
 }
 
-const BlockDetailPage = ({blockId, blockData}: IBlockDetailPageProps) => {
+const BlockDetailPage = ({
+  blockId,
+  blockData,
+  previousBlockId,
+  nextBlockId,
+}: IBlockDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
 
   const router = useRouter();
   const backClickHandler = () => router.back();
+  const previousHandler = () => router.push(`/app/block/${previousBlockId}`);
+  const nextHandler = () => router.push(`/app/block/${nextBlockId}`);
+
+  const buttonStyle =
+    'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
+
+  const previousId = previousBlockId ? previousBlockId : undefined;
+  const nextId = nextBlockId ? nextBlockId : undefined;
 
   return (
     <>
@@ -35,8 +51,9 @@ const BlockDetailPage = ({blockId, blockData}: IBlockDetailPageProps) => {
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
-          <div className="flex w-full flex-1 flex-col items-center space-y-10 px-5 pb-10 pt-28 lg:px-20">
-            <div className="flex w-full items-center justify-start py-10">
+          <div className="flex w-full flex-1 flex-col items-center justify-center px-5 pb-10 pt-28 lg:px-20">
+            {/* Info: (20231017 - Julian) Header */}
+            <div className="flex w-full items-center justify-start">
               {/* Info: (20230912 -Julian) Back Arrow Button */}
               <button onClick={backClickHandler} className="hidden lg:block">
                 <BsArrowLeftShort className="text-48px" />
@@ -56,9 +73,25 @@ const BlockDetailPage = ({blockId, blockData}: IBlockDetailPageProps) => {
               </div>
             </div>
 
+            {/* Info: (20231017 - Julian) Next & Previous Button */}
+            <div className="mt-6 flex items-center space-x-4">
+              {/* Info: (20231017 - Julian) Previous Button */}
+              <button onClick={previousHandler} className={buttonStyle} disabled={!!!previousId}>
+                <RiArrowLeftSLine className="text-2xl" />
+              </button>
+              {/* Info: (20231017 - Julian) Next Button */}
+              <button onClick={nextHandler} className={buttonStyle} disabled={!!!nextId}>
+                <RiArrowRightSLine className="text-2xl" />
+              </button>
+            </div>
+
             {/* Info: (20230912 - Julian) Block Detail */}
-            <BlockDetail blockData={blockData} />
-            <div className="pt-10">
+            <div className="my-10 w-full">
+              <BlockDetail blockData={blockData} />
+            </div>
+
+            {/* Info: (20231017 - Julian) Back Button */}
+            <div className="mt-10">
               <BoltButton
                 onClick={backClickHandler}
                 className="px-12 py-4 font-bold"
@@ -99,7 +132,11 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
-  const blockData = dummyBlockData.find(block => `${block.id}` === params.blockId);
+  const blockIndex = dummyBlockData.findIndex(block => `${block.id}` === params.blockId);
+  const blockData = dummyBlockData[blockIndex]; //dummyBlockData.find(block => `${block.id}` === params.blockId);
+
+  const previousBlockId = dummyBlockData[blockIndex - 1]?.id ?? null;
+  const nextBlockId = dummyBlockData[blockIndex + 1]?.id ?? null;
 
   if (!blockData) {
     return {
@@ -111,6 +148,8 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     props: {
       blockId: params.blockId,
       blockData: blockData,
+      previousBlockId: previousBlockId,
+      nextBlockId: nextBlockId,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };
