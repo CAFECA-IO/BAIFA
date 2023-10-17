@@ -197,7 +197,9 @@
   "COMMON": {
     "NONE": "無",
     "BACK": "返回",
-    "AGO": "前"
+    "AGO": "前",
+    "PRIVATE_NOTE_TITLE": "私人筆記",
+    "PRIVATE_NOTE_PLACEHOLDER": "在此輸入筆記..."
   },
   "FOOTER": {
     "POWERED_BY": "技術支持 稗法",

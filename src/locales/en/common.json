@@ -197,7 +197,9 @@
   "COMMON": {
     "NONE": "None",
     "BACK": "Back",
-    "AGO": "ago"
+    "AGO": "ago",
+    "PRIVATE_NOTE_TITLE": "Private Note",
+    "PRIVATE_NOTE_PLACEHOLDER": "Type your note here..."
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

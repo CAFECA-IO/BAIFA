@@ -12,6 +12,7 @@ import {dummyTransactionData, ITransaction} from '../../../interfaces/transactio
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {getChainIcon} from '../../../lib/common';
+import PrivateNoteSection from '../../../components/private_note_section/private_note_section';
 
 interface ITransactionDetailPageProps {
   transactionId: string;
@@ -74,6 +75,10 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
             {/* Info: (20230907 - Julian) Transaction Detail */}
             <div className="my-10 w-full">
               <TransactionDetail transactionData={transactionData} />
+            </div>
+
+            <div className="w-full">
+              <PrivateNoteSection />
             </div>
 
             {/* Info: (20231017 - Julian) Back Button */}
