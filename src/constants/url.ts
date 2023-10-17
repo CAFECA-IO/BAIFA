@@ -13,6 +13,7 @@ export const BFAURL = {
   BLOCK: '/app/block',
   TRANSACTION: '/app/transaction',
   TRANSACTION_LIST: '/app/transaction-list',
+  ADDRESS: '/app/address',
 };
 
 export const REPORT_PATH = {

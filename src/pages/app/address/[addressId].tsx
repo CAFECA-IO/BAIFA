@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
@@ -8,14 +9,20 @@ import Footer from '../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
+import {IAddress, dummyAddressData} from '../../../interfaces/address';
+import AddressDetail from '../../../components/address_detail/address_detail';
+import {getChainIcon} from '../../../lib/common';
+import PrivateNoteSection from '../../../components/private_note_section/private_note_section';
 
 interface IAddressDetailPageProps {
   addressId: string;
+  addressData: IAddress;
 }
 
-const AddressDetailPage = ({addressId}: IAddressDetailPageProps) => {
+const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `Address ${addressId} - BAIFA`;
+  const chainIcon = getChainIcon(addressData.chainId);
 
   const router = useRouter();
   const backClickHandler = () => router.back();
@@ -30,14 +37,29 @@ const AddressDetailPage = ({addressId}: IAddressDetailPageProps) => {
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
-          <div className="flex w-full flex-1 flex-col items-center space-y-10 px-5 pb-10 pt-28 lg:px-20">
-            <div className="flex w-full items-center justify-start py-10">
+          <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-20 lg:pt-40">
+            {/* Info: (20231017 - Julian) Header */}
+            <div className="flex w-full items-center justify-start">
               {/* Info: (20230912 -Julian) Back Arrow Button */}
               <button onClick={backClickHandler}>
                 <BsArrowLeftShort className="text-48px" />
               </button>
               {/* Info: (20230912 -Julian) Address Title */}
-              <div className="flex flex-1 items-center justify-center space-x-2"></div>
+              <div className="flex flex-1 items-center justify-center space-x-2 text-32px font-bold">
+                <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+                <p>
+                  {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
+                  <span className="ml-2 text-primaryBlue">{addressId}</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="my-10 w-full">
+              <AddressDetail addressData={addressData} />
+            </div>
+
+            <div className="w-full">
+              <PrivateNoteSection />
             </div>
 
             {/* Info: (20231006 - Julian) Back button */}
@@ -62,8 +84,12 @@ const AddressDetailPage = ({addressId}: IAddressDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = [{params: {addressId: '1'}}, {params: {addressId: '2'}}];
+export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+  const paths = dummyAddressData
+    .flatMap(address => {
+      return locales?.map(locale => ({params: {addressId: `${address.id}`}, locale}));
+    })
+    .filter((path): path is {params: {addressId: string}; locale: string} => !!path);
 
   return {
     paths,
@@ -78,9 +104,18 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
+  const addressData = dummyAddressData.find(address => `${address.id}` === params.addressId);
+
+  if (!addressData) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       addressId: params.addressId,
+      addressData: addressData,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };
