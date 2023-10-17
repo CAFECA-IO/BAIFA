@@ -2,28 +2,29 @@ import Image from 'next/image';
 import {getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
+import {RiskLevel} from '../../constants/risk_level';
 
 interface ICurrencyItemProps {
   currencyId: string;
   currencyName: string;
   rank: number;
-  stabilityLevel: string;
+  riskLevel: string;
 }
 
-const CurrencyItem = ({currencyId, currencyName, rank, stabilityLevel}: ICurrencyItemProps) => {
+const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const chainIcon = getChainIcon(currencyId);
 
-  const stabilityColor =
-    stabilityLevel === 'HIGH_RISK'
+  const riskColor =
+    riskLevel === RiskLevel.HIGH_RISK
       ? '#FC8181'
-      : stabilityLevel === 'MEDIUM_RISK'
+      : riskLevel === RiskLevel.MEDIUM_RISK
       ? '#FFA600'
       : '#3DD08C';
-  const stabilityText =
-    stabilityLevel === 'HIGH_RISK'
+  const riskText =
+    riskLevel === RiskLevel.HIGH_RISK
       ? t('CURRENCIES_PAGE.RISK_HIGH')
-      : stabilityLevel === 'MEDIUM_RISK'
+      : riskLevel === RiskLevel.MEDIUM_RISK
       ? t('CURRENCIES_PAGE.RISK_MEDIUM')
       : t('CURRENCIES_PAGE.RISK_LOW');
 
@@ -47,9 +48,9 @@ const CurrencyItem = ({currencyId, currencyName, rank, stabilityLevel}: ICurrenc
           viewBox="0 0 15 16"
           fill="none"
         >
-          <circle cx="7.5" cy="8.48853" r="7.5" fill={stabilityColor} />
+          <circle cx="7.5" cy="8.48853" r="7.5" fill={riskColor} />
         </svg>
-        <p className="text-sm">{stabilityText}</p>
+        <p className="text-sm">{riskText}</p>
       </div>
     </div>
   );

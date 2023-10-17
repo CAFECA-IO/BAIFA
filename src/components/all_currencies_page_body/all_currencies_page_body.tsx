@@ -41,7 +41,7 @@ const AllCurrenciesPageBody = () => {
               currencyId={currency.currencyId}
               currencyName={currency.currencyName}
               rank={index + 1}
-              stabilityLevel={currency.stabilityLevel}
+              riskLevel={currency.riskLevel}
             />
           ))}
         </div>
