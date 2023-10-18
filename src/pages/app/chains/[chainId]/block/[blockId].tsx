@@ -21,6 +21,7 @@ interface IBlockDetailPageProps {
   previousBlockId?: number;
   nextBlockId?: number;
   chainId: string;
+  blocksOfChain: IBlock[];
 }
 
 const BlockDetailPage = ({
@@ -141,15 +142,15 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
-  const blockData = dummyBlockData.find(block => `${block.id}` === params.blockId);
+  // Info: (20231018 - Julian) Get block data in the same chain
+  const blocksOfChain = dummyBlockData.filter(block => block.chainId === params.chainId);
+
+  const blockData = blocksOfChain.find(block => `${block.id}` === params.blockId);
   const chainId = blockData?.chainId ?? null;
 
-  //const blockOfChain = dummyBlockData.filter(block => block.chainId === chainId);
-
-  const blockIndex = dummyBlockData.findIndex(block => `${block.id}` === params.blockId);
-
-  const previousBlockId = dummyBlockData[blockIndex - 1]?.id ?? null;
-  const nextBlockId = dummyBlockData[blockIndex + 1]?.id ?? null;
+  const blockIndex = blocksOfChain.findIndex(block => `${block.id}` === params.blockId);
+  const previousBlockId = blocksOfChain[blockIndex - 1]?.id ?? null;
+  const nextBlockId = blocksOfChain[blockIndex + 1]?.id ?? null;
 
   if (!blockData || !chainId) {
     return {
