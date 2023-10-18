@@ -13,7 +13,7 @@ import {dummyBlockData, IBlock} from '../../../../../interfaces/block';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon} from '../../../../../lib/common';
-import {BFAURL} from '../../../../../constants/url';
+import {getDynamicUrl} from '../../../../../constants/url';
 
 interface IBlockDetailPageProps {
   blockId: string;
@@ -33,10 +33,13 @@ const BlockDetailPage = ({
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
 
+  const previousLink = getDynamicUrl(chainId, `${previousBlockId}`).BLOCK;
+  const nextLink = getDynamicUrl(chainId, `${nextBlockId}`).BLOCK;
+
   const router = useRouter();
   const backClickHandler = () => router.back();
-  const previousHandler = () => router.push(`${BFAURL.CHAINS}/${chainId}/block/${previousBlockId}`);
-  const nextHandler = () => router.push(`${BFAURL.CHAINS}/${chainId}/block/${nextBlockId}`);
+  const previousHandler = () => router.push(previousLink);
+  const nextHandler = () => router.push(nextLink);
 
   const buttonStyle =
     'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';

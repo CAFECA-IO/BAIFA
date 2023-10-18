@@ -4,7 +4,7 @@ import {timestampToString} from '../../lib/common';
 import {ITransaction} from '../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {BFAURL} from '../../constants/url';
+import {getDynamicUrl} from '../../constants/url';
 
 interface ITransactionItemProps {
   transaction: ITransaction;
@@ -13,6 +13,8 @@ interface ITransactionItemProps {
 const TransactionItem = ({transaction}: ITransactionItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {id, chainId, createdTimestamp, type, status} = transaction;
+
+  const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
 
   const createdStr = timestampToString(createdTimestamp);
   // Info: (20230905 - Julian) If month is longer than 3 letters, slice it and add a dot
@@ -56,10 +58,7 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
       </div>
       <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
         {/* Info: (20230907 - Julian) Transaction ID & Type */}
-        <Link
-          href={`${BFAURL.CHAINS}/${chainId}/transaction/${id}`}
-          className="inline-flex flex-1 items-baseline space-x-2"
-        >
+        <Link href={transactionLink} className="inline-flex flex-1 items-baseline space-x-2">
           <h2 className="text-sm lg:text-xl">
             {t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')} <span className="text-primaryBlue">{id}</span>
           </h2>

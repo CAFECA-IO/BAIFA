@@ -5,7 +5,7 @@ import {timestampToString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {ITransaction} from '../../interfaces/transaction';
-import {BFAURL} from '../../constants/url';
+import {BFAURL, getDynamicUrl} from '../../constants/url';
 
 interface ITransactionDetailProps {
   transactionData: ITransaction;
@@ -15,6 +15,8 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {hash, status, chainId, blockId, createdTimestamp, from, to, content, fee, flagging} =
     transactionData.transactionData;
+
+  const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
 
   const displayStatus =
     status === 'PROCESSING' ? (
@@ -84,7 +86,7 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.BLOCK')}
         </p>
-        <Link href={`${BFAURL.CHAINS}/${chainId}/block/${blockId}`}>
+        <Link href={blockLink}>
           <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
             {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} {blockId}
           </BoltButton>
@@ -102,7 +104,7 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.FROM')}
         </p>
-        <Link href={BFAURL.COMING_SOON}>
+        <Link href={`${BFAURL.ADDRESS}/${from}`}>
           <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
             {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {from}
           </BoltButton>

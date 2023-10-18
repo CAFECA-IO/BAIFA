@@ -16,6 +16,14 @@ export const BFAURL = {
   ADDRESS: '/app/address',
 };
 
+export const getDynamicUrl = (chain: string, id: string) => {
+  return {
+    BLOCK: `/app/chains/${chain}/block/${id}`,
+    TRANSACTION: `/app/chains/${chain}/transaction/${id}`,
+    TRANSACTION_LIST: `/app/chains/${chain}/transaction-list/${id}`,
+  };
+};
+
 export const REPORT_PATH = {
   REPORTS: '/reports',
   BALANCE_SHEETS: 'balance',
