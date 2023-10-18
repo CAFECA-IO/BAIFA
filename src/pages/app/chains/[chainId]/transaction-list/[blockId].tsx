@@ -2,16 +2,16 @@ import Head from 'next/head';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import NavBar from '../../../components/nav_bar/nav_bar';
-import TransactionTab from '../../../components/transaction_tab/transaction_tab';
-import BoltButton from '../../../components/bolt_button/bolt_button';
-import Footer from '../../../components/footer/footer';
+import NavBar from '../../../../../components/nav_bar/nav_bar';
+import TransactionTab from '../../../../../components/transaction_tab/transaction_tab';
+import BoltButton from '../../../../../components/bolt_button/bolt_button';
+import Footer from '../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyTransactionData, ITransaction} from '../../../interfaces/transaction';
+import {dummyTransactionData, ITransaction} from '../../../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../interfaces/locale';
-import {getChainIcon} from '../../../lib/common';
+import {TranslateFunction} from '../../../../../interfaces/locale';
+import {getChainIcon} from '../../../../../lib/common';
 
 interface ITransactionDetailPageProps {
   blockId: string;
@@ -87,9 +87,12 @@ const TransactionListPage = ({blockId, transactionData}: ITransactionDetailPageP
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
   const paths = dummyTransactionData
     .flatMap(transaction => {
-      return locales?.map(locale => ({params: {blockId: `${transaction.blockId}`}, locale}));
+      return locales?.map(locale => ({
+        params: {chainId: transaction.chainId, blockId: `${transaction.blockId}`},
+        locale,
+      }));
     })
-    .filter((path): path is {params: {blockId: string}; locale: string} => !!path);
+    .filter((path): path is {params: {chainId: string; blockId: string}; locale: string} => !!path);
 
   return {
     paths: paths,

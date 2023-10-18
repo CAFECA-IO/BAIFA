@@ -154,7 +154,7 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
           {t('BLOCK_DETAIL_PAGE.CONTENT')}
         </p>
-        <Link href={`${BFAURL.TRANSACTION_LIST}/${blockId}`}>
+        <Link href={`${BFAURL.CHAINS}/${chainId}/transaction-list/${blockId}`}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
             {transactions.length} {t('BLOCK_DETAIL_PAGE.TRANSACTIONS_COUNT')}
           </BoltButton>
