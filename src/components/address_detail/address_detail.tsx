@@ -5,7 +5,7 @@ import {timestampToString, getTimeString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IAddress} from '../../interfaces/address';
-import {BFAURL} from '../../constants/url';
+import {getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
 import {FiLock} from 'react-icons/fi';
 
@@ -16,7 +16,9 @@ interface IAddressDetailProps {
 const AddressDetail = (addressData: IAddressDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
+    id,
     addressId,
+    chainId,
     signUpTime,
     lastestActiveTime,
     relatedAddressIds,
@@ -57,8 +59,9 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
   );
 
   const displayRelatedAddress = relatedAddressIds.map((id, index) => {
+    const addressLink = getDynamicUrl(chainId, `${id}`).ADDRESS;
     return (
-      <Link href={`${BFAURL.ADDRESS}/${id}`} key={index}>
+      <Link href={addressLink} key={index}>
         <BoltButton className="px-3 py-1" color="blue" style="solid">
           {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {id}
         </BoltButton>

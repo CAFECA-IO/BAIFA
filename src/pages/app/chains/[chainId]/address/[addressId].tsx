@@ -3,16 +3,16 @@ import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import NavBar from '../../../components/nav_bar/nav_bar';
-import BoltButton from '../../../components/bolt_button/bolt_button';
-import Footer from '../../../components/footer/footer';
+import NavBar from '../../../../../components/nav_bar/nav_bar';
+import BoltButton from '../../../../../components/bolt_button/bolt_button';
+import Footer from '../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../interfaces/locale';
-import {IAddress, dummyAddressData} from '../../../interfaces/address';
-import AddressDetail from '../../../components/address_detail/address_detail';
-import {getChainIcon} from '../../../lib/common';
-import PrivateNoteSection from '../../../components/private_note_section/private_note_section';
+import {TranslateFunction} from '../../../../../interfaces/locale';
+import {IAddress, dummyAddressData} from '../../../../../interfaces/address';
+import AddressDetail from '../../../../../components/address_detail/address_detail';
+import {getChainIcon} from '../../../../../lib/common';
+import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
 
 interface IAddressDetailPageProps {
   addressId: string;
@@ -87,9 +87,14 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
   const paths = dummyAddressData
     .flatMap(address => {
-      return locales?.map(locale => ({params: {addressId: `${address.id}`}, locale}));
+      return locales?.map(locale => ({
+        params: {chainId: `${address.chainId}`, addressId: `${address.id}`},
+        locale,
+      }));
     })
-    .filter((path): path is {params: {addressId: string}; locale: string} => !!path);
+    .filter(
+      (path): path is {params: {chainId: string; addressId: string}; locale: string} => !!path
+    );
 
   return {
     paths,
