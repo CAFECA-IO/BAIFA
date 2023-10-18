@@ -69,11 +69,9 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
       {/* Info: (20230911 - Julian) Hash */}
-      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('TRANSACTION_DETAIL_PAGE.HASH')}
-        </p>
-        <p className="break-words text-sm lg:text-base">{hash}</p>
+      <div className="flex flex-col space-y-2 px-3 py-4 text-sm lg:flex-row lg:items-center lg:space-y-0 lg:text-base">
+        <p className="font-bold text-lilac lg:w-170px">{t('TRANSACTION_DETAIL_PAGE.HASH')}</p>
+        <p className="break-words">{hash}</p>
       </div>
       {/* Info: (20230911 - Julian) Status */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

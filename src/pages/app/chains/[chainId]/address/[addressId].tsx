@@ -44,16 +44,16 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
             {/* Info: (20231017 - Julian) Header */}
             <div className="flex w-full items-center justify-start">
               {/* Info: (20230912 -Julian) Back Arrow Button */}
-              <button onClick={backClickHandler}>
+              <button onClick={backClickHandler} className="hidden lg:block">
                 <BsArrowLeftShort className="text-48px" />
               </button>
               {/* Info: (20230912 -Julian) Address Title */}
-              <div className="flex flex-1 items-center justify-center space-x-2 text-32px font-bold">
+              <div className="flex flex-1 items-center justify-center space-x-2">
                 <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
-                <p>
+                <h1 className="text-2xl font-bold lg:text-32px">
                   {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
                   <span className="ml-2 text-primaryBlue">{addressId}</span>
-                </p>
+                </h1>
               </div>
             </div>
             <div className="my-4 flex w-full flex-col items-center space-y-10">
@@ -61,11 +61,11 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
               <div className="flex text-base font-bold text-lilac">
                 <h2>{t('ADDRESS_DETAIL_PAGE.PUBLIC_TAG')}</h2>
               </div>
-              <div className="flex items-center space-x-6">
+              <div className="flex flex-col items-center space-y-4 lg:w-2/5 lg:flex-row lg:space-x-6 lg:space-y-0">
                 {/* Info: (20231018 - Julian) Tracing Tool Button */}
-                <Link href={BFAURL.COMING_SOON}>
+                <Link href={BFAURL.COMING_SOON} className="w-full">
                   <BoltButton
-                    className="flex items-center space-x-4 px-6 py-4"
+                    className="flex w-full items-center justify-center space-x-2 px-6 py-4 lg:w-fit"
                     color="purple"
                     style="solid"
                   >
@@ -74,13 +74,13 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
                   </BoltButton>
                 </Link>
                 {/* Info: (20231018 - Julian) Follow Button */}
-                <Link href={BFAURL.COMING_SOON}>
+                <Link href={BFAURL.COMING_SOON} className="w-full">
                   <BoltButton
-                    className="flex items-center space-x-4 px-6 py-4"
+                    className="flex w-full items-center justify-center space-x-2 px-6 py-4 lg:w-fit"
                     color="purple"
                     style="solid"
                   >
-                    <AiOutlinePlus className="text-2xl" />
+                    <AiOutlinePlus className="text-2xl text-black" />
                     <p>{t('COMMON.FOLLOW')}</p>
                   </BoltButton>
                 </Link>

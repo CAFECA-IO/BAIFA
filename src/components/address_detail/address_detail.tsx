@@ -4,7 +4,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {timestampToString, getTimeString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IAddress} from '../../interfaces/address';
+import {IAddress, dummyAddressData} from '../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
 
@@ -16,7 +16,6 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     addressId,
-    chainId,
     signUpTime,
     lastestActiveTime,
     relatedAddressIds,
@@ -57,7 +56,8 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
   );
 
   const displayRelatedAddress = relatedAddressIds.map((id, index) => {
-    const addressLink = getDynamicUrl(chainId, `${id}`).ADDRESS;
+    const targetChainId = dummyAddressData.find(address => address.id === id)?.chainId ?? '';
+    const addressLink = getDynamicUrl(targetChainId, `${id}`).ADDRESS;
     return (
       <Link href={addressLink} key={index}>
         <BoltButton className="px-3 py-1" color="blue" style="solid">
@@ -150,11 +150,9 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
       {/* Info: (20231017 - Julian) Address Level */}
-      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')}
-        </p>
-        {addressId}
+      <div className="flex flex-col space-y-2 px-3 py-4 text-sm lg:flex-row lg:items-center lg:space-y-0 lg:text-base">
+        <p className="font-bold text-lilac lg:w-170px">{t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')}</p>
+        <p className="break-words">{addressId}</p>
       </div>
       {/* Info: (20231017 - Julian) Sign Up time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
@@ -175,7 +173,7 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
           {t('ADDRESS_DETAIL_PAGE.RELATED_ADDRESS')}
         </p>
-        <div className="flex flex-wrap items-center space-x-3">{displayRelatedAddress}</div>
+        <div className="flex flex-wrap items-center gap-3">{displayRelatedAddress}</div>
       </div>
       {/* Info: (20231017 - Julian) Interacted With */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
