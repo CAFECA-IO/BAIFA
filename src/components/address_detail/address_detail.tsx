@@ -16,7 +16,6 @@ interface IAddressDetailProps {
 const AddressDetail = (addressData: IAddressDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
-    id,
     addressId,
     chainId,
     signUpTime,
