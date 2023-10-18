@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import {getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -32,12 +33,12 @@ const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItem
   return (
     <div className="flex w-full items-center border-b border-darkPurple4 p-5 font-inter">
       {/* Info: (20230927 - Julian) Rank */}
-      <div className="w-40px text-xl font-semibold">#{rank}</div>
+      <div className="w-50px text-xl font-semibold">#{rank}</div>
       {/* Info: (20230927 - Julian) Currency Name & Icon */}
-      <div className="flex flex-1 items-center space-x-2">
+      <Link href={`/app/currencies/${currencyId}`} className="flex flex-1 items-center space-x-2">
         <Image src={chainIcon.src} width={30} height={30} alt={chainIcon.alt} />
         <p className="text-xl font-semibold">{currencyName}</p>
-      </div>
+      </Link>
       {/* Info: (20230907 - Julian) Risk */}
       <div className="flex items-center space-x-2 px-2">
         {/* Info: (20230907 - Julian) The circle svg */}

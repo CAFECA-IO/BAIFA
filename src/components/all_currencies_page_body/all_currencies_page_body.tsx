@@ -1,3 +1,4 @@
+import {useState, useEffect} from 'react';
 import Footer from '../footer/footer';
 import Breadcrumb from '../breadcrumb/breadcrumb';
 import CurrencyItem from '../currency_item/currency_item';
@@ -5,6 +6,8 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
 import {dummyCurrencyData} from '../../interfaces/currency';
+import Pagination from '../pagination/pagination';
+import {ITEM_PER_PAGE} from '../../constants/config';
 
 const AllCurrenciesPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -20,6 +23,29 @@ const AllCurrenciesPageBody = () => {
     },
   ];
 
+  const [activePage, setActivePage] = useState(1);
+  const [totalPages, setTotalPages] = useState(Math.ceil(dummyCurrencyData.length / ITEM_PER_PAGE));
+
+  const endIdx = activePage * ITEM_PER_PAGE;
+  const startIdx = endIdx - ITEM_PER_PAGE;
+
+  useEffect(() => {
+    setActivePage(1);
+    setTotalPages(Math.ceil(dummyCurrencyData.length / ITEM_PER_PAGE));
+  }, [dummyCurrencyData]);
+
+  const currenciesList = dummyCurrencyData
+    .map((currency, index) => (
+      <CurrencyItem
+        key={index}
+        currencyId={currency.currencyId}
+        currencyName={currency.currencyName}
+        rank={index + 1}
+        riskLevel={currency.riskLevel}
+      />
+    ))
+    .slice(startIdx, endIdx);
+
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
       <div className="flex w-full flex-1 flex-col px-5 pt-28 lg:px-20">
@@ -34,17 +60,8 @@ const AllCurrenciesPageBody = () => {
         </div>
 
         {/* Info: (20230927 - Julian) Currency list */}
-        <div className="flex flex-col px-20 py-5">
-          {dummyCurrencyData.map((currency, index) => (
-            <CurrencyItem
-              key={index}
-              currencyId={currency.currencyId}
-              currencyName={currency.currencyName}
-              rank={index + 1}
-              riskLevel={currency.riskLevel}
-            />
-          ))}
-        </div>
+        <div className="flex flex-col px-20 py-5">{currenciesList}</div>
+        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
       </div>
 
       <div className="mt-12">
