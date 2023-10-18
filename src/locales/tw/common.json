@@ -137,6 +137,7 @@
     "MAIN_TITLE": "列表"
   },
   "ADDRESS_DETAIL_PAGE": {
+    "PUBLIC_TAG": "公開標籤",
     "MAIN_TITLE": "地址",
     "ADDRESS_ID": "地址",
     "SIGN_UP_TIME": "註冊時間",
@@ -213,7 +214,8 @@
     "ADDRESSES": "個地址",
     "CONTRACTS": "個合約",
     "TIMES": "次",
-    "CONTENT_ENCRYPTED": "內容已加密"
+    "CONTENT_ENCRYPTED": "內容已加密",
+    "FOLLOW": "追蹤"
   },
   "FOOTER": {
     "POWERED_BY": "技術支持 稗法",

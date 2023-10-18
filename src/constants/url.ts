@@ -9,11 +9,6 @@ export const BFAURL = {
   AUDITING_TOOL: '/app/auditing-tool',
   RED_FLAG: '/app/red-flag',
   FAQ: '/app/faq',
-
-  BLOCK: '/app/block',
-  TRANSACTION: '/app/transaction',
-  TRANSACTION_LIST: '/app/transaction-list',
-  ADDRESS: '/app/address',
 };
 
 export const getDynamicUrl = (chain: string, id: string) => {

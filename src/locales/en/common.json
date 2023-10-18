@@ -137,6 +137,7 @@
     "MAIN_TITLE": "List"
   },
   "ADDRESS_DETAIL_PAGE": {
+    "PUBLIC_TAG": "Public tag",
     "MAIN_TITLE": "Address",
     "ADDRESS_ID": "Address",
     "SIGN_UP_TIME": "Sign Up Time",
@@ -213,7 +214,8 @@
     "ADDRESSES": "Addresses",
     "CONTRACTS": "Contracts",
     "TIMES": "Times",
-    "CONTENT_ENCRYPTED": "Content Encrypted"
+    "CONTENT_ENCRYPTED": "Content Encrypted",
+    "FOLLOW": "Follow"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

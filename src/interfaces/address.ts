@@ -35,7 +35,7 @@ export const dummyAddressData: IAddress[] = [
     addressId: '0x11256d88475D319156fx93fEc3f74A79Cd0693fEc3',
     chainId: 'isun',
     signUpTime: 1672932841,
-    lastestActiveTime: 16900746184,
+    lastestActiveTime: 1697174618,
     relatedAddressIds: [345288, 345082, 392709],
     interactedAddressIds: [309284, 341336, 392709],
     interactedContactIds: [61932, 60327, 64324],
