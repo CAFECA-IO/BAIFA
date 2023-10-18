@@ -35,7 +35,10 @@ const BlockItem = ({block}: IBlockItemProps) => {
       </div>
       <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
         {/* Info: (20230907 - Julian) Block ID */}
-        <Link href={`${BFAURL.BLOCK}/${block.id}`} className="flex-1 text-sm lg:text-xl">
+        <Link
+          href={`${BFAURL.CHAINS}/${block.chainId}/block/${block.id}`}
+          className="flex-1 text-sm lg:text-xl"
+        >
           <h2>
             {t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')} <span className="text-primaryBlue">{block.id}</span>
           </h2>

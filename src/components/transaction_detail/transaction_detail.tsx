@@ -13,7 +13,7 @@ interface ITransactionDetailProps {
 
 const TransactionDetail = (transactionData: ITransactionDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {hash, status, blockId, createdTimestamp, from, to, content, fee, flagging} =
+  const {hash, status, chainId, blockId, createdTimestamp, from, to, content, fee, flagging} =
     transactionData.transactionData;
 
   const displayStatus =
@@ -84,7 +84,7 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.BLOCK')}
         </p>
-        <Link href={`${BFAURL.BLOCK}/${blockId}`}>
+        <Link href={`${BFAURL.CHAINS}/${chainId}/block/${blockId}`}>
           <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
             {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} {blockId}
           </BoltButton>
