@@ -98,7 +98,7 @@ const SearchFilter = ({
           <RiSearchLine />
         </div>
       </div>
-      <div className="flex w-full flex-col-reverse items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
+      <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
         {/* Info: (20230904 - Julian) Date Picker */}
         <div className="flex w-full items-center text-base lg:w-fit lg:space-x-2">
           <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>

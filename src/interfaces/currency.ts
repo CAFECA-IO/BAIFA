@@ -1,3 +1,5 @@
+import {IRiskLevel, RiskLevel} from '../constants/risk_level';
+
 export interface ICurrency {
   currencyId: string;
   currencyName: string;
@@ -8,7 +10,7 @@ export interface ICurrency {
   holders: number;
   totalTransfers: number;
   redPlag: number;
-  stabilityLevel: 'MEDIUM_RISK' | 'HIGH_RISK' | 'LOW_RISK';
+  riskLevel: IRiskLevel;
 }
 
 export const dummyCurrencyData: ICurrency[] = [
@@ -22,7 +24,7 @@ export const dummyCurrencyData: ICurrency[] = [
     holders: 29564,
     totalTransfers: 48010097,
     redPlag: 2000,
-    stabilityLevel: 'HIGH_RISK',
+    riskLevel: RiskLevel.HIGH_RISK,
   },
   {
     currencyId: 'eth',
@@ -34,7 +36,7 @@ export const dummyCurrencyData: ICurrency[] = [
     holders: 23019,
     totalTransfers: 31092807,
     redPlag: 1700,
-    stabilityLevel: 'MEDIUM_RISK',
+    riskLevel: RiskLevel.MEDIUM_RISK,
   },
   {
     currencyId: 'isun',
@@ -46,7 +48,7 @@ export const dummyCurrencyData: ICurrency[] = [
     holders: 9919,
     totalTransfers: 24992807,
     redPlag: 100,
-    stabilityLevel: 'LOW_RISK',
+    riskLevel: RiskLevel.LOW_RISK,
   },
   {
     currencyId: 'bnb',
@@ -58,7 +60,7 @@ export const dummyCurrencyData: ICurrency[] = [
     holders: 10373,
     totalTransfers: 24262807,
     redPlag: 1020,
-    stabilityLevel: 'MEDIUM_RISK',
+    riskLevel: RiskLevel.MEDIUM_RISK,
   },
   {
     currencyId: 'usdt',
@@ -70,6 +72,6 @@ export const dummyCurrencyData: ICurrency[] = [
     holders: 40387,
     totalTransfers: 29802417,
     redPlag: 1003,
-    stabilityLevel: 'LOW_RISK',
+    riskLevel: RiskLevel.LOW_RISK,
   },
 ];

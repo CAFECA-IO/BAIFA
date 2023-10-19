@@ -11,7 +11,7 @@ const Pagination = ({activePage, setActivePage, totalPages}: IPagination) => {
   const [targetPage, setTargetPage] = useState<number>(1);
 
   const buttonStyle =
-    'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer';
+    'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
 
   // Info: (20230907 - Julian) 將在 input 輸入的數字放入 targetPage
   const pageChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {

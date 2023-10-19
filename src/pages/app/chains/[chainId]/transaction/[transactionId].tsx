@@ -2,16 +2,19 @@ import Head from 'next/head';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import NavBar from '../../../components/nav_bar/nav_bar';
-import TransactionDetail from '../../../components/transaction_detail/transaction_detail';
-import BoltButton from '../../../components/bolt_button/bolt_button';
-import Footer from '../../../components/footer/footer';
+import NavBar from '../../../../../components/nav_bar/nav_bar';
+import TransactionDetail from '../../../../../components/transaction_detail/transaction_detail';
+import BoltButton from '../../../../../components/bolt_button/bolt_button';
+import Footer from '../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyTransactionData, ITransaction} from '../../../interfaces/transaction';
+import {dummyTransactionData, ITransaction} from '../../../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../interfaces/locale';
-import {getChainIcon} from '../../../lib/common';
+import {TranslateFunction} from '../../../../../interfaces/locale';
+import {getChainIcon} from '../../../../../lib/common';
+import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
+import Link from 'next/link';
+import {BFAURL} from '../../../../../constants/url';
 
 interface ITransactionDetailPageProps {
   transactionId: string;
@@ -24,6 +27,8 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
 
   const router = useRouter();
   const backClickHandler = () => router.back();
+  // Info: (20231017 - Julian) 有 flagging 的話就顯示 Add in Tracing Tool 按鈕
+  const isAddInTracingTool = !!transactionData.flagging ? 'block' : 'hidden';
 
   return (
     <>
@@ -35,10 +40,11 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
-          <div className="flex w-4/5 flex-1 flex-col items-center space-y-10 px-20 pb-10 pt-28">
-            <div className="flex w-full items-center justify-start py-10">
+          <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-20 lg:pt-40">
+            {/* Info: (20231017 - Julian) Header */}
+            <div className="relative flex w-full flex-col items-center justify-start lg:flex-row">
               {/* Info: (20230912 -Julian) Back Arrow Button */}
-              <button onClick={backClickHandler}>
+              <button onClick={backClickHandler} className="hidden lg:block">
                 <BsArrowLeftShort className="text-48px" />
               </button>
               {/* Info: (20230912 -Julian) Transaction Title */}
@@ -49,17 +55,38 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
                   width={40}
                   height={40}
                 />
-                <h1 className="text-32px font-bold">
+                <h1 className="text-2xl font-bold lg:text-32px">
                   {t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')}
                   <span className="ml-2 text-primaryBlue"> {transactionId}</span>
                 </h1>
               </div>
+
+              {/* Info: (20231017 - Julian) Tracing Tool Button */}
+              <div className={`relative right-0 mt-6 lg:absolute lg:mt-0 ${isAddInTracingTool}`}>
+                <Link href={BFAURL.COMING_SOON}>
+                  <BoltButton
+                    className="flex items-center space-x-4 px-6 py-4"
+                    color="purple"
+                    style="solid"
+                  >
+                    <Image src="/icons/tracing.svg" alt="" width={24} height={24} />
+                    <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
+                  </BoltButton>
+                </Link>
+              </div>
             </div>
 
             {/* Info: (20230907 - Julian) Transaction Detail */}
-            <TransactionDetail transactionData={transactionData} />
+            <div className="my-10 w-full">
+              <TransactionDetail transactionData={transactionData} />
+            </div>
 
-            <div className="pt-10">
+            <div className="w-full">
+              <PrivateNoteSection />
+            </div>
+
+            {/* Info: (20231017 - Julian) Back Button */}
+            <div className="mt-10">
               <BoltButton
                 onClick={backClickHandler}
                 className="px-12 py-4 font-bold"
@@ -83,9 +110,14 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
   const paths = dummyTransactionData
     .flatMap(transaction => {
-      return locales?.map(locale => ({params: {transactionId: `${transaction.id}`}, locale}));
+      return locales?.map(locale => ({
+        params: {chainId: transaction.chainId, transactionId: `${transaction.id}`},
+        locale,
+      }));
     })
-    .filter((path): path is {params: {transactionId: string}; locale: string} => !!path);
+    .filter(
+      (path): path is {params: {chainId: string; transactionId: string}; locale: string} => !!path
+    );
 
   return {
     paths: paths,

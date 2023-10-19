@@ -1,10 +1,13 @@
 import {useState, useEffect} from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import BoltButton from '../bolt_button/bolt_button';
 import {timestampToString, getTimeString, getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IBlock} from '../../interfaces/block';
+import {BFAURL, getDynamicUrl} from '../../constants/url';
+import {StabilityLevel} from '../../constants/stability_level';
 
 interface IBlockDetailProps {
   blockData: IBlock;
@@ -13,6 +16,7 @@ interface IBlockDetailProps {
 const BlockDetail = (blockData: IBlockDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
+    id: blockId,
     stabilityLevel,
     createdTimestamp,
     chainId,
@@ -35,8 +39,10 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
     return () => clearTimeout(timer);
   }, [sinceTime]);
 
+  const transactionsLink = getDynamicUrl(chainId, `${blockId}`).TRANSACTION_LIST;
+
   const displayStability =
-    stabilityLevel === 'HIGH' ? (
+    stabilityLevel === StabilityLevel.HIGH ? (
       <div className="flex items-center text-hoverWhite">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +55,7 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
         </svg>
         <p className="ml-2">{t('BLOCK_DETAIL_PAGE.STABILITY_HIGH')}</p>
       </div>
-    ) : stabilityLevel === 'MEDIUM' ? (
+    ) : stabilityLevel === StabilityLevel.MEDIUM ? (
       <div className="flex items-center text-hoverWhite">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -78,10 +84,10 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
     );
 
   const displayTime = (
-    <div className="flex items-center space-x-3">
-      <p>{timestampToString(createdTimestamp).date}</p>
-      <p>{timestampToString(createdTimestamp).time}</p>
-      <p>
+    <div className="flex flex-wrap items-center">
+      <p className="mr-2">{timestampToString(createdTimestamp).date}</p>
+      <p className="mr-2">{timestampToString(createdTimestamp).time}</p>
+      <p className="mr-2">
         {getTimeString(sinceTime)} {t('COMMON.AGO')}
       </p>
     </div>
@@ -89,18 +95,22 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
 
   const displayTeam = managementTeam.map((team, index) => {
     return (
-      <BoltButton className="px-3 py-1" color="blue" style="solid" key={index}>
-        {team}
-      </BoltButton>
+      <Link href={BFAURL.COMING_SOON} key={index}>
+        <BoltButton className="px-3 py-1" color="blue" style="solid">
+          {team}
+        </BoltButton>
+      </Link>
     );
   });
 
   const displayMinerAndReward = (
     <div className="flex items-center space-x-3">
       {/* Info: (20230912 - Julian) Miner */}
-      <BoltButton className="px-3 py-1" color="blue" style="solid">
-        {miner}
-      </BoltButton>
+      <Link href={BFAURL.COMING_SOON}>
+        <BoltButton className="px-3 py-1" color="blue" style="solid">
+          {miner}
+        </BoltButton>
+      </Link>
       <p>+</p>
       {/* Info: (20230912 - Julian) Reward */}
       <div className="flex items-center space-x-2">
@@ -121,35 +131,49 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
       {/* Info: (20230912 - Julian) Stability Level */}
-      <div className="flex items-center px-3 py-4">
-        <p className="w-190px font-bold text-lilac">{t('BLOCK_DETAIL_PAGE.STABILITY')}</p>
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
+          {t('BLOCK_DETAIL_PAGE.STABILITY')}
+        </p>
         {displayStability}
       </div>
       {/* Info: (20230912 - Julian) Created Time */}
-      <div className="flex items-center px-3 py-4">
-        <p className="w-190px font-bold text-lilac">{t('BLOCK_DETAIL_PAGE.TIME')}</p>
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
+          {t('BLOCK_DETAIL_PAGE.TIME')}
+        </p>
         {displayTime}
       </div>
       {/* Info: (20230912 - Julian) Management Team */}
-      <div className="flex items-center px-3 py-4">
-        <p className="w-190px font-bold text-lilac">{t('BLOCK_DETAIL_PAGE.MANAGEMENT')}</p>
-        <div className="flex items-center space-x-3">{displayTeam}</div>
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
+          {t('BLOCK_DETAIL_PAGE.MANAGEMENT')}
+        </p>
+        <div className="flex flex-wrap items-center space-x-3">{displayTeam}</div>
       </div>
       {/* Info: (20230912 - Julian) Content */}
-      <div className="flex items-center px-3 py-4">
-        <p className="w-190px font-bold text-lilac">{t('BLOCK_DETAIL_PAGE.CONTENT')}</p>
-        <BoltButton className="px-3 py-1" color="blue" style="solid">
-          {transactions.length} {t('BLOCK_DETAIL_PAGE.TRANSACTIONS_COUNT')}
-        </BoltButton>
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
+          {t('BLOCK_DETAIL_PAGE.CONTENT')}
+        </p>
+        <Link href={transactionsLink}>
+          <BoltButton className="px-3 py-1" color="blue" style="solid">
+            {transactions.length} {t('BLOCK_DETAIL_PAGE.TRANSACTIONS_COUNT')}
+          </BoltButton>
+        </Link>
       </div>
       {/* Info: (20230912 - Julian) Miner & Reward */}
-      <div className="flex items-center px-3 py-4">
-        <p className="w-190px font-bold text-lilac">{t('BLOCK_DETAIL_PAGE.MINER_REWARD')}</p>
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
+          {t('BLOCK_DETAIL_PAGE.MINER_REWARD')}
+        </p>
         {displayMinerAndReward}
       </div>
       {/* Info: (20230912 - Julian) Size */}
-      <div className="flex items-center px-3 py-4">
-        <p className="w-190px font-bold text-lilac">{t('BLOCK_DETAIL_PAGE.SIZE')}</p>
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
+          {t('BLOCK_DETAIL_PAGE.SIZE')}
+        </p>
         <p>
           {size} {/* ToDo: (20230912 - Julian) uint */}
           <span> gb</span>

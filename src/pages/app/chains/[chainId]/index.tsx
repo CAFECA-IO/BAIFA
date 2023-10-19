@@ -2,17 +2,17 @@ import Head from 'next/head';
 import Image from 'next/image';
 import {useState} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import NavBar from '../../../components/nav_bar/nav_bar';
-import Footer from '../../../components/footer/footer';
-import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
-import BlockTab from '../../../components/block_tab/block_tab';
-import TransactionTab from '../../../components/transaction_tab/transaction_tab';
+import NavBar from '../../../../components/nav_bar/nav_bar';
+import Footer from '../../../../components/footer/footer';
+import Breadcrumb from '../../../../components/breadcrumb/breadcrumb';
+import BlockTab from '../../../../components/block_tab/block_tab';
+import TransactionTab from '../../../../components/transaction_tab/transaction_tab';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyChains, IChain} from '../../../interfaces/chain';
+import {dummyChains, IChain} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../interfaces/locale';
-import {BFAURL} from '../../../constants/url';
-import {getChainIcon} from '../../../lib/common';
+import {TranslateFunction} from '../../../../interfaces/locale';
+import {BFAURL} from '../../../../constants/url';
+import {getChainIcon} from '../../../../lib/common';
 
 export interface IChainDetailPageProps {
   chainId: string;
