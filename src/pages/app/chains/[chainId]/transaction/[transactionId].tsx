@@ -2,19 +2,19 @@ import Head from 'next/head';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import NavBar from '../../../components/nav_bar/nav_bar';
-import TransactionDetail from '../../../components/transaction_detail/transaction_detail';
-import BoltButton from '../../../components/bolt_button/bolt_button';
-import Footer from '../../../components/footer/footer';
+import NavBar from '../../../../../components/nav_bar/nav_bar';
+import TransactionDetail from '../../../../../components/transaction_detail/transaction_detail';
+import BoltButton from '../../../../../components/bolt_button/bolt_button';
+import Footer from '../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyTransactionData, ITransaction} from '../../../interfaces/transaction';
+import {dummyTransactionData, ITransaction} from '../../../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../interfaces/locale';
-import {getChainIcon} from '../../../lib/common';
-import PrivateNoteSection from '../../../components/private_note_section/private_note_section';
+import {TranslateFunction} from '../../../../../interfaces/locale';
+import {getChainIcon} from '../../../../../lib/common';
+import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
 import Link from 'next/link';
-import {BFAURL} from '../../../constants/url';
+import {BFAURL} from '../../../../../constants/url';
 
 interface ITransactionDetailPageProps {
   transactionId: string;
@@ -110,9 +110,14 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
   const paths = dummyTransactionData
     .flatMap(transaction => {
-      return locales?.map(locale => ({params: {transactionId: `${transaction.id}`}, locale}));
+      return locales?.map(locale => ({
+        params: {chainId: transaction.chainId, transactionId: `${transaction.id}`},
+        locale,
+      }));
     })
-    .filter((path): path is {params: {transactionId: string}; locale: string} => !!path);
+    .filter(
+      (path): path is {params: {chainId: string; transactionId: string}; locale: string} => !!path
+    );
 
   return {
     paths: paths,

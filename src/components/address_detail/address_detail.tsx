@@ -4,10 +4,9 @@ import BoltButton from '../bolt_button/bolt_button';
 import {timestampToString, getTimeString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IAddress} from '../../interfaces/address';
-import {BFAURL} from '../../constants/url';
+import {IAddress, dummyAddressData} from '../../interfaces/address';
+import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
-import {FiLock} from 'react-icons/fi';
 
 interface IAddressDetailProps {
   addressData: IAddress;
@@ -57,8 +56,10 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
   );
 
   const displayRelatedAddress = relatedAddressIds.map((id, index) => {
+    const targetChainId = dummyAddressData.find(address => address.id === id)?.chainId ?? '';
+    const addressLink = getDynamicUrl(targetChainId, `${id}`).ADDRESS;
     return (
-      <Link href={`${BFAURL.ADDRESS}/${id}`} key={index}>
+      <Link href={addressLink} key={index}>
         <BoltButton className="px-3 py-1" color="blue" style="solid">
           {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {id}
         </BoltButton>
@@ -68,15 +69,22 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
 
   const displayInteractedWith = (
     <div className="flex items-center space-x-2 text-base">
-      <p>
-        <span className="mr-2 text-primaryBlue">{interactedAddressIds.length}</span>
-        {t('COMMON.ADDRESSES')}
-      </p>
-      <p>/</p>
-      <p>
-        <span className="mr-2 text-primaryBlue">{interactedContactIds.length}</span>
-        {t('COMMON.CONTRACTS')}
-      </p>
+      <div className="flex items-center whitespace-nowrap">
+        <Link href={BFAURL.COMING_SOON}>
+          <span className="mr-2 text-primaryBlue underline underline-offset-2">
+            {interactedAddressIds.length}
+          </span>
+        </Link>
+        <p>{t('COMMON.ADDRESSES')} /</p>
+      </div>
+      <div className="flex items-center whitespace-nowrap">
+        <Link href={BFAURL.COMING_SOON}>
+          <span className="mr-2 text-primaryBlue underline underline-offset-2">
+            {interactedContactIds.length}
+          </span>
+        </Link>
+        <p>{t('COMMON.CONTRACTS')}</p>
+      </div>
     </div>
   );
 
@@ -93,9 +101,23 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
       ? t('COMMON.RISK_MEDIUM')
       : t('COMMON.RISK_LOW');
 
+  const flaggingLink =
+    flagging.length > 0 ? (
+      <Link href={BFAURL.COMING_SOON}>
+        <span className="mr-2 text-primaryBlue underline underline-offset-2">
+          {flagging.length}
+        </span>
+      </Link>
+    ) : (
+      <span className="mr-2 text-primaryBlue">{flagging.length}</span>
+    );
+
   const displayRedFlag = (
     <div className="flex items-center space-x-4">
-      <span className="mr-2 text-primaryBlue">{flagging?.length}</span> {t('COMMON.TIMES')}
+      {/* Info: (20231017 - Julian) Flagging */}
+      <div className="flex items-center whitespace-nowrap">
+        {flaggingLink} {t('COMMON.TIMES')}
+      </div>
       {/* Info: (20231017 - Julian) Risk */}
       <div className="flex items-center space-x-2 px-2">
         {/* Info: (20231017 - Julian) The circle svg */}
@@ -113,27 +135,24 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
     </div>
   );
 
-  // Info: (20231017 - Julian) If content is encrypted, display this
-  const encryptedContent = (
-    <div className="flex items-center space-x-4">
-      <FiLock />
-      <p>{t('COMMON.CONTENT_ENCRYPTED')}</p>
-    </div>
+  // ToDo: (20231018 - Julian) log ins
+  const contentLoginOnly = (
+    <Link href={BFAURL.COMING_SOON}>
+      <p className="text-primaryBlue underline underline-offset-2">{t('COMMON.LOG_IN_ONLY')}</p>
+    </Link>
   );
 
   // ToDo: (20231017 - Julian) display balance
-  const displayBalance = balance ? <></> : encryptedContent;
-  const displayTotalSent = totalSent ? <></> : encryptedContent;
-  const displayTotalReceived = totalReceived ? <></> : encryptedContent;
+  const displayBalance = balance ? <></> : contentLoginOnly;
+  const displayTotalSent = totalSent ? <></> : contentLoginOnly;
+  const displayTotalReceived = totalReceived ? <></> : contentLoginOnly;
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
       {/* Info: (20231017 - Julian) Address Level */}
-      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')}
-        </p>
-        {addressId}
+      <div className="flex flex-col space-y-2 px-3 py-4 text-sm lg:flex-row lg:items-center lg:space-y-0 lg:text-base">
+        <p className="font-bold text-lilac lg:w-170px">{t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')}</p>
+        <p className="break-words">{addressId}</p>
       </div>
       {/* Info: (20231017 - Julian) Sign Up time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
@@ -154,7 +173,7 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
           {t('ADDRESS_DETAIL_PAGE.RELATED_ADDRESS')}
         </p>
-        <div className="flex flex-wrap items-center space-x-3">{displayRelatedAddress}</div>
+        <div className="flex flex-wrap items-center gap-3">{displayRelatedAddress}</div>
       </div>
       {/* Info: (20231017 - Julian) Interacted With */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

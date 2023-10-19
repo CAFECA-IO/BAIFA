@@ -4,21 +4,24 @@ import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
-import NavBar from '../../../components/nav_bar/nav_bar';
-import BoltButton from '../../../components/bolt_button/bolt_button';
-import BlockDetail from '../../../components/block_detail/block_detail';
-import Footer from '../../../components/footer/footer';
+import NavBar from '../../../../../components/nav_bar/nav_bar';
+import BoltButton from '../../../../../components/bolt_button/bolt_button';
+import BlockDetail from '../../../../../components/block_detail/block_detail';
+import Footer from '../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyBlockData, IBlock} from '../../../interfaces/block';
+import {dummyBlockData, IBlock} from '../../../../../interfaces/block';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../interfaces/locale';
-import {getChainIcon} from '../../../lib/common';
+import {TranslateFunction} from '../../../../../interfaces/locale';
+import {getChainIcon} from '../../../../../lib/common';
+import {getDynamicUrl} from '../../../../../constants/url';
 
 interface IBlockDetailPageProps {
   blockId: string;
   blockData: IBlock;
   previousBlockId?: number;
   nextBlockId?: number;
+  chainId: string;
+  blocksOfChain: IBlock[];
 }
 
 const BlockDetailPage = ({
@@ -26,14 +29,18 @@ const BlockDetailPage = ({
   blockData,
   previousBlockId,
   nextBlockId,
+  chainId,
 }: IBlockDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
 
+  const previousLink = getDynamicUrl(chainId, `${previousBlockId}`).BLOCK;
+  const nextLink = getDynamicUrl(chainId, `${nextBlockId}`).BLOCK;
+
   const router = useRouter();
   const backClickHandler = () => router.back();
-  const previousHandler = () => router.push(`/app/block/${previousBlockId}`);
-  const nextHandler = () => router.push(`/app/block/${nextBlockId}`);
+  const previousHandler = () => router.push(previousLink);
+  const nextHandler = () => router.push(nextLink);
 
   const buttonStyle =
     'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
@@ -115,9 +122,12 @@ const BlockDetailPage = ({
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
   const paths = dummyBlockData
     .flatMap(block => {
-      return locales?.map(locale => ({params: {blockId: `${block.id}`}, locale}));
+      return locales?.map(locale => ({
+        params: {chainId: block.chainId, blockId: `${block.id}`},
+        locale,
+      }));
     })
-    .filter((path): path is {params: {blockId: string}; locale: string} => !!path);
+    .filter((path): path is {params: {chainId: string; blockId: string}; locale: string} => !!path);
 
   return {
     paths: paths,
@@ -132,13 +142,17 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
-  const blockIndex = dummyBlockData.findIndex(block => `${block.id}` === params.blockId);
-  const blockData = dummyBlockData[blockIndex]; //dummyBlockData.find(block => `${block.id}` === params.blockId);
+  // Info: (20231018 - Julian) Get block data in the same chain
+  const blocksOfChain = dummyBlockData.filter(block => block.chainId === params.chainId);
 
-  const previousBlockId = dummyBlockData[blockIndex - 1]?.id ?? null;
-  const nextBlockId = dummyBlockData[blockIndex + 1]?.id ?? null;
+  const blockData = blocksOfChain.find(block => `${block.id}` === params.blockId);
+  const chainId = blockData?.chainId ?? null;
 
-  if (!blockData) {
+  const blockIndex = blocksOfChain.findIndex(block => `${block.id}` === params.blockId);
+  const previousBlockId = blocksOfChain[blockIndex - 1]?.id ?? null;
+  const nextBlockId = blocksOfChain[blockIndex + 1]?.id ?? null;
+
+  if (!blockData || !chainId) {
     return {
       notFound: true,
     };
@@ -150,6 +164,7 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
       blockData: blockData,
       previousBlockId: previousBlockId,
       nextBlockId: nextBlockId,
+      chainId: chainId,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };

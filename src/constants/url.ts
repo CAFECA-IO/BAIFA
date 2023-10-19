@@ -9,11 +9,15 @@ export const BFAURL = {
   AUDITING_TOOL: '/app/auditing-tool',
   RED_FLAG: '/app/red-flag',
   FAQ: '/app/faq',
+};
 
-  BLOCK: '/app/block',
-  TRANSACTION: '/app/transaction',
-  TRANSACTION_LIST: '/app/transaction-list',
-  ADDRESS: '/app/address',
+export const getDynamicUrl = (chain: string, id: string) => {
+  return {
+    BLOCK: `/app/chains/${chain}/block/${id}`,
+    TRANSACTION: `/app/chains/${chain}/transaction/${id}`,
+    TRANSACTION_LIST: `/app/chains/${chain}/transaction-list/${id}`,
+    ADDRESS: `/app/chains/${chain}/address/${id}`,
+  };
 };
 
 export const REPORT_PATH = {

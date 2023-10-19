@@ -6,7 +6,7 @@ import {timestampToString, getTimeString, getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IBlock} from '../../interfaces/block';
-import {BFAURL} from '../../constants/url';
+import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {StabilityLevel} from '../../constants/stability_level';
 
 interface IBlockDetailProps {
@@ -38,6 +38,8 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
 
     return () => clearTimeout(timer);
   }, [sinceTime]);
+
+  const transactionsLink = getDynamicUrl(chainId, `${blockId}`).TRANSACTION_LIST;
 
   const displayStability =
     stabilityLevel === StabilityLevel.HIGH ? (
@@ -154,7 +156,7 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
           {t('BLOCK_DETAIL_PAGE.CONTENT')}
         </p>
-        <Link href={`${BFAURL.TRANSACTION_LIST}/${blockId}`}>
+        <Link href={transactionsLink}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
             {transactions.length} {t('BLOCK_DETAIL_PAGE.TRANSACTIONS_COUNT')}
           </BoltButton>
