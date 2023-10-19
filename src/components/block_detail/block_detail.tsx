@@ -6,7 +6,8 @@ import {timestampToString, getTimeString, getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IBlock} from '../../interfaces/block';
-import {BFAURL} from '../../constants/url';
+import {BFAURL, getDynamicUrl} from '../../constants/url';
+import {StabilityLevel} from '../../constants/stability_level';
 
 interface IBlockDetailProps {
   blockData: IBlock;
@@ -38,8 +39,10 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
     return () => clearTimeout(timer);
   }, [sinceTime]);
 
+  const transactionsLink = getDynamicUrl(chainId, `${blockId}`).TRANSACTION_LIST;
+
   const displayStability =
-    stabilityLevel === 'HIGH' ? (
+    stabilityLevel === StabilityLevel.HIGH ? (
       <div className="flex items-center text-hoverWhite">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +55,7 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
         </svg>
         <p className="ml-2">{t('BLOCK_DETAIL_PAGE.STABILITY_HIGH')}</p>
       </div>
-    ) : stabilityLevel === 'MEDIUM' ? (
+    ) : stabilityLevel === StabilityLevel.MEDIUM ? (
       <div className="flex items-center text-hoverWhite">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -153,7 +156,7 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
           {t('BLOCK_DETAIL_PAGE.CONTENT')}
         </p>
-        <Link href={`${BFAURL.TRANSACTION_LIST}/${blockId}`}>
+        <Link href={transactionsLink}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
             {transactions.length} {t('BLOCK_DETAIL_PAGE.TRANSACTIONS_COUNT')}
           </BoltButton>

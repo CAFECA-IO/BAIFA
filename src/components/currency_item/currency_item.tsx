@@ -1,43 +1,45 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import {getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
+import {RiskLevel} from '../../constants/risk_level';
 
 interface ICurrencyItemProps {
   currencyId: string;
   currencyName: string;
   rank: number;
-  stabilityLevel: string;
+  riskLevel: string;
 }
 
-const CurrencyItem = ({currencyId, currencyName, rank, stabilityLevel}: ICurrencyItemProps) => {
+const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const chainIcon = getChainIcon(currencyId);
 
-  const stabilityColor =
-    stabilityLevel === 'HIGH_RISK'
+  const riskColor =
+    riskLevel === RiskLevel.HIGH_RISK
       ? '#FC8181'
-      : stabilityLevel === 'MEDIUM_RISK'
+      : riskLevel === RiskLevel.MEDIUM_RISK
       ? '#FFA600'
       : '#3DD08C';
-  const stabilityText =
-    stabilityLevel === 'HIGH_RISK'
-      ? t('CURRENCIES_PAGE.RISK_HIGH')
-      : stabilityLevel === 'MEDIUM_RISK'
-      ? t('CURRENCIES_PAGE.RISK_MEDIUM')
-      : t('CURRENCIES_PAGE.RISK_LOW');
+  const riskText =
+    riskLevel === RiskLevel.HIGH_RISK
+      ? t('COMMON.RISK_HIGH')
+      : riskLevel === RiskLevel.MEDIUM_RISK
+      ? t('COMMON.RISK_MEDIUM')
+      : t('COMMON.RISK_LOW');
 
   // ToDo: (20230927 - Julian) Add link to currency detail page
   return (
     <div className="flex w-full items-center border-b border-darkPurple4 p-5 font-inter">
       {/* Info: (20230927 - Julian) Rank */}
-      <div className="w-40px text-xl font-semibold">#{rank}</div>
+      <div className="w-50px text-xl font-semibold">#{rank}</div>
       {/* Info: (20230927 - Julian) Currency Name & Icon */}
-      <div className="flex flex-1 items-center space-x-2">
+      <Link href={`/app/currencies/${currencyId}`} className="flex flex-1 items-center space-x-2">
         <Image src={chainIcon.src} width={30} height={30} alt={chainIcon.alt} />
         <p className="text-xl font-semibold">{currencyName}</p>
-      </div>
-      {/* Info: (20230907 - Julian) Stability */}
+      </Link>
+      {/* Info: (20230907 - Julian) Risk */}
       <div className="flex items-center space-x-2 px-2">
         {/* Info: (20230907 - Julian) The circle svg */}
         <svg
@@ -47,9 +49,9 @@ const CurrencyItem = ({currencyId, currencyName, rank, stabilityLevel}: ICurrenc
           viewBox="0 0 15 16"
           fill="none"
         >
-          <circle cx="7.5" cy="8.48853" r="7.5" fill={stabilityColor} />
+          <circle cx="7.5" cy="8.48853" r="7.5" fill={riskColor} />
         </svg>
-        <p className="text-sm">{stabilityText}</p>
+        <p className="text-sm">{riskText}</p>
       </div>
     </div>
   );

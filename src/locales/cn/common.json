@@ -104,10 +104,7 @@
   "CURRENCIES_PAGE": {
     "BREADCRUMB_TITLE": "货币列表",
     "TITLE_HIGHLIGHT": "货币",
-    "TITLE": "列表",
-    "RISK_HIGH": "高风险",
-    "RISK_MEDIUM": "中等风险",
-    "RISK_LOW": "低风险"
+    "TITLE": "列表"
   },
   "BLOCK_DETAIL_PAGE": {
     "MAIN_TITLE": "区块",
@@ -133,15 +130,24 @@
     "CONTENT": "内容",
     "VALUE": "金额",
     "FEE": "手续费",
-    "FLAGGING": "警示记录",
-    "TRACING_TOOL_BUTTON": "加入追踪工具"
+    "FLAGGING": "警示记录"
   },
   "TRANSACTION_LIST_PAGE": {
     "MAIN_TITLE_HIGHLIGHT": "交易",
     "MAIN_TITLE": "列表"
   },
   "ADDRESS_DETAIL_PAGE": {
-    "MAIN_TITLE": "地址"
+    "PUBLIC_TAG": "公开标签",
+    "MAIN_TITLE": "地址",
+    "ADDRESS_ID": "地址",
+    "SIGN_UP_TIME": "注册时间",
+    "LATEST_ACTIVE_TIME": "最后活动时间",
+    "RELATED_ADDRESS": "关联地址",
+    "INTERACTED_WITH": "互动对象",
+    "RED_FLAG": "警示记录",
+    "BALANCE": "余额",
+    "TOTAL_SENT": "总发送金额",
+    "TOTAL_RECEIVED": "总接收金额"
   },
   "CONTRACT_DETAIL_PAGE": {
     "MAIN_TITLE": "合约"
@@ -200,7 +206,16 @@
     "AGO": "前",
     "PRIVATE_NOTE_TITLE": "私人笔记",
     "PRIVATE_NOTE_PLACEHOLDER": "在此输入笔记...",
-    "LOG_IN_ONLY": "请先登入"
+    "TRACING_TOOL_BUTTON": "加入追踪工具",
+    "LOG_IN_ONLY": "请先登入",
+    "RISK_HIGH": "高风险",
+    "RISK_MEDIUM": "中等风险",
+    "RISK_LOW": "低风险",
+    "ADDRESSES": "个地址",
+    "CONTRACTS": "个合约",
+    "TIMES": "次",
+    "CONTENT_ENCRYPTED": "内容已加密",
+    "FOLLOW": "追踪"
   },
   "FOOTER": {
     "POWERED_BY": "技术支持 稗法",

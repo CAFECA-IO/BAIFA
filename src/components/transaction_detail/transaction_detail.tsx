@@ -5,7 +5,7 @@ import {timestampToString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {ITransaction} from '../../interfaces/transaction';
-import {BFAURL} from '../../constants/url';
+import {BFAURL, getDynamicUrl} from '../../constants/url';
 
 interface ITransactionDetailProps {
   transactionData: ITransaction;
@@ -13,8 +13,11 @@ interface ITransactionDetailProps {
 
 const TransactionDetail = (transactionData: ITransactionDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {hash, status, blockId, createdTimestamp, from, to, content, fee, flagging} =
+  const {hash, status, chainId, blockId, createdTimestamp, from, to, content, fee, flagging} =
     transactionData.transactionData;
+
+  const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
+  const addressLink = getDynamicUrl(chainId, `${from}`).ADDRESS;
 
   const displayStatus =
     status === 'PROCESSING' ? (
@@ -66,11 +69,9 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
       {/* Info: (20230911 - Julian) Hash */}
-      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('TRANSACTION_DETAIL_PAGE.HASH')}
-        </p>
-        <p className="break-words text-sm lg:text-base">{hash}</p>
+      <div className="flex flex-col space-y-2 px-3 py-4 text-sm lg:flex-row lg:items-center lg:space-y-0 lg:text-base">
+        <p className="font-bold text-lilac lg:w-170px">{t('TRANSACTION_DETAIL_PAGE.HASH')}</p>
+        <p className="break-words">{hash}</p>
       </div>
       {/* Info: (20230911 - Julian) Status */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
@@ -84,7 +85,7 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.BLOCK')}
         </p>
-        <Link href={`${BFAURL.BLOCK}/${blockId}`}>
+        <Link href={blockLink}>
           <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
             {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} {blockId}
           </BoltButton>
@@ -102,7 +103,7 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.FROM')}
         </p>
-        <Link href={BFAURL.COMING_SOON}>
+        <Link href={addressLink}>
           <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
             {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {from}
           </BoltButton>
