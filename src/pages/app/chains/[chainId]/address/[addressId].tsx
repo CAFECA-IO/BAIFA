@@ -1,22 +1,24 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import Link from 'next/link';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../components/bolt_button/bolt_button';
+import Tooltip from '../../../../../components/tooltip/tooltip';
+import AddressDetail from '../../../../../components/address_detail/address_detail';
+import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
+import ReviewSection from '../../../../../components/review_section/review_section';
 import Footer from '../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {IAddress, dummyAddressData} from '../../../../../interfaces/address';
-import AddressDetail from '../../../../../components/address_detail/address_detail';
 import {getChainIcon} from '../../../../../lib/common';
-import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
-import Link from 'next/link';
 import {BFAURL} from '../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
-import Tooltip from '../../../../../components/tooltip/tooltip';
+import {getDummyReviewData} from '../../../../../interfaces/review';
 
 interface IAddressDetailPageProps {
   addressId: string;
@@ -30,6 +32,8 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
 
   const router = useRouter();
   const backClickHandler = () => router.back();
+
+  const dummyReview = getDummyReviewData(addressId);
 
   return (
     <>
@@ -92,17 +96,20 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
                 </Link>
               </div>
             </div>
-
+            {/* Info: (20231020 - Julian) Address Detail */}
             <div className="my-10 w-full">
               <AddressDetail addressData={addressData} />
             </div>
-
+            {/* Info: (20231020 - Julian) Private Note Section */}
             <div className="w-full">
               <PrivateNoteSection />
             </div>
-
+            {/* Info: (20231020 - Julian) Review Section */}
+            <div className="mt-6 w-full">
+              <ReviewSection reviews={dummyReview} />
+            </div>
             {/* Info: (20231006 - Julian) Back button */}
-            <div className="pt-10">
+            <div className="mt-10">
               <BoltButton
                 onClick={backClickHandler}
                 className="px-12 py-4 font-bold"
