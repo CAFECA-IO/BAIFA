@@ -41,7 +41,7 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
-          <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-20 lg:pt-40">
+          <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
             {/* Info: (20231017 - Julian) Header */}
             <div className="flex w-full items-center justify-start">
               {/* Info: (20230912 -Julian) Back Arrow Button */}
@@ -67,7 +67,7 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
                   This is tooltip Sample Text. So if I type in more content, it would be like this.
                 </Tooltip>
               </div>
-              <div className="flex flex-col items-center space-y-4 lg:w-1/2 lg:flex-row lg:space-x-6 lg:space-y-0">
+              <div className="flex flex-col items-center space-y-4 sm:w-1/2 lg:w-2/5 lg:flex-row lg:space-x-6 lg:space-y-0">
                 {/* Info: (20231018 - Julian) Tracing Tool Button */}
                 <Link href={BFAURL.COMING_SOON} className="w-full">
                   <BoltButton
