@@ -17,7 +17,7 @@ const Tooltip = ({children}: ITooltipProps) => {
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
     >
-      <div className="text-lightGray1 opacity-70">
+      <div className="opacity-70">
         <HiOutlineExclamationCircle size={24} color="#ABA7BD" />
       </div>
 
