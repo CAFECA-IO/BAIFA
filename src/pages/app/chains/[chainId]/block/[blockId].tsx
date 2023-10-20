@@ -81,7 +81,7 @@ const BlockDetailPage = ({
             </div>
 
             {/* Info: (20231017 - Julian) Next & Previous Button */}
-            <div className="mt-6 flex items-center space-x-4">
+            <div className="mt-4 flex items-center space-x-4">
               {/* Info: (20231017 - Julian) Previous Button */}
               <button onClick={previousHandler} className={buttonStyle} disabled={!!!previousId}>
                 <RiArrowLeftSLine className="text-2xl" />
