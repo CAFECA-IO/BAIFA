@@ -16,6 +16,7 @@ import PrivateNoteSection from '../../../../../components/private_note_section/p
 import Link from 'next/link';
 import {BFAURL} from '../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
+import Tooltip from '../../../../../components/tooltip/tooltip';
 
 interface IAddressDetailPageProps {
   addressId: string;
@@ -58,10 +59,15 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
             </div>
             <div className="my-4 flex w-full flex-col items-center space-y-10">
               {/* Info: (20231018 - Julian) Public Tag */}
-              <div className="flex text-base font-bold text-lilac">
-                <h2>{t('ADDRESS_DETAIL_PAGE.PUBLIC_TAG')}</h2>
+              <div className="flex items-center space-x-2">
+                <h2 className="text-base font-bold text-lilac">
+                  {t('ADDRESS_DETAIL_PAGE.PUBLIC_TAG')}
+                </h2>
+                <Tooltip>
+                  This is tooltip Sample Text. So if I type in more content, it would be like this.
+                </Tooltip>
               </div>
-              <div className="flex flex-col items-center space-y-4 lg:w-2/5 lg:flex-row lg:space-x-6 lg:space-y-0">
+              <div className="flex flex-col items-center space-y-4 lg:w-1/2 lg:flex-row lg:space-x-6 lg:space-y-0">
                 {/* Info: (20231018 - Julian) Tracing Tool Button */}
                 <Link href={BFAURL.COMING_SOON} className="w-full">
                   <BoltButton
