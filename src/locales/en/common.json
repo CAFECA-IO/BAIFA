@@ -215,7 +215,8 @@
     "CONTRACTS": "Contracts",
     "TIMES": "Times",
     "CONTENT_ENCRYPTED": "Content Encrypted",
-    "FOLLOW": "Follow"
+    "FOLLOW": "Follow",
+    "REVIEWS_TITLE": "Reviews"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

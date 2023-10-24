@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import BoltButton from '../bolt_button/bolt_button';
+import Tooltip from '../tooltip/tooltip';
 import {timestampToString, getTimeString, getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -132,30 +133,39 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
       {/* Info: (20230912 - Julian) Stability Level */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
-          {t('BLOCK_DETAIL_PAGE.STABILITY')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('BLOCK_DETAIL_PAGE.STABILITY')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         {displayStability}
       </div>
       {/* Info: (20230912 - Julian) Created Time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
+        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('BLOCK_DETAIL_PAGE.TIME')}
         </p>
         {displayTime}
       </div>
       {/* Info: (20230912 - Julian) Management Team */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
-          {t('BLOCK_DETAIL_PAGE.MANAGEMENT')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('BLOCK_DETAIL_PAGE.MANAGEMENT')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         <div className="flex flex-wrap items-center space-x-3">{displayTeam}</div>
       </div>
       {/* Info: (20230912 - Julian) Content */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
-          {t('BLOCK_DETAIL_PAGE.CONTENT')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('BLOCK_DETAIL_PAGE.CONTENT')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         <Link href={transactionsLink}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
             {transactions.length} {t('BLOCK_DETAIL_PAGE.TRANSACTIONS_COUNT')}
@@ -164,16 +174,22 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
       </div>
       {/* Info: (20230912 - Julian) Miner & Reward */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
-          {t('BLOCK_DETAIL_PAGE.MINER_REWARD')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('BLOCK_DETAIL_PAGE.MINER_REWARD')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         {displayMinerAndReward}
       </div>
       {/* Info: (20230912 - Julian) Size */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-190px lg:text-base">
-          {t('BLOCK_DETAIL_PAGE.SIZE')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('BLOCK_DETAIL_PAGE.SIZE')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         <p>
           {size} {/* ToDo: (20230912 - Julian) uint */}
           <span> gb</span>

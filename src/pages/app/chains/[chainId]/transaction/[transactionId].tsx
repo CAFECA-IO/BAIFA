@@ -40,7 +40,7 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
-          <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-20 lg:pt-40">
+          <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
             {/* Info: (20231017 - Julian) Header */}
             <div className="relative flex w-full flex-col items-center justify-start lg:flex-row">
               {/* Info: (20230912 -Julian) Back Arrow Button */}

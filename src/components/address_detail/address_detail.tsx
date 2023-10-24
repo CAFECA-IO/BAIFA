@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
 import Link from 'next/link';
 import BoltButton from '../bolt_button/bolt_button';
+import Tooltip from '../tooltip/tooltip';
 import {timestampToString, getTimeString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -151,61 +152,81 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
       {/* Info: (20231017 - Julian) Address Level */}
       <div className="flex flex-col space-y-2 px-3 py-4 text-sm lg:flex-row lg:items-center lg:space-y-0 lg:text-base">
-        <p className="font-bold text-lilac lg:w-170px">{t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')}</p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         <p className="break-words">{addressId}</p>
       </div>
       {/* Info: (20231017 - Julian) Sign Up time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('ADDRESS_DETAIL_PAGE.SIGN_UP_TIME')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('ADDRESS_DETAIL_PAGE.SIGN_UP_TIME')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         {displaySignUpTime}
       </div>
       {/* Info: (20231017 - Julian) Latest Active Time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('ADDRESS_DETAIL_PAGE.LATEST_ACTIVE_TIME')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('ADDRESS_DETAIL_PAGE.LATEST_ACTIVE_TIME')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         {displayLatestActiveTime}
       </div>
       {/* Info: (20231017 - Julian) Related Address */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('ADDRESS_DETAIL_PAGE.RELATED_ADDRESS')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('ADDRESS_DETAIL_PAGE.RELATED_ADDRESS')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         <div className="flex flex-wrap items-center gap-3">{displayRelatedAddress}</div>
       </div>
       {/* Info: (20231017 - Julian) Interacted With */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('ADDRESS_DETAIL_PAGE.INTERACTED_WITH')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('ADDRESS_DETAIL_PAGE.INTERACTED_WITH')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         {displayInteractedWith}
       </div>
       {/* Info: (20231017 - Julian) Red Flag */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('ADDRESS_DETAIL_PAGE.RED_FLAG')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('ADDRESS_DETAIL_PAGE.RED_FLAG')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         {displayRedFlag}
       </div>
       {/* Info: (20231017 - Julian) Balance */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
+        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('ADDRESS_DETAIL_PAGE.BALANCE')}
         </p>
         {displayBalance}
       </div>
       {/* Info: (20231017 - Julian) Total Sent */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
+        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('ADDRESS_DETAIL_PAGE.TOTAL_SENT')}
         </p>
         {displayTotalSent}
       </div>
       {/* Info: (20231017 - Julian) Total Received */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
+        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('ADDRESS_DETAIL_PAGE.TOTAL_RECEIVED')}
         </p>
         {displayTotalReceived}

@@ -215,7 +215,8 @@
     "CONTRACTS": "个合约",
     "TIMES": "次",
     "CONTENT_ENCRYPTED": "内容已加密",
-    "FOLLOW": "追踪"
+    "FOLLOW": "追踪",
+    "REVIEWS_TITLE": "评论"
   },
   "FOOTER": {
     "POWERED_BY": "技术支持 稗法",

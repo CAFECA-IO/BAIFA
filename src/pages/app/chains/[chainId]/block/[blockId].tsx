@@ -58,7 +58,7 @@ const BlockDetailPage = ({
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
-          <div className="flex w-full flex-1 flex-col items-center justify-center px-5 pb-10 pt-28 lg:px-20">
+          <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-28 lg:px-40 lg:pt-40">
             {/* Info: (20231017 - Julian) Header */}
             <div className="flex w-full items-center justify-start">
               {/* Info: (20230912 -Julian) Back Arrow Button */}
@@ -81,7 +81,7 @@ const BlockDetailPage = ({
             </div>
 
             {/* Info: (20231017 - Julian) Next & Previous Button */}
-            <div className="mt-6 flex items-center space-x-4">
+            <div className="mt-4 flex items-center space-x-4">
               {/* Info: (20231017 - Julian) Previous Button */}
               <button onClick={previousHandler} className={buttonStyle} disabled={!!!previousId}>
                 <RiArrowLeftSLine className="text-2xl" />

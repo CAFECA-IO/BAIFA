@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import BoltButton from '../bolt_button/bolt_button';
+import Tooltip from '../tooltip/tooltip';
 import {timestampToString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -70,19 +71,22 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
       {/* Info: (20230911 - Julian) Hash */}
       <div className="flex flex-col space-y-2 px-3 py-4 text-sm lg:flex-row lg:items-center lg:space-y-0 lg:text-base">
-        <p className="font-bold text-lilac lg:w-170px">{t('TRANSACTION_DETAIL_PAGE.HASH')}</p>
+        <p className="font-bold text-lilac lg:w-200px">{t('TRANSACTION_DETAIL_PAGE.HASH')}</p>
         <p className="break-words">{hash}</p>
       </div>
       {/* Info: (20230911 - Julian) Status */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('TRANSACTION_DETAIL_PAGE.STATUS')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('TRANSACTION_DETAIL_PAGE.STATUS')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         {displayStatus}
       </div>
       {/* Info: (20230911 - Julian) Block */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
+        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.BLOCK')}
         </p>
         <Link href={blockLink}>
@@ -93,14 +97,14 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
       </div>
       {/* Info: (20230911 - Julian) Time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
+        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.TIME')}
         </p>
         {displayTime}
       </div>
       {/* Info: (20230911 - Julian) From */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
+        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.FROM')}
         </p>
         <Link href={addressLink}>
@@ -111,7 +115,7 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
       </div>
       {/* Info: (20230911 - Julian) To */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
+        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.TO')}
         </p>
         <Link href={BFAURL.COMING_SOON}>
@@ -122,9 +126,12 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
       </div>
       {/* Info: (20230911 - Julian) Content */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('TRANSACTION_DETAIL_PAGE.CONTENT')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('TRANSACTION_DETAIL_PAGE.CONTENT')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         <Link href={BFAURL.COMING_SOON}>
           <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
             {t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} {content}
@@ -133,9 +140,12 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
       </div>
       {/* Info: (20230911 - Julian) Value */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('TRANSACTION_DETAIL_PAGE.VALUE')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('TRANSACTION_DETAIL_PAGE.VALUE')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         {/* ToDo: (20230911 - Julian) log in button */}
         <Link href={BFAURL.COMING_SOON}>
           <p className="text-primaryBlue underline underline-offset-2">{t('COMMON.LOG_IN_ONLY')}</p>
@@ -143,17 +153,23 @@ const TransactionDetail = (transactionData: ITransactionDetailProps) => {
       </div>
       {/* Info: (20230911 - Julian) Fee */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('TRANSACTION_DETAIL_PAGE.FEE')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('TRANSACTION_DETAIL_PAGE.FEE')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         {/* ToDo: (20230911 - Julian) unit */}
         <p>{fee} BLT</p>
       </div>
       {/* Info: (20230911 - Julian) Flagging */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-170px lg:text-base">
-          {t('TRANSACTION_DETAIL_PAGE.FLAGGING')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('TRANSACTION_DETAIL_PAGE.FLAGGING')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
         {displayFlagging}
       </div>
     </div>

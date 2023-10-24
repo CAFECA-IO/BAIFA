@@ -54,31 +54,29 @@ const PrivateNoteSection = () => {
   ));
 
   return (
-    <>
-      <div className="flex w-full flex-col space-y-4">
-        <h2 className="text-xl text-lilac">{t('COMMON.PRIVATE_NOTE_TITLE')}</h2>
-        <div className="flex w-full flex-col bg-darkPurple p-4">
-          {/* Info: (20231017 - Julian) Tag List */}
-          <div className="mb-2 flex flex-wrap gap-2">{tagList}</div>
-          {/* Info: (20231017 - Julian) Input part */}
-          <div className="relative flex items-center">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={handleInputChange}
-              onKeyDown={handleInputKeyDown}
-              onCompositionStart={handleCompositionStart}
-              onCompositionEnd={handleCompositionEnd}
-              className="h-55px w-full rounded bg-purpleLinear px-3 py-2 text-base text-hoverWhite"
-              placeholder={t('COMMON.PRIVATE_NOTE_PLACEHOLDER')}
-            />
-            <button className="absolute right-4" onClick={addTagHandler}>
-              <Image src="/icons/edit.svg" alt="edit_icon" width={24} height={24} />
-            </button>
-          </div>
+    <div className="flex w-full flex-col space-y-4">
+      <h2 className="text-xl text-lilac">{t('COMMON.PRIVATE_NOTE_TITLE')}</h2>
+      <div className="flex w-full flex-col bg-darkPurple p-4">
+        {/* Info: (20231017 - Julian) Tag List */}
+        <div className="mb-2 flex flex-wrap gap-2">{tagList}</div>
+        {/* Info: (20231017 - Julian) Input part */}
+        <div className="relative flex items-center">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyDown={handleInputKeyDown}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            className="h-55px w-full rounded bg-purpleLinear px-3 py-2 text-base text-hoverWhite"
+            placeholder={t('COMMON.PRIVATE_NOTE_PLACEHOLDER')}
+          />
+          <button className="absolute right-4" onClick={addTagHandler}>
+            <Image src="/icons/edit.svg" alt="edit_icon" width={24} height={24} />
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
