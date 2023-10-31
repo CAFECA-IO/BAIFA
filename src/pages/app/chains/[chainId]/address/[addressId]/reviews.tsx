@@ -6,7 +6,7 @@ import Footer from '../../../../../../components/footer/footer';
 import ReviewSection from '../../../../../../components/review_section/review_section';
 import {IReview, getDummyReviewData} from '../../../../../../interfaces/review';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {getChainIcon, roundToDecimal} from '../../../../../../lib/common';
+import {getChainIcon} from '../../../../../../lib/common';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {useTranslation} from 'react-i18next';
@@ -21,7 +21,9 @@ interface IReviewsPageProps {
 
 const ReviewsPage = ({addressId, chainId, reviews}: IReviewsPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const headTitle = `Reviews of Address ${addressId} - BAIFA`;
+  const headTitle = `${t('REVIEWS_PAGE.TITLE')} of ${t(
+    'ADDRESS_DETAIL_PAGE.MAIN_TITLE'
+  )} ${addressId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
   const router = useRouter();

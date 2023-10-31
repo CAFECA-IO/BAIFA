@@ -170,6 +170,12 @@
     "FLAG_TYPE_HIGH_RISK_LOCATION": "高风险地区",
     "FLAG_TYPE_PRIVACY_COINS": "使用隐私币交易"
   },
+  "REVIEWS_PAGE": {
+    "TITLE": "评论",
+    "BUTTON": "写评论",
+    "SEE_ALL": "查看全部评论",
+    "BY": "由"
+  },
   "DATE_PICKER": {
     "DATE": "日期",
     "SELECT_PERIOD": "选择日期范围",
@@ -216,7 +222,7 @@
     "TIMES": "次",
     "CONTENT_ENCRYPTED": "内容已加密",
     "FOLLOW": "追踪",
-    "REVIEWS_TITLE": "评论"
+    "OF": "之"
   },
   "FOOTER": {
     "POWERED_BY": "技术支持 稗法",

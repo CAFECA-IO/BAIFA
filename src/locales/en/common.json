@@ -170,6 +170,12 @@
     "FLAG_TYPE_HIGH_RISK_LOCATION": "To High Risk Location",
     "FLAG_TYPE_PRIVACY_COINS": "Transactions with Privacy Coins"
   },
+  "REVIEWS_PAGE": {
+    "TITLE": "Reviews",
+    "BUTTON": "Leave Review",
+    "SEE_ALL": "See All Reviews",
+    "BY": "by"
+  },
   "DATE_PICKER": {
     "DATE": "Date",
     "SELECT_PERIOD": "Select Period",
@@ -216,7 +222,7 @@
     "TIMES": "Times",
     "CONTENT_ENCRYPTED": "Content Encrypted",
     "FOLLOW": "Follow",
-    "REVIEWS_TITLE": "Reviews"
+    "OF": "of"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

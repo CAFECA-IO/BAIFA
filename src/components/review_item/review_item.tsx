@@ -5,12 +5,15 @@ import {getDynamicUrl} from '../../constants/url';
 import {dummyAddressData} from '../../interfaces/address';
 import BoltButton from '../bolt_button/bolt_button';
 import {timestampToString} from '../../lib/common';
+import {TranslateFunction} from '../../interfaces/locale';
+import {useTranslation} from 'react-i18next';
 
 interface ReviewItemProps {
   review: IReview;
 }
 
 const ReviewItem = (review: ReviewItemProps) => {
+  const {t}: {t: TranslateFunction} = useTranslation('common');
   const {chainId, transactionId, content, createdTimestamp, authorAddressId, stars} = review.review;
 
   // Info: (20231031 - Julian) Transaction Link
@@ -34,7 +37,7 @@ const ReviewItem = (review: ReviewItemProps) => {
       <div className="flex flex-col items-start space-y-2">
         <Link href={transactionLink}>
           <BoltButton style="solid" color="purple" className="px-3 py-2 text-sm">
-            Transaction {transactionId}
+            {t('TRANSACTION_LIST_PAGE.MAIN_TITLE_HIGHLIGHT')} {transactionId}
           </BoltButton>
         </Link>
         <div className="flex items-center space-x-5px">{displayedStars}</div>
@@ -47,9 +50,9 @@ const ReviewItem = (review: ReviewItemProps) => {
       <div className="mt-2 flex h-full flex-col items-start space-y-2 text-sm text-lilac lg:ml-10 lg:mt-0 lg:items-end lg:justify-between">
         <p>{timestampToString(createdTimestamp).date}</p>
         <p>
-          By{' '}
+          {t('REVIEWS_PAGE.BY')}{' '}
           <Link href={authorLink} className="text-primaryBlue underline">
-            Address {authorAddressId}
+            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {authorAddressId}
           </Link>
         </p>
       </div>

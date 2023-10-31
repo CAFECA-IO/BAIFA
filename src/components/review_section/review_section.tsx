@@ -60,7 +60,7 @@ const ReviewSection = (reviews: IReviewSection) => {
   const displayedReviewsLimited = displayedReviews.slice(0, REVIEW_SECTION_LIMIT);
 
   const sortingButton = (
-    <div className="relative my-2 flex w-300px items-center text-base lg:my-0 lg:w-auto lg:w-fit lg:space-x-2">
+    <div className="relative my-2 flex w-300px items-center text-base lg:my-0 lg:w-fit lg:space-x-2">
       <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
       <button
         onClick={sortingClickHandler}
@@ -102,7 +102,7 @@ const ReviewSection = (reviews: IReviewSection) => {
   const leaveReviewButton = (
     <Link href={BFAURL.COMING_SOON} className="w-300px lg:w-auto">
       <BoltButton style="solid" color="blue" className="w-full px-10 py-3 text-sm font-bold">
-        Leave Review
+        {t('REVIEWS_PAGE.BUTTON')}
       </BoltButton>
     </Link>
   );
@@ -124,7 +124,7 @@ const ReviewSection = (reviews: IReviewSection) => {
           {/* Info: (20231020 - Julian) Reviews List */}
           <div className="my-6 flex flex-col space-y-4">{displayedReviewsLimited}</div>
           <div className="mx-auto py-5 text-sm underline">
-            <Link href={seeAllLink}>See All Reviews</Link>
+            <Link href={seeAllLink}>{t('REVIEWS_PAGE.SEE_ALL')}</Link>
           </div>
         </div>
       </div>
@@ -136,7 +136,7 @@ const ReviewSection = (reviews: IReviewSection) => {
       <div className="flex w-full flex-col items-center justify-between space-y-10 rounded lg:flex-row lg:space-y-0">
         <h2 className="text-6xl">
           {score}
-          <span className="ml-2 text-base text-lilac">of 5</span>
+          <span className="ml-2 text-base text-lilac">{t('COMMON.OF')} 5</span>
         </h2>
         {/* Info: (20231031 - Julian) Sort & Leave review button */}
         <div className="flex flex-col items-end space-y-10 lg:space-y-4">
