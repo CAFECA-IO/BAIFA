@@ -4,21 +4,21 @@ import Link from 'next/link';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import NavBar from '../../../../../components/nav_bar/nav_bar';
-import BoltButton from '../../../../../components/bolt_button/bolt_button';
-import Tooltip from '../../../../../components/tooltip/tooltip';
-import AddressDetail from '../../../../../components/address_detail/address_detail';
-import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
-import ReviewSection from '../../../../../components/review_section/review_section';
-import Footer from '../../../../../components/footer/footer';
+import NavBar from '../../../../../../components/nav_bar/nav_bar';
+import BoltButton from '../../../../../../components/bolt_button/bolt_button';
+import Tooltip from '../../../../../../components/tooltip/tooltip';
+import AddressDetail from '../../../../../../components/address_detail/address_detail';
+import PrivateNoteSection from '../../../../../../components/private_note_section/private_note_section';
+import ReviewSection from '../../../../../../components/review_section/review_section';
+import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../../../interfaces/locale';
-import {IAddress, dummyAddressData} from '../../../../../interfaces/address';
-import {getChainIcon} from '../../../../../lib/common';
-import {BFAURL} from '../../../../../constants/url';
+import {TranslateFunction} from '../../../../../../interfaces/locale';
+import {IAddress, dummyAddressData} from '../../../../../../interfaces/address';
+import {getChainIcon} from '../../../../../../lib/common';
+import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
-import {getDummyReviewData} from '../../../../../interfaces/review';
+import {getDummyReviewData} from '../../../../../../interfaces/review';
 
 interface IAddressDetailPageProps {
   addressId: string;
@@ -34,6 +34,7 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
   const backClickHandler = () => router.back();
 
   const dummyReview = getDummyReviewData(addressId);
+  const reviewLink = getDynamicUrl(addressData.chainId, addressId).REVIEWS;
 
   return (
     <>
@@ -106,7 +107,7 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
             </div>
             {/* Info: (20231020 - Julian) Review Section */}
             <div className="mt-6 w-full">
-              <ReviewSection reviews={dummyReview} />
+              <ReviewSection seeAllLink={reviewLink} reviews={dummyReview} />
             </div>
             {/* Info: (20231006 - Julian) Back button */}
             <div className="mt-10">

@@ -25,17 +25,19 @@ export const dummyReview: IReview[] = [
 export const getDummyReviewData = (addressId: string): IReview[] => {
   const transactionList =
     dummyAddressData.find(address => address.id === addressId)?.transactionIds ?? [];
+  const doubleTransactionList = transactionList.concat(transactionList);
   const chainId = dummyAddressData.find(address => address.id === addressId)?.chainId ?? '398251';
 
   const today =
     new Date(
       `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()} 00:00:00`
     ).getTime() / 1000;
-  const reviews = transactionList.map((id, i) => {
-    const createdTimestamp = today - (Math.random() * 10 + i * 86400);
+
+  const reviews = doubleTransactionList.map((id, i) => {
+    const createdTimestamp = today - i * 86400;
     const authorAddressId =
       i % 3 === 0 ? '324801' : i % 3 === 1 ? '302841' : i % 3 === 2 ? '372840' : '392709';
-    const stars = i % 3 === 0 ? 3 : i % 3 === 1 ? 5 : 1;
+    const stars = i % 5 === 0 ? 3 : i % 5 === 1 ? 5 : i % 5 === 2 ? 1 : i % 5 === 3 ? 2 : 4;
 
     return {
       id: `R${id}00001`,
