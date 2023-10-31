@@ -12,6 +12,7 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import {useTranslation} from 'react-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
+import {dummyAddressData} from '../../../../../../interfaces/address';
 
 interface IReviewsPageProps {
   addressId: string;
@@ -83,9 +84,21 @@ const ReviewsPage = ({addressId, chainId, reviews}: IReviewsPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+  // ToDo: (20231031 - Julian) Get paths
+  const paths = dummyAddressData
+    .flatMap(address => {
+      return locales?.map(locale => ({
+        params: {chainId: `${address.chainId}`, addressId: `${address.addressId}`},
+        locale,
+      }));
+    })
+    .filter(
+      (path): path is {params: {chainId: string; addressId: string}; locale: string} => !!path
+    );
+
   return {
-    paths: [],
+    paths,
     fallback: true,
   };
 };
