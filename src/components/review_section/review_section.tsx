@@ -1,10 +1,11 @@
-import useOuterClick from '../../lib/hooks/use_outer_click';
 import {useState} from 'react';
+import useOuterClick from '../../lib/hooks/use_outer_click';
 import {IReview} from '../../interfaces/review';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {FaChevronDown} from 'react-icons/fa';
 import {roundToDecimal} from '../../lib/common';
+import ReviewItem from '../review_item/review_item';
 
 interface IReviewSection {
   reviews: IReview[];
@@ -21,8 +22,14 @@ const ReviewSection = (reviews: IReviewSection) => {
     setComponentVisible: setSortingVisible,
   } = useOuterClick<HTMLUListElement>(false);
 
-  const newestSortClickHandler = () => setSorting('Newest');
-  const oldestSortClickHandler = () => setSorting('Oldest');
+  const newestSortClickHandler = () => {
+    setSorting('Newest');
+    setSortingVisible(false);
+  };
+  const oldestSortClickHandler = () => {
+    setSorting('Oldest');
+    setSortingVisible(false);
+  };
 
   // Info: (20231020 - Julian) Calculate average score
   const score = roundToDecimal(
@@ -38,8 +45,8 @@ const ReviewSection = (reviews: IReviewSection) => {
     }
   });
 
-  const displayedReviews = sortedReviews.map(review => (
-    <div className="flex items-center bg-darkPurple2 p-5">{review.id}</div>
+  const displayedReviews = sortedReviews.map((review, index) => (
+    <ReviewItem key={index} review={review} />
   ));
 
   return (
