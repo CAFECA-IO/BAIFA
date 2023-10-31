@@ -89,7 +89,7 @@ export const getStaticPaths: GetStaticPaths = async ({locales}) => {
   const paths = dummyAddressData
     .flatMap(address => {
       return locales?.map(locale => ({
-        params: {chainId: `${address.chainId}`, addressId: `${address.addressId}`},
+        params: {chainId: `${address.chainId}`, addressId: `${address.id}`},
         locale,
       }));
     })
@@ -99,7 +99,7 @@ export const getStaticPaths: GetStaticPaths = async ({locales}) => {
 
   return {
     paths,
-    fallback: true,
+    fallback: 'blocking',
   };
 };
 
