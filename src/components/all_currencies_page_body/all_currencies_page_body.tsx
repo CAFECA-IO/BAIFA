@@ -5,9 +5,11 @@ import CurrencyItem from '../currency_item/currency_item';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
-import {dummyCurrencyData} from '../../interfaces/currency';
+import {ICurrency, dummyCurrencyData} from '../../interfaces/currency';
 import Pagination from '../pagination/pagination';
 import {ITEM_PER_PAGE} from '../../constants/config';
+import SearchBar from '../search_bar/search_bar';
+import useStateRef from 'react-usestateref';
 
 const AllCurrenciesPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -23,18 +25,38 @@ const AllCurrenciesPageBody = () => {
     },
   ];
 
+  const [search, setSearch, searchRef] = useStateRef('');
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(dummyCurrencyData.length / ITEM_PER_PAGE));
+  const [filteredCurrencyData, setFilteredCurrencyData] = useState<ICurrency[]>(dummyCurrencyData);
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
+
+  useEffect(() => {
+    const searchResult = dummyCurrencyData.filter(currency => {
+      // Info: (20231101 - Julian) filter by search term
+      const searchTerm = searchRef.current.toLowerCase();
+      const currencyId = currency.currencyId.toString().toLowerCase();
+      const currencyName = currency.currencyName.toLowerCase();
+      return searchTerm !== ''
+        ? currencyId.includes(searchTerm) || currencyName.includes(searchTerm)
+        : true;
+    });
+    // .sort((a: ICurrency, b: ICurrency) => {
+    //   return sorting === 'Newest'
+    //     ? b.createdTimestamp - a.createdTimestamp
+    //     : a.createdTimestamp - b.createdTimestamp;
+    // });
+    setFilteredCurrencyData(searchResult);
+  }, [search]);
 
   useEffect(() => {
     setActivePage(1);
     setTotalPages(Math.ceil(dummyCurrencyData.length / ITEM_PER_PAGE));
   }, [dummyCurrencyData]);
 
-  const currenciesList = dummyCurrencyData
+  const currenciesList = filteredCurrencyData
     .map((currency, index) => (
       <CurrencyItem
         key={index}
@@ -57,6 +79,14 @@ const AllCurrenciesPageBody = () => {
             <span className="text-primaryBlue">{t('CURRENCIES_PAGE.TITLE_HIGHLIGHT')} </span>
             {t('CURRENCIES_PAGE.TITLE')}
           </h1>
+        </div>
+
+        {/* Info: (20231101 - Julian) Search Filter */}
+        <div className="flex w-full flex-col items-center">
+          {/* Info: (20231101 - Julian) Search Bar */}
+          <div className="relative flex w-full items-center justify-center drop-shadow-xl lg:w-7/10">
+            <SearchBar searchBarPlaceholder={'Search in Currency list'} setSearch={setSearch} />
+          </div>
         </div>
 
         {/* Info: (20230927 - Julian) Currency list */}

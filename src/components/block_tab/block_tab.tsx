@@ -1,10 +1,12 @@
 import {useState, useEffect} from 'react';
 import useStateRef from 'react-usestateref';
 import BlockList from '../block_list/block_list';
-import SearchFilter from '../search_filter/search_filter';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IBlock} from '../../interfaces/block';
+import DatePicker from '../date_picker/date_picker';
+import SearchBar from '../search_bar/search_bar';
+import SortingMenu from '../sorting_menu/sorting_menu';
 
 interface IBlockTabProps {
   blockList: IBlock[];
@@ -12,13 +14,14 @@ interface IBlockTabProps {
 
 const BlockTab = ({blockList}: IBlockTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const sortingOptions = ['SORTING.NEWEST', 'SORTING.OLDEST'];
 
   const [search, setSearch, searchRef] = useStateRef('');
   const [period, setPeriod] = useState({
     startTimeStamp: 0,
     endTimeStamp: 0,
   });
-  const [sorting, setSorting] = useState<'Newest' | 'Oldest'>('Newest');
+  const [sorting, setSorting] = useState<string>(sortingOptions[0]);
   const [filteredBlockData, setFilteredBlockData] = useState<IBlock[]>(blockList);
 
   useEffect(() => {
@@ -49,23 +52,44 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
           : true;
       })
       .sort((a: IBlock, b: IBlock) => {
-        return sorting === 'Newest'
-          ? b.createdTimestamp - a.createdTimestamp
-          : a.createdTimestamp - b.createdTimestamp;
+        return sorting === sortingOptions[0]
+          ? // Info: (20231101 - Julian) Newest
+            b.createdTimestamp - a.createdTimestamp
+          : // Info: (20231101 - Julian) Oldest
+            a.createdTimestamp - b.createdTimestamp;
       });
     setFilteredBlockData(searchResult);
   }, [period, search, sorting]);
 
   return (
     <div className="flex w-full flex-col items-center font-inter">
-      {/* Info: (20230907 - Julian) Search Filter */}
-      <SearchFilter
-        searchBarPlaceholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_BLOCKS')}
-        setSearch={setSearch}
-        setPeriod={setPeriod}
-        sorting={sorting}
-        setSorting={setSorting}
-      />
+      {/* Info: (20231101 - Julian) Search Filter */}
+      <div className="flex w-full flex-col items-center">
+        {/* Info: (20231101 - Julian) Search Bar */}
+        <div className="relative flex w-full items-center justify-center drop-shadow-xl lg:w-7/10">
+          <SearchBar
+            searchBarPlaceholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_BLOCKS')}
+            setSearch={setSearch}
+          />
+        </div>
+        <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
+          {/* Info: (20231101 - Julian) Date Picker */}
+          <div className="flex w-full items-center text-base lg:w-fit lg:space-x-2">
+            <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
+            <DatePicker setFilteredPeriod={setPeriod} />
+          </div>
+
+          {/* Info: (20230904 - Julian) Sorting Menu */}
+          <div className="relative flex w-full items-center pb-2 text-base lg:w-fit lg:space-x-2 lg:pb-0">
+            <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
+            <SortingMenu
+              sortingOptions={sortingOptions}
+              sorting={sorting}
+              setSorting={setSorting}
+            />
+          </div>
+        </div>
+      </div>
       {/* Info: (20230904 - Julian) Block List */}
       <BlockList blockData={filteredBlockData} />
     </div>
