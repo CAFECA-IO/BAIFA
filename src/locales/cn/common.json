@@ -106,6 +106,14 @@
     "TITLE_HIGHLIGHT": "货币",
     "TITLE": "列表"
   },
+  "CURRENCY_DETAIL_PAGE": {
+    "PRICE": "价格",
+    "VOLUME_IN_24H": "24 小时交易量",
+    "TOTAL_AMOUNT": "总发行量",
+    "HOLDERS": "持有人数",
+    "TTOTAL_TRANSFERS": "总转帐次数",
+    "RED_FLAG": "警示记录"
+  },
   "BLOCK_DETAIL_PAGE": {
     "MAIN_TITLE": "区块",
     "STABILITY": "稳定性等级",
@@ -206,7 +214,8 @@
     "NEWEST": "最新",
     "OLDEST": "最旧",
     "POPULAR": "热门",
-    "UNPOPULAR": "冷门"
+    "UNPOPULAR": "冷门",
+    "ALL": "全部"
   },
   "COMMON": {
     "NONE": "无",

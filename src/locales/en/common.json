@@ -106,6 +106,14 @@
     "TITLE_HIGHLIGHT": "Currency",
     "TITLE": "List"
   },
+  "CURRENCY_DETAIL_PAGE": {
+    "PRICE": "Price",
+    "VOLUME_IN_24H": "Volume in 24 H",
+    "TOTAL_AMOUNT": "Total Amount",
+    "HOLDERS": "Holders",
+    "TTOTAL_TRANSFERS": "Total Transfers",
+    "RED_FLAG": "Red Flag"
+  },
   "BLOCK_DETAIL_PAGE": {
     "MAIN_TITLE": "Block",
     "STABILITY": "Stability level",
@@ -206,7 +214,8 @@
     "NEWEST": "Newest",
     "OLDEST": "Oldest",
     "POPULAR": "Popular",
-    "UNPOPULAR": "Unpopular"
+    "UNPOPULAR": "Unpopular",
+    "ALL": "All"
   },
   "COMMON": {
     "NONE": "None",

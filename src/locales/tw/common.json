@@ -106,6 +106,14 @@
     "TITLE_HIGHLIGHT": "貨幣",
     "TITLE": "列表"
   },
+  "CURRENCY_DETAIL_PAGE": {
+    "PRICE": "價格",
+    "VOLUME_IN_24H": "24 小時交易量",
+    "TOTAL_AMOUNT": "總發行量",
+    "HOLDERS": "持有人數",
+    "TTOTAL_TRANSFERS": "總轉帳次數",
+    "RED_FLAG": "警示記錄"
+  },
   "BLOCK_DETAIL_PAGE": {
     "MAIN_TITLE": "區塊",
     "STABILITY": "穩定性等級",
@@ -206,7 +214,8 @@
     "NEWEST": "最新",
     "OLDEST": "最舊",
     "POPULAR": "熱門",
-    "UNPOPULAR": "冷門"
+    "UNPOPULAR": "冷門",
+    "ALL": "全部"
   },
   "COMMON": {
     "NONE": "無",

@@ -1,3 +1,4 @@
+import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
 import {IRiskLevel, RiskLevel} from '../constants/risk_level';
 
 export interface ICurrency {
@@ -10,7 +11,7 @@ export interface ICurrency {
   totalAmount: number;
   holders: number;
   totalTransfers: number;
-  redPlag: number;
+  flagging: IRedFlagType[];
   riskLevel: IRiskLevel;
 }
 
@@ -20,12 +21,18 @@ export const dummyCurrencyData: ICurrency[] = [
     currencyName: 'Bitcoin',
     rank: 1,
     price: 27755.4,
-    volumeIn24h: 138,
+    volumeIn24h: 14867304472,
     unit: 'BTC',
     totalAmount: 19388600,
     holders: 29564,
     totalTransfers: 48010097,
-    redPlag: 2000,
+    flagging: [
+      RedFlagType.LARGE_WITHDRAW,
+      RedFlagType.LARGE_DEPOSIT,
+      RedFlagType.LARGE_TRANSFER,
+      RedFlagType.MULTIPLE_RECEIVES,
+      RedFlagType.MULTIPLE_WITHDRAW,
+    ],
     riskLevel: RiskLevel.HIGH_RISK,
   },
   {
@@ -33,12 +40,16 @@ export const dummyCurrencyData: ICurrency[] = [
     currencyName: 'Ethereum',
     rank: 2,
     price: 1000.0,
-    volumeIn24h: 105,
+    volumeIn24h: 6666377248,
     unit: 'ETH',
     totalAmount: 11388600,
     holders: 23019,
     totalTransfers: 31092807,
-    redPlag: 1700,
+    flagging: [
+      RedFlagType.MULTIPLE_RECEIVES,
+      RedFlagType.MULTIPLE_TRANSFER,
+      RedFlagType.MULTIPLE_WITHDRAW,
+    ],
     riskLevel: RiskLevel.MEDIUM_RISK,
   },
   {
@@ -46,12 +57,12 @@ export const dummyCurrencyData: ICurrency[] = [
     currencyName: 'iSunCloud',
     rank: 3,
     price: 500.0,
-    volumeIn24h: 105,
+    volumeIn24h: 4583013964,
     unit: 'BOLT',
     totalAmount: 10982624,
     holders: 9919,
     totalTransfers: 24992807,
-    redPlag: 100,
+    flagging: [RedFlagType.LARGE_DEPOSIT],
     riskLevel: RiskLevel.LOW_RISK,
   },
   {
@@ -59,12 +70,12 @@ export const dummyCurrencyData: ICurrency[] = [
     currencyName: 'Tether',
     rank: 4,
     price: 1.0,
-    volumeIn24h: 832,
+    volumeIn24h: 3447744807,
     unit: 'USDT',
     totalAmount: 27099243,
     holders: 40387,
     totalTransfers: 29802417,
-    redPlag: 1003,
+    flagging: [RedFlagType.MULTIPLE_TRANSFER],
     riskLevel: RiskLevel.LOW_RISK,
   },
   {
@@ -72,12 +83,12 @@ export const dummyCurrencyData: ICurrency[] = [
     currencyName: 'BNB',
     rank: 5,
     price: 6840.44,
-    volumeIn24h: 93,
+    volumeIn24h: 552770616,
     unit: 'BNB',
     totalAmount: 18092499,
     holders: 10373,
     totalTransfers: 24262807,
-    redPlag: 1020,
+    flagging: [RedFlagType.HIGH_RISK_LOCATION],
     riskLevel: RiskLevel.MEDIUM_RISK,
   },
 ];
