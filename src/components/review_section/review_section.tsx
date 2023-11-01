@@ -112,7 +112,7 @@ const ReviewSection = (reviews: IReviewSection) => {
     return (
       <div className="flex w-full flex-col space-y-4">
         <h2 className="text-xl text-lilac">
-          {t('COMMON.REVIEWS_TITLE')}
+          {t('REVIEWS_PAGE.TITLE')}
           <span className="ml-2">({score})</span>
         </h2>
         <div className="flex w-full flex-col rounded bg-darkPurple p-4">

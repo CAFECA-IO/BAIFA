@@ -22,7 +22,7 @@ interface IReviewsPageProps {
 
 const ReviewsPage = ({addressId, chainId, reviews}: IReviewsPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const headTitle = `${t('REVIEWS_PAGE.TITLE')} of ${t(
+  const headTitle = `${t('REVIEWS_PAGE.TITLE')} ${t('COMMON.OF')} ${t(
     'ADDRESS_DETAIL_PAGE.MAIN_TITLE'
   )} ${addressId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
@@ -47,12 +47,14 @@ const ReviewsPage = ({addressId, chainId, reviews}: IReviewsPageProps) => {
               <button onClick={backClickHandler} className="hidden lg:block">
                 <BsArrowLeftShort className="text-48px" />
               </button>
-              {/* Info: (20231018 -Julian) Block Title */}
+              {/* Info: (20231018 -Julian) Review Title */}
               <div className="flex flex-1 flex-col items-center justify-center space-y-6">
-                <h1 className="text-2xl font-bold lg:text-48px">Reviews</h1>
+                <h1 className="text-2xl font-bold lg:text-48px">{t('REVIEWS_PAGE.TITLE')}</h1>
                 <div className="flex items-center space-x-2">
                   <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
-                  <p className="text-xl">Address {addressId}</p>
+                  <p className="text-xl">
+                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {addressId}
+                  </p>
                 </div>
               </div>
             </div>
