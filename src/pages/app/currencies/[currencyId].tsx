@@ -8,8 +8,6 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ICurrency, dummyCurrencyData} from '../../../interfaces/currency';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
-import {TranslateFunction} from '../../../interfaces/locale';
-import {useTranslation} from 'react-i18next';
 import {getChainIcon} from '../../../lib/common';
 
 interface ICurrencyDetailPageProps {
@@ -18,7 +16,6 @@ interface ICurrencyDetailPageProps {
 }
 
 const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps) => {
-  const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${currencyId} - BAIFA`;
   const {currencyName} = currencyData;
   const chainIcon = getChainIcon(currencyId);
