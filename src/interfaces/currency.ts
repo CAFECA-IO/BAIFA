@@ -3,6 +3,7 @@ import {IRiskLevel, RiskLevel} from '../constants/risk_level';
 export interface ICurrency {
   currencyId: string;
   currencyName: string;
+  rank: number;
   price: number;
   volumeIn24h: number;
   unit: string;
@@ -17,6 +18,7 @@ export const dummyCurrencyData: ICurrency[] = [
   {
     currencyId: 'btc',
     currencyName: 'Bitcoin',
+    rank: 1,
     price: 27755.4,
     volumeIn24h: 138,
     unit: 'BTC',
@@ -29,6 +31,7 @@ export const dummyCurrencyData: ICurrency[] = [
   {
     currencyId: 'eth',
     currencyName: 'Ethereum',
+    rank: 2,
     price: 1000.0,
     volumeIn24h: 105,
     unit: 'ETH',
@@ -41,6 +44,7 @@ export const dummyCurrencyData: ICurrency[] = [
   {
     currencyId: 'isun',
     currencyName: 'iSunCloud',
+    rank: 3,
     price: 500.0,
     volumeIn24h: 105,
     unit: 'BOLT',
@@ -51,20 +55,9 @@ export const dummyCurrencyData: ICurrency[] = [
     riskLevel: RiskLevel.LOW_RISK,
   },
   {
-    currencyId: 'bnb',
-    currencyName: 'BNB',
-    price: 6840.44,
-    volumeIn24h: 93,
-    unit: 'BNB',
-    totalAmount: 18092499,
-    holders: 10373,
-    totalTransfers: 24262807,
-    redPlag: 1020,
-    riskLevel: RiskLevel.MEDIUM_RISK,
-  },
-  {
     currencyId: 'usdt',
     currencyName: 'Tether',
+    rank: 4,
     price: 1.0,
     volumeIn24h: 832,
     unit: 'USDT',
@@ -73,5 +66,18 @@ export const dummyCurrencyData: ICurrency[] = [
     totalTransfers: 29802417,
     redPlag: 1003,
     riskLevel: RiskLevel.LOW_RISK,
+  },
+  {
+    currencyId: 'bnb',
+    currencyName: 'BNB',
+    rank: 5,
+    price: 6840.44,
+    volumeIn24h: 93,
+    unit: 'BNB',
+    totalAmount: 18092499,
+    holders: 10373,
+    totalTransfers: 24262807,
+    redPlag: 1020,
+    riskLevel: RiskLevel.MEDIUM_RISK,
   },
 ];

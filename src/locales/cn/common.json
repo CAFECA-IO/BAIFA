@@ -204,7 +204,9 @@
   "SORTING": {
     "SORT_BY": "排序方式",
     "NEWEST": "最新",
-    "OLDEST": "最旧"
+    "OLDEST": "最旧",
+    "POPULAR": "热门",
+    "UNPOPULAR": "冷门"
   },
   "COMMON": {
     "NONE": "无",

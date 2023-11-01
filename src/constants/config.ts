@@ -45,7 +45,7 @@ export const mainMenuContent = [
     title: 'HOME_PAGE.CRYPTO_TITLE',
     description: '10000',
     mark: '+',
-    link: BFAURL.COMING_SOON,
+    link: BFAURL.CURRENCIES,
     alt: 'coin_icon',
   },
   {

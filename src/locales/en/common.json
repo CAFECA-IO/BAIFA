@@ -204,7 +204,9 @@
   "SORTING": {
     "SORT_BY": "Sort By",
     "NEWEST": "Newest",
-    "OLDEST": "Oldest"
+    "OLDEST": "Oldest",
+    "POPULAR": "Popular",
+    "UNPOPULAR": "Unpopular"
   },
   "COMMON": {
     "NONE": "None",

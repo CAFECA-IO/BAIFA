@@ -10,9 +10,16 @@ import Pagination from '../pagination/pagination';
 import {ITEM_PER_PAGE} from '../../constants/config';
 import SearchBar from '../search_bar/search_bar';
 import useStateRef from 'react-usestateref';
+import SortingMenu from '../sorting_menu/sorting_menu';
 
 const AllCurrenciesPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const currenciesOptions = ['All', 'Ethereum', 'Bitcoin', 'iSunCloud', 'BNB', 'Tether'];
+  const sortingOptions = ['SORTING.POPULAR', 'SORTING.UNPOPULAR'];
+
+  const [search, setSearch, searchRef] = useStateRef('');
+  const [currencies, setCurrencies] = useState(currenciesOptions[0]);
+  const [sorting, setSorting] = useState(sortingOptions[0]);
 
   const crumbs = [
     {
@@ -25,7 +32,6 @@ const AllCurrenciesPageBody = () => {
     },
   ];
 
-  const [search, setSearch, searchRef] = useStateRef('');
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(dummyCurrencyData.length / ITEM_PER_PAGE));
   const [filteredCurrencyData, setFilteredCurrencyData] = useState<ICurrency[]>(dummyCurrencyData);
@@ -34,22 +40,31 @@ const AllCurrenciesPageBody = () => {
   const startIdx = endIdx - ITEM_PER_PAGE;
 
   useEffect(() => {
-    const searchResult = dummyCurrencyData.filter(currency => {
-      // Info: (20231101 - Julian) filter by search term
-      const searchTerm = searchRef.current.toLowerCase();
-      const currencyId = currency.currencyId.toString().toLowerCase();
-      const currencyName = currency.currencyName.toLowerCase();
-      return searchTerm !== ''
-        ? currencyId.includes(searchTerm) || currencyName.includes(searchTerm)
-        : true;
-    });
-    // .sort((a: ICurrency, b: ICurrency) => {
-    //   return sorting === 'Newest'
-    //     ? b.createdTimestamp - a.createdTimestamp
-    //     : a.createdTimestamp - b.createdTimestamp;
-    // });
+    const searchResult = dummyCurrencyData
+      .filter(currency => {
+        // Info: (20231101 - Julian) filter by search term
+        const searchTerm = searchRef.current.toLowerCase();
+        const currencyId = currency.currencyId.toString().toLowerCase();
+        const currencyName = currency.currencyName.toLowerCase();
+        return searchTerm !== ''
+          ? currencyId.includes(searchTerm) || currencyName.includes(searchTerm)
+          : true;
+      })
+      .filter(currency => {
+        // Info: (20231101 - Julian) filter by currency
+        const currencyId = currency.currencyId;
+        const currencyName = currency.currencyName;
+        return currencies !== 'All'
+          ? currencyName === currencies || currencyId === currencies
+          : true;
+      })
+      .sort((a, b) => {
+        // Info: (20231101 - Julian) sort by popularity
+        return sorting === sortingOptions[0] ? a.rank - b.rank : b.rank - a.rank;
+      });
+
     setFilteredCurrencyData(searchResult);
-  }, [search]);
+  }, [search, currencies, sorting]);
 
   useEffect(() => {
     setActivePage(1);
@@ -62,7 +77,7 @@ const AllCurrenciesPageBody = () => {
         key={index}
         currencyId={currency.currencyId}
         currencyName={currency.currencyName}
-        rank={index + 1}
+        rank={currency.rank}
         riskLevel={currency.riskLevel}
       />
     ))
@@ -82,15 +97,33 @@ const AllCurrenciesPageBody = () => {
         </div>
 
         {/* Info: (20231101 - Julian) Search Filter */}
-        <div className="flex w-full flex-col items-center">
+        <div className="flex w-full flex-col items-center space-y-10 lg:px-20">
           {/* Info: (20231101 - Julian) Search Bar */}
-          <div className="relative flex w-full items-center justify-center drop-shadow-xl lg:w-7/10">
+          <div className="flex w-full items-center justify-center drop-shadow-xl lg:w-7/10">
             <SearchBar searchBarPlaceholder={'Search in Currency list'} setSearch={setSearch} />
+          </div>
+          <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+            <div className="w-full lg:w-fit">
+              <SortingMenu
+                sortingOptions={currenciesOptions}
+                sorting={currencies}
+                setSorting={setCurrencies}
+              />
+            </div>
+
+            <div className="my-2 flex w-full items-center text-base lg:my-0 lg:w-fit lg:space-x-2">
+              <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
+              <SortingMenu
+                sortingOptions={sortingOptions}
+                sorting={sorting}
+                setSorting={setSorting}
+              />
+            </div>
           </div>
         </div>
 
         {/* Info: (20230927 - Julian) Currency list */}
-        <div className="flex flex-col px-20 py-5">{currenciesList}</div>
+        <div className="flex flex-col py-10 lg:px-20">{currenciesList}</div>
         <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
       </div>
 

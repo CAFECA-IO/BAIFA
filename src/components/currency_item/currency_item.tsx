@@ -37,7 +37,7 @@ const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItem
       {/* Info: (20230927 - Julian) Currency Name & Icon */}
       <Link href={`/app/currencies/${currencyId}`} className="flex flex-1 items-center space-x-2">
         <Image src={chainIcon.src} width={30} height={30} alt={chainIcon.alt} />
-        <p className="text-xl font-semibold">{currencyName}</p>
+        <p className="text-sm font-semibold lg:text-xl">{currencyName}</p>
       </Link>
       {/* Info: (20230907 - Julian) Risk */}
       <div className="flex items-center space-x-2 px-2">
