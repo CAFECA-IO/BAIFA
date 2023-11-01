@@ -12,10 +12,10 @@ interface ITransactionDetailProps {
   transactionData: ITransaction;
 }
 
-const TransactionDetail = (transactionData: ITransactionDetailProps) => {
+const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {hash, status, chainId, blockId, createdTimestamp, from, to, content, fee, flagging} =
-    transactionData.transactionData;
+    transactionData;
 
   const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
   const addressLink = getDynamicUrl(chainId, `${from}`).ADDRESS;

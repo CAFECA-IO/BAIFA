@@ -14,7 +14,7 @@ import SortingMenu from '../sorting_menu/sorting_menu';
 
 const AllCurrenciesPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const currenciesOptions = ['All', 'Ethereum', 'Bitcoin', 'iSunCloud', 'BNB', 'Tether'];
+  const currenciesOptions = ['SORTING.ALL', 'Ethereum', 'Bitcoin', 'iSunCloud', 'BNB', 'Tether'];
   const sortingOptions = ['SORTING.POPULAR', 'SORTING.UNPOPULAR'];
 
   const [search, setSearch, searchRef] = useStateRef('');
@@ -54,7 +54,7 @@ const AllCurrenciesPageBody = () => {
         // Info: (20231101 - Julian) filter by currency
         const currencyId = currency.currencyId;
         const currencyName = currency.currencyName;
-        return currencies !== 'All'
+        return currencies !== currenciesOptions[0]
           ? currencyName === currencies || currencyId === currencies
           : true;
       })

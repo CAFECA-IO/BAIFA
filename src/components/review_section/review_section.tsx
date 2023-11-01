@@ -123,7 +123,7 @@ const ReviewSection = (reviews: IReviewSection) => {
           </div>
           {/* Info: (20231020 - Julian) Reviews List */}
           <div className="my-6 flex flex-col space-y-4">{displayedReviewsLimited}</div>
-          <div className="mx-auto py-5 text-sm underline">
+          <div className="mx-auto py-5 text-sm underline underline-offset-2">
             <Link href={seeAllLink}>{t('REVIEWS_PAGE.SEE_ALL')}</Link>
           </div>
         </div>
