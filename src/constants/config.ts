@@ -26,6 +26,7 @@ export const WEEK_LIST = [
 ];
 
 export const ITEM_PER_PAGE = 10;
+export const REVIEW_SECTION_LIMIT = 3;
 
 export const copyright = 'BAIFA @ 2023. All rights reserved.';
 
