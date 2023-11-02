@@ -105,7 +105,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
   });
 
   return (
-    <div className="flex w-full flex-col space-y-4 rounded-lg shadow-xl">
+    <div className="flex w-full flex-col space-y-4">
       <h2 className="text-xl text-lilac">{t('COMMON.TOP_100_HOLDERS_TITLE')}</h2>
       <div className="flex w-full flex-col bg-darkPurple p-4">
         {/* Info: (20231102 - Julian) Search Filter */}
