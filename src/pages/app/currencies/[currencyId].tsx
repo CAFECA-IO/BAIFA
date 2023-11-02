@@ -9,6 +9,7 @@ import {ICurrency, dummyCurrencyData} from '../../../interfaces/currency';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
 import {getChainIcon} from '../../../lib/common';
+import Top100HolderSection from '../../top_100_holder_section/top_100_holder_section';
 
 interface ICurrencyDetailPageProps {
   currencyId: string;
@@ -52,6 +53,11 @@ const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps
             {/* Info: (20231101 - Julian) Currency Detail */}
             <div className="my-10 w-full">
               <CurrencyDetail currencyData={currencyData} />
+            </div>
+
+            {/* Info: (20231101 - Julian) Top 100 Holder */}
+            <div className="my-10 w-full">
+              <Top100HolderSection />
             </div>
           </div>
         </div>

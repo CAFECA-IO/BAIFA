@@ -7,6 +7,7 @@ import {IBlock} from '../../interfaces/block';
 import DatePicker from '../date_picker/date_picker';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
+import {sortOldAndNewOptions} from '../../constants/config';
 
 interface IBlockTabProps {
   blockList: IBlock[];
@@ -14,14 +15,13 @@ interface IBlockTabProps {
 
 const BlockTab = ({blockList}: IBlockTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const sortingOptions = ['SORTING.NEWEST', 'SORTING.OLDEST'];
 
   const [search, setSearch, searchRef] = useStateRef('');
   const [period, setPeriod] = useState({
     startTimeStamp: 0,
     endTimeStamp: 0,
   });
-  const [sorting, setSorting] = useState<string>(sortingOptions[0]);
+  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredBlockData, setFilteredBlockData] = useState<IBlock[]>(blockList);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
           : true;
       })
       .sort((a: IBlock, b: IBlock) => {
-        return sorting === sortingOptions[0]
+        return sorting === sortOldAndNewOptions[0]
           ? // Info: (20231101 - Julian) Newest
             b.createdTimestamp - a.createdTimestamp
           : // Info: (20231101 - Julian) Oldest
@@ -83,7 +83,7 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
           <div className="relative flex w-full items-center pb-2 text-base lg:w-fit lg:space-x-2 lg:pb-0">
             <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
             <SortingMenu
-              sortingOptions={sortingOptions}
+              sortingOptions={sortOldAndNewOptions}
               sorting={sorting}
               setSorting={setSorting}
             />

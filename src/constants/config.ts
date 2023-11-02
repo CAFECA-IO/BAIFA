@@ -25,6 +25,8 @@ export const WEEK_LIST = [
   'DATE_PICKER.SAT',
 ];
 
+export const sortOldAndNewOptions = ['SORTING.NEWEST', 'SORTING.OLDEST'];
+
 export const ITEM_PER_PAGE = 10;
 export const REVIEW_SECTION_LIMIT = 3;
 

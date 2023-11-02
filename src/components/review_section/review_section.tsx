@@ -1,15 +1,14 @@
 import Link from 'next/link';
 import {useState} from 'react';
-import useOuterClick from '../../lib/hooks/use_outer_click';
 import {IReview} from '../../interfaces/review';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {FaChevronDown} from 'react-icons/fa';
 import {roundToDecimal} from '../../lib/common';
 import ReviewItem from '../review_item/review_item';
 import BoltButton from '../bolt_button/bolt_button';
 import {BFAURL} from '../../constants/url';
-import {REVIEW_SECTION_LIMIT} from '../../constants/config';
+import {REVIEW_SECTION_LIMIT, sortOldAndNewOptions} from '../../constants/config';
+import SortingMenu from '../sorting_menu/sorting_menu';
 
 interface IReviewSection {
   seeAllLink?: string;
@@ -20,22 +19,7 @@ const ReviewSection = (reviews: IReviewSection) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {seeAllLink, reviews: reviewList} = reviews;
 
-  const [sorting, setSorting] = useState<'Newest' | 'Oldest'>('Newest');
-  const {
-    targetRef: sortingRef,
-    componentVisible: sortingVisible,
-    setComponentVisible: setSortingVisible,
-  } = useOuterClick<HTMLUListElement>(false);
-  // Info: (20231031 - Julian) Sorting Handlers
-  const sortingClickHandler = () => setSortingVisible(!sortingVisible);
-  const newestSortClickHandler = () => {
-    setSorting('Newest');
-    setSortingVisible(false);
-  };
-  const oldestSortClickHandler = () => {
-    setSorting('Oldest');
-    setSortingVisible(false);
-  };
+  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
 
   // Info: (20231020 - Julian) Calculate average score
   const score = roundToDecimal(
@@ -59,46 +43,6 @@ const ReviewSection = (reviews: IReviewSection) => {
   // Info: (20231031 - Julian) 擷取前 3 個 Review (Address Detail Page)
   const displayedReviewsLimited = displayedReviews.slice(0, REVIEW_SECTION_LIMIT);
 
-  const sortingButton = (
-    <div className="relative my-2 flex w-300px items-center text-base lg:my-0 lg:w-fit lg:space-x-2">
-      <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
-      <button
-        onClick={sortingClickHandler}
-        className="flex w-full items-center space-x-4 rounded bg-darkPurple px-6 py-4 text-hoverWhite lg:w-140px"
-      >
-        <p
-          className={`flex-1 text-left lg:w-60px ${
-            sortingVisible ? 'opacity-0' : 'opacity-100'
-          } transition-all duration-300 ease-in-out`}
-        >
-          {sorting === 'Newest' ? t('SORTING.NEWEST') : t('SORTING.OLDEST')}
-        </p>
-        <FaChevronDown />
-      </button>
-      <ul
-        ref={sortingRef}
-        className={`absolute right-0 z-10 grid w-full grid-cols-1 items-center overflow-hidden lg:w-140px ${
-          sortingVisible
-            ? 'visible translate-y-90px grid-rows-1 opacity-100'
-            : 'invisible translate-y-12 grid-rows-0 opacity-0'
-        } rounded bg-darkPurple2 text-left text-hoverWhite shadow-xl transition-all duration-300 ease-in-out`}
-      >
-        <li
-          onClick={newestSortClickHandler}
-          className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
-        >
-          {t('SORTING.NEWEST')}
-        </li>
-        <li
-          onClick={oldestSortClickHandler}
-          className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
-        >
-          {t('SORTING.OLDEST')}
-        </li>
-      </ul>
-    </div>
-  );
-
   const leaveReviewButton = (
     <Link href={BFAURL.COMING_SOON} className="w-300px lg:w-auto">
       <BoltButton style="solid" color="blue" className="w-full px-10 py-3 text-sm font-bold">
@@ -118,7 +62,11 @@ const ReviewSection = (reviews: IReviewSection) => {
         <div className="flex w-full flex-col rounded bg-darkPurple p-4">
           {/* Info: (20231020 - Julian) Sort & Leave review button */}
           <div className="flex flex-col-reverse items-center justify-between lg:flex-row">
-            {sortingButton}
+            <SortingMenu
+              sortingOptions={sortOldAndNewOptions}
+              sorting={sorting}
+              setSorting={setSorting}
+            />
             {leaveReviewButton}
           </div>
           {/* Info: (20231020 - Julian) Reviews List */}
@@ -141,7 +89,11 @@ const ReviewSection = (reviews: IReviewSection) => {
         {/* Info: (20231031 - Julian) Sort & Leave review button */}
         <div className="flex flex-col items-end space-y-10 lg:space-y-4">
           {leaveReviewButton}
-          {sortingButton}
+          <SortingMenu
+            sortingOptions={sortOldAndNewOptions}
+            sorting={sorting}
+            setSorting={setSorting}
+          />
         </div>
       </div>
       {/* Info: (20231031 - Julian) Reviews List */}
