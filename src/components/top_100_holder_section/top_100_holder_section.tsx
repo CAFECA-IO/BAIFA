@@ -57,12 +57,15 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
 
     return (
       // Info: (20231102 - Julian) Top 100 Holder Item
-      <div key={index} className="flex h-60px items-center border-b border-darkPurple4 px-6">
-        <Link href={addressLink} className="flex flex-1 items-center space-x-4">
+      <div
+        key={index}
+        className="flex flex-col items-start border-b border-darkPurple4 px-1 lg:h-60px lg:flex-row lg:items-center lg:px-4"
+      >
+        {/* Info: (20231102 - Julian) Address ID (Desktop) */}
+        <Link href={addressLink} className="hidden flex-1 items-center space-x-4 lg:flex">
           <BoltButton className="px-3 py-2 text-sm" style="solid" color="purple">
             {holder.type}
           </BoltButton>
-          {/* Info: (20231102 - Julian) Address ID */}
           <div className="flex items-center space-x-2 text-xl">
             <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
             <p>
@@ -72,10 +75,24 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
           </div>
         </Link>
         {/* Info: (20231102 - Julian) Holding Amount */}
-        <div className="flex w-300px flex-col items-end text-sm">
-          <p>
-            {withCommas(holder.holdingAmount)} {unit}
-          </p>
+        <div className="flex w-full flex-col items-end space-y-1 text-sm lg:w-300px lg:space-y-0">
+          <div className="flex w-full items-center justify-between lg:justify-end">
+            {/* Info: (20231102 - Julian) Address ID (Mobile) */}
+            <Link href={addressLink} className="flex space-x-4 lg:hidden">
+              <div className="flex items-center space-x-2 text-sm">
+                <Image src={chainIcon.src} alt={chainIcon.alt} width={20} height={20} />
+                <p>
+                  {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
+                  <span className="ml-2 font-semibold text-primaryBlue">{holder.addressId}</span>
+                </p>
+              </div>
+            </Link>
+            {/* Info: (20231102 - Julian) Holding Amount */}
+            <p>
+              {withCommas(holder.holdingAmount)} {unit}
+            </p>
+          </div>
+
           <div className="relative flex w-full justify-end px-2 py-px">
             <p className="relative z-10">{holdingPercentage} %</p>
             {/* Info: (20231102 - Julian) Holding Amount Bar */}
@@ -95,16 +112,6 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
       <div className="flex w-full flex-col bg-darkPurple p-4">
         {/* Info: (20231102 - Julian) Search Filter */}
         <div className="flex w-full flex-col items-end space-y-4">
-          {/* Info: (20231102 - Julian) Sorting Menu */}
-          <div className="relative flex w-full items-center pb-2 text-base lg:w-fit lg:space-x-2 lg:pb-0">
-            <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
-            <SortingMenu
-              sortingOptions={sortOldAndNewOptions}
-              sorting={sorting}
-              setSorting={setSorting}
-              isLinearBg={true}
-            />
-          </div>
           {/* Info: (20231102 - Julian) Search Bar */}
           <SearchBar
             searchBarPlaceholder={t('COMMON.TOP_100_HOLDER_PLACEHOLDER')}
@@ -112,7 +119,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
           />
         </div>
         {/* Info: (20231102 - Julian) Address List */}
-        <div className="my-10 flex w-full flex-col">{holderList}</div>
+        <div className="my-10 flex w-full flex-col space-y-2 lg:space-y-0">{holderList}</div>
         <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
       </div>
     </div>

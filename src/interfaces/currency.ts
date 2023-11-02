@@ -1,6 +1,11 @@
 import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
 import {IRiskLevel, RiskLevel} from '../constants/risk_level';
 
+export interface IHolder {
+  addressId: string;
+  holdingAmount: number;
+  type: string;
+}
 export interface ICurrency {
   currencyId: string;
   currencyName: string;
@@ -9,11 +14,7 @@ export interface ICurrency {
   volumeIn24h: number;
   unit: string;
   totalAmount: number;
-  holders: {
-    addressId: string;
-    holdingAmount: number;
-    type: string;
-  }[];
+  holders: IHolder[];
   totalTransfers: number;
   flagging: IRedFlagType[];
   riskLevel: IRiskLevel;
