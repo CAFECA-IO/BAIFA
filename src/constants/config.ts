@@ -1,5 +1,8 @@
 import {REPORT_PATH, BFAURL} from '../constants/url';
 
+export const API_URL = 'https://api.tidebit-defi.com/api';
+export const API_VERSION = 'v1';
+
 export const MONTH_LIST = [
   'DATE_PICKER.JAN',
   'DATE_PICKER.FEB',

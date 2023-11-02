@@ -1,16 +1,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import useStateRef from 'react-usestateref';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import SearchBar from '../search_bar/search_bar';
 import BoltButton from '../bolt_button/bolt_button';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'react-i18next';
-import {sortOldAndNewOptions} from '../../constants/config';
+import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
 import {getChainIcon, roundToDecimal, withCommas} from '../../lib/common';
-import {ICurrency} from '../../interfaces/currency';
+import {ICurrency, IHolder} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
+import Pagination from '../pagination/pagination';
 
 interface ITop100HolderSectionProps {
   currencyData: ICurrency;
@@ -20,16 +21,35 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {currencyId, holders, totalAmount, unit} = currencyData;
 
+  const [activePage, setActivePage] = useState(1);
+  const [totalPages, setTotalPages] = useState(Math.ceil(holders.length / ITEM_PER_PAGE));
+  const [filteredHolderData, setFilteredHolderData] = useState<IHolder[]>(holders);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [search, setSearch, searchRef] = useStateRef('');
 
+  const endIdx = activePage * ITEM_PER_PAGE;
+  const startIdx = endIdx - ITEM_PER_PAGE;
   const chainIcon = getChainIcon(currencyId);
 
   const maxholdingAmount = holders.reduce((prev, current) =>
     prev.holdingAmount > current.holdingAmount ? prev : current
   ).holdingAmount;
 
-  const holderList = holders.map((holder, index) => {
+  useEffect(() => {
+    const searchResult = holders.filter(holder => {
+      // Info: (20231101 - Julian) filter by search term
+      const searchTerm = searchRef.current.toLowerCase();
+      const addressId = holder.addressId.toString().toLowerCase();
+      const type = holder.type.toLowerCase();
+      return searchTerm !== '' ? addressId.includes(searchTerm) || type.includes(searchTerm) : true;
+    });
+
+    setFilteredHolderData(searchResult);
+    setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
+  }, [sorting, search]);
+
+  // Info: (20231102 - Julian) Pagination
+  const holderList = filteredHolderData.slice(startIdx, endIdx).map((holder, index) => {
     const holdingPercentage = roundToDecimal((holder.holdingAmount / totalAmount) * 100, 2);
     const holdingBarWidth = (holder.holdingAmount / maxholdingAmount) * 100;
 
@@ -71,7 +91,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
 
   return (
     <div className="flex w-full flex-col space-y-4 rounded-lg shadow-xl">
-      <h2 className="text-xl text-lilac">Top 100 Holders</h2>
+      <h2 className="text-xl text-lilac">{t('COMMON.TOP_100_HOLDERS_TITLE')}</h2>
       <div className="flex w-full flex-col bg-darkPurple p-4">
         {/* Info: (20231102 - Julian) Search Filter */}
         <div className="flex w-full flex-col items-end space-y-4">
@@ -92,7 +112,8 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
           />
         </div>
         {/* Info: (20231102 - Julian) Address List */}
-        <div className="mt-8 flex w-full flex-col">{holderList}</div>
+        <div className="my-10 flex w-full flex-col">{holderList}</div>
+        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
       </div>
     </div>
   );
