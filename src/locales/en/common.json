@@ -104,7 +104,8 @@
   "CURRENCIES_PAGE": {
     "BREADCRUMB_TITLE": "Currency List",
     "TITLE_HIGHLIGHT": "Currency",
-    "TITLE": "List"
+    "TITLE": "List",
+    "SEARCH_PLACEHOLDER": "Search in Currency list"
   },
   "CURRENCY_DETAIL_PAGE": {
     "PRICE": "Price",

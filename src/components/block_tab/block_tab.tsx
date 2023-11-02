@@ -66,7 +66,7 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
       {/* Info: (20231101 - Julian) Search Filter */}
       <div className="flex w-full flex-col items-center">
         {/* Info: (20231101 - Julian) Search Bar */}
-        <div className="relative flex w-full items-center justify-center drop-shadow-xl lg:w-7/10">
+        <div className="w-full lg:w-7/10">
           <SearchBar
             searchBarPlaceholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_BLOCKS')}
             setSearch={setSearch}

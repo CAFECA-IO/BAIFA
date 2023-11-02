@@ -104,7 +104,8 @@
   "CURRENCIES_PAGE": {
     "BREADCRUMB_TITLE": "货币列表",
     "TITLE_HIGHLIGHT": "货币",
-    "TITLE": "列表"
+    "TITLE": "列表",
+    "SEARCH_PLACEHOLDER": "在货币列表中搜寻"
   },
   "CURRENCY_DETAIL_PAGE": {
     "PRICE": "价格",
