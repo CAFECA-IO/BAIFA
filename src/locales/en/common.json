@@ -234,7 +234,8 @@
     "TIMES": "Times",
     "CONTENT_ENCRYPTED": "Content Encrypted",
     "FOLLOW": "Follow",
-    "OF": "of"
+    "OF": "of",
+    "TOP_100_HOLDER_PLACEHOLDER": "Search Address"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

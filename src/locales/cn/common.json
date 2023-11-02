@@ -234,7 +234,8 @@
     "TIMES": "次",
     "CONTENT_ENCRYPTED": "内容已加密",
     "FOLLOW": "追踪",
-    "OF": "之"
+    "OF": "之",
+    "TOP_100_HOLDER_PLACEHOLDER": "查询地址"
   },
   "FOOTER": {
     "POWERED_BY": "技术支持 稗法",
