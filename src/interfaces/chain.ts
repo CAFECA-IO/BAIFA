@@ -31,7 +31,7 @@ export const dummyChains: IChain[] = [
     chainId: 'usdt',
     chainName: 'Tether',
     blocks: getDummyBlockData('usdt'),
-    transactions: getDummyTransactionData('usdts'),
+    transactions: getDummyTransactionData('usdt'),
   },
   {
     chainId: 'bnb',

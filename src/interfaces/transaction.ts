@@ -336,7 +336,7 @@ export const dummyTransactionData: ITransaction[] = [
     id: '944499',
     hash: '0xd14Ce24E4E5F4A7c4a53aaa7Fe7a772066Df6952',
     type: 'Crypto Currency',
-    status: 'SUCCESS',
+    status: 'PROCESSING',
     chainId: 'usdt',
     blockId: '241415',
     createdTimestamp: 1687222345,
@@ -349,7 +349,7 @@ export const dummyTransactionData: ITransaction[] = [
   {
     id: '944777',
     hash: '0xd14Ce24E4E5F4A7c4a53aaa7Fe7a772066Df6952',
-    type: 'Crypto Currency',
+    type: 'Evidence',
     status: 'SUCCESS',
     chainId: 'usdt',
     blockId: '241415',
@@ -363,7 +363,7 @@ export const dummyTransactionData: ITransaction[] = [
   {
     id: '945008',
     hash: '0xd14Ce24E4E5F4A7c4a53aaa7Fe7a772066Df6952',
-    type: 'Crypto Currency',
+    type: 'NFT',
     status: 'SUCCESS',
     chainId: 'usdt',
     blockId: '241414',

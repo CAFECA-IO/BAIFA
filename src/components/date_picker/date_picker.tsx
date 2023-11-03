@@ -26,6 +26,7 @@ interface IPopulateDatesParams {
 
 interface IDatePickerProps {
   setFilteredPeriod: Dispatch<SetStateAction<IDatePeriod>>;
+  isLinearBg?: boolean;
 }
 
 /* Info:(20230530 - Julian) Safari 只接受 YYYY/MM/DD 格式的日期 */
@@ -137,7 +138,7 @@ const PopulateDates = ({
   );
 };
 
-const DatePicker = ({setFilteredPeriod}: IDatePickerProps) => {
+const DatePicker = ({setFilteredPeriod, isLinearBg}: IDatePickerProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const {targetRef, componentVisible, setComponentVisible} = useOuterClick<HTMLDivElement>(false);
@@ -279,20 +280,22 @@ const DatePicker = ({setFilteredPeriod}: IDatePickerProps) => {
 
       <div
         onClick={openCalendeHandler}
-        className="flex w-full items-center space-x-3 rounded bg-darkPurple px-6 py-4 font-inter text-hoverWhite hover:cursor-pointer lg:w-300px"
+        className={`flex w-full items-center space-x-3 rounded p-4 font-inter ${
+          isLinearBg ? 'bg-purpleLinear' : 'bg-darkPurple'
+        } text-hoverWhite hover:cursor-pointer lg:w-250px`}
       >
-        <p className="flex-1 whitespace-nowrap text-base">{displayPeriod}</p>
+        <p className="flex-1 whitespace-nowrap text-sm">{displayPeriod}</p>
         <Image src="/icons/calender.svg" width={24} height={24} alt="calender_icon" />
       </div>
 
       {/* Info: (20230830 - Julian) Calender part */}
       <div
         ref={targetRef}
-        className={`absolute top-16 z-20 grid w-300px items-center space-y-4 rounded ${
+        className={`absolute top-16 z-20 grid w-250px items-center space-y-4 rounded ${
           componentVisible
             ? 'visible translate-y-0 grid-rows-1 opacity-100'
             : 'invisible -translate-y-10 grid-rows-0 opacity-0'
-        } bg-purpleLinear px-10 py-5 shadow-xl transition-all duration-500 ease-in-out`}
+        } bg-purpleLinear p-5 shadow-xl transition-all duration-500 ease-in-out`}
       >
         {/* Info: (20230830 - Julian) Today button */}
         <button
