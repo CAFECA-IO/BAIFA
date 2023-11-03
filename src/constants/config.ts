@@ -1,5 +1,8 @@
 import {REPORT_PATH, BFAURL} from '../constants/url';
 
+export const API_URL = 'https://api.tidebit-defi.com/api';
+export const API_VERSION = 'v1';
+
 export const MONTH_LIST = [
   'DATE_PICKER.JAN',
   'DATE_PICKER.FEB',
@@ -25,6 +28,8 @@ export const WEEK_LIST = [
   'DATE_PICKER.SAT',
 ];
 
+export const sortOldAndNewOptions = ['SORTING.NEWEST', 'SORTING.OLDEST'];
+
 export const ITEM_PER_PAGE = 10;
 export const REVIEW_SECTION_LIMIT = 3;
 
@@ -45,7 +50,7 @@ export const mainMenuContent = [
     title: 'HOME_PAGE.CRYPTO_TITLE',
     description: '10000',
     mark: '+',
-    link: BFAURL.COMING_SOON,
+    link: BFAURL.CURRENCIES,
     alt: 'coin_icon',
   },
   {

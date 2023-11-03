@@ -104,7 +104,16 @@
   "CURRENCIES_PAGE": {
     "BREADCRUMB_TITLE": "Currency List",
     "TITLE_HIGHLIGHT": "Currency",
-    "TITLE": "List"
+    "TITLE": "List",
+    "SEARCH_PLACEHOLDER": "Search in Currency list"
+  },
+  "CURRENCY_DETAIL_PAGE": {
+    "PRICE": "Price",
+    "VOLUME_IN_24H": "Volume in 24 H",
+    "TOTAL_AMOUNT": "Total Amount",
+    "HOLDERS": "Holders",
+    "TTOTAL_TRANSFERS": "Total Transfers",
+    "RED_FLAG": "Red Flag"
   },
   "BLOCK_DETAIL_PAGE": {
     "MAIN_TITLE": "Block",
@@ -204,7 +213,10 @@
   "SORTING": {
     "SORT_BY": "Sort By",
     "NEWEST": "Newest",
-    "OLDEST": "Oldest"
+    "OLDEST": "Oldest",
+    "POPULAR": "Popular",
+    "UNPOPULAR": "Unpopular",
+    "ALL": "All"
   },
   "COMMON": {
     "NONE": "None",
@@ -222,7 +234,9 @@
     "TIMES": "Times",
     "CONTENT_ENCRYPTED": "Content Encrypted",
     "FOLLOW": "Follow",
-    "OF": "of"
+    "OF": "of",
+    "TOP_100_HOLDERS_TITLE": "Top 100 Holders",
+    "TOP_100_HOLDER_PLACEHOLDER": "Search Address"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

@@ -1,3 +1,5 @@
+import {API_URL, API_VERSION} from './config';
+
 export type IAPIName =
   | 'BALANCE_SHEET'
   | 'COMPREHENSIVE_INCOME_STATEMENTS'
@@ -21,10 +23,10 @@ export const APIName: IAPINameConstant = {
 };
 
 export const APIURL = {
-  BALANCE_SHEET: 'https://api.tidebit-defi.com/balance-sheet',
-  COMPREHENSIVE_INCOME_STATEMENTS: 'https://api.tidebit-defi.com/comprehensive-income',
-  STATEMENTS_OF_CASH_FLOW: 'https://api.tidebit-defi.com/cash-flow',
-  EXCHANGE_RATES: 'https://api.tidebit-defi.com/exchange-rates',
+  BALANCE_SHEET: `${API_URL}/${API_VERSION}/balance-sheet`,
+  COMPREHENSIVE_INCOME_STATEMENTS: `${API_URL}/${API_VERSION}/comprehensive-income`,
+  STATEMENTS_OF_CASH_FLOW: `${API_URL}/${API_VERSION}/cash-flow`,
+  EXCHANGE_RATES: `${API_URL}/${API_VERSION}/exchange-rates`,
 
   WEBSITE_RESERVE: 'https://api.tidebit-defi.com/public/reserve',
 };

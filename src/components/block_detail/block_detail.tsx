@@ -14,7 +14,7 @@ interface IBlockDetailProps {
   blockData: IBlock;
 }
 
-const BlockDetail = (blockData: IBlockDetailProps) => {
+const BlockDetail = ({blockData}: IBlockDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     id: blockId,
@@ -26,7 +26,7 @@ const BlockDetail = (blockData: IBlockDetailProps) => {
     miner,
     reward,
     size,
-  } = blockData.blockData;
+  } = blockData;
   const [sinceTime, setSinceTime] = useState(0);
 
   let timer: NodeJS.Timeout;

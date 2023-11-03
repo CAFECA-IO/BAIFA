@@ -51,7 +51,7 @@ const ReviewItem = (review: ReviewItemProps) => {
         <p>{timestampToString(createdTimestamp).date}</p>
         <p>
           {t('REVIEWS_PAGE.BY')}{' '}
-          <Link href={authorLink} className="text-primaryBlue underline">
+          <Link href={authorLink} className="text-primaryBlue underline underline-offset-2">
             {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {authorAddressId}
           </Link>
         </p>

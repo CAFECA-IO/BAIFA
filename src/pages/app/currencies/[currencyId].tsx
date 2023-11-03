@@ -2,14 +2,14 @@ import Head from 'next/head';
 import Image from 'next/image';
 import NavBar from '../../../components/nav_bar/nav_bar';
 import Footer from '../../../components/footer/footer';
+import CurrencyDetail from '../../../components/currency_detail/currency_detail';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ICurrency, dummyCurrencyData} from '../../../interfaces/currency';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
-import {TranslateFunction} from '../../../interfaces/locale';
-import {useTranslation} from 'react-i18next';
 import {getChainIcon} from '../../../lib/common';
+import Top100HolderSection from '../../../components/top_100_holder_section/top_100_holder_section';
 
 interface ICurrencyDetailPageProps {
   currencyId: string;
@@ -17,7 +17,6 @@ interface ICurrencyDetailPageProps {
 }
 
 const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps) => {
-  const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${currencyId} - BAIFA`;
   const {currencyName} = currencyData;
   const chainIcon = getChainIcon(currencyId);
@@ -49,6 +48,16 @@ const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps
                   <span className="ml-2"> {currencyName}</span>
                 </h1>
               </div>
+            </div>
+
+            {/* Info: (20231101 - Julian) Currency Detail */}
+            <div className="my-10 w-full">
+              <CurrencyDetail currencyData={currencyData} />
+            </div>
+
+            {/* Info: (20231101 - Julian) Top 100 Holder */}
+            <div className="my-10 w-full">
+              <Top100HolderSection currencyData={currencyData} />
             </div>
           </div>
         </div>
