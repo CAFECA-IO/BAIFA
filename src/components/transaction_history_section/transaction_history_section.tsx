@@ -137,10 +137,10 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
       <h2 className="text-xl text-lilac">
         {t('COMMON.TRANSACTION_HISTORY_TITLE')} ({transactions.length})
       </h2>
-      <div className="flex h-950px w-full flex-col bg-darkPurple p-4">
+      <div className="flex w-full flex-col bg-darkPurple p-4 lg:h-950px">
         {/* Info: (20231103 - Julian) Search Filter */}
         <div className="flex w-full flex-col items-end space-y-4">
-          <div className="flex w-full items-center justify-between">
+          <div className="flex w-full flex-col items-center justify-between lg:flex-row">
             {/* Info: (20231101 - Julian) Date Picker */}
             <div className="flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
@@ -164,9 +164,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
           />
         </div>
         {/* Info: (20231103 - Julian) Address List */}
-        <div className="my-10 flex w-full flex-1 flex-col space-y-2 lg:space-y-0">
-          {transactionList}
-        </div>
+        <div className="my-10 flex w-full flex-1 flex-col">{transactionList}</div>
         <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
       </div>
     </div>
