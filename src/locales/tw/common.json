@@ -17,9 +17,9 @@
   },
   "HOME_PAGE": {
     "BREADCRUMB_TITLE": "首頁",
-    "CHAINS_TITLE": "區塊鏈",
-    "CRYPTO_TITLE": "加密貨幣",
-    "BLACKLIST_TITLE": "黑名單用戶",
+    "CHAINS_TITLE": "條區塊鏈",
+    "CRYPTO_TITLE": "個加密貨幣",
+    "BLACKLIST_TITLE": "個黑名單用戶",
     "SEARCH_PLACEHOLDER": "想知道什麼？"
   },
   "LANDING_PAGE": {
@@ -236,7 +236,11 @@
     "FOLLOW": "追蹤",
     "OF": "之",
     "TOP_100_HOLDERS_TITLE": "前 100 名持有者",
-    "TOP_100_HOLDER_PLACEHOLDER": "查詢地址"
+    "TOP_100_HOLDER_PLACEHOLDER": "查詢地址",
+    "TRANSACTION_HISTORY_TITLE": "交易歷史記錄",
+    "TRANSACTION_HISTORY_PLACEHOLDER": "在交易記錄中搜尋",
+    "BLOCK_PRODUCED_HISTORY_TITLE": "區塊生成歷史記錄",
+    "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在區塊生成記錄中搜尋"
   },
   "FOOTER": {
     "POWERED_BY": "技術支持 稗法",
