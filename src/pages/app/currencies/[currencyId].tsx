@@ -12,6 +12,9 @@ import {getChainIcon} from '../../../lib/common';
 import Top100HolderSection from '../../../components/top_100_holder_section/top_100_holder_section';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
 import BlockProducedHistorySection from '../../../components/block_produced_section/block_produced_section';
+import BoltButton from '../../../components/bolt_button/bolt_button';
+import {TranslateFunction} from '../../../interfaces/locale';
+import {useTranslation} from 'react-i18next';
 
 interface ICurrencyDetailPageProps {
   currencyId: string;
@@ -19,6 +22,7 @@ interface ICurrencyDetailPageProps {
 }
 
 const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps) => {
+  const {t}: {t: TranslateFunction} = useTranslation('common');
   const {currencyName, blocks, transactions, unit} = currencyData;
   const headTitle = `${currencyName} - BAIFA`;
   const chainIcon = getChainIcon(currencyId);
@@ -62,10 +66,22 @@ const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps
               <Top100HolderSection currencyData={currencyData} />
             </div>
 
-            {/* Info: (20231103 - Julian) Transaction History */}
+            {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
             <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
               <TransactionHistorySection transactions={transactions} />
               <BlockProducedHistorySection blocks={blocks} unit={unit} />
+            </div>
+
+            {/* Info: (20231017 - Julian) Back Button */}
+            <div className="mt-10">
+              <BoltButton
+                onClick={backClickHandler}
+                className="px-12 py-4 font-bold"
+                color="blue"
+                style="hollow"
+              >
+                {t('COMMON.BACK')}
+              </BoltButton>
             </div>
           </div>
         </div>

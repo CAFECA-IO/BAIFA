@@ -1,4 +1,5 @@
 import {MONTH_LIST} from '../constants/config';
+import {dummyCurrencyData} from '../interfaces/currency';
 
 export const timestampToString = (timestamp: number) => {
   if (timestamp === 0)
@@ -133,6 +134,10 @@ export const getChainIcon = (chainId: string) => {
     src: `/currencies/${chainId}.svg`,
     alt: `${chainId}_icon`,
   };
+};
+
+export const getUnit = (chainId: string) => {
+  return dummyCurrencyData.find(currency => currency.currencyId === chainId)?.unit ?? '';
 };
 
 export const getReportTimeSpan = () => {
