@@ -102,7 +102,7 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
           {/* Info: (20231103 - Julian) Mine */}
           <div className="flex items-center space-x-2">
             <Image src={icon.src} width={24} height={24} alt={icon.alt} />
-            <p className="tex-sm">
+            <p className="text-sm">
               +{roundToDecimal(reward, 2)} {unit}
             </p>
           </div>
