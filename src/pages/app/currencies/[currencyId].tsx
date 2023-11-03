@@ -11,6 +11,7 @@ import {useRouter} from 'next/router';
 import {getChainIcon} from '../../../lib/common';
 import Top100HolderSection from '../../../components/top_100_holder_section/top_100_holder_section';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
+import BlockProducedHistorySection from '../../../components/block_produced_section/block_produced_section';
 
 interface ICurrencyDetailPageProps {
   currencyId: string;
@@ -18,8 +19,8 @@ interface ICurrencyDetailPageProps {
 }
 
 const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps) => {
-  const headTitle = `${currencyId} - BAIFA`;
-  const {currencyName} = currencyData;
+  const {currencyName, blocks, transactions, unit} = currencyData;
+  const headTitle = `${currencyName} - BAIFA`;
   const chainIcon = getChainIcon(currencyId);
 
   const router = useRouter();
@@ -63,8 +64,8 @@ const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps
 
             {/* Info: (20231103 - Julian) Transaction History */}
             <div className="my-10 flex w-full items-start space-x-2">
-              <TransactionHistorySection transactions={currencyData.transactions} />
-              {/* ToDo: (20231103 - Julian) Block Produced History */}
+              <TransactionHistorySection transactions={transactions} />
+              <BlockProducedHistorySection blocks={blocks} unit={unit} />
             </div>
           </div>
         </div>

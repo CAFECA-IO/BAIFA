@@ -7,22 +7,23 @@ import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'react-i18next';
 import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
-import {timestampToString} from '../../lib/common';
+import {getChainIcon, roundToDecimal, timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 import DatePicker from '../date_picker/date_picker';
-import {ITransaction} from '../../interfaces/transaction';
+import {IBlock} from '../../interfaces/block';
 
-interface ITransactionHistorySectionProps {
-  transactions: ITransaction[];
+interface IBlockProducedHistorySectionProps {
+  blocks: IBlock[];
+  unit: string;
 }
 
-const TransactionHistorySection = ({transactions}: ITransactionHistorySectionProps) => {
+const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(1 / ITEM_PER_PAGE));
-  const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactions);
+  const [filteredBlocks, setFilteredBlocks] = useState<IBlock[]>(blocks);
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [period, setPeriod] = useState({
@@ -34,27 +35,24 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
   const startIdx = endIdx - ITEM_PER_PAGE;
 
   useEffect(() => {
-    const searchResult = transactions // Info: (20231103 - Julian) filter by search term
-      .filter((transaction: ITransaction) => {
+    const searchResult = blocks // Info: (20231103 - Julian) filter by search term
+      .filter((block: IBlock) => {
         const searchTerm = searchRef.current.toLowerCase();
-        const transactionId = transaction.id.toString().toLowerCase();
-        const status = transaction.status.toLowerCase();
-        const blockId = transaction.blockId.toString().toLowerCase();
-        const fromAddress = transaction.from.toString().toLowerCase();
-        const toAddress = transaction.to.toString().toLowerCase();
-        const content = transaction.content.toString().toLowerCase();
-
+        const managementTeam = block.managementTeam.map(team => team.toLowerCase());
+        const stabilityLevel = block.stabilityLevel.toLowerCase();
+        const transactions = block.transactions.toString().toLowerCase();
+        const miner = block.miner.toString().toLowerCase();
         return searchTerm !== ''
-          ? transactionId.includes(searchTerm) ||
-              status.includes(searchTerm) ||
-              blockId.includes(searchTerm) ||
-              fromAddress.includes(searchTerm) ||
-              toAddress.includes(searchTerm) ||
-              content.includes(searchTerm)
+          ? block.id.toString().includes(searchTerm) ||
+              managementTeam.includes(searchTerm) ||
+              stabilityLevel.includes(searchTerm) ||
+              transactions.toString().includes(searchTerm) ||
+              miner.toString().includes(searchTerm)
           : true;
-      }) // Info: (20231103 - Julian) filter by date range
-      .filter((transaction: ITransaction) => {
-        const createdTimestamp = transaction.createdTimestamp;
+      })
+      // Info: (20231103 - Julian) filter by date range
+      .filter((block: IBlock) => {
+        const createdTimestamp = block.createdTimestamp;
         const start = period.startTimeStamp;
         const end = period.endTimeStamp;
         // Info: (20231103 - Julian) if start and end are 0, it means that there is no period filter
@@ -62,50 +60,31 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
           start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
         return isCreatedTimestampInRange;
       })
-      .sort((a: ITransaction, b: ITransaction) => {
+      .sort((a: IBlock, b: IBlock) => {
         return sorting === sortOldAndNewOptions[0]
-          ? // Info: (20231103 - Julian) Newest
+          ? // Info: (20231101 - Julian) Newest
             b.createdTimestamp - a.createdTimestamp
-          : // Info: (20231103 - Julian) Oldest
+          : // Info: (20231101 - Julian) Oldest
             a.createdTimestamp - b.createdTimestamp;
       });
-
-    setFilteredTransactions(searchResult);
+    setFilteredBlocks(searchResult);
     setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
     setActivePage(1);
   }, [search, sorting, period]);
 
   // Info: (20231103 - Julian) Pagination
-  const transactionList = filteredTransactions.slice(startIdx, endIdx).map(transaction => {
-    const {id, chainId, createdTimestamp, status} = transaction;
-    const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
+  const blockList = filteredBlocks.slice(startIdx, endIdx).map(block => {
+    const {id, chainId, createdTimestamp, reward} = block;
+    const icon = getChainIcon(chainId);
 
     const createdStr = timestampToString(createdTimestamp);
     // Info: (20231103 - Julian) If month is longer than 3 letters, slice it and add a dot
     const monthStr =
       t(createdStr.month).length > 3 ? `${t(createdStr.month).slice(0, 3)}.` : t(createdStr.month);
 
-    const statusStyle =
-      status === 'PROCESSING'
-        ? {
-            str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
-            icon: '/animations/trade_processing.gif',
-            style: 'text-hoverWhite',
-          }
-        : status === 'SUCCESS'
-        ? {
-            str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
-            icon: '/icons/success_icon.svg',
-            style: 'text-lightGreen',
-          }
-        : {
-            str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
-            icon: '/icons/failed_icon.svg',
-            style: 'text-lightRed',
-          };
+    const blockLink = getDynamicUrl(chainId, `${id}`).BLOCK;
 
     return (
-      // Info: (20231103 - Julian) Transaction History Item
       <div className="flex h-60px w-full items-center">
         {/* Info: (20231103 - Julian) Create Time square */}
         <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-purpleLinear">
@@ -114,17 +93,18 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
           <p className="text-xs text-lilac">{createdStr.time}</p>
         </div>
         <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
-          {/* Info: (20231103 - Julian) Transaction ID & Type */}
-          <Link href={transactionLink} className="inline-flex flex-1 items-baseline space-x-2">
-            <h2 className="text-sm lg:text-xl">
-              {t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')}{' '}
-              <span className="text-primaryBlue">{id}</span>
+          {/* Info: (20231103 - Julian) Block ID */}
+          <Link href={blockLink} className="flex-1 text-sm lg:text-xl">
+            <h2>
+              {t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')} <span className="text-primaryBlue">{id}</span>
             </h2>
           </Link>
-          {/* Info: (20231103 - Julian) Status */}
-          <div className="flex items-center space-x-2 px-2">
-            <Image src={statusStyle.icon} width={16} height={16} alt={`${statusStyle.str}_icon`} />
-            <p className={`hidden text-sm lg:block ${statusStyle.style}`}>{statusStyle.str}</p>
+          {/* Info: (20231103 - Julian) Mine */}
+          <div className="flex items-center space-x-2">
+            <Image src={icon.src} width={24} height={24} alt={icon.alt} />
+            <p className="tex-sm">
+              +{roundToDecimal(reward, 2)} {unit}
+            </p>
           </div>
         </div>
       </div>
@@ -135,7 +115,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
     <div className="flex w-full flex-col space-y-4">
       {/* Info: (20231103 - Julian) Title */}
       <h2 className="text-xl text-lilac">
-        {t('COMMON.TRANSACTION_HISTORY_TITLE')} ({transactions.length})
+        {t('COMMON.BLOCK_PRODUCED_HISTORY_TITLE')} ({blocks.length})
       </h2>
       <div className="flex h-950px w-full flex-col bg-darkPurple p-4">
         {/* Info: (20231103 - Julian) Search Filter */}
@@ -159,18 +139,16 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
           </div>
           {/* Info: (20231103 - Julian) Search Bar */}
           <SearchBar
-            searchBarPlaceholder={t('COMMON.TRANSACTION_HISTORY_PLACEHOLDER')}
+            searchBarPlaceholder={t('COMMON.BLOCK_PRODUCED_HISTORY_PLACEHOLDER')}
             setSearch={setSearch}
           />
         </div>
         {/* Info: (20231103 - Julian) Address List */}
-        <div className="my-10 flex w-full flex-1 flex-col space-y-2 lg:space-y-0">
-          {transactionList}
-        </div>
+        <div className="my-10 flex w-full flex-1 flex-col space-y-2 lg:space-y-0">{blockList}</div>
         <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
       </div>
     </div>
   );
 };
 
-export default TransactionHistorySection;
+export default BlockProducedHistorySection;
