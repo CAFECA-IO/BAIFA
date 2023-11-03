@@ -1,5 +1,6 @@
 import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
 import {IRiskLevel, RiskLevel} from '../constants/risk_level';
+import {ITransaction, getDummyTransactionData} from './transaction';
 
 export interface IHolder {
   addressId: string;
@@ -18,6 +19,7 @@ export interface ICurrency {
   totalTransfers: number;
   flagging: IRedFlagType[];
   riskLevel: IRiskLevel;
+  transactions: ITransaction[];
 }
 
 export const dummyCurrencyData: ICurrency[] = [
@@ -65,6 +67,7 @@ export const dummyCurrencyData: ICurrency[] = [
       RedFlagType.MULTIPLE_WITHDRAW,
     ],
     riskLevel: RiskLevel.HIGH_RISK,
+    transactions: getDummyTransactionData('btc'),
   },
   {
     currencyId: 'eth',
@@ -108,6 +111,7 @@ export const dummyCurrencyData: ICurrency[] = [
       RedFlagType.MULTIPLE_WITHDRAW,
     ],
     riskLevel: RiskLevel.MEDIUM_RISK,
+    transactions: getDummyTransactionData('eth'),
   },
   {
     currencyId: 'isun',
@@ -152,6 +156,7 @@ export const dummyCurrencyData: ICurrency[] = [
     totalTransfers: 24992807,
     flagging: [RedFlagType.LARGE_DEPOSIT],
     riskLevel: RiskLevel.LOW_RISK,
+    transactions: getDummyTransactionData('isun'),
   },
   {
     currencyId: 'usdt',
@@ -201,6 +206,7 @@ export const dummyCurrencyData: ICurrency[] = [
     totalTransfers: 29802417,
     flagging: [RedFlagType.MULTIPLE_TRANSFER],
     riskLevel: RiskLevel.LOW_RISK,
+    transactions: getDummyTransactionData('usdt'),
   },
   {
     currencyId: 'bnb',
@@ -225,5 +231,6 @@ export const dummyCurrencyData: ICurrency[] = [
     totalTransfers: 24262807,
     flagging: [RedFlagType.HIGH_RISK_LOCATION],
     riskLevel: RiskLevel.MEDIUM_RISK,
+    transactions: getDummyTransactionData('bnb'),
   },
 ];

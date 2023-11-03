@@ -36,7 +36,7 @@ const Pagination = ({activePage, setActivePage, totalPages}: IPagination) => {
   const previousBtn = (
     <button
       onClick={() => setActivePage(activePage - 1)}
-      disabled={activePage === 1 ? true : false}
+      disabled={activePage === 1 || totalPages === 0 ? true : false}
       className={buttonStyle}
     >
       <RiArrowLeftSLine className="text-2xl" />
@@ -46,7 +46,7 @@ const Pagination = ({activePage, setActivePage, totalPages}: IPagination) => {
   const nextBtn = (
     <button
       onClick={() => setActivePage(activePage + 1)}
-      disabled={activePage === totalPages ? true : false}
+      disabled={activePage === totalPages || totalPages === 0 ? true : false}
       className={buttonStyle}
     >
       <RiArrowRightSLine className="text-2xl" />

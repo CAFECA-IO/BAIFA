@@ -66,7 +66,7 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
         </Link>
         {/* Info: (20230907 - Julian) Status */}
         <div className="flex items-center space-x-2 px-2">
-          <Image src={statusStyle.icon} width={16} height={16} alt={`${type}_icon`} />
+          <Image src={statusStyle.icon} width={16} height={16} alt={`${statusStyle.str}_icon`} />
           <p className={`hidden text-sm lg:block ${statusStyle.style}`}>{statusStyle.str}</p>
         </div>
       </div>

@@ -62,8 +62,9 @@ const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps
             </div>
 
             {/* Info: (20231103 - Julian) Transaction History */}
-            <div className="my-10 w-full">
-              <TransactionHistorySection />
+            <div className="my-10 flex w-full items-start space-x-2">
+              <TransactionHistorySection transactions={currencyData.transactions} />
+              {/* ToDo: (20231103 - Julian) Block Produced History */}
             </div>
           </div>
         </div>
