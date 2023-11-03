@@ -104,7 +104,8 @@
   "CURRENCIES_PAGE": {
     "BREADCRUMB_TITLE": "Currency List",
     "TITLE_HIGHLIGHT": "Currency",
-    "TITLE": "List"
+    "TITLE": "List",
+    "SEARCH_PLACEHOLDER": "Search in Currency list"
   },
   "CURRENCY_DETAIL_PAGE": {
     "PRICE": "Price",
@@ -233,7 +234,9 @@
     "TIMES": "Times",
     "CONTENT_ENCRYPTED": "Content Encrypted",
     "FOLLOW": "Follow",
-    "OF": "of"
+    "OF": "of",
+    "TOP_100_HOLDERS_TITLE": "Top 100 Holders",
+    "TOP_100_HOLDER_PLACEHOLDER": "Search Address"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

@@ -13,17 +13,17 @@ const SearchBar = ({searchBarPlaceholder, setSearch}: ISearchBarProps) => {
   };
 
   return (
-    <>
+    <div className="relative w-full drop-shadow-xl">
       <input
         type="search"
         className="w-full items-center rounded-full bg-purpleLinear px-6 py-3 text-base"
         placeholder={searchBarPlaceholder}
         onChange={searchChangeHandler}
       />
-      <div className="absolute right-4 text-2xl font-bold hover:cursor-pointer">
+      <div className="absolute right-4 top-3 text-2xl font-bold hover:cursor-pointer">
         <RiSearchLine />
       </div>
-    </>
+    </div>
   );
 };
 

@@ -62,7 +62,7 @@ const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <p>{withCommas(holders)}</p>
+        <p>{withCommas(holders.length)}</p>
       </div>
       {/* Info: (20231101 - Julian) Total Transfers */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

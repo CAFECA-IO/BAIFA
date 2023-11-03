@@ -99,8 +99,11 @@ const AllCurrenciesPageBody = () => {
         {/* Info: (20231101 - Julian) Search Filter */}
         <div className="flex w-full flex-col items-center space-y-10 lg:px-20">
           {/* Info: (20231101 - Julian) Search Bar */}
-          <div className="flex w-full items-center justify-center drop-shadow-xl lg:w-7/10">
-            <SearchBar searchBarPlaceholder={'Search in Currency list'} setSearch={setSearch} />
+          <div className="flex lg:w-7/10">
+            <SearchBar
+              searchBarPlaceholder={t('CURRENCIES_PAGE.SEARCH_PLACEHOLDER')}
+              setSearch={setSearch}
+            />
           </div>
           <div className="flex w-full flex-col items-center justify-between lg:flex-row">
             <div className="w-full lg:w-fit">

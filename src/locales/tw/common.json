@@ -104,7 +104,8 @@
   "CURRENCIES_PAGE": {
     "BREADCRUMB_TITLE": "貨幣列表",
     "TITLE_HIGHLIGHT": "貨幣",
-    "TITLE": "列表"
+    "TITLE": "列表",
+    "SEARCH_PLACEHOLDER": "在貨幣列表中搜尋"
   },
   "CURRENCY_DETAIL_PAGE": {
     "PRICE": "價格",
@@ -233,7 +234,9 @@
     "TIMES": "次",
     "CONTENT_ENCRYPTED": "內容已加密",
     "FOLLOW": "追蹤",
-    "OF": "之"
+    "OF": "之",
+    "TOP_100_HOLDERS_TITLE": "前 100 名持有者",
+    "TOP_100_HOLDER_PLACEHOLDER": "查詢地址"
   },
   "FOOTER": {
     "POWERED_BY": "技術支持 稗法",
