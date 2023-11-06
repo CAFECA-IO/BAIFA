@@ -4,10 +4,10 @@ export interface IIncomeAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
-    BTC: ICurrencyDetail;
-    ETH: ICurrencyDetail;
-    USDT: ICurrencyDetail;
-    USD: ICurrencyDetail;
+    BTC?: ICurrencyDetail;
+    ETH?: ICurrencyDetail;
+    USDT?: ICurrencyDetail;
+    USD?: ICurrencyDetail;
   };
 }
 
