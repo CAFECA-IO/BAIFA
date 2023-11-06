@@ -28,7 +28,7 @@ const ReviewSection = (reviews: IReviewSection) => {
   );
 
   const sortedReviews = reviewList.sort((a, b) => {
-    if (sorting === 'Newest') {
+    if (sorting === sortOldAndNewOptions[0]) {
       return b.createdTimestamp - a.createdTimestamp;
     } else {
       return a.createdTimestamp - b.createdTimestamp;
