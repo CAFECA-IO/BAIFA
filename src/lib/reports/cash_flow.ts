@@ -3,6 +3,7 @@ import {
   INonCashAccountingDetail,
   INonCashConsiderationDetail,
 } from '../../interfaces/statements_of_cash_flow';
+import {defaultBreakdown} from '../../interfaces/report_currency_detail';
 import {roundToDecimal} from '../common';
 import {ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';
@@ -1004,12 +1005,12 @@ export const createActivitiesAnalysis = (
   };
   if (!dataA || !dataB) return defaultTable;
 
-  const btcA = dataA.breakdown.BTC;
-  const btcB = dataB.breakdown.BTC;
-  const ethA = dataA.breakdown.ETH;
-  const ethB = dataB.breakdown.ETH;
-  const usdtA = dataA.breakdown.USDT;
-  const usdtB = dataB.breakdown.USDT;
+  const btcA = dataA.breakdown.BTC ?? defaultBreakdown;
+  const btcB = dataB.breakdown.BTC ?? defaultBreakdown;
+  const ethA = dataA.breakdown.ETH ?? defaultBreakdown;
+  const ethB = dataB.breakdown.ETH ?? defaultBreakdown;
+  const usdtA = dataA.breakdown.USDT ?? defaultBreakdown;
+  const usdtB = dataB.breakdown.USDT ?? defaultBreakdown;
 
   const totalCostA = +dataA.weightedAverageCost;
   const totalCostB = +dataB.weightedAverageCost;
