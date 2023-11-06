@@ -5,8 +5,8 @@ interface ICashFlowAccountingDetail {
   weightedAverageCost: number;
   breakdown: {
     USD?: ICurrencyDetail;
-    TWD?: ICurrencyDetail;
-    HKD?: ICurrencyDetail;
+    TWD?: ICurrencyDetail; // 確認去留
+    HKD?: ICurrencyDetail; // 確認去留
   };
 }
 

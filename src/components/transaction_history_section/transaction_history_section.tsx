@@ -5,7 +5,7 @@ import useStateRef from 'react-usestateref';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
-import {useTranslation} from 'react-i18next';
+import {useTranslation} from 'next-i18next';
 import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
 import {timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
@@ -76,7 +76,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
   }, [search, sorting, period]);
 
   // Info: (20231103 - Julian) Pagination
-  const transactionList = filteredTransactions.slice(startIdx, endIdx).map(transaction => {
+  const transactionList = filteredTransactions.slice(startIdx, endIdx).map((transaction, index) => {
     const {id, chainId, createdTimestamp, status} = transaction;
     const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
 
@@ -106,7 +106,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
 
     return (
       // Info: (20231103 - Julian) Transaction History Item
-      <div className="flex h-60px w-full items-center">
+      <div key={index} className="flex h-60px w-full items-center">
         {/* Info: (20231103 - Julian) Create Time square */}
         <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-purpleLinear">
           <p className="text-xl">{createdStr.day}</p>
