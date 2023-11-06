@@ -1,4 +1,4 @@
-import {REPORT_PATH, BFAURL} from '../constants/url';
+import {REPORT_PATH} from '../constants/url';
 
 export const API_URL = 'https://api.tidebit-defi.com/api';
 export const API_VERSION = 'v1';
@@ -34,34 +34,6 @@ export const ITEM_PER_PAGE = 10;
 export const REVIEW_SECTION_LIMIT = 3;
 
 export const copyright = 'BAIFA @ 2023. All rights reserved.';
-
-/* Info: (20230711 - Julian) ----- Home Page ----- */
-export const mainMenuContent = [
-  {
-    icon: '/icons/chain.svg',
-    title: 'HOME_PAGE.CHAINS_TITLE',
-    description: '30',
-    mark: '+',
-    link: BFAURL.CHAINS,
-    alt: 'chain_icon',
-  },
-  {
-    icon: '/icons/coin.svg',
-    title: 'HOME_PAGE.CRYPTO_TITLE',
-    description: '10000',
-    mark: '+',
-    link: BFAURL.CURRENCIES,
-    alt: 'coin_icon',
-  },
-  {
-    icon: '/icons/black_list.svg',
-    title: 'HOME_PAGE.BLACKLIST_TITLE',
-    description: '200',
-    mark: '+',
-    link: BFAURL.COMING_SOON,
-    alt: 'blacklist_icon',
-  },
-];
 
 /* Info: (20230711 - Julian) ----- Landing Page ----- */
 export const SCROLL_END = 530;

@@ -2,6 +2,7 @@ import {
   IComprehensiveIncomeStatements,
   IIncomeAccountingDetail,
 } from '../../interfaces/comprehensive_income_statements';
+import {defaultBreakdown} from '../../interfaces/report_currency_detail';
 import {roundToDecimal, getChange} from '../../lib/common';
 import {ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';
@@ -500,17 +501,17 @@ export const createRevenueTable = (
   };
   if (!dataA || !dataB) return defaultTable;
 
-  const usdA = dataA.breakdown.USD;
-  const usdB = dataB.breakdown.USD;
+  const usdA = dataA.breakdown.USD ?? defaultBreakdown;
+  const usdB = dataB.breakdown.USD ?? defaultBreakdown;
 
-  const bitA = dataA.breakdown.BTC;
-  const bitB = dataB.breakdown.BTC;
+  const btcA = dataA.breakdown.BTC ?? defaultBreakdown;
+  const btcB = dataB.breakdown.BTC ?? defaultBreakdown;
 
-  const ethA = dataA.breakdown.ETH;
-  const ethB = dataB.breakdown.ETH;
+  const ethA = dataA.breakdown.ETH ?? defaultBreakdown;
+  const ethB = dataB.breakdown.ETH ?? defaultBreakdown;
 
-  const usdtA = dataA.breakdown.USDT;
-  const usdtB = dataB.breakdown.USDT;
+  const usdtA = dataA.breakdown.USDT ?? defaultBreakdown;
+  const usdtB = dataB.breakdown.USDT ?? defaultBreakdown;
 
   const totalCostA = +dataA.weightedAverageCost;
   const totalCostB = +dataB.weightedAverageCost;
@@ -519,8 +520,8 @@ export const createRevenueTable = (
   const usdPerA = (+usdA.weightedAverageCost / totalCostA) * 100;
   const usdPerB = (+usdB.weightedAverageCost / totalCostB) * 100;
 
-  const bitPerA = (+bitA.weightedAverageCost / totalCostA) * 100;
-  const bitPerB = (+bitB.weightedAverageCost / totalCostB) * 100;
+  const btcPerA = (+btcA.weightedAverageCost / totalCostA) * 100;
+  const btcPerB = (+btcB.weightedAverageCost / totalCostB) * 100;
 
   const ethPerA = (+ethA.weightedAverageCost / totalCostA) * 100;
   const ethPerB = (+ethB.weightedAverageCost / totalCostB) * 100;
@@ -528,8 +529,8 @@ export const createRevenueTable = (
   const usdtPerA = (+usdtA.weightedAverageCost / totalCostA) * 100;
   const usdtPerB = (+usdtB.weightedAverageCost / totalCostB) * 100;
 
-  const totalPerA = usdPerA + bitPerA + ethPerA + usdtPerA;
-  const totalPerB = usdPerB + bitPerB + ethPerB + usdtPerB;
+  const totalPerA = usdPerA + btcPerA + ethPerA + usdtPerA;
+  const totalPerB = usdPerB + btcPerB + ethPerB + usdtPerB;
 
   const tbody = [
     {
@@ -560,12 +561,12 @@ export const createRevenueTable = (
       rowType: RowType.bookkeeping,
       rowData: [
         `Bitcoin (${numero[1]})`,
-        `${roundToDecimal(+bitA.amount, 2)}`,
-        `${roundToDecimal(+bitA.weightedAverageCost, 2)}`,
-        `${roundToDecimal(bitPerA, 1)} %`,
-        `${roundToDecimal(+bitB.amount, 2)}`,
-        `${roundToDecimal(+bitB.weightedAverageCost, 2)}`,
-        `${roundToDecimal(bitPerB, 1)} %`,
+        `${roundToDecimal(+btcA.amount, 2)}`,
+        `${roundToDecimal(+btcA.weightedAverageCost, 2)}`,
+        `${roundToDecimal(btcPerA, 1)} %`,
+        `${roundToDecimal(+btcB.amount, 2)}`,
+        `${roundToDecimal(+btcB.weightedAverageCost, 2)}`,
+        `${roundToDecimal(btcPerB, 1)} %`,
       ],
     },
     {

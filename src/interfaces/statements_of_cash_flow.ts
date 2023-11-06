@@ -4,9 +4,9 @@ interface ICashFlowAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
-    USD: ICurrencyDetail;
-    TWD: ICurrencyDetail;
-    HKD: ICurrencyDetail;
+    USD?: ICurrencyDetail;
+    TWD?: ICurrencyDetail;
+    HKD?: ICurrencyDetail;
   };
 }
 
@@ -14,9 +14,9 @@ export interface INonCashAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
-    ETH: ICurrencyDetail;
-    BTC: ICurrencyDetail;
-    USDT: ICurrencyDetail;
+    ETH?: ICurrencyDetail;
+    BTC?: ICurrencyDetail;
+    USDT?: ICurrencyDetail;
   };
 }
 

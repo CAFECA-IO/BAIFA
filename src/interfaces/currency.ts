@@ -1,5 +1,7 @@
 import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
 import {IRiskLevel, RiskLevel} from '../constants/risk_level';
+import {IBlock, getDummyBlockData} from './block';
+import {ITransaction, getDummyTransactionData} from './transaction';
 
 export interface IHolder {
   addressId: string;
@@ -18,6 +20,8 @@ export interface ICurrency {
   totalTransfers: number;
   flagging: IRedFlagType[];
   riskLevel: IRiskLevel;
+  blocks: IBlock[];
+  transactions: ITransaction[];
 }
 
 export const dummyCurrencyData: ICurrency[] = [
@@ -31,18 +35,28 @@ export const dummyCurrencyData: ICurrency[] = [
     totalAmount: 19388600,
     holders: [
       {
-        addressId: '302841',
+        addressId: '110029',
         holdingAmount: 248597,
         type: 'Binance-coldwallet',
       },
       {
-        addressId: '329301',
+        addressId: '110132',
         holdingAmount: 178010,
         type: 'Binance-coldwallet',
       },
       {
-        addressId: '399283',
+        addressId: '112840',
         holdingAmount: 117351,
+        type: 'Unknown User',
+      },
+      {
+        addressId: '114007',
+        holdingAmount: 93109,
+        type: 'Unknown User',
+      },
+      {
+        addressId: '115588',
+        holdingAmount: 62352,
         type: 'Unknown User',
       },
     ],
@@ -55,6 +69,8 @@ export const dummyCurrencyData: ICurrency[] = [
       RedFlagType.MULTIPLE_WITHDRAW,
     ],
     riskLevel: RiskLevel.HIGH_RISK,
+    blocks: getDummyBlockData('btc'),
+    transactions: getDummyTransactionData('btc'),
   },
   {
     currencyId: 'eth',
@@ -66,24 +82,29 @@ export const dummyCurrencyData: ICurrency[] = [
     totalAmount: 11388600,
     holders: [
       {
-        addressId: '372840',
+        addressId: '120499',
         holdingAmount: 192597,
         type: 'Unknown User',
       },
       {
-        addressId: '338261',
+        addressId: '120999',
         holdingAmount: 148800,
         type: 'Unknown User',
       },
       {
-        addressId: '399209',
+        addressId: '123201',
         holdingAmount: 117019,
         type: 'Binance-coldwallet',
       },
       {
-        addressId: '392709',
+        addressId: '121700',
         holdingAmount: 79352,
         type: 'Unknown User',
+      },
+      {
+        addressId: '122810',
+        holdingAmount: 57019,
+        type: 'Binance-coldwallet',
       },
     ],
     totalTransfers: 31092807,
@@ -93,6 +114,8 @@ export const dummyCurrencyData: ICurrency[] = [
       RedFlagType.MULTIPLE_WITHDRAW,
     ],
     riskLevel: RiskLevel.MEDIUM_RISK,
+    blocks: getDummyBlockData('eth'),
+    transactions: getDummyTransactionData('eth'),
   },
   {
     currencyId: 'isun',
@@ -104,34 +127,41 @@ export const dummyCurrencyData: ICurrency[] = [
     totalAmount: 10982624,
     holders: [
       {
-        addressId: '345082',
+        addressId: '130008',
         holdingAmount: 180291,
         type: 'Binance-coldwallet',
       },
       {
-        addressId: '398251',
+        addressId: '130025',
         holdingAmount: 161829,
         type: 'Binance-coldwallet',
       },
       {
-        addressId: '324801',
+        addressId: '130089',
         holdingAmount: 149028,
         type: 'Binance-coldwallet',
       },
       {
-        addressId: '345288',
+        addressId: '130294',
         holdingAmount: 102392,
         type: 'Binance-coldwallet',
       },
       {
-        addressId: '382984',
+        addressId: '130682',
         holdingAmount: 62895,
+        type: 'Binance-coldwallet',
+      },
+      {
+        addressId: '134902',
+        holdingAmount: 39281,
         type: 'Binance-coldwallet',
       },
     ],
     totalTransfers: 24992807,
     flagging: [RedFlagType.LARGE_DEPOSIT],
     riskLevel: RiskLevel.LOW_RISK,
+    blocks: getDummyBlockData('isun'),
+    transactions: getDummyTransactionData('isun'),
   },
   {
     currencyId: 'usdt',
@@ -143,73 +173,50 @@ export const dummyCurrencyData: ICurrency[] = [
     totalAmount: 27099243,
     holders: [
       {
-        addressId: '398251',
+        addressId: '140002',
         holdingAmount: 238012,
         type: 'Binance-coldwallet',
       },
       {
-        addressId: '338261',
+        addressId: '140007',
         holdingAmount: 192040,
         type: 'Unknown User',
       },
       {
-        addressId: '392709',
+        addressId: '140050',
         holdingAmount: 180252,
         type: 'Unknown User',
       },
       {
-        addressId: '399283',
+        addressId: '140333',
         holdingAmount: 175219,
         type: 'Unknown User',
       },
       {
-        addressId: '382984',
+        addressId: '144055',
         holdingAmount: 169528,
         type: 'Binance-coldwallet',
       },
       {
-        addressId: '329301',
+        addressId: '144338',
         holdingAmount: 138011,
         type: 'Binance-coldwallet',
       },
       {
-        addressId: '324801',
+        addressId: '146605',
         holdingAmount: 93028,
         type: 'Binance-coldwallet',
-      },
-      {
-        addressId: '345288',
-        holdingAmount: 90525,
-        type: 'Binance-coldwallet',
-      },
-      {
-        addressId: '302841',
-        holdingAmount: 88524,
-        type: 'Binance-coldwallet',
-      },
-      {
-        addressId: '399209',
-        holdingAmount: 58390,
-        type: 'Binance-coldwallet',
-      },
-      {
-        addressId: '345082',
-        holdingAmount: 43197,
-        type: 'Binance-coldwallet',
-      },
-      {
-        addressId: '372840',
-        holdingAmount: 35972,
-        type: 'Unknown User',
       },
     ],
     totalTransfers: 29802417,
     flagging: [RedFlagType.MULTIPLE_TRANSFER],
     riskLevel: RiskLevel.LOW_RISK,
+    blocks: getDummyBlockData('usdt'),
+    transactions: getDummyTransactionData('usdt'),
   },
   {
     currencyId: 'bnb',
-    currencyName: 'BNB',
+    currencyName: 'Binace Coin',
     rank: 5,
     price: 6840.44,
     volumeIn24h: 552770616,
@@ -217,28 +224,20 @@ export const dummyCurrencyData: ICurrency[] = [
     totalAmount: 18092499,
     holders: [
       {
-        addressId: '372840',
+        addressId: '150381',
         holdingAmount: 52597,
         type: 'Unknown User',
       },
       {
-        addressId: '329301',
+        addressId: '150472',
         holdingAmount: 40211,
         type: 'Unknown User',
-      },
-      {
-        addressId: '345288',
-        holdingAmount: 17291,
-        type: 'Binance-coldwallet',
-      },
-      {
-        addressId: '382984',
-        holdingAmount: 8885,
-        type: 'Binance-coldwallet',
       },
     ],
     totalTransfers: 24262807,
     flagging: [RedFlagType.HIGH_RISK_LOCATION],
     riskLevel: RiskLevel.MEDIUM_RISK,
+    blocks: getDummyBlockData('bnb'),
+    transactions: getDummyTransactionData('bnb'),
   },
 ];

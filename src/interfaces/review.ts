@@ -14,7 +14,7 @@ export const dummyReview: IReview[] = [
   {
     id: 'T93130200001',
     transactionId: '931302',
-    chainId: '398251',
+    chainId: 'eth',
     createdTimestamp: 1689352795,
     authorAddressId: '324801',
     content: 'This is a review',
@@ -26,7 +26,7 @@ export const getDummyReviewData = (addressId: string): IReview[] => {
   const transactionList =
     dummyAddressData.find(address => address.id === addressId)?.transactionIds ?? [];
   const doubleTransactionList = transactionList.concat(transactionList);
-  const chainId = dummyAddressData.find(address => address.id === addressId)?.chainId ?? '398251';
+  const chainId = dummyAddressData.find(address => address.id === addressId)?.chainId ?? 'eth';
 
   const today =
     new Date(
@@ -36,7 +36,7 @@ export const getDummyReviewData = (addressId: string): IReview[] => {
   const reviews = doubleTransactionList.map((id, i) => {
     const createdTimestamp = today - i * 86400;
     const authorAddressId =
-      i % 3 === 0 ? '324801' : i % 3 === 1 ? '302841' : i % 3 === 2 ? '372840' : '392709';
+      i % 3 === 0 ? '123201' : i % 3 === 1 ? '120999' : i % 3 === 2 ? '113992' : '130682';
     const stars = i % 5 === 0 ? 3 : i % 5 === 1 ? 5 : i % 5 === 2 ? 1 : i % 5 === 3 ? 2 : 4;
 
     return {

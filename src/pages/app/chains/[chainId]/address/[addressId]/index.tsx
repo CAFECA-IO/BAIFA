@@ -15,10 +15,14 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {IAddress, dummyAddressData} from '../../../../../../interfaces/address';
-import {getChainIcon} from '../../../../../../lib/common';
+import {getChainIcon, getUnit} from '../../../../../../lib/common';
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
 import {getDummyReviewData} from '../../../../../../interfaces/review';
+import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
+import TransactionHistorySection from '../../../../../../components/transaction_history_section/transaction_history_section';
+import {dummyTransactionData} from '../../../../../../interfaces/transaction';
+import {dummyBlockData} from '../../../../../../interfaces/block';
 
 interface IAddressDetailPageProps {
   addressId: string;
@@ -28,13 +32,20 @@ interface IAddressDetailPageProps {
 const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
-  const chainIcon = getChainIcon(addressData.chainId);
+  const {chainId, transactionIds} = addressData;
+  const chainIcon = getChainIcon(chainId);
 
   const router = useRouter();
   const backClickHandler = () => router.back();
 
   const dummyReview = getDummyReviewData(addressId);
-  const reviewLink = getDynamicUrl(addressData.chainId, addressId).REVIEWS;
+  const reviewLink = getDynamicUrl(chainId, addressId).REVIEWS;
+
+  const transactionHistory = dummyTransactionData.filter(transaction =>
+    transactionIds.includes(transaction.id)
+  );
+  // Info: (20231103 - Julian) dummy data
+  const dummyBlockProducedHistory = dummyBlockData.filter(block => block.chainId === chainId);
 
   return (
     <>
@@ -109,6 +120,15 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
             <div className="mt-6 w-full">
               <ReviewSection seeAllLink={reviewLink} reviews={dummyReview} />
             </div>
+            {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
+            <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
+              <TransactionHistorySection transactions={transactionHistory} />
+              <BlockProducedHistorySection
+                blocks={dummyBlockProducedHistory}
+                unit={getUnit(chainId)}
+              />
+            </div>
+
             {/* Info: (20231006 - Julian) Back button */}
             <div className="mt-10">
               <BoltButton

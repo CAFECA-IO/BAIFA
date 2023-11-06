@@ -40,9 +40,9 @@ const SortingMenu = ({sortingOptions, sorting, setSorting, isLinearBg}: ISearchF
   return (
     <button
       onClick={() => setSortingVisible(!sortingVisible)}
-      className={`relative flex w-full items-center space-x-4 rounded ${
+      className={`relative flex w-full items-center space-x-4 rounded text-sm ${
         isLinearBg ? 'bg-purpleLinear' : 'bg-darkPurple'
-      } px-6 py-4 text-hoverWhite lg:w-160px`}
+      } p-4 text-hoverWhite lg:w-160px`}
     >
       {/* Info: (20231101 - Julian) Sorting Button */}
       <p

@@ -236,7 +236,11 @@
     "FOLLOW": "Follow",
     "OF": "of",
     "TOP_100_HOLDERS_TITLE": "Top 100 Holders",
-    "TOP_100_HOLDER_PLACEHOLDER": "Search Address"
+    "TOP_100_HOLDER_PLACEHOLDER": "Search Address",
+    "TRANSACTION_HISTORY_TITLE": "Transaction History",
+    "TRANSACTION_HISTORY_PLACEHOLDER": "Search in Transaction History",
+    "BLOCK_PRODUCED_HISTORY_TITLE": "Block Produced History",
+    "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "Search in Block Produced History"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

@@ -7,3 +7,11 @@ export interface ICurrencyDetail {
   currencyType: ICurrencyType;
   weightedAverageCost: number;
 }
+
+export const defaultBreakdown = {
+  name: '',
+  amount: 0,
+  fairValue: 0,
+  currencyType: 'CRYPTOCURRENCY',
+  weightedAverageCost: 0,
+};
