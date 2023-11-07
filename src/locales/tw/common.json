@@ -159,7 +159,12 @@
     "TOTAL_RECEIVED": "總接收金額"
   },
   "CONTRACT_DETAIL_PAGE": {
-    "MAIN_TITLE": "合約"
+    "MAIN_TITLE": "合約",
+    "PLATFORM": "在平台上查看",
+    "CONTRACT_ADDRESS": "合約地址",
+    "CREATOR": "創建者",
+    "CREATING_TIME": "創建時間",
+    "SOURCE_CODE": "原始碼"
   },
   "EVIDENCE_DETAIL_PAGE": {
     "MAIN_TITLE": "證據"

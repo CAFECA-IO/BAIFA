@@ -159,7 +159,12 @@
     "TOTAL_RECEIVED": "Total Received"
   },
   "CONTRACT_DETAIL_PAGE": {
-    "MAIN_TITLE": "Contract"
+    "MAIN_TITLE": "Contract",
+    "PLATFORM": "Platform",
+    "CONTRACT_ADDRESS": "Contract Address",
+    "CREATOR": "Creator",
+    "CREATING_TIME": "Creating Time",
+    "SOURCE_CODE": "Source Code"
   },
   "EVIDENCE_DETAIL_PAGE": {
     "MAIN_TITLE": "Evidence"

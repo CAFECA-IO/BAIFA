@@ -62,7 +62,7 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
               </div>
 
               {/* Info: (20231017 - Julian) Tracing Tool Button */}
-              <div className={`relative right-0 mt-6 lg:absolute lg:mt-0 ${isAddInTracingTool}`}>
+              <div className={`relative right-0 mt-6 lg:mt-0 xl:absolute ${isAddInTracingTool}`}>
                 <Link href={BFAURL.COMING_SOON}>
                   <BoltButton
                     className="flex items-center space-x-4 px-6 py-4"

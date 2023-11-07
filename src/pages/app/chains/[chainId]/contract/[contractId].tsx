@@ -62,7 +62,7 @@ const ContractDetailPage = ({chainId, contractId, contractData}: IContractDetail
                   height={40}
                 />
                 <h1 className="text-2xl font-bold lg:text-32px">
-                  Contract
+                  {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')}
                   <span className="ml-2 text-primaryBlue"> {contractId}</span>
                 </h1>
               </div>
@@ -75,7 +75,7 @@ const ContractDetailPage = ({chainId, contractId, contractData}: IContractDetail
                     style="solid"
                   >
                     <Image src="/icons/link.svg" alt="" width={24} height={24} />
-                    <p>Platform</p>
+                    <p>{t('CONTRACT_DETAIL_PAGE.PLATFORM')}</p>
                   </BoltButton>
                 </Link>
               </div>

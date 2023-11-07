@@ -159,7 +159,12 @@
     "TOTAL_RECEIVED": "总接收金额"
   },
   "CONTRACT_DETAIL_PAGE": {
-    "MAIN_TITLE": "合约"
+    "MAIN_TITLE": "合约",
+    "PLATFORM": "在平台上查看",
+    "CONTRACT_ADDRESS": "合约地址",
+    "CREATOR": "创建者",
+    "CREATING_TIME": "创建时间",
+    "SOURCE_CODE": "原始码"
   },
   "EVIDENCE_DETAIL_PAGE": {
     "MAIN_TITLE": "证据"
