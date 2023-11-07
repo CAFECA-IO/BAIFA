@@ -172,7 +172,9 @@
     "STATE": "状态",
     "CREATOR": "创建者",
     "CREATING_TIME": "创建时间",
-    "CONTENT": "内容"
+    "CONTENT": "内容",
+    "STATE_ACTIVE": "有效",
+    "STATE_INACTIVE": "无效"
   },
   "RED_FLAG_DETAIL_PAGE": {
     "MAIN_TITLE": "警示",

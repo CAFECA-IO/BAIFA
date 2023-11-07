@@ -2,7 +2,7 @@ export interface IEvidence {
   id: string;
   chainId: string;
   evidenceHash: string;
-  state: 'Active';
+  state: 'Active' | 'Inactive';
   creatorAddressId: string;
   createdTimestamp: number;
   content: string;
