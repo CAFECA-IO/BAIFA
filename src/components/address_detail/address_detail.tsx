@@ -13,7 +13,7 @@ interface IAddressDetailProps {
   addressData: IAddress;
 }
 
-const AddressDetail = (addressData: IAddressDetailProps) => {
+const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     addressId,
@@ -27,7 +27,7 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
     balance,
     totalSent,
     totalReceived,
-  } = addressData.addressData;
+  } = addressData;
   const [sinceTime, setSinceTime] = useState(0);
 
   let timer: NodeJS.Timeout;
@@ -59,6 +59,7 @@ const AddressDetail = (addressData: IAddressDetailProps) => {
   const displayRelatedAddress = relatedAddressIds.map((id, index) => {
     const targetChainId = dummyAddressData.find(address => address.id === id)?.chainId ?? '';
     const addressLink = getDynamicUrl(targetChainId, `${id}`).ADDRESS;
+    const contractLink = getDynamicUrl(targetChainId, `${id}`).CONTRACT;
     return (
       <Link href={addressLink} key={index}>
         <BoltButton className="px-3 py-1" color="blue" style="solid">

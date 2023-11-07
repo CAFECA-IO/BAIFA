@@ -19,6 +19,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
 
   const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
   const addressLink = getDynamicUrl(chainId, `${from}`).ADDRESS;
+  const contractLink = getDynamicUrl(chainId, `${to}`).CONTRACT;
 
   const displayStatus =
     status === 'PROCESSING' ? (
@@ -118,7 +119,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.TO')}
         </p>
-        <Link href={BFAURL.COMING_SOON}>
+        <Link href={contractLink}>
           <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
             {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} {to}
           </BoltButton>

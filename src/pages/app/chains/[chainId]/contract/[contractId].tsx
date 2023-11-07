@@ -6,16 +6,17 @@ import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../components/bolt_button/bolt_button';
 import Footer from '../../../../../components/footer/footer';
+import ContractDetail from '../../../../../components/contract_detail/contract_detail';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon} from '../../../../../lib/common';
-import {getDynamicUrl} from '../../../../../constants/url';
+import {BFAURL} from '../../../../../constants/url';
 import {IContract, dummyContractData} from '../../../../../interfaces/contract';
 import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
 import TransactionHistorySection from '../../../../../components/transaction_history_section/transaction_history_section';
 import {dummyTransactionData} from '../../../../../interfaces/transaction';
-import Tooltip from '../../../../../components/tooltip/tooltip';
+import Link from 'next/link';
 
 interface IContractDetailPageProps {
   chainId: string;
@@ -47,7 +48,7 @@ const ContractDetailPage = ({chainId, contractId, contractData}: IContractDetail
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
           <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-28 lg:px-40 lg:pt-40">
             {/* Info: (20231106 - Julian) Header */}
-            <div className="flex w-full items-center justify-start">
+            <div className="relative flex w-full flex-col items-center justify-start lg:flex-row">
               {/* Info: (20231106 - Julian) Back Arrow Button */}
               <button onClick={backClickHandler} className="hidden lg:block">
                 <BsArrowLeftShort className="text-48px" />
@@ -65,22 +66,24 @@ const ContractDetailPage = ({chainId, contractId, contractData}: IContractDetail
                   <span className="ml-2 text-primaryBlue"> {contractId}</span>
                 </h1>
               </div>
+              {/* Info: (20231107 - Julian) Platform Link Button */}
+              <div className="right-0 mt-6 lg:absolute lg:mt-0">
+                <Link href={BFAURL.COMING_SOON}>
+                  <BoltButton
+                    className="flex items-center justify-center space-x-4 px-6 py-3"
+                    color="purple"
+                    style="solid"
+                  >
+                    <Image src="/icons/link.svg" alt="" width={24} height={24} />
+                    <p>Platform</p>
+                  </BoltButton>
+                </Link>
+              </div>
             </div>
 
             {/* Info: (20231106 - Julian) Contract Detail */}
             <div className="my-10 w-full">
-              <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
-                {/* Info: (20231106 - Julian) Creator */}
-                <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-                  <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-                    <p>Creator</p>
-                    <Tooltip>
-                      This is tooltip Sample Text. So if I type in more content, it would be like
-                      this.
-                    </Tooltip>
-                  </div>
-                </div>
-              </div>
+              <ContractDetail contractData={contractData} />
             </div>
 
             {/* Info: (20231106 - Julian) Private Note Section */}

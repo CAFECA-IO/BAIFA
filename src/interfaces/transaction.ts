@@ -70,7 +70,7 @@ export const dummyTransactionData: ITransaction[] = [
     blockId: '230676',
     createdTimestamp: 1688158795,
     from: '134902',
-    to: '310291',
+    to: '330291',
     content: '412859',
     value: 0.01,
     fee: 0.01,
