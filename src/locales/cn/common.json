@@ -161,13 +161,18 @@
   "CONTRACT_DETAIL_PAGE": {
     "MAIN_TITLE": "合约",
     "PLATFORM": "在平台上查看",
-    "CONTRACT_ADDRESS": "合约地址",
+    "CONTRACT_HASH": "合约地址",
     "CREATOR": "创建者",
     "CREATING_TIME": "创建时间",
     "SOURCE_CODE": "原始码"
   },
   "EVIDENCE_DETAIL_PAGE": {
-    "MAIN_TITLE": "证据"
+    "MAIN_TITLE": "证据",
+    "EVIDENCE_HASH": "证据地址",
+    "STATE": "状态",
+    "CREATOR": "创建者",
+    "CREATING_TIME": "创建时间",
+    "CONTENT": "内容"
   },
   "RED_FLAG_DETAIL_PAGE": {
     "MAIN_TITLE": "警示",

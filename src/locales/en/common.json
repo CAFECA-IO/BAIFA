@@ -161,13 +161,18 @@
   "CONTRACT_DETAIL_PAGE": {
     "MAIN_TITLE": "Contract",
     "PLATFORM": "Platform",
-    "CONTRACT_ADDRESS": "Contract Address",
+    "CONTRACT_HASH": "Contract Hash",
     "CREATOR": "Creator",
     "CREATING_TIME": "Creating Time",
     "SOURCE_CODE": "Source Code"
   },
   "EVIDENCE_DETAIL_PAGE": {
-    "MAIN_TITLE": "Evidence"
+    "MAIN_TITLE": "Evidence",
+    "EVIDENCE_HASH": "Evidence Hash",
+    "STATE": "State",
+    "CREATOR": "Creator",
+    "CREATING_TIME": "Creating Time",
+    "CONTENT": "Content"
   },
   "RED_FLAG_DETAIL_PAGE": {
     "MAIN_TITLE": "Red Flag",

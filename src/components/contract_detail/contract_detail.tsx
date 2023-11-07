@@ -13,7 +13,7 @@ interface IContractDetailProps {
 
 const ContractDetail = ({contractData}: IContractDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {contractAddress, chainId, creatorAddressId, createdTimestamp} = contractData;
+  const {contractHash, chainId, creatorAddressId, createdTimestamp} = contractData;
 
   const addressLink = getDynamicUrl(chainId, `${creatorAddressId}`).ADDRESS;
 
@@ -22,12 +22,12 @@ const ContractDetail = ({contractData}: IContractDetailProps) => {
       {/* Info: (20231107 - Julian) Contract Address */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          <p>{t('CONTRACT_DETAIL_PAGE.CONTRACT_ADDRESS')}</p>
+          <p>{t('CONTRACT_DETAIL_PAGE.CONTRACT_HASH')}</p>
           <Tooltip>
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <p className="break-words text-sm lg:text-base">{contractAddress}</p>
+        <p className="break-words text-sm lg:text-base">{contractHash}</p>
       </div>
       {/* Info: (20231107 - Julian) Creator */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

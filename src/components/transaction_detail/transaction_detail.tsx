@@ -14,7 +14,7 @@ interface ITransactionDetailProps {
 
 const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {hash, status, chainId, blockId, createdTimestamp, from, to, content, fee, flagging} =
+  const {hash, status, chainId, blockId, createdTimestamp, from, to, evidenceId, fee, flagging} =
     transactionData;
 
   const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
@@ -66,6 +66,16 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
       <p>{timestampToString(createdTimestamp).date}</p>
       <p>{timestampToString(createdTimestamp).time}</p>
     </div>
+  );
+
+  const displayEvidence = evidenceId ? (
+    <Link href={getDynamicUrl(`${chainId}`, `${evidenceId}`).EVIDENCE}>
+      <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
+        {t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} {evidenceId}
+      </BoltButton>
+    </Link>
+  ) : (
+    <p>{t('COMMON.NONE')}</p>
   );
 
   return (
@@ -133,11 +143,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <Link href={BFAURL.COMING_SOON}>
-          <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-            {t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} {content}
-          </BoltButton>
-        </Link>
+        {displayEvidence}
       </div>
       {/* Info: (20230911 - Julian) Value */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
