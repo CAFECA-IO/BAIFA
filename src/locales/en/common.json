@@ -174,7 +174,8 @@
     "CREATING_TIME": "Creating Time",
     "CONTENT": "Content",
     "STATE_ACTIVE": "Active",
-    "STATE_INACTIVE": "Inactive"
+    "STATE_INACTIVE": "Inactive",
+    "DOWNLOAD_EVIDENCE_BUTTON": "Download Evidence"
   },
   "RED_FLAG_DETAIL_PAGE": {
     "MAIN_TITLE": "Red Flag",

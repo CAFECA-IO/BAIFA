@@ -193,7 +193,7 @@ export const dummyAddressData: IAddress[] = [
     addressId: '0x4C99f7A2c156dD8635675D429d5706fE1693',
     chainId: 'eth',
     signUpTime: 1683274111,
-    lastestActiveTime: 1697366666,
+    lastestActiveTime: 1687366666,
     relatedAddressIds: ['120499', '123201'],
     interactedAddressIds: ['120499', '123201'],
     interactedContactIds: ['320062'],

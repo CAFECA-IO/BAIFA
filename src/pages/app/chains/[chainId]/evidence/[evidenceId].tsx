@@ -15,6 +15,8 @@ import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
 import {IEvidence, dummyEvidenceData} from '../../../../../interfaces/evidence';
+import TransactionHistorySection from '../../../../../components/transaction_history_section/transaction_history_section';
+import {dummyTransactionData} from '../../../../../interfaces/transaction';
 
 interface IEvidenceDetailPageProps {
   evidenceId: string;
@@ -23,11 +25,15 @@ interface IEvidenceDetailPageProps {
 
 const EvidenceDetailPage = ({evidenceId, evidenceData}: IEvidenceDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {chainId} = evidenceData;
+  const {chainId, transactionIds} = evidenceData;
   const headTitle = `${t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} ${evidenceId} - BAIFA`;
 
   const router = useRouter();
   const backClickHandler = () => router.back();
+
+  const transactionHistory = dummyTransactionData.filter(transaction =>
+    transactionIds.includes(transaction.id)
+  );
 
   return (
     <>
@@ -39,7 +45,7 @@ const EvidenceDetailPage = ({evidenceId, evidenceData}: IEvidenceDetailPageProps
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
-          <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
+          <div className="flex w-full flex-1 flex-col items-center space-y-10 px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
             {/* Info: (20231107 - Julian) Header */}
             <div className="relative flex w-full flex-col items-center justify-start lg:flex-row">
               {/* Info: (20231107 -Julian) Back Arrow Button */}
@@ -60,7 +66,7 @@ const EvidenceDetailPage = ({evidenceId, evidenceData}: IEvidenceDetailPageProps
                 </h1>
               </div>
 
-              {/* Info: (20231107 - Julian) Tracing Tool Button */}
+              {/* Info: (20231107 - Julian) Download Evidence Button */}
               <div className="relative right-0 mt-6 lg:mt-0 xl:absolute">
                 <Link href={BFAURL.COMING_SOON}>
                   <BoltButton
@@ -68,24 +74,30 @@ const EvidenceDetailPage = ({evidenceId, evidenceData}: IEvidenceDetailPageProps
                     color="purple"
                     style="solid"
                   >
-                    <Image src="/icons/tracing.svg" alt="" width={24} height={24} />
-                    <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
+                    <Image src="/icons/download.svg" alt="" width={24} height={24} />
+                    <p>{t('EVIDENCE_DETAIL_PAGE.DOWNLOAD_EVIDENCE_BUTTON')}</p>
                   </BoltButton>
                 </Link>
               </div>
             </div>
 
             {/* Info: (20231107 - Julian) Evidence Detail */}
-            <div className="my-10 w-full">
+            <div className="w-full pt-10">
               <EvidenceDetail evidenceData={evidenceData} />
             </div>
 
+            {/* Info: (20231107 - Julian) Private Note Section */}
             <div className="w-full">
               <PrivateNoteSection />
             </div>
 
+            {/* Info: (20231107 - Julian) Transaction History Section */}
+            <div className="w-full">
+              <TransactionHistorySection transactions={transactionHistory} />
+            </div>
+
             {/* Info: (20231107 - Julian) Back Button */}
-            <div className="mt-10">
+            <div className="">
               <BoltButton
                 onClick={backClickHandler}
                 className="px-12 py-4 font-bold"

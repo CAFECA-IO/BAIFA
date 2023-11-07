@@ -42,15 +42,13 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
         const blockId = transaction.blockId.toString().toLowerCase();
         const fromAddress = transaction.from.toString().toLowerCase();
         const toAddress = transaction.to.toString().toLowerCase();
-        const content = transaction.content.toString().toLowerCase();
 
         return searchTerm !== ''
           ? transactionId.includes(searchTerm) ||
               status.includes(searchTerm) ||
               blockId.includes(searchTerm) ||
               fromAddress.includes(searchTerm) ||
-              toAddress.includes(searchTerm) ||
-              content.includes(searchTerm)
+              toAddress.includes(searchTerm)
           : true;
       }) // Info: (20231103 - Julian) filter by date range
       .filter((transaction: ITransaction) => {
