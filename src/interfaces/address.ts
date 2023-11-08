@@ -1,27 +1,32 @@
 import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
 import {IRiskLevel, RiskLevel} from '../constants/risk_level';
+import {IInteractionItem} from './interaction_item';
 
-export interface IAddress {
-  id: string;
+export interface IAddress extends IInteractionItem {
+  //id: string;
   addressId: string;
-  chainId: string;
-  signUpTime: number;
+  //chainId: string;
+  //createdTimestamp: number;
   lastestActiveTime: number;
   relatedAddressIds: string[];
   interactedAddressIds: string[];
   interactedContactIds: string[];
-  transactionIds: string[];
+  //transactionIds: string[];
   flagging: IRedFlagType[];
   riskLevel: IRiskLevel;
-  publicTag: string[];
+  //publicTag: string[];
+  balance?: number;
+  totalSent?: number;
+  totalReceived?: number;
 }
 
 export const dummyAddressData: IAddress[] = [
   {
     id: '130008',
+    type: 'address',
     addressId: '0x5Ab3190693fEc256156f9f74Cd8843A77277',
     chainId: 'isun',
-    signUpTime: 1535762837,
+    createdTimestamp: 1535762837,
     lastestActiveTime: 1696710310,
     relatedAddressIds: ['130089', '130294', '130025'],
     interactedAddressIds: ['130089', '130294', '130025'],
@@ -33,9 +38,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '130025',
+    type: 'address',
     addressId: '0x11256d88475D319156fx93fEc3f74A79Cd0693fEc3',
     chainId: 'isun',
-    signUpTime: 1672932841,
+    createdTimestamp: 1672932841,
     lastestActiveTime: 1697174618,
     relatedAddressIds: ['130682', '134902', '130008'],
     interactedAddressIds: ['130682', '134902', '130008'],
@@ -47,9 +53,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '130089',
+    type: 'address',
     addressId: '0x2775D319156f9f74Cd0693fEc256d8843A79',
     chainId: 'isun',
-    signUpTime: 1680935382,
+    createdTimestamp: 1680935382,
     lastestActiveTime: 1682746184,
     relatedAddressIds: ['130008', '130682'],
     interactedAddressIds: ['130008', '130682'],
@@ -61,9 +68,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '130294',
+    type: 'address',
     addressId: '0x27256d3982516f9f34903674Cd0693fEcA79',
     chainId: 'isun',
-    signUpTime: 1682801849,
+    createdTimestamp: 1682801849,
     lastestActiveTime: 1688201837,
     relatedAddressIds: ['130008'],
     interactedAddressIds: ['130008'],
@@ -75,9 +83,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '130682',
+    type: 'address',
     addressId: '0x67843A7990693fEc2575D31Cd86d156f9f74',
     chainId: 'isun',
-    signUpTime: 1635603109,
+    createdTimestamp: 1635603109,
     lastestActiveTime: 1677176283,
     relatedAddressIds: ['130025', '130089'],
     interactedAddressIds: ['130025', '130089'],
@@ -89,9 +98,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '134902',
+    type: 'address',
     addressId: '0x27256d3982516f9f34903674Cd0693fEcA79',
     chainId: 'isun',
-    signUpTime: 1680188201,
+    createdTimestamp: 1680188201,
     lastestActiveTime: 1682168283,
     relatedAddressIds: ['130008', '130025'],
     interactedAddressIds: ['130008', '130025'],
@@ -103,9 +113,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '110029',
+    type: 'address',
     addressId: '0x156f9f74C2775D3190693fEc256dd8843A79',
     chainId: 'btc',
-    signUpTime: 1667129031,
+    createdTimestamp: 1667129031,
     lastestActiveTime: 1683709357,
     relatedAddressIds: ['110132', '114007'],
     interactedAddressIds: ['110132', '114007'],
@@ -117,9 +128,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '110132',
+    type: 'address',
     addressId: '0x2775D3190693fEc256d156f9f74Cd8843A79',
     chainId: 'btc',
-    signUpTime: 1680827461,
+    createdTimestamp: 1680827461,
     lastestActiveTime: 1682935384,
     relatedAddressIds: ['110029', '112840', '114007'],
     interactedAddressIds: ['110029', '112840', '114007'],
@@ -131,9 +143,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '112840',
+    type: 'address',
     addressId: '0x8e9f74C775D3190693fEc256d156dD865A79',
     chainId: 'btc',
-    signUpTime: 1682746180,
+    createdTimestamp: 1682746180,
     lastestActiveTime: 1685902948,
     relatedAddressIds: ['110132', '113992', '115588'],
     interactedAddressIds: ['110132', '113992', '115588'],
@@ -145,9 +158,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '113992',
+    type: 'address',
     addressId: '0x1975d156f9f74D3190693fEc256Cd88243a04',
     chainId: 'btc',
-    signUpTime: 16853990284,
+    createdTimestamp: 16853990284,
     lastestActiveTime: 1688435283,
     relatedAddressIds: ['112840', '114007', '115588'],
     interactedAddressIds: ['112840', '114007', '115588'],
@@ -159,9 +173,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '114007',
+    type: 'address',
     addressId: '0x1975d15693fEc256Cd88243a0f9f74D319064',
     chainId: 'btc',
-    signUpTime: 16853990284,
+    createdTimestamp: 16853990284,
     lastestActiveTime: 1688435283,
     relatedAddressIds: ['110029', '113992', '110132'],
     interactedAddressIds: ['110029', '113992', '110132'],
@@ -173,9 +188,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '115588',
+    type: 'address',
     addressId: '0x1975d1566Cd88243a0f9f74D319093fEc2564',
     chainId: 'btc',
-    signUpTime: 16853990284,
+    createdTimestamp: 16853990284,
     lastestActiveTime: 1688435283,
     relatedAddressIds: ['113992', '112840'],
     interactedAddressIds: ['113992', '112840'],
@@ -187,9 +203,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '120499',
+    type: 'address',
     addressId: '0x693fEc156dD863199f74C7069d5A25675D42',
     chainId: 'eth',
-    signUpTime: 1670274180,
+    createdTimestamp: 1670274180,
     lastestActiveTime: 1697332361,
     relatedAddressIds: ['120999', '123201'],
     interactedAddressIds: ['120999', '123201'],
@@ -201,9 +218,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '120999',
+    type: 'address',
     addressId: '0x4C99f7A2c156dD8635675D429d5706fE1693',
     chainId: 'eth',
-    signUpTime: 1683274111,
+    createdTimestamp: 1683274111,
     lastestActiveTime: 1687366666,
     relatedAddressIds: ['120499', '123201'],
     interactedAddressIds: ['120499', '123201'],
@@ -215,9 +233,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '123201',
+    type: 'address',
     addressId: '0x4C706fE199f5675D429d56937A2c156dD863',
     chainId: 'eth',
-    signUpTime: 1674183211,
+    createdTimestamp: 1674183211,
     lastestActiveTime: 16873619373,
     relatedAddressIds: ['121700', '120999', '120499'],
     interactedAddressIds: ['121700', '120999', '120499'],
@@ -229,9 +248,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '121700',
+    type: 'address',
     addressId: '0x4C706fE199f7A2c156dD8635675D429d5693',
     chainId: 'eth',
-    signUpTime: 1688223345,
+    createdTimestamp: 1688223345,
     lastestActiveTime: 1689301831,
     relatedAddressIds: ['122810', '123201'],
     interactedAddressIds: ['122810', '123201'],
@@ -243,10 +263,11 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '122810',
+    type: 'address',
     addressId: '0x8635675D429d56934C706fE199f7A2c156dD',
     chainId: 'eth',
-    signUpTime: 1687222335,
-    lastestActiveTime: 16893917332,
+    createdTimestamp: 1687222335,
+    lastestActiveTime: 1689317332,
     relatedAddressIds: ['121700', ''],
     interactedAddressIds: ['121700', ''],
     interactedContactIds: [],
@@ -257,9 +278,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '140002',
+    type: 'address',
     addressId: '0x6C04f7A2c15675D42391dD863d5706fE1693',
     chainId: 'usdt',
-    signUpTime: 1683266111,
+    createdTimestamp: 1683266111,
     lastestActiveTime: 1697366746,
     relatedAddressIds: ['140007', '140050'],
     interactedAddressIds: ['140007', '140050'],
@@ -271,9 +293,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '140007',
+    type: 'address',
     addressId: '0x3d5706f6C04f7A2c15675D42391dD86E10291',
     chainId: 'usdt',
-    signUpTime: 1681366321,
+    createdTimestamp: 1681366321,
     lastestActiveTime: 1689761746,
     relatedAddressIds: ['140002', '140050', '140333'],
     interactedAddressIds: ['140002', '140050', '140333'],
@@ -285,9 +308,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '140050',
+    type: 'address',
     addressId: '0x3d5706f6C04f7A2c15675D42391dD86E10291',
     chainId: 'usdt',
-    signUpTime: 1681366321,
+    createdTimestamp: 1681366321,
     lastestActiveTime: 1689761746,
     relatedAddressIds: ['140002', '140007'],
     interactedAddressIds: ['140002', '140007'],
@@ -299,9 +323,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '140333',
+    type: 'address',
     addressId: '0x6C04f7A2c33333D42391dD863d5706fE1693',
     chainId: 'usdt',
-    signUpTime: 1683262333,
+    createdTimestamp: 1683262333,
     lastestActiveTime: 1697366333,
     relatedAddressIds: ['140007', '144055'],
     interactedAddressIds: ['140007', '144055'],
@@ -313,9 +338,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '144055',
+    type: 'address',
     addressId: '0x6E102913d57c15675D4206f6C04f7A2391dD8',
     chainId: 'usdt',
-    signUpTime: 1681617321,
+    createdTimestamp: 1681617321,
     lastestActiveTime: 1689746663,
     relatedAddressIds: ['140333'],
     interactedAddressIds: ['140333'],
@@ -327,9 +353,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '144338',
+    type: 'address',
     addressId: '0x6Ec15913d67665C04f7A2391dD1618D4206f6',
     chainId: 'usdt',
-    signUpTime: 16841027321,
+    createdTimestamp: 16841027321,
     lastestActiveTime: 1689646357,
     relatedAddressIds: ['146605'],
     interactedAddressIds: ['146605'],
@@ -341,9 +368,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '146605',
+    type: 'address',
     addressId: '0x18D46Ec15913d67665C0217A2391dD16206f6',
     chainId: 'usdt',
-    signUpTime: 16844617321,
+    createdTimestamp: 16844617321,
     lastestActiveTime: 1689602357,
     relatedAddressIds: ['144338'],
     interactedAddressIds: ['144338'],
@@ -355,9 +383,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '150381',
+    type: 'address',
     addressId: '0x183d67D46Ec1A2391dD16591665C0217206f6',
     chainId: 'bnb',
-    signUpTime: 16841734621,
+    createdTimestamp: 16841734621,
     lastestActiveTime: 1689235607,
     relatedAddressIds: ['150472'],
     interactedAddressIds: ['150472'],
@@ -369,9 +398,10 @@ export const dummyAddressData: IAddress[] = [
   },
   {
     id: '150472',
+    type: 'address',
     addressId: '0x183d1659166567D46Ec1A2391dDC0217206f6',
     chainId: 'bnb',
-    signUpTime: 16846071721,
+    createdTimestamp: 16846071721,
     lastestActiveTime: 1689346235,
     relatedAddressIds: ['150381'],
     interactedAddressIds: ['150381'],

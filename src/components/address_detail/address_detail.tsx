@@ -17,7 +17,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     addressId,
-    signUpTime,
+    createdTimestamp,
     lastestActiveTime,
     relatedAddressIds,
     interactedAddressIds,
@@ -43,8 +43,8 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
 
   const displaySignUpTime = (
     <div className="flex flex-wrap items-center">
-      <p className="mr-2">{timestampToString(signUpTime).date}</p>
-      <p className="mr-2">{timestampToString(signUpTime).time}</p>
+      <p className="mr-2">{timestampToString(createdTimestamp).date}</p>
+      <p className="mr-2">{timestampToString(createdTimestamp).time}</p>
     </div>
   );
 
