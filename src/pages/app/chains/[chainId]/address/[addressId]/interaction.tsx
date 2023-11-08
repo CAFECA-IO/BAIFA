@@ -37,8 +37,13 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
   const router = useRouter();
   const backClickHandler = () => router.back();
 
+  // Info: (20231108 - Julian) Type Url Query
+  const {type} = router.query;
+  const selectedType = type ? type.toString() : null;
   // Info: (20231108 - Julian) Type Options
   const typeOptions = ['All', 'Address', 'Contract'];
+  const defaultType =
+    selectedType && typeOptions.includes(selectedType) ? selectedType : typeOptions[0];
 
   // Info: (20231108 - Julian) States
   const [search, setSearch, searchRef] = useStateRef('');
@@ -47,7 +52,7 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
     startTimeStamp: 0,
     endTimeStamp: 0,
   });
-  const [filteredType, setFilteredType] = useState<string>(typeOptions[0]);
+  const [filteredType, setFilteredType] = useState<string>(defaultType);
   const [filteredInteractedList, setFilteredInteractedList] =
     useState<IInteractionItem[]>(interactedList);
 
@@ -127,11 +132,11 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
               {/* Info: (20231108 - Julian) Search Bar */}
               <div className="mx-auto w-full lg:w-7/10">
                 <SearchBar
-                  searchBarPlaceholder={t('COMMON.BLOCK_PRODUCED_HISTORY_PLACEHOLDER')}
+                  searchBarPlaceholder={'Search in Interaction List'}
                   setSearch={setSearch}
                 />
               </div>
-              <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+              <div className="flex w-full flex-col items-center gap-2 lg:flex-row lg:justify-between">
                 {/* Info: (20231108 - Julian) Type Select Menu */}
                 <div className="relative flex w-full items-center space-y-2 text-base lg:w-fit">
                   <SortingMenu
@@ -141,12 +146,12 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
                   />
                 </div>
                 {/* Info: (20231108 - Julian) Date Picker */}
-                <div className="flex w-full items-center text-sm lg:w-fit">
+                <div className="flex w-full items-center text-sm lg:w-fit lg:space-x-2">
                   <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
                   <DatePicker setFilteredPeriod={setPeriod} />
                 </div>
                 {/* Info: (20231108 - Julian) Sorting Menu */}
-                <div className="relative flex w-full items-center text-sm lg:w-fit">
+                <div className="relative flex w-full items-center text-sm lg:w-fit lg:space-x-2">
                   <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
                   <SortingMenu
                     sortingOptions={sortOldAndNewOptions}
@@ -241,6 +246,7 @@ export const getStaticProps: GetStaticProps<IInteractionPageProps> = async ({par
       addressId: params.addressId,
       chainId: params.chainId,
       interactedList,
+      //selectedType: selectedType ?? null,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };
