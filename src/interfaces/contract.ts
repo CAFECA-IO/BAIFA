@@ -6,6 +6,7 @@ export interface IContract {
   createdTimestamp: number;
   sourceCode: string;
   transactionIds: string[];
+  publicTag: string[];
 }
 
 export const dummyContractData: IContract[] = [
@@ -17,6 +18,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1688341795,
     sourceCode: '',
     transactionIds: ['930032', '931314'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '330071',
@@ -26,6 +28,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1692322345,
     sourceCode: '',
     transactionIds: ['930071'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '330077',
@@ -35,6 +38,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1693341175,
     sourceCode: '',
     transactionIds: ['930291', '931302'],
+    publicTag: ['TideBit'],
   },
   {
     id: '330291',
@@ -44,6 +48,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1689352395,
     sourceCode: '',
     transactionIds: ['930683'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '310683',
@@ -53,6 +58,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1680978100,
     sourceCode: '',
     transactionIds: ['910101', '912299'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '310992',
@@ -62,6 +68,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1690000000,
     sourceCode: '',
     transactionIds: ['913211'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '311025',
@@ -71,6 +78,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1698340041,
     sourceCode: '',
     transactionIds: ['914025'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '311382',
@@ -80,6 +88,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1698321919,
     sourceCode: '',
     transactionIds: ['915024', '918402'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '311382',
@@ -89,6 +98,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1698242391,
     sourceCode: '',
     transactionIds: ['916841'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '312817',
@@ -98,6 +108,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1698243092,
     sourceCode: '',
     transactionIds: ['919298'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '320062',
@@ -107,6 +118,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1694242591,
     sourceCode: '',
     transactionIds: ['919298'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '320103',
@@ -116,6 +128,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1690242391,
     sourceCode: '',
     transactionIds: ['919298'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '320293',
@@ -125,6 +138,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1683822349,
     sourceCode: '',
     transactionIds: ['919298'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '320592',
@@ -134,6 +148,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1682120557,
     sourceCode: '',
     transactionIds: ['923372'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '320728',
@@ -143,6 +158,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1682452309,
     sourceCode: '',
     transactionIds: ['924713', '928728'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '340042',
@@ -152,6 +168,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1687303345,
     sourceCode: '',
     transactionIds: ['940555'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '341938',
@@ -161,6 +178,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1685341407,
     sourceCode: '',
     transactionIds: ['940202'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '342001',
@@ -170,6 +188,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1687349821,
     sourceCode: '',
     transactionIds: ['940202', '944499'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '343917',
@@ -179,6 +198,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1687449002,
     sourceCode: '',
     transactionIds: ['944777'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '344321',
@@ -188,6 +208,7 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1687449002,
     sourceCode: '',
     transactionIds: ['945008'],
+    publicTag: ['Unknown user'],
   },
   {
     id: '345673',
@@ -197,5 +218,6 @@ export const dummyContractData: IContract[] = [
     createdTimestamp: 1687449002,
     sourceCode: '',
     transactionIds: ['945449'],
+    publicTag: ['Unknown user'],
   },
 ];
