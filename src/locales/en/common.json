@@ -161,14 +161,14 @@
   "CONTRACT_DETAIL_PAGE": {
     "MAIN_TITLE": "Contract",
     "PLATFORM": "Platform",
-    "CONTRACT_HASH": "Contract Hash",
+    "CONTRACT_ADDRESS": "Contract Address",
     "CREATOR": "Creator",
     "CREATING_TIME": "Creating Time",
     "SOURCE_CODE": "Source Code"
   },
   "EVIDENCE_DETAIL_PAGE": {
     "MAIN_TITLE": "Evidence",
-    "EVIDENCE_HASH": "Evidence Hash",
+    "EVIDENCE_ADDRESS": "Evidence Address",
     "STATE": "State",
     "CREATOR": "Creator",
     "CREATING_TIME": "Creating Time",
