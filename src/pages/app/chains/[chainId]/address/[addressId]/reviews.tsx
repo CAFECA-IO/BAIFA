@@ -87,7 +87,6 @@ const ReviewsPage = ({addressId, chainId, reviews}: IReviewsPageProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  // ToDo: (20231031 - Julian) Get paths
   const paths = dummyAddressData
     .flatMap(address => {
       return locales?.map(locale => ({

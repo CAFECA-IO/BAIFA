@@ -17,6 +17,7 @@ import PrivateNoteSection from '../../../../../components/private_note_section/p
 import TransactionHistorySection from '../../../../../components/transaction_history_section/transaction_history_section';
 import {dummyTransactionData} from '../../../../../interfaces/transaction';
 import Link from 'next/link';
+import Tooltip from '../../../../../components/tooltip/tooltip';
 
 interface IContractDetailPageProps {
   chainId: string;
@@ -26,8 +27,8 @@ interface IContractDetailPageProps {
 
 const ContractDetailPage = ({chainId, contractId, contractData}: IContractDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {transactionIds} = contractData;
-  const headTitle = `Contract ${contractId} - BAIFA`;
+  const {transactionIds, publicTag} = contractData;
+  const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
 
   const router = useRouter();
   const backClickHandler = () => router.back();
@@ -35,6 +36,15 @@ const ContractDetailPage = ({chainId, contractId, contractData}: IContractDetail
   const transactionHistory = dummyTransactionData.filter(transaction =>
     transactionIds.includes(transaction.id)
   );
+
+  const displayPublicTag = publicTag.map((tag, index) => (
+    <div
+      key={index}
+      className="whitespace-nowrap rounded border border-hoverWhite px-4 py-2 text-sm font-bold"
+    >
+      {t(tag)}
+    </div>
+  ));
 
   return (
     <>
@@ -48,29 +58,43 @@ const ContractDetailPage = ({chainId, contractId, contractData}: IContractDetail
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
           <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-28 lg:px-40 lg:pt-40">
             {/* Info: (20231106 - Julian) Header */}
-            <div className="relative flex w-full flex-col items-center justify-start lg:flex-row">
+            <div className="relative flex w-full flex-col items-center justify-start lg:flex-row lg:items-start">
               {/* Info: (20231106 - Julian) Back Arrow Button */}
               <button onClick={backClickHandler} className="hidden lg:block">
                 <BsArrowLeftShort className="text-48px" />
               </button>
               {/* Info: (20231106 - Julian) Contract Title */}
-              <div className="flex flex-1 items-center justify-center space-x-2">
-                <Image
-                  src={getChainIcon(chainId).src}
-                  alt={getChainIcon(chainId).alt}
-                  width={40}
-                  height={40}
-                />
-                <h1 className="text-2xl font-bold lg:text-32px">
-                  {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')}
-                  <span className="ml-2 text-primaryBlue"> {contractId}</span>
-                </h1>
+              <div className="flex flex-1 flex-col items-center justify-center space-y-4">
+                <div className="flex items-center space-x-2">
+                  <Image
+                    src={getChainIcon(chainId).src}
+                    alt={getChainIcon(chainId).alt}
+                    width={40}
+                    height={40}
+                  />
+                  <h1 className="text-2xl font-bold lg:text-32px">
+                    {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')}
+                    <span className="ml-2 text-primaryBlue"> {contractId}</span>
+                  </h1>
+                </div>
+                {/* Info: (20231109 - Julian) Public Tag */}
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center text-base font-bold text-lilac">
+                    {t('PUBLIC_TAG.TITLE')}&nbsp;
+                    <Tooltip>
+                      This is tooltip Sample Text. So if I type in more content, it would be like
+                      this.
+                    </Tooltip>
+                    &nbsp;:
+                  </div>
+                  <div className="">{displayPublicTag}</div>
+                </div>
               </div>
               {/* Info: (20231107 - Julian) Platform Link Button */}
-              <div className="right-0 mt-6 lg:absolute lg:mt-0">
+              <div className="right-0 mt-6 w-2/3 lg:absolute lg:mt-0 lg:w-fit">
                 <Link href={BFAURL.COMING_SOON}>
                   <BoltButton
-                    className="flex items-center justify-center space-x-4 px-6 py-3"
+                    className="flex w-full items-center justify-center space-x-4 px-6 py-3"
                     color="purple"
                     style="solid"
                   >

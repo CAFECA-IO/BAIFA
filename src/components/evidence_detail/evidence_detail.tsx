@@ -14,7 +14,7 @@ interface IEvidenceDetailProps {
 
 const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {evidenceHash, chainId, state, creatorAddressId, createdTimestamp} = evidenceData;
+  const {evidenceAddess, chainId, state, creatorAddressId, createdTimestamp} = evidenceData;
 
   const addressLink = getDynamicUrl(chainId, `${creatorAddressId}`).ADDRESS;
 
@@ -56,12 +56,12 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
       {/* Info: (20231107 - Julian) Evidence Hash */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          <p>{t('EVIDENCE_DETAIL_PAGE.EVIDENCE_HASH')}</p>
+          <p>{t('EVIDENCE_DETAIL_PAGE.EVIDENCE_ADDRESS')}</p>
           <Tooltip>
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <p className="break-words text-sm lg:text-base">{evidenceHash}</p>
+        <p className="break-words text-sm lg:text-base">{evidenceAddess}</p>
       </div>
       {/* Info: (20231107 - Julian) State */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

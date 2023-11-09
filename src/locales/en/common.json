@@ -125,8 +125,7 @@
     "MANAGEMENT": "Management Team",
     "CONTENT": "Content",
     "MINER_REWARD": "Miner & Reward",
-    "SIZE": "Size",
-    "TRANSACTIONS_COUNT": "Transactions"
+    "SIZE": "Size"
   },
   "TRANSACTION_DETAIL_PAGE": {
     "MAIN_TITLE": "Transaction",
@@ -146,7 +145,6 @@
     "MAIN_TITLE": "List"
   },
   "ADDRESS_DETAIL_PAGE": {
-    "PUBLIC_TAG": "Public tag",
     "MAIN_TITLE": "Address",
     "ADDRESS_ID": "Address",
     "SIGN_UP_TIME": "Sign Up Time",
@@ -161,14 +159,14 @@
   "CONTRACT_DETAIL_PAGE": {
     "MAIN_TITLE": "Contract",
     "PLATFORM": "Platform",
-    "CONTRACT_HASH": "Contract Hash",
+    "CONTRACT_ADDRESS": "Contract Address",
     "CREATOR": "Creator",
     "CREATING_TIME": "Creating Time",
     "SOURCE_CODE": "Source Code"
   },
   "EVIDENCE_DETAIL_PAGE": {
     "MAIN_TITLE": "Evidence",
-    "EVIDENCE_HASH": "Evidence Hash",
+    "EVIDENCE_ADDRESS": "Evidence Address",
     "STATE": "State",
     "CREATOR": "Creator",
     "CREATING_TIME": "Creating Time",
@@ -176,6 +174,11 @@
     "STATE_ACTIVE": "Active",
     "STATE_INACTIVE": "Inactive",
     "DOWNLOAD_EVIDENCE_BUTTON": "Download Evidence"
+  },
+  "INTERACTION_LIST_PAGE": {
+    "MAIN_TITLE_HIGHLIGHT": "Interaction ",
+    "MAIN_TITLE": "List",
+    "SEARCH_PLACEHOLDER": "Search in Interaction list"
   },
   "RED_FLAG_DETAIL_PAGE": {
     "MAIN_TITLE": "Red Flag",
@@ -244,6 +247,7 @@
     "RISK_LOW": "Low Risk",
     "ADDRESSES": "Addresses",
     "CONTRACTS": "Contracts",
+    "TRANSACTIONS": "Transactions",
     "TIMES": "Times",
     "CONTENT_ENCRYPTED": "Content Encrypted",
     "FOLLOW": "Follow",
@@ -254,6 +258,11 @@
     "TRANSACTION_HISTORY_PLACEHOLDER": "Search in Transaction History",
     "BLOCK_PRODUCED_HISTORY_TITLE": "Block Produced History",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "Search in Block Produced History"
+  },
+  "PUBLIC_TAG": {
+    "TITLE": "Public tag",
+    "UNKNOWN_USER": "Unknown User",
+    "HACKER": "Hacker"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

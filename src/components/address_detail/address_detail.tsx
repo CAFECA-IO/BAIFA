@@ -16,8 +16,10 @@ interface IAddressDetailProps {
 const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
+    id,
     addressId,
-    signUpTime,
+    chainId,
+    createdTimestamp,
     lastestActiveTime,
     relatedAddressIds,
     interactedAddressIds,
@@ -41,10 +43,12 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     return () => clearTimeout(timer);
   }, [sinceTime]);
 
+  const interactionLink = getDynamicUrl(`${chainId}`, `${id}`).INTERACTION;
+
   const displaySignUpTime = (
     <div className="flex flex-wrap items-center">
-      <p className="mr-2">{timestampToString(signUpTime).date}</p>
-      <p className="mr-2">{timestampToString(signUpTime).time}</p>
+      <p className="mr-2">{timestampToString(createdTimestamp).date}</p>
+      <p className="mr-2">{timestampToString(createdTimestamp).time}</p>
     </div>
   );
 
@@ -71,7 +75,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const displayInteractedWith = (
     <div className="flex items-center space-x-2 text-base">
       <div className="flex items-center whitespace-nowrap">
-        <Link href={BFAURL.COMING_SOON}>
+        <Link href={`${interactionLink}?type=Address`}>
           <span className="mr-2 text-primaryBlue underline underline-offset-2">
             {interactedAddressIds.length}
           </span>
@@ -79,7 +83,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
         <p>{t('COMMON.ADDRESSES')} /</p>
       </div>
       <div className="flex items-center whitespace-nowrap">
-        <Link href={BFAURL.COMING_SOON}>
+        <Link href={`${interactionLink}?type=Contract`}>
           <span className="mr-2 text-primaryBlue underline underline-offset-2">
             {interactedContactIds.length}
           </span>

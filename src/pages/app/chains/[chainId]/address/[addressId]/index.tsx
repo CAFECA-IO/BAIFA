@@ -32,7 +32,7 @@ interface IAddressDetailPageProps {
 const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
-  const {chainId, transactionIds} = addressData;
+  const {chainId, transactionIds, publicTag} = addressData;
   const chainIcon = getChainIcon(chainId);
 
   const router = useRouter();
@@ -46,6 +46,15 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
   );
   // Info: (20231103 - Julian) dummy data
   const dummyBlockProducedHistory = dummyBlockData.filter(block => block.chainId === chainId);
+
+  const displayPublicTag = publicTag.map((tag, index) => (
+    <div
+      key={index}
+      className="whitespace-nowrap rounded border border-hoverWhite px-4 py-2 text-sm font-bold"
+    >
+      {t(tag)}
+    </div>
+  ));
 
   return (
     <>
@@ -75,19 +84,22 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
             </div>
             <div className="my-4 flex w-full flex-col items-center space-y-10">
               {/* Info: (20231018 - Julian) Public Tag */}
-              <div className="flex items-center space-x-2">
-                <h2 className="text-base font-bold text-lilac">
-                  {t('ADDRESS_DETAIL_PAGE.PUBLIC_TAG')}
-                </h2>
-                <Tooltip>
-                  This is tooltip Sample Text. So if I type in more content, it would be like this.
-                </Tooltip>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center text-base font-bold text-lilac">
+                  {t('PUBLIC_TAG.TITLE')}&nbsp;
+                  <Tooltip>
+                    This is tooltip Sample Text. So if I type in more content, it would be like
+                    this.
+                  </Tooltip>
+                  &nbsp;:
+                </div>
+                <div className="">{displayPublicTag}</div>
               </div>
               <div className="flex flex-col items-center space-y-4 sm:w-1/2 lg:w-2/5 lg:flex-row lg:space-x-6 lg:space-y-0">
                 {/* Info: (20231018 - Julian) Tracing Tool Button */}
                 <Link href={BFAURL.COMING_SOON} className="w-full">
                   <BoltButton
-                    className="flex w-full items-center justify-center space-x-2 px-6 py-4 lg:w-fit"
+                    className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
                     color="purple"
                     style="solid"
                   >
@@ -98,7 +110,7 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
                 {/* Info: (20231018 - Julian) Follow Button */}
                 <Link href={BFAURL.COMING_SOON} className="w-full">
                   <BoltButton
-                    className="flex w-full items-center justify-center space-x-2 px-6 py-4 lg:w-fit"
+                    className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
                     color="purple"
                     style="solid"
                   >
