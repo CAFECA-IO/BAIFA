@@ -18,7 +18,7 @@ const InteractionItem = ({interactedData}: IInteractionItemProps) => {
   const itemLink = getDynamicUrl(`${chainId}`, `${id}`);
 
   const displayPublicTag = (
-    <div className="whitespace-nowrap rounded border-violet bg-violet px-4 py-2 text-base">
+    <div className="whitespace-nowrap rounded border-violet bg-violet px-4 py-2 text-sm lg:text-base">
       {t(publicTag[0])}
     </div>
   );
@@ -48,7 +48,7 @@ const InteractionItem = ({interactedData}: IInteractionItemProps) => {
       {displayPublicTag}
       {/* Info: (20231108 - Julian) Address/Contract ID */}
       {displayIds}
-      <div className="flex items-center">
+      <div className="hidden items-center lg:flex">
         <p className="text-sm">
           <Link href={BFAURL.COMING_SOON} className="text-primaryBlue underline underline-offset-2">
             {transactionIds.length}

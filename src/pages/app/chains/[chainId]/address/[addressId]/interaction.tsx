@@ -19,7 +19,8 @@ import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {dummyAddressData} from '../../../../../../interfaces/address';
 import {dummyContractData} from '../../../../../../interfaces/contract';
 import {IInteractionItem} from '../../../../../../interfaces/interaction_item';
-import {sortOldAndNewOptions} from '../../../../../../constants/config';
+import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../../../../../constants/config';
+import Pagination from '../../../../../../components/pagination/pagination';
 
 interface IInteractionPageProps {
   addressId: string;
@@ -29,7 +30,7 @@ interface IInteractionPageProps {
 
 const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const headTitle = `${t('INTERACTION_LIST_PAGE.MAIN_TITLE_HIGHLIGHT')} ${t(
+  const headTitle = `${t('INTERACTION_LIST_PAGE.MAIN_TITLE_HIGHLIGHT')}${t(
     'INTERACTION_LIST_PAGE.MAIN_TITLE'
   )} ${t('COMMON.OF')} ${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
@@ -42,9 +43,9 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
   const selectedType = type ? type.toString() : null;
   // Info: (20231108 - Julian) Type Options
   const typeOptions = [
-    t('SORTING.ALL'),
-    t('ADDRESS_DETAIL_PAGE.MAIN_TITLE'),
-    t('CONTRACT_DETAIL_PAGE.MAIN_TITLE'),
+    'SORTING.ALL',
+    'ADDRESS_DETAIL_PAGE.MAIN_TITLE',
+    'CONTRACT_DETAIL_PAGE.MAIN_TITLE',
   ];
   const defaultType =
     selectedType && typeOptions.includes(selectedType) ? selectedType : typeOptions[0];
@@ -59,9 +60,17 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
   const [filteredType, setFilteredType] = useState<string>(defaultType);
   const [filteredInteractedList, setFilteredInteractedList] =
     useState<IInteractionItem[]>(interactedList);
+  const [activePage, setActivePage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(
+    Math.ceil(interactedList.length / ITEM_PER_PAGE)
+  );
+
+  const endIdx = activePage * ITEM_PER_PAGE;
+  const startIdx = endIdx - ITEM_PER_PAGE;
 
   useEffect(() => {
-    const searchResult = interactedList // Info: (20231108 - Julian) filter by search term
+    const searchResult = interactedList
+      // Info: (20231108 - Julian) filter by search term
       .filter((interactedData: IInteractionItem) => {
         const searchTerm = searchRef.current.toLowerCase();
         const type = interactedData.type.toLowerCase();
@@ -83,9 +92,8 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
       })
       // Info: (20231108 - Julian) filter by type
       .filter((interactedData: IInteractionItem) => {
-        return filteredType !== typeOptions[0]
-          ? interactedData.type.toLowerCase() === filteredType.toLowerCase()
-          : true;
+        const type = interactedData.type.toLowerCase();
+        return filteredType !== typeOptions[0] ? filteredType.toLowerCase().includes(type) : true;
       })
       // Info: (20231108 - Julian) sort by Newest or Oldest
       .sort((a: IInteractionItem, b: IInteractionItem) => {
@@ -93,12 +101,18 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
           ? a.createdTimestamp - b.createdTimestamp
           : b.createdTimestamp - a.createdTimestamp;
       });
+
     setFilteredInteractedList(searchResult);
+    setActivePage(1);
+    setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
   }, [filteredType, search, period, sorting]);
 
-  const displayInteractedList = filteredInteractedList.map((interactedData, index) => (
-    <InteractionItem key={index} interactedData={interactedData} />
-  ));
+  const displayInteractedList = filteredInteractedList
+    // Info: (20231109 - Julian) Pagination
+    .slice(startIdx, endIdx)
+    .map((interactedData, index) => (
+      <InteractionItem key={index} interactedData={interactedData} />
+    ));
 
   return (
     <>
@@ -122,7 +136,7 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
                 <h1 className="text-2xl font-bold lg:text-48px">
                   <span className="text-primaryBlue">
                     {t('INTERACTION_LIST_PAGE.MAIN_TITLE_HIGHLIGHT')}
-                  </span>{' '}
+                  </span>
                   {t('INTERACTION_LIST_PAGE.MAIN_TITLE')}
                 </h1>
                 <div className="flex items-center space-x-2">
@@ -171,6 +185,11 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
 
             {/* Info: (20231108 - Julian) Interaction List */}
             <div className="flex w-full flex-col lg:mt-20">{displayInteractedList}</div>
+            <Pagination
+              activePage={activePage}
+              setActivePage={setActivePage}
+              totalPages={totalPages}
+            />
 
             {/* Info: (20231108 - Julian) Back button */}
             <div className="">
