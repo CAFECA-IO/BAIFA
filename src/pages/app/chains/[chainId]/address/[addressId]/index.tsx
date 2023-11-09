@@ -52,7 +52,7 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
       key={index}
       className="whitespace-nowrap rounded border border-hoverWhite px-4 py-2 text-sm font-bold"
     >
-      {tag}
+      {t(tag)}
     </div>
   ));
 
@@ -86,7 +86,7 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
               {/* Info: (20231018 - Julian) Public Tag */}
               <div className="flex items-center space-x-4">
                 <div className="flex items-center text-base font-bold text-lilac">
-                  {t('ADDRESS_DETAIL_PAGE.PUBLIC_TAG')}&nbsp;
+                  {t('PUBLIC_TAG.TITLE')}&nbsp;
                   <Tooltip>
                     This is tooltip Sample Text. So if I type in more content, it would be like
                     this.

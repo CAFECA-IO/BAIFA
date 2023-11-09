@@ -34,7 +34,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['930032', '930071'],
     flagging: [],
     riskLevel: RiskLevel.LOW_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '130025',
@@ -49,7 +49,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['930291', '930683'],
     flagging: [],
     riskLevel: RiskLevel.LOW_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '130089',
@@ -64,7 +64,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['930032', '931302'],
     flagging: [RedFlagType.LARGE_WITHDRAW],
     riskLevel: RiskLevel.MEDIUM_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '130294',
@@ -79,7 +79,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['930071'],
     flagging: [RedFlagType.LARGE_DEPOSIT],
     riskLevel: RiskLevel.MEDIUM_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '130682',
@@ -94,7 +94,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['930291', '931302'],
     flagging: [RedFlagType.GAMBLING_SITE],
     riskLevel: RiskLevel.HIGH_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '134902',
@@ -109,7 +109,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['930683'],
     flagging: [RedFlagType.GAMBLING_SITE, RedFlagType.PRIVACY_COINS],
     riskLevel: RiskLevel.HIGH_RISK,
-    publicTag: ['Hacker'],
+    publicTag: ['PUBLIC_TAG.HACKER'],
   },
   {
     id: '110029',
@@ -124,7 +124,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['910101', '914025'],
     flagging: [RedFlagType.PRIVACY_COINS],
     riskLevel: RiskLevel.MEDIUM_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '110132',
@@ -139,7 +139,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['910101', '912299', '918402'],
     flagging: [RedFlagType.LARGE_DEPOSIT],
     riskLevel: RiskLevel.MEDIUM_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '112840',
@@ -154,7 +154,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['912299', '913211', '919298'],
     flagging: [RedFlagType.DARKNET, RedFlagType.BLACK_LIST],
     riskLevel: RiskLevel.HIGH_RISK,
-    publicTag: ['Hacker'],
+    publicTag: ['PUBLIC_TAG.HACKER'],
   },
   {
     id: '113992',
@@ -169,14 +169,14 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['913211', '915024', '916841'],
     flagging: [RedFlagType.MIXING_SERVICE],
     riskLevel: RiskLevel.MEDIUM_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '114007',
     type: 'address',
     addressId: '0x1975d15693fEc256Cd88243a0f9f74D319064',
     chainId: 'btc',
-    createdTimestamp: 16853990284,
+    createdTimestamp: 1685399284,
     lastestActiveTime: 1688435283,
     relatedAddressIds: ['110029', '113992', '110132'],
     interactedAddressIds: ['110029', '113992', '110132'],
@@ -184,14 +184,14 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['914025', '915024', '918402'],
     flagging: [],
     riskLevel: RiskLevel.LOW_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '115588',
     type: 'address',
     addressId: '0x1975d1566Cd88243a0f9f74D319093fEc2564',
     chainId: 'btc',
-    createdTimestamp: 16853990284,
+    createdTimestamp: 1685390284,
     lastestActiveTime: 1688435283,
     relatedAddressIds: ['113992', '112840'],
     interactedAddressIds: ['113992', '112840'],
@@ -199,7 +199,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['916841', '919298'],
     flagging: [RedFlagType.DARKNET],
     riskLevel: RiskLevel.HIGH_RISK,
-    publicTag: ['Hacker'],
+    publicTag: ['PUBLIC_TAG.HACKER'],
   },
   {
     id: '120499',
@@ -214,7 +214,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['920219', '928728'],
     flagging: [],
     riskLevel: RiskLevel.LOW_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '120999',
@@ -229,7 +229,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['920219'],
     flagging: [],
     riskLevel: RiskLevel.LOW_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '123201',
@@ -244,7 +244,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['923372', '928728', '924713'],
     flagging: [RedFlagType.MULTIPLE_RECEIVES],
     riskLevel: RiskLevel.MEDIUM_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '121700',
@@ -259,7 +259,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['922372', '923372'],
     flagging: [RedFlagType.HIGH_RISK_LOCATION],
     riskLevel: RiskLevel.HIGH_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '122810',
@@ -274,7 +274,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['922372'],
     flagging: [RedFlagType.HIGH_RISK_LOCATION],
     riskLevel: RiskLevel.HIGH_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '140002',
@@ -289,7 +289,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['940202', '940555', '944499'],
     flagging: [],
     riskLevel: RiskLevel.LOW_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '140007',
@@ -304,7 +304,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['940202', '941749', '944499', '944777'],
     flagging: [RedFlagType.PRIVACY_COINS],
     riskLevel: RiskLevel.MEDIUM_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '140050',
@@ -319,7 +319,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['940555', '941749'],
     flagging: [RedFlagType.GAMBLING_SITE, RedFlagType.DARKNET],
     riskLevel: RiskLevel.HIGH_RISK,
-    publicTag: ['Hacker'],
+    publicTag: ['PUBLIC_TAG.HACKER'],
   },
   {
     id: '140333',
@@ -334,7 +334,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['944777', '945008'],
     flagging: [],
     riskLevel: RiskLevel.LOW_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '144055',
@@ -349,7 +349,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['945008'],
     flagging: [RedFlagType.LARGE_DEPOSIT],
     riskLevel: RiskLevel.MEDIUM_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '144338',
@@ -364,7 +364,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['945449'],
     flagging: [],
     riskLevel: RiskLevel.LOW_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '146605',
@@ -379,7 +379,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['945449'],
     flagging: [],
     riskLevel: RiskLevel.LOW_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '150381',
@@ -394,7 +394,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['955549'],
     flagging: [RedFlagType.LARGE_WITHDRAW],
     riskLevel: RiskLevel.MEDIUM_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
     id: '150472',
@@ -409,6 +409,6 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['955549'],
     flagging: [],
     riskLevel: RiskLevel.LOW_RISK,
-    publicTag: ['Unknown User'],
+    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
 ];

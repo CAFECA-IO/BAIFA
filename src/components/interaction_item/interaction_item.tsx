@@ -19,7 +19,7 @@ const InteractionItem = ({interactedData}: IInteractionItemProps) => {
 
   const displayPublicTag = (
     <div className="whitespace-nowrap rounded border-violet bg-violet px-4 py-2 text-base">
-      {publicTag[0]}
+      {t(publicTag[0])}
     </div>
   );
 
@@ -53,7 +53,7 @@ const InteractionItem = ({interactedData}: IInteractionItemProps) => {
           <Link href={BFAURL.COMING_SOON} className="text-primaryBlue underline underline-offset-2">
             {transactionIds.length}
           </Link>{' '}
-          Transactions
+          {t('COMMON.TRANSACTIONS')}
         </p>
       </div>
     </div>

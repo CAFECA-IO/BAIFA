@@ -29,9 +29,9 @@ interface IInteractionPageProps {
 
 const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const headTitle = `Interaction List ${t('COMMON.OF')} ${t(
-    'ADDRESS_DETAIL_PAGE.MAIN_TITLE'
-  )} ${addressId} - BAIFA`;
+  const headTitle = `${t('INTERACTION_LIST_PAGE.MAIN_TITLE_HIGHLIGHT')} ${t(
+    'INTERACTION_LIST_PAGE.MAIN_TITLE'
+  )} ${t('COMMON.OF')} ${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
   const router = useRouter();
@@ -41,7 +41,11 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
   const {type} = router.query;
   const selectedType = type ? type.toString() : null;
   // Info: (20231108 - Julian) Type Options
-  const typeOptions = ['All', 'Address', 'Contract'];
+  const typeOptions = [
+    t('SORTING.ALL'),
+    t('ADDRESS_DETAIL_PAGE.MAIN_TITLE'),
+    t('CONTRACT_DETAIL_PAGE.MAIN_TITLE'),
+  ];
   const defaultType =
     selectedType && typeOptions.includes(selectedType) ? selectedType : typeOptions[0];
 
@@ -116,7 +120,10 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
               {/* Info: (20231108 -Julian) Interaction Title */}
               <div className="flex flex-1 flex-col items-center justify-center space-y-6">
                 <h1 className="text-2xl font-bold lg:text-48px">
-                  <span className="text-primaryBlue">Interaction</span> List
+                  <span className="text-primaryBlue">
+                    {t('INTERACTION_LIST_PAGE.MAIN_TITLE_HIGHLIGHT')}
+                  </span>{' '}
+                  {t('INTERACTION_LIST_PAGE.MAIN_TITLE')}
                 </h1>
                 <div className="flex items-center space-x-2">
                   <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
@@ -132,7 +139,7 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
               {/* Info: (20231108 - Julian) Search Bar */}
               <div className="mx-auto w-full lg:w-7/10">
                 <SearchBar
-                  searchBarPlaceholder={'Search in Interaction List'}
+                  searchBarPlaceholder={t('INTERACTION_LIST_PAGE.SEARCH_PLACEHOLDER')}
                   setSearch={setSearch}
                 />
               </div>

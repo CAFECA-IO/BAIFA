@@ -125,8 +125,7 @@
     "MANAGEMENT": "管理團隊",
     "CONTENT": "內容",
     "MINER_REWARD": "礦工 & 報酬",
-    "SIZE": "區塊大小",
-    "TRANSACTIONS_COUNT": "筆交易"
+    "SIZE": "區塊大小"
   },
   "TRANSACTION_DETAIL_PAGE": {
     "MAIN_TITLE": "交易",
@@ -146,7 +145,6 @@
     "MAIN_TITLE": "列表"
   },
   "ADDRESS_DETAIL_PAGE": {
-    "PUBLIC_TAG": "公開標籤",
     "MAIN_TITLE": "地址",
     "ADDRESS_ID": "地址",
     "SIGN_UP_TIME": "註冊時間",
@@ -176,6 +174,11 @@
     "STATE_ACTIVE": "有效",
     "STATE_INACTIVE": "無效",
     "DOWNLOAD_EVIDENCE_BUTTON": "下載證據"
+  },
+  "INTERACTION_LIST_PAGE": {
+    "MAIN_TITLE_HIGHLIGHT": "互動",
+    "MAIN_TITLE": "列表",
+    "SEARCH_PLACEHOLDER": "在互動列表中搜尋"
   },
   "RED_FLAG_DETAIL_PAGE": {
     "MAIN_TITLE": "警示",
@@ -244,6 +247,7 @@
     "RISK_LOW": "低風險",
     "ADDRESSES": "個地址",
     "CONTRACTS": "個合約",
+    "TRANSACTIONS": "筆交易",
     "TIMES": "次",
     "CONTENT_ENCRYPTED": "內容已加密",
     "FOLLOW": "追蹤",
@@ -254,6 +258,11 @@
     "TRANSACTION_HISTORY_PLACEHOLDER": "在交易記錄中搜尋",
     "BLOCK_PRODUCED_HISTORY_TITLE": "區塊生成歷史記錄",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在區塊生成記錄中搜尋"
+  },
+  "PUBLIC_TAG": {
+    "TITLE": "公開標籤",
+    "UNKNOWN_USER": "未知用戶",
+    "HACKER": "駭客"
   },
   "FOOTER": {
     "POWERED_BY": "技術支持 稗法",
