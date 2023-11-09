@@ -181,7 +181,9 @@
     "SEARCH_PLACEHOLDER": "Search in Interaction list"
   },
   "RED_FLAG_DETAIL_PAGE": {
-    "MAIN_TITLE": "Red Flag",
+    "MAIN_TITLE_HIGHLIGHT": "Red ",
+    "MAIN_TITLE": "Flag",
+    "SEARCH_PLACEHOLDER": "Search in Red Flag list",
     "FLAG_TYPE_MULTIPLE_RECEIVES": "Multiple Receives",
     "FLAG_TYPE_MULTIPLE_TRANSFER": "Multiple Transfer",
     "FLAG_TYPE_LARGE_TRANSFER": "Large Transfer",

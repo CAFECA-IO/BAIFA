@@ -181,7 +181,9 @@
     "SEARCH_PLACEHOLDER": "在互動列表中搜尋"
   },
   "RED_FLAG_DETAIL_PAGE": {
-    "MAIN_TITLE": "警示",
+    "MAIN_TITLE_HIGHLIGHT": "警示",
+    "MAIN_TITLE": "記錄",
+    "SEARCH_PLACEHOLDER": "在警示列表中搜尋",
     "FLAG_TYPE_MULTIPLE_RECEIVES": "多次收款",
     "FLAG_TYPE_MULTIPLE_TRANSFER": "多次轉帳",
     "FLAG_TYPE_LARGE_TRANSFER": "大額轉帳",
