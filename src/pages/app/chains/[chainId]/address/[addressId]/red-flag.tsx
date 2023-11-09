@@ -16,17 +16,18 @@ import {BsArrowLeftShort} from 'react-icons/bs';
 import {getChainIcon} from '../../../../../../lib/common';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {dummyAddressData} from '../../../../../../interfaces/address';
-import {dummyContractData} from '../../../../../../interfaces/contract';
-import {IInteractionItem} from '../../../../../../interfaces/interaction_item';
 import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../../../../../constants/config';
 import Pagination from '../../../../../../components/pagination/pagination';
+import {IRedFlag} from '../../../../../../interfaces/red_flag';
+import RedFlagItem from '../../../../../../components/red_flag_item/red_flag_item';
 
 interface IRedFlagOfAddressPageProps {
   chainId: string;
   addressId: string;
+  redflagData: IRedFlag[];
 }
 
-const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) => {
+const RedFlagOfAddressPage = ({chainId, addressId, redflagData}: IRedFlagOfAddressPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.MAIN_TITLE_HIGHLIGHT')}${t(
     'RED_FLAG_DETAIL_PAGE.MAIN_TITLE'
@@ -37,7 +38,8 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
   const backClickHandler = () => router.back();
 
   // Info: (20231109 - Julian) Type Options
-  const typeOptions = ['SORTING.ALL'];
+  const flaggingType = redflagData.map(redflagData => redflagData.redFlagType);
+  const typeOptions = ['SORTING.ALL', ...flaggingType];
 
   // Info: (20231109 - Julian) States
   const [search, setSearch, searchRef] = useStateRef('');
@@ -47,52 +49,54 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
     endTimeStamp: 0,
   });
   const [filteredType, setFilteredType] = useState<string>(typeOptions[0]);
-  //const [filteredInteractedList, setFilteredInteractedList] =
-  //  useState<IInteractionItem[]>(interactedList);
+  const [filteredRedFlagList, setFilteredRedFlagList] = useState<IRedFlag[]>(redflagData);
   const [activePage, setActivePage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  //  Math.ceil(interactedList.length / ITEM_PER_PAGE)
+  const [totalPages, setTotalPages] = useState<number>(
+    Math.ceil(redflagData.length / ITEM_PER_PAGE)
+  );
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
-  useEffect(() => {
-    /*       const searchResult = interactedList
-        // Info: (20231108 - Julian) filter by search term
-        .filter((interactedData: IInteractionItem) => {
-          const searchTerm = searchRef.current.toLowerCase();
-          const type = interactedData.type.toLowerCase();
-          const id = interactedData.id.toLowerCase();
-          const publicTag = interactedData.publicTag.map(tag => tag.toLowerCase());
-          return searchTerm !== ''
-            ? type.includes(searchTerm) || id.includes(searchTerm) || publicTag.includes(searchTerm)
-            : true;
-        })
-        // Info: (20231108 - Julian) filter by date range
-        .filter((interactedData: IInteractionItem) => {
-          const createdTimestamp = interactedData.createdTimestamp;
-          const start = period.startTimeStamp;
-          const end = period.endTimeStamp;
-          // Info: (20231108 - Julian) if start and end are 0, it means that there is no period filter
-          const isCreatedTimestampInRange =
-            start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-          return isCreatedTimestampInRange;
-        })
-        // Info: (20231108 - Julian) filter by type
-        .filter((interactedData: IInteractionItem) => {
-          const type = interactedData.type.toLowerCase();
-          return filteredType !== typeOptions[0] ? filteredType.toLowerCase().includes(type) : true;
-        })
-        // Info: (20231108 - Julian) sort by Newest or Oldest
-        .sort((a: IInteractionItem, b: IInteractionItem) => {
-          return sorting === sortOldAndNewOptions[0]
-            ? a.createdTimestamp - b.createdTimestamp
-            : b.createdTimestamp - a.createdTimestamp;
-        }); */
+  const displayRedFlagList = filteredRedFlagList
+    // Info: (20231109 - Julian) pagination
+    .slice(startIdx, endIdx)
+    .map((redflagData, index) => <RedFlagItem key={index} redflagData={redflagData} />);
 
-    //setFilteredInteractedList(searchResult);
+  useEffect(() => {
+    const searchResult = redflagData
+      // Info: (20231109 - Julian) filter by search term
+      .filter((redflagData: IRedFlag) => {
+        const searchTerm = searchRef.current.toLowerCase();
+        const type = redflagData.redFlagType.toLowerCase();
+        const id = redflagData.addressId.toLowerCase();
+        return searchTerm !== '' ? type.includes(searchTerm) || id.includes(searchTerm) : true;
+      })
+      // Info: (20231109 - Julian) filter by date range
+      .filter((redflagData: IRedFlag) => {
+        const createdTimestamp = redflagData.flaggingTimestamp;
+        const start = period.startTimeStamp;
+        const end = period.endTimeStamp;
+        // Info: (20231109 - Julian) if start and end are 0, it means that there is no period filter
+        const isCreatedTimestampInRange =
+          start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+        return isCreatedTimestampInRange;
+      })
+      // Info: (20231109 - Julian) filter by type
+      .filter((redflagData: IRedFlag) => {
+        const type = redflagData.redFlagType.toLowerCase();
+        return filteredType !== typeOptions[0] ? filteredType.toLowerCase().includes(type) : true;
+      })
+      // Info: (20231109 - Julian) sort by Newest or Oldest
+      .sort((a: IRedFlag, b: IRedFlag) => {
+        return sorting === sortOldAndNewOptions[0]
+          ? a.flaggingTimestamp - b.flaggingTimestamp
+          : b.flaggingTimestamp - a.flaggingTimestamp;
+      });
+
+    setFilteredRedFlagList(searchResult);
     setActivePage(1);
-    //setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
+    setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
   }, [filteredType, search, period, sorting]);
 
   return (
@@ -165,7 +169,7 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
             </div>
 
             {/* Info: (20231109 - Julian) Red Flag List */}
-            <div className="flex w-full flex-col lg:mt-20"></div>
+            <div className="flex w-full flex-col lg:mt-20">{displayRedFlagList}</div>
             <Pagination
               activePage={activePage}
               setActivePage={setActivePage}
@@ -241,7 +245,7 @@ export const getStaticProps: GetStaticProps<IRedFlagOfAddressPageProps> = async 
     props: {
       addressId: params.addressId,
       chainId: params.chainId,
-      //interactedList,
+      redflagData: originAddressData.flagging,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };
