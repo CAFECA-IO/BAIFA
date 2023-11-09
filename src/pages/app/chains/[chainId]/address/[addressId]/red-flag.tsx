@@ -24,21 +24,21 @@ import RedFlagItem from '../../../../../../components/red_flag_item/red_flag_ite
 interface IRedFlagOfAddressPageProps {
   chainId: string;
   addressId: string;
-  redflagData: IRedFlag[];
+  redFlagData: IRedFlag[];
 }
 
-const RedFlagOfAddressPage = ({chainId, addressId, redflagData}: IRedFlagOfAddressPageProps) => {
+const RedFlagOfAddressPage = ({chainId, addressId, redFlagData}: IRedFlagOfAddressPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const headTitle = `${t('RED_FLAG_DETAIL_PAGE.MAIN_TITLE_HIGHLIGHT')}${t(
-    'RED_FLAG_DETAIL_PAGE.MAIN_TITLE'
-  )} ${t('COMMON.OF')} ${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
+  const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} ${t('COMMON.OF')} ${t(
+    'ADDRESS_DETAIL_PAGE.MAIN_TITLE'
+  )} ${addressId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
   const router = useRouter();
   const backClickHandler = () => router.back();
 
   // Info: (20231109 - Julian) Type Options
-  const flaggingType = redflagData.map(redflagData => redflagData.redFlagType);
+  const flaggingType = redFlagData.map(redFlagData => redFlagData.redFlagType);
   const typeOptions = ['SORTING.ALL', ...flaggingType];
 
   // Info: (20231109 - Julian) States
@@ -49,10 +49,10 @@ const RedFlagOfAddressPage = ({chainId, addressId, redflagData}: IRedFlagOfAddre
     endTimeStamp: 0,
   });
   const [filteredType, setFilteredType] = useState<string>(typeOptions[0]);
-  const [filteredRedFlagList, setFilteredRedFlagList] = useState<IRedFlag[]>(redflagData);
+  const [filteredRedFlagList, setFilteredRedFlagList] = useState<IRedFlag[]>(redFlagData);
   const [activePage, setActivePage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(
-    Math.ceil(redflagData.length / ITEM_PER_PAGE)
+    Math.ceil(redFlagData.length / ITEM_PER_PAGE)
   );
 
   const endIdx = activePage * ITEM_PER_PAGE;
@@ -61,20 +61,20 @@ const RedFlagOfAddressPage = ({chainId, addressId, redflagData}: IRedFlagOfAddre
   const displayRedFlagList = filteredRedFlagList
     // Info: (20231109 - Julian) pagination
     .slice(startIdx, endIdx)
-    .map((redflagData, index) => <RedFlagItem key={index} redflagData={redflagData} />);
+    .map((redFlagData, index) => <RedFlagItem key={index} redFlagData={redFlagData} />);
 
   useEffect(() => {
-    const searchResult = redflagData
+    const searchResult = redFlagData
       // Info: (20231109 - Julian) filter by search term
-      .filter((redflagData: IRedFlag) => {
+      .filter((redFlagData: IRedFlag) => {
         const searchTerm = searchRef.current.toLowerCase();
-        const type = redflagData.redFlagType.toLowerCase();
-        const id = redflagData.addressId.toLowerCase();
+        const type = redFlagData.redFlagType.toLowerCase();
+        const id = redFlagData.addressId.toLowerCase();
         return searchTerm !== '' ? type.includes(searchTerm) || id.includes(searchTerm) : true;
       })
       // Info: (20231109 - Julian) filter by date range
-      .filter((redflagData: IRedFlag) => {
-        const createdTimestamp = redflagData.flaggingTimestamp;
+      .filter((redFlagData: IRedFlag) => {
+        const createdTimestamp = redFlagData.flaggingTimestamp;
         const start = period.startTimeStamp;
         const end = period.endTimeStamp;
         // Info: (20231109 - Julian) if start and end are 0, it means that there is no period filter
@@ -83,8 +83,8 @@ const RedFlagOfAddressPage = ({chainId, addressId, redflagData}: IRedFlagOfAddre
         return isCreatedTimestampInRange;
       })
       // Info: (20231109 - Julian) filter by type
-      .filter((redflagData: IRedFlag) => {
-        const type = redflagData.redFlagType.toLowerCase();
+      .filter((redFlagData: IRedFlag) => {
+        const type = redFlagData.redFlagType.toLowerCase();
         return filteredType !== typeOptions[0] ? filteredType.toLowerCase().includes(type) : true;
       })
       // Info: (20231109 - Julian) sort by Newest or Oldest
@@ -245,7 +245,7 @@ export const getStaticProps: GetStaticProps<IRedFlagOfAddressPageProps> = async 
     props: {
       addressId: params.addressId,
       chainId: params.chainId,
-      redflagData: originAddressData.flagging,
+      redFlagData: originAddressData.flagging,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };

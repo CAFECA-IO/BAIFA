@@ -7,14 +7,14 @@ import {getChainIcon, timestampToString} from '../../lib/common';
 import {IRedFlag} from '../../interfaces/red_flag';
 
 interface IRedFlagItemProps {
-  redflagData: IRedFlag;
+  redFlagData: IRedFlag;
 }
 
-const RedFlagItem = ({redflagData}: IRedFlagItemProps) => {
+const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const chainIcon = getChainIcon(redflagData.chainId);
+  const chainIcon = getChainIcon(redFlagData.chainId);
 
-  const flaggingTime = timestampToString(redflagData.flaggingTimestamp);
+  const flaggingTime = timestampToString(redFlagData.flaggingTimestamp);
   // Info: (20231109 - Julian) If month is longer than 3 letters, slice it and add a dot
   const monthStr =
     t(flaggingTime.month).length > 3
@@ -39,13 +39,13 @@ const RedFlagItem = ({redflagData}: IRedFlagItemProps) => {
           <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
           <h2>
             {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-            <span className="text-primaryBlue"> {redflagData.addressId}</span>
+            <span className="text-primaryBlue"> {redFlagData.addressId}</span>
           </h2>
         </Link>
         {/* Info: (20231109 - Julian) Flag Type */}
         <div className="flex items-center space-x-2 px-2">
           <Image src="/icons/red_flag.svg" alt="red_flag_icon" width={24} height={24} />
-          <p className="hidden text-sm lg:block">{t(redflagData.redFlagType)}</p>
+          <p className="hidden text-sm lg:block">{t(redFlagData.redFlagType)}</p>
         </div>
       </div>
     </div>
