@@ -56,7 +56,7 @@ const SortingMenu = ({sortingOptions, sorting, setSorting, isLinearBg}: ISearchF
 
       <ul
         ref={sortingRef}
-        className={`absolute -top-6 right-0 z-10 grid w-full grid-cols-1 items-center overflow-hidden lg:w-160px ${
+        className={`absolute -top-6 right-0 z-10 grid max-h-320px w-full items-center overflow-y-auto overflow-x-hidden lg:w-160px ${
           sortingVisible
             ? 'visible translate-y-90px grid-rows-1 opacity-100'
             : 'invisible translate-y-12 grid-rows-0 opacity-0'

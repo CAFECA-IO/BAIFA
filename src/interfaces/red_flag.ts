@@ -17,7 +17,7 @@ export const getDummyRedFlag = (
   addressId: string,
   flagingTimes: number
 ): IRedFlag[] => {
-  let result: IRedFlag[] = [];
+  const result: IRedFlag[] = [];
 
   for (let i = 0; i < flagingTimes; i++) {
     const id = i < 10 ? `flag-0000000${i}` : `flag-000000${i}`;
