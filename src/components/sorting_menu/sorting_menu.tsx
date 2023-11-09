@@ -1,5 +1,5 @@
 import {Dispatch, SetStateAction} from 'react';
-import {useTranslation} from 'react-i18next';
+import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import {FaChevronDown} from 'react-icons/fa';

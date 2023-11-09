@@ -6,7 +6,7 @@ import {dummyAddressData} from '../../interfaces/address';
 import BoltButton from '../bolt_button/bolt_button';
 import {timestampToString} from '../../lib/common';
 import {TranslateFunction} from '../../interfaces/locale';
-import {useTranslation} from 'react-i18next';
+import {useTranslation} from 'next-i18next';
 
 interface ReviewItemProps {
   review: IReview;
@@ -37,7 +37,7 @@ const ReviewItem = (review: ReviewItemProps) => {
       <div className="flex flex-col items-start space-y-2">
         <Link href={transactionLink}>
           <BoltButton style="solid" color="purple" className="px-3 py-2 text-sm">
-            {t('TRANSACTION_LIST_PAGE.MAIN_TITLE_HIGHLIGHT')} {transactionId}
+            {t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')} {transactionId}
           </BoltButton>
         </Link>
         <div className="flex items-center space-x-5px">{displayedStars}</div>

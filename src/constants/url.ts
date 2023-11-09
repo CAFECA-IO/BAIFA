@@ -17,7 +17,10 @@ export const getDynamicUrl = (chain: string, id: string) => {
     TRANSACTION: `/app/chains/${chain}/transaction/${id}`,
     TRANSACTION_LIST: `/app/chains/${chain}/transaction-list/${id}`,
     ADDRESS: `/app/chains/${chain}/address/${id}`,
+    CONTRACT: `/app/chains/${chain}/contract/${id}`,
+    EVIDENCE: `/app/chains/${chain}/evidence/${id}`,
     REVIEWS: `/app/chains/${chain}/address/${id}/reviews`,
+    INTERACTION: `/app/chains/${chain}/address/${id}/interaction`,
   };
 };
 

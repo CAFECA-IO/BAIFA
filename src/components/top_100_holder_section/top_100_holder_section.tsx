@@ -5,7 +5,7 @@ import useStateRef from 'react-usestateref';
 import SearchBar from '../search_bar/search_bar';
 import BoltButton from '../bolt_button/bolt_button';
 import {TranslateFunction} from '../../interfaces/locale';
-import {useTranslation} from 'react-i18next';
+import {useTranslation} from 'next-i18next';
 import {ITEM_PER_PAGE} from '../../constants/config';
 import {getChainIcon, roundToDecimal, withCommas} from '../../lib/common';
 import {ICurrency, IHolder} from '../../interfaces/currency';

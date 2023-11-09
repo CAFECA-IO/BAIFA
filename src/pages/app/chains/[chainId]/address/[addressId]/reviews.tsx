@@ -9,7 +9,7 @@ import {BsArrowLeftShort} from 'react-icons/bs';
 import {getChainIcon} from '../../../../../../lib/common';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import {useTranslation} from 'react-i18next';
+import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import {dummyAddressData} from '../../../../../../interfaces/address';
@@ -87,7 +87,6 @@ const ReviewsPage = ({addressId, chainId, reviews}: IReviewsPageProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  // ToDo: (20231031 - Julian) Get paths
   const paths = dummyAddressData
     .flatMap(address => {
       return locales?.map(locale => ({

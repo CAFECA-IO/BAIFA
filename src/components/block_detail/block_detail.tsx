@@ -168,7 +168,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
         </div>
         <Link href={transactionsLink}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
-            {transactions.length} {t('BLOCK_DETAIL_PAGE.TRANSACTIONS_COUNT')}
+            {transactions.length} {t('COMMON.TRANSACTIONS')}
           </BoltButton>
         </Link>
       </div>

@@ -14,7 +14,7 @@ import TransactionHistorySection from '../../../components/transaction_history_s
 import BlockProducedHistorySection from '../../../components/block_produced_section/block_produced_section';
 import BoltButton from '../../../components/bolt_button/bolt_button';
 import {TranslateFunction} from '../../../interfaces/locale';
-import {useTranslation} from 'react-i18next';
+import {useTranslation} from 'next-i18next';
 
 interface ICurrencyDetailPageProps {
   currencyId: string;

@@ -5,7 +5,7 @@ import useStateRef from 'react-usestateref';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
-import {useTranslation} from 'react-i18next';
+import {useTranslation} from 'next-i18next';
 import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
 import {getChainIcon, roundToDecimal, timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
@@ -73,7 +73,7 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
   }, [search, sorting, period]);
 
   // Info: (20231103 - Julian) Pagination
-  const blockList = filteredBlocks.slice(startIdx, endIdx).map(block => {
+  const blockList = filteredBlocks.slice(startIdx, endIdx).map((block, index) => {
     const {id, chainId, createdTimestamp, reward} = block;
     const icon = getChainIcon(chainId);
 
@@ -85,7 +85,7 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
     const blockLink = getDynamicUrl(chainId, `${id}`).BLOCK;
 
     return (
-      <div className="flex h-60px w-full items-center">
+      <div key={index} className="flex h-60px w-full items-center">
         {/* Info: (20231103 - Julian) Create Time square */}
         <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-purpleLinear">
           <p className="text-xl">{createdStr.day}</p>

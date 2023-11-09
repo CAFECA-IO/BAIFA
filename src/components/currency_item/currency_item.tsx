@@ -29,7 +29,6 @@ const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItem
       ? t('COMMON.RISK_MEDIUM')
       : t('COMMON.RISK_LOW');
 
-  // ToDo: (20230927 - Julian) Add link to currency detail page
   return (
     <div className="flex w-full items-center border-b border-darkPurple4 p-5 font-inter">
       {/* Info: (20230927 - Julian) Rank */}
