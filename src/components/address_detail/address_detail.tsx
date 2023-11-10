@@ -17,7 +17,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     id,
-    addressId,
+    addressHash,
     chainId,
     createdTimestamp,
     lastestActiveTime,
@@ -43,7 +43,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     return () => clearTimeout(timer);
   }, [sinceTime]);
 
-  const interactionLink = getDynamicUrl(`${chainId}`, `${id}`).INTERACTION;
+  const dynamicUrl = getDynamicUrl(`${chainId}`, `${id}`);
 
   const displaySignUpTime = (
     <div className="flex flex-wrap items-center">
@@ -75,7 +75,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const displayInteractedWith = (
     <div className="flex items-center space-x-2 text-base">
       <div className="flex items-center whitespace-nowrap">
-        <Link href={`${interactionLink}?type=Address`}>
+        <Link href={`${dynamicUrl.INTERACTION}?type=Address`}>
           <span className="mr-2 text-primaryBlue underline underline-offset-2">
             {interactedAddressIds.length}
           </span>
@@ -83,7 +83,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
         <p>{t('COMMON.ADDRESSES')} /</p>
       </div>
       <div className="flex items-center whitespace-nowrap">
-        <Link href={`${interactionLink}?type=Contract`}>
+        <Link href={`${dynamicUrl.INTERACTION}?type=Contract`}>
           <span className="mr-2 text-primaryBlue underline underline-offset-2">
             {interactedContactIds.length}
           </span>
@@ -108,7 +108,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
 
   const flaggingLink =
     flagging.length > 0 ? (
-      <Link href={BFAURL.COMING_SOON}>
+      <Link href={dynamicUrl.RED_FLAG}>
         <span className="mr-2 text-primaryBlue underline underline-offset-2">
           {flagging.length}
         </span>
@@ -162,7 +162,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <p className="break-words">{addressId}</p>
+        <p className="break-words">{addressHash}</p>
       </div>
       {/* Info: (20231017 - Julian) Sign Up time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

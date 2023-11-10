@@ -18,15 +18,19 @@ const LandingPageBody = () => {
   const [scrollLeft, setScrollLeft] = useState(0);
 
   /* Info:(20230815 - Julian) slide X scroll function */
-  const slide = (shift: number) => (scrl.current!.scrollLeft += shift);
+  const slide = (shift: number) => {
+    if (scrl.current) scrl.current.scrollLeft += shift;
+  };
 
   useEffect(() => {
+    if (!!!scrl.current) return;
     /* Info:(20230815 - Julian) 設定監聽事件，將捲軸位置更新到 scrollLeft */
-    const onScroll = () => setScrollLeft(scrl.current!.scrollLeft);
-    scrl.current!.addEventListener('scroll', onScroll);
+    const scrollLeft = scrl.current.scrollLeft;
+    const onScroll = () => setScrollLeft(scrollLeft);
+    scrl.current.addEventListener('scroll', onScroll);
 
     return () => {
-      if (scrl.current) scrl.current!.removeEventListener('scroll', onScroll);
+      if (scrl.current) scrl.current.removeEventListener('scroll', onScroll);
     };
   }, [scrollLeft]);
 

@@ -181,7 +181,10 @@
     "SEARCH_PLACEHOLDER": "在互动列表中搜寻"
   },
   "RED_FLAG_DETAIL_PAGE": {
-    "MAIN_TITLE": "警示",
+    "MAIN_TITLE_HIGHLIGHT": "警示",
+    "MAIN_TITLE": "记录",
+    "SEARCH_PLACEHOLDER": "在警示列表中搜寻",
+    "BREADCRUMB_TITLE": "警示记录",
     "FLAG_TYPE_MULTIPLE_RECEIVES": "多次收款",
     "FLAG_TYPE_MULTIPLE_TRANSFER": "多次转帐",
     "FLAG_TYPE_LARGE_TRANSFER": "大额转帐",

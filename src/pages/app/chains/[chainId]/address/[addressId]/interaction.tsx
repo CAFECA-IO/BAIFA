@@ -272,7 +272,6 @@ export const getStaticProps: GetStaticProps<IInteractionPageProps> = async ({par
       addressId: params.addressId,
       chainId: params.chainId,
       interactedList,
-      //selectedType: selectedType ?? null,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };
