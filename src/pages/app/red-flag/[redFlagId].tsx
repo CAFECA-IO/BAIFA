@@ -25,7 +25,7 @@ interface IRedFlagDetailPageProps {
 const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {chainId, addressId, transactionIds} = redFlagData;
-  const dummyTransactionList = dummyTransactionData.filter(transaction =>
+  const transactions = dummyTransactionData.filter(transaction =>
     transactionIds.includes(transaction.id)
   );
 
@@ -97,7 +97,7 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
 
             {/* Info: (20231110 - Julian)  Transaction List */}
             <div className="w-full">
-              <FlaggingTransactionListSection transactions={dummyTransactionList} />
+              <FlaggingTransactionListSection transactions={transactions} />
             </div>
 
             {/* Info: (20231110 - Julian) Back Button */}

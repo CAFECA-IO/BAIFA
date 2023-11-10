@@ -2,7 +2,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useState, useEffect} from 'react';
 import useStateRef from 'react-usestateref';
-import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
@@ -10,8 +9,8 @@ import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
 import {timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
-import DatePicker from '../date_picker/date_picker';
 import {ITransaction} from '../../interfaces/transaction';
+import {RiSearchLine} from 'react-icons/ri';
 
 interface IFlaggingTransactionListSectionProps {
   transactions: ITransaction[];
@@ -20,18 +19,25 @@ interface IFlaggingTransactionListSectionProps {
 const FlaggingTransactionListSection = ({transactions}: IFlaggingTransactionListSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
+  const addressOptions = [
+    'All',
+    ...transactions.map((transaction: ITransaction) => `${transaction.from}`),
+  ];
+
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(1 / ITEM_PER_PAGE));
   const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactions);
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [period, setPeriod] = useState({
-    startTimeStamp: 0,
-    endTimeStamp: 0,
-  });
+  const [filterAddress, setFilterAddress] = useState<string>(addressOptions[0]);
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
+
+  const searchChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = event.target.value;
+    setSearch(searchTerm);
+  };
 
   useEffect(() => {
     const searchResult = transactions // Info: (20231110 - Julian) filter by search term
@@ -50,15 +56,10 @@ const FlaggingTransactionListSection = ({transactions}: IFlaggingTransactionList
               fromAddress.includes(searchTerm) ||
               toAddress.includes(searchTerm)
           : true;
-      }) // Info: (20231110 - Julian) filter by date range
+      })
+      // Info: (20231110 - Julian) filter by address
       .filter((transaction: ITransaction) => {
-        const createdTimestamp = transaction.createdTimestamp;
-        const start = period.startTimeStamp;
-        const end = period.endTimeStamp;
-        // Info: (20231110 - Julian) if start and end are 0, it means that there is no period filter
-        const isCreatedTimestampInRange =
-          start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-        return isCreatedTimestampInRange;
+        return filterAddress !== addressOptions[0] ? transaction.from === filterAddress : true;
       })
       .sort((a: ITransaction, b: ITransaction) => {
         return sorting === sortOldAndNewOptions[0]
@@ -71,7 +72,7 @@ const FlaggingTransactionListSection = ({transactions}: IFlaggingTransactionList
     setFilteredTransactions(searchResult);
     setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
     setActivePage(1);
-  }, [search, sorting, period]);
+  }, [search, sorting, filterAddress]);
 
   // Info: (20231110 - Julian) Pagination
   const transactionList = filteredTransactions.slice(startIdx, endIdx).map((transaction, index) => {
@@ -133,10 +134,29 @@ const FlaggingTransactionListSection = ({transactions}: IFlaggingTransactionList
     <div className="flex w-full flex-col space-y-4">
       {/* Info: (20231110 - Julian) Title */}
       <h2 className="text-xl text-lilac">Transaction List ({transactions.length})</h2>
-      <div className="flex w-full flex-col bg-darkPurple p-4 lg:h-950px">
+      <div className="flex w-full flex-col rounded-lg bg-darkPurple px-10 py-4 drop-shadow-xl lg:h-950px">
         {/* Info: (20231110 - Julian) Search Filter */}
         <div className="flex w-full flex-col items-end space-y-4">
-          <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+          <div className="flex w-full flex-col items-center justify-between gap-10 lg:flex-row">
+            {/* Info: (20231110 - Julian) Address Menu */}
+            <SortingMenu
+              sortingOptions={addressOptions}
+              sorting={filterAddress}
+              setSorting={setFilterAddress}
+              bgColor="bg-darkPurple3"
+            />
+            {/* Info: (20231110 - Julian) Search Bar */}
+            <div className="relative w-400px">
+              <input
+                type="search"
+                className="w-full items-center rounded-full bg-darkPurple3 px-6 py-3 text-base placeholder:text-sm placeholder:lg:text-base"
+                placeholder={'Search in Transaction List'}
+                onChange={searchChangeHandler}
+              />
+              <div className="absolute right-4 top-3 text-2xl font-bold hover:cursor-pointer">
+                <RiSearchLine />
+              </div>
+            </div>
             {/* Info: (20231110 - Julian) Sorting Menu */}
             <div className="relative flex w-full items-center space-x-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
@@ -148,11 +168,6 @@ const FlaggingTransactionListSection = ({transactions}: IFlaggingTransactionList
               />
             </div>
           </div>
-          {/* Info: (20231110 - Julian) Search Bar */}
-          <SearchBar
-            searchBarPlaceholder={t('COMMON.TRANSACTION_HISTORY_PLACEHOLDER')}
-            setSearch={setSearch}
-          />
         </div>
         {/* Info: (20231110 - Julian) To Address List */}
         <div className="my-10 flex w-full flex-1 flex-col">{transactionList}</div>

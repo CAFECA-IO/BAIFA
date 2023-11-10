@@ -66,10 +66,9 @@ const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps
               <Top100HolderSection currencyData={currencyData} />
             </div>
 
-            {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
-            <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
+            {/* Info: (20231103 - Julian) Transaction History */}
+            <div className="my-10 flex w-full">
               <TransactionHistorySection transactions={transactions} />
-              <BlockProducedHistorySection blocks={blocks} unit={unit} />
             </div>
 
             {/* Info: (20231017 - Julian) Back Button */}

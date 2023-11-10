@@ -117,7 +117,7 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
       <h2 className="text-xl text-lilac">
         {t('COMMON.BLOCK_PRODUCED_HISTORY_TITLE')} ({blocks.length})
       </h2>
-      <div className="flex w-full flex-col bg-darkPurple p-4 lg:h-950px">
+      <div className="flex w-full flex-col rounded-lg bg-darkPurple p-4 drop-shadow-xl lg:h-950px">
         {/* Info: (20231103 - Julian) Search Filter */}
         <div className="flex w-full flex-col items-end space-y-4">
           <div className="flex w-full flex-col items-center justify-between lg:flex-row">
