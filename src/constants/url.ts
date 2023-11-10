@@ -7,7 +7,7 @@ export const BFAURL = {
   CURRENCIES: '/app/currencies',
   TRACING_TOOL: '/app/tracing-tool',
   AUDITING_TOOL: '/app/auditing-tool',
-  RED_FLAG: '/app/red-flag',
+  RED_FLAGS: '/app/red-flags',
   FAQ: '/app/faq',
 };
 
@@ -21,7 +21,7 @@ export const getDynamicUrl = (chain: string, id: string) => {
     EVIDENCE: `/app/chains/${chain}/evidence/${id}`,
     REVIEWS: `/app/chains/${chain}/address/${id}/reviews`,
     INTERACTION: `/app/chains/${chain}/address/${id}/interaction`,
-    RED_FLAG: `/app/chains/${chain}/address/${id}/red-flag`,
+    RED_FLAGS: `/app/chains/${chain}/address/${id}/red-flags`,
   };
 };
 

@@ -37,9 +37,11 @@ const SortingMenu = ({sortingOptions, sorting, setSorting, isLinearBg}: ISearchF
     );
   });
 
+  const menuOpenHandler = () => setSortingVisible(!sortingVisible);
+
   return (
     <button
-      onClick={() => setSortingVisible(!sortingVisible)}
+      onClick={menuOpenHandler}
       className={`relative flex w-full items-center space-x-4 rounded text-sm ${
         isLinearBg ? 'bg-purpleLinear' : 'bg-darkPurple'
       } p-4 text-hoverWhite lg:w-160px`}

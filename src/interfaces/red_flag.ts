@@ -1,4 +1,5 @@
 import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
+import {dummyAddressData} from './address';
 
 export interface IRedFlag {
   id: string;
@@ -11,6 +12,10 @@ export interface IRedFlag {
   totalAmount: number;
   transactionIds: string[];
 }
+
+export const dummyAllRedFlags: IRedFlag[] = dummyAddressData.flatMap(
+  addressData => addressData.flagging
+);
 
 export const getDummyRedFlag = (
   chainId: string,
