@@ -342,6 +342,9 @@ module.exports = {
         '140px': '140px',
         '250px': '250px',
       },
+      minWidth: {
+        '200px': '200px',
+      },
       minHeight: {
         'fit': 'fit-content',
         '200px': '200px',

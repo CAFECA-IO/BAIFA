@@ -108,7 +108,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
 
   const flaggingLink =
     flagging.length > 0 ? (
-      <Link href={dynamicUrl.RED_FLAGS}>
+      <Link href={dynamicUrl.RED_FLAG}>
         <span className="mr-2 text-primaryBlue underline underline-offset-2">
           {flagging.length}
         </span>

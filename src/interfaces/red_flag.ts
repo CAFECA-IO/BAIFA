@@ -1,5 +1,4 @@
 import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
-import {dummyAddressData} from './address';
 
 export interface IRedFlag {
   id: string;
@@ -8,9 +7,9 @@ export interface IRedFlag {
   addressHash: string;
   redFlagType: IRedFlagType;
   flaggingTimestamp: number;
-  interactedAddressIds: string[];
-  totalAmount: number;
-  transactionIds: string[];
+  interactedAddressIds: string[]; // 被警示交易的交易對象
+  totalAmount: number; // 交易總金額
+  transactionIds: string[]; // 被警示的交易記錄
 }
 
 export const getDummyRedFlag = (
@@ -47,9 +46,18 @@ export const getDummyRedFlag = (
       addressHash: '0x000000',
       redFlagType: redFlagType,
       flaggingTimestamp: flaggingTimestamp,
-      interactedAddressIds: ['123201', '120999', '113992', '130682'],
+      interactedAddressIds: [
+        '123201',
+        '120999',
+        '113992',
+        '144055',
+        '130682',
+        '140002',
+        '140007',
+        '140333',
+      ],
       totalAmount: 100,
-      transactionIds: ['931302', '912299', '918402'],
+      transactionIds: ['931302', '912299', '918402', '924713', '928728', '941749'],
     };
     result.push(redFlag);
   }

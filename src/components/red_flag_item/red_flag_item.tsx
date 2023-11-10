@@ -33,7 +33,7 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
         {/* Info: (20231109 - Julian) Address ID */}
         <Link
           // ToDo: (20231109 - Julian) link
-          href={BFAURL.COMING_SOON}
+          href={`${BFAURL.RED_FLAG}/${redFlagData.id}`}
           className="flex flex-1 items-center space-x-2 text-sm font-bold lg:text-xl"
         >
           <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />

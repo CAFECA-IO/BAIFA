@@ -22,7 +22,7 @@ const RedFlagListPage = () => {
     },
     {
       label: t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE'),
-      path: BFAURL.RED_FLAGS,
+      path: BFAURL.RED_FLAG,
     },
   ];
 

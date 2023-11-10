@@ -1,8 +1,10 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
+import RedFlagDetail from '../../../components/red_flag_detail/red_flag_detail';
 import BoltButton from '../../../components/bolt_button/bolt_button';
 import Footer from '../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
@@ -10,11 +12,9 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {IRedFlag} from '../../../interfaces/red_flag';
-import {getChainIcon, timestampToString} from '../../../lib/common';
-import Link from 'next/link';
+import {getChainIcon} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
 import {dummyAddressData} from '../../../interfaces/address';
-import Tooltip from '../../../components/tooltip/tooltip';
 
 interface IRedFlagDetailPageProps {
   redFlagData: IRedFlag;
@@ -41,7 +41,7 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
-          <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
+          <div className="flex w-full flex-1 flex-col items-center space-y-10 px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
             {/* Info: (20231110 - Julian) Header */}
             <div className="flex w-full items-center justify-start">
               {/* Info: (20231110 -Julian) Back Arrow Button */}
@@ -59,7 +59,7 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
               </div>
             </div>
 
-            <div className="my-10 flex w-full flex-col items-center gap-4 sm:w-1/2 lg:flex-row">
+            <div className="flex w-full flex-col items-center gap-4 sm:w-1/2 lg:flex-row">
               {/* Info: (20231110 - Julian) Download Report Button */}
               <Link href={BFAURL.COMING_SOON} className="w-full">
                 <BoltButton
@@ -84,78 +84,16 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
               </Link>
             </div>
 
-            {/* Info: (20231110 - Julian) */}
-            <div className="my-10 w-full">
-              {/* Info: (20231110 - Julian) Red Flag Detail */}
-              <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
-                {/* Info: (20231110 - Julian) Address Hash */}
-                <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-                  <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-                    <p>{t('BLOCK_DETAIL_PAGE.STABILITY')}</p>
-                    <Tooltip>
-                      This is tooltip Sample Text. So if I type in more content, it would be like
-                      this.
-                    </Tooltip>
-                  </div>
-                  {addressHash}
-                </div>
-                {/* Info: (20231110 - Julian) Red Flag Type */}
-                <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-                  <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-                    <p>Red Flag Type</p>
-                    <Tooltip>
-                      This is tooltip Sample Text. So if I type in more content, it would be like
-                      this.
-                    </Tooltip>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Image src="/icons/red_flag.svg" alt="red_flag_icon" width={24} height={24} />
-                    <p>{t(redFlagType)}</p>
-                  </div>
-                </div>
-
-                {/* Info: (20231110 - Julian) Flagging Time */}
-                <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-                  <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
-                    Flagging Time
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <p>{timestampToString(flaggingTimestamp).date}</p>
-                    <p>{timestampToString(flaggingTimestamp).time}</p>
-                  </div>
-                </div>
-                {/* Info: (20231110 - Julian) Interacted with */}
-                <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-                  <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-                    <p>Interacted with</p>
-                    <Tooltip>
-                      This is tooltip Sample Text. So if I type in more content, it would be like
-                      this.
-                    </Tooltip>
-                  </div>
-                  <div className="flex flex-wrap items-center space-x-3">{}</div>
-                </div>
-                {/* Info: (20231110 - Julian) Total Amount */}
-                <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-                  <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-                    <p>Total Amount</p>
-                    <Tooltip>
-                      This is tooltip Sample Text. So if I type in more content, it would be like
-                      this.
-                    </Tooltip>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Image src={chainIcon.src} alt={chainIcon.alt} width={24} height={24} />
-                    <p>{totalAmount}</p>
-                  </div>
-                </div>
-              </div>
+            {/* Info: (20231110 - Julian)  Red Flag Detail */}
+            <div className="w-full">
+              <RedFlagDetail redFlagData={redFlagData} />
             </div>
 
+            {/* Info: (20231110 - Julian)  Transaction List */}
             <div className="w-full"></div>
 
             {/* Info: (20231110 - Julian) Back Button */}
-            <div className="mt-10">
+            <div className="">
               <BoltButton
                 onClick={backClickHandler}
                 className="px-12 py-4 font-bold"
