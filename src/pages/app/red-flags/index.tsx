@@ -5,14 +5,15 @@ import NavBar from '../../../components/nav_bar/nav_bar';
 import RedFlagList from '../../../components/red_flag_list/red_flag_list';
 import Footer from '../../../components/footer/footer';
 import {ILocale, TranslateFunction} from '../../../interfaces/locale';
-import {dummyAllRedFlags} from '../../../interfaces/red_flag';
 import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import {BFAURL} from '../../../constants/url';
+import {dummyAddressData} from '../../../interfaces/address';
 
 const RedFlagListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  //const redFlagData: IRedFlag[] = dummyAddressData.flatMap(addressData => addressData.flagging);
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
+
+  const dummyAllRedFlags = dummyAddressData.flatMap(addressData => addressData.flagging);
 
   const crumbs = [
     {

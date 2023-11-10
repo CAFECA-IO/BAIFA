@@ -13,10 +13,6 @@ export interface IRedFlag {
   transactionIds: string[];
 }
 
-export const dummyAllRedFlags: IRedFlag[] = dummyAddressData.flatMap(
-  addressData => addressData.flagging
-);
-
 export const getDummyRedFlag = (
   chainId: string,
   addressId: string,
@@ -25,7 +21,7 @@ export const getDummyRedFlag = (
   const result: IRedFlag[] = [];
 
   for (let i = 0; i < flagingTimes; i++) {
-    const id = i < 10 ? `flag-0000000${i}` : `flag-000000${i}`;
+    const id = i < 10 ? `${addressId}-00${i}` : `${addressId}-0${i}`;
     const redFlagType =
       i % 7 === 0
         ? RedFlagType.LARGE_DEPOSIT

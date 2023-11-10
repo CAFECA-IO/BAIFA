@@ -73,7 +73,7 @@ const NavBar = () => {
           <Link href={BFAURL.COMING_SOON}>{t('NAV_BAR.AUDITING_TOOL')}</Link>
         </div>
         <div className="text-white hover:text-primaryBlue">
-          <Link href={BFAURL.RED_FLAG}>{t('NAV_BAR.RED_FLAG')}</Link>
+          <Link href={BFAURL.RED_FLAGS}>{t('NAV_BAR.RED_FLAG')}</Link>
         </div>
         <div className="text-white hover:text-primaryBlue">
           <Link href={BFAURL.COMING_SOON}>{t('NAV_BAR.FAQ')}</Link>
@@ -101,7 +101,7 @@ const NavBar = () => {
         </Link>
       </li>
       <li className="px-10 py-4">
-        <Link href={BFAURL.RED_FLAG} className="px-10 py-4">
+        <Link href={BFAURL.RED_FLAGS} className="px-10 py-4">
           {t('NAV_BAR.RED_FLAG')}
         </Link>
       </li>
