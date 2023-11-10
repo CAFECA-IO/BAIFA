@@ -86,6 +86,7 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
               sortingOptions={sortOldAndNewOptions}
               sorting={sorting}
               setSorting={setSorting}
+              bgColor="bg-darkPurple"
             />
           </div>
         </div>

@@ -66,6 +66,7 @@ const ReviewSection = (reviews: IReviewSection) => {
               sortingOptions={sortOldAndNewOptions}
               sorting={sorting}
               setSorting={setSorting}
+              bgColor="bg-darkPurple"
             />
             {leaveReviewButton}
           </div>
@@ -93,6 +94,7 @@ const ReviewSection = (reviews: IReviewSection) => {
             sortingOptions={sortOldAndNewOptions}
             sorting={sorting}
             setSorting={setSorting}
+            bgColor="bg-darkPurple"
           />
         </div>
       </div>

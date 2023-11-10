@@ -6,6 +6,7 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
 import RedFlagDetail from '../../../components/red_flag_detail/red_flag_detail';
 import BoltButton from '../../../components/bolt_button/bolt_button';
+import FlaggingTransactionListSection from '../../../components/flagging_transaction_list_section/flagging_transaction_list_section';
 import Footer from '../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
@@ -15,6 +16,7 @@ import {IRedFlag} from '../../../interfaces/red_flag';
 import {getChainIcon} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
 import {dummyAddressData} from '../../../interfaces/address';
+import {dummyTransactionData} from '../../../interfaces/transaction';
 
 interface IRedFlagDetailPageProps {
   redFlagData: IRedFlag;
@@ -22,8 +24,10 @@ interface IRedFlagDetailPageProps {
 
 const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {chainId, addressId, addressHash, redFlagType, flaggingTimestamp, totalAmount} =
-    redFlagData;
+  const {chainId, addressId, transactionIds} = redFlagData;
+  const dummyTransactionList = dummyTransactionData.filter(transaction =>
+    transactionIds.includes(transaction.id)
+  );
 
   const headTitle = `${'Red Flag '} ${'Address'} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
@@ -49,13 +53,15 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
                 <BsArrowLeftShort className="text-48px" />
               </button>
               {/* Info: (20231110 -Julian) Red Flag Address Title */}
-              <div className="flex flex-1 items-center justify-center space-x-4 text-2xl font-bold lg:text-32px">
+              <div className="flex flex-1 flex-col items-center justify-center gap-4 text-2xl font-bold lg:flex-row lg:text-32px">
                 <h1>{t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')}</h1>
-                <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
-                <h1>
-                  {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-                  <span className="text-primaryBlue"> {addressId}</span>
-                </h1>
+                <div className="flex items-center justify-center gap-4">
+                  <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+                  <h1>
+                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
+                    <span className="text-primaryBlue"> {addressId}</span>
+                  </h1>
+                </div>
               </div>
             </div>
 
@@ -90,7 +96,9 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
             </div>
 
             {/* Info: (20231110 - Julian)  Transaction List */}
-            <div className="w-full"></div>
+            <div className="w-full">
+              <FlaggingTransactionListSection transactions={dummyTransactionList} />
+            </div>
 
             {/* Info: (20231110 - Julian) Back Button */}
             <div className="">

@@ -8,10 +8,10 @@ interface ISearchFilter {
   sortingOptions: string[];
   sorting: string;
   setSorting: Dispatch<SetStateAction<string>>;
-  isLinearBg?: boolean;
+  bgColor: string;
 }
 
-const SortingMenu = ({sortingOptions, sorting, setSorting, isLinearBg}: ISearchFilter) => {
+const SortingMenu = ({sortingOptions, sorting, setSorting, bgColor}: ISearchFilter) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   // Info: (20231101 - Julian) close sorting menu when click outer
@@ -43,7 +43,7 @@ const SortingMenu = ({sortingOptions, sorting, setSorting, isLinearBg}: ISearchF
     <button
       onClick={menuOpenHandler}
       className={`relative flex w-full items-center space-x-4 rounded text-sm ${
-        isLinearBg ? 'bg-purpleLinear' : 'bg-darkPurple'
+        bgColor //? 'bg-purpleLinear' : 'bg-darkPurple'
       } p-4 text-hoverWhite lg:w-160px`}
     >
       {/* Info: (20231101 - Julian) Sorting Button */}

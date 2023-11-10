@@ -164,6 +164,7 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
                     sortingOptions={typeOptions}
                     sorting={filteredType}
                     setSorting={setFilteredType}
+                    bgColor="bg-darkPurple"
                   />
                 </div>
                 {/* Info: (20231108 - Julian) Date Picker */}
@@ -178,6 +179,7 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
                     sortingOptions={sortOldAndNewOptions}
                     sorting={sorting}
                     setSorting={setSorting}
+                    bgColor="bg-darkPurple"
                   />
                 </div>
               </div>

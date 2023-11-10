@@ -133,7 +133,7 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
                 sortingOptions={sortOldAndNewOptions}
                 sorting={sorting}
                 setSorting={setSorting}
-                isLinearBg
+                bgColor="bg-purpleLinear"
               />
             </div>
           </div>
