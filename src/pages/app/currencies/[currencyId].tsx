@@ -11,7 +11,6 @@ import {useRouter} from 'next/router';
 import {getChainIcon} from '../../../lib/common';
 import Top100HolderSection from '../../../components/top_100_holder_section/top_100_holder_section';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
-import BlockProducedHistorySection from '../../../components/block_produced_section/block_produced_section';
 import BoltButton from '../../../components/bolt_button/bolt_button';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
@@ -23,7 +22,7 @@ interface ICurrencyDetailPageProps {
 
 const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {currencyName, blocks, transactions, unit} = currencyData;
+  const {currencyName, transactions} = currencyData;
   const headTitle = `${currencyName} - BAIFA`;
   const chainIcon = getChainIcon(currencyId);
 

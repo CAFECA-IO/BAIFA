@@ -76,7 +76,7 @@ const FlaggingTransactionListSection = ({transactions}: IFlaggingTransactionList
 
   // Info: (20231110 - Julian) Pagination
   const transactionList = filteredTransactions.slice(startIdx, endIdx).map((transaction, index) => {
-    const {id, chainId, createdTimestamp, status} = transaction;
+    const {id, chainId, createdTimestamp, status, from} = transaction;
     const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
 
     const createdStr = timestampToString(createdTimestamp);
@@ -117,7 +117,7 @@ const FlaggingTransactionListSection = ({transactions}: IFlaggingTransactionList
           <Link href={transactionLink} className="inline-flex flex-1 items-baseline space-x-2">
             <h2 className="text-sm lg:text-xl">
               To Address
-              <span className="text-primaryBlue"> {id}</span>
+              <span className="text-primaryBlue"> {from}</span>
             </h2>
           </Link>
           {/* Info: (20231110 - Julian) Status */}
@@ -134,8 +134,9 @@ const FlaggingTransactionListSection = ({transactions}: IFlaggingTransactionList
     <div className="flex w-full flex-col space-y-4">
       {/* Info: (20231110 - Julian) Title */}
       <h2 className="text-xl text-lilac">Transaction List ({transactions.length})</h2>
-      <div className="flex w-full flex-col rounded-lg bg-darkPurple px-10 py-4 drop-shadow-xl lg:h-950px">
+      <div className="flex w-full flex-col rounded-lg bg-darkPurple px-6 py-4 drop-shadow-xl lg:h-950px">
         {/* Info: (20231110 - Julian) Search Filter */}
+        {/* ToDo: (20231110 - Julian) 樣式待確認 */}
         <div className="flex w-full flex-col items-end space-y-4">
           <div className="flex w-full flex-col items-center justify-between gap-10 lg:flex-row">
             {/* Info: (20231110 - Julian) Address Menu */}
@@ -146,7 +147,7 @@ const FlaggingTransactionListSection = ({transactions}: IFlaggingTransactionList
               bgColor="bg-darkPurple3"
             />
             {/* Info: (20231110 - Julian) Search Bar */}
-            <div className="relative w-400px">
+            <div className="relative w-350px">
               <input
                 type="search"
                 className="w-full items-center rounded-full bg-darkPurple3 px-6 py-3 text-base placeholder:text-sm placeholder:lg:text-base"
