@@ -117,7 +117,7 @@ const BlackListPage = () => {
                 {/* Info: (20231113 - Julian) Search Bar */}
                 <div className="mx-auto my-5 w-full lg:w-7/10">
                   <SearchBar
-                    searchBarPlaceholder={t('RED_FLAG_DETAIL_PAGE.SEARCH_PLACEHOLDER')}
+                    searchBarPlaceholder={t('BLACKLIST_PAGE.SEARCH_PLACEHOLDER')}
                     setSearch={setSearch}
                   />
                 </div>
