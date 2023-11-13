@@ -94,7 +94,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['930291', '931302'],
     flagging: getDummyRedFlag('isun', '130682', 7),
     riskLevel: RiskLevel.HIGH_RISK,
-    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
+    publicTag: ['PUBLIC_TAG.HACKER'],
   },
   {
     id: '134902',
@@ -259,7 +259,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['922372', '923372'],
     flagging: getDummyRedFlag('eth', '121700', 12),
     riskLevel: RiskLevel.HIGH_RISK,
-    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
+    publicTag: ['PUBLIC_TAG.HACKER'],
   },
   {
     id: '122810',
@@ -274,7 +274,7 @@ export const dummyAddressData: IAddress[] = [
     transactionIds: ['922372'],
     flagging: getDummyRedFlag('eth', '122810', 17),
     riskLevel: RiskLevel.HIGH_RISK,
-    publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
+    publicTag: ['PUBLIC_TAG.HACKER'],
   },
   {
     id: '140002',
