@@ -198,6 +198,18 @@
     "FLAG_TYPE_HIGH_RISK_LOCATION": "高風險地區",
     "FLAG_TYPE_PRIVACY_COINS": "使用隱私幣交易"
   },
+  "RED_FLAG_ADDRESS_PAGE": {
+    "MAIN_TITLE": "警示地址",
+    "RED_FLAG": "警示",
+    "ADDRESS": "地址",
+    "ADDRESS_ID": "地址",
+    "RED_FLAG_TYPE": "警示類型",
+    "FLAGGING_TIME": "警示時間",
+    "INTERACTED_WITH": "互動對象",
+    "TOTAL_AMOUNT": "總金額",
+    "DOWNLOAD_REPORT_BUTTON": "下載報告",
+    "OPEN_IN_TRACING_TOOL_BUTTON": "在追蹤工具中開啟"
+  },
   "REVIEWS_PAGE": {
     "TITLE": "評論",
     "BUTTON": "寫評論",

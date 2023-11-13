@@ -198,6 +198,18 @@
     "FLAG_TYPE_HIGH_RISK_LOCATION": "To High Risk Location",
     "FLAG_TYPE_PRIVACY_COINS": "Transactions with Privacy Coins"
   },
+  "RED_FLAG_ADDRESS_PAGE": {
+    "MAIN_TITLE": "Red Flag Address",
+    "RED_FLAG": "Red Flag",
+    "ADDRESS": "Address",
+    "ADDRESS_ID": "Address",
+    "RED_FLAG_TYPE": "Red Flag Type",
+    "FLAGGING_TIME": "Flagging Time",
+    "INTERACTED_WITH": "Interacted With",
+    "TOTAL_AMOUNT": "Total Amount",
+    "DOWNLOAD_REPORT_BUTTON": "Download Report",
+    "OPEN_IN_TRACING_TOOL_BUTTON": "Open in Tracing Tool"
+  },
   "REVIEWS_PAGE": {
     "TITLE": "Reviews",
     "BUTTON": "Leave Review",

@@ -35,10 +35,14 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   let timer: NodeJS.Timeout;
 
   useEffect(() => {
+    clearTimeout(timer);
+
     // Info: (20231017 - Julian) 算出 lastestActiveTime 距離現在過了多少時間
-    const now = Math.ceil(Date.now() / 1000);
-    const timeSpan = now - lastestActiveTime;
-    setSinceTime(timeSpan);
+    timer = setTimeout(() => {
+      const now = Math.ceil(Date.now() / 1000);
+      const timeSpan = now - lastestActiveTime;
+      setSinceTime(timeSpan);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [sinceTime]);
@@ -54,9 +58,10 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
 
   const displayLatestActiveTime = (
     <div className="flex flex-wrap items-center">
-      <p className="mr-2">
-        {getTimeString(sinceTime)} {t('COMMON.AGO')}
-      </p>
+      <div className="mr-2 flex items-center">
+        <p className="w-150px">{getTimeString(sinceTime)}</p>
+        <p>{t('COMMON.AGO')}</p>
+      </div>
     </div>
   );
 

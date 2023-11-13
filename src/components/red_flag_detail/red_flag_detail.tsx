@@ -38,7 +38,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
       {/* Info: (20231110 - Julian) Address Hash */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          <p>Address</p>
+          <p>{t('RED_FLAG_ADDRESS_PAGE.ADDRESS_ID')}</p>
           <Tooltip>
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
@@ -48,7 +48,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
       {/* Info: (20231110 - Julian) Red Flag Type */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          <p>Red Flag Type</p>
+          <p>{t('RED_FLAG_ADDRESS_PAGE.RED_FLAG_TYPE')}</p>
           <Tooltip>
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
@@ -62,7 +62,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
       {/* Info: (20231110 - Julian) Flagging Time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          <p>Flagging Time</p>
+          <p>{t('RED_FLAG_ADDRESS_PAGE.FLAGGING_TIME')}</p>
           <Tooltip>
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
@@ -74,15 +74,15 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
       </div>
       {/* Info: (20231110 - Julian) Interacted with */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <div className="lg:min-w-200px flex items-center text-sm font-bold text-lilac lg:text-base">
-          <p>Interacted with</p>
+        <div className="flex items-center text-sm font-bold text-lilac lg:min-w-200px lg:text-base">
+          <p>{t('RED_FLAG_ADDRESS_PAGE.INTERACTED_WITH')}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">{displayInteractedAddresses}</div>
       </div>
       {/* Info: (20231110 - Julian) Total Amount */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          <p>Total Amount</p>
+          <p>{t('RED_FLAG_ADDRESS_PAGE.TOTAL_AMOUNT')}</p>
         </div>
         <div className="flex items-center space-x-2">
           <Image src={chainIcon.src} alt={chainIcon.alt} width={24} height={24} />

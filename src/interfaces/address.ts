@@ -412,3 +412,7 @@ export const dummyAddressData: IAddress[] = [
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
 ];
+
+export const dummyBlacklistAddressData: IAddress[] = dummyAddressData.filter(address =>
+  address.publicTag.includes('PUBLIC_TAG.HACKER')
+);
