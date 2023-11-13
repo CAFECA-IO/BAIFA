@@ -69,22 +69,34 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
               {/* Info: (20231110 - Julian) Download Report Button */}
               <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
                 <BoltButton
-                  className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+                  className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
                   color="purple"
                   style="solid"
                 >
-                  <Image src="/icons/download.svg" alt="" width={24} height={24} />
+                  <Image
+                    src="/icons/download.svg"
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="invert group-hover:invert-0"
+                  />
                   <p>{t('RED_FLAG_ADDRESS_PAGE.DOWNLOAD_REPORT_BUTTON')}</p>
                 </BoltButton>
               </Link>
               {/* Info: (20231110 - Julian) Open in Tracing Tool Button */}
               <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
                 <BoltButton
-                  className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+                  className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
                   color="purple"
                   style="solid"
                 >
-                  <Image src="/icons/tracing.svg" alt="" width={24} height={24} />
+                  <Image
+                    src="/icons/tracing.svg"
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="invert group-hover:invert-0"
+                  />
                   <p>{t('RED_FLAG_ADDRESS_PAGE.OPEN_IN_TRACING_TOOL_BUTTON')}</p>
                 </BoltButton>
               </Link>
