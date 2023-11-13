@@ -6,7 +6,6 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
 import RedFlagDetail from '../../../components/red_flag_detail/red_flag_detail';
 import BoltButton from '../../../components/bolt_button/bolt_button';
-import FlaggingTransactionListSection from '../../../components/flagging_transaction_list_section/flagging_transaction_list_section';
 import Footer from '../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
@@ -17,6 +16,7 @@ import {getChainIcon} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
 import {dummyAddressData} from '../../../interfaces/address';
 import {dummyTransactionData} from '../../../interfaces/transaction';
+import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
 
 interface IRedFlagDetailPageProps {
   redFlagData: IRedFlag;
@@ -97,7 +97,7 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
 
             {/* Info: (20231110 - Julian)  Transaction List */}
             <div className="w-full">
-              <FlaggingTransactionListSection transactions={transactions} />
+              <TransactionHistorySection transactions={transactions} />
             </div>
 
             {/* Info: (20231110 - Julian) Back Button */}

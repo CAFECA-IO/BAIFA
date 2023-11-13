@@ -58,8 +58,8 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
 
   const displayLatestActiveTime = (
     <div className="flex flex-wrap items-center">
-      <div className="mr-2 flex items-center">
-        <p className="w-150px">{getTimeString(sinceTime)}</p>
+      <div className="mr-2 flex items-center space-x-2">
+        <p>{getTimeString(sinceTime)}</p>
         <p>{t('COMMON.AGO')}</p>
       </div>
     </div>

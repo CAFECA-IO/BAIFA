@@ -220,7 +220,8 @@
     "MAIN_TITLE_HIGHLIGHT": "黑名單",
     "MAIN_TITLE": "",
     "SEARCH_PLACEHOLDER": "在黑名單中搜尋",
-    "BREADCRUMB_TITLE": "黑名單"
+    "BREADCRUMB_TITLE": "黑名單",
+    "LASTED_ACTIVE_TIME": "最後活動時間"
   },
   "DATE_PICKER": {
     "DATE": "日期",
@@ -277,6 +278,7 @@
     "TOP_100_HOLDER_PLACEHOLDER": "查詢地址",
     "TRANSACTION_HISTORY_TITLE": "交易歷史記錄",
     "TRANSACTION_HISTORY_PLACEHOLDER": "在交易記錄中搜尋",
+    "TRANSACTION_HISTORY_TO_ADDRESS": "收件地址",
     "BLOCK_PRODUCED_HISTORY_TITLE": "區塊生成歷史記錄",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在區塊生成記錄中搜尋"
   },

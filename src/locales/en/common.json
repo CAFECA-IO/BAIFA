@@ -220,7 +220,8 @@
     "MAIN_TITLE_HIGHLIGHT": "Black ",
     "MAIN_TITLE": "List",
     "SEARCH_PLACEHOLDER": "Search in Black List",
-    "BREADCRUMB_TITLE": "Black List"
+    "BREADCRUMB_TITLE": "Black List",
+    "LASTED_ACTIVE_TIME": "Lasted Active Time"
   },
   "DATE_PICKER": {
     "DATE": "Date",
@@ -277,6 +278,7 @@
     "TOP_100_HOLDER_PLACEHOLDER": "Search Address",
     "TRANSACTION_HISTORY_TITLE": "Transaction History",
     "TRANSACTION_HISTORY_PLACEHOLDER": "Search in Transaction History",
+    "TRANSACTION_HISTORY_TO_ADDRESS": "To Address",
     "BLOCK_PRODUCED_HISTORY_TITLE": "Block Produced History",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "Search in Block Produced History"
   },

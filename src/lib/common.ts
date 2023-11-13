@@ -91,6 +91,11 @@ export const timestampToString = (timestamp: number) => {
 export const getTimeString = (timeSpan: number) => {
   const time = Math.ceil(timeSpan);
 
+  if (time >= 360000) {
+    const day = Math.floor(time / 86400);
+    return `${day}D`;
+  }
+
   if (time < 60) return `${time}s`;
   if (time >= 60 && time < 3600) {
     const min = Math.floor(time / 60);
