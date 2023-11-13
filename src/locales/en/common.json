@@ -204,6 +204,12 @@
     "SEE_ALL": "See All Reviews",
     "BY": "by"
   },
+  "BLACKLIST_PAGE": {
+    "MAIN_TITLE_HIGHLIGHT": "Black ",
+    "MAIN_TITLE": "List",
+    "SEARCH_PLACEHOLDER": "Search in Black List",
+    "BREADCRUMB_TITLE": "Black List"
+  },
   "DATE_PICKER": {
     "DATE": "Date",
     "SELECT_PERIOD": "Select Period",

@@ -204,6 +204,12 @@
     "SEE_ALL": "查看全部評論",
     "BY": "由"
   },
+  "BLACKLIST_PAGE": {
+    "MAIN_TITLE_HIGHLIGHT": "黑名單",
+    "MAIN_TITLE": "",
+    "SEARCH_PLACEHOLDER": "在黑名單中搜尋",
+    "BREADCRUMB_TITLE": "黑名單"
+  },
   "DATE_PICKER": {
     "DATE": "日期",
     "SELECT_PERIOD": "選擇日期範圍",

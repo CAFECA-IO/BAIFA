@@ -16,19 +16,19 @@ const NavBar = () => {
 
   const navbarContent = [
     {
-      name: t('NAV_BAR.TRACING_TOOL'),
+      name: 'NAV_BAR.TRACING_TOOL',
       link: BFAURL.COMING_SOON,
     },
     {
-      name: t('NAV_BAR.AUDITING_TOOL'),
+      name: 'NAV_BAR.AUDITING_TOOL',
       link: BFAURL.COMING_SOON,
     },
     {
-      name: t('NAV_BAR.RED_FLAG'),
+      name: 'NAV_BAR.RED_FLAG',
       link: BFAURL.RED_FLAG,
     },
     {
-      name: t('NAV_BAR.FAQ'),
+      name: 'NAV_BAR.FAQ',
       link: BFAURL.COMING_SOON,
     },
   ];
@@ -96,7 +96,7 @@ const NavBar = () => {
               pathname === item.link ? 'border-primaryBlue' : 'border-transparent'
             }`}
           >
-            <Link href={item.link}>{item.name}</Link>
+            <Link href={item.link}>{t(item.name)}</Link>
           </li>
         ))}
         <li className="ml-10">{isDisplayedUser}</li>
@@ -113,7 +113,7 @@ const NavBar = () => {
       {navbarContent.map((item, index) => (
         <li key={index} className="px-10 py-4">
           <Link href={item.link} className="px-10 py-4">
-            {item.name}
+            {t(item.name)}
           </Link>
         </li>
       ))}

@@ -204,6 +204,12 @@
     "SEE_ALL": "查看全部评论",
     "BY": "由"
   },
+  "BLACKLIST_PAGE": {
+    "MAIN_TITLE_HIGHLIGHT": "黑名单",
+    "MAIN_TITLE": "",
+    "SEARCH_PLACEHOLDER": "在黑名单中搜寻",
+    "BREADCRUMB_TITLE": "黑名单"
+  },
   "DATE_PICKER": {
     "DATE": "日期",
     "SELECT_PERIOD": "选择日期范围",

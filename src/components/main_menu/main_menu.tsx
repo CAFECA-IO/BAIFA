@@ -28,7 +28,7 @@ const MainMenu = () => {
       icon: '/icons/black_list.svg',
       title: 'HOME_PAGE.BLACKLIST_TITLE',
       description: '200',
-      link: BFAURL.COMING_SOON,
+      link: BFAURL.BLACKLIST,
       alt: 'blacklist_icon',
     },
   ];
