@@ -7,7 +7,7 @@ import {timestampToString, getTimeString, getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IBlock} from '../../interfaces/block';
-import {BFAURL, getDynamicUrl} from '../../constants/url';
+import {BFAURL} from '../../constants/url';
 import {StabilityLevel} from '../../constants/stability_level';
 
 interface IBlockDetailProps {
@@ -40,7 +40,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     return () => clearTimeout(timer);
   }, [sinceTime]);
 
-  const transactionsLink = getDynamicUrl(chainId, `${blockId}`).TRANSACTION_LIST;
+  const transactionsLink = `${BFAURL.TRANSACTION_LIST}?blockId=${blockId}`; //getDynamicUrl(chainId, `${blockId}`).TRANSACTION_LIST;
 
   const displayStability =
     stabilityLevel === StabilityLevel.HIGH ? (

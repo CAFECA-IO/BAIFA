@@ -141,8 +141,13 @@
     "FLAGGING": "警示記錄"
   },
   "TRANSACTION_LIST_PAGE": {
+    "HEAD_TITLE_BLOCK": "交易列表之區塊",
+    "HEAD_TITLE_ADDRESS_1": "交易歷史之地址",
+    "HEAD_TITLE_ADDRESS_2": "和地址",
     "MAIN_TITLE_HIGHLIGHT": "交易",
-    "MAIN_TITLE": "列表"
+    "MAIN_TITLE_BLOCK": "列表",
+    "MAIN_TITLE_ADDRESSES": "歷史",
+    "SEARCH_PLACEHOLDER": "在交易列表中搜尋"
   },
   "ADDRESS_DETAIL_PAGE": {
     "MAIN_TITLE": "地址",

@@ -141,8 +141,13 @@
     "FLAGGING": "Flagging"
   },
   "TRANSACTION_LIST_PAGE": {
-    "MAIN_TITLE_HIGHLIGHT": "Transaction",
-    "MAIN_TITLE": "List"
+    "HEAD_TITLE_BLOCK": "Transaction List of Block",
+    "HEAD_TITLE_ADDRESS_1": "Transaction History of Address",
+    "HEAD_TITLE_ADDRESS_2": "and Address",
+    "MAIN_TITLE_HIGHLIGHT": "Transaction ",
+    "MAIN_TITLE_BLOCK": "List",
+    "MAIN_TITLE_ADDRESSES": "History",
+    "SEARCH_PLACEHOLDER": "Search in Transaction list"
   },
   "ADDRESS_DETAIL_PAGE": {
     "MAIN_TITLE": "Address",
