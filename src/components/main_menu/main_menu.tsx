@@ -5,6 +5,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {dummyChains} from '../../interfaces/chain';
 import {dummyCurrencyData} from '../../interfaces/currency';
 import {BFAURL} from '../../constants/url';
+import {dummyBlacklistAddressData} from '../../interfaces/address';
 
 const MainMenu = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -13,6 +14,7 @@ const MainMenu = () => {
     {
       icon: '/icons/chain.svg',
       title: 'HOME_PAGE.CHAINS_TITLE',
+      // ToDo: (20231113 - Julian) Get from API
       description: dummyChains.length,
       link: BFAURL.CHAINS,
       alt: 'chain_icon',
@@ -20,6 +22,7 @@ const MainMenu = () => {
     {
       icon: '/icons/coin.svg',
       title: 'HOME_PAGE.CRYPTO_TITLE',
+      // ToDo: (20231113 - Julian) Get from API
       description: dummyCurrencyData.length,
       link: BFAURL.CURRENCIES,
       alt: 'coin_icon',
@@ -27,8 +30,9 @@ const MainMenu = () => {
     {
       icon: '/icons/black_list.svg',
       title: 'HOME_PAGE.BLACKLIST_TITLE',
-      description: '200',
-      link: BFAURL.COMING_SOON,
+      // ToDo: (20231113 - Julian) Get from API
+      description: dummyBlacklistAddressData.length,
+      link: BFAURL.BLACKLIST,
       alt: 'blacklist_icon',
     },
   ];

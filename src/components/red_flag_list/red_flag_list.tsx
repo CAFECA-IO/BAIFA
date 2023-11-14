@@ -97,6 +97,7 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
               sortingOptions={typeOptions}
               sorting={filteredType}
               setSorting={setFilteredType}
+              bgColor="bg-darkPurple"
             />
           </div>
           {/* Info: (20231109 - Julian) Date Picker */}
@@ -111,6 +112,7 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
               sortingOptions={sortOldAndNewOptions}
               sorting={sorting}
               setSorting={setSorting}
+              bgColor="bg-darkPurple"
             />
           </div>
         </div>

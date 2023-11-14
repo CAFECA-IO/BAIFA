@@ -22,7 +22,7 @@ const BoltButton = ({children, style, color, className, ...otherProps}: IBoltBut
 
   return (
     <button
-      className={`${className} ${buttonStyle} ${buttonColor} whitespace-nowrap rounded text-base disabled:bg-lilac`}
+      className={`${className} ${buttonStyle} ${buttonColor} whitespace-nowrap rounded-lg text-base disabled:bg-lilac`}
       {...otherProps}
     >
       {children}

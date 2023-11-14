@@ -111,6 +111,7 @@ const AllCurrenciesPageBody = () => {
                 sortingOptions={currenciesOptions}
                 sorting={currencies}
                 setSorting={setCurrencies}
+                bgColor="bg-darkPurple"
               />
             </div>
 
@@ -120,6 +121,7 @@ const AllCurrenciesPageBody = () => {
                 sortingOptions={sortingOptions}
                 sorting={sorting}
                 setSorting={setSorting}
+                bgColor="bg-darkPurple"
               />
             </div>
           </div>

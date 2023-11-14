@@ -198,11 +198,30 @@
     "FLAG_TYPE_HIGH_RISK_LOCATION": "高风险地区",
     "FLAG_TYPE_PRIVACY_COINS": "使用隐私币交易"
   },
+  "RED_FLAG_ADDRESS_PAGE": {
+    "MAIN_TITLE": "警示地址",
+    "RED_FLAG": "警示",
+    "ADDRESS": "地址",
+    "ADDRESS_ID": "地址",
+    "RED_FLAG_TYPE": "警示类型",
+    "FLAGGING_TIME": "警示时间",
+    "INTERACTED_WITH": "互动对象",
+    "TOTAL_AMOUNT": "总金额",
+    "DOWNLOAD_REPORT_BUTTON": "下载报告",
+    "OPEN_IN_TRACING_TOOL_BUTTON": "在追踪工具中开启"
+  },
   "REVIEWS_PAGE": {
     "TITLE": "评论",
     "BUTTON": "写评论",
     "SEE_ALL": "查看全部评论",
     "BY": "由"
+  },
+  "BLACKLIST_PAGE": {
+    "MAIN_TITLE_HIGHLIGHT": "黑名单",
+    "MAIN_TITLE": "",
+    "SEARCH_PLACEHOLDER": "在黑名单中搜寻",
+    "BREADCRUMB_TITLE": "黑名单",
+    "LASTED_ACTIVE_TIME": "最后活动时间"
   },
   "DATE_PICKER": {
     "DATE": "日期",
@@ -259,6 +278,7 @@
     "TOP_100_HOLDER_PLACEHOLDER": "查询地址",
     "TRANSACTION_HISTORY_TITLE": "交易历史记录",
     "TRANSACTION_HISTORY_PLACEHOLDER": "在交易记录中搜寻",
+    "TRANSACTION_HISTORY_TO_ADDRESS": "收件地址",
     "BLOCK_PRODUCED_HISTORY_TITLE": "区块生成历史记录",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在区块生成记录中搜寻"
   },

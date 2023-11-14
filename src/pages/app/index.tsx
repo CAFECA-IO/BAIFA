@@ -1,15 +1,17 @@
 import Head from 'next/head';
 import NavBar from '../../components/nav_bar/nav_bar';
 import HomePageBody from '../../components/home_page_body/home_page_body';
+import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {ILocale} from '../../interfaces/locale';
+import {ILocale, TranslateFunction} from '../../interfaces/locale';
 
 const Home = () => {
+  const {t}: {t: TranslateFunction} = useTranslation('common');
   return (
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>APP - BAIFA</title>
+        <title>{t('HOME_PAGE.BREADCRUMB_TITLE')} - BAIFA</title>
       </Head>
 
       <NavBar />

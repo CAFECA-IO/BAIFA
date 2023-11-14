@@ -11,7 +11,6 @@ import {useRouter} from 'next/router';
 import {getChainIcon} from '../../../lib/common';
 import Top100HolderSection from '../../../components/top_100_holder_section/top_100_holder_section';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
-import BlockProducedHistorySection from '../../../components/block_produced_section/block_produced_section';
 import BoltButton from '../../../components/bolt_button/bolt_button';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
@@ -23,7 +22,7 @@ interface ICurrencyDetailPageProps {
 
 const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {currencyName, blocks, transactions, unit} = currencyData;
+  const {currencyName, transactions} = currencyData;
   const headTitle = `${currencyName} - BAIFA`;
   const chainIcon = getChainIcon(currencyId);
 
@@ -66,10 +65,9 @@ const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps
               <Top100HolderSection currencyData={currencyData} />
             </div>
 
-            {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
-            <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
+            {/* Info: (20231103 - Julian) Transaction History */}
+            <div className="my-10 flex w-full">
               <TransactionHistorySection transactions={transactions} />
-              <BlockProducedHistorySection blocks={blocks} unit={unit} />
             </div>
 
             {/* Info: (20231017 - Julian) Back Button */}

@@ -95,26 +95,32 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
                 </div>
                 <div className="">{displayPublicTag}</div>
               </div>
-              <div className="flex flex-col items-center space-y-4 sm:w-1/2 lg:w-2/5 lg:flex-row lg:space-x-6 lg:space-y-0">
+              <div className="flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-6 lg:space-y-0">
                 {/* Info: (20231018 - Julian) Tracing Tool Button */}
-                <Link href={BFAURL.COMING_SOON} className="w-full">
+                <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
                   <BoltButton
-                    className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+                    className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
                     color="purple"
                     style="solid"
                   >
-                    <Image src="/icons/tracing.svg" alt="" width={24} height={24} />
+                    <Image
+                      src="/icons/tracing.svg"
+                      alt=""
+                      width={24}
+                      height={24}
+                      className="invert group-hover:invert-0"
+                    />
                     <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
                   </BoltButton>
                 </Link>
                 {/* Info: (20231018 - Julian) Follow Button */}
-                <Link href={BFAURL.COMING_SOON} className="w-full">
+                <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
                   <BoltButton
-                    className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+                    className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
                     color="purple"
                     style="solid"
                   >
-                    <AiOutlinePlus className="text-2xl text-black" />
+                    <AiOutlinePlus className="text-2xl text-white group-hover:text-black" />
                     <p>{t('COMMON.FOLLOW')}</p>
                   </BoltButton>
                 </Link>

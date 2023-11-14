@@ -88,6 +88,7 @@ const TransactionTab = ({transactionList}: ITransactionTabProps) => {
               sortingOptions={sortOldAndNewOptions}
               sorting={sorting}
               setSorting={setSorting}
+              bgColor="bg-darkPurple"
             />
           </div>
         </div>
