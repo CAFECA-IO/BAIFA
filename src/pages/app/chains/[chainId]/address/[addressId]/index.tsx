@@ -116,11 +116,11 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
                 {/* Info: (20231018 - Julian) Follow Button */}
                 <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
                   <BoltButton
-                    className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+                    className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
                     color="purple"
                     style="solid"
                   >
-                    <AiOutlinePlus className="text-2xl text-white group-hover:text-black" />
+                    <AiOutlinePlus className="text-2xl" />
                     <p>{t('COMMON.FOLLOW')}</p>
                   </BoltButton>
                 </Link>

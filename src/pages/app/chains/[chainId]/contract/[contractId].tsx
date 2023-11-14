@@ -94,11 +94,17 @@ const ContractDetailPage = ({chainId, contractId, contractData}: IContractDetail
               <div className="right-0 mt-6 w-2/3 lg:absolute lg:mt-0 lg:w-fit">
                 <Link href={BFAURL.COMING_SOON}>
                   <BoltButton
-                    className="flex w-full items-center justify-center space-x-4 px-6 py-3"
+                    className="group flex w-full items-center justify-center space-x-4 px-6 py-3"
                     color="purple"
                     style="solid"
                   >
-                    <Image src="/icons/link.svg" alt="" width={24} height={24} />
+                    <Image
+                      src="/icons/link.svg"
+                      alt=""
+                      width={24}
+                      height={24}
+                      className="invert group-hover:invert-0"
+                    />
                     <p>{t('CONTRACT_DETAIL_PAGE.PLATFORM')}</p>
                   </BoltButton>
                 </Link>
