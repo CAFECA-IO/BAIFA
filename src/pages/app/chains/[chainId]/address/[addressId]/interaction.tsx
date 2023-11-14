@@ -111,7 +111,7 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
     // Info: (20231109 - Julian) Pagination
     .slice(startIdx, endIdx)
     .map((interactedData, index) => (
-      <InteractionItem key={index} interactedData={interactedData} />
+      <InteractionItem key={index} orignalAddressId={addressId} interactedData={interactedData} />
     ));
 
   return (

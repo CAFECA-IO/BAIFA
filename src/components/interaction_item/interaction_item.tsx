@@ -7,15 +7,17 @@ import {getChainIcon} from '../../lib/common';
 import {IInteractionItem} from '../../interfaces/interaction_item';
 
 interface IInteractionItemProps {
+  orignalAddressId: string;
   interactedData: IInteractionItem;
 }
 
-const InteractionItem = ({interactedData}: IInteractionItemProps) => {
+const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {id, type, chainId, transactionIds, publicTag} = interactedData;
 
   const chainIcon = getChainIcon(chainId);
   const itemLink = getDynamicUrl(`${chainId}`, `${id}`);
+  const transactionLink = `${BFAURL.TRANSACTION_LIST}?addressId=${orignalAddressId}&addressId=${id}`;
 
   const displayPublicTag = (
     <div className="whitespace-nowrap rounded border-violet bg-violet px-4 py-2 text-sm lg:text-base">
@@ -50,7 +52,7 @@ const InteractionItem = ({interactedData}: IInteractionItemProps) => {
       {displayIds}
       <div className="hidden items-center lg:flex">
         <p className="text-sm">
-          <Link href={BFAURL.COMING_SOON} className="text-primaryBlue underline underline-offset-2">
+          <Link href={transactionLink} className="text-primaryBlue underline underline-offset-2">
             {transactionIds.length}
           </Link>{' '}
           {t('COMMON.TRANSACTIONS')}

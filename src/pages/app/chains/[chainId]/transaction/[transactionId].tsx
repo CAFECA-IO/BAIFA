@@ -65,11 +65,17 @@ const TransactionDetailPage = ({transactionId, transactionData}: ITransactionDet
               <div className={`relative right-0 mt-6 lg:mt-0 xl:absolute ${isAddInTracingTool}`}>
                 <Link href={BFAURL.COMING_SOON}>
                   <BoltButton
-                    className="flex items-center space-x-4 px-6 py-4"
+                    className="group flex items-center space-x-4 px-6 py-4"
                     color="purple"
                     style="solid"
                   >
-                    <Image src="/icons/tracing.svg" alt="" width={24} height={24} />
+                    <Image
+                      src="/icons/tracing.svg"
+                      alt=""
+                      width={24}
+                      height={24}
+                      className="invert group-hover:invert-0"
+                    />
                     <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
                   </BoltButton>
                 </Link>
