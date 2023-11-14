@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {useRouter} from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
 import I18n from '../i18n/i18n';
@@ -12,6 +13,28 @@ const NavBar = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [isLogin, setIsLogin] = useState(false);
+
+  const navbarContent = [
+    {
+      name: 'NAV_BAR.TRACING_TOOL',
+      link: BFAURL.COMING_SOON,
+    },
+    {
+      name: 'NAV_BAR.AUDITING_TOOL',
+      link: BFAURL.COMING_SOON,
+    },
+    {
+      name: 'NAV_BAR.RED_FLAG',
+      link: BFAURL.RED_FLAG,
+    },
+    {
+      name: 'NAV_BAR.FAQ',
+      link: BFAURL.COMING_SOON,
+    },
+  ];
+
+  const router = useRouter();
+  const {pathname} = router;
 
   /* Info: (20230712 - Julian) left menu = hamburger menu */
   const {
@@ -64,23 +87,20 @@ const NavBar = () => {
 
         <I18n />
       </div>
-      <div className="flex items-center space-x-10">
+      <ul className="flex items-center">
         {/* ToDo: (20230727 - Julian) page link */}
-        <div className="text-white hover:text-primaryBlue">
-          <Link href={BFAURL.COMING_SOON}>{t('NAV_BAR.TRACING_TOOL')}</Link>
-        </div>
-        <div className="text-white hover:text-primaryBlue">
-          <Link href={BFAURL.COMING_SOON}>{t('NAV_BAR.AUDITING_TOOL')}</Link>
-        </div>
-        <div className="text-white hover:text-primaryBlue">
-          <Link href={BFAURL.RED_FLAG}>{t('NAV_BAR.RED_FLAG')}</Link>
-        </div>
-        <div className="text-white hover:text-primaryBlue">
-          <Link href={BFAURL.COMING_SOON}>{t('NAV_BAR.FAQ')}</Link>
-        </div>
-
-        {isDisplayedUser}
-      </div>
+        {navbarContent.map((item, index) => (
+          <li
+            key={index}
+            className={`border-b-3px px-4 py-3 text-white hover:text-primaryBlue ${
+              pathname === item.link ? 'border-primaryBlue' : 'border-transparent'
+            }`}
+          >
+            <Link href={item.link}>{t(item.name)}</Link>
+          </li>
+        ))}
+        <li className="ml-10">{isDisplayedUser}</li>
+      </ul>
     </div>
   );
 
@@ -90,26 +110,13 @@ const NavBar = () => {
         hamburgerVisible ? 'visible translate-x-0' : 'invisible -translate-x-full'
       } drop-shadow-xlSide transition-all duration-300 ease-in-out`}
     >
-      <li className="px-10 py-4">
-        <Link href={BFAURL.TRACING_TOOL} className="px-10 py-4">
-          {t('NAV_BAR.TRACING_TOOL')}
-        </Link>
-      </li>
-      <li className="px-10 py-4">
-        <Link href={BFAURL.AUDITING_TOOL} className="px-10 py-4">
-          {t('NAV_BAR.AUDITING_TOOL')}
-        </Link>
-      </li>
-      <li className="px-10 py-4">
-        <Link href={BFAURL.RED_FLAG} className="px-10 py-4">
-          {t('NAV_BAR.RED_FLAG')}
-        </Link>
-      </li>
-      <li className="px-10 py-4">
-        <Link href={BFAURL.FAQ} className="px-10 py-4">
-          {t('NAV_BAR.FAQ')}
-        </Link>
-      </li>
+      {navbarContent.map((item, index) => (
+        <li key={index} className="px-10 py-4">
+          <Link href={item.link} className="px-10 py-4">
+            {t(item.name)}
+          </Link>
+        </li>
+      ))}
       <li className="px-10 py-4">
         <I18n />
       </li>

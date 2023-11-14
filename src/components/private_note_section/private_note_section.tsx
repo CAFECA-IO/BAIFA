@@ -56,7 +56,7 @@ const PrivateNoteSection = () => {
   return (
     <div className="flex w-full flex-col space-y-4">
       <h2 className="text-xl text-lilac">{t('COMMON.PRIVATE_NOTE_TITLE')}</h2>
-      <div className="flex w-full flex-col bg-darkPurple p-4">
+      <div className="flex w-full flex-col rounded-lg bg-darkPurple p-4 shadow-xl">
         {/* Info: (20231017 - Julian) Tag List */}
         <div className="mb-2 flex flex-wrap gap-2">{tagList}</div>
         {/* Info: (20231017 - Julian) Input part */}

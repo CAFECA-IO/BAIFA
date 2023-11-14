@@ -6,7 +6,6 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
 import RedFlagDetail from '../../../components/red_flag_detail/red_flag_detail';
 import BoltButton from '../../../components/bolt_button/bolt_button';
-import FlaggingTransactionListSection from '../../../components/flagging_transaction_list_section/flagging_transaction_list_section';
 import Footer from '../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
@@ -17,6 +16,7 @@ import {getChainIcon} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
 import {dummyAddressData} from '../../../interfaces/address';
 import {dummyTransactionData} from '../../../interfaces/transaction';
+import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
 
 interface IRedFlagDetailPageProps {
   redFlagData: IRedFlag;
@@ -29,7 +29,7 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
     transactionIds.includes(transaction.id)
   );
 
-  const headTitle = `${'Red Flag '} ${'Address'} - BAIFA`;
+  const headTitle = `${t('RED_FLAG_ADDRESS_PAGE.MAIN_TITLE')} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
   const router = useRouter();
@@ -54,38 +54,50 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
               </button>
               {/* Info: (20231110 -Julian) Red Flag Address Title */}
               <div className="flex flex-1 flex-col items-center justify-center gap-4 text-2xl font-bold lg:flex-row lg:text-32px">
-                <h1>{t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')}</h1>
+                <h1>{t('RED_FLAG_ADDRESS_PAGE.RED_FLAG')}</h1>
                 <div className="flex items-center justify-center gap-4">
                   <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
                   <h1>
-                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
+                    {t('RED_FLAG_ADDRESS_PAGE.ADDRESS')}
                     <span className="text-primaryBlue"> {addressId}</span>
                   </h1>
                 </div>
               </div>
             </div>
 
-            <div className="flex w-full flex-col items-center gap-4 sm:w-1/2 lg:flex-row">
+            <div className="flex w-full flex-col items-center justify-center gap-4 lg:flex-row">
               {/* Info: (20231110 - Julian) Download Report Button */}
-              <Link href={BFAURL.COMING_SOON} className="w-full">
+              <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
                 <BoltButton
-                  className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+                  className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
                   color="purple"
                   style="solid"
                 >
-                  <Image src="/icons/download.svg" alt="" width={24} height={24} />
-                  <p>Download Report</p>
+                  <Image
+                    src="/icons/download.svg"
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="invert group-hover:invert-0"
+                  />
+                  <p>{t('RED_FLAG_ADDRESS_PAGE.DOWNLOAD_REPORT_BUTTON')}</p>
                 </BoltButton>
               </Link>
               {/* Info: (20231110 - Julian) Open in Tracing Tool Button */}
-              <Link href={BFAURL.COMING_SOON} className="w-full">
+              <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
                 <BoltButton
-                  className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+                  className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
                   color="purple"
                   style="solid"
                 >
-                  <Image src="/icons/tracing.svg" alt="" width={24} height={24} />
-                  <p>Open in Tracing Tool</p>
+                  <Image
+                    src="/icons/tracing.svg"
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="invert group-hover:invert-0"
+                  />
+                  <p>{t('RED_FLAG_ADDRESS_PAGE.OPEN_IN_TRACING_TOOL_BUTTON')}</p>
                 </BoltButton>
               </Link>
             </div>
@@ -97,7 +109,7 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
 
             {/* Info: (20231110 - Julian)  Transaction List */}
             <div className="w-full">
-              <FlaggingTransactionListSection transactions={transactions} />
+              <TransactionHistorySection transactions={transactions} />
             </div>
 
             {/* Info: (20231110 - Julian) Back Button */}

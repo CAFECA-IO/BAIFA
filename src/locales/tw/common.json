@@ -198,11 +198,30 @@
     "FLAG_TYPE_HIGH_RISK_LOCATION": "高風險地區",
     "FLAG_TYPE_PRIVACY_COINS": "使用隱私幣交易"
   },
+  "RED_FLAG_ADDRESS_PAGE": {
+    "MAIN_TITLE": "警示地址",
+    "RED_FLAG": "警示",
+    "ADDRESS": "地址",
+    "ADDRESS_ID": "地址",
+    "RED_FLAG_TYPE": "警示類型",
+    "FLAGGING_TIME": "警示時間",
+    "INTERACTED_WITH": "互動對象",
+    "TOTAL_AMOUNT": "總金額",
+    "DOWNLOAD_REPORT_BUTTON": "下載報告",
+    "OPEN_IN_TRACING_TOOL_BUTTON": "在追蹤工具中開啟"
+  },
   "REVIEWS_PAGE": {
     "TITLE": "評論",
     "BUTTON": "寫評論",
     "SEE_ALL": "查看全部評論",
     "BY": "由"
+  },
+  "BLACKLIST_PAGE": {
+    "MAIN_TITLE_HIGHLIGHT": "黑名單",
+    "MAIN_TITLE": "",
+    "SEARCH_PLACEHOLDER": "在黑名單中搜尋",
+    "BREADCRUMB_TITLE": "黑名單",
+    "LASTED_ACTIVE_TIME": "最後活動時間"
   },
   "DATE_PICKER": {
     "DATE": "日期",
@@ -259,6 +278,7 @@
     "TOP_100_HOLDER_PLACEHOLDER": "查詢地址",
     "TRANSACTION_HISTORY_TITLE": "交易歷史記錄",
     "TRANSACTION_HISTORY_PLACEHOLDER": "在交易記錄中搜尋",
+    "TRANSACTION_HISTORY_TO_ADDRESS": "收件地址",
     "BLOCK_PRODUCED_HISTORY_TITLE": "區塊生成歷史記錄",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在區塊生成記錄中搜尋"
   },
