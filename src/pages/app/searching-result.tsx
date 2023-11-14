@@ -34,7 +34,7 @@ const SearchingResultPage = () => {
   // Info: (20231114 - Julian) Filter State
   const [search, setSearch, searchRef] = useStateRef<string>('');
   const [sorting, setSorting] = useState(sortingOptions[0]);
-  const [activeTab, setActiveTab] = useState('All');
+  const [activeTab, setActiveTab] = useState(filterTabs[0]);
   const [period, setPeriod] = useState({
     startTimeStamp: 0,
     endTimeStamp: 0,
