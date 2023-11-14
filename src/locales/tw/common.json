@@ -223,6 +223,17 @@
     "BREADCRUMB_TITLE": "黑名單",
     "LASTED_ACTIVE_TIME": "最後活動時間"
   },
+  "SEARCHING_RESULT_PAGE": {
+    "MAIN_TITLE": "搜尋結果",
+    "ALL": "全部",
+    "BLOCKS": "區塊",
+    "ADDRESSES": "地址",
+    "CONTRACTS": "合約",
+    "EVIDENCES": "證據",
+    "TRANSACTIONS": "交易",
+    "BLACK_LIST": "黑名單",
+    "RED_FLAGS": "警示記錄"
+  },
   "DATE_PICKER": {
     "DATE": "日期",
     "SELECT_PERIOD": "選擇日期範圍",
@@ -254,7 +265,8 @@
     "OLDEST": "最舊",
     "POPULAR": "熱門",
     "UNPOPULAR": "冷門",
-    "ALL": "全部"
+    "ALL": "全部",
+    "RELEVANCY": "相關性"
   },
   "COMMON": {
     "NONE": "無",

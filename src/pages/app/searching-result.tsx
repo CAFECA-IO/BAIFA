@@ -14,18 +14,18 @@ import {ILocale, TranslateFunction} from '../../interfaces/locale';
 
 const SearchingResultPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const headTitle = `Searching Result - BAIFA`;
+  const headTitle = `${t('SEARCHING_RESULT_PAGE.MAIN_TITLE')} - BAIFA`;
   const filterTabs = [
-    'All',
-    'Blocks',
-    'Addresses',
-    'Contracts',
-    'Evidences',
-    'Transactions',
-    'Black List',
-    'Red Flags',
+    'SEARCHING_RESULT_PAGE.ALL', // All
+    'SEARCHING_RESULT_PAGE.BLOCKS', // Blocks
+    'SEARCHING_RESULT_PAGE.ADDRESSES', // Addresses
+    'SEARCHING_RESULT_PAGE.CONTRACTS', // Contracts
+    'SEARCHING_RESULT_PAGE.EVIDENCES', // Evidences
+    'SEARCHING_RESULT_PAGE.TRANSACTIONS', // Transactions
+    'SEARCHING_RESULT_PAGE.BLACK_LIST', // Black List
+    'SEARCHING_RESULT_PAGE.RED_FLAGS', // Red Flags
   ];
-  const sortingOptions = ['Relevancy', ...sortOldAndNewOptions];
+  const sortingOptions = ['SORTING.RELEVANCY', ...sortOldAndNewOptions];
   const shadowClassNameL =
     'before:absolute before:-inset-1 before:top-0 before:block xl:before:hidden before:w-5 before:bg-gradient-to-r before:from-black before:to-transparent';
   const shadowClassNameR =
@@ -53,7 +53,7 @@ const SearchingResultPage = () => {
 
     return (
       <li key={index} className={tabClassName} onClick={tabClickHandler}>
-        {tab}
+        {t(tab)}
       </li>
     );
   });

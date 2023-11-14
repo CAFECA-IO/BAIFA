@@ -223,6 +223,17 @@
     "BREADCRUMB_TITLE": "黑名单",
     "LASTED_ACTIVE_TIME": "最后活动时间"
   },
+  "SEARCHING_RESULT_PAGE": {
+    "MAIN_TITLE": "搜寻结果",
+    "ALL": "全部",
+    "BLOCKS": "区块",
+    "ADDRESSES": "地址",
+    "CONTRACTS": "合约",
+    "EVIDENCES": "证据",
+    "TRANSACTIONS": "交易",
+    "BLACK_LIST": "黑名单",
+    "RED_FLAGS": "警示记录"
+  },
   "DATE_PICKER": {
     "DATE": "日期",
     "SELECT_PERIOD": "选择日期范围",
@@ -254,7 +265,8 @@
     "OLDEST": "最旧",
     "POPULAR": "热门",
     "UNPOPULAR": "冷门",
-    "ALL": "全部"
+    "ALL": "全部",
+    "RELEVANCY": "相关性"
   },
   "COMMON": {
     "NONE": "无",

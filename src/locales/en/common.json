@@ -223,6 +223,17 @@
     "BREADCRUMB_TITLE": "Black List",
     "LASTED_ACTIVE_TIME": "Lasted Active Time"
   },
+  "SEARCHING_RESULT_PAGE": {
+    "MAIN_TITLE": "Searching Result",
+    "ALL": "All",
+    "BLOCKS": "Blocks",
+    "ADDRESSES": "Addresses",
+    "CONTRACTS": "Contracts",
+    "EVIDENCES": "Evidences",
+    "TRANSACTIONS": "Transactions",
+    "BLACK_LIST": "Black List",
+    "RED_FLAGS": "Red Flags"
+  },
   "DATE_PICKER": {
     "DATE": "Date",
     "SELECT_PERIOD": "Select Period",
@@ -254,7 +265,8 @@
     "OLDEST": "Oldest",
     "POPULAR": "Popular",
     "UNPOPULAR": "Unpopular",
-    "ALL": "All"
+    "ALL": "All",
+    "RELEVANCY": "Relevancy"
   },
   "COMMON": {
     "NONE": "None",
