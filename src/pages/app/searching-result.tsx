@@ -80,7 +80,10 @@ const SearchingResultPage = () => {
         const searchTerm = searchTextRef.current.toLowerCase();
         const id = searchResult.data.id.toLowerCase();
         const chainId = searchResult.data.chainId.toLowerCase();
-        return searchTerm !== '' ? id.includes(searchTerm) || chainId.includes(searchTerm) : true;
+        const type = searchResult.type.toLowerCase();
+        return searchTerm !== ''
+          ? id.includes(searchTerm) || chainId.includes(searchTerm) || type.includes(searchTerm)
+          : true;
       })
       .filter(searchResult => {
         // Info: (20231115 - Julian) filter by Filter Tabs
