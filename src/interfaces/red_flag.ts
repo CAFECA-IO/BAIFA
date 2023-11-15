@@ -6,7 +6,7 @@ export interface IRedFlag {
   addressId: string;
   addressHash: string;
   redFlagType: IRedFlagType;
-  flaggingTimestamp: number;
+  createdTimestamp: number; // 被警示的日期
   interactedAddressIds: string[]; // 被警示交易的交易對象
   totalAmount: number; // 交易總金額
   transactionIds: string[]; // 被警示的交易記錄
@@ -37,7 +37,7 @@ export const getDummyRedFlag = (
         : i % 7 === 6
         ? RedFlagType.HIGH_RISK_LOCATION
         : RedFlagType.GAMBLING_SITE;
-    const flaggingTimestamp = 1689230832 - i * 100000;
+    const createdTimestamp = 1689230832 - i * 100000;
 
     const redFlag: IRedFlag = {
       id: id,
@@ -45,7 +45,7 @@ export const getDummyRedFlag = (
       addressId: addressId,
       addressHash: '0x000000',
       redFlagType: redFlagType,
-      flaggingTimestamp: flaggingTimestamp,
+      createdTimestamp: createdTimestamp,
       interactedAddressIds: [
         '123201',
         '120999',

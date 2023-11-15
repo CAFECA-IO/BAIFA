@@ -14,7 +14,7 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const chainIcon = getChainIcon(redFlagData.chainId);
 
-  const flaggingTime = timestampToString(redFlagData.flaggingTimestamp);
+  const flaggingTime = timestampToString(redFlagData.createdTimestamp);
   // Info: (20231109 - Julian) If month is longer than 3 letters, slice it and add a dot
   const monthStr =
     t(flaggingTime.month).length > 3
