@@ -16,14 +16,14 @@ const SearchingResultPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${t('SEARCHING_RESULT_PAGE.MAIN_TITLE')} - BAIFA`;
   const filterTabs = [
-    'SEARCHING_RESULT_PAGE.ALL', // All
-    'SEARCHING_RESULT_PAGE.BLOCKS', // Blocks
-    'SEARCHING_RESULT_PAGE.ADDRESSES', // Addresses
-    'SEARCHING_RESULT_PAGE.CONTRACTS', // Contracts
-    'SEARCHING_RESULT_PAGE.EVIDENCES', // Evidences
-    'SEARCHING_RESULT_PAGE.TRANSACTIONS', // Transactions
-    'SEARCHING_RESULT_PAGE.BLACK_LIST', // Black List
-    'SEARCHING_RESULT_PAGE.RED_FLAGS', // Red Flags
+    'SEARCHING_RESULT_PAGE.ALL_TAB', // All
+    'SEARCHING_RESULT_PAGE.BLOCKS_TAB', // Blocks
+    'SEARCHING_RESULT_PAGE.ADDRESSES_TAB', // Addresses
+    'SEARCHING_RESULT_PAGE.CONTRACTS_TAB', // Contracts
+    'SEARCHING_RESULT_PAGE.EVIDENCES_TAB', // Evidences
+    'SEARCHING_RESULT_PAGE.TRANSACTIONS_TAB', // Transactions
+    'SEARCHING_RESULT_PAGE.BLACK_LIST_TAB', // Black List
+    'SEARCHING_RESULT_PAGE.RED_FLAGS_TAB', // Red Flags
   ];
   const sortingOptions = ['SORTING.RELEVANCY', ...sortOldAndNewOptions];
   const shadowClassNameL =
@@ -65,7 +65,6 @@ const SearchingResultPage = () => {
         <title>{headTitle}</title>
       </Head>
 
-      {/* Info:(20231114 - Julian) Navbar */}
       <NavBar />
 
       <main>
