@@ -14,10 +14,10 @@ import {timestampToString, getReportTimeSpan} from '../../../lib/common';
 import {
   createCashFlowFirstPart,
   createCashFlowSecondPart,
-  createCashFlowLastPart,
   createHistoricalCashFlowTable,
   createActivitiesAnalysis,
   createNonCashConsideration,
+  createCashActivities,
 } from '../../../lib/reports/cash_flow';
 import {IResult} from '../../../interfaces/result';
 import {APIURL} from '../../../constants/api_request';
@@ -87,20 +87,29 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
     startCashFlowData
   );
   const cash_flow_p4_1 = createCashFlowSecondPart(endCashFlowData, startCashFlowData);
-  const cash_flow_p5_1 = createCashFlowLastPart(endCashFlowData, startCashFlowData);
 
   // Info: (20230922 - Julian) ------------- Cash Flow table(this year vs last year) -------------
   const historicalCashFlowDates = [endDateStr.year, endDateStr.lastYear];
 
-  const cash_flow_p9_1 = createHistoricalCashFlowTable(
+  const cash_flow_p8_1 = createHistoricalCashFlowTable(
     endDateStr.monthAndDay,
     historicalCashFlowDates,
     endCashFlowData,
     historicalCashFlowData
   );
 
+  // Info: (20231116 - Julian) Cash deposited by customers
+  const numeroOfCashDeposited = ['C027', 'C002, C003'];
+  const cash_flow_p9_1 = createCashActivities(
+    'Cash deposited by customers',
+    cashFlowDates,
+    endCashFlowData?.operatingActivities.details.cashDepositedByCustomers,
+    startCashFlowData?.operatingActivities.details.cashDepositedByCustomers,
+    numeroOfCashDeposited
+  );
+
   // Info: (20230922 - Julian) Cryptocurrencies deposited by customers
-  const numeroOfDeposited = ['C001', 'C054, C055', 'C052, C053', 'C002, C003'];
+  const numeroOfCryptoDeposited = ['C001', 'C054, C055', 'C052, C053', 'C002, C003'];
   const cash_flow_p10_1 = createActivitiesAnalysis(
     'Cryptocurrencies deposited by customers',
     cashFlowDates,
@@ -108,7 +117,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
       .cryptocurrenciesDepositedByCustomers,
     startCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesDepositedByCustomers,
-    numeroOfDeposited
+    numeroOfCryptoDeposited
   );
 
   // Info: (20230922 - Julian) Cryptocurrencies withdrawn by customers
@@ -315,14 +324,6 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           <ReportPageBody reportTitle={reportTitle} currentPage={4}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <ReportTable tableData={cash_flow_p4_1} />
-            </div>
-          </ReportPageBody>
-          <hr className="break-before-page" />
-
-          {/* Info: (20231012 - Julian) Page 5 */}
-          <ReportPageBody reportTitle={reportTitle} currentPage={5}>
-            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
-              <ReportTable tableData={cash_flow_p5_1} />
               <p>
                 For a crypto exchange, the distinction between cash and non-cash activities by
                 cryptocurrencies in its cash flow statement isn't just a matter of accounting
@@ -334,8 +335,8 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20231012 - Julian) Page 6 */}
-          <ReportPageBody reportTitle={reportTitle} currentPage={6}>
+          {/* Info: (20231012 - Julian) Page 5 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={5}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <ol className="ml-5 list-decimal font-bold">
                 <li>
@@ -420,8 +421,8 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20231012 - Julian) Page 7 */}
-          <ReportPageBody reportTitle={reportTitle} currentPage={7}>
+          {/* Info: (20231012 - Julian) Page 6 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={6}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <h1 className="text-lg font-bold text-violet">Note To Statements of Cash Flow</h1>
               {/* Info: (20230906 - Julian) Note 1 */}
@@ -472,8 +473,8 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20231012 - Julian) Page 8 */}
-          <ReportPageBody reportTitle={reportTitle} currentPage={8}>
+          {/* Info: (20231012 - Julian) Page 7 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={7}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p>fair value of customer cryptocurrencies and liabilities.</p>
               <p className="font-bold">User deposits</p>
@@ -519,8 +520,8 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20231012 - Julian) Page 9 */}
-          <ReportPageBody reportTitle={reportTitle} currentPage={9}>
+          {/* Info: (20231012 - Julian) Page 8 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={8}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               {/* Info: (20230906 - Julian) Note 4 */}
               <h2 className="font-bold uppercase">4. Cash Flow</h2>
@@ -538,7 +539,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
                 utilized in investing and financing activities, as well as the net increase in both
                 cash and non-cash operating activities.
               </p>
-              <ReportTable tableData={cash_flow_p9_1} />
+              <ReportTable tableData={cash_flow_p8_1} />
               {/* Info: (20230906 - Julian) Note 5 */}
               <h2 className="font-bold uppercase"> 5. ACTIVITIES ANALYSIS</h2>
               <p>
@@ -550,6 +551,25 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
                 operations, ensuring that our stakeholders have a thorough grasp of our financial
                 dynamics. The following sections delve into each category in detail:
               </p>
+              <p className="italic text-lilac">Next Page</p>
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+
+          {/* Info: (20231012 - Julian) Page 9 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={9}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <p className="font-bold">Cash deposited by customers</p>
+              <p>
+                This table outlines the cash deposits made by our customers, comparing the figures
+                from
+                <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, to
+                those from
+                <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>. It
+                includes details on the amount, cost value, and percentage of total deposits for
+                each cash type.
+              </p>
+              <ReportTable tableData={cash_flow_p9_1} />
               <p className="italic text-lilac">Next Page</p>
             </div>
           </ReportPageBody>

@@ -23,17 +23,14 @@ const ReportTableRow = ({row}: IReportTableRow) => {
     if (item === '*-*') return null;
 
     return (
-      <td key={index} colSpan={1 + addCol} className="max-w-250px p-5px">
+      <td key={index} colSpan={1 + addCol} className=" p-5px">
         {item}
       </td>
     );
   });
 
   const displayContent = rowData.slice(1).map((item, index) => (
-    <td
-      key={index}
-      className="max-w-250px whitespace-nowrap border-l border-black p-5px text-right"
-    >
+    <td key={index} className="whitespace-nowrap border-l border-black p-5px text-right">
       {item}
     </td>
   ));
@@ -57,7 +54,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
         });
 
         return (
-          <td key={index} colSpan={1 + addCol} className={`max-w-250px text-center`}>
+          <td key={index} colSpan={1 + addCol} className={` text-center`}>
             {displayThArr}
           </td>
         );
@@ -85,14 +82,11 @@ const ReportTableRow = ({row}: IReportTableRow) => {
     case RowType.stringRow:
       return (
         <tr className="border-x border-b border-black">
-          <td className="max-w-250px border-l border-black p-5px text-left font-bold text-violet">
+          <td className=" border-l border-black p-5px text-left font-bold text-violet">
             {rowData[0]}
           </td>
           {rowData.slice(1).map((item, index) => (
-            <td
-              key={index}
-              className="w-70px max-w-250px border-l border-black p-5px text-center text-lilac"
-            >
+            <td key={index} className="w-70px border-l border-black p-5px text-center text-lilac">
               {item}
             </td>
           ))}
@@ -102,11 +96,9 @@ const ReportTableRow = ({row}: IReportTableRow) => {
     case RowType.titleRow:
       return (
         <tr className="border-x border-b border-black font-bold">
-          <td className="max-w-250px border-l border-black p-5px text-left text-violet">
-            {rowData[0]}
-          </td>
+          <td className="border-l border-black p-5px text-left text-violet">{rowData[0]}</td>
           {rowData.slice(1).map((item, index) => (
-            <td key={index} className="w-70px max-w-250px border-l border-black p-5px text-center">
+            <td key={index} className="w-70px border-l border-black p-5px text-center">
               {item}
             </td>
           ))}
@@ -127,7 +119,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
     case RowType.bookkeeping:
       return (
         <tr className="border-x border-b border-black">
-          <td className="max-w-250px border-l border-black p-5px text-lilac">{rowData[0]}</td>
+          <td className="border-l border-black p-5px text-lilac">{rowData[0]}</td>
           {displayContent}
         </tr>
       );
@@ -135,7 +127,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
     case RowType.foot:
       return (
         <tr className="border-x border-b border-black bg-lilac2 font-bold">
-          <td className="max-w-250px border-l border-black p-5px">{rowData[0]}</td>
+          <td className="w-300px border-l border-black p-5px">{rowData[0]}</td>
           {displayContent}
         </tr>
       );
@@ -171,7 +163,7 @@ const ReportTable = ({tableData}: IReportTable) => {
                 key={index}
                 colSpan={1 + addThCol}
                 rowSpan={rowSpan}
-                className={`max-w-250px whitespace-nowrap px-10px ${thStyle} ${thSize}`}
+                className={` whitespace-nowrap px-10px ${thStyle} ${thSize}`}
               >
                 {item}
               </th>
@@ -192,7 +184,7 @@ const ReportTable = ({tableData}: IReportTable) => {
             <th
               key={index}
               colSpan={1 + addThCol}
-              className={`max-w-250px whitespace-normal px-10px text-center font-bold ${thSize}`}
+              className={` whitespace-normal px-10px text-center font-bold ${thSize}`}
             >
               {item}
             </th>

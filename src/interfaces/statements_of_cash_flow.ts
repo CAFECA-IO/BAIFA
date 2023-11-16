@@ -1,6 +1,6 @@
 import {ICurrencyDetail} from './report_currency_detail';
 
-interface ICashFlowAccountingDetail {
+export interface ICashFlowAccountingDetail {
   totalAmountFairValue: number;
   weightedAverageCost: number;
   breakdown: {
