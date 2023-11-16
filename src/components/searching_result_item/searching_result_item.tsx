@@ -130,7 +130,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         );
 
         return {
-          LINE_1: <p className="text-base">{addressHash}</p>,
+          LINE_1: <p className="break-all text-base">{addressHash}</p>,
           LINE_2: addressFlagging,
           LINK: dynamicUrl.ADDRESS,
         };
@@ -138,7 +138,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
       case SearchType.CONTRACT:
         const {contractAddess} = data as IContract;
         return {
-          LINE_1: <p className="text-base">{contractAddess}</p>,
+          LINE_1: <p className="break-all text-base">{contractAddess}</p>,
           LINE_2: displayedTime,
           LINK: dynamicUrl.CONTRACT,
         };
@@ -146,7 +146,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
       case SearchType.EVIDENCE:
         const {evidenceAddess} = data as IEvidence;
         return {
-          LINE_1: <p className="text-base">{evidenceAddess}</p>,
+          LINE_1: <p className="break-all text-base">{evidenceAddess}</p>,
           LINE_2: displayedTime,
           LINK: dynamicUrl.EVIDENCE,
         };
@@ -154,7 +154,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
       case SearchType.TRANSACTION:
         const {hash} = data as ITransaction;
         return {
-          LINE_1: <p className="text-base">{hash}</p>,
+          LINE_1: <p className="break-all text-base">{hash}</p>,
           LINE_2: displayedTime,
           LINK: dynamicUrl.TRANSACTION,
         };
@@ -169,7 +169,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         );
 
         return {
-          LINE_1: <p className="text-base">{redFlagAddressHash}</p>,
+          LINE_1: <p className="break-all text-base">{redFlagAddressHash}</p>,
           LINE_2: displayedRedFlagType,
           LINK: dynamicUrl.RED_FLAG,
         };
@@ -196,12 +196,12 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
   };
 
   const displayedId = (
-    <div className="flex flex-1 items-center space-x-4">
-      <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
-      <h2 className="text-xl font-semibold">
-        {t(`SEARCHING_RESULT_PAGE.ITEM_TITLE_${type}`)}
-        <span className="ml-2 text-primaryBlue">{data.id}</span>
-      </h2>
+    <div className="flex flex-wrap items-center space-x-2 text-xl font-semibold">
+      <div className="flex items-center space-x-4">
+        <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
+        <h2>{t(`SEARCHING_RESULT_PAGE.ITEM_TITLE_${type}`)}</h2>
+      </div>
+      <h2 className="text-primaryBlue">{data.id}</h2>
     </div>
   );
 
@@ -227,17 +227,17 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         {/* Info: (20231115 - Julian) Link */}
         <div className="rounded-lg bg-darkPurple p-8 shadow-xl transition-all duration-300 ease-in-out hover:bg-purpleLinear">
           {/* Info: (20231115 - Julian) Title */}
-          <div className="flex w-4/5 items-center">
+          <div className="flex w-full items-center lg:w-4/5">
             {/* Info: (20231115 - Julian) ID */}
-            {displayedId}
-            {/* Info: (20231115 - Julian) SubTitle */}
-            {displayedSubtitle}
+            <div className="flex-1">{displayedId}</div>
+            {/* Info: (20231115 - Julian) SubTitle - For Desktop */}
+            <div className="hidden lg:block">{displayedSubtitle}</div>
           </div>
 
           {/* Info: (20231115 - Julian) Content */}
-          <div className="flex flex-col items-center px-12">
+          <div className="flex flex-col items-center lg:px-12">
             {/* Info: (20231115 - Julian) Line 1 */}
-            <div className="flex w-full items-center border-b border-darkPurple4 py-5">
+            <div className="flex w-full flex-col items-start gap-2 border-b border-darkPurple4 py-5 lg:flex-row lg:items-center">
               <div className="flex w-200px items-center space-x-2">
                 <p className="text-base font-bold text-lilac">
                   {t(`SEARCHING_RESULT_PAGE.ITEM_LINE_1_${type}`)}
@@ -250,7 +250,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
               {displayedLine1}
             </div>
             {/* Info: (20231115 - Julian) Line 2 */}
-            <div className="flex w-full items-center border-b border-darkPurple4 py-5">
+            <div className="flex w-full flex-col items-start gap-2 border-b border-darkPurple4 py-5 lg:flex-row lg:items-center">
               <div className="flex w-200px items-center space-x-2">
                 <p className="text-base font-bold text-lilac">
                   {t(`SEARCHING_RESULT_PAGE.ITEM_LINE_2_${type}`)}
@@ -262,6 +262,9 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
               {/* Info: (20231115 - Julian) Line 2 Content */}
               {displayedLine2}
             </div>
+
+            {/* Info: (20231115 - Julian) SubTitle - For Mobile */}
+            <div className="flex items-center py-5 lg:hidden">{displayedSubtitle}</div>
           </div>
         </div>
       </Link>
