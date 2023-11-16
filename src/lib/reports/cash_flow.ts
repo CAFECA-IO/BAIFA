@@ -2,7 +2,7 @@ import {
   IStatementsOfCashFlow,
   INonCashAccountingDetail,
   ICashFlowAccountingDetail,
-  INonCashConsiderationDetail,
+  IConsiderationDetail,
 } from '../../interfaces/statements_of_cash_flow';
 import {defaultBreakdown} from '../../interfaces/report_currency_detail';
 import {roundToDecimal} from '../common';
@@ -930,7 +930,7 @@ export const createCashActivities = (
   return result;
 };
 
-const getCurrenciesData = (data: INonCashConsiderationDetail, currency: string) => {
+const getCurrenciesData = (data: IConsiderationDetail, currency: string) => {
   if (data.type === 'STABLECOIN_TO_CRYPTO') {
     // Info: (20230922 - Julian) STABLECOIN_TO_CRYPTO: purchase of cryptocurrencies with non-cash consideration
     // Info: (20230922 - Julian) 找出買入(to)的資料
@@ -957,11 +957,12 @@ const getCurrenciesData = (data: INonCashConsiderationDetail, currency: string) 
 export const createNonCashConsideration = (
   title: string,
   dates: string[],
-  dataA: INonCashConsiderationDetail | undefined,
-  dataB: INonCashConsiderationDetail | undefined,
+  dataA: IConsiderationDetail | undefined,
+  dataB: IConsiderationDetail | undefined,
   numero: string[]
 ) => {
   const thead = [`${numero[0]} ${title}`, dates[0], '*-*', '*-*', dates[1], '*-*', '*-*'];
+
   const defaultTable: ITable = {
     thead,
     tbody: [
@@ -996,9 +997,6 @@ export const createNonCashConsideration = (
     ],
   };
   if (!dataA || !dataB) return defaultTable;
-
-  if (dataA.type === 'STABLECOIN_TO_CRYPTO' && dataB.type === 'STABLECOIN_TO_CRYPTO') {
-  }
 
   // Info: (20230922 - Julian) -------- BTC --------
   const btcDataA = getCurrenciesData(dataA, 'BTC');
@@ -1078,6 +1076,101 @@ export const createNonCashConsideration = (
           `${roundToDecimal(usdtDataB.amount, 2)}`,
           `${roundToDecimal(usdtDataB.costValue, 2)}`,
           `${roundToDecimal(usdtPerB, 1)} %`,
+        ],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: [
+          `Total ${title}`,
+          `—`,
+          `$ ${roundToDecimal(totalDataA, 2)}`,
+          `${roundToDecimal(totalPerA, 1)} %`,
+          `—`,
+          `$ ${roundToDecimal(totalDataB, 2)}`,
+          `${roundToDecimal(totalPerB, 1)} %`,
+        ],
+      },
+    ],
+  };
+  return result;
+};
+
+export const createCashConsideration = (
+  title: string,
+  dates: string[],
+  dataA: IConsiderationDetail | undefined,
+  dataB: IConsiderationDetail | undefined,
+  numero: string[]
+) => {
+  const thead = [`${numero[0]} ${title}`, dates[0], '*-*', '*-*', dates[1], '*-*', '*-*'];
+
+  const defaultTable: ITable = {
+    thead,
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost Value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [`USD (${numero[1]})`, `—`, `—`, `—`, `—`, `—`, `—`],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: [`Total ${title}`, `—`, `—`, `—`, `—`, `—`, `—`],
+      },
+    ],
+  };
+  if (!dataA || !dataB) return defaultTable;
+
+  // Info: (20230922 - Julian) -------- USD --------
+  const usdDataA = getCurrenciesData(dataA, 'USD');
+  const usdDataB = getCurrenciesData(dataB, 'USD');
+
+  // Info: (20230922 - Julian) -------- Total --------
+  const totalDataA = +dataA.weightedAverageCost;
+  const totalDataB = +dataB.weightedAverageCost;
+
+  // Info: (20230922 - Julian) -------- Percentage --------
+  const usdPerA = (usdDataA.costValue / totalDataA) * 100;
+  const usdPerB = (usdDataB.costValue / totalDataB) * 100;
+
+  const totalPerA = usdPerA;
+  const totalPerB = usdPerB;
+
+  const result: ITable = {
+    thead,
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost Value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          `USD (${numero[1]})`,
+          `${roundToDecimal(usdDataA.amount, 2)}`,
+          `${roundToDecimal(usdDataA.costValue, 2)}`,
+          `${roundToDecimal(usdPerA, 1)} %`,
+          `${roundToDecimal(usdDataB.amount, 2)}`,
+          `${roundToDecimal(usdDataB.costValue, 2)}`,
+          `${roundToDecimal(usdPerB, 1)} %`,
         ],
       },
       {

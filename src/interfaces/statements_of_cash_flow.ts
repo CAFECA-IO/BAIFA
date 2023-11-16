@@ -20,7 +20,7 @@ export interface INonCashAccountingDetail {
   };
 }
 
-export interface INonCashConsiderationDetail {
+export interface IConsiderationDetail {
   dateRange: {
     start: string;
     end: string;
@@ -43,8 +43,8 @@ export interface IStatementsOfCashFlow {
     details: {
       cashDepositedByCustomers: ICashFlowAccountingDetail;
       cashWithdrawnByCustomers: ICashFlowAccountingDetail;
-      purchaseOfCryptocurrencies: INonCashConsiderationDetail;
-      disposalOfCryptocurrencies: INonCashConsiderationDetail;
+      purchaseOfCryptocurrencies: IConsiderationDetail;
+      disposalOfCryptocurrencies: IConsiderationDetail;
       cashPaidToSuppliersForExpenses: ICashFlowAccountingDetail;
       cashReceivedFromCustomersAsTransactionFee: ICashFlowAccountingDetail;
       cashReceivedFromCustomersForLiquidationInCFDTrading: ICashFlowAccountingDetail;
@@ -77,8 +77,8 @@ export interface IStatementsOfCashFlow {
       cryptocurrenciesWithdrawnByCustomers: INonCashAccountingDetail;
       cryptocurrencyInflows: INonCashAccountingDetail;
       cryptocurrencyOutflows: INonCashAccountingDetail;
-      purchaseOfCryptocurrenciesWithNonCashConsideration: INonCashConsiderationDetail;
-      disposalOfCryptocurrenciesForNonCashConsideration: INonCashConsiderationDetail;
+      purchaseOfCryptocurrenciesWithNonCashConsideration: IConsiderationDetail;
+      disposalOfCryptocurrenciesForNonCashConsideration: IConsiderationDetail;
       cryptocurrenciesReceivedFromCustomersAsTransactionFees: INonCashAccountingDetail;
       cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading: INonCashAccountingDetail;
       cryptocurrenciesPaidToCustomersAsRebatesForTransactionFees: INonCashAccountingDetail;
