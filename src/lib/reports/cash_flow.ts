@@ -15,7 +15,7 @@ export const createCashFlowFirstPart = (
   dataA: IStatementsOfCashFlow | undefined,
   dataB: IStatementsOfCashFlow | undefined
 ) => {
-  const subThead = ['Statements of Cash Flow - USD ($)', `30 Days Ended ${endedDate},`, '*-*'];
+  const subThead = ['Statements of Cash Flows - USD ($)', `30 Days Ended ${endedDate},`, '*-*'];
   const thead = ['$ in Thousands', dates[0], dates[1]];
   const defaultTable: ITable = {
     subThead,
@@ -23,7 +23,7 @@ export const createCashFlowFirstPart = (
     tbody: [
       {
         rowType: RowType.title,
-        rowData: ['Cash flow from operating activities', '*-*', '*-*'],
+        rowData: ['Cash flows from operating activities', '*-*', '*-*'],
       },
       {
         rowType: RowType.bookkeeping,
@@ -111,7 +111,7 @@ export const createCashFlowFirstPart = (
     tbody: [
       {
         rowType: RowType.title,
-        rowData: ['Cash flow from operating activities', '*-*', '*-*'],
+        rowData: ['Cash flows from operating activities', '*-*', '*-*'],
       },
       {
         rowType: RowType.bookkeeping,
@@ -724,7 +724,7 @@ export const createActivitiesAnalysis = (
       {
         rowType: RowType.stringRow,
         rowData: [
-          '(Cost Value in thousands)',
+          '(Cost value in thousands)',
           'Amount',
           'Cost Value',
           'Percentage of Total',
@@ -746,7 +746,7 @@ export const createActivitiesAnalysis = (
         rowData: [`USDT (${numero[3]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
         rowData: [`Total ${title}`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
     ],
@@ -778,7 +778,7 @@ export const createActivitiesAnalysis = (
       {
         rowType: RowType.stringRow,
         rowData: [
-          '(Cost Value in thousands)',
+          '(Cost value in thousands)',
           'Amount',
           'Cost Value',
           'Percentage of Total',
@@ -824,7 +824,7 @@ export const createActivitiesAnalysis = (
         ],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
         rowData: [
           `Total ${title}`,
           `—`,
@@ -854,7 +854,7 @@ export const createCashActivities = (
       {
         rowType: RowType.stringRow,
         rowData: [
-          '(Cost Value in thousands)',
+          '(Cost value in thousands)',
           'Amount',
           'Cost Value',
           'Percentage of Total',
@@ -868,7 +868,7 @@ export const createCashActivities = (
         rowData: [`USD (${numero[1]})`, `—`, `$ —`, `—`, `—`, `$ —`, `—`],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
         rowData: [`Total ${title}`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
     ],
@@ -892,7 +892,7 @@ export const createCashActivities = (
       {
         rowType: RowType.stringRow,
         rowData: [
-          '(Cost Value in thousands)',
+          '(Cost value in thousands)',
           'Amount',
           'Cost Value',
           'Percentage of Total',
@@ -914,7 +914,7 @@ export const createCashActivities = (
         ],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
         rowData: [
           `Total ${title}`,
           `—`,
@@ -969,7 +969,7 @@ export const createNonCashConsideration = (
       {
         rowType: RowType.stringRow,
         rowData: [
-          '(Cost Value in thousands)',
+          '(Cost value in thousands)',
           'Amount',
           'Cost Value',
           'Percentage of Total',
@@ -991,7 +991,7 @@ export const createNonCashConsideration = (
         rowData: [`USDT (${numero[3]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
         rowData: [`Total ${title}`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
     ],
@@ -1033,7 +1033,7 @@ export const createNonCashConsideration = (
       {
         rowType: RowType.stringRow,
         rowData: [
-          '(Cost Value in thousands)',
+          '(Cost value in thousands)',
           'Amount',
           'Cost Value',
           'Percentage of Total',
@@ -1079,7 +1079,7 @@ export const createNonCashConsideration = (
         ],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
         rowData: [
           `Total ${title}`,
           `—`,
@@ -1110,7 +1110,7 @@ export const createCashConsideration = (
       {
         rowType: RowType.stringRow,
         rowData: [
-          '(Cost Value in thousands)',
+          '(Cost value in thousands)',
           'Amount',
           'Cost Value',
           'Percentage of Total',
@@ -1124,7 +1124,7 @@ export const createCashConsideration = (
         rowData: [`USD (${numero[1]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
         rowData: [`Total ${title}`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
     ],
@@ -1152,7 +1152,7 @@ export const createCashConsideration = (
       {
         rowType: RowType.stringRow,
         rowData: [
-          '(Cost Value in thousands)',
+          '(Cost value in thousands)',
           'Amount',
           'Cost Value',
           'Percentage of Total',
@@ -1174,7 +1174,7 @@ export const createCashConsideration = (
         ],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
         rowData: [
           `Total ${title}`,
           `—`,

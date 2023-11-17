@@ -29,7 +29,7 @@ interface IStatementsOfCashFlowProps {
 }
 
 const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
-  const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOW;
+  const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOWS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
   const projectName = projectId;
 
@@ -57,7 +57,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
   const getStatementsOfCashFlow = async (date: string) => {
     let reportData;
     try {
-      const response = await fetch(`${APIURL.STATEMENTS_OF_CASH_FLOW}?date=${date}`, {
+      const response = await fetch(`${APIURL.STATEMENTS_OF_CASH_FLOWS}?date=${date}`, {
         method: 'GET',
       });
       const result: IResult = await response.json();
@@ -112,7 +112,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
   // Info: (20231116 - Julian) Cash received from customers as transaction fees
   const numeroOfCashFee = ['C031', 'C136, C137'];
   const cash_flow_p9_2 = createCashActivities(
-    'Cash deposited by customers',
+    'Cash received from customers as transaction fees',
     cashFlowDates,
     endCashFlowData?.operatingActivities.details.cashReceivedFromCustomersAsTransactionFee,
     startCashFlowData?.operatingActivities.details.cashReceivedFromCustomersAsTransactionFee,
@@ -391,7 +391,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
           {/* Info: (20231012 - Julian) Page 6 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={6}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
-              <h1 className="text-lg font-bold text-violet">Note To Statements of Cash Flow</h1>
+              <h1 className="text-lg font-bold text-violet">Note To Statements of Cash Flows</h1>
               {/* Info: (20230906 - Julian) Note 1 */}
               <h2 className="font-bold uppercase"> 1. Nature of Operations</h2>
               <p>
