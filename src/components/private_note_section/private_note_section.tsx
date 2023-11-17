@@ -3,9 +3,14 @@ import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {ImCross} from 'react-icons/im';
+import Link from 'next/link';
+import {BFAURL} from '../../constants/url';
 
 const PrivateNoteSection = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+
+  // Info: (20231117 - Julian) API
+  const [isLogin, setIsLogin] = useState<boolean>(false);
 
   const [tags, setTags] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
@@ -53,28 +58,44 @@ const PrivateNoteSection = () => {
     </div>
   ));
 
+  const displayNotes = (
+    <>
+      {/* Info: (20231017 - Julian) Tag List */}
+      <div className="mb-2 flex flex-wrap gap-2">{tagList}</div>
+      {/* Info: (20231017 - Julian) Input part */}
+      <div className="relative flex items-center">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyDown={handleInputKeyDown}
+          onCompositionStart={handleCompositionStart}
+          onCompositionEnd={handleCompositionEnd}
+          className="h-55px w-full rounded bg-purpleLinear px-3 py-2 text-base text-hoverWhite"
+          placeholder={t('COMMON.PRIVATE_NOTE_PLACEHOLDER')}
+        />
+        <button className="absolute right-4" onClick={addTagHandler}>
+          <Image src="/icons/edit.svg" alt="edit_icon" width={24} height={24} />
+        </button>
+      </div>
+    </>
+  );
+
   return (
     <div className="flex w-full flex-col space-y-4">
       <h2 className="text-xl text-lilac">{t('COMMON.PRIVATE_NOTE_TITLE')}</h2>
       <div className="flex w-full flex-col rounded-lg bg-darkPurple p-4 shadow-xl">
-        {/* Info: (20231017 - Julian) Tag List */}
-        <div className="mb-2 flex flex-wrap gap-2">{tagList}</div>
-        {/* Info: (20231017 - Julian) Input part */}
-        <div className="relative flex items-center">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={handleInputChange}
-            onKeyDown={handleInputKeyDown}
-            onCompositionStart={handleCompositionStart}
-            onCompositionEnd={handleCompositionEnd}
-            className="h-55px w-full rounded bg-purpleLinear px-3 py-2 text-base text-hoverWhite"
-            placeholder={t('COMMON.PRIVATE_NOTE_PLACEHOLDER')}
-          />
-          <button className="absolute right-4" onClick={addTagHandler}>
-            <Image src="/icons/edit.svg" alt="edit_icon" width={24} height={24} />
-          </button>
-        </div>
+        {isLogin ? (
+          displayNotes
+        ) : (
+          <div className="flex w-full items-center justify-center py-2">
+            <Link href={BFAURL.COMING_SOON}>
+              <p className="text-base text-primaryBlue underline underline-offset-2">
+                {t('COMMON.LOG_IN_ONLY')}
+              </p>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
