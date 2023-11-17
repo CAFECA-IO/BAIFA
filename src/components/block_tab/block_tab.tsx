@@ -41,13 +41,11 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
         const searchTerm = searchRef.current.toLowerCase();
         const managementTeam = block.managementTeam.map(team => team.toLowerCase());
         const stabilityLevel = block.stabilityLevel.toLowerCase();
-        const transactions = block.transactions.toString().toLowerCase();
         const miner = block.miner.toString().toLowerCase();
         return searchTerm !== ''
           ? block.id.toString().includes(searchTerm) ||
               managementTeam.includes(searchTerm) ||
               stabilityLevel.includes(searchTerm) ||
-              transactions.toString().includes(searchTerm) ||
               miner.toString().includes(searchTerm)
           : true;
       })
