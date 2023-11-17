@@ -23,7 +23,7 @@ const ReportTableRow = ({row}: IReportTableRow) => {
     if (item === '*-*') return null;
 
     return (
-      <td key={index} colSpan={1 + addCol} className=" p-5px">
+      <td key={index} colSpan={1 + addCol} className="p-5px">
         {item}
       </td>
     );
@@ -128,6 +128,16 @@ const ReportTableRow = ({row}: IReportTableRow) => {
       return (
         <tr className="border-x border-b border-black bg-lilac2 font-bold">
           <td className="w-300px border-l border-black p-5px">{rowData[0]}</td>
+          {displayContent}
+        </tr>
+      );
+    // Info: (20231117 - Julian) 淺紫底色 + 粗體黑字 + 標題只有開頭字母大寫
+    case RowType.capitalFoot:
+      return (
+        <tr className="border-x border-b border-black bg-lilac2 font-bold">
+          <td className="w-300px border-l border-black p-5px lowercase first-letter:uppercase">
+            {rowData[0]}
+          </td>
           {displayContent}
         </tr>
       );
