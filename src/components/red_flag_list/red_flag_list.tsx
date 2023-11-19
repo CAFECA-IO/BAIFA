@@ -54,7 +54,7 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
       })
       // Info: (20231109 - Julian) filter by date range
       .filter((redFlagData: IRedFlag) => {
-        const createdTimestamp = redFlagData.flaggingTimestamp;
+        const createdTimestamp = redFlagData.createdTimestamp;
         const start = period.startTimeStamp;
         const end = period.endTimeStamp;
         // Info: (20231109 - Julian) if start and end are 0, it means that there is no period filter
@@ -70,8 +70,8 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
       // Info: (20231109 - Julian) sort by Newest or Oldest
       .sort((a: IRedFlag, b: IRedFlag) => {
         return sorting === sortOldAndNewOptions[0]
-          ? a.flaggingTimestamp - b.flaggingTimestamp
-          : b.flaggingTimestamp - a.flaggingTimestamp;
+          ? a.createdTimestamp - b.createdTimestamp
+          : b.createdTimestamp - a.createdTimestamp;
       });
 
     setFilteredRedFlagList(searchResult);

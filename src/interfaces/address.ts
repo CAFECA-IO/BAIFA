@@ -3,18 +3,13 @@ import {IInteractionItem} from './interaction_item';
 import {IRedFlag, getDummyRedFlag} from './red_flag';
 
 export interface IAddress extends IInteractionItem {
-  //id: string;
   addressHash: string;
-  //chainId: string;
-  //createdTimestamp: number;
   lastestActiveTime: number;
   relatedAddressIds: string[];
   interactedAddressIds: string[];
   interactedContactIds: string[];
-  //transactionIds: string[];
   flagging: IRedFlag[];
   riskLevel: IRiskLevel;
-  //publicTag: string[];
   balance?: number;
   totalSent?: number;
   totalReceived?: number;
@@ -39,7 +34,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '130025',
     type: 'address',
-    addressHash: '0x11256d88475D319156fx93fEc3f74A79Cd0693fEc3',
+    addressHash: '0x11256d88475D319156fx93fEc3f74A79Cd069',
     chainId: 'isun',
     createdTimestamp: 1672932841,
     lastestActiveTime: 1697174618,

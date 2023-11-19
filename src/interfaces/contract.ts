@@ -1,14 +1,9 @@
 import {IInteractionItem} from './interaction_item';
 
 export interface IContract extends IInteractionItem {
-  //id: string;
   contractAddess: string;
-  //chainId: string;
   creatorAddressId: string;
-  //createdTimestamp: number;
   sourceCode: string;
-  //transactionIds: string[];
-  //publicTag: string[];
 }
 
 export const dummyContractData: IContract[] = [

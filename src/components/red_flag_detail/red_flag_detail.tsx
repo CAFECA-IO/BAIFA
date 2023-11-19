@@ -15,7 +15,7 @@ interface IRedFlagDetailProps {
 
 const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {chainId, addressHash, redFlagType, interactedAddressIds, flaggingTimestamp, totalAmount} =
+  const {chainId, addressHash, redFlagType, interactedAddressIds, createdTimestamp, totalAmount} =
     redFlagData;
 
   const chainIcon = getChainIcon(chainId);
@@ -68,8 +68,8 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
           </Tooltip>
         </div>
         <div className="flex items-center gap-2">
-          <p>{timestampToString(flaggingTimestamp).date}</p>
-          <p>{timestampToString(flaggingTimestamp).time}</p>
+          <p>{timestampToString(createdTimestamp).date}</p>
+          <p>{timestampToString(createdTimestamp).time}</p>
         </div>
       </div>
       {/* Info: (20231110 - Julian) Interacted with */}

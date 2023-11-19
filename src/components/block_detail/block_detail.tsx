@@ -40,7 +40,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     return () => clearTimeout(timer);
   }, [sinceTime]);
 
-  const transactionsLink = `${BFAURL.TRANSACTION_LIST}?blockId=${blockId}`; //getDynamicUrl(chainId, `${blockId}`).TRANSACTION_LIST;
+  const transactionsLink = `${BFAURL.TRANSACTION_LIST}?blockId=${blockId}`;
 
   const displayStability =
     stabilityLevel === StabilityLevel.HIGH ? (
@@ -168,7 +168,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
         </div>
         <Link href={transactionsLink}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
-            {transactions.length} {t('COMMON.TRANSACTIONS')}
+            {transactions} {t('COMMON.TRANSACTIONS')}
           </BoltButton>
         </Link>
       </div>

@@ -11,13 +11,13 @@ export const BFAURL = {
   FAQ: '/app/faq',
   BLACKLIST: '/app/blacklist',
   TRANSACTION_LIST: '/app/transaction-list',
+  SEARCHING_RESULT: '/app/searching-result',
 };
 
 export const getDynamicUrl = (chain: string, id: string) => {
   return {
     BLOCK: `/app/chains/${chain}/block/${id}`,
     TRANSACTION: `/app/chains/${chain}/transaction/${id}`,
-    //TRANSACTION_LIST: `/app/chains/${chain}/transaction-list/${id}`,
     ADDRESS: `/app/chains/${chain}/address/${id}`,
     CONTRACT: `/app/chains/${chain}/contract/${id}`,
     EVIDENCE: `/app/chains/${chain}/evidence/${id}`,

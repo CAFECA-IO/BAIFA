@@ -7,6 +7,7 @@ export type IRowType =
   | 'content'
   | 'stringRow'
   | 'titleRow'
+  | 'capitalFoot'
   | 'foot';
 
 export type IRowTypeContent = {
@@ -18,6 +19,7 @@ export type IRowTypeContent = {
   content: IRowType;
   stringRow: IRowType;
   titleRow: IRowType;
+  capitalFoot: IRowType;
   foot: IRowType;
 };
 
@@ -30,5 +32,6 @@ export const RowType: IRowTypeContent = {
   content: 'content',
   stringRow: 'stringRow',
   titleRow: 'titleRow',
+  capitalFoot: 'capitalFoot',
   foot: 'foot',
 };

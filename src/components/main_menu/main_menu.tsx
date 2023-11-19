@@ -2,36 +2,34 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {dummyChains} from '../../interfaces/chain';
-import {dummyCurrencyData} from '../../interfaces/currency';
+import {getDummyPromotion} from '../../interfaces/promotion';
 import {BFAURL} from '../../constants/url';
-import {dummyBlacklistAddressData} from '../../interfaces/address';
 
 const MainMenu = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+
+  // ToDo: (20231117 - Julian) Get Data from API
+  const promotionData = getDummyPromotion();
 
   const mainMenuContent = [
     {
       icon: '/icons/chain.svg',
       title: 'HOME_PAGE.CHAINS_TITLE',
-      // ToDo: (20231113 - Julian) Get from API
-      description: dummyChains.length,
+      description: promotionData.chains,
       link: BFAURL.CHAINS,
       alt: 'chain_icon',
     },
     {
       icon: '/icons/coin.svg',
       title: 'HOME_PAGE.CRYPTO_TITLE',
-      // ToDo: (20231113 - Julian) Get from API
-      description: dummyCurrencyData.length,
+      description: promotionData.cryptoCurrencies,
       link: BFAURL.CURRENCIES,
       alt: 'coin_icon',
     },
     {
       icon: '/icons/black_list.svg',
       title: 'HOME_PAGE.BLACKLIST_TITLE',
-      // ToDo: (20231113 - Julian) Get from API
-      description: dummyBlacklistAddressData.length,
+      description: promotionData.blackList,
       link: BFAURL.BLACKLIST,
       alt: 'blacklist_icon',
     },
