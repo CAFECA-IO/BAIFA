@@ -48,7 +48,7 @@ export const createCISFirstPart = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['B014 Guaranteed stop loss fee', `—`, `—`],
+        rowData: ['B014 Guaranteed stop-loss fee', `—`, `—`],
       },
       {
         rowType: RowType.foot,
@@ -161,7 +161,7 @@ export const createCISFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'B014 Guaranteed stop loss fee',
+          'B014 Guaranteed stop-loss fee',
           `${roundToDecimal(+dataA.income.details.guaranteedStopFee.weightedAverageCost, 2)}`,
           `${roundToDecimal(+dataB.income.details.guaranteedStopFee.weightedAverageCost, 2)}`,
         ],
@@ -494,7 +494,7 @@ export const createRevenueTable = (
         rowData: [`USDT (${numero[3]})`, `—`, `—`, `— %`, `—`, `—`, `— %`],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
         rowData: [`Total ${title}`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
       },
     ],
@@ -594,7 +594,7 @@ export const createRevenueTable = (
       ],
     },
     {
-      rowType: RowType.foot,
+      rowType: RowType.capitalFoot,
       rowData: [
         `Total ${title}`,
         `—`,
@@ -652,7 +652,7 @@ export const createRevenueChangeTable = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['B014 Guaranteed stop loss fee', `—`, `—`, `— %`],
+        rowData: ['B014 Guaranteed stop-loss fee', `—`, `—`, `— %`],
       },
       {
         rowType: RowType.foot,
@@ -761,7 +761,7 @@ export const createRevenueChangeTable = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'B014 Guaranteed stop loss fee',
+          'B014 Guaranteed stop-loss fee',
           `${roundToDecimal(thisYearGuaranteedStopLossFee, 2)}`,
           `${roundToDecimal(lastYearGuaranteedStopLossFee, 2)}`,
           `${roundToDecimal(guaranteedStopLossFeeChange, 1)} %`,

@@ -99,7 +99,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   // numero: 0. Total, 1. Bitcoin, 2. Ethereum, 3. USDT, 4. USD
   const numeroOfTradingFee = ['B011', 'B048, B049', 'B046, B047', 'B050, B051', 'B052, B053'];
   const income_statements_p7_1 = createRevenueTable(
-    'Trading Fee',
+    'Trading fee',
     revenueDate,
     endIncomeData?.income.details.transactionFee,
     startIncomeData?.income.details.transactionFee,
@@ -109,7 +109,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   // Info: (20231013 - Julian) Spread Fee
   const numeroOfSpreadFee = ['B012', 'B056, B057', 'B054, B055', 'B058, B059', 'B060, B061'];
   const income_statements_p8_1 = createRevenueTable(
-    'Spread Fee',
+    'Spread fee',
     revenueDate,
     endIncomeData?.income.details.spreadFee,
     startIncomeData?.income.details.spreadFee,
@@ -119,7 +119,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   // Info: (20231013 - Julian) Withdrawal Fee
   const numeroOfWithdrawalFee = ['B005', 'B042, B043', 'B040, B041', 'B006, B007', 'B044, B045'];
   const income_statements_p9_1 = createRevenueTable(
-    'Withdrawal Fee',
+    'Withdrawal fee',
     revenueDate,
     endIncomeData?.income.details.withdrawalFee,
     startIncomeData?.income.details.withdrawalFee,
@@ -129,7 +129,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   // Info: (20231013 - Julian) Deposit Fee
   const numeroOfDepositFee = ['B001', 'B036, B037', 'B034, B035', 'B002, B003', 'B038, B039'];
   const income_statements_p10_1 = createRevenueTable(
-    'Deposit Fee',
+    'Deposit fee',
     revenueDate,
     endIncomeData?.income.details.depositFee,
     startIncomeData?.income.details.depositFee,
@@ -139,7 +139,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   // Info: (20231013 - Julian) Liquidation Fee
   const numeroOfLiquidationFee = ['B013', 'B064, B065', 'B062, B063', 'B066, B067', 'B068, B069'];
   const income_statements_p11_1 = createRevenueTable(
-    'Liquidation Fee',
+    'Liquidation fee',
     revenueDate,
     endIncomeData?.income.details.liquidationFee,
     startIncomeData?.income.details.liquidationFee,
@@ -155,7 +155,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
     'B076, B077',
   ];
   const income_statements_p12_1 = createRevenueTable(
-    'Guaranteed Stop Loss Fee',
+    'Guaranteed stop-loss fee',
     revenueDate,
     endIncomeData?.income.details.guaranteedStopFee,
     startIncomeData?.income.details.guaranteedStopFee,
@@ -165,7 +165,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   // Info: (20230921 - Julian) Rebate Expenses
   const numeroOfRebateExpenses = ['B020', 'B080, B081', 'B078, B079', 'B082, B083', 'B084, B085'];
   const income_statements_p13_1 = createRevenueTable(
-    'Rebate Expenses',
+    'Rebate expenses',
     revenueDate,
     endIncomeData?.operatingExpenses.details.commissionRebates,
     startIncomeData?.operatingExpenses.details.commissionRebates,
@@ -181,7 +181,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
     'B092, B093',
   ];
   const income_statements_p14_1 = createRevenueTable(
-    'Cryptocurrency Forex Losses',
+    'Cryptocurrency forex losses',
     revenueDate,
     endIncomeData?.otherGainsLosses.details.cryptocurrencyGains,
     startIncomeData?.otherGainsLosses.details.cryptocurrencyGains,
@@ -197,27 +197,47 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
     'B098, B099',
   ];
   const income_statements_p15_1 = createRevenueTable(
-    'Technical Supplier Costs',
+    'Technical supplier costs',
     revenueDate,
     endIncomeData?.costs.details.technicalProviderFee,
     startIncomeData?.costs.details.technicalProviderFee,
     numeroOfTechnicalSupplierCosts
   );
 
-  // Info: (20230922 - Julian) ------------ Comprehensive Income Statements(this year vs last year) Data ------------
-  const historicalTableThead = ['$ in Thousands', endDateStr.year, endDateStr.lastYear];
+  // Info: (20231116 - Julian) Cryptocurrency Gains
+  const numeroOfCryptocurrencyGains = [
+    'B028',
+    'B104, B105',
+    'B102, B103',
+    'B100, B101',
+    'B106, B107',
+  ];
+  const income_statements_p16_1 = createRevenueTable(
+    'Cryptocurrency gains',
+    revenueDate,
+    endIncomeData?.otherGainsLosses.details.cryptocurrencyGains,
+    startIncomeData?.otherGainsLosses.details.cryptocurrencyGains,
+    numeroOfCryptocurrencyGains
+  );
 
-  const income_statements_p16_1 = createCISFirstPart(
+  // Info: (20230922 - Julian) ------------ Comprehensive Income Statements(this year vs last year) Data ------------
+  const historicalTableThead = [
+    'shares in Thousands, $ in Thousands',
+    endDateStr.year,
+    endDateStr.lastYear,
+  ];
+
+  const income_statements_p17_1 = createCISFirstPart(
     historicalTableThead,
     cisEndedDate,
     endIncomeData,
     historicalIncomeData
   );
 
-  const income_statements_p17_1 = createCISLastPart(endIncomeData, historicalIncomeData);
+  const income_statements_p18_1 = createCISLastPart(endIncomeData, historicalIncomeData);
 
   // Info: (20230922 - Julian) ------------ Revenue Change Table Data ------------
-  const income_statements_p17_2 = createRevenueChangeTable(
+  const income_statements_p18_2 = createRevenueChangeTable(
     endDateStr.monthAndDay,
     [endDateStr.year, endDateStr.lastYear],
     endIncomeData,
@@ -522,10 +542,17 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
           {/* Info: (20230906 - Julian) Page 16 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={16}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
-              {/* Info: (20230906 - Julian) Note 4 */}
-              <h2 className="font-bold uppercase">4. Results of Operations</h2>
-              <p>The following table summarizes the historical statement of income data:</p>
+              <p className="font-bold">Cryptocurrency gains</p>
+              <p>
+                The table below provides insights into the gains incurred from cryptocurrency. It
+                contrasts the data from
+                <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, with
+                that of
+                <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>,
+                showcasing the amount, cost value, and percentage of total losses for each currency.
+              </p>
               <ReportTable tableData={income_statements_p16_1} />
+              <p className="italic text-lilac">Next Page</p>
             </div>
           </ReportPageBody>
           <hr className="break-before-page" />
@@ -533,18 +560,29 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
           {/* Info: (20230906 - Julian) Page 17 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={17}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              {/* Info: (20230906 - Julian) Note 4 */}
+              <h2 className="font-bold uppercase">4. Results of Operations</h2>
+              <p>The following table summarizes the historical statement of income data:</p>
               <ReportTable tableData={income_statements_p17_1} />
-              <p>
-                Comparison of the
-                <span className="font-bold text-violet"> 30 days ended July 30, 2023 and 2022</span>
-              </p>
-              <ReportTable tableData={income_statements_p17_2} />
             </div>
           </ReportPageBody>
           <hr className="break-before-page" />
 
           {/* Info: (20230906 - Julian) Page 18 */}
           <ReportPageBody reportTitle={reportTitle} currentPage={18}>
+            <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
+              <ReportTable tableData={income_statements_p18_1} />
+              <p>
+                Comparison of the
+                <span className="font-bold text-violet"> 30 days ended July 30, 2023 and 2022</span>
+              </p>
+              <ReportTable tableData={income_statements_p18_2} />
+            </div>
+          </ReportPageBody>
+          <hr className="break-before-page" />
+
+          {/* Info: (20230906 - Julian) Page 19 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={19}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               {/* Info: (20230906 - Julian) Note 5 */}
               <h2 className="font-bold uppercase">5. Exchange rate</h2>
@@ -557,8 +595,8 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
           </ReportPageBody>
           <hr className="break-before-page" />
 
-          {/* Info: (20230906 - Julian) Page 19 */}
-          <ReportPageBody reportTitle={reportTitle} currentPage={19}>
+          {/* Info: (20230906 - Julian) Page 20 */}
+          <ReportPageBody reportTitle={reportTitle} currentPage={20}>
             <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
               <p>
                 Please note that the values are approximate and may vary slightly due to market

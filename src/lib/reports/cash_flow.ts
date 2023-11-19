@@ -1,7 +1,8 @@
 import {
   IStatementsOfCashFlow,
   INonCashAccountingDetail,
-  INonCashConsiderationDetail,
+  ICashFlowAccountingDetail,
+  IConsiderationDetail,
 } from '../../interfaces/statements_of_cash_flow';
 import {defaultBreakdown} from '../../interfaces/report_currency_detail';
 import {roundToDecimal} from '../common';
@@ -14,7 +15,7 @@ export const createCashFlowFirstPart = (
   dataA: IStatementsOfCashFlow | undefined,
   dataB: IStatementsOfCashFlow | undefined
 ) => {
-  const subThead = ['Statements of Cash Flow - USD ($)', `30 Days Ended ${endedDate},`, '*-*'];
+  const subThead = ['Statements of Cash Flows - USD ($)', `30 Days Ended ${endedDate},`, '*-*'];
   const thead = ['$ in Thousands', dates[0], dates[1]];
   const defaultTable: ITable = {
     subThead,
@@ -22,7 +23,7 @@ export const createCashFlowFirstPart = (
     tbody: [
       {
         rowType: RowType.title,
-        rowData: ['Cash flow from operating activities', '*-*', '*-*'],
+        rowData: ['Cash flows from operating activities', '*-*', '*-*'],
       },
       {
         rowType: RowType.bookkeeping,
@@ -46,39 +47,7 @@ export const createCashFlowFirstPart = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['C032 Cash received from customers for liquidation in CFD trading', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C033 Cash paid to customers as rebates for transaction fees', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
         rowData: ['C034 Cash paid to suppliers for expenses', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C036 Cash paid to customers for CFD trading profits', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C037 Insurance fund for perpetual contracts', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C038 Cash paid to customers for funding rates in perpetual contract', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C039 Cash paid to customers for profits in perpetual contract', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C040 Cash received from customers for liquidation in perpetual contract',
-          `-`,
-          `-`,
-        ],
       },
       {
         rowType: RowType.bookkeeping,
@@ -92,6 +61,46 @@ export const createCashFlowFirstPart = (
         rowType: RowType.bookkeeping,
         rowData: ['C042 Net cash provided by investing activities', `-`, `-`],
       },
+      {
+        rowType: RowType.title,
+        rowData: ['Cash flows from financing activities', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C043 Proceeds from issuance of common stock', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C044 Long-term debt', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C045 Short-term borrowings', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C046 Payments of dividends', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C047 Treasury Stock', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C048 Net cash used in financing activities', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C049 Net increase in cash, cash equivalents, and restricted cash', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          'C050 Cash, cash equivalents, and restricted cash, beginning of period',
+          `-`,
+          `-`,
+        ],
+      },
     ],
   };
   if (!dataA || !dataB) return defaultTable;
@@ -102,7 +111,7 @@ export const createCashFlowFirstPart = (
     tbody: [
       {
         rowType: RowType.title,
-        rowData: ['Cash flow from operating activities', '*-*', '*-*'],
+        rowData: ['Cash flows from operating activities', '*-*', '*-*'],
       },
       {
         rowType: RowType.bookkeeping,
@@ -179,38 +188,6 @@ export const createCashFlowFirstPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'C032 Cash received from customers for liquidation in CFD trading',
-          `${roundToDecimal(
-            +dataA.operatingActivities.details.cashReceivedFromCustomersForLiquidationInCFDTrading
-              .weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.operatingActivities.details.cashReceivedFromCustomersForLiquidationInCFDTrading
-              .weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C033 Cash paid to customers as rebates for transaction fees',
-          `${roundToDecimal(
-            +dataA.operatingActivities.details.cashPaidToCustomersAsRebatesForTransactionFees
-              .weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.operatingActivities.details.cashPaidToCustomersAsRebatesForTransactionFees
-              .weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
           'C034 Cash paid to suppliers for expenses',
           `${roundToDecimal(
             +dataA.operatingActivities.details.cashPaidToSuppliersForExpenses.weightedAverageCost,
@@ -218,86 +195,6 @@ export const createCashFlowFirstPart = (
           )}`,
           `${roundToDecimal(
             +dataB.operatingActivities.details.cashPaidToSuppliersForExpenses.weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C036 Cash paid to customers for CFD trading profits',
-          `${roundToDecimal(
-            +dataA.operatingActivities.details.cashPaidToCustomersForCFDTradingProfits
-              .weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.operatingActivities.details.cashPaidToCustomersForCFDTradingProfits
-              .weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C037 Insurance fund for perpetual contracts',
-          `${roundToDecimal(
-            +dataA.operatingActivities.details.insuranceFundForPerpetualContracts
-              .weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.operatingActivities.details.insuranceFundForPerpetualContracts
-              .weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C038 Cash paid to customers for funding rates in perpetual contract',
-          `${roundToDecimal(
-            +dataA.operatingActivities.details.cashPaidToCustomersForFundingRatesInPerpetualContract
-              .weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.operatingActivities.details.cashPaidToCustomersForFundingRatesInPerpetualContract
-              .weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C039 Cash paid to customers for profits in perpetual contract',
-          `${roundToDecimal(
-            +dataA.operatingActivities.details.cashPaidToCustomersForPerpetualContractProfits
-              .weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.operatingActivities.details.cashPaidToCustomersForPerpetualContractProfits
-              .weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C040 Cash received from customers for liquidation in perpetual contract',
-          `${roundToDecimal(
-            +dataA.operatingActivities.details
-              .cashReceivedFromCustomersForLiquidationInPerpetualContract.weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.operatingActivities.details
-              .cashReceivedFromCustomersForLiquidationInPerpetualContract.weightedAverageCost,
             2
           )}`,
         ],
@@ -322,115 +219,6 @@ export const createCashFlowFirstPart = (
           `${roundToDecimal(+dataB.investingActivities.weightedAverageCost, 2)}`,
         ],
       },
-    ],
-  };
-  return result;
-};
-
-export const createCashFlowSecondPart = (
-  dataA: IStatementsOfCashFlow | undefined,
-  dataB: IStatementsOfCashFlow | undefined
-) => {
-  const defaultTable: ITable = {
-    tbody: [
-      {
-        rowType: RowType.title,
-        rowData: ['Cash flows from financing activities', '*-*', '*-*'],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C043 Proceeds from issuance of common stock', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C044 Long-term debt', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C045 Short-term borrowings', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C046 Payments of dividends', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C047 Treasury Stock', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C048 Net cash used in financing activities', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C049 Net increase in cash, cash equivalents, and restricted cash', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C050 Cash, cash equivalents, and restricted cash, beginning of period',
-          `-`,
-          `-`,
-        ],
-      },
-      {
-        rowType: RowType.foot,
-        rowData: ['C051 Cash, cash equivalents, and restricted cash, end of period', `-`, `-`],
-      },
-      {
-        rowType: RowType.title,
-        rowData: ['Supplemental schedule of non-cash operating activities', '*-*', '*-*'],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C001 Cryptocurrencies deposited by customers', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C009 Cryptocurrencies withdrawn by customers', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C015 Cryptocurrency inflows', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C016 Cryptocurrency outflows', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C004 Cryptocurrencies received from customers as transaction fees', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C017 Cryptocurrencies received from customers for liquidation in CFD trading',
-          `-`,
-          `-`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C018 Cryptocurrencies paid to customers as rebates for transaction fees',
-          `-`,
-          `-`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C012 Cryptocurrencies paid to suppliers for expenses', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C026 Cryptocurrencies paid to customers for CFD trading profits', `-`, `-`],
-      },
-    ],
-  };
-  if (!dataA || !dataB) return defaultTable;
-
-  const result: ITable = {
-    tbody: [
       {
         rowType: RowType.title,
         rowData: ['Cash flows from financing activities', '*-*', '*-*'],
@@ -547,6 +335,75 @@ export const createCashFlowSecondPart = (
           )}`,
         ],
       },
+    ],
+  };
+  return result;
+};
+
+export const createCashFlowSecondPart = (
+  dataA: IStatementsOfCashFlow | undefined,
+  dataB: IStatementsOfCashFlow | undefined
+) => {
+  const defaultTable: ITable = {
+    tbody: [
+      {
+        rowType: RowType.foot,
+        rowData: ['C051 Cash, cash equivalents, and restricted cash, end of period', `-`, `-`],
+      },
+      {
+        rowType: RowType.title,
+        rowData: ['Supplemental schedule of non-cash operating activities', '*-*', '*-*'],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C001 Cryptocurrencies deposited by customers', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C009 Cryptocurrencies withdrawn by customers', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C015 Cryptocurrency inflows', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C016 Cryptocurrency outflows', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C004 Cryptocurrencies received from customers as transaction fees', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C012 Cryptocurrencies paid to suppliers for expenses', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C023 Purchase of cryptocurrencies with non-cash consideration', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C024 Disposal of cryptocurrencies for non-cash consideration', `-`, `-`],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['C007 Net increase in non-cash operating activities', `-`, `-`],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: ['C025 Cryptocurrencies, beginning of period', `-`, `-`],
+      },
+      {
+        rowType: RowType.foot,
+        rowData: ['C008 Cryptocurrencies, end of period', `$ -`, `$ -`],
+      },
+    ],
+  };
+  if (!dataA || !dataB) return defaultTable;
+
+  const result: ITable = {
+    tbody: [
       {
         rowType: RowType.foot,
         rowData: [
@@ -650,38 +507,6 @@ export const createCashFlowSecondPart = (
       {
         rowType: RowType.bookkeeping,
         rowData: [
-          'C017 Cryptocurrencies received from customers for liquidation in CFD trading',
-          `${roundToDecimal(
-            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading.weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesReceivedFromCustomersForLiquidationInCFDTrading.weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C018 Cryptocurrencies paid to customers as rebates for transaction fees',
-          `${roundToDecimal(
-            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesPaidToCustomersAsRebatesForTransactionFees.weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesPaidToCustomersAsRebatesForTransactionFees.weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
           'C012 Cryptocurrencies paid to suppliers for expenses',
           `${roundToDecimal(
             +dataA.supplementalScheduleOfNonCashOperatingActivities.details
@@ -691,83 +516,6 @@ export const createCashFlowSecondPart = (
           `${roundToDecimal(
             +dataB.supplementalScheduleOfNonCashOperatingActivities.details
               .cryptocurrenciesPaidToSuppliersForExpenses.weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C026 Cryptocurrencies paid to customers for CFD trading profits',
-          `${roundToDecimal(
-            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesPaidToCustomersForCFDTradingProfits.weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesPaidToCustomersForCFDTradingProfits.weightedAverageCost,
-            2
-          )}`,
-        ],
-      },
-    ],
-  };
-  return result;
-};
-
-export const createCashFlowLastPart = (
-  dataA: IStatementsOfCashFlow | undefined,
-  dataB: IStatementsOfCashFlow | undefined
-) => {
-  const defaultTable: ITable = {
-    tbody: [
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C022 Cryptocurrencies paid to customers for profits in perpetual contract',
-          `-`,
-          `-`,
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C023 Purchase of cryptocurrencies with non-cash consideration', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C024 Disposal of cryptocurrencies for non-cash consideration', `-`, `-`],
-      },
-      {
-        rowType: RowType.foot,
-        rowData: ['C007 Net increase in non-cash operating activities', `-`, `-`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['C025 Cryptocurrencies, beginning of period', `-`, `-`],
-      },
-      {
-        rowType: RowType.foot,
-        rowData: ['C008 Cryptocurrencies, end of period', `$ -`, `$ -`],
-      },
-    ],
-  };
-  if (!dataA || !dataB) return defaultTable;
-
-  const result: ITable = {
-    tbody: [
-      {
-        rowType: RowType.bookkeeping,
-        rowData: [
-          'C022 Cryptocurrencies paid to customers for profits in perpetual contract',
-          `${roundToDecimal(
-            +dataA.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesPaidToCustomersForProfitsInPerpetualContract.weightedAverageCost,
-            2
-          )}`,
-          `${roundToDecimal(
-            +dataB.supplementalScheduleOfNonCashOperatingActivities.details
-              .cryptocurrenciesPaidToCustomersForProfitsInPerpetualContract.weightedAverageCost,
             2
           )}`,
         ],
@@ -976,7 +724,7 @@ export const createActivitiesAnalysis = (
       {
         rowType: RowType.stringRow,
         rowData: [
-          '(Cost Value in thousands)',
+          '(Cost value in thousands)',
           'Amount',
           'Cost Value',
           'Percentage of Total',
@@ -998,7 +746,7 @@ export const createActivitiesAnalysis = (
         rowData: [`USDT (${numero[3]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
         rowData: [`Total ${title}`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
     ],
@@ -1030,7 +778,7 @@ export const createActivitiesAnalysis = (
       {
         rowType: RowType.stringRow,
         rowData: [
-          '(Cost Value in thousands)',
+          '(Cost value in thousands)',
           'Amount',
           'Cost Value',
           'Percentage of Total',
@@ -1076,7 +824,7 @@ export const createActivitiesAnalysis = (
         ],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
         rowData: [
           `Total ${title}`,
           `—`,
@@ -1092,7 +840,97 @@ export const createActivitiesAnalysis = (
   return result;
 };
 
-const getCurrenciesData = (data: INonCashConsiderationDetail, currency: string) => {
+export const createCashActivities = (
+  title: string,
+  dates: string[],
+  dataA: ICashFlowAccountingDetail | undefined,
+  dataB: ICashFlowAccountingDetail | undefined,
+  numero: string[]
+) => {
+  const thead = [`${numero[0]} ${title}`, dates[0], '*-*', '*-*', dates[1], '*-*', '*-*'];
+  const defaultTable: ITable = {
+    thead,
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [`USD (${numero[1]})`, `—`, `$ —`, `—`, `—`, `$ —`, `—`],
+      },
+      {
+        rowType: RowType.capitalFoot,
+        rowData: [`Total ${title}`, `—`, `—`, `—`, `—`, `—`, `—`],
+      },
+    ],
+  };
+  if (!dataA || !dataB) return defaultTable;
+
+  const usdA = dataA.breakdown.USD ?? defaultBreakdown;
+  const usdB = dataB.breakdown.USD ?? defaultBreakdown;
+
+  const totalCostA = +dataA.weightedAverageCost;
+  const totalCostB = +dataB.weightedAverageCost;
+
+  const usdPerA = (+usdA.weightedAverageCost / totalCostA) * 100;
+  const usdPerB = (+usdB.weightedAverageCost / totalCostB) * 100;
+  const totalPerA = usdPerA;
+  const totalPerB = usdPerB;
+
+  const result: ITable = {
+    thead,
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          `USD (${numero[1]})`,
+          `${roundToDecimal(+usdA.amount, 2)}`,
+          `${roundToDecimal(+usdA.weightedAverageCost, 2)}`,
+          `${roundToDecimal(usdPerA, 1)} %`,
+          `${roundToDecimal(+usdB.amount, 2)}`,
+          `${roundToDecimal(+usdB.weightedAverageCost, 2)}`,
+          `${roundToDecimal(usdPerB, 1)} %`,
+        ],
+      },
+      {
+        rowType: RowType.capitalFoot,
+        rowData: [
+          `Total ${title}`,
+          `—`,
+          `${roundToDecimal(totalCostA, 2)}`,
+          `${roundToDecimal(totalPerA, 1)} %`,
+          `—`,
+          `${roundToDecimal(totalCostB, 2)}`,
+          `${roundToDecimal(totalPerB, 1)} %`,
+        ],
+      },
+    ],
+  };
+  return result;
+};
+
+const getCurrenciesData = (data: IConsiderationDetail, currency: string) => {
   if (data.type === 'STABLECOIN_TO_CRYPTO') {
     // Info: (20230922 - Julian) STABLECOIN_TO_CRYPTO: purchase of cryptocurrencies with non-cash consideration
     // Info: (20230922 - Julian) 找出買入(to)的資料
@@ -1119,18 +957,19 @@ const getCurrenciesData = (data: INonCashConsiderationDetail, currency: string) 
 export const createNonCashConsideration = (
   title: string,
   dates: string[],
-  dataA: INonCashConsiderationDetail | undefined,
-  dataB: INonCashConsiderationDetail | undefined,
+  dataA: IConsiderationDetail | undefined,
+  dataB: IConsiderationDetail | undefined,
   numero: string[]
 ) => {
   const thead = [`${numero[0]} ${title}`, dates[0], '*-*', '*-*', dates[1], '*-*', '*-*'];
+
   const defaultTable: ITable = {
     thead,
     tbody: [
       {
         rowType: RowType.stringRow,
         rowData: [
-          '(Cost Value in thousands)',
+          '(Cost value in thousands)',
           'Amount',
           'Cost Value',
           'Percentage of Total',
@@ -1152,15 +991,12 @@ export const createNonCashConsideration = (
         rowData: [`USDT (${numero[3]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
         rowData: [`Total ${title}`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
     ],
   };
   if (!dataA || !dataB) return defaultTable;
-
-  if (dataA.type === 'STABLECOIN_TO_CRYPTO' && dataB.type === 'STABLECOIN_TO_CRYPTO') {
-  }
 
   // Info: (20230922 - Julian) -------- BTC --------
   const btcDataA = getCurrenciesData(dataA, 'BTC');
@@ -1197,7 +1033,7 @@ export const createNonCashConsideration = (
       {
         rowType: RowType.stringRow,
         rowData: [
-          '(Cost Value in thousands)',
+          '(Cost value in thousands)',
           'Amount',
           'Cost Value',
           'Percentage of Total',
@@ -1243,7 +1079,102 @@ export const createNonCashConsideration = (
         ],
       },
       {
-        rowType: RowType.foot,
+        rowType: RowType.capitalFoot,
+        rowData: [
+          `Total ${title}`,
+          `—`,
+          `$ ${roundToDecimal(totalDataA, 2)}`,
+          `${roundToDecimal(totalPerA, 1)} %`,
+          `—`,
+          `$ ${roundToDecimal(totalDataB, 2)}`,
+          `${roundToDecimal(totalPerB, 1)} %`,
+        ],
+      },
+    ],
+  };
+  return result;
+};
+
+export const createCashConsideration = (
+  title: string,
+  dates: string[],
+  dataA: IConsiderationDetail | undefined,
+  dataB: IConsiderationDetail | undefined,
+  numero: string[]
+) => {
+  const thead = [`${numero[0]} ${title}`, dates[0], '*-*', '*-*', dates[1], '*-*', '*-*'];
+
+  const defaultTable: ITable = {
+    thead,
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [`USD (${numero[1]})`, `—`, `—`, `—`, `—`, `—`, `—`],
+      },
+      {
+        rowType: RowType.capitalFoot,
+        rowData: [`Total ${title}`, `—`, `—`, `—`, `—`, `—`, `—`],
+      },
+    ],
+  };
+  if (!dataA || !dataB) return defaultTable;
+
+  // Info: (20230922 - Julian) -------- USD --------
+  const usdDataA = getCurrenciesData(dataA, 'USD');
+  const usdDataB = getCurrenciesData(dataB, 'USD');
+
+  // Info: (20230922 - Julian) -------- Total --------
+  const totalDataA = +dataA.weightedAverageCost;
+  const totalDataB = +dataB.weightedAverageCost;
+
+  // Info: (20230922 - Julian) -------- Percentage --------
+  const usdPerA = (usdDataA.costValue / totalDataA) * 100;
+  const usdPerB = (usdDataB.costValue / totalDataB) * 100;
+
+  const totalPerA = usdPerA;
+  const totalPerB = usdPerB;
+
+  const result: ITable = {
+    thead,
+    tbody: [
+      {
+        rowType: RowType.stringRow,
+        rowData: [
+          '(Cost value in thousands)',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+          'Amount',
+          'Cost Value',
+          'Percentage of Total',
+        ],
+      },
+      {
+        rowType: RowType.bookkeeping,
+        rowData: [
+          `USD (${numero[1]})`,
+          `${roundToDecimal(usdDataA.amount, 2)}`,
+          `${roundToDecimal(usdDataA.costValue, 2)}`,
+          `${roundToDecimal(usdPerA, 1)} %`,
+          `${roundToDecimal(usdDataB.amount, 2)}`,
+          `${roundToDecimal(usdDataB.costValue, 2)}`,
+          `${roundToDecimal(usdPerB, 1)} %`,
+        ],
+      },
+      {
+        rowType: RowType.capitalFoot,
         rowData: [
           `Total ${title}`,
           `—`,

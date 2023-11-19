@@ -27,7 +27,7 @@ const ReportCover = ({reportTitle, reportDateStart, reportDateEnd}: ReportCoverP
           style={{objectFit: 'contain', objectPosition: 'left'}}
         />
       </div>
-    ) : reportTitle === BaifaReports.STATEMENTS_OF_CASH_FLOW ? (
+    ) : reportTitle === BaifaReports.STATEMENTS_OF_CASH_FLOWS ? (
       <div className="relative my-12px flex h-70px w-full">
         <Image
           src={'/documents/cash_flow.svg'}

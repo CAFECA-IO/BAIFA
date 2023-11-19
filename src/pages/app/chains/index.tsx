@@ -2,14 +2,17 @@ import Head from 'next/head';
 import NavBar from '../../../components/nav_bar/nav_bar';
 import AllChainPageBody from '../../../components/all_chain_page_body/all_chain_page_body';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {ILocale} from '../../../interfaces/locale';
+import {ILocale, TranslateFunction} from '../../../interfaces/locale';
+import {useTranslation} from 'next-i18next';
 
 const ChainsPage = () => {
+  const {t}: {t: TranslateFunction} = useTranslation('common');
+
   return (
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>Chains - BAIFA</title>
+        <title>{t('CHAINS_PAGE.BREADCRUMB_TITLE')} - BAIFA</title>
       </Head>
 
       <NavBar />
