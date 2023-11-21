@@ -30,25 +30,32 @@ interface IInteractionPageProps {
 
 const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+
   const headTitle = `${t('INTERACTION_LIST_PAGE.MAIN_TITLE_HIGHLIGHT')}${t(
     'INTERACTION_LIST_PAGE.MAIN_TITLE'
   )} ${t('COMMON.OF')} ${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
+
   const chainIcon = getChainIcon(chainId);
 
-  const router = useRouter();
-  const backClickHandler = () => router.back();
-
-  // Info: (20231108 - Julian) Type Url Query
-  const {type} = router.query;
-  const selectedType = type ? type.toString() : null;
   // Info: (20231108 - Julian) Type Options
   const typeOptions = [
     'SORTING.ALL',
     'ADDRESS_DETAIL_PAGE.MAIN_TITLE',
     'CONTRACT_DETAIL_PAGE.MAIN_TITLE',
   ];
-  const defaultType =
-    selectedType && typeOptions.includes(selectedType) ? selectedType : typeOptions[0];
+
+  const router = useRouter();
+  const backClickHandler = () => router.back();
+
+  // Info: (20231108 - Julian) Type Url Query
+  const {type} = router.query;
+  const selectedType = type
+    ? type.toString() === 'address'
+      ? typeOptions[1]
+      : type.toString() === 'contract'
+      ? typeOptions[2]
+      : typeOptions[0]
+    : typeOptions[0];
 
   // Info: (20231108 - Julian) States
   const [search, setSearch, searchRef] = useStateRef('');
@@ -57,7 +64,7 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
     startTimeStamp: 0,
     endTimeStamp: 0,
   });
-  const [filteredType, setFilteredType] = useState<string>(defaultType);
+  const [filteredType, setFilteredType] = useState<string>(selectedType);
   const [filteredInteractedList, setFilteredInteractedList] =
     useState<IInteractionItem[]>(interactedList);
   const [activePage, setActivePage] = useState<number>(1);

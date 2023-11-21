@@ -136,9 +136,9 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- CONTRACT -----------------
       case SearchType.CONTRACT:
-        const {contractAddess} = data as IContract;
+        const {contractAddress} = data as IContract;
         return {
-          LINE_1: <p className="break-all text-base">{contractAddess}</p>,
+          LINE_1: <p className="break-all text-base">{contractAddress}</p>,
           LINE_2: displayedTime,
           LINK: dynamicUrl.CONTRACT,
         };

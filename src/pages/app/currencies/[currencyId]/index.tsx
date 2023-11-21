@@ -1,18 +1,18 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import NavBar from '../../../components/nav_bar/nav_bar';
-import Footer from '../../../components/footer/footer';
-import CurrencyDetail from '../../../components/currency_detail/currency_detail';
+import NavBar from '../../../../components/nav_bar/nav_bar';
+import Footer from '../../../../components/footer/footer';
+import CurrencyDetail from '../../../../components/currency_detail/currency_detail';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {ICurrency, dummyCurrencyData} from '../../../interfaces/currency';
+import {ICurrency, dummyCurrencyData} from '../../../../interfaces/currency';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
-import {getChainIcon} from '../../../lib/common';
-import Top100HolderSection from '../../../components/top_100_holder_section/top_100_holder_section';
-import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
-import BoltButton from '../../../components/bolt_button/bolt_button';
-import {TranslateFunction} from '../../../interfaces/locale';
+import {getChainIcon} from '../../../../lib/common';
+import Top100HolderSection from '../../../../components/top_100_holder_section/top_100_holder_section';
+import TransactionHistorySection from '../../../../components/transaction_history_section/transaction_history_section';
+import BoltButton from '../../../../components/bolt_button/bolt_button';
+import {TranslateFunction} from '../../../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 
 interface ICurrencyDetailPageProps {

@@ -80,19 +80,27 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const displayInteractedWith = (
     <div className="flex items-center space-x-2 text-base">
       <div className="flex items-center whitespace-nowrap">
-        <Link href={`${dynamicUrl.INTERACTION}?type=Address`}>
-          <span className="mr-2 text-primaryBlue underline underline-offset-2">
-            {interactedAddressIds.length}
-          </span>
-        </Link>
+        {interactedAddressIds.length > 0 ? (
+          <Link href={`${dynamicUrl.INTERACTION}?type=address`}>
+            <span className="mr-2 text-primaryBlue underline underline-offset-2">
+              {interactedAddressIds.length}
+            </span>
+          </Link>
+        ) : (
+          <span className="mr-2 text-primaryBlue">{interactedAddressIds.length}</span>
+        )}
         <p>{t('COMMON.ADDRESSES')} /</p>
       </div>
       <div className="flex items-center whitespace-nowrap">
-        <Link href={`${dynamicUrl.INTERACTION}?type=Contract`}>
-          <span className="mr-2 text-primaryBlue underline underline-offset-2">
-            {interactedContactIds.length}
-          </span>
-        </Link>
+        {interactedContactIds.length > 0 ? (
+          <Link href={`${dynamicUrl.INTERACTION}?type=contract`}>
+            <span className="mr-2 text-primaryBlue underline underline-offset-2">
+              {interactedContactIds.length}
+            </span>
+          </Link>
+        ) : (
+          <span className="mr-2 text-primaryBlue">{interactedContactIds.length}</span>
+        )}
         <p>{t('COMMON.CONTRACTS')}</p>
       </div>
     </div>

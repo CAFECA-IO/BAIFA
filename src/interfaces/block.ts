@@ -6,7 +6,7 @@ export interface IBlock {
   stabilityLevel: IStabilityLevel;
   createdTimestamp: number;
   managementTeam: string[];
-  transactions: number;
+  transactionCount: number;
   miner: string;
   reward: number;
   size: number;
@@ -19,10 +19,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.MEDIUM,
     createdTimestamp: 1679978900,
     managementTeam: ['John', 'Jane', 'Jack'],
-    transactions: 13,
+    transactionCount: 13,
     miner: '0x1234567890',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '230676',
@@ -30,10 +30,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.HIGH,
     createdTimestamp: 1679998900,
     managementTeam: ['Linda', 'Liam'],
-    transactions: 14,
+    transactionCount: 14,
     miner: '0x1234564890',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '220087',
@@ -41,10 +41,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.MEDIUM,
     createdTimestamp: 16943492374,
     managementTeam: ['Diana', 'Dennis', 'Dylan'],
-    transactions: 16,
+    transactionCount: 16,
     miner: '0x7593284634',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '221875',
@@ -52,10 +52,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.LOW,
     createdTimestamp: 1692860902,
     managementTeam: ['Xavier', 'Xena'],
-    transactions: 15,
+    transactionCount: 15,
     miner: '0x9393993034',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '228765',
@@ -63,10 +63,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.HIGH,
     createdTimestamp: 1690000902,
     managementTeam: ['Gina', 'Galo'],
-    transactions: 12,
+    transactionCount: 12,
     miner: '0x3752075234',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '210296',
@@ -74,10 +74,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.LOW,
     createdTimestamp: 1670734427,
     managementTeam: ['Yolanda', 'Yoda'],
-    transactions: 13,
+    transactionCount: 13,
     miner: '0x9393075234',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '212039',
@@ -85,10 +85,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.HIGH,
     createdTimestamp: 1688442795,
     managementTeam: ['Sam', 'Sally', 'Simon'],
-    transactions: 7,
+    transactionCount: 7,
     miner: '0x9313075232',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '217328',
@@ -96,10 +96,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.MEDIUM,
     createdTimestamp: 1689567791,
     managementTeam: ['Wendy', 'Walter', 'Weston'],
-    transactions: 8,
+    transactionCount: 8,
     miner: '0x9393075234',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '217329',
@@ -107,10 +107,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.LOW,
     createdTimestamp: 1689940795,
     managementTeam: ['Quinn', 'Quincy'],
-    transactions: 11,
+    transactionCount: 11,
     miner: '0x2175239304',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '240505',
@@ -118,10 +118,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.HIGH,
     createdTimestamp: 1673940795,
     managementTeam: ['Dennis'],
-    transactions: 4,
+    transactionCount: 4,
     miner: '0x2175239304',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '241414',
@@ -129,10 +129,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.HIGH,
     createdTimestamp: 1673079945,
     managementTeam: ['Hillary', 'Helen'],
-    transactions: 6,
+    transactionCount: 6,
     miner: '0x2175239304',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '241415',
@@ -140,10 +140,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.MEDIUM,
     createdTimestamp: 1673080400,
     managementTeam: ['Ciara'],
-    transactions: 11,
+    transactionCount: 11,
     miner: '0x2175239304',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '245920',
@@ -151,10 +151,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.LOW,
     createdTimestamp: 1673080400,
     managementTeam: ['Forrest', 'Fiona'],
-    transactions: 3,
+    transactionCount: 3,
     miner: '0x2175239304',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
   {
     id: '259403',
@@ -162,10 +162,10 @@ export const dummyBlockData: IBlock[] = [
     stabilityLevel: StabilityLevel.LOW,
     createdTimestamp: 1680407300,
     managementTeam: ['Brenda', 'Bryan'],
-    transactions: 1,
+    transactionCount: 1,
     miner: '0x2175239304',
     reward: 0.01,
-    size: 3.523,
+    size: 3523,
   },
 ];
 

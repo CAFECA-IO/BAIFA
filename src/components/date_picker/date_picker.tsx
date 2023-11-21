@@ -207,8 +207,8 @@ const DatePicker = ({setFilteredPeriod, isLinearBg}: IDatePickerProps) => {
     let month = selectedMonth;
     let year = selectedYear;
     month++;
-    if (month > 11) {
-      month = 0;
+    if (month > 12) {
+      month = 1;
       year++;
     }
     setSelectedMonth(month);
@@ -219,8 +219,8 @@ const DatePicker = ({setFilteredPeriod, isLinearBg}: IDatePickerProps) => {
     let month = selectedMonth;
     let year = selectedYear;
     month--;
-    if (month < 0) {
-      month = 11;
+    if (month < 1) {
+      month = 12;
       year--;
     }
     setSelectedMonth(month);

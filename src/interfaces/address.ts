@@ -232,7 +232,7 @@ export const dummyAddressData: IAddress[] = [
     addressHash: '0x4C706fE199f5675D429d56937A2c156dD863',
     chainId: 'eth',
     createdTimestamp: 1674183211,
-    lastestActiveTime: 16873619373,
+    lastestActiveTime: 1687619373,
     relatedAddressIds: ['121700', '120999', '120499'],
     interactedAddressIds: ['121700', '120999', '120499'],
     interactedContactIds: ['320592', '320728'],
