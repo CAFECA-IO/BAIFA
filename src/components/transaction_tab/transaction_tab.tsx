@@ -42,8 +42,8 @@ const TransactionTab = ({transactionList}: ITransactionTabProps) => {
         const transactionId = transaction.id.toString().toLowerCase();
         const status = transaction.status.toLowerCase();
         const blockId = transaction.blockId.toString().toLowerCase();
-        const fromAddress = transaction.from.toString().toLowerCase();
-        const toAddress = transaction.to.toString().toLowerCase();
+        const fromAddress = transaction.fromAddressId.toString().toLowerCase();
+        const toAddress = transaction.toAddressId.toString().toLowerCase();
 
         return searchTerm !== ''
           ? transactionId.includes(searchTerm) ||

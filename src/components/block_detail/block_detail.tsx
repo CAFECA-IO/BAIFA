@@ -22,7 +22,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     createdTimestamp,
     chainId,
     managementTeam,
-    transactions,
+    transactionCount,
     miner,
     reward,
     size,
@@ -168,7 +168,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
         </div>
         <Link href={transactionsLink}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
-            {transactions} {t('COMMON.TRANSACTIONS')}
+            {transactionCount} {t('COMMON.TRANSACTIONS')}
           </BoltButton>
         </Link>
       </div>
@@ -192,7 +192,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
         </div>
         <p>
           {size} {/* ToDo: (20230912 - Julian) uint */}
-          <span> gb</span>
+          <span> bytes</span>
         </p>
       </div>
     </div>

@@ -14,12 +14,22 @@ interface ITransactionDetailProps {
 
 const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {hash, status, chainId, blockId, createdTimestamp, from, to, evidenceId, fee, flagging} =
-    transactionData;
+  const {
+    hash,
+    status,
+    chainId,
+    blockId,
+    createdTimestamp,
+    fromAddressId,
+    toAddressId,
+    evidenceId,
+    fee,
+    flagging,
+  } = transactionData;
 
   const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
-  const addressLink = getDynamicUrl(chainId, `${from}`).ADDRESS;
-  const contractLink = getDynamicUrl(chainId, `${to}`).CONTRACT;
+  const addressLink = getDynamicUrl(chainId, `${fromAddressId}`).ADDRESS;
+  const contractLink = getDynamicUrl(chainId, `${toAddressId}`).CONTRACT;
 
   const displayStatus =
     status === 'PROCESSING' ? (
@@ -120,7 +130,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
         </p>
         <Link href={addressLink}>
           <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {from}
+            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {fromAddressId}
           </BoltButton>
         </Link>
       </div>
@@ -131,7 +141,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
         </p>
         <Link href={contractLink}>
           <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-            {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} {to}
+            {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} {toAddressId}
           </BoltButton>
         </Link>
       </div>
