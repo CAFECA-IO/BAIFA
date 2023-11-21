@@ -68,11 +68,11 @@ const BlackListPage = () => {
       .sort(
         // Info: (20231113 - Julian) sort by Sorting Menu
         (a, b) => {
-          const aTimestamp = a.flagging[0].createdTimestamp;
-          const bTimestamp = b.flagging[0].createdTimestamp;
+          const aTimestamp = a.lastestActiveTime;
+          const bTimestamp = b.lastestActiveTime;
           return sorting === sortOldAndNewOptions[0]
-            ? aTimestamp - bTimestamp
-            : bTimestamp - aTimestamp;
+            ? bTimestamp - aTimestamp
+            : aTimestamp - bTimestamp;
         }
       );
 
