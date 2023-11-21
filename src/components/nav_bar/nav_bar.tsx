@@ -50,32 +50,36 @@ const NavBar = () => {
     setComponentVisible: setProfileVisible,
   } = useOuterClick<HTMLDivElement>(false);
 
+  // ToDo: (20230614 - Julian) log in function
   const loginHandler = () => setIsLogin(!isLogin);
   const hamburgerClickHandler = () => setHamburgerVisible(!hamburgerVisible);
   const profileClickHandler = () => setProfileVisible(!profileVisible);
 
-  // ToDo: (20230614 - Julian) log in function
   const isDisplayedUser = isLogin ? (
     <User isLogin={isLogin} setIsLogin={setIsLogin} />
   ) : (
-    <button
-      className="rounded bg-primaryBlue px-7 py-2 text-black hover:bg-hoverWhite"
-      onClick={loginHandler}
-    >
-      {t('NAV_BAR.WALLET_CONNECT_BUTTON')}
-    </button>
+    <Link href={BFAURL.COMING_SOON}>
+      <button
+        className="rounded bg-primaryBlue px-7 py-2 text-black hover:bg-hoverWhite"
+        //onClick={loginHandler}
+      >
+        {t('NAV_BAR.WALLET_CONNECT_BUTTON')}
+      </button>
+    </Link>
   );
 
   const isDisplayedProfileMenu = isLogin ? (
     <User isLogin={isLogin} setIsLogin={setIsLogin} />
   ) : (
     /* Info: (20230712 - Julian) wallet connect button */
-    <button
-      className="mx-5 my-20 rounded bg-primaryBlue px-10 py-3 text-black hover:bg-hoverWhite"
-      onClick={loginHandler}
-    >
-      {t('NAV_BAR.WALLET_CONNECT_BUTTON')}
-    </button>
+    <Link href={BFAURL.COMING_SOON}>
+      <button
+        className="mx-5 my-20 rounded bg-primaryBlue px-10 py-3 text-black hover:bg-hoverWhite"
+        //onClick={loginHandler}
+      >
+        {t('NAV_BAR.WALLET_CONNECT_BUTTON')}
+      </button>
+    </Link>
   );
 
   const desktopNavBar = (
