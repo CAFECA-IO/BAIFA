@@ -85,7 +85,7 @@ const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
         <div className="flex items-center space-x-6">
           <p className="text-base">
             <Link
-              href={BFAURL.COMING_SOON}
+              href={`${BFAURL.CURRENCIES}/${currencyData.currencyId}/red-flag`}
               className="mr-2 text-primaryBlue underline underline-offset-2"
             >
               {withCommas(flagging.length)}
