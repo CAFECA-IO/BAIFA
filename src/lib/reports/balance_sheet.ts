@@ -240,40 +240,55 @@ export const createSummaryTable = (
   numero: string[]
 ) => {
   const thead = ['', dates[0], '*-*', '*-*', dates[1], '*-*', '*-*'];
-  const defaultTable: ITable = {
-    thead,
-    tbody: [
-      {
-        rowType: RowType.stringRow,
-        rowData: [
-          '',
-          'Amount',
-          'Fair Value',
-          'Percentage of Total',
-          'Amount',
-          'Fair Value',
-          'Percentage of Total',
-        ],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Bitcoin', `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['Ethereum', `—`, `—`, `— %`, `—`, `—`, `— %`],
-      },
-      {
-        rowType: RowType.bookkeeping,
-        rowData: ['USDT', `—`, `—`, `— %`, `—`, `—`, `— %`],
-      },
-      {
-        rowType: RowType.foot,
-        rowData: [`Total ${title}`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
-      },
-    ],
+  const defaultUsdItem = {
+    rowType: RowType.bookkeeping,
+    rowData: [`USD (${numero[4]})`, `—`, `—`, `— %`, `—`, `—`, `— %`],
   };
-  if (!dataA || !dataB) return defaultTable;
+  const defaultTbody = [
+    {
+      rowType: RowType.stringRow,
+      rowData: [
+        '',
+        'Amount',
+        'Fair Value',
+        'Percentage of Total',
+        'Amount',
+        'Fair Value',
+        'Percentage of Total',
+      ],
+    },
+    {
+      rowType: RowType.bookkeeping,
+      rowData: [`Bitcoin (${numero[1]})`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
+    },
+    {
+      rowType: RowType.bookkeeping,
+      rowData: [`Ethereum (${numero[2]})`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+    },
+    {
+      rowType: RowType.bookkeeping,
+      rowData: [`USDT (${numero[3]})`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+    },
+    {
+      rowType: RowType.foot,
+      rowData: [`${numero[0]} Total ${title}`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
+    },
+  ];
+
+  if (!dataA || !dataB) {
+    // Info: (20231011 - Julian) cryptocurrencies table doesn't have USD
+    if (title === 'cryptocurrencies')
+      return {
+        thead,
+        tbody: defaultTbody,
+      };
+
+    defaultTbody.splice(1, 0, defaultUsdItem);
+    return {
+      thead,
+      tbody: defaultTbody,
+    };
+  }
 
   const totalFairValueA = +dataA.totalAmountFairValue;
   const totalFairValueB = +dataB.totalAmountFairValue;
