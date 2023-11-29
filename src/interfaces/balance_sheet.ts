@@ -47,6 +47,7 @@ export interface IBalanceSheet {
     details: {
       retainedEarnings: IBalanceAccountingDetail;
       capital: IBalanceAccountingDetail;
+      otherCapitalReserve: IBalanceAccountingDetail;
     };
   };
 }
