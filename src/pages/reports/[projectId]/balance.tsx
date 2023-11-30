@@ -76,7 +76,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
 
   // Info: (20231013 - Julian) ------- User Deposits -------
   // numero: 0. Total, 1. Bitcoin, 2. Ethereum, 3. USDT, 4. USD
-  const numeroOfUserDeposit = ['A006', 'A044, A045', 'A044, A045', 'A007, A008', 'A040, A041'];
+  const numeroOfUserDeposit = ['A006', 'A044, A045', 'A042, A043', 'A007, A008', 'A040, A041'];
   const balance_sheets_p6_1 = createSummaryTable(
     'user deposits',
     theadDate,
@@ -110,7 +110,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
     numeroOfAccountsReceivable
   );
   // Info: (20231011 - Julian) ------- Accounts Payable -------
-  const numeroOfAccountsPayable = ['A031', 'A027, A028', 'A029, A030', 'A025, A026', 'A032, A033'];
+  const numeroOfAccountsPayable = ['A031', 'A036, A037', 'A038, A039', 'A034, A035', 'A032, A033'];
   const balance_sheets_p9_1 = createSummaryTable(
     'accounts payable',
     theadDate,
