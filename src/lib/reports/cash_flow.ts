@@ -735,7 +735,7 @@ export const createActivitiesAnalysis = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`Bitcoin (${numero[1]})`, `—`, `$ —`, `—`, `—`, `$ —`, `—`],
+        rowData: [`Bitcoin (${numero[1]})`, `—`, `—`, `—`, `—`, `—`, `—`],
       },
       {
         rowType: RowType.bookkeeping,
@@ -792,10 +792,10 @@ export const createActivitiesAnalysis = (
         rowData: [
           `Bitcoin (${numero[1]})`,
           `${roundToDecimal(+btcA.amount, 2)}`,
-          `$ ${roundToDecimal(+btcA.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+btcA.weightedAverageCost, 2)}`,
           `${roundToDecimal(btcPerA, 1)} %`,
           `${roundToDecimal(+btcB.amount, 2)}`,
-          `$ ${roundToDecimal(+btcB.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+btcB.weightedAverageCost, 2)}`,
           `${roundToDecimal(btcPerB, 1)} %`,
         ],
       },
@@ -869,7 +869,7 @@ export const createCashActivities = (
       },
       {
         rowType: RowType.capitalFoot,
-        rowData: [`Total ${title}`, `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`Total ${title}`, `—`, `$ —`, `—`, `—`, `$ —`, `—`],
       },
     ],
   };
@@ -906,10 +906,10 @@ export const createCashActivities = (
         rowData: [
           `USD (${numero[1]})`,
           `${roundToDecimal(+usdA.amount, 2)}`,
-          `${roundToDecimal(+usdA.weightedAverageCost, 2)}`,
+          `$ ${roundToDecimal(+usdA.weightedAverageCost, 2)}`,
           `${roundToDecimal(usdPerA, 1)} %`,
           `${roundToDecimal(+usdB.amount, 2)}`,
-          `${roundToDecimal(+usdB.weightedAverageCost, 2)}`,
+          `$ ${roundToDecimal(+usdB.weightedAverageCost, 2)}`,
           `${roundToDecimal(usdPerB, 1)} %`,
         ],
       },
@@ -918,10 +918,10 @@ export const createCashActivities = (
         rowData: [
           `Total ${title}`,
           `—`,
-          `${roundToDecimal(totalCostA, 2)}`,
+          `$ ${roundToDecimal(totalCostA, 2)}`,
           `${roundToDecimal(totalPerA, 1)} %`,
           `—`,
-          `${roundToDecimal(totalCostB, 2)}`,
+          `$ ${roundToDecimal(totalCostB, 2)}`,
           `${roundToDecimal(totalPerB, 1)} %`,
         ],
       },
@@ -1047,10 +1047,10 @@ export const createNonCashConsideration = (
         rowData: [
           `Bitcoin (${numero[1]})`,
           `${roundToDecimal(btcDataA.amount, 2)}`,
-          `$ ${roundToDecimal(btcDataA.costValue, 2)}`,
+          `${roundToDecimal(btcDataA.costValue, 2)}`,
           `${roundToDecimal(btcPerA, 1)} %`,
           `${roundToDecimal(btcDataB.amount, 2)}`,
-          `$ ${roundToDecimal(btcDataB.costValue, 2)}`,
+          `${roundToDecimal(btcDataB.costValue, 2)}`,
           `${roundToDecimal(btcPerB, 1)} %`,
         ],
       },
@@ -1083,10 +1083,10 @@ export const createNonCashConsideration = (
         rowData: [
           `Total ${title}`,
           `—`,
-          `$ ${roundToDecimal(totalDataA, 2)}`,
+          `${roundToDecimal(totalDataA, 2)}`,
           `${roundToDecimal(totalPerA, 1)} %`,
           `—`,
-          `$ ${roundToDecimal(totalDataB, 2)}`,
+          `${roundToDecimal(totalDataB, 2)}`,
           `${roundToDecimal(totalPerB, 1)} %`,
         ],
       },
@@ -1121,11 +1121,11 @@ export const createCashConsideration = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: [`USD (${numero[1]})`, `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`USD (${numero[1]})`, `—`, `$ —`, `—`, `—`, `$ —`, `—`],
       },
       {
         rowType: RowType.capitalFoot,
-        rowData: [`Total ${title}`, `—`, `—`, `—`, `—`, `—`, `—`],
+        rowData: [`Total ${title}`, `—`, `$ —`, `—`, `—`, `$ —`, `—`],
       },
     ],
   };
@@ -1166,10 +1166,10 @@ export const createCashConsideration = (
         rowData: [
           `USD (${numero[1]})`,
           `${roundToDecimal(usdDataA.amount, 2)}`,
-          `${roundToDecimal(usdDataA.costValue, 2)}`,
+          `$ ${roundToDecimal(usdDataA.costValue, 2)}`,
           `${roundToDecimal(usdPerA, 1)} %`,
           `${roundToDecimal(usdDataB.amount, 2)}`,
-          `${roundToDecimal(usdDataB.costValue, 2)}`,
+          `$ ${roundToDecimal(usdDataB.costValue, 2)}`,
           `${roundToDecimal(usdPerB, 1)} %`,
         ],
       },
