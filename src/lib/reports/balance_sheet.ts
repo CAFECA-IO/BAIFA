@@ -61,7 +61,7 @@ export const createBalanceSheetsTable = (
       },
       {
         rowType: RowType.bookkeeping,
-        rowData: ['A006 User deposits', `—`, `—`],
+        rowData: ['A006 User deposits', `$ —`, `$ —`],
       },
       {
         rowType: RowType.bookkeeping,
@@ -222,8 +222,8 @@ export const createBalanceSheetsTable = (
         rowType: RowType.bookkeeping,
         rowData: [
           'A006 User deposits',
-          `${roundToDecimal(+userDepositA.weightedAverageCost, 2)}`,
-          `${roundToDecimal(+userDepositB.weightedAverageCost, 2)}`,
+          `$ ${roundToDecimal(+userDepositA.weightedAverageCost, 2)}`,
+          `$ ${roundToDecimal(+userDepositB.weightedAverageCost, 2)}`,
         ],
       },
       {
@@ -299,10 +299,7 @@ export const createSummaryTable = (
   numero: string[]
 ) => {
   const thead = ['', dates[0], '*-*', '*-*', dates[1], '*-*', '*-*'];
-  const defaultUsdItem = {
-    rowType: RowType.bookkeeping,
-    rowData: [`USD (${numero[4]})`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
-  };
+
   const defaultTbody = [
     {
       rowType: RowType.stringRow,
@@ -315,6 +312,10 @@ export const createSummaryTable = (
         'Fair Value',
         'Percentage of Total',
       ],
+    },
+    {
+      rowType: RowType.bookkeeping,
+      rowData: [`USD (${numero[4]})`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
     },
     {
       rowType: RowType.bookkeeping,
@@ -335,14 +336,6 @@ export const createSummaryTable = (
   ];
 
   if (!dataA || !dataB) {
-    // Info: (20231011 - Julian) cryptocurrencies table doesn't have USD
-    if (title === 'cryptocurrencies')
-      return {
-        thead,
-        tbody: defaultTbody,
-      };
-
-    defaultTbody.splice(1, 0, defaultUsdItem);
     return {
       thead,
       tbody: defaultTbody,
@@ -386,19 +379,6 @@ export const createSummaryTable = (
   const totalPerA = btcPerA + ethPerA + usdtPerA + usdPerA;
   const totalPerB = btcPerB + ethPerB + usdtPerB + usdPerB;
 
-  const usdItem = {
-    rowType: RowType.bookkeeping,
-    rowData: [
-      `USD (${numero[4]})`,
-      `${roundToDecimal(+usdA.amount, 2)}`,
-      `$ ${roundToDecimal(+usdA.fairValue, 2)}`,
-      `${roundToDecimal(usdPerA, 1)} %`,
-      `${roundToDecimal(+usdB.amount, 2)}`,
-      `$ ${roundToDecimal(+usdB.fairValue, 2)}`,
-      `${roundToDecimal(usdPerB, 1)} %`,
-    ],
-  };
-
   const resultTBody = [
     {
       rowType: RowType.stringRow,
@@ -410,6 +390,18 @@ export const createSummaryTable = (
         'Amount',
         'Fair Value',
         'Percentage of Total',
+      ],
+    },
+    {
+      rowType: RowType.bookkeeping,
+      rowData: [
+        `USD (${numero[4]})`,
+        `${roundToDecimal(+usdA.amount, 2)}`,
+        `$ ${roundToDecimal(+usdA.fairValue, 2)}`,
+        `${roundToDecimal(usdPerA, 1)} %`,
+        `${roundToDecimal(+usdB.amount, 2)}`,
+        `$ ${roundToDecimal(+usdB.fairValue, 2)}`,
+        `${roundToDecimal(usdPerB, 1)} %`,
       ],
     },
     {
@@ -462,14 +454,160 @@ export const createSummaryTable = (
     },
   ];
 
+  return {
+    thead,
+    tbody: resultTBody,
+  };
+};
+
+export const createCryptocurrencyTable = (
+  title: string,
+  dates: string[],
+  dataA: IBalanceAccountingDetail | undefined,
+  dataB: IBalanceAccountingDetail | undefined,
+  numero: string[]
+) => {
   // Info: (20231011 - Julian) cryptocurrencies table doesn't have USD
-  if (title === 'cryptocurrencies')
+  const thead = ['', dates[0], '*-*', '*-*', dates[1], '*-*', '*-*'];
+
+  const defaultTbody = [
+    {
+      rowType: RowType.stringRow,
+      rowData: [
+        '',
+        'Amount',
+        'Fair Value',
+        'Percentage of Total',
+        'Amount',
+        'Fair Value',
+        'Percentage of Total',
+      ],
+    },
+    {
+      rowType: RowType.bookkeeping,
+      rowData: [`Bitcoin (${numero[1]})`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
+    },
+    {
+      rowType: RowType.bookkeeping,
+      rowData: [`Ethereum (${numero[2]})`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+    },
+    {
+      rowType: RowType.bookkeeping,
+      rowData: [`USDT (${numero[3]})`, `—`, `—`, `— %`, `—`, `—`, `— %`],
+    },
+    {
+      rowType: RowType.foot,
+      rowData: [`${numero[0]} Total ${title}`, `—`, `$ —`, `— %`, `—`, `$ —`, `— %`],
+    },
+  ];
+
+  if (!dataA || !dataB) {
     return {
       thead,
-      tbody: resultTBody,
+      tbody: defaultTbody,
     };
+  }
 
-  resultTBody.splice(1, 0, usdItem);
+  const totalFairValueA = +dataA.totalAmountFairValue;
+  const totalFairValueB = +dataB.totalAmountFairValue;
+
+  const defaultCurrencyData = {
+    amount: 0,
+    fairValue: 0,
+  };
+
+  const getCurrData = (data: ICurrencyDetail | undefined) => {
+    if (!data) return defaultCurrencyData;
+    return {
+      amount: +data.amount,
+      fairValue: +data.fairValue,
+    };
+  };
+
+  const btcA = getCurrData(dataA.breakdown.BTC);
+  const btcB = getCurrData(dataB.breakdown.BTC);
+  const ethA = getCurrData(dataA.breakdown.ETH);
+  const ethB = getCurrData(dataB.breakdown.ETH);
+  const usdtA = getCurrData(dataA.breakdown.USDT);
+  const usdtB = getCurrData(dataB.breakdown.USDT);
+  const usdA = getCurrData(dataA.breakdown.USD);
+  const usdB = getCurrData(dataB.breakdown.USD);
+
+  const btcPerA = (+btcA.fairValue / totalFairValueA) * 100;
+  const btcPerB = (+btcB.fairValue / totalFairValueB) * 100;
+  const ethPerA = (+ethA.fairValue / totalFairValueA) * 100;
+  const ethPerB = (+ethB.fairValue / totalFairValueB) * 100;
+  const usdtPerA = (+usdtA.fairValue / totalFairValueA) * 100;
+  const usdtPerB = (+usdtB.fairValue / totalFairValueB) * 100;
+  const usdPerA = (+usdA.fairValue / totalFairValueA) * 100;
+  const usdPerB = (+usdB.fairValue / totalFairValueB) * 100;
+
+  const totalPerA = btcPerA + ethPerA + usdtPerA + usdPerA;
+  const totalPerB = btcPerB + ethPerB + usdtPerB + usdPerB;
+
+  const resultTBody = [
+    {
+      rowType: RowType.stringRow,
+      rowData: [
+        '',
+        'Amount',
+        'Fair Value',
+        'Percentage of Total',
+        'Amount',
+        'Fair Value',
+        'Percentage of Total',
+      ],
+    },
+    {
+      rowType: RowType.bookkeeping,
+      rowData: [
+        `Bitcoin (${numero[1]})`,
+        `${roundToDecimal(+btcA.amount, 2)}`,
+        `$ ${roundToDecimal(+btcA.fairValue, 2)}`,
+        `${roundToDecimal(btcPerA, 1)} %`,
+        `${roundToDecimal(+btcB.amount, 2)}`,
+        `$ ${roundToDecimal(+btcB.fairValue, 2)}`,
+        `${roundToDecimal(btcPerB, 1)}%`,
+      ],
+    },
+    {
+      rowType: RowType.bookkeeping,
+      rowData: [
+        `Ethereum (${numero[2]})`,
+        `${roundToDecimal(+ethA.amount, 2)}`,
+        `${roundToDecimal(+ethA.fairValue, 2)}`,
+        `${roundToDecimal(ethPerA, 1)} %`,
+        `${roundToDecimal(+ethB.amount, 2)}`,
+        `${roundToDecimal(+ethB.fairValue, 2)}`,
+        `${roundToDecimal(ethPerB, 1)} %`,
+      ],
+    },
+    {
+      rowType: RowType.bookkeeping,
+      rowData: [
+        `USDT (${numero[3]})`,
+        `${roundToDecimal(+usdtA.amount, 2)}`,
+        `${roundToDecimal(+usdtA.fairValue, 2)}`,
+        `${roundToDecimal(usdtPerA, 1)} %`,
+        `${roundToDecimal(+usdtB.amount, 2)}`,
+        `${roundToDecimal(+usdtB.fairValue, 2)}`,
+        `${roundToDecimal(usdtPerB, 1)} %`,
+      ],
+    },
+    {
+      rowType: RowType.foot,
+      rowData: [
+        `${numero[0]} Total ${title}`,
+        `—`,
+        `$ ${roundToDecimal(totalFairValueA, 2)}`,
+        `${roundToDecimal(totalPerA, 1)} %`,
+        `—`,
+        `$ ${roundToDecimal(totalFairValueB, 2)}`,
+        `${roundToDecimal(totalPerB, 1)} %`,
+      ],
+    },
+  ];
+
   return {
     thead,
     tbody: resultTBody,

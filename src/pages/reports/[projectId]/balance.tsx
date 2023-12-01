@@ -13,6 +13,7 @@ import {IBalanceSheet} from '../../../interfaces/balance_sheet';
 import {
   createBalanceSheetsTable,
   createSummaryTable,
+  createCryptocurrencyTable,
   createFairValueTable,
 } from '../../../lib/reports/balance_sheet';
 import {IResult} from '../../../interfaces/result';
@@ -87,7 +88,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
 
   // Info: (20231011 - Julian) ------- Cryptocurrencies -------
   const numeroOfCryptocurrencies = ['A001', 'A046, A047', 'A015, A016', 'A002, A003', ''];
-  const balance_sheets_p7_1 = createSummaryTable(
+  const balance_sheets_p7_1 = createCryptocurrencyTable(
     'cryptocurrencies',
     theadDate,
     endBalanceData?.assets.details.cryptocurrency,
