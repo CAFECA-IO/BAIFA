@@ -2,13 +2,13 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
-type ResponseData = Array<{
+type ResponseData = {
   chainId: string;
   chainName: string;
   chainIcon: string;
   blocks: number;
   transactions: number;
-}>;
+}[];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const result: ResponseData = [

@@ -2,23 +2,27 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
+type BlockData = {
+  id: string;
+  chainId: string;
+  createdTimestamp: number;
+  stability: 'LOW' | 'MEDIUM' | 'HIGH';
+};
+
+type TransactionData = {
+  id: string;
+  chainId: string;
+  createdTimestamp: number;
+  type: 'Crypto Currency' | 'Evidence' | 'NFT';
+  status: 'PENDING' | 'SUCCESS' | 'FAILED';
+};
+
 type ResponseData = {
   chainId: string;
   chainName: string;
   chainIcon: string;
-  blockData: Array<{
-    id: string;
-    chainId: string;
-    createdTimestamp: number;
-    stability: 'LOW' | 'MEDIUM' | 'HIGH';
-  }>;
-  transactionData: Array<{
-    id: string;
-    chainId: string;
-    createdTimestamp: number;
-    type: 'Crypto Currency' | 'Evidence' | 'NFT';
-    status: 'PENDING' | 'SUCCESS' | 'FAILED';
-  }>;
+  blockData: BlockData[];
+  transactionData: TransactionData[];
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {

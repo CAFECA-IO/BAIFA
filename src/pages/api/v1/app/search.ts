@@ -2,7 +2,7 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
-type ResponseData = Array<{
+type ResponseData = {
   type: string;
   data: {
     id: string;
@@ -15,10 +15,10 @@ type ResponseData = Array<{
     contractAddress?: string;
     evidenceAddress?: string;
     hash?: string;
-    publicTag?: Array<string>;
+    publicTag?: string[];
     redFlagType?: string;
   };
-}>;
+}[];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const result: ResponseData = [
