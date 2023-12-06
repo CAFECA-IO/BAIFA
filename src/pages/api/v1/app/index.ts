@@ -1,4 +1,5 @@
-// api/v1/app
+// /app
+
 import type {NextApiRequest, NextApiResponse} from 'next';
 
 type ResponseData = {

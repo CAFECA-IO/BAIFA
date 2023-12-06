@@ -1,4 +1,4 @@
-// api/v1/app/chains/:chainId/blocks?start_date=${startTimestamp}&end_date=${endTimestamp}
+// /app/chains/:chainId/blocks?start_date=${startTimestamp}&end_date=${endTimestamp}
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 

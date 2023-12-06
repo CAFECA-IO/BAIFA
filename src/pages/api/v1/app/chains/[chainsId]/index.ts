@@ -1,4 +1,5 @@
-// api/v1/app/chains/:chainId.ts
+// /app/chains/:chainId
+
 import type {NextApiRequest, NextApiResponse} from 'next';
 
 type ResponseData = {

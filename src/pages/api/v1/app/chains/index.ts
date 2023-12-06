@@ -1,4 +1,5 @@
-// api/v1/app/chains.ts
+// /app/chains
+
 import type {NextApiRequest, NextApiResponse} from 'next';
 
 type ResponseData = Array<{

@@ -1,4 +1,4 @@
-// api/v1/app/suggestions?search_input=${searchInput}
+// /app/suggestions?search_input=${searchInput}
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
