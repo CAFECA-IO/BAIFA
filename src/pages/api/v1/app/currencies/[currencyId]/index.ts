@@ -1,4 +1,4 @@
-// /app/currencies/:currencyId
+// 018 - GET /app/currencies/:currencyId
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 

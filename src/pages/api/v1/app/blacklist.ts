@@ -1,4 +1,4 @@
-// /app/blacklist
+// 020 - GET /app/blacklist
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 

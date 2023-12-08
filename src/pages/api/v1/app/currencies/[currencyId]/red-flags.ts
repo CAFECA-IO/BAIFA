@@ -1,4 +1,4 @@
-// /app/currencies/:currencyId/red-flags
+// 019 - GET /app/currencies/:currencyId/red-flags
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 

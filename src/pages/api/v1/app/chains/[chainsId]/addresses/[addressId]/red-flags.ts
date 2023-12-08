@@ -1,4 +1,4 @@
-// /app/chains/:chainId/addresses/:addressId/red-flags
+// 013 - GET /app/chains/:chainId/addresses/:addressId/red-flags
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 

@@ -1,4 +1,4 @@
-// /app/chains
+// 004 - GET /app/chains
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 

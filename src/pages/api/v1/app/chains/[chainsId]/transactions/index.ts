@@ -1,4 +1,4 @@
-// /app/chains/:chainId/transactions?start_date=${startTimestamp}&end_date=${endTimestamp}
+// 009 - GET /app/chains/:chainId/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 

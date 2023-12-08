@@ -1,4 +1,4 @@
-// /app/chains/:chainId/transactions/:transactionId
+// 010 - GET /app/chains/:chainId/transactions/:transactionId
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 

@@ -1,4 +1,5 @@
-// /app/red-flags?currency=${currencyId}&chain=${chainId}&address=${addressId}
+// 021 - GET /app/red-flags
+
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 

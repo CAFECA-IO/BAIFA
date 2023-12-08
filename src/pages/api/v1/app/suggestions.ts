@@ -1,4 +1,5 @@
-// /app/suggestions?search_input=${searchInput}
+// 002 - GET /app/suggestions?search_input=${searchInput}
+
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 

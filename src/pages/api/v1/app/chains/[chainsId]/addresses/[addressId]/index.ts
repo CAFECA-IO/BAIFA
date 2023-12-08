@@ -1,4 +1,4 @@
-// /app/chains/:chainId/addresses/:addressId
+// 011 - GET /app/chains/:chainId/addresses/:addressId
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
