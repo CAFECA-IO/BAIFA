@@ -1,5 +1,4 @@
-// 021 - GET /app/red-flags
-
+// 019 - GET /app/currencies/:currency_id/red_flags
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
@@ -14,11 +13,11 @@ type ResponseData = {
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const result: ResponseData = [
     {
-      'id': '1223724980',
-      'chainId': 'eth',
-      'addressId': '122372',
-      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_TRANSFER',
-      'createdTimestamp': 1677769870,
+      'id': '1183720028',
+      'chainId': 'btc',
+      'addressId': '118372',
+      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
+      'createdTimestamp': 1679099781,
     },
     {
       'id': '1132480029',
@@ -28,20 +27,21 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
       'createdTimestamp': 1682172429,
     },
     {
-      'id': '1468697785',
-      'chainId': 'usdt',
-      'addressId': '146869',
-      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_GAMBLING_SITE',
-      'createdTimestamp': 1686548904,
+      'id': '1182740004',
+      'chainId': 'btc',
+      'addressId': '118274',
+      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_BLACK_LIST',
+      'createdTimestamp': 1689427103,
     },
     {
-      'id': '1378976701',
-      'chainId': 'isun',
-      'addressId': '137897',
-      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_DEPOSIT',
-      'createdTimestamp': 1690657412,
+      'id': '1192830192',
+      'chainId': 'btc',
+      'addressId': '119283',
+      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MIXING_SERVICE',
+      'createdTimestamp': 1689424291,
     },
     // ... other red flags
   ];
+
   res.status(200).json(result);
 }

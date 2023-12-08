@@ -1,4 +1,4 @@
-// 016 - GET /app/chains/:chainId/evidence/:evidenceId
+// 016 - GET /app/chains/:chain_id/evidence/:evidence_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 

@@ -1,4 +1,4 @@
-// 022 - GET /app/red-flags/:redFlagId
+// 022 - GET /app/red_flags/:red_flag_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
