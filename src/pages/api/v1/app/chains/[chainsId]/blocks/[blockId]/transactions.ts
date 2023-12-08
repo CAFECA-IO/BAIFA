@@ -1,21 +1,16 @@
-/*
-022 - Transaction History from Addresses / Transaction List form a block
-HTTP Request:
-    GET /app/transactions?address=${address1},${address2},...
-    GET /app/transactions?block_id=${blockId}
-Parameters: address or block_id (Cannot choose both) - required*
-Request Example: GET /app/transactions?address=${114007},${110029},...
- */
+// 008 - GET /app/chains/:chainId/blocks/:blockId/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
-type ResponseData = {
+type TransactionData = {
   id: string;
   chainId: string;
   createdTimestamp: number;
-  type: 'Crypto Currency' | 'Evidence'; // Update types based on your actual data
-  status: 'SUCCESS' | 'PENDING' | 'FAILED';
-}[];
+  type: string;
+  status: 'SUCCESS' | 'FAILED' | 'PENDING';
+};
+
+type ResponseData = TransactionData[];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const result: ResponseData = [
@@ -56,5 +51,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     },
     // ...other transactions
   ];
+
   res.status(200).json(result);
 }
