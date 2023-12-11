@@ -13,7 +13,7 @@ const SearchBar = ({searchBarPlaceholder, setSearch}: ISearchBarProps) => {
   };
 
   return (
-    <div className="relative w-full max-w-800px drop-shadow-xl">
+    <div className="relative w-full drop-shadow-xl">
       <input
         type="search"
         className="w-full items-center rounded-full bg-purpleLinear px-6 py-3 text-base placeholder:text-sm placeholder:lg:text-base"
