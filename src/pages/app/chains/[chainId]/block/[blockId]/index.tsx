@@ -4,16 +4,16 @@ import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
-import NavBar from '../../../../../components/nav_bar/nav_bar';
-import BoltButton from '../../../../../components/bolt_button/bolt_button';
-import BlockDetail from '../../../../../components/block_detail/block_detail';
-import Footer from '../../../../../components/footer/footer';
+import NavBar from '../../../../../../components/nav_bar/nav_bar';
+import BoltButton from '../../../../../../components/bolt_button/bolt_button';
+import BlockDetail from '../../../../../../components/block_detail/block_detail';
+import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyBlockData, IBlock} from '../../../../../interfaces/block';
+import {dummyBlockData, IBlock} from '../../../../../../interfaces/block';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../../../interfaces/locale';
-import {getChainIcon} from '../../../../../lib/common';
-import {getDynamicUrl} from '../../../../../constants/url';
+import {TranslateFunction} from '../../../../../../interfaces/locale';
+import {getChainIcon} from '../../../../../../lib/common';
+import {getDynamicUrl} from '../../../../../../constants/url';
 
 interface IBlockDetailPageProps {
   blockId: string;
