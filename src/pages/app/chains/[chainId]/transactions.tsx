@@ -1,18 +1,18 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
-import NavBar from '../../../../../components/nav_bar/nav_bar';
-import BoltButton from '../../../../../components/bolt_button/bolt_button';
-import TransactionTab from '../../../../../components/transaction_tab/transaction_tab';
-import Footer from '../../../../../components/footer/footer';
+import NavBar from '../../../../components/nav_bar/nav_bar';
+import BoltButton from '../../../../components/bolt_button/bolt_button';
+import TransactionTab from '../../../../components/transaction_tab/transaction_tab';
+import Footer from '../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyTransactionData, ITransaction} from '../../../../../interfaces/transaction';
+import {dummyTransactionData, ITransaction} from '../../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../../../interfaces/locale';
-import {getChainIcon} from '../../../../../lib/common';
+import {TranslateFunction} from '../../../../interfaces/locale';
+import {getChainIcon} from '../../../../lib/common';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import {dummyChains} from '../../../../../interfaces/chain';
+import {dummyChains} from '../../../../interfaces/chain';
 
 interface ITransactionsPageProps {
   chainId: string;
