@@ -17,15 +17,11 @@ const TransactionListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
 
-  const {blockId, addressId} = router.query;
-  // Info: (20231114 - Julian) 如果取得 blockId，則顯示該 block 的交易資料
-  const isShowBlockData = !!blockId;
+  const {addressId} = router.query;
   //  Info: (20231114 - Julian) 如果取得 addressId，且 addressId 是陣列，則顯示該 address 的交易資料
   const isShowAddressData = !!addressId && typeof addressId === 'object';
 
-  const headTitle = isShowBlockData
-    ? `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_BLOCK')} ${blockId} - BAIFA`
-    : isShowAddressData
+  const headTitle = isShowAddressData
     ? `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_ADDRESS_1')} ${addressId[0]} ${t(
         'TRANSACTION_LIST_PAGE.HEAD_TITLE_ADDRESS_2'
       )} ${addressId[1]} - BAIFA`
@@ -53,14 +49,7 @@ const TransactionListPage = () => {
     </h1>
   );
 
-  const subTitle = isShowBlockData ? (
-    <div className="flex items-center space-x-2">
-      <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
-      <h2 className="text-xl">
-        {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} {blockId}
-      </h2>
-    </div>
-  ) : isShowAddressData ? (
+  const subTitle = isShowAddressData ? (
     <div className="flex items-center space-x-4">
       <div className="flex items-center space-x-2">
         <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
@@ -80,12 +69,11 @@ const TransactionListPage = () => {
     <></>
   );
 
-  const isShowTransactionList =
-    isShowBlockData || isShowAddressData ? (
-      <TransactionTab transactionList={filteredTransactionData} />
-    ) : (
-      <h2 className="text-2xl font-bold">{t('ERROR_PAGE.HEAD_TITLE')}</h2>
-    );
+  const isShowTransactionList = isShowAddressData ? (
+    <TransactionTab transactionList={filteredTransactionData} />
+  ) : (
+    <h2 className="text-2xl font-bold">{t('ERROR_PAGE.HEAD_TITLE')}</h2>
+  );
 
   return (
     <>

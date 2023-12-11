@@ -33,11 +33,11 @@ const BlockDetailPage = ({
 }: IBlockDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
+  const router = useRouter();
 
   const previousLink = getDynamicUrl(chainId, `${previousBlockId}`).BLOCK;
   const nextLink = getDynamicUrl(chainId, `${nextBlockId}`).BLOCK;
 
-  const router = useRouter();
   const backClickHandler = () => router.back();
   const previousHandler = () => router.push(previousLink);
   const nextHandler = () => router.push(nextLink);
