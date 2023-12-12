@@ -8,7 +8,8 @@ export type IAPIName =
   | 'EXCHANGE_RATES'
   | 'PROMOTION'
   | 'SEARCH_SUGGESTIONS'
-  | 'SEARCH_RESULT';
+  | 'SEARCH_RESULT'
+  | 'CHAINS';
 
 export interface IAPINameConstant {
   BALANCE_SHEET: IAPIName;
@@ -20,6 +21,7 @@ export interface IAPINameConstant {
   PROMOTION: IAPIName;
   SEARCH_SUGGESTIONS: IAPIName;
   SEARCH_RESULT: IAPIName;
+  CHAINS: IAPIName;
 }
 
 export const APIName: IAPINameConstant = {
@@ -31,6 +33,7 @@ export const APIName: IAPINameConstant = {
   PROMOTION: 'PROMOTION',
   SEARCH_SUGGESTIONS: 'SEARCH_SUGGESTIONS',
   SEARCH_RESULT: 'SEARCH_RESULT',
+  CHAINS: 'CHAINS',
 };
 
 export const APIURL = {
@@ -42,6 +45,7 @@ export const APIURL = {
   PROMOTION: '/api/v1/app', // `${BFA_API_URL}/${BFA_API_VERSION}/app`,
   SEARCH_SUGGESTIONS: '/api/v1/app/suggestions', //`${BFA_API_URL}/${BFA_API_VERSION}/app/suggestions`,
   SEARCH_RESULT: '/api/v1/app/search', //`${BFA_API_URL}/${BFA_API_VERSION}/app/search`,
+  CHAINS: '/api/v1/app/chains', //`${BFA_API_URL}/${BFA_API_VERSION}/app/chains`,
 
   WEBSITE_RESERVE: 'https://api.tidebit-defi.com/public/reserve',
 };

@@ -4,39 +4,39 @@ import {ITransaction, getDummyTransactionData} from './transaction';
 export interface IChain {
   chainId: string;
   chainName: string;
-  blocks: IBlock[];
-  transactions: ITransaction[];
+  blocks: number;
+  transactions: number;
 }
 
 export const dummyChains: IChain[] = [
   {
     chainId: 'isun',
     chainName: 'iSunCloud',
-    blocks: getDummyBlockData('isun'),
-    transactions: getDummyTransactionData('isun'),
+    blocks: 213,
+    transactions: 123,
   },
   {
     chainId: 'eth',
     chainName: 'Ethereum',
-    blocks: getDummyBlockData('eth'),
-    transactions: getDummyTransactionData('eth'),
+    blocks: 2841,
+    transactions: 19713,
   },
   {
     chainId: 'btc',
     chainName: 'Bitcoin',
-    blocks: getDummyBlockData('btc'),
-    transactions: getDummyTransactionData('btc'),
+    blocks: 5413,
+    transactions: 81364,
   },
   {
     chainId: 'usdt',
     chainName: 'Tether',
-    blocks: getDummyBlockData('usdt'),
-    transactions: getDummyTransactionData('usdt'),
+    blocks: 1355,
+    transactions: 13874,
   },
   {
     chainId: 'bnb',
     chainName: 'Binance',
-    blocks: getDummyBlockData('bnb'),
-    transactions: getDummyTransactionData('bnb'),
+    blocks: 134,
+    transactions: 4872,
   },
 ];

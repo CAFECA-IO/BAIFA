@@ -1,14 +1,18 @@
+import {useState, useEffect} from 'react';
 import Footer from '../footer/footer';
 import ChainsCard from '../chain_card/chain_card';
 import Breadcrumb from '../../components/breadcrumb/breadcrumb';
-import {dummyChains} from '../../interfaces/chain';
+import {IChain} from '../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
 import {getChainIcon} from '../../lib/common';
+import {APIURL} from '../../constants/api_request';
 
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+
+  const [chainList, setChainList] = useState<IChain[]>([]);
 
   const crumbs = [
     {
@@ -20,6 +24,34 @@ const AllChainPageBody = () => {
       path: BFAURL.CHAINS,
     },
   ];
+
+  const getChains = async () => {
+    let data: IChain[] = [];
+    try {
+      const response = await fetch(`${APIURL.CHAINS}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getChains error', error);
+    }
+    return data;
+  };
+
+  useEffect(() => {
+    getChains().then(data => setChainList(data));
+  }, []);
+
+  const displayChains = chainList.map((chain, index) => (
+    <ChainsCard
+      key={index}
+      chainId={chain.chainId}
+      chainName={chain.chainName}
+      icon={getChainIcon(chain.chainId).src}
+      blocks={chain.blocks}
+      transactions={chain.transactions}
+    />
+  ));
 
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
@@ -35,17 +67,8 @@ const AllChainPageBody = () => {
         </div>
 
         {/* Info: (20230829 - Julian) Chain list */}
-        <div className="mx-auto grid grid-cols-1 gap-6 pt-5 lg:grid-cols-2 xl:grid-cols-4">
-          {dummyChains.map((chain, index) => (
-            <ChainsCard
-              key={index}
-              chainId={chain.chainId}
-              chainName={chain.chainName}
-              icon={getChainIcon(chain.chainId).src}
-              blocks={chain.blocks.length}
-              transactions={chain.transactions.length}
-            />
-          ))}
+        <div className="mx-auto grid grid-cols-1 gap-6 pt-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {displayChains}
         </div>
       </div>
 
