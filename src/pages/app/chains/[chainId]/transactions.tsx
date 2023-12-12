@@ -1,44 +1,39 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState} from 'react';
 import {useRouter} from 'next/router';
-import NavBar from '../../components/nav_bar/nav_bar';
-import BoltButton from '../../components/bolt_button/bolt_button';
-import TransactionTab from '../../components/transaction_tab/transaction_tab';
-import Footer from '../../components/footer/footer';
+import NavBar from '../../../../components/nav_bar/nav_bar';
+import BoltButton from '../../../../components/bolt_button/bolt_button';
+import TransactionTab from '../../../../components/transaction_tab/transaction_tab';
+import Footer from '../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyTransactionData, ITransaction} from '../../interfaces/transaction';
+import {dummyTransactionData, ITransaction} from '../../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
-import {ILocale, TranslateFunction} from '../../interfaces/locale';
-import {getChainIcon} from '../../lib/common';
+import {TranslateFunction} from '../../../../interfaces/locale';
+import {getChainIcon} from '../../../../lib/common';
+import {GetStaticPaths, GetStaticProps} from 'next';
+import {dummyChains} from '../../../../interfaces/chain';
 
-const TransactionListPage = () => {
+interface ITransactionsPageProps {
+  chainId: string;
+  transactionList: ITransaction[];
+}
+
+const TransactionsPage = ({chainId, transactionList}: ITransactionsPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
 
-  const {blockId, addressId} = router.query;
-  // Info: (20231114 - Julian) 如果取得 blockId，則顯示該 block 的交易資料
-  const isShowBlockData = !!blockId;
+  const {addressId} = router.query;
   //  Info: (20231114 - Julian) 如果取得 addressId，且 addressId 是陣列，則顯示該 address 的交易資料
   const isShowAddressData = !!addressId && typeof addressId === 'object';
 
-  const headTitle = isShowBlockData
-    ? `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_BLOCK')} ${blockId} - BAIFA`
-    : isShowAddressData
+  const headTitle = isShowAddressData
     ? `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_ADDRESS_1')} ${addressId[0]} ${t(
         'TRANSACTION_LIST_PAGE.HEAD_TITLE_ADDRESS_2'
       )} ${addressId[1]} - BAIFA`
-    : ``;
-
-  // Info: (20231114 - Julian) Transaction Data State
-  // ToDo: (20231114 - Julian) 這裡的 dummyTransactionData 和 'isun' 應該改成從 API 取得的資料
-  const [chainId, setChainId] = useState('isun');
-  const [filteredTransactionData, setFilteredTransactionData] =
-    useState<ITransaction[]>(dummyTransactionData);
+    : `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_ADDRESS_1')} - BAIFA`;
 
   const chainIcon = getChainIcon(chainId);
-
   const backClickHandler = () => router.back();
 
   const mainTitle = isShowAddressData ? (
@@ -53,14 +48,7 @@ const TransactionListPage = () => {
     </h1>
   );
 
-  const subTitle = isShowBlockData ? (
-    <div className="flex items-center space-x-2">
-      <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
-      <h2 className="text-xl">
-        {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} {blockId}
-      </h2>
-    </div>
-  ) : isShowAddressData ? (
+  const subTitle = isShowAddressData ? (
     <div className="flex items-center space-x-4">
       <div className="flex items-center space-x-2">
         <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
@@ -80,12 +68,11 @@ const TransactionListPage = () => {
     <></>
   );
 
-  const isShowTransactionList =
-    isShowBlockData || isShowAddressData ? (
-      <TransactionTab transactionList={filteredTransactionData} />
-    ) : (
-      <h2 className="text-2xl font-bold">{t('ERROR_PAGE.HEAD_TITLE')}</h2>
-    );
+  const isShowTransactionList = isShowAddressData ? (
+    <TransactionTab transactionList={transactionList} />
+  ) : (
+    <h2 className="text-2xl font-bold">{t('ERROR_PAGE.HEAD_TITLE')}</h2>
+  );
 
   return (
     <>
@@ -135,12 +122,46 @@ const TransactionListPage = () => {
   );
 };
 
-const getStaticPropsFunction = async ({locale}: ILocale) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['common'])),
-  },
-});
+export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+  const paths = dummyChains
+    .flatMap(chain => {
+      return locales?.map(locale => ({params: {chainId: chain.chainId}, locale}));
+    })
+    .filter((path): path is {params: {chainId: string}; locale: string} => !!path);
 
-export const getStaticProps = getStaticPropsFunction;
+  return {
+    paths: paths,
+    fallback: 'blocking',
+  };
+};
 
-export default TransactionListPage;
+export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+  if (!params || !params.chainId || typeof params.chainId !== 'string') {
+    return {
+      notFound: true,
+    };
+  }
+
+  const chainId = params.chainId;
+
+  // Info: (20231211 - Julian) Get Data from API
+  const transactionList = dummyTransactionData.filter(
+    transaction => transaction.chainId === chainId
+  );
+
+  if (!transactionList) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      chainId: chainId,
+      transactionList: transactionList,
+      ...(await serverSideTranslations(locale as string, ['common'])),
+    },
+  };
+};
+
+export default TransactionsPage;

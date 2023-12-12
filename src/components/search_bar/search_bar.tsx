@@ -20,7 +20,7 @@ const SearchBar = ({searchBarPlaceholder, setSearch}: ISearchBarProps) => {
         placeholder={searchBarPlaceholder}
         onChange={searchChangeHandler}
       />
-      <div className="absolute right-4 top-3 text-2xl font-bold hover:cursor-pointer">
+      <div className="absolute right-5 top-3 text-2xl">
         <RiSearchLine />
       </div>
     </div>

@@ -17,7 +17,10 @@ const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemPro
 
   const chainIcon = getChainIcon(chainId);
   const itemLink = getDynamicUrl(`${chainId}`, `${id}`);
-  const transactionLink = `${BFAURL.TRANSACTION_LIST}?addressId=${orignalAddressId}&addressId=${id}`;
+
+  const transactionUrl = `${getDynamicUrl(`${chainId}`, `${orignalAddressId}`).TRANSACTION_LIST}`;
+  const transactionQuery = `?addressId=${orignalAddressId}&addressId=${id}`;
+  const transactionLink = `${transactionUrl}${transactionQuery}`;
 
   const displayPublicTag = (
     <div className="whitespace-nowrap rounded border-violet bg-violet px-4 py-2 text-sm lg:text-base">
