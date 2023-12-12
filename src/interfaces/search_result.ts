@@ -21,5 +21,5 @@ export const dummySearchResult: ISearchResult[] = [
     type: SearchType.RED_FLAG,
     data: redFlag,
   })),
-  ...dummyBlacklistAddressData.map(address => ({type: SearchType.BLACK_LIST, data: address})),
+  ...dummyBlacklistAddressData.map(address => ({type: SearchType.BLACKLIST, data: address})),
 ];
