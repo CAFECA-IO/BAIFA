@@ -1,0 +1,586 @@
+{
+  "info": {
+    "_postman_id": "3e89246b-8c5e-4640-b2b6-ec4418e66150",
+    "name": "BAIFA_API_v1.1.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31472948"
+  },
+  "item": [
+    {
+      "name": "001 - /app",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "{{url}}/app",
+          "host": ["{{url}}"],
+          "path": ["app"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "002 - /app/suggestions?search_input=${searchInput}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/suggestions?search_input=searchInput",
+          "host": ["{{url}}"],
+          "path": ["app", "suggestions"],
+          "query": [
+            {
+              "key": "search_input",
+              "value": "searchInput"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "003 - /app/search?search_input=${searchInput}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/search?search_input=${searchInput}",
+          "host": ["{{url}}"],
+          "path": ["app", "search"],
+          "query": [
+            {
+              "key": "search_input",
+              "value": "${searchInput}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "004 - /app/chains",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "{{url}}/app/chains",
+          "host": ["{{url}}"],
+          "path": ["app", "chains"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "005 - /app/chains/:chain_id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/chains/:chain_id",
+          "host": ["{{url}}"],
+          "path": ["app", "chains", ":chain_id"],
+          "variable": [
+            {
+              "key": "chain_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "006 - /app/chains/:chain_id/blocks?start_date=${startTimestamp}&end_date=${endTimestamp}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/chains/:chain_id/blocks?start_date=${startTimestamp}&end_date=${endTimestamp}",
+          "host": ["{{url}}"],
+          "path": ["app", "chains", ":chain_id", "blocks"],
+          "query": [
+            {
+              "key": "start_date",
+              "value": "${startTimestamp}"
+            },
+            {
+              "key": "end_date",
+              "value": "${endTimestamp}"
+            }
+          ],
+          "variable": [
+            {
+              "key": "chain_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "007 - /app/chains/:chain_id/blocks/:block_id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/chains/:chain_id/blocks/:block_id",
+          "host": ["{{url}}"],
+          "path": ["app", "chains", ":chain_id", "blocks", ":block_id"],
+          "variable": [
+            {
+              "key": "chain_id",
+              "value": ""
+            },
+            {
+              "key": "block_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "008 - /app/chains/:chain_id/blocks/:block_id/transactions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/chains/:chain_id/blocks/:block_id/transactions",
+          "host": ["{{url}}"],
+          "path": ["app", "chains", ":chain_id", "blocks", ":block_id", "transactions"],
+          "variable": [
+            {
+              "key": "chain_id",
+              "value": ""
+            },
+            {
+              "key": "block_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "009 - /app/chains/:chain_id/transactions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": [
+        {
+          "name": "?start_date=${startTimestamp}&end_date=${endTimestamp}",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/app/chains/:chainId/transactions?start_date=${startTimestamp}&end_date=${endTimestamp}",
+              "host": ["{{url}}"],
+              "path": ["app", "chains", ":chainId", "transactions"],
+              "query": [
+                {
+                  "key": "start_date",
+                  "value": "${startTimestamp}"
+                },
+                {
+                  "key": "end_date",
+                  "value": "${endTimestamp}"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "chainId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": null
+        },
+        {
+          "name": "?address=${address1},${address2},...",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/app/chains/:chainId/transactions?address=${address1},${address2},...",
+              "host": ["{{url}}"],
+              "path": ["app", "chains", ":chainId", "transactions"],
+              "query": [
+                {
+                  "key": "address",
+                  "value": "${address1},${address2},..."
+                }
+              ],
+              "variable": [
+                {
+                  "key": "chainId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": null
+        }
+      ]
+    },
+    {
+      "name": "010 - /app/chains/:chain_id/transactions/:transaction_id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/chains/:chain_id/transactions/:transaction_id",
+          "host": ["{{url}}"],
+          "path": ["app", "chains", ":chain_id", "transactions", ":transaction_id"],
+          "variable": [
+            {
+              "key": "chain_id",
+              "value": ""
+            },
+            {
+              "key": "transaction_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "011 - /app/chains/:chain_id/addresses/:address_id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/chains/:chain_id/addresses/:address_id",
+          "host": ["{{url}}"],
+          "path": ["app", "chains", ":chain_id", "addresses", ":address_id"],
+          "variable": [
+            {
+              "key": "chain_id",
+              "value": ""
+            },
+            {
+              "key": "address_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "012 - /app/chains/:chain_id/addresses/:address_id/reviews",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/chains/:chain_id/addresses/:address_id/reviews",
+          "host": ["{{url}}"],
+          "path": ["app", "chains", ":chain_id", "addresses", ":address_id", "reviews"],
+          "variable": [
+            {
+              "key": "chain_id",
+              "value": ""
+            },
+            {
+              "key": "address_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "013 - /app/chains/:chain_id/addresses/:address_id/red_flags",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/chains/:chain_id/addresses/:address_id/red_flags",
+          "host": ["{{url}}"],
+          "path": ["app", "chains", ":chain_id", "addresses", ":address_id", "red_flags"],
+          "variable": [
+            {
+              "key": "chain_id",
+              "value": ""
+            },
+            {
+              "key": "address_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "014 - /app/chains/:chain_id/addresses/:address_id/interactions?type=address",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/chains/:chain_id/addresses/:address_id/interactions?type=address",
+          "host": ["{{url}}"],
+          "path": ["app", "chains", ":chain_id", "addresses", ":address_id", "interactions"],
+          "query": [
+            {
+              "key": "type",
+              "value": "address"
+            }
+          ],
+          "variable": [
+            {
+              "key": "chain_id",
+              "value": ""
+            },
+            {
+              "key": "address_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "015 - /app/chains/:chain_id/contracts/:contract_id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/chains/:chain_id/contracts/:contract_id",
+          "host": ["{{url}}"],
+          "path": ["app", "chains", ":chain_id", "contracts", ":contract_id"],
+          "variable": [
+            {
+              "key": "chain_id",
+              "value": ""
+            },
+            {
+              "key": "contract_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "016 - /app/chains/:chain_id/evidence/:evidence_id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/chains/:chain_id/evidence/:evidence_id",
+          "host": ["{{url}}"],
+          "path": ["app", "chains", ":chain_id", "evidence", ":evidence_id"],
+          "variable": [
+            {
+              "key": "chain_id",
+              "value": ""
+            },
+            {
+              "key": "evidence_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "017 - /app/currencies",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/currencies",
+          "host": ["{{url}}"],
+          "path": ["app", "currencies"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "018 - /app/currencies/:currency_id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/currencies/:currency_id",
+          "host": ["{{url}}"],
+          "path": ["app", "currencies", ":currency_id"],
+          "variable": [
+            {
+              "key": "currency_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "019 - /app/currencies/:currency_id/red_flags",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/currencies/:currency_id/red_flags",
+          "host": ["{{url}}"],
+          "path": ["app", "currencies", ":currency_id", "red_flags"],
+          "variable": [
+            {
+              "key": "currency_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "020 - /app/blacklist",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/blacklist",
+          "host": ["{{url}}"],
+          "path": ["app", "blacklist"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "021 - /app/red_flags",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/red_flags",
+          "host": ["{{url}}"],
+          "path": ["app", "red_flags"]
+        }
+      },
+      "response": [
+        {
+          "name": "Default",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/app/red_flags",
+              "host": ["{{url}}"],
+              "path": ["app", "red_flags"]
+            }
+          },
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": null
+        },
+        {
+          "name": "?currency=${currencyId}&chain=${chainId}&address=${addressId}",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/app/red_flags?currency=${currencyId}&chain=${chainId}&address=${addressId}",
+              "host": ["{{url}}"],
+              "path": ["app", "red_flags"],
+              "query": [
+                {
+                  "key": "currency",
+                  "value": "${currencyId}"
+                },
+                {
+                  "key": "chain",
+                  "value": "${chainId}"
+                },
+                {
+                  "key": "address",
+                  "value": "${addressId}"
+                }
+              ]
+            }
+          },
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": null
+        }
+      ]
+    },
+    {
+      "name": "022 - /app/red_flags/:red_flag_id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/app/red_flags/:red_flag_id",
+          "host": ["{{url}}"],
+          "path": ["app", "red_flags", ":red_flag_id"],
+          "variable": [
+            {
+              "key": "red_flag_id",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "url",
+      "value": "http://localhost:3000/api/v1"
+    }
+  ]
+}
