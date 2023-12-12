@@ -36,8 +36,8 @@ export const APIURL = {
   STATEMENTS_OF_CASH_FLOWS: `${TBD_API_URL}/${TBD_API_VERSION}/cash-flow`,
   EXCHANGE_RATES: `${TBD_API_URL}/${TBD_API_VERSION}/exchange-rates`,
 
-  PROMOTION: `${BFA_API_URL}/${BFA_API_VERSION}/app`,
-  SEARCH_SUGGESTIONS: `${BFA_API_URL}/${BFA_API_VERSION}/app/suggestions`,
+  PROMOTION: '/api/v1/app', // `${BFA_API_URL}/${BFA_API_VERSION}/app`,
+  SEARCH_SUGGESTIONS: 'api/v1/app/suggestions', //`${BFA_API_URL}/${BFA_API_VERSION}/app/suggestions`,
 
   WEBSITE_RESERVE: 'https://api.tidebit-defi.com/public/reserve',
 };
