@@ -3,6 +3,8 @@ import useStateRef from 'react-usestateref';
 import {IChain} from '../interfaces/chain';
 import {APIURL} from '../constants/api_request';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
+import {ISearchResult} from '../interfaces/search_result';
+import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -14,6 +16,8 @@ export interface IMarketContext {
   chainList: IChain[];
   getChains: () => Promise<void>;
   getChainDetail: (chainId: string) => Promise<IChain>;
+  getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
+  getSuggestions: (searchInput: string) => Promise<ISuggestions>;
 }
 
 export const MarketContext = createContext<IMarketContext>({
@@ -22,16 +26,13 @@ export const MarketContext = createContext<IMarketContext>({
   chainList: [],
   getChains: () => Promise.resolve(),
   getChainDetail: () => Promise.resolve({} as IChain),
+  getSearchResult: () => Promise.resolve([] as ISearchResult[]),
+  getSuggestions: () => Promise.resolve(defaultSuggestions),
 });
 
 export const MarketProvider = ({children}: IMarketProvider) => {
   const [promotion, setPromotion, promotionRef] = useStateRef<IPromotion>(defaultPromotion);
   const [chainList, setChainList, chainListRef] = useStateRef<IChain[]>([]);
-
-  const init = useCallback(async () => {
-    await getPromotion();
-    await getChains();
-  }, []);
 
   const getPromotion = async () => {
     let data: IPromotion = defaultPromotion;
@@ -59,6 +60,37 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     setChainList(data);
   }, []);
 
+  const init = useCallback(async () => {
+    await getPromotion();
+    await getChains();
+  }, []);
+
+  const getSuggestions = useCallback(async (searchInput: string) => {
+    let data: ISuggestions = defaultSuggestions;
+    try {
+      const response = await fetch(`${APIURL.SEARCH_SUGGESTIONS}?search_input=${searchInput}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getSuggestions error', error);
+    }
+    return data;
+  }, []);
+
+  const getSearchResult = useCallback(async (searchInput: string) => {
+    let data: ISearchResult[] = [];
+    try {
+      const response = await fetch(`${APIURL.SEARCH_RESULT}?search_input=${searchInput}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getSearchResult error', error);
+    }
+    return data;
+  }, []);
+
   const getChainDetail = useCallback(async (chainId: string) => {
     let data: IChain = {} as IChain;
     try {
@@ -78,6 +110,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     chainList: chainListRef.current,
     getChains,
     getChainDetail,
+    getSearchResult,
+    getSuggestions,
   };
 
   return <MarketContext.Provider value={defaultValues}>{children}</MarketContext.Provider>;

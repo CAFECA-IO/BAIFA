@@ -1,5 +1,7 @@
 import Head from 'next/head';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
+import {AppContext} from '../../contexts/app_context';
+import {MarketContext} from '../../contexts/market_context';
 import useStateRef from 'react-usestateref';
 import {useRouter} from 'next/router';
 import NavBar from '../../components/nav_bar/nav_bar';
@@ -14,10 +16,17 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {ILocale, TranslateFunction} from '../../interfaces/locale';
 import {dummySearchResult, ISearchResult} from '../../interfaces/search_result';
-import {APIURL} from '../../constants/api_request';
 
 const SearchingResultPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const appCtx = useContext(AppContext);
+  const {getSearchResult} = useContext(MarketContext);
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+  }, []);
 
   const router = useRouter();
   const {search} = router.query;
@@ -60,23 +69,11 @@ const SearchingResultPage = () => {
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
-  const getSearchResult = async () => {
-    let data: ISearchResult[] = [];
-    try {
-      const response = await fetch(`${APIURL.SEARCH_RESULT}`, {
-        method: 'GET',
-      });
-      data = await response.json();
-    } catch (error) {
-      //console.log('getSearchResult error', error);
-    }
-    return data;
-  };
-
   useEffect(() => {
-    getSearchResult().then(data => setSearchResult(data));
-    setFilteredResult(searchResult);
-  }, []);
+    getSearchResult(searchTextRef.current).then(data => {
+      setSearchResult(data);
+    });
+  }, [searchText]);
 
   useEffect(() => {
     const result = searchResult

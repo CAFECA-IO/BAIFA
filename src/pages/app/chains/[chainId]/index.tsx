@@ -166,7 +166,7 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
   const getChainData = async (chainId: string) => {
     let data: IChainDetail | null = null;
     try {
-      const response = await fetch(`api/v1/chains/eth`, {
+      const response = await fetch(`${APIURL.CHAINS}/${chainId}`, {
         method: 'GET',
       });
       data = await response.json();

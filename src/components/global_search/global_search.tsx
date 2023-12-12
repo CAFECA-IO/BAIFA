@@ -1,17 +1,18 @@
 import Image from 'next/image';
-import {useState, useEffect, ChangeEvent, KeyboardEvent, use} from 'react';
+import {useState, useEffect, useContext, ChangeEvent, KeyboardEvent} from 'react';
+import {MarketContext} from '../../contexts/market_context';
 import {useRouter} from 'next/router';
 import {BFAURL} from '../../constants/url';
 import {FiSearch} from 'react-icons/fi';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {APIURL} from '../../constants/api_request';
 import {ISuggestions, defaultSuggestions} from '../../interfaces/suggestions';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 
 const GlobalSearch = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
+  const {getSuggestions} = useContext(MarketContext);
 
   // Info: (20231212 - Julian) 搜尋欄位的值
   const [inputValue, setInputValue] = useState<string>('');
@@ -24,19 +25,6 @@ const GlobalSearch = () => {
     componentVisible: suggestionVisible,
     setComponentVisible: setSuggestionVisible,
   } = useOuterClick<HTMLInputElement>(false);
-
-  const getSuggestions = async (searchInput: string) => {
-    let data: ISuggestions = defaultSuggestions;
-    try {
-      const response = await fetch(`${APIURL.SEARCH_SUGGESTIONS}?search_input=${searchInput}`, {
-        method: 'GET',
-      });
-      data = await response.json();
-    } catch (error) {
-      //console.log('getSuggestions error', error);
-    }
-    return data;
-  };
 
   useEffect(() => {
     getSuggestions(inputValue).then(data => setSuggestionData(data));

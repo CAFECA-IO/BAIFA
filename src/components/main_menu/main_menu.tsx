@@ -1,33 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect} from 'react';
+import {useContext} from 'react';
+import {MarketContext} from '../../contexts/market_context';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IPromotion, defaultPromotion} from '../../interfaces/promotion';
 import {BFAURL} from '../../constants/url';
-import {APIURL} from '../../constants/api_request';
 
 const MainMenu = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-
-  const [promotionData, setPromotionData] = useState<IPromotion>(defaultPromotion);
-
-  const getPromotion = async () => {
-    let data: IPromotion = defaultPromotion;
-    try {
-      const response = await fetch(`${APIURL.PROMOTION}`, {
-        method: 'GET',
-      });
-      data = await response.json();
-    } catch (error) {
-      //console.log('getPromotion error', error);
-    }
-    return data;
-  };
-
-  useEffect(() => {
-    getPromotion().then(data => setPromotionData(data));
-  }, []);
+  const {promotionData} = useContext(MarketContext);
 
   const mainMenuContent = [
     {
