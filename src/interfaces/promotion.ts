@@ -9,9 +9,9 @@ export interface IPromotion {
 }
 
 export const defaultPromotion: IPromotion = {
-  chains: '—',
-  cryptoCurrencies: '—',
-  blackList: '—',
+  chains: 'N/A',
+  cryptoCurrencies: 'N/A',
+  blackList: 'N/A',
 };
 
 export const getDummyPromotion = (): IPromotion => {

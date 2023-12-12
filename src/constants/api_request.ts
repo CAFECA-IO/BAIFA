@@ -5,7 +5,8 @@ export type IAPIName =
   | 'COMPREHENSIVE_INCOME_STATEMENTS'
   | 'STATEMENTS_OF_CASH_FLOWS'
   | 'STATEMENTS_OF_RED_FLAGS'
-  | 'EXCHANGE_RATES';
+  | 'EXCHANGE_RATES'
+  | 'PROMOTION';
 
 export interface IAPINameConstant {
   BALANCE_SHEET: IAPIName;
@@ -13,6 +14,8 @@ export interface IAPINameConstant {
   STATEMENTS_OF_CASH_FLOWS: IAPIName;
   EXCHANGE_RATES: IAPIName;
   //STATEMENTS_OF_RED_FLAGS: IAPIName;
+
+  PROMOTION: IAPIName;
 }
 
 export const APIName: IAPINameConstant = {
@@ -20,6 +23,8 @@ export const APIName: IAPINameConstant = {
   COMPREHENSIVE_INCOME_STATEMENTS: 'COMPREHENSIVE_INCOME_STATEMENTS',
   STATEMENTS_OF_CASH_FLOWS: 'STATEMENTS_OF_CASH_FLOWS',
   EXCHANGE_RATES: 'EXCHANGE_RATES',
+
+  PROMOTION: 'PROMOTION',
 };
 
 export const APIURL = {
@@ -27,6 +32,8 @@ export const APIURL = {
   COMPREHENSIVE_INCOME_STATEMENTS: `${API_URL}/${API_VERSION}/comprehensive-income`,
   STATEMENTS_OF_CASH_FLOWS: `${API_URL}/${API_VERSION}/cash-flow`,
   EXCHANGE_RATES: `${API_URL}/${API_VERSION}/exchange-rates`,
+
+  PROMOTION: '/api/v1/app', //`${API_URL}/${API_VERSION}/app`,
 
   WEBSITE_RESERVE: 'https://api.tidebit-defi.com/public/reserve',
 };
