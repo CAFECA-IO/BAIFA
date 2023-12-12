@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState} from 'react';
+import {AppContext} from '../../../../contexts/app_context';
+import {MarketContext} from '../../../../contexts/market_context';
+import {useState, useEffect, useContext} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../components/footer/footer';
@@ -8,19 +10,29 @@ import Breadcrumb from '../../../../components/breadcrumb/breadcrumb';
 import BlockTab from '../../../../components/block_tab/block_tab';
 import TransactionTab from '../../../../components/transaction_tab/transaction_tab';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyChains, IChain} from '../../../../interfaces/chain';
+import {IChainDetail} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
 import {getChainIcon} from '../../../../lib/common';
+import {APIURL} from '../../../../constants/api_request';
+import {chainList} from '../../../../constants/config';
 
 export interface IChainDetailPageProps {
   chainId: string;
-  chainData: IChain;
+  chainData: IChainDetail;
 }
 
 const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const appCtx = useContext(AppContext);
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+  }, []);
+
   const chainName = chainData.chainName;
   const chainIcon = getChainIcon(chainData.chainId).src;
   const headTitle = `${chainName} - BAIFA`;
@@ -88,9 +100,9 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
 
   const tabContent =
     activeTab === 'blocks' ? (
-      <BlockTab blockList={chainData.blocks} />
+      <BlockTab blockList={chainData.blockData} />
     ) : (
-      <TransactionTab transactionList={chainData.transactions} />
+      <TransactionTab transactionList={chainData.transactionData} />
     );
 
   return (
@@ -131,9 +143,9 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyChains
+  const paths = chainList
     .flatMap(chain => {
-      return locales?.map(locale => ({params: {chainId: chain.chainId}, locale}));
+      return locales?.map(locale => ({params: {chainId: chain}, locale}));
     })
     .filter((path): path is {params: {chainId: string}; locale: string} => !!path);
 
@@ -150,7 +162,22 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
-  const chainData = dummyChains.find(chain => chain.chainId === params.chainId);
+  // fetch data from APIURL.CHAINS
+  const getChainData = async (chainId: string) => {
+    let data: IChainDetail | null = null;
+    try {
+      const response = await fetch(`api/v1/chains/eth`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getChainData error', error);
+    }
+    return data;
+  };
+
+  const chainId = params.chainId;
+  const chainData = await getChainData(chainId);
 
   if (!chainData) {
     return {

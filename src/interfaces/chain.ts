@@ -1,11 +1,16 @@
-import {IBlock, getDummyBlockData} from './block';
-import {ITransaction, getDummyTransactionData} from './transaction';
+import {IBlock} from './block';
+import {ITransaction} from './transaction';
 
 export interface IChain {
   chainId: string;
   chainName: string;
   blocks: number;
   transactions: number;
+}
+
+export interface IChainDetail extends IChain {
+  blockData: IBlock[];
+  transactionData: ITransaction[];
 }
 
 export const dummyChains: IChain[] = [

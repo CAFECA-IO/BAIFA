@@ -1,18 +1,16 @@
-import {useState, useEffect} from 'react';
+import {useContext} from 'react';
 import Footer from '../footer/footer';
 import ChainsCard from '../chain_card/chain_card';
 import Breadcrumb from '../../components/breadcrumb/breadcrumb';
-import {IChain} from '../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
 import {getChainIcon} from '../../lib/common';
-import {APIURL} from '../../constants/api_request';
+import {MarketContext} from '../../contexts/market_context';
 
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-
-  const [chainList, setChainList] = useState<IChain[]>([]);
+  const {chainList} = useContext(MarketContext);
 
   const crumbs = [
     {
@@ -24,23 +22,6 @@ const AllChainPageBody = () => {
       path: BFAURL.CHAINS,
     },
   ];
-
-  const getChains = async () => {
-    let data: IChain[] = [];
-    try {
-      const response = await fetch(`${APIURL.CHAINS}`, {
-        method: 'GET',
-      });
-      data = await response.json();
-    } catch (error) {
-      //console.log('getChains error', error);
-    }
-    return data;
-  };
-
-  useEffect(() => {
-    getChains().then(data => setChainList(data));
-  }, []);
 
   const displayChains = chainList.map((chain, index) => (
     <ChainsCard
