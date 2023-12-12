@@ -3,7 +3,7 @@ import {IInteractionItem} from './interaction_item';
 import {IRedFlag, getDummyRedFlag} from './red_flag';
 
 export interface IAddress extends IInteractionItem {
-  addressHash: string;
+  address: string;
   lastestActiveTime: number;
   relatedAddressIds: string[];
   interactedAddressIds: string[];
@@ -20,7 +20,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '130008',
     type: 'address',
-    addressHash: '0x5Ab3190693fEc256156f9f74Cd8843A77277',
+    address: '0x5Ab3190693fEc256156f9f74Cd8843A77277',
     chainId: 'isun',
     createdTimestamp: 1535762837,
     lastestActiveTime: 1696710310,
@@ -36,7 +36,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '130025',
     type: 'address',
-    addressHash: '0x11256d88475D319156fx93fEc3f74A79Cd069',
+    address: '0x11256d88475D319156fx93fEc3f74A79Cd069',
     chainId: 'isun',
     createdTimestamp: 1672932841,
     lastestActiveTime: 1697174618,
@@ -52,7 +52,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '130089',
     type: 'address',
-    addressHash: '0x2775D319156f9f74Cd0693fEc256d8843A79',
+    address: '0x2775D319156f9f74Cd0693fEc256d8843A79',
     chainId: 'isun',
     createdTimestamp: 1680935382,
     lastestActiveTime: 1682746184,
@@ -68,7 +68,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '130294',
     type: 'address',
-    addressHash: '0x27256d3982516f9f34903674Cd0693fEcA79',
+    address: '0x27256d3982516f9f34903674Cd0693fEcA79',
     chainId: 'isun',
     createdTimestamp: 1682801849,
     lastestActiveTime: 1688201837,
@@ -84,7 +84,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '130682',
     type: 'address',
-    addressHash: '0x67843A7990693fEc2575D31Cd86d156f9f74',
+    address: '0x67843A7990693fEc2575D31Cd86d156f9f74',
     chainId: 'isun',
     createdTimestamp: 1635603109,
     lastestActiveTime: 1677176283,
@@ -100,7 +100,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '134902',
     type: 'address',
-    addressHash: '0x27256d3982516f9f34903674Cd0693fEcA79',
+    address: '0x27256d3982516f9f34903674Cd0693fEcA79',
     chainId: 'isun',
     createdTimestamp: 1680188201,
     lastestActiveTime: 1682168283,
@@ -116,7 +116,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '110029',
     type: 'address',
-    addressHash: '0x156f9f74C2775D3190693fEc256dd8843A79',
+    address: '0x156f9f74C2775D3190693fEc256dd8843A79',
     chainId: 'btc',
     createdTimestamp: 1667129031,
     lastestActiveTime: 1683709357,
@@ -132,7 +132,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '110132',
     type: 'address',
-    addressHash: '0x2775D3190693fEc256d156f9f74Cd8843A79',
+    address: '0x2775D3190693fEc256d156f9f74Cd8843A79',
     chainId: 'btc',
     createdTimestamp: 1680827461,
     lastestActiveTime: 1682935384,
@@ -148,7 +148,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '112840',
     type: 'address',
-    addressHash: '0x8e9f74C775D3190693fEc256d156dD865A79',
+    address: '0x8e9f74C775D3190693fEc256d156dD865A79',
     chainId: 'btc',
     createdTimestamp: 1682746180,
     lastestActiveTime: 1685902948,
@@ -164,7 +164,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '113992',
     type: 'address',
-    addressHash: '0x1975d156f9f74D3190693fEc256Cd88243a04',
+    address: '0x1975d156f9f74D3190693fEc256Cd88243a04',
     chainId: 'btc',
     createdTimestamp: 16853990284,
     lastestActiveTime: 1688435283,
@@ -180,7 +180,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '114007',
     type: 'address',
-    addressHash: '0x1975d15693fEc256Cd88243a0f9f74D319064',
+    address: '0x1975d15693fEc256Cd88243a0f9f74D319064',
     chainId: 'btc',
     createdTimestamp: 1685399284,
     lastestActiveTime: 1688435283,
@@ -196,7 +196,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '115588',
     type: 'address',
-    addressHash: '0x1975d1566Cd88243a0f9f74D319093fEc2564',
+    address: '0x1975d1566Cd88243a0f9f74D319093fEc2564',
     chainId: 'btc',
     createdTimestamp: 1685390284,
     lastestActiveTime: 1688435283,
@@ -212,7 +212,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '120499',
     type: 'address',
-    addressHash: '0x693fEc156dD863199f74C7069d5A25675D42',
+    address: '0x693fEc156dD863199f74C7069d5A25675D42',
     chainId: 'eth',
     createdTimestamp: 1670274180,
     lastestActiveTime: 1697332361,
@@ -228,7 +228,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '120999',
     type: 'address',
-    addressHash: '0x4C99f7A2c156dD8635675D429d5706fE1693',
+    address: '0x4C99f7A2c156dD8635675D429d5706fE1693',
     chainId: 'eth',
     createdTimestamp: 1683274111,
     lastestActiveTime: 1687366666,
@@ -244,7 +244,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '123201',
     type: 'address',
-    addressHash: '0x4C706fE199f5675D429d56937A2c156dD863',
+    address: '0x4C706fE199f5675D429d56937A2c156dD863',
     chainId: 'eth',
     createdTimestamp: 1674183211,
     lastestActiveTime: 1687619373,
@@ -260,7 +260,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '121700',
     type: 'address',
-    addressHash: '0x4C706fE199f7A2c156dD8635675D429d5693',
+    address: '0x4C706fE199f7A2c156dD8635675D429d5693',
     chainId: 'eth',
     createdTimestamp: 1688223345,
     lastestActiveTime: 1689301831,
@@ -276,7 +276,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '122810',
     type: 'address',
-    addressHash: '0x8635675D429d56934C706fE199f7A2c156dD',
+    address: '0x8635675D429d56934C706fE199f7A2c156dD',
     chainId: 'eth',
     createdTimestamp: 1687222335,
     lastestActiveTime: 1689317332,
@@ -292,7 +292,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '140002',
     type: 'address',
-    addressHash: '0x6C04f7A2c15675D42391dD863d5706fE1693',
+    address: '0x6C04f7A2c15675D42391dD863d5706fE1693',
     chainId: 'usdt',
     createdTimestamp: 1683266111,
     lastestActiveTime: 1697366746,
@@ -308,7 +308,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '140007',
     type: 'address',
-    addressHash: '0x3d5706f6C04f7A2c15675D42391dD86E10291',
+    address: '0x3d5706f6C04f7A2c15675D42391dD86E10291',
     chainId: 'usdt',
     createdTimestamp: 1681366321,
     lastestActiveTime: 1689761746,
@@ -324,7 +324,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '140050',
     type: 'address',
-    addressHash: '0x3d5706f6C04f7A2c15675D42391dD86E10291',
+    address: '0x3d5706f6C04f7A2c15675D42391dD86E10291',
     chainId: 'usdt',
     createdTimestamp: 1681366321,
     lastestActiveTime: 1689761746,
@@ -340,7 +340,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '140333',
     type: 'address',
-    addressHash: '0x6C04f7A2c33333D42391dD863d5706fE1693',
+    address: '0x6C04f7A2c33333D42391dD863d5706fE1693',
     chainId: 'usdt',
     createdTimestamp: 1683262333,
     lastestActiveTime: 1697366333,
@@ -356,7 +356,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '144055',
     type: 'address',
-    addressHash: '0x6E102913d57c15675D4206f6C04f7A2391dD8',
+    address: '0x6E102913d57c15675D4206f6C04f7A2391dD8',
     chainId: 'usdt',
     createdTimestamp: 1681617321,
     lastestActiveTime: 1689746663,
@@ -372,7 +372,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '144338',
     type: 'address',
-    addressHash: '0x6Ec15913d67665C04f7A2391dD1618D4206f6',
+    address: '0x6Ec15913d67665C04f7A2391dD1618D4206f6',
     chainId: 'usdt',
     createdTimestamp: 16841027321,
     lastestActiveTime: 1689646357,
@@ -388,7 +388,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '146605',
     type: 'address',
-    addressHash: '0x18D46Ec15913d67665C0217A2391dD16206f6',
+    address: '0x18D46Ec15913d67665C0217A2391dD16206f6',
     chainId: 'usdt',
     createdTimestamp: 16844617321,
     lastestActiveTime: 1689602357,
@@ -404,7 +404,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '150381',
     type: 'address',
-    addressHash: '0x183d67D46Ec1A2391dD16591665C0217206f6',
+    address: '0x183d67D46Ec1A2391dD16591665C0217206f6',
     chainId: 'bnb',
     createdTimestamp: 16841734621,
     lastestActiveTime: 1689235607,
@@ -420,7 +420,7 @@ export const dummyAddressData: IAddress[] = [
   {
     id: '150472',
     type: 'address',
-    addressHash: '0x183d1659166567D46Ec1A2391dDC0217206f6',
+    address: '0x183d1659166567D46Ec1A2391dDC0217206f6',
     chainId: 'bnb',
     createdTimestamp: 16846071721,
     lastestActiveTime: 1689346235,

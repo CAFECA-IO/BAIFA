@@ -15,7 +15,7 @@ interface IRedFlagDetailProps {
 
 const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {chainId, addressHash, redFlagType, interactedAddressIds, createdTimestamp, totalAmount} =
+  const {chainId, address, redFlagType, interactedAddressIds, createdTimestamp, totalAmount} =
     redFlagData;
 
   const chainIcon = getChainIcon(chainId);
@@ -43,7 +43,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        {addressHash}
+        {address}
       </div>
       {/* Info: (20231110 - Julian) Red Flag Type */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

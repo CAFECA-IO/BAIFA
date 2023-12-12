@@ -17,7 +17,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     id,
-    addressHash,
+    address,
     chainId,
     createdTimestamp,
     lastestActiveTime,
@@ -175,7 +175,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <p className="break-all">{addressHash}</p>
+        <p className="break-all">{address}</p>
       </div>
       {/* Info: (20231017 - Julian) Sign Up time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

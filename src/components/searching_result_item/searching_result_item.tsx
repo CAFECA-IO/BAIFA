@@ -91,7 +91,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- ADDRESS -----------------
       case SearchType.ADDRESS:
-        const {addressHash, flagging, flaggingCount, riskLevel} = data as IAddress;
+        const {address, flaggingCount, riskLevel} = data as IAddress;
 
         const riskColor =
           riskLevel === RiskLevel.HIGH_RISK
@@ -130,7 +130,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         );
 
         return {
-          LINE_1: <p className="break-all text-base">{addressHash}</p>,
+          LINE_1: <p className="break-all text-base">{address}</p>,
           LINE_2: addressFlagging,
           LINK: dynamicUrl.ADDRESS,
         };
@@ -144,9 +144,9 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- EVIDENCE -----------------
       case SearchType.EVIDENCE:
-        const {evidenceAddess} = data as IEvidence;
+        const {evidenceAddress} = data as IEvidence;
         return {
-          LINE_1: <p className="break-all text-base">{evidenceAddess}</p>,
+          LINE_1: <p className="break-all text-base">{evidenceAddress}</p>,
           LINE_2: displayedTime,
           LINK: dynamicUrl.EVIDENCE,
         };
@@ -160,7 +160,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- RED FLAG -----------------
       case SearchType.RED_FLAG:
-        const {addressHash: redFlagAddressHash, redFlagType} = data as IRedFlag;
+        const {address: redFlagaddress, redFlagType} = data as IRedFlag;
         const displayedRedFlagType = (
           <div className="flex items-center gap-2">
             <Image src="/icons/red_flag.svg" alt="red_flag_icon" width={24} height={24} />
@@ -169,20 +169,20 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         );
 
         return {
-          LINE_1: <p className="break-all text-base">{redFlagAddressHash}</p>,
+          LINE_1: <p className="break-all text-base">{redFlagaddress}</p>,
           LINE_2: displayedRedFlagType,
           LINK: dynamicUrl.RED_FLAG,
         };
       // Info: (20231115 - Julian) ----------------- BLACK LIST -----------------
-      case SearchType.BLACK_LIST:
-        const {addressHash: blackListAddressHash, publicTag} = data as IAddress;
+      case SearchType.BLACKLIST:
+        const {address: blackListaddress, publicTag} = data as IAddress;
         const displayedPublicTag = (
           <div className="whitespace-nowrap rounded-lg border-violet bg-violet px-3 py-2 text-sm text-hoverWhite">
             {t(publicTag[0])}
           </div>
         );
         return {
-          LINE_1: <p className="text-base">{blackListAddressHash}</p>,
+          LINE_1: <p className="text-base">{blackListaddress}</p>,
           LINE_2: displayedPublicTag,
           LINK: dynamicUrl.ADDRESS,
         };
