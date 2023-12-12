@@ -28,12 +28,9 @@ const GlobalSearch = () => {
   const getSuggestions = async (searchInput: string) => {
     let data: ISuggestions = defaultSuggestions;
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/v1/app/suggestions?search_input=${searchInput}`,
-        {
-          method: 'GET',
-        }
-      );
+      const response = await fetch(`${APIURL.SEARCH_SUGGESTIONS}?search_input=${searchInput}`, {
+        method: 'GET',
+      });
       data = await response.json();
     } catch (error) {
       //console.log('getSuggestions error', error);

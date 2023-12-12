@@ -31,7 +31,7 @@ const SearchingResultPage = () => {
     'SEARCHING_RESULT_PAGE.CONTRACTS_TAB', // Contracts
     'SEARCHING_RESULT_PAGE.EVIDENCES_TAB', // Evidences
     'SEARCHING_RESULT_PAGE.TRANSACTIONS_TAB', // Transactions
-    'SEARCHING_RESULT_PAGE.BLACK_LIST_TAB', // Black List
+    'SEARCHING_RESULT_PAGE.BLACKLIST_TAB', // Black List
     'SEARCHING_RESULT_PAGE.RED_FLAGS_TAB', // Red Flags
   ];
   // Info: (20231114 - Julian) Sorting Menu Options
@@ -63,7 +63,7 @@ const SearchingResultPage = () => {
   const getSearchResult = async () => {
     let data: ISearchResult[] = [];
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/app/search`, {
+      const response = await fetch(`${APIURL.SEARCH_RESULT}`, {
         method: 'GET',
       });
       data = await response.json();
@@ -75,9 +75,8 @@ const SearchingResultPage = () => {
 
   useEffect(() => {
     getSearchResult().then(data => setSearchResult(data));
+    setFilteredResult(searchResult);
   }, []);
-
-  console.log('searchResult', searchResult);
 
   useEffect(() => {
     const result = searchResult
