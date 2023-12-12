@@ -1,4 +1,4 @@
-import {API_URL, API_VERSION} from './config';
+import {TBD_API_URL, TBD_API_VERSION, BFA_API_URL, BFA_API_VERSION} from './config';
 
 export type IAPIName =
   | 'BALANCE_SHEET'
@@ -6,7 +6,8 @@ export type IAPIName =
   | 'STATEMENTS_OF_CASH_FLOWS'
   | 'STATEMENTS_OF_RED_FLAGS'
   | 'EXCHANGE_RATES'
-  | 'PROMOTION';
+  | 'PROMOTION'
+  | 'SEARCH_SUGGESTIONS';
 
 export interface IAPINameConstant {
   BALANCE_SHEET: IAPIName;
@@ -16,6 +17,7 @@ export interface IAPINameConstant {
   //STATEMENTS_OF_RED_FLAGS: IAPIName;
 
   PROMOTION: IAPIName;
+  SEARCH_SUGGESTIONS: IAPIName;
 }
 
 export const APIName: IAPINameConstant = {
@@ -25,15 +27,17 @@ export const APIName: IAPINameConstant = {
   EXCHANGE_RATES: 'EXCHANGE_RATES',
 
   PROMOTION: 'PROMOTION',
+  SEARCH_SUGGESTIONS: 'SEARCH_SUGGESTIONS',
 };
 
 export const APIURL = {
-  BALANCE_SHEET: `${API_URL}/${API_VERSION}/balance-sheet`,
-  COMPREHENSIVE_INCOME_STATEMENTS: `${API_URL}/${API_VERSION}/comprehensive-income`,
-  STATEMENTS_OF_CASH_FLOWS: `${API_URL}/${API_VERSION}/cash-flow`,
-  EXCHANGE_RATES: `${API_URL}/${API_VERSION}/exchange-rates`,
+  BALANCE_SHEET: `${TBD_API_URL}/${TBD_API_VERSION}/balance-sheet`,
+  COMPREHENSIVE_INCOME_STATEMENTS: `${TBD_API_URL}/${TBD_API_VERSION}/comprehensive-income`,
+  STATEMENTS_OF_CASH_FLOWS: `${TBD_API_URL}/${TBD_API_VERSION}/cash-flow`,
+  EXCHANGE_RATES: `${TBD_API_URL}/${TBD_API_VERSION}/exchange-rates`,
 
-  PROMOTION: '/api/v1/app', //`${API_URL}/${API_VERSION}/app`,
+  PROMOTION: `${BFA_API_URL}/${BFA_API_VERSION}/app`,
+  SEARCH_SUGGESTIONS: `${BFA_API_URL}/${BFA_API_VERSION}/app/suggestions`,
 
   WEBSITE_RESERVE: 'https://api.tidebit-defi.com/public/reserve',
 };
