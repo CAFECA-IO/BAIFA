@@ -91,7 +91,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- ADDRESS -----------------
       case SearchType.ADDRESS:
-        const {addressHash, flagging, riskLevel} = data as IAddress;
+        const {addressHash, flagging, flaggingCount, riskLevel} = data as IAddress;
 
         const riskColor =
           riskLevel === RiskLevel.HIGH_RISK
@@ -110,7 +110,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
           <div className="flex items-center space-x-4">
             {/* Info: (20231017 - Julian) Flagging */}
             <div className="flex items-center whitespace-nowrap">
-              <span className="mr-2 text-primaryBlue">{flagging.length}</span> {t('COMMON.TIMES')}
+              <span className="mr-2 text-primaryBlue">{flaggingCount}</span> {t('COMMON.TIMES')}
             </div>
             {/* Info: (20231017 - Julian) Risk */}
             <div className="flex items-center space-x-2 px-2">

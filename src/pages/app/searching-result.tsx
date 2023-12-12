@@ -13,7 +13,8 @@ import {sortOldAndNewOptions, ITEM_PER_PAGE} from '../../constants/config';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {ILocale, TranslateFunction} from '../../interfaces/locale';
-import {dummySearchResult} from '../../interfaces/search_result';
+import {dummySearchResult, ISearchResult} from '../../interfaces/search_result';
+import {APIURL} from '../../constants/api_request';
 
 const SearchingResultPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -52,38 +53,43 @@ const SearchingResultPage = () => {
   // Info: (20231114 - Julian) Pagination State
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(dummySearchResult.length / ITEM_PER_PAGE));
-  const [filteredResult, setFilteredResult] = useState(dummySearchResult);
+  const [searchResult, setSearchResult] = useState<ISearchResult[]>([]);
+  const [filteredResult, setFilteredResult] = useState<ISearchResult[]>([]);
 
   // Info: (20231115 - Julian) Pagination Index
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
-  const displayedFilterTabs = filterTabs.map((tab, index) => {
-    const tabClickHandler = () => setActiveTab(tab);
-    const tabClassName = `whitespace-nowrap px-4 py-3 text-base border-b-3px ${
-      activeTab === tab
-        ? 'text-primaryBlue border-primaryBlue'
-        : 'text-hoverWhite border-darkPurple4'
-    } hover:text-primaryBlue cursor-pointer transition-all duration-150 ease-in-out`;
-
-    return (
-      <li key={index} className={tabClassName} onClick={tabClickHandler}>
-        {t(tab)}
-      </li>
-    );
-  });
+  const getSearchResult = async () => {
+    let data: ISearchResult[] = [];
+    try {
+      const response = await fetch(`http://localhost:3000/api/v1/app/search`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getSearchResult error', error);
+    }
+    return data;
+  };
 
   useEffect(() => {
-    const result = dummySearchResult
+    getSearchResult().then(data => setSearchResult(data));
+  }, []);
+
+  console.log('searchResult', searchResult);
+
+  useEffect(() => {
+    const result = searchResult
       .filter(searchResult => {
         // Info: (20231115 - Julian) filter by Search bar
         const searchTerm = searchTextRef.current.toLowerCase();
         const id = searchResult.data.id.toLowerCase();
         const chainId = searchResult.data.chainId.toLowerCase();
         const type = searchResult.type.toLowerCase();
-        return searchTerm !== ''
-          ? id.includes(searchTerm) || chainId.includes(searchTerm) || type.includes(searchTerm)
-          : true;
+        return searchTerm === ''
+          ? true
+          : id.includes(searchTerm) || chainId.includes(searchTerm) || type.includes(searchTerm);
       })
       .filter(searchResult => {
         // Info: (20231115 - Julian) filter by Filter Tabs
@@ -112,10 +118,25 @@ const SearchingResultPage = () => {
     setFilteredResult(result);
     setTotalPages(Math.ceil(result.length / ITEM_PER_PAGE));
     setActivePage(1);
-  }, [searchText, sorting, activeTab, period]);
+  }, [searchText, sorting, activeTab, period, searchResult]);
 
   const resultList = filteredResult.slice(startIdx, endIdx).map((searchResult, index) => {
     return <SearchingResultItem key={index} searchResult={searchResult} />;
+  });
+
+  const displayedFilterTabs = filterTabs.map((tab, index) => {
+    const tabClickHandler = () => setActiveTab(tab);
+    const tabClassName = `whitespace-nowrap px-4 py-3 text-base border-b-3px ${
+      activeTab === tab
+        ? 'text-primaryBlue border-primaryBlue'
+        : 'text-hoverWhite border-darkPurple4'
+    } hover:text-primaryBlue cursor-pointer transition-all duration-150 ease-in-out`;
+
+    return (
+      <li key={index} className={tabClassName} onClick={tabClickHandler}>
+        {t(tab)}
+      </li>
+    );
   });
 
   return (

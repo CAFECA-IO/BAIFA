@@ -36,7 +36,7 @@ const GlobalSearch = () => {
       );
       data = await response.json();
     } catch (error) {
-      //console.log('getPromotion error', error);
+      //console.log('getSuggestions error', error);
     }
     return data;
   };
