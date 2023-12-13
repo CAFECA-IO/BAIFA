@@ -1,6 +1,6 @@
 import React, {createContext, useCallback} from 'react';
 import useStateRef from 'react-usestateref';
-import {IChain} from '../interfaces/chain';
+import {IChain, IChainDetail} from '../interfaces/chain';
 import {APIURL} from '../constants/api_request';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
@@ -15,7 +15,7 @@ export interface IMarketContext {
   promotionData: IPromotion;
   chainList: IChain[];
   getChains: () => Promise<void>;
-  getChainDetail: (chainId: string) => Promise<IChain>;
+  getChainDetail: (chainId: string) => Promise<IChainDetail>;
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
 }
@@ -25,7 +25,7 @@ export const MarketContext = createContext<IMarketContext>({
   promotionData: defaultPromotion,
   chainList: [],
   getChains: () => Promise.resolve(),
-  getChainDetail: () => Promise.resolve({} as IChain),
+  getChainDetail: () => Promise.resolve({} as IChainDetail),
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
 });
@@ -92,7 +92,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, []);
 
   const getChainDetail = useCallback(async (chainId: string) => {
-    let data: IChain = {} as IChain;
+    let data: IChainDetail = {} as IChainDetail;
     try {
       const response = await fetch(`${APIURL.CHAINS}/${chainId}`, {
         method: 'GET',

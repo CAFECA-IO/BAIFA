@@ -23,14 +23,7 @@ const AllChainPageBody = () => {
   ];
 
   const displayChains = chainList.map((chain, index) => (
-    <ChainsCard
-      key={index}
-      chainId={chain.chainId}
-      chainName={chain.chainName}
-      icon={chain.chainIcon}
-      blocks={chain.blocks}
-      transactions={chain.transactions}
-    />
+    <ChainsCard key={index} chainData={chain} />
   ));
 
   return (

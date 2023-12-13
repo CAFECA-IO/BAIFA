@@ -20,18 +20,27 @@ import {chainList} from '../../../../constants/config';
 
 export interface IChainDetailPageProps {
   chainId: string;
-  chainData: IChainDetail;
+  //chainData: IChainDetail;
 }
 
-const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
+const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
+  const {getChainDetail} = useContext(MarketContext);
+
+  const [chainData, setChainData] = useState<IChainDetail>({} as IChainDetail);
 
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
   }, []);
+
+  useEffect(() => {
+    getChainDetail(chainId).then(data => setChainData(data));
+  }, []);
+
+  console.log('blockData', chainData.blockData);
 
   const chainName = chainData.chainName;
   const chainIcon = getChainIcon(chainData.chainId).src;
@@ -98,12 +107,12 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
     </div>
   );
 
-  const tabContent =
-    activeTab === 'blocks' ? (
-      <BlockTab blockList={chainData.blockData} />
-    ) : (
-      <TransactionTab transactionList={chainData.transactionData} />
-    );
+  // const tabContent =
+  //   activeTab === 'blocks' ? (
+  //     <BlockTab blockList={chainData.blockData} />
+  //   ) : (
+  //     <TransactionTab transactionList={chainData.transactionData} />
+  //   );
 
   return (
     <>
@@ -130,7 +139,7 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
               {transactionsButton}
             </div>
             {/* Info: (20230904 - Julian) Tab Content */}
-            {tabContent}
+            {`tabContent`}
           </div>
         </div>
       </main>
@@ -163,32 +172,32 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
   }
 
   // fetch data from APIURL.CHAINS
-  const getChainData = async (chainId: string) => {
-    let data: IChainDetail | null = null;
-    try {
-      const response = await fetch(`${APIURL.CHAINS}/${chainId}`, {
-        method: 'GET',
-      });
-      data = await response.json();
-    } catch (error) {
-      //console.log('getChainData error', error);
-    }
-    return data;
-  };
+  // const getChainData = async (chainId: string) => {
+  //   let data: IChainDetail = {} as IChainDetail;
+  //   try {
+  //     const response = await fetch(`${APIURL.CHAINS}/${chainId}`, {
+  //       method: 'GET',
+  //     });
+  //     data = await response.json();
+  //   } catch (error) {
+  //     //console.log('getChainData error', error);
+  //   }
+  //   return data;
+  // };
 
-  const chainId = params.chainId;
-  const chainData = await getChainData(chainId);
+  // const chainId = params.chainId;
+  // const chainData = await getChainData(chainId);
 
-  if (!chainData) {
-    return {
-      notFound: true,
-    };
-  }
+  // if (!chainData) {
+  //   return {
+  //     notFound: true,
+  //   };
+  // }
 
   return {
     props: {
       chainId: params.chainId,
-      chainData: chainData,
+      //chainData: chainData,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };

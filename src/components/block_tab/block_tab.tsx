@@ -40,11 +40,9 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
       .filter((block: IBlock) => {
         const searchTerm = searchRef.current.toLowerCase();
         const stability = block.stability.toLowerCase();
-        const miner = block.miner.toString().toLowerCase();
+
         return searchTerm !== ''
-          ? block.id.toString().includes(searchTerm) ||
-              stability.includes(searchTerm) ||
-              miner.toString().includes(searchTerm)
+          ? block.id.toString().includes(searchTerm) || stability.includes(searchTerm)
           : true;
       })
       .sort((a: IBlock, b: IBlock) => {

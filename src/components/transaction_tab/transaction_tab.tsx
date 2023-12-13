@@ -41,16 +41,9 @@ const TransactionTab = ({transactionList}: ITransactionTabProps) => {
         const searchTerm = searchRef.current.toLowerCase();
         const transactionId = transaction.id.toString().toLowerCase();
         const status = transaction.status.toLowerCase();
-        const blockId = transaction.blockId.toString().toLowerCase();
-        const fromAddress = transaction.fromAddressId.toString().toLowerCase();
-        const toAddress = transaction.toAddressId.toString().toLowerCase();
 
         return searchTerm !== ''
-          ? transactionId.includes(searchTerm) ||
-              status.includes(searchTerm) ||
-              blockId.includes(searchTerm) ||
-              fromAddress.includes(searchTerm) ||
-              toAddress.includes(searchTerm)
+          ? transactionId.includes(searchTerm) || status.includes(searchTerm)
           : true;
       })
       .sort((a: ITransaction, b: ITransaction) => {

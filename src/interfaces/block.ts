@@ -5,6 +5,9 @@ export interface IBlock {
   chainId: string;
   stability: IStabilityLevel;
   createdTimestamp: number;
+}
+
+export interface IBlockDetail extends IBlock {
   managementTeam: string[];
   transactionCount: number;
   miner: string;
@@ -12,7 +15,7 @@ export interface IBlock {
   size: number;
 }
 
-export const dummyBlockData: IBlock[] = [
+export const dummyBlockData: IBlockDetail[] = [
   {
     id: '230021',
     chainId: 'isun',

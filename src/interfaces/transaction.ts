@@ -2,12 +2,15 @@ import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
 
 export interface ITransaction {
   id: string;
-  hash: string;
   status: 'PROCESSING' | 'FAILED' | 'SUCCESS';
   type: 'Crypto Currency' | 'Evidence' | 'NFT';
   chainId: string;
-  blockId: string;
   createdTimestamp: number;
+}
+
+export interface ITransactionDetail extends ITransaction {
+  hash: string;
+  blockId: string;
   fromAddressId: string;
   toAddressId: string;
   evidenceId?: string;
@@ -16,7 +19,7 @@ export interface ITransaction {
   flagging?: IRedFlagType;
 }
 
-export const dummyTransactionData: ITransaction[] = [
+export const dummyTransactionData: ITransactionDetail[] = [
   {
     id: '930032',
     hash: '0xE47Dcf8aF9829AD3c4E31409eB6ECfecd046d1BD',
