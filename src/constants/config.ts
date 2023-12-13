@@ -32,6 +32,10 @@ export const WEEK_LIST = [
 ];
 
 export const sortOldAndNewOptions = ['SORTING.NEWEST', 'SORTING.OLDEST'];
+export const defaultPeriod = {
+  startTimeStamp: Math.floor(Date.now() / 1000) - 86400 * 30,
+  endTimeStamp: Math.floor(Date.now() / 1000),
+};
 
 export const ITEM_PER_PAGE = 10;
 export const REVIEW_SECTION_LIMIT = 3;

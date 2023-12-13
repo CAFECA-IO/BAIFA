@@ -11,7 +11,7 @@ import DatePicker from '../../components/date_picker/date_picker';
 import SortingMenu from '../../components/sorting_menu/sorting_menu';
 import SearchingResultItem from '../../components/searching_result_item/searching_result_item';
 import Pagination from '../../components/pagination/pagination';
-import {sortOldAndNewOptions, ITEM_PER_PAGE} from '../../constants/config';
+import {sortOldAndNewOptions, ITEM_PER_PAGE, defaultPeriod} from '../../constants/config';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {ILocale, TranslateFunction} from '../../interfaces/locale';
@@ -55,10 +55,7 @@ const SearchingResultPage = () => {
   const [searchText, setSearchText, searchTextRef] = useStateRef<string>(keyWord);
   const [sorting, setSorting] = useState(sortingOptions[0]);
   const [activeTab, setActiveTab] = useState(filterTabs[0]);
-  const [period, setPeriod] = useState({
-    startTimeStamp: 0,
-    endTimeStamp: 0,
-  });
+  const [period, setPeriod] = useState(defaultPeriod);
   // Info: (20231114 - Julian) Pagination State
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(dummySearchResult.length / ITEM_PER_PAGE));
@@ -170,7 +167,7 @@ const SearchingResultPage = () => {
                 {/* Info: (20231114 - Julian) Date Picker */}
                 <div className="flex w-full items-center space-x-2 text-base lg:w-fit">
                   <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-                  <DatePicker setFilteredPeriod={setPeriod} />
+                  <DatePicker period={period} setFilteredPeriod={setPeriod} />
                 </div>
                 {/* Info: (20231114 - Julian) Sorting Menu */}
                 <div className="my-2 flex w-full items-center text-base lg:my-0 lg:w-fit lg:space-x-2">

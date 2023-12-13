@@ -19,7 +19,11 @@ import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {dummyAddressData} from '../../../../../../interfaces/address';
 import {dummyContractData} from '../../../../../../interfaces/contract';
 import {IInteractionItem} from '../../../../../../interfaces/interaction_item';
-import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../../../../../constants/config';
+import {
+  ITEM_PER_PAGE,
+  defaultPeriod,
+  sortOldAndNewOptions,
+} from '../../../../../../constants/config';
 import Pagination from '../../../../../../components/pagination/pagination';
 
 interface IInteractionPageProps {
@@ -60,10 +64,7 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
   // Info: (20231108 - Julian) States
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [period, setPeriod] = useState({
-    startTimeStamp: 0,
-    endTimeStamp: 0,
-  });
+  const [period, setPeriod] = useState(defaultPeriod);
   const [filteredType, setFilteredType] = useState<string>(selectedType);
   const [filteredInteractedList, setFilteredInteractedList] =
     useState<IInteractionItem[]>(interactedList);
@@ -177,7 +178,7 @@ const InteractionPage = ({addressId, chainId, interactedList}: IInteractionPageP
                 {/* Info: (20231108 - Julian) Date Picker */}
                 <div className="flex w-full items-center text-sm lg:w-fit lg:space-x-2">
                   <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-                  <DatePicker setFilteredPeriod={setPeriod} />
+                  <DatePicker period={period} setFilteredPeriod={setPeriod} />
                 </div>
                 {/* Info: (20231108 - Julian) Sorting Menu */}
                 <div className="relative flex w-full items-center text-sm lg:w-fit lg:space-x-2">

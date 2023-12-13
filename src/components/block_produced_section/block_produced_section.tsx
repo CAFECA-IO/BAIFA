@@ -6,15 +6,15 @@ import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
+import {ITEM_PER_PAGE, defaultPeriod, sortOldAndNewOptions} from '../../constants/config';
 import {getChainIcon, roundToDecimal, timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 import DatePicker from '../date_picker/date_picker';
-import {IBlock} from '../../interfaces/block';
+import {IBlockDetail} from '../../interfaces/block';
 
 interface IBlockProducedHistorySectionProps {
-  blocks: IBlock[];
+  blocks: IBlockDetail[];
   unit: string;
 }
 
@@ -23,24 +23,22 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(1 / ITEM_PER_PAGE));
-  const [filteredBlocks, setFilteredBlocks] = useState<IBlock[]>(blocks);
+  const [filteredBlocks, setFilteredBlocks] = useState<IBlockDetail[]>(blocks);
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [period, setPeriod] = useState({
-    startTimeStamp: 0,
-    endTimeStamp: 0,
-  });
+  const [period, setPeriod] = useState(defaultPeriod);
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
   useEffect(() => {
     const searchResult = blocks // Info: (20231103 - Julian) filter by search term
-      .filter((block: IBlock) => {
+      .filter((block: IBlockDetail) => {
         const searchTerm = searchRef.current.toLowerCase();
         const managementTeam = block.managementTeam.map(team => team.toLowerCase());
         const stability = block.stability.toLowerCase();
-        const miner = block.miner.toString().toLowerCase();
+        const miner = block.miner.toLowerCase();
+
         return searchTerm !== ''
           ? block.id.toString().includes(searchTerm) ||
               managementTeam.includes(searchTerm) ||
@@ -49,7 +47,7 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
           : true;
       })
       // Info: (20231103 - Julian) filter by date range
-      .filter((block: IBlock) => {
+      .filter((block: IBlockDetail) => {
         const createdTimestamp = block.createdTimestamp;
         const start = period.startTimeStamp;
         const end = period.endTimeStamp;
@@ -58,7 +56,7 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
           start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
         return isCreatedTimestampInRange;
       })
-      .sort((a: IBlock, b: IBlock) => {
+      .sort((a: IBlockDetail, b: IBlockDetail) => {
         return sorting === sortOldAndNewOptions[0]
           ? // Info: (20231101 - Julian) Newest
             b.createdTimestamp - a.createdTimestamp
@@ -122,7 +120,7 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
             {/* Info: (20231101 - Julian) Date Picker */}
             <div className="flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-              <DatePicker setFilteredPeriod={setPeriod} isLinearBg />
+              <DatePicker period={period} setFilteredPeriod={setPeriod} isLinearBg />
             </div>
             {/* Info: (20231103 - Julian) Sorting Menu */}
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">

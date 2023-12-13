@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import useStateRef from 'react-usestateref';
-import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
+import {ITEM_PER_PAGE, defaultPeriod, sortOldAndNewOptions} from '../../constants/config';
 import Pagination from '../../components/pagination/pagination';
 import SearchBar from '../../components/search_bar/search_bar';
 import SortingMenu from '../../components/sorting_menu/sorting_menu';
@@ -24,10 +24,7 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
   // Info: (20231109 - Julian) States
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [period, setPeriod] = useState({
-    startTimeStamp: 0,
-    endTimeStamp: 0,
-  });
+  const [period, setPeriod] = useState(defaultPeriod);
   const [filteredType, setFilteredType] = useState<string>(typeOptions[0]);
   const [filteredRedFlagList, setFilteredRedFlagList] = useState<IRedFlag[]>(redFlagData);
   const [activePage, setActivePage] = useState<number>(1);
@@ -103,7 +100,7 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
           {/* Info: (20231109 - Julian) Date Picker */}
           <div className="flex w-full items-center text-sm lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-            <DatePicker setFilteredPeriod={setPeriod} />
+            <DatePicker period={period} setFilteredPeriod={setPeriod} />
           </div>
           {/* Info: (20231109 - Julian) Sorting Menu */}
           <div className="relative flex w-full items-center text-sm lg:w-fit lg:space-x-2">

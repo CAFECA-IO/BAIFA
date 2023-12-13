@@ -7,7 +7,7 @@ import {ITransaction} from '../../interfaces/transaction';
 import SearchBar from '../search_bar/search_bar';
 import DatePicker from '../date_picker/date_picker';
 import SortingMenu from '../sorting_menu/sorting_menu';
-import {sortOldAndNewOptions} from '../../constants/config';
+import {defaultPeriod, sortOldAndNewOptions} from '../../constants/config';
 
 interface ITransactionTabProps {
   transactionList: ITransaction[];
@@ -17,10 +17,7 @@ const TransactionTab = ({transactionList}: ITransactionTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [search, setSearch, searchRef] = useStateRef('');
-  const [period, setPeriod] = useState({
-    startTimeStamp: 0,
-    endTimeStamp: 0,
-  });
+  const [period, setPeriod] = useState(defaultPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactionList);
 
@@ -71,7 +68,7 @@ const TransactionTab = ({transactionList}: ITransactionTabProps) => {
           {/* Info: (20231101 - Julian) Date Picker */}
           <div className="flex w-full items-center text-base lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-            <DatePicker setFilteredPeriod={setPeriod} />
+            <DatePicker period={period} setFilteredPeriod={setPeriod} />
           </div>
 
           {/* Info: (20230904 - Julian) Sorting Menu */}
