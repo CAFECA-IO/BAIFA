@@ -17,8 +17,6 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {getChainIcon} from '../../../../../../lib/common';
 import {getDynamicUrl} from '../../../../../../constants/url';
-import {IChainDetail} from '../../../../../../interfaces/chain';
-import {APIURL} from '../../../../../../constants/api_request';
 
 interface IBlockDetailPageProps {
   blockId: string;
@@ -157,39 +155,16 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
   );
 };
 
-// Info: (20231213 - Julian) To get the block list
-const getChainDetail = async (chainId: string) => {
-  let data: IChainDetail = {} as IChainDetail;
-  try {
-    const response = await fetch(`${APIURL.CHAINS}/${chainId}`, {
-      method: 'GET',
-    });
-    data = await response.json();
-  } catch (error) {
-    //console.log('getChainDetail error', error);
-  }
-  return data;
-};
-
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  // Info: (20231213 - Julian) Fetch chains data from the API
-  const chainsData: IChainDetail = await getChainDetail('isun');
-  const blockData = chainsData.blockData ?? [];
+  // ToDo: (20231213 - Julian) Add dynamic paths
+  const paths = [
+    {
+      params: {chainId: 'isun', blockId: '1'},
+      locale: 'en',
+    },
+  ];
 
-  // Info: (20231213 - Julian) Generate paths based on the chains data
-  const paths = blockData
-    .flatMap(block => {
-      return locales?.map(locale => ({
-        params: {chainId: block.chainId, blockId: `${block.id}`},
-        locale,
-      }));
-    })
-    .filter((path): path is {params: {chainId: string; blockId: string}; locale: string} => !!path);
-
-  return {
-    paths,
-    fallback: 'blocking',
-  };
+  return {paths, fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps = async ({params, locale}) => {

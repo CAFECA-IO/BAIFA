@@ -89,19 +89,27 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     },
   ];
 
-  const mobileTitle = (
-    <div className="flex items-center justify-center space-x-4 text-2xl font-bold lg:hidden">
-      <Image src={chainIcon} alt={`${chainName}_icon`} width={30} height={30} />
-
+  const displayedTitle = !isLoading ? (
+    <div className="flex items-center justify-center space-x-4 py-5 text-2xl font-bold lg:text-48px">
+      <Image
+        className="block lg:hidden"
+        src={chainIcon}
+        alt={`${chainName}_icon`}
+        width={30}
+        height={30}
+      />
+      <Image
+        className="hidden lg:block"
+        src={chainIcon}
+        alt={`${chainName}_icon`}
+        width={60}
+        height={60}
+      />
       <h1>{chainName}</h1>
     </div>
-  );
-
-  const desktopTitle = (
-    <div className="hidden items-center justify-center space-x-4 py-5 text-48px font-bold lg:flex">
-      <Image src={chainIcon} alt={`${chainName}_icon`} width={60} height={60} />
-      <h1>{chainName}</h1>
-    </div>
+  ) : (
+    // ToDo: (20231213 - Julian) Loading Animation
+    <></>
   );
 
   const blocksButton = (
@@ -158,8 +166,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
               <Breadcrumb crumbs={crumbs} />
             </div>
             {/* Info: (20230904 - Julian) Page Title */}
-            {mobileTitle}
-            {desktopTitle}
+            {displayedTitle}
             {/* Info: (20230904 - Julian) Tabs */}
             <div className="flex items-center justify-center space-x-6 lg:py-7">
               {blocksButton}

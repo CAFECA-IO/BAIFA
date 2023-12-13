@@ -6,6 +6,7 @@ import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
 import {IBlockDetail} from '../interfaces/block';
+import {ITransaction} from '../interfaces/transaction';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -23,6 +24,7 @@ export interface IMarketContext {
     endDate: number
   ) => Promise<IChainDetail>;
   getBlockDetail: (chainId: string, blockId: string) => Promise<IBlockDetail>;
+  getTransactionList: (chainId: string, blockId: string) => Promise<ITransaction[]>;
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
 }
@@ -35,6 +37,7 @@ export const MarketContext = createContext<IMarketContext>({
   getChainDetail: () => Promise.resolve({} as IChainDetail),
   getChainDetailByPeriod: () => Promise.resolve({} as IChainDetail),
   getBlockDetail: () => Promise.resolve({} as IBlockDetail),
+  getTransactionList: () => Promise.resolve({} as ITransaction[]),
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
 });
@@ -146,6 +149,19 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getTransactionList = useCallback(async (chainId: string, blockId: string) => {
+    let data: ITransaction[] = [];
+    try {
+      const response = await fetch(`${APIURL.CHAINS}/${chainId}/blocks/${blockId}/transactions`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getTransactionList error', error);
+    }
+    return data;
+  }, []);
+
   const defaultValues = {
     init,
     promotionData: promotionRef.current,
@@ -154,6 +170,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getChainDetail,
     getChainDetailByPeriod,
     getBlockDetail,
+    getTransactionList,
     getSearchResult,
     getSuggestions,
   };
