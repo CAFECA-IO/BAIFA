@@ -6,7 +6,7 @@ import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
 import {IBlockDetail} from '../interfaces/block';
-import {ITransaction} from '../interfaces/transaction';
+import {ITransaction, ITransactionDetail} from '../interfaces/transaction';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -25,6 +25,7 @@ export interface IMarketContext {
   ) => Promise<IChainDetail>;
   getBlockDetail: (chainId: string, blockId: string) => Promise<IBlockDetail>;
   getTransactionList: (chainId: string, blockId: string) => Promise<ITransaction[]>;
+  getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
 }
@@ -38,6 +39,7 @@ export const MarketContext = createContext<IMarketContext>({
   getChainDetailByPeriod: () => Promise.resolve({} as IChainDetail),
   getBlockDetail: () => Promise.resolve({} as IBlockDetail),
   getTransactionList: () => Promise.resolve({} as ITransaction[]),
+  getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
 });
@@ -162,6 +164,19 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getTransactionDetail = useCallback(async (chainId: string, transactionId: string) => {
+    let data: ITransactionDetail = {} as ITransactionDetail;
+    try {
+      const response = await fetch(`${APIURL.CHAINS}/${chainId}/transactions/${transactionId}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getTransactionList error', error);
+    }
+    return data;
+  }, []);
+
   const defaultValues = {
     init,
     promotionData: promotionRef.current,
@@ -171,6 +186,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getChainDetailByPeriod,
     getBlockDetail,
     getTransactionList,
+    getTransactionDetail,
     getSearchResult,
     getSuggestions,
   };
