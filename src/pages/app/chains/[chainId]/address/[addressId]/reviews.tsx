@@ -4,7 +4,7 @@ import {useRouter} from 'next/router';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../../../components/footer/footer';
 import ReviewSection from '../../../../../../components/review_section/review_section';
-import {IReview, getDummyReviewData} from '../../../../../../interfaces/review';
+import {IReview, dummyReview} from '../../../../../../interfaces/review';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {getChainIcon} from '../../../../../../lib/common';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
@@ -12,7 +12,7 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
-import {dummyAddressData} from '../../../../../../interfaces/address';
+//import {dummyAddressData} from '../../../../../../interfaces/address';
 
 interface IReviewsPageProps {
   addressId: string;
@@ -87,21 +87,15 @@ const ReviewsPage = ({addressId, chainId, reviews}: IReviewsPageProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyAddressData
-    .flatMap(address => {
-      return locales?.map(locale => ({
-        params: {chainId: `${address.chainId}`, addressId: `${address.id}`},
-        locale,
-      }));
-    })
-    .filter(
-      (path): path is {params: {chainId: string; addressId: string}; locale: string} => !!path
-    );
+  // ToDo: (20231213 - Julian) Add dynamic paths
+  const paths = [
+    {
+      params: {chainId: 'isun', addressId: '1'},
+      locale: 'en',
+    },
+  ];
 
-  return {
-    paths,
-    fallback: 'blocking',
-  };
+  return {paths, fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps<IReviewsPageProps> = async ({params, locale}) => {
@@ -116,7 +110,7 @@ export const getStaticProps: GetStaticProps<IReviewsPageProps> = async ({params,
     };
   }
 
-  const reviews = getDummyReviewData(params.addressId);
+  const reviews = dummyReview; //getDummyReviewData(params.addressId);
 
   if (!reviews) {
     return {

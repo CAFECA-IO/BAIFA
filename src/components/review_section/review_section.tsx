@@ -22,18 +22,19 @@ const ReviewSection = (reviews: IReviewSection) => {
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
 
   // Info: (20231020 - Julian) Calculate average score
-  const score = roundToDecimal(
-    reviewList.reduce((acc, cur) => acc + cur.stars, 0) / reviewList.length,
-    1
-  );
+  const score = reviewList
+    ? roundToDecimal(reviewList.reduce((acc, cur) => acc + cur.stars, 0) / reviewList.length, 1)
+    : 0;
 
-  const sortedReviews = reviewList.sort((a, b) => {
-    if (sorting === sortOldAndNewOptions[0]) {
-      return b.createdTimestamp - a.createdTimestamp;
-    } else {
-      return a.createdTimestamp - b.createdTimestamp;
-    }
-  });
+  const sortedReviews = reviewList
+    ? reviewList.sort((a, b) => {
+        if (sorting === sortOldAndNewOptions[0]) {
+          return b.createdTimestamp - a.createdTimestamp;
+        } else {
+          return a.createdTimestamp - b.createdTimestamp;
+        }
+      })
+    : [];
 
   // Info: (20231031 - Julian) 全部的 Review
   const displayedReviews = sortedReviews.map((review, index) => (

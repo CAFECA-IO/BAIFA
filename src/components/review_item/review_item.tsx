@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {IReview} from '../../interfaces/review';
 import {getDynamicUrl} from '../../constants/url';
-import {dummyAddressData} from '../../interfaces/address';
 import BoltButton from '../bolt_button/bolt_button';
 import {timestampToString} from '../../lib/common';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -19,8 +18,7 @@ const ReviewItem = (review: ReviewItemProps) => {
   // Info: (20231031 - Julian) Transaction Link
   const transactionLink = getDynamicUrl(chainId, `${transactionId}`).TRANSACTION;
   // Info: (20231031 - Julian) Author Address Link
-  const authorChainId =
-    dummyAddressData.find(address => address.id === authorAddressId)?.chainId ?? '';
+  const authorChainId = chainId;
   const authorLink = getDynamicUrl(authorChainId, `${authorAddressId}`).ADDRESS;
 
   // Info: (20231031 - Julian) Stars

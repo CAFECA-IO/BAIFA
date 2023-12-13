@@ -7,6 +7,7 @@ import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
 import {IBlockDetail} from '../interfaces/block';
 import {ITransaction, ITransactionDetail} from '../interfaces/transaction';
+import {IAddress} from '../interfaces/address';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -26,6 +27,7 @@ export interface IMarketContext {
   getBlockDetail: (chainId: string, blockId: string) => Promise<IBlockDetail>;
   getTransactionList: (chainId: string, blockId: string) => Promise<ITransaction[]>;
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
+  getAddressDetail: (chainId: string, addressId: string) => Promise<IAddress>;
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
 }
@@ -40,6 +42,7 @@ export const MarketContext = createContext<IMarketContext>({
   getBlockDetail: () => Promise.resolve({} as IBlockDetail),
   getTransactionList: () => Promise.resolve({} as ITransaction[]),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
+  getAddressDetail: () => Promise.resolve({} as IAddress),
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
 });
@@ -177,16 +180,32 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getAddressDetail = useCallback(async (chainId: string, addressId: string) => {
+    let data: IAddress = {} as IAddress;
+    try {
+      const response = await fetch(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getAddressDetail error', error);
+    }
+    return data;
+  }, []);
+
   const defaultValues = {
     init,
     promotionData: promotionRef.current,
     chainList: chainListRef.current,
+
     getChains,
     getChainDetail,
     getChainDetailByPeriod,
     getBlockDetail,
     getTransactionList,
     getTransactionDetail,
+    getAddressDetail,
+
     getSearchResult,
     getSuggestions,
   };

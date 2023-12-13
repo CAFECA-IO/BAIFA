@@ -5,7 +5,7 @@ import Tooltip from '../tooltip/tooltip';
 import {timestampToString, getTimeString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IAddress, dummyAddressData} from '../../interfaces/address';
+import {IAddress} from '../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
 
@@ -65,42 +65,52 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     </div>
   );
 
-  const displayRelatedAddress = relatedAddressIds.map((id, index) => {
-    const targetChainId = dummyAddressData.find(address => address.id === id)?.chainId ?? '';
-    const addressLink = getDynamicUrl(targetChainId, `${id}`).ADDRESS;
-    return (
-      <Link href={addressLink} key={index}>
-        <BoltButton className="px-3 py-1" color="blue" style="solid">
-          {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {id}
-        </BoltButton>
-      </Link>
-    );
-  });
+  const displayRelatedAddress = relatedAddressIds ? (
+    relatedAddressIds.map((id, index) => {
+      const targetChainId = '232424'; //dummyAddressData.find(address => address.id === id)?.chainId ?? '';
+      const addressLink = getDynamicUrl(targetChainId, `${id}`).ADDRESS;
+      return (
+        <Link href={addressLink} key={index}>
+          <BoltButton className="px-3 py-1" color="blue" style="solid">
+            {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {id}
+          </BoltButton>
+        </Link>
+      );
+    })
+  ) : (
+    <></>
+  );
 
   const displayInteractedWith = (
     <div className="flex items-center space-x-2 text-base">
       <div className="flex items-center whitespace-nowrap">
-        {interactedAddressIds.length > 0 ? (
-          <Link href={`${dynamicUrl.INTERACTION}?type=address`}>
-            <span className="mr-2 text-primaryBlue underline underline-offset-2">
-              {interactedAddressIds.length}
-            </span>
-          </Link>
+        {interactedAddressIds ? (
+          interactedAddressIds.length > 0 ? (
+            <Link href={`${dynamicUrl.INTERACTION}?type=address`}>
+              <span className="mr-2 text-primaryBlue underline underline-offset-2">
+                {interactedAddressIds.length}
+              </span>
+            </Link>
+          ) : (
+            <span className="mr-2 text-primaryBlue">{interactedAddressIds.length}</span>
+          )
         ) : (
-          <span className="mr-2 text-primaryBlue">{interactedAddressIds.length}</span>
+          <></>
         )}
         <p>{t('COMMON.ADDRESSES')} /</p>
       </div>
       <div className="flex items-center whitespace-nowrap">
-        {interactedContactIds.length > 0 ? (
-          <Link href={`${dynamicUrl.INTERACTION}?type=contract`}>
-            <span className="mr-2 text-primaryBlue underline underline-offset-2">
-              {interactedContactIds.length}
-            </span>
-          </Link>
-        ) : (
-          <span className="mr-2 text-primaryBlue">{interactedContactIds.length}</span>
-        )}
+        {interactedContactIds ? (
+          interactedContactIds.length > 0 ? (
+            <Link href={`${dynamicUrl.INTERACTION}?type=contract`}>
+              <span className="mr-2 text-primaryBlue underline underline-offset-2">
+                {interactedContactIds.length}
+              </span>
+            </Link>
+          ) : (
+            <span className="mr-2 text-primaryBlue">{interactedContactIds.length}</span>
+          )
+        ) : null}
         <p>{t('COMMON.CONTRACTS')}</p>
       </div>
     </div>
@@ -119,7 +129,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
       ? t('COMMON.RISK_MEDIUM')
       : t('COMMON.RISK_LOW');
 
-  const flaggingLink =
+  const flaggingLink = flagging ? (
     flagging.length > 0 ? (
       <Link href={dynamicUrl.RED_FLAG}>
         <span className="mr-2 text-primaryBlue underline underline-offset-2">
@@ -128,7 +138,10 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
       </Link>
     ) : (
       <span className="mr-2 text-primaryBlue">{flagging.length}</span>
-    );
+    )
+  ) : (
+    <></>
+  );
 
   const displayRedFlag = (
     <div className="flex items-center space-x-4">

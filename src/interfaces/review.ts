@@ -1,4 +1,4 @@
-import {dummyAddressData} from './address';
+//import {dummyAddressData} from './address';
 
 export interface IReview {
   id: string;
@@ -21,7 +21,7 @@ export const dummyReview: IReview[] = [
     stars: 3,
   },
 ];
-
+/* 
 export const getDummyReviewData = (addressId: string): IReview[] => {
   const transactionList =
     dummyAddressData.find(address => address.id === addressId)?.transactionIds ?? [];
@@ -52,4 +52,4 @@ export const getDummyReviewData = (addressId: string): IReview[] => {
   });
 
   return reviews;
-};
+}; */

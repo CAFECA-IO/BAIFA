@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
+import {useState, useContext, useEffect} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
@@ -14,47 +15,124 @@ import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {IAddress, dummyAddressData} from '../../../../../../interfaces/address';
-import {getChainIcon, getUnit} from '../../../../../../lib/common';
+import {IAddress} from '../../../../../../interfaces/address';
+import {getUnit} from '../../../../../../lib/common';
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
-import {getDummyReviewData} from '../../../../../../interfaces/review';
-import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
-import TransactionHistorySection from '../../../../../../components/transaction_history_section/transaction_history_section';
-import {dummyTransactionData} from '../../../../../../interfaces/transaction';
+//import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
+//import TransactionHistorySection from '../../../../../../components/transaction_history_section/transaction_history_section';
 import {dummyBlockData} from '../../../../../../interfaces/block';
+import {MarketContext} from '../../../../../../contexts/market_context';
+import {AppContext} from '../../../../../../contexts/app_context';
 
 interface IAddressDetailPageProps {
   addressId: string;
-  addressData: IAddress;
+  chainId: string;
 }
 
-const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) => {
+const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
-  const {chainId, transactionIds, publicTag} = addressData;
-  const chainIcon = getChainIcon(chainId);
-
   const router = useRouter();
+  const appCtx = useContext(AppContext);
+  const {getAddressDetail} = useContext(MarketContext);
+
+  const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [addressData, setAddressData] = useState<IAddress>({} as IAddress);
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+
+    const getAddressData = async (chainId: string, blockId: string) => {
+      try {
+        const data = await getAddressDetail(chainId, blockId);
+        setAddressData(data);
+      } catch (error) {
+        //console.log('getAddressData error', error);
+      }
+    };
+
+    getAddressData(chainId, addressId);
+  }, []);
+
+  let timer: NodeJS.Timeout;
+
+  useEffect(() => {
+    clearTimeout(timer);
+
+    if (addressData) {
+      setAddressData(addressData);
+    }
+    timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [addressData]);
+
+  const {chainIcon, transactionHistoryData, publicTag, reviewData} = addressData;
+
   const backClickHandler = () => router.back();
 
-  const dummyReview = getDummyReviewData(addressId);
   const reviewLink = getDynamicUrl(chainId, addressId).REVIEWS;
 
-  const transactionHistory = dummyTransactionData.filter(transaction =>
-    transactionIds.includes(transaction.id)
-  );
   // Info: (20231103 - Julian) dummy data
   const dummyBlockProducedHistory = dummyBlockData.filter(block => block.chainId === chainId);
 
-  const displayPublicTag = publicTag.map((tag, index) => (
-    <div
-      key={index}
-      className="whitespace-nowrap rounded border border-hoverWhite px-4 py-2 text-sm font-bold"
-    >
-      {t(tag)}
+  const displayPublicTag = publicTag ? (
+    publicTag.map((tag, index) => (
+      <div
+        key={index}
+        className="whitespace-nowrap rounded border border-hoverWhite px-4 py-2 text-sm font-bold"
+      >
+        {t(tag)}
+      </div>
+    ))
+  ) : (
+    <></>
+  );
+
+  const displayedHeader = !isLoading ? (
+    <div className="flex w-full items-center justify-start">
+      {/* Info: (20230912 -Julian) Back Arrow Button */}
+      <button onClick={backClickHandler} className="hidden lg:block">
+        <BsArrowLeftShort className="text-48px" />
+      </button>
+      {/* Info: (20230912 -Julian) Address Title */}
+      <div className="flex flex-1 items-center justify-center space-x-2">
+        <Image src={chainIcon} alt={`${chainId}_icon`} width={40} height={40} />
+        <h1 className="text-2xl font-bold lg:text-32px">
+          {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
+          <span className="ml-2 text-primaryBlue">{addressId}</span>
+        </h1>
+      </div>
     </div>
-  ));
+  ) : (
+    <></>
+  );
+
+  const displayedAddressDetail = !isLoading ? (
+    <AddressDetail addressData={addressData} />
+  ) : (
+    // ToDo: (20231213 - Julian) Add loading animation
+    <h1>Loading..</h1>
+  );
+
+  const displayedTransactionHistory = !isLoading ? (
+    <>TransactionHistorySection</>
+  ) : (
+    //<TransactionHistorySection transactions={transactionHistoryData} />
+    // ToDo: (20231213 - Julian) Add loading animation
+    <h1>Loading..</h1>
+  );
+
+  const displayedBlockProducedHistory = !isLoading ? (
+    <>BlockProducedHistorySection</>
+  ) : (
+    //<BlockProducedHistorySection blocks={dummyBlockProducedHistory} unit={getUnit(chainId)} />
+    // ToDo: (20231213 - Julian) Add loading animation
+    <h1>Loading..</h1>
+  );
 
   return (
     <>
@@ -68,20 +146,7 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
           <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
             {/* Info: (20231017 - Julian) Header */}
-            <div className="flex w-full items-center justify-start">
-              {/* Info: (20230912 -Julian) Back Arrow Button */}
-              <button onClick={backClickHandler} className="hidden lg:block">
-                <BsArrowLeftShort className="text-48px" />
-              </button>
-              {/* Info: (20230912 -Julian) Address Title */}
-              <div className="flex flex-1 items-center justify-center space-x-2">
-                <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
-                <h1 className="text-2xl font-bold lg:text-32px">
-                  {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-                  <span className="ml-2 text-primaryBlue">{addressId}</span>
-                </h1>
-              </div>
-            </div>
+            {displayedHeader}
             <div className="my-4 flex w-full flex-col items-center space-y-10">
               {/* Info: (20231018 - Julian) Public Tag */}
               <div className="flex items-center space-x-4">
@@ -127,24 +192,19 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
               </div>
             </div>
             {/* Info: (20231020 - Julian) Address Detail */}
-            <div className="my-10 w-full">
-              <AddressDetail addressData={addressData} />
-            </div>
+            <div className="my-10 w-full">{displayedAddressDetail}</div>
             {/* Info: (20231020 - Julian) Private Note Section */}
             <div className="w-full">
               <PrivateNoteSection />
             </div>
             {/* Info: (20231020 - Julian) Review Section */}
             <div className="mt-6 w-full">
-              <ReviewSection seeAllLink={reviewLink} reviews={dummyReview} />
+              <ReviewSection seeAllLink={reviewLink} reviews={reviewData} />
             </div>
             {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
             <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
-              <TransactionHistorySection transactions={transactionHistory} />
-              <BlockProducedHistorySection
-                blocks={dummyBlockProducedHistory}
-                unit={getUnit(chainId)}
-              />
+              {displayedTransactionHistory}
+              {displayedBlockProducedHistory}
             </div>
 
             {/* Info: (20231006 - Julian) Back button */}
@@ -170,21 +230,15 @@ const AddressDetailPage = ({addressId, addressData}: IAddressDetailPageProps) =>
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyAddressData
-    .flatMap(address => {
-      return locales?.map(locale => ({
-        params: {chainId: `${address.chainId}`, addressId: `${address.id}`},
-        locale,
-      }));
-    })
-    .filter(
-      (path): path is {params: {chainId: string; addressId: string}; locale: string} => !!path
-    );
+  // ToDo: (20231213 - Julian) Add dynamic paths
+  const paths = [
+    {
+      params: {chainId: 'isun', addressId: '1'},
+      locale: 'en',
+    },
+  ];
 
-  return {
-    paths,
-    fallback: 'blocking',
-  };
+  return {paths, fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps = async ({params, locale}) => {
@@ -194,9 +248,10 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
-  const addressData = dummyAddressData.find(address => `${address.id}` === params.addressId);
+  const addressId = params.addressId;
+  const chainId = params.chainId;
 
-  if (!addressData) {
+  if (!addressId || !chainId) {
     return {
       notFound: true,
     };
@@ -204,8 +259,8 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
 
   return {
     props: {
-      addressId: params.addressId,
-      addressData: addressData,
+      addressId,
+      chainId,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };
