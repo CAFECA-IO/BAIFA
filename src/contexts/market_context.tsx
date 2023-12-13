@@ -5,6 +5,7 @@ import {APIURL} from '../constants/api_request';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
+import {IBlockDetail} from '../interfaces/block';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -16,6 +17,12 @@ export interface IMarketContext {
   chainList: IChain[];
   getChains: () => Promise<void>;
   getChainDetail: (chainId: string) => Promise<IChainDetail>;
+  getChainDetailByPeriod: (
+    chainId: string,
+    startDate: number,
+    endDate: number
+  ) => Promise<IChainDetail>;
+  getBlockDetail: (chainId: string, blockId: string) => Promise<IBlockDetail>;
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
 }
@@ -26,6 +33,8 @@ export const MarketContext = createContext<IMarketContext>({
   chainList: [],
   getChains: () => Promise.resolve(),
   getChainDetail: () => Promise.resolve({} as IChainDetail),
+  getChainDetailByPeriod: () => Promise.resolve({} as IChainDetail),
+  getBlockDetail: () => Promise.resolve({} as IBlockDetail),
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
 });
@@ -104,12 +113,47 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  // --------------------------------------------------------------------------------???
+  const getChainDetailByPeriod = useCallback(
+    async (chainId: string, startDate: number, endDate: number) => {
+      let data: IChainDetail = {} as IChainDetail;
+      try {
+        const response = await fetch(
+          `${APIURL.CHAINS}/${chainId}?start_date=${startDate}&end_date=${endDate}`,
+          {
+            method: 'GET',
+          }
+        );
+        data = await response.json();
+      } catch (error) {
+        //console.log('getChainDetail error', error);
+      }
+      return data;
+    },
+    []
+  );
+
+  const getBlockDetail = useCallback(async (chainId: string, blockId: string) => {
+    let data: IBlockDetail = {} as IBlockDetail;
+    try {
+      const response = await fetch(`${APIURL.CHAINS}/${chainId}/blocks/${blockId}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getBlockDetail error', error);
+    }
+    return data;
+  }, []);
+
   const defaultValues = {
     init,
     promotionData: promotionRef.current,
     chainList: chainListRef.current,
     getChains,
     getChainDetail,
+    getChainDetailByPeriod,
+    getBlockDetail,
     getSearchResult,
     getSuggestions,
   };

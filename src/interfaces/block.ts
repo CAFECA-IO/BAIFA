@@ -13,6 +13,8 @@ export interface IBlockDetail extends IBlock {
   miner: string;
   reward: number;
   size: number;
+  previousBlockId: string;
+  nextBlockId: string;
 }
 
 export const dummyBlockData: IBlockDetail[] = [
@@ -26,6 +28,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x1234567890',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '230020',
+    nextBlockId: '230022',
   },
   {
     id: '230676',
@@ -37,6 +41,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x1234564890',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '230675',
+    nextBlockId: '230677',
   },
   {
     id: '220087',
@@ -48,6 +54,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x7593284634',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '220086',
+    nextBlockId: '220088',
   },
   {
     id: '221875',
@@ -59,6 +67,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x9393993034',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '221874',
+    nextBlockId: '221876',
   },
   {
     id: '228765',
@@ -70,6 +80,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x3752075234',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '228764',
+    nextBlockId: '228766',
   },
   {
     id: '210296',
@@ -81,6 +93,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x9393075234',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '210295',
+    nextBlockId: '210297',
   },
   {
     id: '212039',
@@ -92,6 +106,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x9313075232',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '212038',
+    nextBlockId: '212040',
   },
   {
     id: '217328',
@@ -103,6 +119,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x9393075234',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '217327',
+    nextBlockId: '217329',
   },
   {
     id: '217329',
@@ -114,6 +132,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x2175239304',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '217328',
+    nextBlockId: '217330',
   },
   {
     id: '240505',
@@ -125,6 +145,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x2175239304',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '240504',
+    nextBlockId: '240506',
   },
   {
     id: '241414',
@@ -136,6 +158,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x2175239304',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '241413',
+    nextBlockId: '241415',
   },
   {
     id: '241415',
@@ -147,6 +171,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x2175239304',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '241414',
+    nextBlockId: '241416',
   },
   {
     id: '245920',
@@ -158,6 +184,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x2175239304',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '245919',
+    nextBlockId: '245921',
   },
   {
     id: '259403',
@@ -169,6 +197,8 @@ export const dummyBlockData: IBlockDetail[] = [
     miner: '0x2175239304',
     reward: 0.01,
     size: 3523,
+    previousBlockId: '259402',
+    nextBlockId: '259404',
   },
 ];
 

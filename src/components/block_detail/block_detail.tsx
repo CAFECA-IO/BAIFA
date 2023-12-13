@@ -6,12 +6,12 @@ import Tooltip from '../tooltip/tooltip';
 import {timestampToString, getTimeString, getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IBlock} from '../../interfaces/block';
+import {IBlockDetail} from '../../interfaces/block';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {StabilityLevel} from '../../constants/stability_level';
 
 interface IBlockDetailProps {
-  blockData: IBlock;
+  blockData: IBlockDetail;
 }
 
 const BlockDetail = ({blockData}: IBlockDetailProps) => {
