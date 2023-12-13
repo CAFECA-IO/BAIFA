@@ -12,7 +12,7 @@ import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import BlockDetail from '../../../../../../components/block_detail/block_detail';
 import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyBlockData, IBlock, IBlockDetail} from '../../../../../../interfaces/block';
+import {IBlockDetail} from '../../../../../../interfaces/block';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {getChainIcon} from '../../../../../../lib/common';
@@ -22,20 +22,10 @@ import {APIURL} from '../../../../../../constants/api_request';
 
 interface IBlockDetailPageProps {
   blockId: string;
-  //blockData: IBlock;
-  //previousBlockId?: number;
-  //nextBlockId?: number;
   chainId: string;
-  //blocksOfChain: IBlock[];
 }
 
-const BlockDetailPage = ({
-  blockId,
-  //blockData,
-  //previousBlockId,
-  //nextBlockId,
-  chainId,
-}: IBlockDetailPageProps) => {
+const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
   const {getBlockDetail} = useContext(MarketContext);
@@ -167,6 +157,7 @@ const BlockDetailPage = ({
   );
 };
 
+// Info: (20231213 - Julian) To get the block list
 const getChainDetail = async (chainId: string) => {
   let data: IChainDetail = {} as IChainDetail;
   try {
@@ -181,20 +172,11 @@ const getChainDetail = async (chainId: string) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  // const paths = dummyBlockData
-  //   .flatMap(block => {
-  //     return locales?.map(locale => ({
-  //       params: {chainId: block.chainId, blockId: `${block.id}`},
-  //       locale,
-  //     }));
-  //   })
-  //   .filter((path): path is {params: {chainId: string; blockId: string}; locale: string} => !!path);
-
-  // Fetch chains data from the API
+  // Info: (20231213 - Julian) Fetch chains data from the API
   const chainsData: IChainDetail = await getChainDetail('isun');
   const blockData = chainsData.blockData ?? [];
 
-  // Generate paths based on the chains data
+  // Info: (20231213 - Julian) Generate paths based on the chains data
   const paths = blockData
     .flatMap(block => {
       return locales?.map(locale => ({
@@ -205,15 +187,7 @@ export const getStaticPaths: GetStaticPaths = async ({locales}) => {
     .filter((path): path is {params: {chainId: string; blockId: string}; locale: string} => !!path);
 
   return {
-    paths /* : [
-      {
-        params: {
-          chainId: 'isun',
-          blockId: '230020',
-        },
-        locale: 'en',
-      },
-    ] */,
+    paths,
     fallback: 'blocking',
   };
 };
@@ -225,29 +199,19 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
-  // Info: (20231018 - Julian) Get block data in the same chain
-  const blocksOfChain = dummyBlockData.filter(block => block.chainId === params.chainId);
+  const blockId = params.blockId;
+  const chainId = params.chainId;
 
-  const blockData = blocksOfChain.find(block => `${block.id}` === params.blockId);
-  const chainId = blockData?.chainId ?? null;
-
-  const blockIndex = blocksOfChain.findIndex(block => `${block.id}` === params.blockId);
-  const previousBlockId = blocksOfChain[blockIndex - 1]?.id ?? null;
-  const nextBlockId = blocksOfChain[blockIndex + 1]?.id ?? null;
-
-  // if (!blockData || !chainId) {
-  //   return {
-  //     notFound: true,
-  //   };
-  // }
+  if (!blockId || !chainId) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
-      blockId: params.blockId,
-      //blockData: blockData,
-      //previousBlockId: previousBlockId,
-      //nextBlockId: nextBlockId,
-      chainId: chainId,
+      blockId,
+      chainId,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };

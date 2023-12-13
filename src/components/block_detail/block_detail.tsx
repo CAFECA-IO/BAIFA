@@ -94,15 +94,20 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     </div>
   );
 
-  const displayTeam = managementTeam.map((team, index) => {
-    return (
-      <Link href={BFAURL.COMING_SOON} key={index}>
-        <BoltButton className="px-3 py-1" color="blue" style="solid">
-          {team}
-        </BoltButton>
-      </Link>
-    );
-  });
+  const displayTeam = managementTeam ? (
+    managementTeam.map((team, index) => {
+      return (
+        <Link href={BFAURL.COMING_SOON} key={index}>
+          <BoltButton className="px-3 py-1" color="blue" style="solid">
+            {team}
+          </BoltButton>
+        </Link>
+      );
+    })
+  ) : (
+    // Info: (20231213 - Julian) If there is no management team
+    <></>
+  );
 
   const displayMinerAndReward = (
     <div className="flex items-center space-x-3">

@@ -24,15 +24,15 @@ const TransactionTab = ({transactionList}: ITransactionTabProps) => {
   useEffect(() => {
     const searchResult = transactionList
       // Info: (20230905 - Julian) filter by date range
-      .filter((transaction: ITransaction) => {
-        const createdTimestamp = transaction.createdTimestamp;
-        const start = period.startTimeStamp;
-        const end = period.endTimeStamp;
-        // Info: (20230905 - Julian) if start and end are 0, it means that there is no period filter
-        const isCreatedTimestampInRange =
-          start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-        return isCreatedTimestampInRange;
-      })
+      // .filter((transaction: ITransaction) => {
+      //   const createdTimestamp = transaction.createdTimestamp;
+      //   const start = period.startTimeStamp;
+      //   const end = period.endTimeStamp;
+      //   // Info: (20230905 - Julian) if start and end are 0, it means that there is no period filter
+      //   const isCreatedTimestampInRange =
+      //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+      //   return isCreatedTimestampInRange;
+      // })
       // Info: (20230905 - Julian) filter by search term
       .filter((transaction: ITransaction) => {
         const searchTerm = searchRef.current.toLowerCase();
