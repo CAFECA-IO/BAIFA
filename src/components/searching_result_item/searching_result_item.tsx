@@ -40,10 +40,10 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
     switch (type) {
       // Info: (20231115 - Julian) ----------------- BLOCK -----------------
       case SearchType.BLOCK:
-        const {stabilityLevel} = data as IBlock;
+        const {stability} = data as IBlock;
 
         const blockStability =
-          stabilityLevel === StabilityLevel.HIGH ? (
+          stability === StabilityLevel.HIGH ? (
             <div className="flex items-center text-hoverWhite">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +56,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
               </svg>
               <p className="ml-2">{t('BLOCK_DETAIL_PAGE.STABILITY_HIGH')}</p>
             </div>
-          ) : stabilityLevel === StabilityLevel.MEDIUM ? (
+          ) : stability === StabilityLevel.MEDIUM ? (
             <div className="flex items-center text-hoverWhite">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

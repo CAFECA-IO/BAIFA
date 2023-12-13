@@ -18,7 +18,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     id: blockId,
-    stabilityLevel,
+    stability,
     createdTimestamp,
     chainId,
     managementTeam,
@@ -43,7 +43,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   const transactionsLink = `${getDynamicUrl(chainId, blockId).TRANSACTIONS_IN_BLOCK}`;
 
   const displayStability =
-    stabilityLevel === StabilityLevel.HIGH ? (
+    stability === StabilityLevel.HIGH ? (
       <div className="flex items-center text-hoverWhite">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +56,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
         </svg>
         <p className="ml-2">{t('BLOCK_DETAIL_PAGE.STABILITY_HIGH')}</p>
       </div>
-    ) : stabilityLevel === StabilityLevel.MEDIUM ? (
+    ) : stability === StabilityLevel.MEDIUM ? (
       <div className="flex items-center text-hoverWhite">
         <svg
           xmlns="http://www.w3.org/2000/svg"

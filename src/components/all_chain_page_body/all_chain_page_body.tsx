@@ -5,7 +5,6 @@ import Breadcrumb from '../../components/breadcrumb/breadcrumb';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
-import {getChainIcon} from '../../lib/common';
 import {MarketContext} from '../../contexts/market_context';
 
 const AllChainPageBody = () => {
@@ -28,7 +27,7 @@ const AllChainPageBody = () => {
       key={index}
       chainId={chain.chainId}
       chainName={chain.chainName}
-      icon={getChainIcon(chain.chainId).src}
+      icon={chain.chainIcon}
       blocks={chain.blocks}
       transactions={chain.transactions}
     />

@@ -39,13 +39,11 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
       // Info: (20230905 - Julian) filter by search term
       .filter((block: IBlock) => {
         const searchTerm = searchRef.current.toLowerCase();
-        const managementTeam = block.managementTeam.map(team => team.toLowerCase());
-        const stabilityLevel = block.stabilityLevel.toLowerCase();
+        const stability = block.stability.toLowerCase();
         const miner = block.miner.toString().toLowerCase();
         return searchTerm !== ''
           ? block.id.toString().includes(searchTerm) ||
-              managementTeam.includes(searchTerm) ||
-              stabilityLevel.includes(searchTerm) ||
+              stability.includes(searchTerm) ||
               miner.toString().includes(searchTerm)
           : true;
       })

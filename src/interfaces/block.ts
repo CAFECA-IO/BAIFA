@@ -3,7 +3,7 @@ import {IStabilityLevel, StabilityLevel} from '../constants/stability_level';
 export interface IBlock {
   id: string;
   chainId: string;
-  stabilityLevel: IStabilityLevel;
+  stability: IStabilityLevel;
   createdTimestamp: number;
   managementTeam: string[];
   transactionCount: number;
@@ -16,7 +16,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '230021',
     chainId: 'isun',
-    stabilityLevel: StabilityLevel.MEDIUM,
+    stability: StabilityLevel.MEDIUM,
     createdTimestamp: 1679978900,
     managementTeam: ['John', 'Jane', 'Jack'],
     transactionCount: 3,
@@ -27,7 +27,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '230676',
     chainId: 'isun',
-    stabilityLevel: StabilityLevel.HIGH,
+    stability: StabilityLevel.HIGH,
     createdTimestamp: 1679998900,
     managementTeam: ['Linda', 'Liam'],
     transactionCount: 3,
@@ -38,7 +38,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '220087',
     chainId: 'eth',
-    stabilityLevel: StabilityLevel.MEDIUM,
+    stability: StabilityLevel.MEDIUM,
     createdTimestamp: 16943492374,
     managementTeam: ['Diana', 'Dennis', 'Dylan'],
     transactionCount: 2,
@@ -49,7 +49,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '221875',
     chainId: 'eth',
-    stabilityLevel: StabilityLevel.LOW,
+    stability: StabilityLevel.LOW,
     createdTimestamp: 1692860902,
     managementTeam: ['Xavier', 'Xena'],
     transactionCount: 1,
@@ -60,7 +60,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '228765',
     chainId: 'eth',
-    stabilityLevel: StabilityLevel.HIGH,
+    stability: StabilityLevel.HIGH,
     createdTimestamp: 1690000902,
     managementTeam: ['Gina', 'Galo'],
     transactionCount: 2,
@@ -71,7 +71,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '210296',
     chainId: 'btc',
-    stabilityLevel: StabilityLevel.LOW,
+    stability: StabilityLevel.LOW,
     createdTimestamp: 1670734427,
     managementTeam: ['Yolanda', 'Yoda'],
     transactionCount: 1,
@@ -82,7 +82,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '212039',
     chainId: 'btc',
-    stabilityLevel: StabilityLevel.HIGH,
+    stability: StabilityLevel.HIGH,
     createdTimestamp: 1688442795,
     managementTeam: ['Sam', 'Sally', 'Simon'],
     transactionCount: 2,
@@ -93,7 +93,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '217328',
     chainId: 'btc',
-    stabilityLevel: StabilityLevel.MEDIUM,
+    stability: StabilityLevel.MEDIUM,
     createdTimestamp: 1689567791,
     managementTeam: ['Wendy', 'Walter', 'Weston'],
     transactionCount: 2,
@@ -104,7 +104,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '217329',
     chainId: 'btc',
-    stabilityLevel: StabilityLevel.LOW,
+    stability: StabilityLevel.LOW,
     createdTimestamp: 1689940795,
     managementTeam: ['Quinn', 'Quincy'],
     transactionCount: 3,
@@ -115,7 +115,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '240505',
     chainId: 'usdt',
-    stabilityLevel: StabilityLevel.HIGH,
+    stability: StabilityLevel.HIGH,
     createdTimestamp: 1673940795,
     managementTeam: ['Dennis'],
     transactionCount: 2,
@@ -126,7 +126,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '241414',
     chainId: 'usdt',
-    stabilityLevel: StabilityLevel.HIGH,
+    stability: StabilityLevel.HIGH,
     createdTimestamp: 1673079945,
     managementTeam: ['Hillary', 'Helen'],
     transactionCount: 2,
@@ -137,7 +137,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '241415',
     chainId: 'usdt',
-    stabilityLevel: StabilityLevel.MEDIUM,
+    stability: StabilityLevel.MEDIUM,
     createdTimestamp: 1673080400,
     managementTeam: ['Ciara'],
     transactionCount: 2,
@@ -148,7 +148,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '245920',
     chainId: 'usdt',
-    stabilityLevel: StabilityLevel.LOW,
+    stability: StabilityLevel.LOW,
     createdTimestamp: 1673080400,
     managementTeam: ['Forrest', 'Fiona'],
     transactionCount: 1,
@@ -159,7 +159,7 @@ export const dummyBlockData: IBlock[] = [
   {
     id: '259403',
     chainId: 'bnb',
-    stabilityLevel: StabilityLevel.LOW,
+    stability: StabilityLevel.LOW,
     createdTimestamp: 1680407300,
     managementTeam: ['Brenda', 'Bryan'],
     transactionCount: 1,
