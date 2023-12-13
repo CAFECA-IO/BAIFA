@@ -15,12 +15,12 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
 import {getChainIcon} from '../../../../lib/common';
-import {APIURL} from '../../../../constants/api_request';
 import {chainList} from '../../../../constants/config';
+import {IBlock} from '../../../../interfaces/block';
+import {ITransaction} from '../../../../interfaces/transaction';
 
 export interface IChainDetailPageProps {
   chainId: string;
-  //chainData: IChainDetail;
 }
 
 const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
@@ -28,25 +28,48 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const appCtx = useContext(AppContext);
   const {getChainDetail} = useContext(MarketContext);
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<'blocks' | 'transactions'>('blocks');
   const [chainData, setChainData] = useState<IChainDetail>({} as IChainDetail);
+  const [blockData, setBlockData] = useState<IBlock[]>([]);
+  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
+
+    const getChainData = async (chainId: string) => {
+      try {
+        const data = await getChainDetail(chainId);
+        setChainData(data);
+        setBlockData(data.blockData);
+        setTransactionData(data.transactionData);
+      } catch (error) {
+        //console.log('getChainDetail error', error);
+      }
+    };
+
+    getChainData(chainId);
   }, []);
+
+  let timer: NodeJS.Timeout;
 
   useEffect(() => {
-    getChainDetail(chainId).then(data => setChainData(data));
-  }, []);
+    clearTimeout(timer);
 
-  console.log('blockData', chainData.blockData);
+    if (chainData.blockData) {
+      setBlockData(chainData.blockData);
+      setTransactionData(chainData.transactionData);
+    }
+
+    timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [chainData.blockData, chainData.transactionData]);
 
   const chainName = chainData.chainName;
   const chainIcon = getChainIcon(chainData.chainId).src;
   const headTitle = `${chainName} - BAIFA`;
-
-  const [activeTab, setActiveTab] = useState<'blocks' | 'transactions'>('blocks');
 
   const crumbs = [
     {
@@ -107,12 +130,16 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     </div>
   );
 
-  // const tabContent =
-  //   activeTab === 'blocks' ? (
-  //     <BlockTab blockList={chainData.blockData} />
-  //   ) : (
-  //     <TransactionTab transactionList={chainData.transactionData} />
-  //   );
+  const tabContent = !isLoading ? (
+    activeTab === 'blocks' ? (
+      <BlockTab blockList={blockData} />
+    ) : (
+      <TransactionTab transactionList={transactionData} />
+    )
+  ) : (
+    // ToDo: (20231213 - Julian) Loading Animation
+    <h1>Loading...</h1>
+  );
 
   return (
     <>
@@ -139,7 +166,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
               {transactionsButton}
             </div>
             {/* Info: (20230904 - Julian) Tab Content */}
-            {`tabContent`}
+            {tabContent}
           </div>
         </div>
       </main>
@@ -171,33 +198,9 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
-  // fetch data from APIURL.CHAINS
-  // const getChainData = async (chainId: string) => {
-  //   let data: IChainDetail = {} as IChainDetail;
-  //   try {
-  //     const response = await fetch(`${APIURL.CHAINS}/${chainId}`, {
-  //       method: 'GET',
-  //     });
-  //     data = await response.json();
-  //   } catch (error) {
-  //     //console.log('getChainData error', error);
-  //   }
-  //   return data;
-  // };
-
-  // const chainId = params.chainId;
-  // const chainData = await getChainData(chainId);
-
-  // if (!chainData) {
-  //   return {
-  //     notFound: true,
-  //   };
-  // }
-
   return {
     props: {
       chainId: params.chainId,
-      //chainData: chainData,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };
