@@ -25,7 +25,7 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getRedFlags} = useContext(MarketContext);
+  const {getRedFlagsFromAddress} = useContext(MarketContext);
 
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} ${t('COMMON.OF')} ${t(
     'ADDRESS_DETAIL_PAGE.MAIN_TITLE'
@@ -41,7 +41,7 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
     }
 
     const getRedFlagData = async (chainId: string, addressId: string) => {
-      const redFlagData = await getRedFlags(chainId, addressId);
+      const redFlagData = await getRedFlagsFromAddress(chainId, addressId);
       setRedFlagData(redFlagData);
     };
 

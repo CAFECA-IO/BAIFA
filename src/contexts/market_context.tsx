@@ -37,7 +37,7 @@ export interface IMarketContext {
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
   getAddressDetail: (chainId: string, addressId: string) => Promise<IAddress>;
   getReviews: (chainId: string, addressId: string) => Promise<IReviews>;
-  getRedFlags: (chainId: string, addressId: string) => Promise<IRedFlag[]>;
+  getRedFlagsFromAddress: (chainId: string, addressId: string) => Promise<IRedFlag[]>;
   getInteractions: (
     chainId: string,
     addressId: string,
@@ -65,7 +65,7 @@ export const MarketContext = createContext<IMarketContext>({
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressDetail: () => Promise.resolve({} as IAddress),
   getReviews: () => Promise.resolve({} as IReviews),
-  getRedFlags: () => Promise.resolve([] as IRedFlag[]),
+  getRedFlagsFromAddress: () => Promise.resolve([] as IRedFlag[]),
   getInteractions: () => Promise.resolve([] as IInteractionItem[]),
   getContractDetail: () => Promise.resolve({} as IContract),
   getEvidenceDetail: () => Promise.resolve({} as IEvidence),
@@ -249,7 +249,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
-  const getRedFlags = useCallback(async (chainId: string, addressId: string) => {
+  const getRedFlagsFromAddress = useCallback(async (chainId: string, addressId: string) => {
     let data: IRedFlag[] = [];
     try {
       const response = await fetch(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}/red_flags`, {
@@ -257,7 +257,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getRedFlags error', error);
+      //console.log('getRedFlagsFromAddress error', error);
     }
     return data;
   }, []);
@@ -317,6 +317,19 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getRedFlagsFromCurrency = useCallback(async (currencyId: string) => {
+    let data: ICurrencyDetail = {} as ICurrencyDetail;
+    try {
+      const response = await fetch(`${APIURL.CURRENCIES}/${currencyId}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getChains error', error);
+    }
+    return data;
+  }, []);
+
   const defaultValues = {
     init,
     promotionData: promotionRef.current,
@@ -331,7 +344,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getTransactionDetail,
     getAddressDetail,
     getReviews,
-    getRedFlags,
+    getRedFlagsFromAddress,
     getInteractions,
     getContractDetail,
     getEvidenceDetail,

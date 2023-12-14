@@ -56,7 +56,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     if (currencyData) {
       setCurrencyData(currencyData);
     }
-    timer = setTimeout(() => setIsLoading(false), 500);
+    timer = setTimeout(() => setIsLoading(false), 700);
     return () => clearTimeout(timer);
   }, [currencyData]);
 
