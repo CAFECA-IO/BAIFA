@@ -15,7 +15,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '130008',
     createdTimestamp: 1688341795,
     sourceCode: '',
-    transactionIds: ['930032', '931314'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -26,7 +26,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '130294',
     createdTimestamp: 1692322345,
     sourceCode: '',
-    transactionIds: ['930071'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -37,7 +37,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '130682',
     createdTimestamp: 1693341175,
     sourceCode: '',
-    transactionIds: ['930291', '931302'],
+    transactionHistoryData: [],
     publicTag: ['TideBit'],
   },
   {
@@ -48,7 +48,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '134902',
     createdTimestamp: 1689352395,
     sourceCode: '',
-    transactionIds: ['930683'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -59,7 +59,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '110132',
     createdTimestamp: 1680978100,
     sourceCode: '',
-    transactionIds: ['910101', '912299'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -70,7 +70,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '112840',
     createdTimestamp: 1690000000,
     sourceCode: '',
-    transactionIds: ['913211'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -81,7 +81,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '114007',
     createdTimestamp: 1698340041,
     sourceCode: '',
-    transactionIds: ['914025'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -92,7 +92,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '114007',
     createdTimestamp: 1698321919,
     sourceCode: '',
-    transactionIds: ['915024', '918402'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -103,7 +103,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '115588',
     createdTimestamp: 1698242391,
     sourceCode: '',
-    transactionIds: ['916841'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -114,7 +114,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '112840',
     createdTimestamp: 1698243092,
     sourceCode: '',
-    transactionIds: ['919298'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -125,7 +125,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '120999',
     createdTimestamp: 1694242591,
     sourceCode: '',
-    transactionIds: ['919298'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -136,7 +136,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '120999',
     createdTimestamp: 1690242391,
     sourceCode: '',
-    transactionIds: ['919298'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -147,7 +147,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '121700',
     createdTimestamp: 1683822349,
     sourceCode: '',
-    transactionIds: ['919298'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -158,7 +158,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '123201',
     createdTimestamp: 1682120557,
     sourceCode: '',
-    transactionIds: ['923372'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -169,7 +169,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '123201',
     createdTimestamp: 1682452309,
     sourceCode: '',
-    transactionIds: ['924713', '928728'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -180,7 +180,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '140002',
     createdTimestamp: 1687303345,
     sourceCode: '',
-    transactionIds: ['940555'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -191,7 +191,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '140050',
     createdTimestamp: 1685341407,
     sourceCode: '',
-    transactionIds: ['940202'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -202,7 +202,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '140002',
     createdTimestamp: 1687349821,
     sourceCode: '',
-    transactionIds: ['940202', '944499'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -213,7 +213,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '140333',
     createdTimestamp: 1687449002,
     sourceCode: '',
-    transactionIds: ['944777'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -224,7 +224,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '144055',
     createdTimestamp: 1687449002,
     sourceCode: '',
-    transactionIds: ['945008'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
   {
@@ -235,7 +235,7 @@ export const dummyContractData: IContract[] = [
     creatorAddressId: '146605',
     createdTimestamp: 1687449002,
     sourceCode: '',
-    transactionIds: ['945449'],
+    transactionHistoryData: [],
     publicTag: ['PUBLIC_TAG.UNKNOWN_USER'],
   },
 ];

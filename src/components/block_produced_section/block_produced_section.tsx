@@ -11,19 +11,18 @@ import {getChainIcon, roundToDecimal, timestampToString} from '../../lib/common'
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 import DatePicker from '../date_picker/date_picker';
-import {IBlockDetail} from '../../interfaces/block';
+import {IBlock} from '../../interfaces/block';
 
 interface IBlockProducedHistorySectionProps {
-  blocks: IBlockDetail[];
-  unit: string;
+  blocks: IBlock[];
 }
 
-const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectionProps) => {
+const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(1 / ITEM_PER_PAGE));
-  const [filteredBlocks, setFilteredBlocks] = useState<IBlockDetail[]>(blocks);
+  const [filteredBlocks, setFilteredBlocks] = useState<IBlock[]>(blocks);
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [period, setPeriod] = useState(defaultPeriod);
@@ -33,30 +32,30 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
 
   useEffect(() => {
     const searchResult = blocks // Info: (20231103 - Julian) filter by search term
-      .filter((block: IBlockDetail) => {
+      .filter((block: IBlock) => {
         const searchTerm = searchRef.current.toLowerCase();
-        const managementTeam = block.managementTeam.map(team => team.toLowerCase());
+        //const managementTeam = block.managementTeam.map(team => team.toLowerCase());
         const stability = block.stability.toLowerCase();
-        const miner = block.miner.toLowerCase();
+        //const miner = block.miner.toLowerCase();
 
         return searchTerm !== ''
           ? block.id.toString().includes(searchTerm) ||
-              managementTeam.includes(searchTerm) ||
-              stability.includes(searchTerm) ||
-              miner.toString().includes(searchTerm)
-          : true;
+              //managementTeam.includes(searchTerm) ||
+              stability.includes(searchTerm)
+          : //miner.toString().includes(searchTerm)
+            true;
       })
       // Info: (20231103 - Julian) filter by date range
-      .filter((block: IBlockDetail) => {
-        const createdTimestamp = block.createdTimestamp;
-        const start = period.startTimeStamp;
-        const end = period.endTimeStamp;
-        // Info: (20231103 - Julian) if start and end are 0, it means that there is no period filter
-        const isCreatedTimestampInRange =
-          start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-        return isCreatedTimestampInRange;
-      })
-      .sort((a: IBlockDetail, b: IBlockDetail) => {
+      // .filter((block: IBlock) => {
+      //   const createdTimestamp = block.createdTimestamp;
+      //   const start = period.startTimeStamp;
+      //   const end = period.endTimeStamp;
+      //   // Info: (20231103 - Julian) if start and end are 0, it means that there is no period filter
+      //   const isCreatedTimestampInRange =
+      //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+      //   return isCreatedTimestampInRange;
+      // })
+      .sort((a: IBlock, b: IBlock) => {
         return sorting === sortOldAndNewOptions[0]
           ? // Info: (20231101 - Julian) Newest
             b.createdTimestamp - a.createdTimestamp
@@ -70,8 +69,9 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
 
   // Info: (20231103 - Julian) Pagination
   const blockList = filteredBlocks.slice(startIdx, endIdx).map((block, index) => {
-    const {id, chainId, createdTimestamp, reward} = block;
-    const icon = getChainIcon(chainId);
+    const {id, chainId, createdTimestamp /* reward */} = block;
+    // ToDo: (20231213 - Julian) Add reward, unit, and icon
+    const icon = getChainIcon('btc');
 
     const createdStr = timestampToString(createdTimestamp);
     // Info: (20231103 - Julian) If month is longer than 3 letters, slice it and add a dot
@@ -99,7 +99,8 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
           <div className="flex items-center space-x-2">
             <Image src={icon.src} width={24} height={24} alt={icon.alt} />
             <p className="text-sm">
-              +{roundToDecimal(reward, 2)} {unit}
+              {/* ToDo: (20231213 - Julian) Add reward */}
+              {/*  +{roundToDecimal(reward, 2)} {unit} */}+{roundToDecimal(2.24, 2)} btc
             </p>
           </div>
         </div>
@@ -115,8 +116,8 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
       </h2>
       <div className="flex w-full flex-col rounded-lg bg-darkPurple p-4 drop-shadow-xl lg:h-950px">
         {/* Info: (20231103 - Julian) Search Filter */}
-        <div className="flex w-full flex-col items-end space-y-4">
-          <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+        <div className="flex w-full flex-col items-end gap-4">
+          <div className="flex w-full flex-col items-start justify-between xl:flex-row">
             {/* Info: (20231101 - Julian) Date Picker */}
             <div className="flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
