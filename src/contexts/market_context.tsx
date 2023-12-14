@@ -11,6 +11,7 @@ import {IAddress} from '../interfaces/address';
 import {IReviews} from '../interfaces/review';
 import {IRedFlag} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
+import {IContract} from '../interfaces/contract';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -39,6 +40,7 @@ export interface IMarketContext {
     addressId: string,
     type: string
   ) => Promise<IInteractionItem[]>;
+  getContractDetail: (chainId: string, contractId: string) => Promise<IContract>;
 
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
@@ -59,6 +61,7 @@ export const MarketContext = createContext<IMarketContext>({
   getReviews: () => Promise.resolve({} as IReviews),
   getRedFlags: () => Promise.resolve([] as IRedFlag[]),
   getInteractions: () => Promise.resolve([] as IInteractionItem[]),
+  getContractDetail: () => Promise.resolve({} as IContract),
 
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
@@ -252,6 +255,19 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getContractDetail = useCallback(async (chainId: string, contractId: string) => {
+    let data: IContract = {} as IContract;
+    try {
+      const response = await fetch(`${APIURL.CHAINS}/${chainId}/contracts/${contractId}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getContractDetail error', error);
+    }
+    return data;
+  }, []);
+
   const defaultValues = {
     init,
     promotionData: promotionRef.current,
@@ -267,6 +283,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getReviews,
     getRedFlags,
     getInteractions,
+    getContractDetail,
 
     getSearchResult,
     getSuggestions,

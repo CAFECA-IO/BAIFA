@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import Link from 'next/link';
 import {useRouter} from 'next/router';
+import {useContext, useState, useEffect} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
@@ -12,39 +14,85 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
-import {IContract, dummyContractData} from '../../../../../interfaces/contract';
+import {IContract} from '../../../../../interfaces/contract';
 import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
 import TransactionHistorySection from '../../../../../components/transaction_history_section/transaction_history_section';
-import {dummyTransactionData} from '../../../../../interfaces/transaction';
-import Link from 'next/link';
 import Tooltip from '../../../../../components/tooltip/tooltip';
+import {AppContext} from '../../../../../contexts/app_context';
+import {MarketContext} from '../../../../../contexts/market_context';
 
 interface IContractDetailPageProps {
   chainId: string;
   contractId: string;
-  contractData: IContract;
 }
 
-const ContractDetailPage = ({chainId, contractId, contractData}: IContractDetailPageProps) => {
+const ContractDetailPage = ({chainId, contractId}: IContractDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {transactionIds, publicTag} = contractData;
-  const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
-
   const router = useRouter();
+  const appCtx = useContext(AppContext);
+  const {getContractDetail} = useContext(MarketContext);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [contractData, setContractData] = useState<IContract>({} as IContract);
+
+  const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
+  const {transactionHistoryData, publicTag} = contractData;
+
   const backClickHandler = () => router.back();
 
-  const transactionHistory = dummyTransactionData.filter(transaction =>
-    transactionIds.includes(transaction.id)
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+
+    const getContractData = async (chainId: string, contractId: string) => {
+      const contractData = await getContractDetail(chainId, contractId);
+      setContractData(contractData);
+    };
+
+    getContractData(chainId, contractId);
+  }, []);
+
+  let timer: NodeJS.Timeout;
+
+  useEffect(() => {
+    clearTimeout(timer);
+
+    if (contractData) {
+      setContractData(contractData);
+    }
+    timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [contractData]);
+
+  const displayPublicTag = publicTag ? (
+    publicTag.map((tag, index) => (
+      <div
+        key={index}
+        className="whitespace-nowrap rounded border border-hoverWhite px-4 py-2 text-sm font-bold"
+      >
+        {t(tag)}
+      </div>
+    ))
+  ) : (
+    <></>
   );
 
-  const displayPublicTag = publicTag.map((tag, index) => (
-    <div
-      key={index}
-      className="whitespace-nowrap rounded border border-hoverWhite px-4 py-2 text-sm font-bold"
-    >
-      {t(tag)}
-    </div>
-  ));
+  const displayedContractDetail = !isLoading ? (
+    <ContractDetail contractData={contractData} />
+  ) : (
+    // ToDo: (20231214 - Julian) Add loading animation
+    <h1>Loading...</h1>
+  );
+
+  const displayedTransactionHistory = !isLoading ? (
+    <></>
+  ) : (
+    // ToDo: (20231214 - Julian) Contract Transaction History
+    // <TransactionHistorySection transactions={transactionHistoryData} />
+    // ToDo: (20231214 - Julian) Add loading animation
+    <h1>Loading...</h1>
+  );
 
   return (
     <>
@@ -112,9 +160,7 @@ const ContractDetailPage = ({chainId, contractId, contractData}: IContractDetail
             </div>
 
             {/* Info: (20231106 - Julian) Contract Detail */}
-            <div className="my-10 w-full">
-              <ContractDetail contractData={contractData} />
-            </div>
+            <div className="my-10 w-full">{displayedContractDetail}</div>
 
             {/* Info: (20231106 - Julian) Private Note Section */}
             <div className="w-full">
@@ -122,9 +168,7 @@ const ContractDetailPage = ({chainId, contractId, contractData}: IContractDetail
             </div>
 
             {/* Info: (20231103 - Julian) Transaction History */}
-            <div className="my-10 w-full">
-              <TransactionHistorySection transactions={transactionHistory} />
-            </div>
+            <div className="my-10 w-full">{displayedTransactionHistory}</div>
 
             {/* Info: (20231017 - Julian) Back Button */}
             <div className="mt-10">
@@ -149,46 +193,34 @@ const ContractDetailPage = ({chainId, contractId, contractData}: IContractDetail
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyContractData
-    .flatMap(contract => {
-      return locales?.map(locale => ({
-        params: {chainId: contract.chainId, contractId: `${contract.id}`},
-        locale,
-      }));
-    })
-    .filter(
-      (path): path is {params: {chainId: string; contractId: string}; locale: string} => !!path
-    );
+  // ToDo: (20231213 - Julian) Add dynamic paths
+  const paths = [
+    {
+      params: {chainId: 'isun', contractId: '1'},
+      locale: 'en',
+    },
+  ];
 
-  return {
-    paths: paths,
-    fallback: 'blocking',
-  };
+  return {paths, fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+  if (!params || !params.chainId || typeof params.chainId !== 'string') {
+    return {
+      notFound: true,
+    };
+  }
   if (!params || !params.contractId || typeof params.contractId !== 'string') {
     return {
       notFound: true,
     };
   }
 
-  const contractData = dummyContractData.find(contract => `${contract.id}` === params.contractId);
-  const chainId = contractData?.chainId ?? null;
-
-  if (!contractData || !chainId) {
-    return {
-      notFound: true,
-    };
-  }
+  const chainId = params.chainId;
+  const contractId = params.contractId;
 
   return {
-    props: {
-      contractId: params.contractId,
-      contractData: contractData,
-      chainId: chainId,
-      ...(await serverSideTranslations(locale as string, ['common'])),
-    },
+    props: {contractId, chainId, ...(await serverSideTranslations(locale as string, ['common']))},
   };
 };
 
