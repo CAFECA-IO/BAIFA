@@ -5,7 +5,8 @@ import {ITransaction, getDummyTransactionData} from './transaction';
 export interface IHolder {
   addressId: string;
   holdingAmount: number;
-  type: string;
+  holdingPercentage: number;
+  publicTag: string[];
 }
 
 export interface ICurrency {
@@ -22,8 +23,8 @@ export interface ICurrencyDetail extends ICurrency {
   holders: IHolder[];
   totalTransfers: number;
   flagging: IRedFlag[];
-
-  transactions: ITransaction[];
+  flaggingCount: number;
+  transactionHistoryData: ITransaction[];
 }
 
 export const dummyCurrencyData: ICurrencyDetail[] = [
@@ -39,33 +40,39 @@ export const dummyCurrencyData: ICurrencyDetail[] = [
       {
         addressId: '110029',
         holdingAmount: 248597,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '110132',
         holdingAmount: 178010,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '112840',
         holdingAmount: 117351,
-        type: 'Unknown User',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '114007',
         holdingAmount: 93109,
-        type: 'Unknown User',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '115588',
         holdingAmount: 62352,
-        type: 'Unknown User',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
     ],
     totalTransfers: 48010097,
+    flaggingCount: 15,
     flagging: getDummyRedFlag('btc', '112840', 31),
     riskLevel: RiskLevel.HIGH_RISK,
-    transactions: getDummyTransactionData('btc'),
+    transactionHistoryData: getDummyTransactionData('btc'),
   },
   {
     currencyId: 'eth',
@@ -79,33 +86,39 @@ export const dummyCurrencyData: ICurrencyDetail[] = [
       {
         addressId: '120499',
         holdingAmount: 192597,
-        type: 'Unknown User',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '120999',
         holdingAmount: 148800,
-        type: 'Unknown User',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '123201',
         holdingAmount: 117019,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '121700',
         holdingAmount: 79352,
-        type: 'Unknown User',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '122810',
         holdingAmount: 57019,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
     ],
     totalTransfers: 31092807,
+    flaggingCount: 15,
     flagging: getDummyRedFlag('eth', '120499', 17),
     riskLevel: RiskLevel.MEDIUM_RISK,
-    transactions: getDummyTransactionData('eth'),
+    transactionHistoryData: getDummyTransactionData('eth'),
   },
   {
     currencyId: 'isun',
@@ -119,38 +132,45 @@ export const dummyCurrencyData: ICurrencyDetail[] = [
       {
         addressId: '130008',
         holdingAmount: 180291,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '130025',
         holdingAmount: 161829,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '130089',
         holdingAmount: 149028,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '130294',
         holdingAmount: 102392,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '130682',
         holdingAmount: 62895,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '134902',
         holdingAmount: 39281,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
     ],
     totalTransfers: 24992807,
+    flaggingCount: 15,
     flagging: getDummyRedFlag('isun', '134902', 6),
     riskLevel: RiskLevel.LOW_RISK,
-    transactions: getDummyTransactionData('isun'),
+    transactionHistoryData: getDummyTransactionData('isun'),
   },
   {
     currencyId: 'usdt',
@@ -164,43 +184,51 @@ export const dummyCurrencyData: ICurrencyDetail[] = [
       {
         addressId: '140002',
         holdingAmount: 238012,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '140007',
         holdingAmount: 192040,
-        type: 'Unknown User',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '140050',
         holdingAmount: 180252,
-        type: 'Unknown User',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '140333',
         holdingAmount: 175219,
-        type: 'Unknown User',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '144055',
         holdingAmount: 169528,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '144338',
         holdingAmount: 138011,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '146605',
         holdingAmount: 93028,
-        type: 'Binance-coldwallet',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
     ],
     totalTransfers: 29802417,
+    flaggingCount: 15,
     flagging: getDummyRedFlag('usdt', '140007', 25),
     riskLevel: RiskLevel.LOW_RISK,
-    transactions: getDummyTransactionData('usdt'),
+    transactionHistoryData: getDummyTransactionData('usdt'),
   },
   {
     currencyId: 'bnb',
@@ -214,17 +242,20 @@ export const dummyCurrencyData: ICurrencyDetail[] = [
       {
         addressId: '150381',
         holdingAmount: 52597,
-        type: 'Unknown User',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
       {
         addressId: '150472',
         holdingAmount: 40211,
-        type: 'Unknown User',
+        publicTag: [],
+        holdingPercentage: 1.3,
       },
     ],
     totalTransfers: 24262807,
+    flaggingCount: 15,
     flagging: getDummyRedFlag('bnb', '150381', 2),
     riskLevel: RiskLevel.MEDIUM_RISK,
-    transactions: getDummyTransactionData('bnb'),
+    transactionHistoryData: getDummyTransactionData('bnb'),
   },
 ];

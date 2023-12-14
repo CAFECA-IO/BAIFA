@@ -331,7 +331,8 @@
   "PUBLIC_TAG": {
     "TITLE": "Public tag",
     "UNKNOWN_USER": "Unknown User",
-    "HACKER": "Hacker"
+    "HACKER": "Hacker",
+    "BINANCE_COLDWALLET": "Binance Cold Wallet"
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

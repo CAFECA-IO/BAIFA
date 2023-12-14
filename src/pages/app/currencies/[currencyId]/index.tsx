@@ -3,9 +3,10 @@ import Image from 'next/image';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../components/footer/footer';
 import CurrencyDetail from '../../../../components/currency_detail/currency_detail';
+import {useContext, useEffect, useState} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {ICurrency, dummyCurrencyData} from '../../../../interfaces/currency';
+import {ICurrencyDetail} from '../../../../interfaces/currency';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
 import {getChainIcon} from '../../../../lib/common';
@@ -14,20 +15,92 @@ import TransactionHistorySection from '../../../../components/transaction_histor
 import BoltButton from '../../../../components/bolt_button/bolt_button';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
+import {AppContext} from '../../../../contexts/app_context';
+import {MarketContext} from '../../../../contexts/market_context';
 
 interface ICurrencyDetailPageProps {
   currencyId: string;
-  currencyData: ICurrency;
 }
 
-const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps) => {
+const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {currencyName, transactions} = currencyData;
-  const headTitle = `${currencyName} - BAIFA`;
-  const chainIcon = getChainIcon(currencyId);
-
   const router = useRouter();
+  const appCtx = useContext(AppContext);
+  const {getCurrencyDetail} = useContext(MarketContext);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [currencyData, setCurrencyData] = useState<ICurrencyDetail>({} as ICurrencyDetail);
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+
+    const getCurrencyData = async (currencyId: string) => {
+      try {
+        const data = await getCurrencyDetail(currencyId);
+        setCurrencyData(data);
+      } catch (error) {
+        //console.log('getBlockDetail error', error);
+      }
+    };
+
+    getCurrencyData(currencyId);
+  }, []);
+
+  let timer: NodeJS.Timeout;
+
+  useEffect(() => {
+    clearTimeout(timer);
+
+    if (currencyData) {
+      setCurrencyData(currencyData);
+    }
+    timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [currencyData]);
+
+  const {currencyName, transactionHistoryData} = currencyData;
+  const headTitle = `${currencyName} - BAIFA`;
+  const chainIcon = getChainIcon(currencyId); // ToDo: (20231214 -Julian) Get icon from API
+
   const backClickHandler = () => router.back();
+
+  const displayedHeader = (
+    <div className="flex w-full items-center justify-start">
+      {/* Info: (20231018 -Julian) Back Arrow Button */}
+      <button onClick={backClickHandler} className="hidden lg:block">
+        <BsArrowLeftShort className="text-48px" />
+      </button>
+      {/* Info: (20231018 -Julian) Block Title */}
+      <div className="flex flex-1 items-center justify-center space-x-2">
+        <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+        <h1 className="text-2xl font-bold lg:text-32px">
+          <span className="ml-2"> {currencyName}</span>
+        </h1>
+      </div>
+    </div>
+  );
+
+  const displayedCurrencyDetail = !isLoading ? (
+    <CurrencyDetail currencyData={currencyData} />
+  ) : (
+    // ToDo: (20231103 - Julian) Add loading animation
+    <h1>Loading...</h1>
+  );
+  const displayedTop100Holder = !isLoading ? (
+    <Top100HolderSection currencyData={currencyData} />
+  ) : (
+    // ToDo: (20231103 - Julian) Add loading animation
+    <h1>Loading...</h1>
+  );
+
+  const displayedTransactionHistory = !isLoading ? (
+    <TransactionHistorySection transactions={transactionHistoryData} />
+  ) : (
+    // ToDo: (20231103 - Julian) Add loading animation
+    <h1>Loading...</h1>
+  );
 
   return (
     <>
@@ -41,34 +114,16 @@ const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
           <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
             {/* Info: (20231018 - Julian) Header */}
-            <div className="flex w-full items-center justify-start">
-              {/* Info: (20231018 -Julian) Back Arrow Button */}
-              <button onClick={backClickHandler} className="hidden lg:block">
-                <BsArrowLeftShort className="text-48px" />
-              </button>
-              {/* Info: (20231018 -Julian) Block Title */}
-              <div className="flex flex-1 items-center justify-center space-x-2">
-                <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
-                <h1 className="text-2xl font-bold lg:text-32px">
-                  <span className="ml-2"> {currencyName}</span>
-                </h1>
-              </div>
-            </div>
+            {displayedHeader}
 
             {/* Info: (20231101 - Julian) Currency Detail */}
-            <div className="my-10 w-full">
-              <CurrencyDetail currencyData={currencyData} />
-            </div>
+            <div className="my-10 w-full">{displayedCurrencyDetail}</div>
 
             {/* Info: (20231101 - Julian) Top 100 Holder */}
-            <div className="my-10 w-full">
-              <Top100HolderSection currencyData={currencyData} />
-            </div>
+            <div className="my-10 w-full">{displayedTop100Holder}</div>
 
             {/* Info: (20231103 - Julian) Transaction History */}
-            <div className="my-10 flex w-full">
-              <TransactionHistorySection transactions={transactions} />
-            </div>
+            <div className="my-10 flex w-full">{displayedTransactionHistory}</div>
 
             {/* Info: (20231017 - Julian) Back Button */}
             <div className="mt-10">
@@ -93,19 +148,15 @@ const CurrencyDetailPage = ({currencyId, currencyData}: ICurrencyDetailPageProps
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyCurrencyData
-    .flatMap(currency => {
-      return locales?.map(locale => ({
-        params: {currencyId: `${currency.currencyId}`},
-        locale,
-      }));
-    })
-    .filter((path): path is {params: {currencyId: string}; locale: string} => !!path);
+  // ToDo: (20231213 - Julian) Add dynamic paths
+  const paths = [
+    {
+      params: {currencyId: 'isun'},
+      locale: 'en',
+    },
+  ];
 
-  return {
-    paths: paths,
-    fallback: 'blocking',
-  };
+  return {paths, fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps = async ({params, locale}) => {
@@ -115,22 +166,10 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
-  const currencyData = dummyCurrencyData.find(
-    currency => `${currency.currencyId}` === params.currencyId
-  );
-
-  if (!currencyData) {
-    return {
-      notFound: true,
-    };
-  }
+  const currencyId = params.currencyId;
 
   return {
-    props: {
-      currencyId: params.currencyId,
-      currencyData: currencyData,
-      ...(await serverSideTranslations(locale as string, ['common'])),
-    },
+    props: {currencyId, ...(await serverSideTranslations(locale as string, ['common']))},
   };
 };
 

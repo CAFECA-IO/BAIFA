@@ -1,7 +1,7 @@
 import React, {createContext, useCallback} from 'react';
 import useStateRef from 'react-usestateref';
-import {IChain, IChainDetail} from '../interfaces/chain';
 import {APIURL} from '../constants/api_request';
+import {IChain, IChainDetail} from '../interfaces/chain';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
@@ -13,7 +13,7 @@ import {IRedFlag} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContract} from '../interfaces/contract';
 import {IEvidence} from '../interfaces/evidence';
-import {ICurrency} from '../interfaces/currency';
+import {ICurrency, ICurrencyDetail} from '../interfaces/currency';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -45,6 +45,7 @@ export interface IMarketContext {
   ) => Promise<IInteractionItem[]>;
   getContractDetail: (chainId: string, contractId: string) => Promise<IContract>;
   getEvidenceDetail: (chainId: string, evidenceId: string) => Promise<IEvidence>;
+  getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetail>;
 
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
@@ -68,6 +69,7 @@ export const MarketContext = createContext<IMarketContext>({
   getInteractions: () => Promise.resolve([] as IInteractionItem[]),
   getContractDetail: () => Promise.resolve({} as IContract),
   getEvidenceDetail: () => Promise.resolve({} as IEvidence),
+  getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetail),
 
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
@@ -302,6 +304,19 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getCurrencyDetail = useCallback(async (currencyId: string) => {
+    let data: ICurrencyDetail = {} as ICurrencyDetail;
+    try {
+      const response = await fetch(`${APIURL.CURRENCIES}/${currencyId}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getChains error', error);
+    }
+    return data;
+  }, []);
+
   const defaultValues = {
     init,
     promotionData: promotionRef.current,
@@ -320,6 +335,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getInteractions,
     getContractDetail,
     getEvidenceDetail,
+    getCurrencyDetail,
 
     getSearchResult,
     getSuggestions,

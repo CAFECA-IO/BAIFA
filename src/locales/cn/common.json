@@ -331,7 +331,8 @@
   "PUBLIC_TAG": {
     "TITLE": "公开标签",
     "UNKNOWN_USER": "未知用户",
-    "HACKER": "黑客"
+    "HACKER": "黑客",
+    "BINANCE_COLDWALLET": "币安冷钱包"
   },
   "FOOTER": {
     "POWERED_BY": "技术支持 稗法",

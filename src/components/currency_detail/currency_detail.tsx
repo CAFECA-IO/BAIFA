@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
-import {ICurrency} from '../../interfaces/currency';
+import {ICurrencyDetail} from '../../interfaces/currency';
 import {TranslateFunction} from '../../interfaces/locale';
 import {roundToDecimal, withCommas} from '../../lib/common';
 import {BFAURL} from '../../constants/url';
@@ -8,12 +8,12 @@ import {RiskLevel} from '../../constants/risk_level';
 import Tooltip from '../tooltip/tooltip';
 
 interface ICurrencyDetailProps {
-  currencyData: ICurrency;
+  currencyData: ICurrencyDetail;
 }
 
 const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {price, volumeIn24h, totalAmount, unit, holders, totalTransfers, flagging, riskLevel} =
+  const {price, volumeIn24h, totalAmount, unit, holders, totalTransfers, flaggingCount, riskLevel} =
     currencyData;
 
   const riskColor =
@@ -28,6 +28,9 @@ const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
       : riskLevel === RiskLevel.MEDIUM_RISK
       ? t('COMMON.RISK_MEDIUM')
       : t('COMMON.RISK_LOW');
+
+  // Todo: (20231214 - Julian) get holders count from API
+  const holderCount = holders ? withCommas(holders.length) : '—';
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
@@ -62,7 +65,7 @@ const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <p>{withCommas(holders.length)}</p>
+        <p>{holderCount}</p>
       </div>
       {/* Info: (20231101 - Julian) Total Transfers */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
@@ -88,7 +91,7 @@ const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
               href={`${BFAURL.CURRENCIES}/${currencyData.currencyId}/red-flag`}
               className="mr-2 text-primaryBlue underline underline-offset-2"
             >
-              {withCommas(flagging.length)}
+              {withCommas(flaggingCount)}
             </Link>
             {t('COMMON.TIMES')}
           </p>
