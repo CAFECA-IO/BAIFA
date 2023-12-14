@@ -12,6 +12,7 @@ type ResponseData = {
   transactionCount: number;
   miner: string;
   reward: number;
+  uint: string;
   size: number; // bytes
   previousBlockId: string;
   nextBlockId: string;
@@ -28,6 +29,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     'transactionCount': 25,
     'miner': '0x1234567890',
     'reward': 2.5,
+    'uint': 'isun',
     'size': 3523, //bytes
     'previousBlockId': '230020',
     'nextBlockId': '230022',

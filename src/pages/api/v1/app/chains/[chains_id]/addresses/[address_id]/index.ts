@@ -2,6 +2,16 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
+type RelatedAddressInfo = {
+  id: string;
+  chainId: string;
+};
+
+type AddressInfo = {
+  type: 'address' | 'contract';
+  address: string;
+};
+
 type ReviewData = {
   id: string;
   transactionId: string;
@@ -14,7 +24,10 @@ type ReviewData = {
 
 type TransactionHistoryData = {
   id: string;
+  chainId: string;
   createdTimestamp: number;
+  from: AddressInfo[];
+  to: AddressInfo[];
   type: 'Crypto Currency' | 'Evidence' | 'NFT';
   status: 'PENDING' | 'SUCCESS' | 'FAILED';
 };
@@ -23,17 +36,20 @@ type BlockProducedData = {
   id: string;
   createdTimestamp: number;
   stability: 'LOW' | 'MEDIUM' | 'HIGH';
+  reward: number;
+  uint: string;
+  chainIcon: string;
 };
 
 type ResponseData = {
   id: string;
-  type: 'address';
+  type: string;
   address: string;
   chainId: string;
   chainIcon: string;
   createdTimestamp: number;
   latestActiveTime: number;
-  relatedAddressIds: string[];
+  relatedAddresses: RelatedAddressInfo[];
   interactedAddressCount: number;
   interactedContactCount: number;
   score: number;
@@ -54,7 +70,17 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'chainIcon': '/currencies/isun.svg',
     'createdTimestamp': 1680827461,
     'latestActiveTime': 1682935384,
-    'relatedAddressIds': ['110029', '112840', '114007'],
+    'relatedAddresses': [
+      {
+        'id': '214134',
+        'chainId': 'btc',
+      },
+      {
+        'id': '234143',
+        'chainId': 'eth',
+      },
+      // ...
+    ],
     'interactedAddressCount': 3,
     'interactedContactCount': 2,
     'score': 2.8,
@@ -81,14 +107,20 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     ],
     'transactionHistoryData': [
       {
-        'id': '930154',
+        'id': '918402',
+        'chainId': 'btc',
         'createdTimestamp': 1679978987,
-        'type': 'Crypto Currency',
+        'from': [{'type': 'address', 'address': '114007'}], // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        'to': [{'type': 'contract', 'address': '110132'}],
+        'type': 'Evidence',
         'status': 'SUCCESS',
       },
       {
-        'id': '930785',
+        'id': '912299',
+        'chainId': 'btc',
         'createdTimestamp': 1687909392,
+        'from': [{'type': 'address', 'address': '110132'}], // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        'to': [{'type': 'contract', 'address': '310683'}],
         'type': 'Evidence',
         'status': 'FAILED',
       },
@@ -96,14 +128,20 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     ],
     'blockProducedData': [
       {
-        'id': '230976',
+        'id': '217328',
         'createdTimestamp': 1678940724,
         'stability': 'MEDIUM',
+        'reward': 2.4,
+        'uint': 'btc',
+        'chainIcon': '/currencies/btc.svg',
       },
       {
-        'id': '234680',
+        'id': '217329',
         'createdTimestamp': 1684176283,
         'stability': 'LOW',
+        'reward': 2.4,
+        'uint': 'btc',
+        'chainIcon': '/currencies/btc.svg',
       },
       //...
     ],

@@ -2,6 +2,11 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
+type AddressInfo = {
+  type: 'address' | 'contract';
+  address: string;
+};
+
 type ResponseData = {
   id: string;
   hash: string;
@@ -11,8 +16,8 @@ type ResponseData = {
   chainIcon: string;
   blockId: string;
   createdTimestamp: number;
-  fromAddressId: string;
-  toAddressId: string;
+  from: AddressInfo[];
+  to: AddressInfo[];
   evidenceId: string;
   value: number;
   fee: number;
@@ -29,8 +34,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'chainIcon': '/currencies/isun.svg',
     'blockId': '230021',
     'createdTimestamp': 1688342795,
-    'fromAddressId': '130008',
-    'toAddressId': '310029',
+    'from': [{'type': 'address', 'address': '130294'}],
+    'to': [{'type': 'contract', 'address': '310071'}],
     'evidenceId': '530029',
     'value': 0.01,
     'fee': 0.01,
