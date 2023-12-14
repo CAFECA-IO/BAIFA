@@ -1,11 +1,12 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
+import {MarketContext} from '../../contexts/market_context';
 import Footer from '../footer/footer';
 import Breadcrumb from '../breadcrumb/breadcrumb';
 import CurrencyItem from '../currency_item/currency_item';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
-import {ICurrency, dummyCurrencyData} from '../../interfaces/currency';
+import {ICurrency} from '../../interfaces/currency';
 import Pagination from '../pagination/pagination';
 import {ITEM_PER_PAGE} from '../../constants/config';
 import SearchBar from '../search_bar/search_bar';
@@ -14,6 +15,8 @@ import SortingMenu from '../sorting_menu/sorting_menu';
 
 const AllCurrenciesPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const {currencyList} = useContext(MarketContext);
+
   const currenciesOptions = ['SORTING.ALL', 'Ethereum', 'Bitcoin', 'iSunCloud', 'BNB', 'Tether'];
   const sortingOptions = ['SORTING.POPULAR', 'SORTING.UNPOPULAR'];
 
@@ -33,14 +36,14 @@ const AllCurrenciesPageBody = () => {
   ];
 
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(dummyCurrencyData.length / ITEM_PER_PAGE));
-  const [filteredCurrencyData, setFilteredCurrencyData] = useState<ICurrency[]>(dummyCurrencyData);
+  const [totalPages, setTotalPages] = useState(Math.ceil(currencyList.length / ITEM_PER_PAGE));
+  const [filteredCurrencyData, setFilteredCurrencyData] = useState<ICurrency[]>(currencyList);
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
   useEffect(() => {
-    const searchResult = dummyCurrencyData
+    const searchResult = currencyList
       .filter(currency => {
         // Info: (20231101 - Julian) filter by search term
         const searchTerm = searchRef.current.toLowerCase();
@@ -68,8 +71,8 @@ const AllCurrenciesPageBody = () => {
 
   useEffect(() => {
     setActivePage(1);
-    setTotalPages(Math.ceil(dummyCurrencyData.length / ITEM_PER_PAGE));
-  }, [dummyCurrencyData]);
+    setTotalPages(Math.ceil(currencyList.length / ITEM_PER_PAGE));
+  }, [currencyList]);
 
   const currenciesList = filteredCurrencyData
     .map((currency, index) => (

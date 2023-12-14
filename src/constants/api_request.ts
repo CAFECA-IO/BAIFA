@@ -46,6 +46,7 @@ export const APIURL = {
   SEARCH_SUGGESTIONS: `${BFA_API_URL}/${BFA_API_VERSION}/app/suggestions`,
   SEARCH_RESULT: `${BFA_API_URL}/${BFA_API_VERSION}/app/search`,
   CHAINS: `${BFA_API_URL}/${BFA_API_VERSION}/app/chains`,
+  CURRENCIES: `${BFA_API_URL}/${BFA_API_VERSION}/app/currencies`,
 
   WEBSITE_RESERVE: 'https://api.tidebit-defi.com/public/reserve',
 };

@@ -13,6 +13,7 @@ import {IRedFlag} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContract} from '../interfaces/contract';
 import {IEvidence} from '../interfaces/evidence';
+import {ICurrency} from '../interfaces/currency';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -22,6 +23,7 @@ export interface IMarketContext {
   init: () => Promise<void>;
   promotionData: IPromotion;
   chainList: IChain[];
+  currencyList: ICurrency[];
 
   getChains: () => Promise<void>;
   getChainDetail: (chainId: string) => Promise<IChainDetail>;
@@ -52,6 +54,7 @@ export const MarketContext = createContext<IMarketContext>({
   init: () => Promise.resolve(),
   promotionData: defaultPromotion,
   chainList: [],
+  currencyList: [],
 
   getChains: () => Promise.resolve(),
   getChainDetail: () => Promise.resolve({} as IChainDetail),
@@ -73,6 +76,7 @@ export const MarketContext = createContext<IMarketContext>({
 export const MarketProvider = ({children}: IMarketProvider) => {
   const [promotion, setPromotion, promotionRef] = useStateRef<IPromotion>(defaultPromotion);
   const [chainList, setChainList, chainListRef] = useStateRef<IChain[]>([]);
+  const [currencyList, setCurrencyList, currencyListRef] = useStateRef<ICurrency[]>([]);
 
   const getPromotion = async () => {
     let data: IPromotion = defaultPromotion;
@@ -100,9 +104,23 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     setChainList(data);
   }, []);
 
+  const getCurrencies = useCallback(async () => {
+    let data: ICurrency[] = [];
+    try {
+      const response = await fetch(`${APIURL.CURRENCIES}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getChains error', error);
+    }
+    setCurrencyList(data);
+  }, []);
+
   const init = useCallback(async () => {
     await getPromotion();
     await getChains();
+    await getCurrencies();
   }, []);
 
   const getSuggestions = useCallback(async (searchInput: string) => {
@@ -288,6 +306,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     init,
     promotionData: promotionRef.current,
     chainList: chainListRef.current,
+    currencyList: currencyListRef.current,
 
     getChains,
     getChainDetail,

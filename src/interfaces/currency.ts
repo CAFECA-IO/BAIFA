@@ -7,10 +7,14 @@ export interface IHolder {
   holdingAmount: number;
   type: string;
 }
+
 export interface ICurrency {
   currencyId: string;
   currencyName: string;
   rank: number;
+  riskLevel: IRiskLevel;
+}
+export interface ICurrencyDetail extends ICurrency {
   price: number;
   volumeIn24h: number;
   unit: string;
@@ -18,11 +22,11 @@ export interface ICurrency {
   holders: IHolder[];
   totalTransfers: number;
   flagging: IRedFlag[];
-  riskLevel: IRiskLevel;
+
   transactions: ITransaction[];
 }
 
-export const dummyCurrencyData: ICurrency[] = [
+export const dummyCurrencyData: ICurrencyDetail[] = [
   {
     currencyId: 'btc',
     currencyName: 'Bitcoin',
