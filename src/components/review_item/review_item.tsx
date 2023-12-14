@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import {IReview} from '../../interfaces/review';
+import {IReviewDetail} from '../../interfaces/review';
 import {getDynamicUrl} from '../../constants/url';
 import BoltButton from '../bolt_button/bolt_button';
 import {timestampToString} from '../../lib/common';
@@ -8,7 +8,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 
 interface ReviewItemProps {
-  review: IReview;
+  review: IReviewDetail;
 }
 
 const ReviewItem = (review: ReviewItemProps) => {

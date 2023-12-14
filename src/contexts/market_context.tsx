@@ -8,6 +8,7 @@ import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
 import {IBlockDetail} from '../interfaces/block';
 import {ITransaction, ITransactionDetail} from '../interfaces/transaction';
 import {IAddress} from '../interfaces/address';
+import {IReviews} from '../interfaces/review';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -17,6 +18,7 @@ export interface IMarketContext {
   init: () => Promise<void>;
   promotionData: IPromotion;
   chainList: IChain[];
+
   getChains: () => Promise<void>;
   getChainDetail: (chainId: string) => Promise<IChainDetail>;
   getChainDetailByPeriod: (
@@ -28,6 +30,8 @@ export interface IMarketContext {
   getTransactionList: (chainId: string, blockId: string) => Promise<ITransaction[]>;
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
   getAddressDetail: (chainId: string, addressId: string) => Promise<IAddress>;
+  getReviews: (chainId: string, addressId: string) => Promise<IReviews>;
+
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
 }
@@ -36,6 +40,7 @@ export const MarketContext = createContext<IMarketContext>({
   init: () => Promise.resolve(),
   promotionData: defaultPromotion,
   chainList: [],
+
   getChains: () => Promise.resolve(),
   getChainDetail: () => Promise.resolve({} as IChainDetail),
   getChainDetailByPeriod: () => Promise.resolve({} as IChainDetail),
@@ -43,6 +48,8 @@ export const MarketContext = createContext<IMarketContext>({
   getTransactionList: () => Promise.resolve({} as ITransaction[]),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressDetail: () => Promise.resolve({} as IAddress),
+  getReviews: () => Promise.resolve({} as IReviews),
+
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
 });
@@ -193,6 +200,19 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getReviews = useCallback(async (chainId: string, addressId: string) => {
+    let data: IReviews = {} as IReviews;
+    try {
+      const response = await fetch(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}/reviews`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getReviews error', error);
+    }
+    return data;
+  }, []);
+
   const defaultValues = {
     init,
     promotionData: promotionRef.current,
@@ -205,6 +225,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getTransactionList,
     getTransactionDetail,
     getAddressDetail,
+    getReviews,
 
     getSearchResult,
     getSuggestions,

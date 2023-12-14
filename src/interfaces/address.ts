@@ -2,7 +2,7 @@ import {IRiskLevel, RiskLevel} from '../constants/risk_level';
 import {IBlock} from './block';
 import {IInteractionItem} from './interaction_item';
 import {IRedFlag, getDummyRedFlag} from './red_flag';
-import {IReview} from './review';
+import {IReviewDetail} from './review';
 
 export interface IAddress extends IInteractionItem {
   address: string;
@@ -18,7 +18,7 @@ export interface IAddress extends IInteractionItem {
   totalSent?: number;
   totalReceived?: number;
   blockProducedData: IBlock[];
-  reviewData: IReview[];
+  reviewData: IReviewDetail[];
 }
 /* 
 export const dummyAddressData: IAddress[] = [

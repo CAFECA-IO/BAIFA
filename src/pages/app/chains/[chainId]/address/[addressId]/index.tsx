@@ -10,20 +10,23 @@ import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import Tooltip from '../../../../../../components/tooltip/tooltip';
 import AddressDetail from '../../../../../../components/address_detail/address_detail';
 import PrivateNoteSection from '../../../../../../components/private_note_section/private_note_section';
-import ReviewSection from '../../../../../../components/review_section/review_section';
+import ReviewItem from '../../../../../../components/review_item/review_item';
+import LeaveReviewButton from '../../../../../../components/leave_review_button/leave_review_button';
 import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {IAddress} from '../../../../../../interfaces/address';
-import {getUnit} from '../../../../../../lib/common';
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
-//import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
-//import TransactionHistorySection from '../../../../../../components/transaction_history_section/transaction_history_section';
+import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
+import TransactionHistorySection from '../../../../../../components/transaction_history_section/transaction_history_section';
 import {dummyBlockData} from '../../../../../../interfaces/block';
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {AppContext} from '../../../../../../contexts/app_context';
+import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
+import {sortOldAndNewOptions} from '../../../../../../constants/config';
+import {roundToDecimal} from '../../../../../../lib/common';
 
 interface IAddressDetailPageProps {
   addressId: string;
@@ -40,6 +43,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [addressData, setAddressData] = useState<IAddress>({} as IAddress);
+  const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -70,14 +74,26 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
     return () => clearTimeout(timer);
   }, [addressData]);
 
-  const {chainIcon, transactionHistoryData, publicTag, reviewData} = addressData;
+  const {chainIcon, transactionHistoryData, blockProducedData, publicTag, reviewData} = addressData;
 
   const backClickHandler = () => router.back();
 
   const reviewLink = getDynamicUrl(chainId, addressId).REVIEWS;
-
-  // Info: (20231103 - Julian) dummy data
-  const dummyBlockProducedHistory = dummyBlockData.filter(block => block.chainId === chainId);
+  const reviewList = reviewData ? (
+    reviewData
+      // Info: (20231214 - Julian) Sort reviews by createdTimestamp
+      .sort((a, b) => {
+        if (reviewSorting === sortOldAndNewOptions[0]) {
+          return b.createdTimestamp - a.createdTimestamp;
+        } else {
+          return a.createdTimestamp - b.createdTimestamp;
+        }
+      })
+      // Info: (20231214 - Julian) Print reviews
+      .map((review, index) => <ReviewItem key={index} review={review} />)
+  ) : (
+    <></>
+  );
 
   const displayPublicTag = publicTag ? (
     publicTag.map((tag, index) => (
@@ -119,17 +135,44 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
   );
 
   const displayedTransactionHistory = !isLoading ? (
-    <>TransactionHistorySection</>
+    <TransactionHistorySection transactions={transactionHistoryData} />
   ) : (
-    //<TransactionHistorySection transactions={transactionHistoryData} />
     // ToDo: (20231213 - Julian) Add loading animation
     <h1>Loading..</h1>
   );
 
   const displayedBlockProducedHistory = !isLoading ? (
-    <>BlockProducedHistorySection</>
+    <BlockProducedHistorySection blocks={blockProducedData} />
   ) : (
-    //<BlockProducedHistorySection blocks={dummyBlockProducedHistory} unit={getUnit(chainId)} />
+    // ToDo: (20231213 - Julian) Add loading animation
+    <h1>Loading..</h1>
+  );
+
+  const displayedReviewSection = !isLoading ? (
+    <div className="flex w-full flex-col space-y-4">
+      <h2 className="text-xl text-lilac">
+        {t('REVIEWS_PAGE.TITLE')}
+        <span className="ml-2">({roundToDecimal(1.31, 2)})</span>
+      </h2>
+      <div className="flex w-full flex-col rounded bg-darkPurple p-4">
+        {/* Info: (20231020 - Julian) Sort & Leave review button */}
+        <div className="flex flex-col-reverse items-center justify-between lg:flex-row">
+          <SortingMenu
+            sortingOptions={sortOldAndNewOptions}
+            sorting={reviewSorting}
+            setSorting={setReviewSorting}
+            bgColor="bg-darkPurple"
+          />
+          <LeaveReviewButton />
+        </div>
+        {/* Info: (20231020 - Julian) Reviews List */}
+        <div className="my-6 flex flex-col space-y-4">{reviewList}</div>
+        <div className="mx-auto py-5 text-sm underline underline-offset-2">
+          <Link href={reviewLink}>{t('REVIEWS_PAGE.SEE_ALL')}</Link>
+        </div>
+      </div>
+    </div>
+  ) : (
     // ToDo: (20231213 - Julian) Add loading animation
     <h1>Loading..</h1>
   );
@@ -198,9 +241,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
               <PrivateNoteSection />
             </div>
             {/* Info: (20231020 - Julian) Review Section */}
-            <div className="mt-6 w-full">
-              <ReviewSection seeAllLink={reviewLink} reviews={reviewData} />
-            </div>
+            <div className="mt-6 w-full">{displayedReviewSection}</div>
             {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
             <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
               {displayedTransactionHistory}
