@@ -22,11 +22,10 @@ import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
 
 interface IContractDetailPageProps {
-  chainId: string;
   contractId: string;
 }
 
-const ContractDetailPage = ({chainId, contractId}: IContractDetailPageProps) => {
+const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
@@ -36,7 +35,7 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailPageProps) => 
   const [contractData, setContractData] = useState<IContract>({} as IContract);
 
   const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
-  const {transactionHistoryData, publicTag} = contractData;
+  const {transactionHistoryData, publicTag, chainId} = contractData;
 
   const backClickHandler = () => router.back();
 
@@ -216,11 +215,10 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
-  const chainId = params.chainId;
   const contractId = params.contractId;
 
   return {
-    props: {contractId, chainId, ...(await serverSideTranslations(locale as string, ['common']))},
+    props: {contractId, ...(await serverSideTranslations(locale as string, ['common']))},
   };
 };
 

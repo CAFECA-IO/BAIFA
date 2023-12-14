@@ -8,6 +8,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {BFAURL} from '../../constants/url';
 import {sortOldAndNewOptions} from '../../constants/config';
 import SortingMenu from '../sorting_menu/sorting_menu';
+import {roundToDecimal} from '../../lib/common';
 
 interface IReviewDetailSection {
   reviews: IReviews;
@@ -46,7 +47,7 @@ const ReviewSection = ({reviews}: IReviewDetailSection) => {
     <div className="flex w-full flex-col space-y-4">
       <div className="flex w-full flex-col items-center justify-between space-y-10 rounded lg:flex-row lg:space-y-0">
         <h2 className="text-6xl">
-          {score}
+          {roundToDecimal(score, 1)}
           <span className="ml-2 text-base text-lilac">{t('COMMON.OF')} 5</span>
         </h2>
         {/* Info: (20231031 - Julian) Sort & Leave review button */}

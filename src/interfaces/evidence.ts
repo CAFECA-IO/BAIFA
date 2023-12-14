@@ -1,3 +1,5 @@
+import {ITransaction} from './transaction';
+
 export interface IEvidence {
   id: string;
   chainId: string;
@@ -6,7 +8,7 @@ export interface IEvidence {
   creatorAddressId: string;
   createdTimestamp: number;
   content: string;
-  transactionIds: string[];
+  transactionHistoryData: ITransaction[];
 }
 
 export const dummyEvidenceData: IEvidence[] = [
@@ -18,7 +20,7 @@ export const dummyEvidenceData: IEvidence[] = [
     creatorAddressId: '130008',
     createdTimestamp: 1688341795,
     content: '',
-    transactionIds: ['930032', '930071', '931314'],
+    transactionHistoryData: [],
   },
   {
     id: '510071',
@@ -28,7 +30,7 @@ export const dummyEvidenceData: IEvidence[] = [
     creatorAddressId: '114007',
     createdTimestamp: 1692322345,
     content: '',
-    transactionIds: ['912299', '915024'],
+    transactionHistoryData: [],
   },
   {
     id: '515482',
@@ -38,7 +40,7 @@ export const dummyEvidenceData: IEvidence[] = [
     creatorAddressId: '110132',
     createdTimestamp: 1692322345,
     content: '',
-    transactionIds: ['913211', '916841'],
+    transactionHistoryData: [],
   },
   {
     id: '524713',
@@ -48,7 +50,7 @@ export const dummyEvidenceData: IEvidence[] = [
     creatorAddressId: '121700',
     createdTimestamp: 1692322345,
     content: '',
-    transactionIds: ['922372'],
+    transactionHistoryData: [],
   },
   {
     id: '522761',
@@ -58,7 +60,7 @@ export const dummyEvidenceData: IEvidence[] = [
     creatorAddressId: '123201',
     createdTimestamp: 1692322345,
     content: '',
-    transactionIds: ['924713', '923372'],
+    transactionHistoryData: [],
   },
   {
     id: '543201',
@@ -68,7 +70,7 @@ export const dummyEvidenceData: IEvidence[] = [
     creatorAddressId: '140002',
     createdTimestamp: 1692322345,
     content: '',
-    transactionIds: ['940202', '940555'],
+    transactionHistoryData: [],
   },
   {
     id: '548173',
@@ -78,7 +80,7 @@ export const dummyEvidenceData: IEvidence[] = [
     creatorAddressId: '140050',
     createdTimestamp: 1692322345,
     content: '',
-    transactionIds: ['941749', '945008'],
+    transactionHistoryData: [],
   },
   {
     id: '543251',
@@ -88,6 +90,6 @@ export const dummyEvidenceData: IEvidence[] = [
     creatorAddressId: '146605',
     createdTimestamp: 1692322345,
     content: '',
-    transactionIds: ['945449'],
+    transactionHistoryData: [],
   },
 ];

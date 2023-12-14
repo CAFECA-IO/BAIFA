@@ -12,6 +12,7 @@ import {IReviews} from '../interfaces/review';
 import {IRedFlag} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContract} from '../interfaces/contract';
+import {IEvidence} from '../interfaces/evidence';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -41,6 +42,7 @@ export interface IMarketContext {
     type: string
   ) => Promise<IInteractionItem[]>;
   getContractDetail: (chainId: string, contractId: string) => Promise<IContract>;
+  getEvidenceDetail: (chainId: string, evidenceId: string) => Promise<IEvidence>;
 
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
@@ -62,6 +64,7 @@ export const MarketContext = createContext<IMarketContext>({
   getRedFlags: () => Promise.resolve([] as IRedFlag[]),
   getInteractions: () => Promise.resolve([] as IInteractionItem[]),
   getContractDetail: () => Promise.resolve({} as IContract),
+  getEvidenceDetail: () => Promise.resolve({} as IEvidence),
 
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
@@ -268,6 +271,19 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getEvidenceDetail = useCallback(async (chainId: string, evidenceId: string) => {
+    let data: IEvidence = {} as IEvidence;
+    try {
+      const response = await fetch(`${APIURL.CHAINS}/${chainId}/evidence/${evidenceId}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getEvidenceDetail error', error);
+    }
+    return data;
+  }, []);
+
   const defaultValues = {
     init,
     promotionData: promotionRef.current,
@@ -284,6 +300,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getRedFlags,
     getInteractions,
     getContractDetail,
+    getEvidenceDetail,
 
     getSearchResult,
     getSuggestions,
