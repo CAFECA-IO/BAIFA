@@ -1,10 +1,8 @@
-import {ITransaction} from './transaction';
-
 export interface IInteractionItem {
   id: string;
   type: 'address' | 'contract';
   chainId: string;
   createdTimestamp: number;
-  transactionHistoryData: ITransaction[];
+  transactionCount: number;
   publicTag: string[];
 }

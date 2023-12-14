@@ -10,6 +10,7 @@ import {ITransaction, ITransactionDetail} from '../interfaces/transaction';
 import {IAddress} from '../interfaces/address';
 import {IReviews} from '../interfaces/review';
 import {IRedFlag} from '../interfaces/red_flag';
+import {IInteractionItem} from '../interfaces/interaction_item';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -33,6 +34,11 @@ export interface IMarketContext {
   getAddressDetail: (chainId: string, addressId: string) => Promise<IAddress>;
   getReviews: (chainId: string, addressId: string) => Promise<IReviews>;
   getRedFlags: (chainId: string, addressId: string) => Promise<IRedFlag[]>;
+  getInteractions: (
+    chainId: string,
+    addressId: string,
+    type: string
+  ) => Promise<IInteractionItem[]>;
 
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
@@ -52,6 +58,7 @@ export const MarketContext = createContext<IMarketContext>({
   getAddressDetail: () => Promise.resolve({} as IAddress),
   getReviews: () => Promise.resolve({} as IReviews),
   getRedFlags: () => Promise.resolve([] as IRedFlag[]),
+  getInteractions: () => Promise.resolve([] as IInteractionItem[]),
 
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
@@ -229,6 +236,22 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getInteractions = useCallback(async (chainId: string, addressId: string, type: string) => {
+    let data: IInteractionItem[] = [];
+    try {
+      const response = await fetch(
+        `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/interactions?type=${type}`,
+        {
+          method: 'GET',
+        }
+      );
+      data = await response.json();
+    } catch (error) {
+      //console.log('getInteractions error', error);
+    }
+    return data;
+  }, []);
+
   const defaultValues = {
     init,
     promotionData: promotionRef.current,
@@ -243,6 +266,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getAddressDetail,
     getReviews,
     getRedFlags,
+    getInteractions,
 
     getSearchResult,
     getSuggestions,

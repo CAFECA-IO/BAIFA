@@ -1,8 +1,9 @@
 import {IRiskLevel, RiskLevel} from '../constants/risk_level';
 import {IBlock} from './block';
 import {IInteractionItem} from './interaction_item';
-import {IRedFlag, getDummyRedFlag} from './red_flag';
+import {IRedFlag} from './red_flag';
 import {IReviewDetail} from './review';
+import {ITransaction} from './transaction';
 
 export interface IAddress extends IInteractionItem {
   address: string;
@@ -17,6 +18,7 @@ export interface IAddress extends IInteractionItem {
   balance?: number;
   totalSent?: number;
   totalReceived?: number;
+  transactionHistoryData: ITransaction[];
   blockProducedData: IBlock[];
   reviewData: IReviewDetail[];
 }
@@ -480,6 +482,7 @@ export const dummyBlacklistAddressData: IAddress[] = [
     interactedAddressCount: 13,
     interactedContactCount: 123,
     transactionHistoryData: [],
+    transactionCount: 10,
     blockProducedData: [],
     flagging: [],
     flaggingCount: 10,
