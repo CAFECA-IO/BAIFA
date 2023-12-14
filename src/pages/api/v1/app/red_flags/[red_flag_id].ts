@@ -2,11 +2,17 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
+type AddressInfo = {
+  type: 'address' | 'contract';
+  address: string;
+};
+
 type TransactionData = {
   id: string;
   chainId: string;
   createdTimestamp: number;
-  toAddressId: string;
+  from: AddressInfo[];
+  to: AddressInfo[];
   status: 'SUCCESS' | 'PENDING' | 'FAILED';
 };
 
@@ -24,7 +30,7 @@ type ResponseData = {
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const result: ResponseData = {
-    'id': '1400520038',
+    'id': '140050038',
     'chainId': 'usdt',
     'addressId': '140052',
     'address': '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -34,17 +40,19 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'totalAmount': 100,
     'transactionData': [
       {
-        'id': '943029',
+        'id': '918402',
         'chainId': 'btc',
         'createdTimestamp': 1686579229,
-        'toAddressId': '123452',
+        'from': [{'type': 'address', 'address': '912299'}],
+        'to': [{'type': 'contract', 'address': '110132'}],
         'status': 'SUCCESS',
       },
       {
-        'id': '944291',
+        'id': '912299',
         'chainId': 'btc',
         'createdTimestamp': 1687860718,
-        'toAddressId': '181716',
+        'from': [{'type': 'address', 'address': '110132'}],
+        'to': [{'type': 'contract', 'address': '310683'}],
         'status': 'PENDING',
       },
       //...

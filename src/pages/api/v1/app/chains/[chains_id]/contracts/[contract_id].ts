@@ -1,11 +1,18 @@
 // 015 - GET /app/chains/:chain_id/contracts/:contract_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
+type AddressInfo = {
+  type: 'address' | 'contract';
+  address: string;
+};
 
 type TransactionData = {
   id: string;
+  chainId: string;
   createdTimestamp: number;
-  toAddressId: string;
+  from: AddressInfo[];
+  to: AddressInfo[];
+  type: 'Crypto Currency' | 'Evidence' | 'NFT';
   status: 'PENDING' | 'SUCCESS' | 'FAILED';
 };
 
@@ -32,20 +39,24 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'sourceCode': '',
     'transactionData': [
       {
-        'id': '930918',
-        'createdTimestamp': 1689957331,
-        'toAddressId': '329013',
+        'id': '931314',
+        'chainId': 'isun',
+        'createdTimestamp': 1607957394,
+        'from': [
+          {'type': 'address', 'address': '130008'},
+          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        ],
+        'to': [
+          {'type': 'contract', 'address': '330029'},
+          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        ],
+        'type': 'Evidence',
         'status': 'SUCCESS',
-      },
-      {
-        'id': '932726',
-        'createdTimestamp': 1692977381,
-        'toAddressId': '339103',
-        'status': 'PENDING',
       },
       //...
     ],
     'publicTag': ['PUBLIC_TAG.UNKNOWN_USER'],
   };
+
   res.status(200).json(result);
 }

@@ -2,11 +2,17 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
+type AddressInfo = {
+  type: 'address' | 'contract';
+  address: string;
+};
+
 type TransactionData = {
   id: string;
   chainId: string;
   createdTimestamp: number;
-  toAddressId: string;
+  from: AddressInfo[];
+  to: AddressInfo[];
   status: 'PENDING' | 'SUCCESS' | 'FAILED';
 };
 
@@ -32,21 +38,36 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'content': '',
     'transactionData': [
       {
-        'id': '918436',
+        'id': '915024',
         'chainId': 'btc',
         'createdTimestamp': 1682817342,
-        'toAddressId': '313823',
-        'status': 'FAILED',
+        'from': [
+          {'type': 'address', 'address': '114007'},
+          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        ],
+        'to': [
+          {'type': 'contract', 'address': '311382'},
+          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        ],
+        'status': 'SUCCESS',
       },
       {
-        'id': '913827',
+        'id': '912299',
         'chainId': 'btc',
         'createdTimestamp': 1684029313,
-        'toAddressId': '309135',
-        'status': 'SUCCESS',
+        'from': [
+          {'type': 'address', 'address': '110132'},
+          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        ],
+        'to': [
+          {'type': 'contract', 'address': '310683'},
+          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        ],
+        'status': 'FAILED',
       },
       //...
     ],
   };
+
   res.status(200).json(result);
 }
