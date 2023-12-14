@@ -14,7 +14,7 @@ interface IBlacklistItemProps {
 
 const BlacklistItem = ({address}: IBlacklistItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {id, chainId, lastestActiveTime, publicTag} = address;
+  const {id, chainId, latestActiveTime, publicTag} = address;
 
   const [sinceTime, setSinceTime] = useState(0);
 
@@ -25,10 +25,10 @@ const BlacklistItem = ({address}: IBlacklistItemProps) => {
   useEffect(() => {
     clearTimeout(timer);
 
-    // Info: (20231113 - Julian) 算出 lastestActiveTime 距離現在過了多少時間
+    // Info: (20231113 - Julian) 算出 latestActiveTime 距離現在過了多少時間
     timer = setTimeout(() => {
       const now = Math.ceil(Date.now() / 1000);
-      const timeSpan = now - lastestActiveTime;
+      const timeSpan = now - latestActiveTime;
       setSinceTime(timeSpan);
     }, 1000);
 

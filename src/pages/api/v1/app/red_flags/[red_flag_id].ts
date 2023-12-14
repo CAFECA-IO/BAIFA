@@ -17,7 +17,7 @@ type ResponseData = {
   address: string;
   redFlagType: string;
   createdTimestamp: number;
-  interactedAddressIds: string[];
+  interactedAddressCount: string[];
   totalAmount: number;
   transactionData: TransactionData[];
 };
@@ -30,7 +30,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'address': '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
     'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_WITHDRAW',
     'createdTimestamp': 1686579200,
-    'interactedAddressIds': ['140197', '141253', '144282', '149371'],
+    'interactedAddressCount': ['140197', '141253', '144282', '149371'],
     'totalAmount': 100,
     'transactionData': [
       {

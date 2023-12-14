@@ -22,7 +22,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'chainId': 'bit',
       'chainName': 'Bitcoin',
-      'chainIcon': '/currencies/btc.svg',
+      'chainIcon': '/currencies/bit.svg',
       'blocks': 67890,
       'transactions': 987654,
     },

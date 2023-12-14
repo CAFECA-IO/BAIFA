@@ -106,7 +106,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     })
   ) : (
     // Info: (20231213 - Julian) If there is no management team
-    <></>
+    <p>None</p>
   );
 
   const displayMinerAndReward = (

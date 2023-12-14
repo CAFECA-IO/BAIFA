@@ -7,7 +7,7 @@ export interface IRedFlag {
   address: string;
   redFlagType: IRedFlagType;
   createdTimestamp: number; // 被警示的日期
-  interactedAddressIds: string[]; // 被警示交易的交易對象
+  interactedAddressCount: string[]; // 被警示交易的交易對象
   totalAmount: number; // 交易總金額
   transactionIds: string[]; // 被警示的交易記錄
 }
@@ -46,7 +46,7 @@ export const getDummyRedFlag = (
       address: '0x000000',
       redFlagType: redFlagType,
       createdTimestamp: createdTimestamp,
-      interactedAddressIds: [
+      interactedAddressCount: [
         '123201',
         '120999',
         '113992',

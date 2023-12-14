@@ -20,11 +20,11 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     address,
     chainId,
     createdTimestamp,
-    lastestActiveTime,
+    latestActiveTime,
     relatedAddressIds,
-    interactedAddressIds,
-    interactedContactIds,
-    flagging,
+    interactedAddressCount,
+    interactedContactCount,
+    flaggingCount,
     riskLevel,
     balance,
     totalSent,
@@ -37,10 +37,10 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   useEffect(() => {
     clearTimeout(timer);
 
-    // Info: (20231017 - Julian) 算出 lastestActiveTime 距離現在過了多少時間
+    // Info: (20231017 - Julian) 算出 latestActiveTime 距離現在過了多少時間
     timer = setTimeout(() => {
       const now = Math.ceil(Date.now() / 1000);
-      const timeSpan = now - lastestActiveTime;
+      const timeSpan = now - latestActiveTime;
       setSinceTime(timeSpan);
     }, 1000);
 
@@ -84,33 +84,27 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const displayInteractedWith = (
     <div className="flex items-center space-x-2 text-base">
       <div className="flex items-center whitespace-nowrap">
-        {interactedAddressIds ? (
-          interactedAddressIds.length > 0 ? (
-            <Link href={`${dynamicUrl.INTERACTION}?type=address`}>
-              <span className="mr-2 text-primaryBlue underline underline-offset-2">
-                {interactedAddressIds.length}
-              </span>
-            </Link>
-          ) : (
-            <span className="mr-2 text-primaryBlue">{interactedAddressIds.length}</span>
-          )
+        {interactedAddressCount > 0 ? (
+          <Link href={`${dynamicUrl.INTERACTION}?type=address`}>
+            <span className="mr-2 text-primaryBlue underline underline-offset-2">
+              {interactedAddressCount}
+            </span>
+          </Link>
         ) : (
-          <></>
+          <span className="mr-2 text-primaryBlue">{interactedAddressCount}</span>
         )}
         <p>{t('COMMON.ADDRESSES')} /</p>
       </div>
       <div className="flex items-center whitespace-nowrap">
-        {interactedContactIds ? (
-          interactedContactIds.length > 0 ? (
-            <Link href={`${dynamicUrl.INTERACTION}?type=contract`}>
-              <span className="mr-2 text-primaryBlue underline underline-offset-2">
-                {interactedContactIds.length}
-              </span>
-            </Link>
-          ) : (
-            <span className="mr-2 text-primaryBlue">{interactedContactIds.length}</span>
-          )
-        ) : null}
+        {interactedContactCount > 0 ? (
+          <Link href={`${dynamicUrl.INTERACTION}?type=contract`}>
+            <span className="mr-2 text-primaryBlue underline underline-offset-2">
+              {interactedContactCount}
+            </span>
+          </Link>
+        ) : (
+          <span className="mr-2 text-primaryBlue">{interactedContactCount}</span>
+        )}
         <p>{t('COMMON.CONTRACTS')}</p>
       </div>
     </div>
@@ -129,19 +123,14 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
       ? t('COMMON.RISK_MEDIUM')
       : t('COMMON.RISK_LOW');
 
-  const flaggingLink = flagging ? (
-    flagging.length > 0 ? (
+  const flaggingLink =
+    flaggingCount > 0 ? (
       <Link href={dynamicUrl.RED_FLAG}>
-        <span className="mr-2 text-primaryBlue underline underline-offset-2">
-          {flagging.length}
-        </span>
+        <span className="mr-2 text-primaryBlue underline underline-offset-2">{flaggingCount}</span>
       </Link>
     ) : (
-      <span className="mr-2 text-primaryBlue">{flagging.length}</span>
-    )
-  ) : (
-    <></>
-  );
+      <span className="mr-2 text-primaryBlue">{flaggingCount}</span>
+    );
 
   const displayRedFlag = (
     <div className="flex items-center space-x-4">

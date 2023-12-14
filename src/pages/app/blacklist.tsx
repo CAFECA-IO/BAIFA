@@ -68,8 +68,8 @@ const BlackListPage = () => {
       .sort(
         // Info: (20231113 - Julian) sort by Sorting Menu
         (a, b) => {
-          const aTimestamp = a.lastestActiveTime;
-          const bTimestamp = b.lastestActiveTime;
+          const aTimestamp = a.latestActiveTime;
+          const bTimestamp = b.latestActiveTime;
           return sorting === sortOldAndNewOptions[0]
             ? bTimestamp - aTimestamp
             : aTimestamp - bTimestamp;

@@ -6,7 +6,6 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IRedFlag} from '../../interfaces/red_flag';
 import {getChainIcon, getUnit, timestampToString} from '../../lib/common';
-import {dummyAddressData} from '../../interfaces/address';
 import {getDynamicUrl} from '../../constants/url';
 
 interface IRedFlagDetailProps {
@@ -15,14 +14,14 @@ interface IRedFlagDetailProps {
 
 const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {chainId, address, redFlagType, interactedAddressIds, createdTimestamp, totalAmount} =
+  const {chainId, address, redFlagType, interactedAddressCount, createdTimestamp, totalAmount} =
     redFlagData;
 
   const chainIcon = getChainIcon(chainId);
   const unit = getUnit(chainId);
 
-  const displayInteractedAddresses = interactedAddressIds.map((id, index) => {
-    const targetChainId = dummyAddressData.find(address => address.id === id)?.chainId ?? '';
+  const displayInteractedAddresses = interactedAddressCount.map((id, index) => {
+    const targetChainId = '242411'; //dummyAddressData.find(address => address.id === id)?.chainId ?? '';
     const addressLink = getDynamicUrl(targetChainId, `${id}`).ADDRESS;
     return (
       <Link href={addressLink} key={index}>
