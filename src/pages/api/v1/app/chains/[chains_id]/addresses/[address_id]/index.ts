@@ -36,6 +36,7 @@ type ResponseData = {
   relatedAddressIds: string[];
   interactedAddressCount: number;
   interactedContactCount: number;
+  score: number;
   reviewData: ReviewData[];
   transactionHistoryData: TransactionHistoryData[];
   blockProducedData: BlockProducedData[];
@@ -56,6 +57,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'relatedAddressIds': ['110029', '112840', '114007'],
     'interactedAddressCount': 3,
     'interactedContactCount': 2,
+    'score': 2.8,
     'reviewData': [
       {
         'id': 'T93015400001',
