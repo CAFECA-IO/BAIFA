@@ -21,7 +21,6 @@ import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
 import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
 import TransactionHistorySection from '../../../../../../components/transaction_history_section/transaction_history_section';
-import {dummyBlockData} from '../../../../../../interfaces/block';
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';

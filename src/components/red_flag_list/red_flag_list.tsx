@@ -46,19 +46,23 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
       .filter((redFlagData: IRedFlag) => {
         const searchTerm = searchRef.current.toLowerCase();
         const type = redFlagData.redFlagType.toLowerCase();
-        const id = redFlagData.addressId.toLowerCase();
-        return searchTerm !== '' ? type.includes(searchTerm) || id.includes(searchTerm) : true;
+        const addressId = redFlagData.addressId.toLowerCase();
+        const id = redFlagData.id.toLowerCase();
+
+        return searchTerm !== ''
+          ? type.includes(searchTerm) || addressId.includes(searchTerm) || id.includes(searchTerm)
+          : true;
       })
       // Info: (20231109 - Julian) filter by date range
-      .filter((redFlagData: IRedFlag) => {
-        const createdTimestamp = redFlagData.createdTimestamp;
-        const start = period.startTimeStamp;
-        const end = period.endTimeStamp;
-        // Info: (20231109 - Julian) if start and end are 0, it means that there is no period filter
-        const isCreatedTimestampInRange =
-          start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-        return isCreatedTimestampInRange;
-      })
+      // .filter((redFlagData: IRedFlag) => {
+      //   const createdTimestamp = redFlagData.createdTimestamp;
+      //   const start = period.startTimeStamp;
+      //   const end = period.endTimeStamp;
+      //   // Info: (20231109 - Julian) if start and end are 0, it means that there is no period filter
+      //   const isCreatedTimestampInRange =
+      //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+      //   return isCreatedTimestampInRange;
+      // })
       // Info: (20231109 - Julian) filter by type
       .filter((redFlagData: IRedFlag) => {
         const type = redFlagData.redFlagType.toLowerCase();

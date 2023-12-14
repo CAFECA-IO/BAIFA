@@ -9,6 +9,7 @@ import {IBlockDetail} from '../interfaces/block';
 import {ITransaction, ITransactionDetail} from '../interfaces/transaction';
 import {IAddress} from '../interfaces/address';
 import {IReviews} from '../interfaces/review';
+import {IRedFlag} from '../interfaces/red_flag';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -31,6 +32,7 @@ export interface IMarketContext {
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
   getAddressDetail: (chainId: string, addressId: string) => Promise<IAddress>;
   getReviews: (chainId: string, addressId: string) => Promise<IReviews>;
+  getRedFlags: (chainId: string, addressId: string) => Promise<IRedFlag[]>;
 
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
@@ -49,6 +51,7 @@ export const MarketContext = createContext<IMarketContext>({
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressDetail: () => Promise.resolve({} as IAddress),
   getReviews: () => Promise.resolve({} as IReviews),
+  getRedFlags: () => Promise.resolve([] as IRedFlag[]),
 
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
@@ -213,6 +216,19 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getRedFlags = useCallback(async (chainId: string, addressId: string) => {
+    let data: IRedFlag[] = [];
+    try {
+      const response = await fetch(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}/red_flags`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getRedFlags error', error);
+    }
+    return data;
+  }, []);
+
   const defaultValues = {
     init,
     promotionData: promotionRef.current,
@@ -226,6 +242,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getTransactionDetail,
     getAddressDetail,
     getReviews,
+    getRedFlags,
 
     getSearchResult,
     getSuggestions,

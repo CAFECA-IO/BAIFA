@@ -67,7 +67,8 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
 
   const displayRelatedAddress = relatedAddressIds ? (
     relatedAddressIds.map((id, index) => {
-      const targetChainId = '232424'; //dummyAddressData.find(address => address.id === id)?.chainId ?? '';
+      // ToDo: (20231214 - Julian) get target chain id
+      const targetChainId = '232424';
       const addressLink = getDynamicUrl(targetChainId, `${id}`).ADDRESS;
       return (
         <Link href={addressLink} key={index}>
