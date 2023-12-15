@@ -41,24 +41,19 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
         const searchTerm = searchRef.current.toLowerCase();
         const transactionId = transaction.id.toString().toLowerCase();
         const status = transaction.status.toLowerCase();
-        const fromAddress = transaction.from
-          ? transaction.from.map(f => f.address.toLowerCase())
-          : [];
-        const toAddress = transaction.to ? transaction.to.map(t => t.address.toLowerCase()) : [];
+        const toAddress = transaction.to ? transaction.to.map(t => t.address).join(',') : '';
 
         return searchTerm !== ''
           ? transactionId.includes(searchTerm) ||
               status.includes(searchTerm) ||
-              fromAddress.includes(searchTerm) ||
               toAddress.includes(searchTerm)
           : true;
       })
-      // Info: (20231113 - Julian) filter by address
-      // .filter((transaction: ITransaction) => {
-      //   return filterAddress !== addressOptions[0]
-      //     ? transaction.fromAddressId === filterAddress
-      //     : true;
-      // })
+      //Info: (20231113 - Julian) filter by to
+      .filter((transaction: ITransaction) => {
+        const toAddress = transaction.to ? transaction.to.map(t => t.address) : [];
+        return filterAddress !== addressOptions[0] ? toAddress.includes(filterAddress) : true;
+      })
       .sort((a: ITransaction, b: ITransaction) => {
         return sorting === sortOldAndNewOptions[0]
           ? // Info: (20231113 - Julian) Newest
@@ -74,7 +69,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
 
   // Info: (20231113 - Julian) Pagination
   const transactionList = filteredTransactions.slice(startIdx, endIdx).map((transaction, index) => {
-    const {id, chainId, createdTimestamp, status /* fromAddressId */} = transaction;
+    const {id, chainId, createdTimestamp, status} = transaction;
     const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
 
     const createdStr = timestampToString(createdTimestamp);

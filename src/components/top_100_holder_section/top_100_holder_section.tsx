@@ -42,7 +42,9 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
       // Info: (20231101 - Julian) filter by search term
       const searchTerm = searchRef.current.toLowerCase();
       const addressId = holder.addressId.toString().toLowerCase();
-      const publicTag = holder.publicTag ? holder.publicTag.map(tag => tag.toLowerCase()) : [];
+      const publicTag = holder.publicTag
+        ? holder.publicTag.map(tag => tag.toLowerCase()).join(',')
+        : '';
       return searchTerm !== ''
         ? addressId.includes(searchTerm) || publicTag.includes(searchTerm)
         : true;

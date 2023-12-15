@@ -7,7 +7,7 @@ import {ITransaction} from '../../interfaces/transaction';
 import SearchBar from '../search_bar/search_bar';
 import DatePicker from '../date_picker/date_picker';
 import SortingMenu from '../sorting_menu/sorting_menu';
-import {defaultPeriod, sortOldAndNewOptions} from '../../constants/config';
+import {default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
 
 interface ITransactionTabProps {
   transactionList: ITransaction[];
@@ -17,7 +17,7 @@ const TransactionTab = ({transactionList}: ITransactionTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [search, setSearch, searchRef] = useStateRef('');
-  const [period, setPeriod] = useState(defaultPeriod);
+  const [period, setPeriod] = useState(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactionList);
 

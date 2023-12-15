@@ -32,7 +32,7 @@ export const WEEK_LIST = [
 ];
 
 export const sortOldAndNewOptions = ['SORTING.NEWEST', 'SORTING.OLDEST'];
-export const defaultPeriod = {
+export const default30DayPeriod = {
   startTimeStamp: Math.floor(Date.now() / 1000) - 86400 * 30,
   endTimeStamp: Math.floor(Date.now() / 1000),
 };

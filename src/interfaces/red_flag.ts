@@ -1,4 +1,5 @@
 import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
+import {ITransaction} from './transaction';
 
 export interface IRedFlag {
   id: string;
@@ -13,7 +14,7 @@ export interface IRedFlagDetail extends IRedFlag {
   address: string;
   interactedAddressCount: string[]; // 被警示交易的交易對象
   totalAmount: number; // 交易總金額
-  transactionIds: string[]; // 被警示的交易記錄
+  transactionData: ITransaction[]; // 被警示的交易記錄
 }
 
 export const getDummyRedFlag = (

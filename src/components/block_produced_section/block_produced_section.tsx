@@ -6,7 +6,7 @@ import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {ITEM_PER_PAGE, defaultPeriod, sortOldAndNewOptions} from '../../constants/config';
+import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
 import {roundToDecimal, timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
@@ -25,7 +25,7 @@ const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps
   const [filteredBlocks, setFilteredBlocks] = useState<IProductionBlock[]>(blocks);
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [period, setPeriod] = useState(defaultPeriod);
+  const [period, setPeriod] = useState(default30DayPeriod);
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;

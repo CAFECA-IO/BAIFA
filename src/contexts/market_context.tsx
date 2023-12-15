@@ -5,11 +5,11 @@ import {IChain, IChainDetail} from '../interfaces/chain';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
-import {IBlockDetail, IBlock} from '../interfaces/block';
+import {IBlock, IBlockDetail} from '../interfaces/block';
 import {ITransaction, ITransactionDetail} from '../interfaces/transaction';
 import {IAddress} from '../interfaces/address';
 import {IReviews} from '../interfaces/review';
-import {IRedFlag} from '../interfaces/red_flag';
+import {IRedFlag, IRedFlagDetail} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContract} from '../interfaces/contract';
 import {IEvidence} from '../interfaces/evidence';
@@ -52,7 +52,7 @@ export interface IMarketContext {
   getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetail>;
   getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlag[]>;
   getAllRedFlags: () => Promise<IRedFlag[]>;
-
+  getRedFlagDetail: (redFlagId: string) => Promise<IRedFlagDetail>;
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
 }
@@ -81,7 +81,7 @@ export const MarketContext = createContext<IMarketContext>({
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetail),
   getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlag[]),
   getAllRedFlags: () => Promise.resolve([] as IRedFlag[]),
-
+  getRedFlagDetail: () => Promise.resolve({} as IRedFlagDetail),
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
 });
@@ -392,6 +392,19 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getRedFlagDetail = useCallback(async (redFlagId: string) => {
+    let data: IRedFlagDetail = {} as IRedFlagDetail;
+    try {
+      const response = await fetch(`${APIURL.RED_FLAGS}/${redFlagId}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getRedFlagDetail error', error);
+    }
+    return data;
+  }, []);
+
   const defaultValues = {
     init,
     promotionData: promotionRef.current,
@@ -416,7 +429,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getCurrencyDetail,
     getRedFlagsFromCurrency,
     getAllRedFlags,
-
+    getRedFlagDetail,
     getSearchResult,
     getSuggestions,
   };

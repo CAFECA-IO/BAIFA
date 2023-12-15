@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import useStateRef from 'react-usestateref';
-import {ITEM_PER_PAGE, defaultPeriod, sortOldAndNewOptions} from '../../constants/config';
+import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
 import Pagination from '../../components/pagination/pagination';
 import SearchBar from '../../components/search_bar/search_bar';
 import SortingMenu from '../../components/sorting_menu/sorting_menu';
@@ -24,7 +24,7 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
   // Info: (20231109 - Julian) States
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [period, setPeriod] = useState(defaultPeriod);
+  const [period, setPeriod] = useState(default30DayPeriod);
   const [filteredType, setFilteredType] = useState<string>(typeOptions[0]);
   const [filteredRedFlagList, setFilteredRedFlagList] = useState<IRedFlag[]>(redFlagData);
   const [activePage, setActivePage] = useState<number>(1);
@@ -54,15 +54,15 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
           : true;
       })
       // Info: (20231109 - Julian) filter by date range
-      // .filter((redFlagData: IRedFlag) => {
-      //   const createdTimestamp = redFlagData.createdTimestamp;
-      //   const start = period.startTimeStamp;
-      //   const end = period.endTimeStamp;
-      //   // Info: (20231109 - Julian) if start and end are 0, it means that there is no period filter
-      //   const isCreatedTimestampInRange =
-      //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-      //   return isCreatedTimestampInRange;
-      // })
+      .filter((redFlagData: IRedFlag) => {
+        const createdTimestamp = redFlagData.createdTimestamp;
+        const start = period.startTimeStamp;
+        const end = period.endTimeStamp;
+        // Info: (20231109 - Julian) if start and end are 0, it means that there is no period filter
+        const isCreatedTimestampInRange =
+          start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+        return isCreatedTimestampInRange;
+      })
       // Info: (20231109 - Julian) filter by type
       .filter((redFlagData: IRedFlag) => {
         const type = redFlagData.redFlagType.toLowerCase();
@@ -91,7 +91,7 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
             setSearch={setSearch}
           />
         </div>
-        <div className="flex w-full flex-col items-center gap-2 lg:flex-row lg:justify-between">
+        <div className="flex h-72px w-full flex-col items-center gap-2 lg:flex-row lg:justify-between">
           {/* Info: (20231109 - Julian) Type Select Menu */}
           <div className="relative flex w-full items-center space-y-2 text-base lg:w-fit">
             <SortingMenu

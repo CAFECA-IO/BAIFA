@@ -4,12 +4,12 @@ import Tooltip from '../tooltip/tooltip';
 import BoltButton from '../bolt_button/bolt_button';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IRedFlag} from '../../interfaces/red_flag';
+import {IRedFlagDetail} from '../../interfaces/red_flag';
 import {getChainIcon, getUnit, timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 
 interface IRedFlagDetailProps {
-  redFlagData: IRedFlag;
+  redFlagData: IRedFlagDetail;
 }
 
 const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
@@ -17,20 +17,23 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
   const {chainId, address, redFlagType, interactedAddressCount, createdTimestamp, totalAmount} =
     redFlagData;
 
+  // ToDo: (20231215 - Julian) Get chainIcon & unit from api
   const chainIcon = getChainIcon(chainId);
   const unit = getUnit(chainId);
 
-  const displayInteractedAddresses = interactedAddressCount.map((id, index) => {
-    const targetChainId = '242411'; //dummyAddressData.find(address => address.id === id)?.chainId ?? '';
-    const addressLink = getDynamicUrl(targetChainId, `${id}`).ADDRESS;
-    return (
-      <Link href={addressLink} key={index}>
-        <BoltButton className="px-3 py-1" color="blue" style="solid">
-          {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {id}
-        </BoltButton>
-      </Link>
-    );
-  });
+  const displayInteractedAddresses = interactedAddressCount
+    ? interactedAddressCount.map((id, index) => {
+        // ToDo: (20231215 - Julian) Get chainId from api
+        const addressLink = getDynamicUrl(chainId, `${id}`).ADDRESS;
+        return (
+          <Link href={addressLink} key={index}>
+            <BoltButton className="px-3 py-1" color="blue" style="solid">
+              {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {id}
+            </BoltButton>
+          </Link>
+        );
+      })
+    : [];
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">

@@ -19,7 +19,7 @@ import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {IInteractionItem} from '../../../../../../interfaces/interaction_item';
 import {
   ITEM_PER_PAGE,
-  defaultPeriod,
+  default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
 import Pagination from '../../../../../../components/pagination/pagination';
@@ -78,7 +78,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   // Info: (20231214 - Julian) Search Filter
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [period, setPeriod] = useState(defaultPeriod);
+  const [period, setPeriod] = useState(default30DayPeriod);
   const [filteredType, setFilteredType] = useState<string>(selectedType.text);
   const [filteredInteractedList, setFilteredInteractedList] =
     useState<IInteractionItem[]>(interactedList);
@@ -130,8 +130,8 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
         const type = interactedData.type.toLowerCase();
         const id = interactedData.id.toLowerCase();
         const publicTag = interactedData.publicTag
-          ? interactedData.publicTag.map(tag => tag.toLowerCase())
-          : [];
+          ? interactedData.publicTag.map(tag => tag.toLowerCase()).join(',')
+          : '';
         return searchTerm !== ''
           ? type.includes(searchTerm) || id.includes(searchTerm) || publicTag.includes(searchTerm)
           : true;

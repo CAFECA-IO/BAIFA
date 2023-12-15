@@ -1,6 +1,9 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
+import {useState, useEffect, useContext, use} from 'react';
+import {AppContext} from '../../../contexts/app_context';
+import {MarketContext} from '../../../contexts/market_context';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
@@ -11,29 +14,66 @@ import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
-import {IRedFlag} from '../../../interfaces/red_flag';
+import {IRedFlagDetail} from '../../../interfaces/red_flag';
 import {getChainIcon} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
-import {dummyAddressData} from '../../../interfaces/address';
-import {dummyTransactionData} from '../../../interfaces/transaction';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
 
 interface IRedFlagDetailPageProps {
-  redFlagData: IRedFlag;
+  redFlagId: string;
 }
 
-const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
+const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {chainId, addressId, transactionIds} = redFlagData;
-  const transactions = dummyTransactionData.filter(transaction =>
-    transactionIds.includes(transaction.id)
-  );
+  const appCtx = useContext(AppContext);
+  const {getRedFlagDetail} = useContext(MarketContext);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [redFlagData, setRedFlagData] = useState<IRedFlagDetail>({} as IRedFlagDetail);
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+
+    const getRedFlagData = async (redFlagId: string) => {
+      try {
+        const data = await getRedFlagDetail(redFlagId);
+        setRedFlagData(data);
+      } catch (error) {
+        //console.log('getRedFlagDetail error', error);
+      }
+    };
+
+    getRedFlagData(redFlagId);
+  }, []);
+
+  let timer: NodeJS.Timeout;
+
+  useEffect(() => {
+    clearTimeout(timer);
+
+    if (redFlagData) {
+      setRedFlagData(redFlagData);
+    }
+    timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [redFlagData]);
+
+  const {chainId, addressId, transactionData} = redFlagData;
 
   const headTitle = `${t('RED_FLAG_ADDRESS_PAGE.MAIN_TITLE')} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
   const router = useRouter();
   const backClickHandler = () => router.back();
+
+  const displayedTransactionHistory = !isLoading ? (
+    <TransactionHistorySection transactions={transactionData} />
+  ) : (
+    // ToDo: (20231215 - Julian) Add loading animation
+    <h1>Loading...</h1>
+  );
 
   return (
     <>
@@ -108,9 +148,7 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
             </div>
 
             {/* Info: (20231110 - Julian)  Transaction List */}
-            <div className="w-full">
-              <TransactionHistorySection transactions={transactions} />
-            </div>
+            <div className="w-full">{displayedTransactionHistory}</div>
 
             {/* Info: (20231110 - Julian) Back Button */}
             <div className="">
@@ -135,21 +173,15 @@ const RedFlagDetailPage = ({redFlagData}: IRedFlagDetailPageProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const dummyAllRedFlags = dummyAddressData.flatMap(addressData => addressData.flagging);
+  // ToDo: (20231213 - Julian) Add dynamic paths
+  const paths = [
+    {
+      params: {redFlagId: '1'},
+      locale: 'en',
+    },
+  ];
 
-  const paths = dummyAllRedFlags
-    .flatMap(redFlag => {
-      return locales?.map(locale => ({
-        params: {redFlagId: `${redFlag.id}`},
-        locale,
-      }));
-    })
-    .filter((path): path is {params: {redFlagId: string}; locale: string} => !!path);
-
-  return {
-    paths: paths,
-    fallback: 'blocking',
-  };
+  return {paths, fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps = async ({params, locale}) => {
@@ -159,20 +191,10 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
-  const dummyAllRedFlags = dummyAddressData.flatMap(addressData => addressData.flagging);
-  const redFlagData = dummyAllRedFlags.find(redFlag => `${redFlag.id}` === params.redFlagId);
-
-  if (!redFlagData) {
-    return {
-      notFound: true,
-    };
-  }
+  const redFlagId = params.redFlagId;
 
   return {
-    props: {
-      redFlagData: redFlagData,
-      ...(await serverSideTranslations(locale as string, ['common'])),
-    },
+    props: {redFlagId, ...(await serverSideTranslations(locale as string, ['common']))},
   };
 };
 
