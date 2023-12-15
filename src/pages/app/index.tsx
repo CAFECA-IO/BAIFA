@@ -11,6 +11,8 @@ const Home = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
 
+  const headTitle = `${t('HOME_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
+
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
@@ -21,7 +23,7 @@ const Home = () => {
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>{t('HOME_PAGE.BREADCRUMB_TITLE')} - BAIFA</title>
+        <title>{headTitle}</title>
       </Head>
 
       <NavBar />

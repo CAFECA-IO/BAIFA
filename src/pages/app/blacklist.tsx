@@ -48,6 +48,7 @@ const BlackListPage = () => {
   // Info: (20231113 - Julian) Blacklist State
   const [filteredBlacklist, setFilteredBlacklist] = useState<IBlacklist[]>(blacklist);
 
+  const headTitle = `${t('BLACKLIST_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
   const crumbs = [
     {
       label: t('HOME_PAGE.BREADCRUMB_TITLE'),
@@ -97,7 +98,7 @@ const BlackListPage = () => {
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>{t('BLACKLIST_PAGE.BREADCRUMB_TITLE')} - BAIFA</title>
+        <title>{headTitle}</title>
       </Head>
 
       <NavBar />

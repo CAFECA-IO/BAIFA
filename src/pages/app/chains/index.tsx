@@ -9,6 +9,7 @@ import {useTranslation} from 'next-i18next';
 
 const ChainsPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const headTitle = `${t('CHAINS_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
 
   const appCtx = useContext(AppContext);
 
@@ -22,7 +23,7 @@ const ChainsPage = () => {
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>{t('CHAINS_PAGE.BREADCRUMB_TITLE')} - BAIFA</title>
+        <title>{headTitle}</title>
       </Head>
 
       <NavBar />

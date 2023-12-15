@@ -28,6 +28,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
   const reportTitle = BaifaReports.BALANCE_SHEETS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
   const projectName = projectId;
+  const headTitle = `${reportTitle} of ${projectName} - BAIFA`;
 
   // Info: (20231002 - Julian) Set scale for mobile view
   const pageRef = useRef<HTMLDivElement>(null);
@@ -156,9 +157,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
   return (
     <>
       <Head>
-        <title>
-          {reportTitle} of {projectName} - BAIFA
-        </title>
+        <title>{headTitle}</title>
       </Head>
 
       <div className="flex h-1000px flex-col items-center a4:h-auto">

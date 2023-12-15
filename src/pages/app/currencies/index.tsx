@@ -11,6 +11,8 @@ const CurrenciesPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
 
+  const headTitle = `${t('CURRENCIES_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
+
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
@@ -21,7 +23,7 @@ const CurrenciesPage = () => {
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>{t('CURRENCIES_PAGE.BREADCRUMB_TITLE')} - BAIFA</title>
+        <title>{headTitle}</title>
       </Head>
 
       <NavBar />
