@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import {useState, useEffect, useContext, use} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import {AppContext} from '../../../contexts/app_context';
 import {MarketContext} from '../../../contexts/market_context';
 import {useRouter} from 'next/router';
@@ -69,8 +69,10 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const backClickHandler = () => router.back();
 
   const displayedTransactionHistory = !isLoading ? (
-    <TransactionHistorySection transactions={transactionData} />
+    <></>
   ) : (
+    // ToDo: (20231215 - Julian) #394
+    //<TransactionHistorySection transactions={transactionData} />
     // ToDo: (20231215 - Julian) Add loading animation
     <h1>Loading...</h1>
   );
