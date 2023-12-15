@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import {useState, useEffect, useContext} from 'react';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
@@ -7,25 +8,28 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../components/bolt_button/bolt_button';
 import Footer from '../../../../components/footer/footer';
+import {AppContext} from '../../../../contexts/app_context';
+import {MarketContext} from '../../../../contexts/market_context';
+import {chainIdToCurrencyName} from '../../../../constants/config';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {getChainIcon} from '../../../../lib/common';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {IRedFlag} from '../../../../interfaces/red_flag';
 import RedFlagList from '../../../../components/red_flag_list/red_flag_list';
-import {dummyCurrencyData} from '../../../../interfaces/currency';
 
 interface IRedFlagOfCurrencyPageProps {
   currencyId: string;
   currencyName: string;
-  redFlagData: IRedFlag[];
 }
 
-const RedFlagOfCurrencyPage = ({
-  currencyId,
-  currencyName,
-  redFlagData,
-}: IRedFlagOfCurrencyPageProps) => {
+const RedFlagOfCurrencyPage = ({currencyId, currencyName}: IRedFlagOfCurrencyPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const appCtx = useContext(AppContext);
+  const {getRedFlagsFromCurrency} = useContext(MarketContext);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [redFlagData, setRedFlagData] = useState<IRedFlag[]>([]);
+
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} ${t(
     'COMMON.OF'
   )} ${currencyName} - BAIFA`;
@@ -33,6 +37,42 @@ const RedFlagOfCurrencyPage = ({
 
   const router = useRouter();
   const backClickHandler = () => router.back();
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+
+    const getRedFlagData = async (currencyId: string) => {
+      try {
+        const data = await getRedFlagsFromCurrency(currencyId);
+        setRedFlagData(data);
+      } catch (error) {
+        //console.log('getRedFlagsFromCurrency error', error);
+      }
+    };
+
+    getRedFlagData(currencyId);
+  }, []);
+
+  let timer: NodeJS.Timeout;
+
+  useEffect(() => {
+    clearTimeout(timer);
+
+    if (redFlagData) {
+      setRedFlagData(redFlagData);
+    }
+    timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [redFlagData]);
+
+  const displayRedFlagList = !isLoading ? (
+    <RedFlagList redFlagData={redFlagData} />
+  ) : (
+    // ToDo: (20231215 - Julian) Add loading animation
+    <h1>Loading...</h1>
+  );
 
   return (
     <>
@@ -67,9 +107,7 @@ const RedFlagOfCurrencyPage = ({
             </div>
 
             {/* Info: (20231109 - Julian) Red Flag List */}
-            <div className="w-full">
-              <RedFlagList redFlagData={redFlagData} />
-            </div>
+            <div className="w-full">{displayRedFlagList}</div>
 
             {/* Info: (20231109 - Julian) Back button */}
             <div className="">
@@ -96,19 +134,15 @@ const RedFlagOfCurrencyPage = ({
 export default RedFlagOfCurrencyPage;
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyCurrencyData
-    .flatMap(currency => {
-      return locales?.map(locale => ({
-        params: {currencyId: `${currency.currencyId}`},
-        locale,
-      }));
-    })
-    .filter((path): path is {params: {currencyId: string}; locale: string} => !!path);
+  // ToDo: (20231213 - Julian) Add dynamic paths
+  const paths = [
+    {
+      params: {currencyId: 'isun'},
+      locale: 'en',
+    },
+  ];
 
-  return {
-    paths,
-    fallback: 'blocking',
-  };
+  return {paths, fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps<IRedFlagOfCurrencyPageProps> = async ({
@@ -121,21 +155,13 @@ export const getStaticProps: GetStaticProps<IRedFlagOfCurrencyPageProps> = async
     };
   }
 
-  const originCurrencyData = dummyCurrencyData.find(
-    currency => `${currency.currencyId}` === params.currencyId
-  );
-
-  if (!originCurrencyData) {
-    return {
-      notFound: true,
-    };
-  }
+  const currencyId = params.currencyId;
+  const currencyName = '2'; //chainIdToCurrencyName[currencyId];
 
   return {
     props: {
-      currencyId: params.currencyId,
-      currencyName: originCurrencyData.currencyName,
-      redFlagData: originCurrencyData.flagging,
+      currencyId,
+      currencyName,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };

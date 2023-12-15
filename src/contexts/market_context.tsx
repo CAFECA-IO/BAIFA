@@ -50,6 +50,7 @@ export interface IMarketContext {
   getContractDetail: (chainId: string, contractId: string) => Promise<IContract>;
   getEvidenceDetail: (chainId: string, evidenceId: string) => Promise<IEvidence>;
   getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetail>;
+  getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlag[]>;
 
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
@@ -77,6 +78,7 @@ export const MarketContext = createContext<IMarketContext>({
   getContractDetail: () => Promise.resolve({} as IContract),
   getEvidenceDetail: () => Promise.resolve({} as IEvidence),
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetail),
+  getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlag[]),
 
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
@@ -363,14 +365,14 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, []);
 
   const getRedFlagsFromCurrency = useCallback(async (currencyId: string) => {
-    let data: ICurrencyDetail = {} as ICurrencyDetail;
+    let data: IRedFlag[] = [];
     try {
-      const response = await fetch(`${APIURL.CURRENCIES}/${currencyId}`, {
+      const response = await fetch(`${APIURL.CURRENCIES}/${currencyId}/red_flags`, {
         method: 'GET',
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getChains error', error);
+      //console.log('getRedFlagsFromCurrency error', error);
     }
     return data;
   }, []);
@@ -397,6 +399,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getContractDetail,
     getEvidenceDetail,
     getCurrencyDetail,
+    getRedFlagsFromCurrency,
 
     getSearchResult,
     getSuggestions,
