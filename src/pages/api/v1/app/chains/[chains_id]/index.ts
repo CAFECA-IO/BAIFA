@@ -2,6 +2,11 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
+type AddressInfo = {
+  type: string;
+  address: string;
+};
+
 type BlockData = {
   id: string;
   chainId: string;
@@ -13,6 +18,8 @@ type TransactionData = {
   id: string;
   chainId: string;
   createdTimestamp: number;
+  from: AddressInfo[];
+  to: AddressInfo[];
   type: 'Crypto Currency' | 'Evidence' | 'NFT';
   status: 'PENDING' | 'SUCCESS' | 'FAILED';
 };
@@ -56,20 +63,45 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
         'id': '930071',
         'chainId': 'isun',
         'createdTimestamp': 1607957394,
+        'from': [
+          {'type': 'address', 'address': '130294'},
+          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        ],
+        'to': [
+          {'type': 'contract', 'address': '310071'},
+          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        ],
         'type': 'Crypto Currency',
         'status': 'SUCCESS',
       },
       {
-        'id': '930072',
+        'id': '930291',
         'chainId': 'isun',
         'createdTimestamp': 1679978900,
+        'from': [
+          {'type': 'address', 'address': '130682'},
+          // ...
+          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        ],
+        'to': [
+          {'type': 'contract', 'address': '310071'},
+          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        ],
         'type': 'Evidence',
         'status': 'FAILED',
       },
       {
-        'id': '930073',
-        'chainId': 'usdt',
+        'id': '930032',
+        'chainId': 'isun',
         'createdTimestamp': 1680176231,
+        'from': [
+          {'type': 'address', 'address': '130008'},
+          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        ],
+        'to': [
+          {'type': 'contract', 'address': '310029'},
+          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        ],
         'type': 'NFT',
         'status': 'PENDING',
       },

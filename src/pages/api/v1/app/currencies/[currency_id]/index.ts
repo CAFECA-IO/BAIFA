@@ -2,6 +2,11 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 
+type AddressInfo = {
+  type: 'address' | 'contract';
+  address: string;
+};
+
 type HolderData = {
   addressId: string;
   holdingAmount: number;
@@ -13,6 +18,8 @@ type TransactionHistoryData = {
   id: string;
   chainId: string;
   createdTimestamp: number;
+  from: AddressInfo[];
+  to: AddressInfo[];
   type: 'Crypto Currency' | 'Evidence' | 'NFT';
   status: 'PENDING' | 'SUCCESS' | 'FAILED';
 };
@@ -79,21 +86,26 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'riskLevel': 'HIGH_RISK',
     'transactionHistoryData': [
       {
-        'id': '910154',
+        'id': '916841',
         'chainId': 'btc',
-        'createdTimestamp': 1679987093,
-        'type': 'Crypto Currency',
-        'status': 'SUCCESS',
-      },
-      {
-        'id': '910785',
-        'chainId': 'btc',
-        'createdTimestamp': 1689787324,
+        'createdTimestamp': 1679978987,
+        'from': [{'type': 'address', 'address': '115588'}], // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        'to': [{'type': 'contract', 'address': '311382'}],
         'type': 'Evidence',
         'status': 'FAILED',
+      },
+      {
+        'id': '914025',
+        'chainId': 'btc',
+        'createdTimestamp': 1687909392,
+        'from': [{'type': 'address', 'address': '114007'}], // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        'to': [{'type': 'contract', 'address': '311025'}],
+        'type': 'Crypto Currency',
+        'status': 'SUCCESS',
       },
       // ...other transaction history
     ],
   };
+
   res.status(200).json(result);
 }
