@@ -14,6 +14,7 @@ import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContract} from '../interfaces/contract';
 import {IEvidence} from '../interfaces/evidence';
 import {ICurrency, ICurrencyDetail} from '../interfaces/currency';
+import {IBlacklist} from '../interfaces/blacklist';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -24,6 +25,7 @@ export interface IMarketContext {
   promotionData: IPromotion;
   chainList: IChain[];
   currencyList: ICurrency[];
+  blacklist: IBlacklist[];
 
   getChains: () => Promise<void>;
   getChainDetail: (chainId: string) => Promise<IChainDetail>;
@@ -56,6 +58,7 @@ export const MarketContext = createContext<IMarketContext>({
   promotionData: defaultPromotion,
   chainList: [],
   currencyList: [],
+  blacklist: [],
 
   getChains: () => Promise.resolve(),
   getChainDetail: () => Promise.resolve({} as IChainDetail),
@@ -79,6 +82,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const [promotion, setPromotion, promotionRef] = useStateRef<IPromotion>(defaultPromotion);
   const [chainList, setChainList, chainListRef] = useStateRef<IChain[]>([]);
   const [currencyList, setCurrencyList, currencyListRef] = useStateRef<ICurrency[]>([]);
+  const [blacklist, setBlacklist, blacklistRef] = useStateRef<IBlacklist[]>([]);
 
   const getPromotion = async () => {
     let data: IPromotion = defaultPromotion;
@@ -114,15 +118,29 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getChains error', error);
+      //console.log('getCurrencies error', error);
     }
     setCurrencyList(data);
+  }, []);
+
+  const getBlacklist = useCallback(async () => {
+    let data: IBlacklist[] = [];
+    try {
+      const response = await fetch(`${APIURL.BLACKLIST}`, {
+        method: 'GET',
+      });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getBlacklist error', error);
+    }
+    setBlacklist(data);
   }, []);
 
   const init = useCallback(async () => {
     await getPromotion();
     await getChains();
     await getCurrencies();
+    await getBlacklist();
   }, []);
 
   const getSuggestions = useCallback(async (searchInput: string) => {
@@ -335,6 +353,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     promotionData: promotionRef.current,
     chainList: chainListRef.current,
     currencyList: currencyListRef.current,
+    blacklist: blacklistRef.current,
 
     getChains,
     getChainDetail,

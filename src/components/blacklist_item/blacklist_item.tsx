@@ -4,17 +4,17 @@ import {useState, useEffect} from 'react';
 import BoltButton from '../../components/bolt_button/bolt_button';
 import {getChainIcon, getTimeString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
-import {IAddress} from '../../interfaces/address';
+import {IBlacklist} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 
 interface IBlacklistItemProps {
-  address: IAddress;
+  blacklistAddress: IBlacklist;
 }
 
-const BlacklistItem = ({address}: IBlacklistItemProps) => {
+const BlacklistItem = ({blacklistAddress}: IBlacklistItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {id, chainId, latestActiveTime, publicTag} = address;
+  const {id, chainId, latestActiveTime, publicTag} = blacklistAddress;
 
   const [sinceTime, setSinceTime] = useState(0);
 

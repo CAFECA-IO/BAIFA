@@ -88,6 +88,10 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
     Math.ceil(interactedList.length / ITEM_PER_PAGE)
   );
 
+  // Info: (20231214 - Julian) 取得 type 的查詢字串
+  const queryType =
+    typeOptions.find(typeOption => typeOption.text === filteredType)?.queryString ?? '';
+
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
@@ -95,9 +99,6 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   }, []);
 
   useEffect(() => {
-    const queryType =
-      typeOptions.find(typeOption => typeOption.text === filteredType)?.queryString ?? '';
-
     const getInteractionData = async (chainId: string, addressId: string, type: string) => {
       const interactedList = await getInteractions(chainId, addressId, type);
       setInteractedList(interactedList);

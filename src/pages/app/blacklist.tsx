@@ -1,5 +1,7 @@
 import Head from 'next/head';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
+import {AppContext} from '../../contexts/app_context';
+import {MarketContext} from '../../contexts/market_context';
 import useStateRef from 'react-usestateref';
 import NavBar from '../../components/nav_bar/nav_bar';
 import Breadcrumb from '../../components/breadcrumb/breadcrumb';
@@ -7,7 +9,7 @@ import SortingMenu from '../../components/sorting_menu/sorting_menu';
 import Pagination from '../../components/pagination/pagination';
 import SearchBar from '../../components/search_bar/search_bar';
 import BlacklistItem from '../../components/blacklist_item/blacklist_item';
-import {dummyBlacklistAddressData, IAddress} from '../../interfaces/address';
+import {IBlacklist} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ILocale, TranslateFunction} from '../../interfaces/locale';
@@ -16,11 +18,19 @@ import {sortOldAndNewOptions} from '../../constants/config';
 
 const BlackListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const appCtx = useContext(AppContext);
+  const {blacklist} = useContext(MarketContext);
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+  }, []);
 
   // Info: (20231113 - Julian) Flagging Options
-  const flaggingType = dummyBlacklistAddressData
-    .flatMap(address => address.flagging)
-    .map(flagging => flagging.redFlagType);
+  const flaggingType = blacklist
+    .flatMap(address => address.flaggingRecords)
+    .map(flagging => flagging);
   const flaggingOptions = ['SORTING.ALL'];
   flaggingType.forEach(type => {
     if (!flaggingOptions.includes(type)) {
@@ -36,7 +46,7 @@ const BlackListPage = () => {
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredFlagging, setFilteredFlagging] = useState<string>(flaggingOptions[0]);
   // Info: (20231113 - Julian) Blacklist State
-  const [filteredBlacklist, setFilteredBlacklist] = useState<IAddress[]>(dummyBlacklistAddressData);
+  const [filteredBlacklist, setFilteredBlacklist] = useState<IBlacklist[]>(blacklist);
 
   const crumbs = [
     {
@@ -50,7 +60,7 @@ const BlackListPage = () => {
   ];
 
   useEffect(() => {
-    const result = dummyBlacklistAddressData
+    const result = blacklist
       .filter(address => {
         // Info: (20231113 - Julian) filter by Search bar
         const searchTerm = searchRef.current.toLowerCase();
@@ -59,11 +69,9 @@ const BlackListPage = () => {
       })
       .filter(address => {
         // Info: (20231113 - Julian) filter by Flagging Select Menu
-        const flagging = address.flagging;
+        const flagging = address.flaggingRecords;
         const type = filteredFlagging;
-        return type === 'SORTING.ALL'
-          ? true
-          : flagging.some(flagging => flagging.redFlagType === type);
+        return type === 'SORTING.ALL' ? true : flagging.some(flagging => flagging === type);
       })
       .sort(
         // Info: (20231113 - Julian) sort by Sorting Menu
@@ -82,7 +90,7 @@ const BlackListPage = () => {
   }, [search, filteredFlagging, sorting]);
 
   const displayBlacklist = filteredBlacklist.slice(0, 10).map((address, index) => {
-    return <BlacklistItem key={index} address={address} />;
+    return <BlacklistItem key={index} blacklistAddress={address} />;
   });
 
   return (
@@ -121,7 +129,7 @@ const BlackListPage = () => {
                     setSearch={setSearch}
                   />
                 </div>
-                <div className="flex w-full flex-col items-center gap-2 lg:flex-row lg:justify-between">
+                <div className="flex h-72px w-full flex-col items-center gap-2 lg:flex-row lg:justify-between">
                   {/* Info: (20231113 - Julian) Flagging Select Menu */}
                   <div className="relative flex w-full items-center space-y-2 text-base lg:w-fit">
                     <SortingMenu
