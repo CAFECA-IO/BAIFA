@@ -156,7 +156,7 @@ export const getStaticProps: GetStaticProps<IRedFlagOfCurrencyPageProps> = async
   }
 
   const currencyId = params.currencyId;
-  const currencyName = '2'; //chainIdToCurrencyName[currencyId];
+  const currencyName = chainIdToCurrencyName.find(chain => chain.id === currencyId)?.name ?? '';
 
   return {
     props: {

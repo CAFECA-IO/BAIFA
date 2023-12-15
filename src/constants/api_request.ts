@@ -48,6 +48,7 @@ export const APIURL = {
   CHAINS: `${BFA_API_URL}/${BFA_API_VERSION}/app/chains`,
   CURRENCIES: `${BFA_API_URL}/${BFA_API_VERSION}/app/currencies`,
   BLACKLIST: `${BFA_API_URL}/${BFA_API_VERSION}/app/blacklist`,
+  RED_FLAGS: `${BFA_API_URL}/${BFA_API_VERSION}/app/red_flags`,
 
   WEBSITE_RESERVE: 'https://api.tidebit-defi.com/public/reserve',
 };

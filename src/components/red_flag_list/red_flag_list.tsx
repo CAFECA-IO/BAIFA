@@ -78,7 +78,7 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
     setFilteredRedFlagList(searchResult);
     setActivePage(1);
     setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
-  }, [filteredType, search, period, sorting]);
+  }, [redFlagData, filteredType, search, period, sorting]);
 
   return (
     <>

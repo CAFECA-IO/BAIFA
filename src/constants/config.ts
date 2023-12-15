@@ -187,10 +187,10 @@ export const pluginReportsList = [
 /* Info: (20230814 - Julian) ----- Chains ----- */
 export const chainList = ['eth', 'bit', 'usdt', 'bnb', 'isun'];
 
-export const chainIdToCurrencyName = {
-  eth: 'ETH',
-  bit: 'BTC',
-  usdt: 'USDT',
-  bnb: 'BNB',
-  isun: 'ISUN',
-};
+export const chainIdToCurrencyName = [
+  {id: 'eth', name: 'Ethereum'},
+  {id: 'btc', name: 'Bitcoin'},
+  {id: 'usdt', name: 'Tether'},
+  {id: 'bnb', name: 'Binance Coin'},
+  {id: 'isun', name: 'iSunCloud'},
+];
