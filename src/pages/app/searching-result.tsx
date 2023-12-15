@@ -15,7 +15,7 @@ import {sortOldAndNewOptions, ITEM_PER_PAGE, defaultPeriod} from '../../constant
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {ILocale, TranslateFunction} from '../../interfaces/locale';
-import {dummySearchResult, ISearchResult} from '../../interfaces/search_result';
+import {ISearchResult} from '../../interfaces/search_result';
 
 const SearchingResultPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -51,6 +51,8 @@ const SearchingResultPage = () => {
   const shadowClassNameR =
     'after:absolute after:-inset-1 after:ml-auto after:top-0 after:block xl:after:hidden after:w-5 after:bg-gradient-to-l after:from-black after:to-transparent';
 
+  const [searchResult, setSearchResult] = useState<ISearchResult[]>([]);
+  const [filteredResult, setFilteredResult] = useState<ISearchResult[]>([]);
   // Info: (20231114 - Julian) Filter State
   const [searchText, setSearchText, searchTextRef] = useStateRef<string>(keyWord);
   const [sorting, setSorting] = useState(sortingOptions[0]);
@@ -58,9 +60,7 @@ const SearchingResultPage = () => {
   const [period, setPeriod] = useState(defaultPeriod);
   // Info: (20231114 - Julian) Pagination State
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(dummySearchResult.length / ITEM_PER_PAGE));
-  const [searchResult, setSearchResult] = useState<ISearchResult[]>([]);
-  const [filteredResult, setFilteredResult] = useState<ISearchResult[]>([]);
+  const [totalPages, setTotalPages] = useState(Math.ceil(filteredResult.length / ITEM_PER_PAGE));
 
   // Info: (20231115 - Julian) Pagination Index
   const endIdx = activePage * ITEM_PER_PAGE;

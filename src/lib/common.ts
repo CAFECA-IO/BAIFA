@@ -1,5 +1,4 @@
 import {MONTH_LIST} from '../constants/config';
-import {dummyCurrencyData} from '../interfaces/currency';
 
 export const timestampToString = (timestamp: number) => {
   if (timestamp === 0)
@@ -145,6 +144,14 @@ export const getChainIcon = (chainId: string) => {
 };
 
 export const getUnit = (chainId: string) => {
+  const dummyCurrencyData = [
+    {currencyId: 'btc', currencyName: 'Bitcoin', unit: 'BTC'},
+    {currencyId: 'eth', currencyName: 'Ethereum', unit: 'ETH'},
+    {currencyId: 'isun', currencyName: 'iSunCloud', unit: 'BOLT'},
+    {currencyId: 'usdt', currencyName: 'Tether', unit: 'USDT'},
+    {currencyId: 'bnb', currencyName: 'Binace Coin', unit: 'BNB'},
+  ];
+
   return dummyCurrencyData.find(currency => currency.currencyId === chainId)?.unit ?? '';
 };
 
