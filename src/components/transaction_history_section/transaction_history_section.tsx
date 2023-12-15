@@ -19,11 +19,9 @@ interface ITransactionHistorySectionProps {
 const TransactionHistorySection = ({transactions}: ITransactionHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  const addressOptions = [
-    'All',
-    // Info: (20231215 - Julian) 取得所有的 to address
-    ...transactions.flatMap((transaction: ITransaction) => transaction.to.map(to => to.address)),
-  ];
+  const addressOptions = ['All'];
+  // Info: (20231215 - Julian) 取得所有的 to address
+  if (transactions) addressOptions.push(...transactions.map(transaction => transaction.id));
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(1 / ITEM_PER_PAGE));

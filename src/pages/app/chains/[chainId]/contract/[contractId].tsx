@@ -87,12 +87,11 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
   const displayedTransactionHistory = !isLoading ? (
     <></>
   ) : (
-    // ToDo: (20231214 - Julian) Contract Transaction History
-    // <TransactionHistorySection transactions={transactionHistoryData} />
+    // ToDo: (20231215 - Julian) #394
+    //<TransactionHistorySection transactions={transactionHistoryData} />
     // ToDo: (20231214 - Julian) Add loading animation
     <h1>Loading...</h1>
   );
-
   return (
     <>
       <Head>
