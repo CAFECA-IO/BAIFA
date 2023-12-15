@@ -7,6 +7,12 @@ export interface IBlock {
   createdTimestamp: number;
 }
 
+export interface IProductionBlock extends IBlock {
+  reward: number;
+  unit: string;
+  chainIcon: string;
+}
+
 export interface IBlockDetail extends IBlock {
   managementTeam: string[];
   transactionCount: number;

@@ -1,5 +1,5 @@
 import {IRiskLevel, RiskLevel} from '../constants/risk_level';
-import {IBlock} from './block';
+import {IProductionBlock} from './block';
 import {IInteractionItem} from './interaction_item';
 import {IRedFlag} from './red_flag';
 import {IReviewDetail} from './review';
@@ -17,7 +17,7 @@ export interface IAddress extends IInteractionItem {
   balance?: number;
   totalSent?: number;
   totalReceived?: number;
-  blockProducedData: IBlock[];
+  blockProducedData: IProductionBlock[];
   reviewData: IReviewDetail[];
 }
 

@@ -197,7 +197,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
           </Tooltip>
         </div>
         <p>
-          {size} {/* ToDo: (20230912 - Julian) uint */}
+          {size}
           <span> bytes</span>
         </p>
       </div>

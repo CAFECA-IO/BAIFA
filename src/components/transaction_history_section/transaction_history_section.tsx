@@ -21,7 +21,8 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
 
   const addressOptions = [
     'All',
-    //...transactions.map((transaction: ITransaction) => `${transaction.fromAddressId}`),
+    // Info: (20231215 - Julian) 取得所有的 to address
+    ...transactions.flatMap((transaction: ITransaction) => transaction.to.map(to => to.address)),
   ];
 
   const [activePage, setActivePage] = useState(1);
@@ -40,16 +41,13 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
         const searchTerm = searchRef.current.toLowerCase();
         const transactionId = transaction.id.toString().toLowerCase();
         const status = transaction.status.toLowerCase();
-        //const blockId = transaction.blockId.toString().toLowerCase();
-        //const fromAddress = transaction.fromAddressId.toString().toLowerCase();
-        //const toAddress = transaction.toAddressId.toString().toLowerCase();
+        const toAddress = transaction.to ? transaction.to.map(t => t.address.toLowerCase()) : [];
 
         return searchTerm !== ''
-          ? transactionId.includes(searchTerm) || status.includes(searchTerm)
-          : //blockId.includes(searchTerm) ||
-            //fromAddress.includes(searchTerm) ||
-            //toAddress.includes(searchTerm)
-            true;
+          ? transactionId.includes(searchTerm) ||
+              status.includes(searchTerm) ||
+              toAddress.includes(searchTerm)
+          : true;
       })
       // Info: (20231113 - Julian) filter by address
       // .filter((transaction: ITransaction) => {

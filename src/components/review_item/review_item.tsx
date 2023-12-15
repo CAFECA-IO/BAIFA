@@ -43,7 +43,7 @@ const ReviewItem = (review: ReviewItemProps) => {
       {/* Info: (20231031 - Julian) Divider */}
       <span className="my-2 h-px w-full bg-darkPurple4 lg:mx-10 lg:h-full lg:w-px"></span>
       {/* Info: (20231031 - Julian) Review Content */}
-      <div className="line-clamp-4 flex-1 text-sm lg:line-clamp-2">{content}</div>
+      <div className="line-clamp-3 flex-1 text-sm leading-5">{content}</div>
       {/* Info: (20231031 - Julian) Reviewer & Date */}
       <div className="mt-2 flex h-full flex-col items-start space-y-2 text-sm text-lilac lg:ml-10 lg:mt-0 lg:items-end lg:justify-between">
         <p>{timestampToString(createdTimestamp).date}</p>

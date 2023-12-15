@@ -7,7 +7,7 @@ import TransactionTab from '../../../../components/transaction_tab/transaction_t
 import Footer from '../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyTransactionData, ITransaction} from '../../../../interfaces/transaction';
+import {ITransaction} from '../../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {getChainIcon} from '../../../../lib/common';
@@ -144,23 +144,8 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
 
   const chainId = params.chainId;
 
-  // Info: (20231211 - Julian) Get Data from API
-  const transactionList = dummyTransactionData.filter(
-    transaction => transaction.chainId === chainId
-  );
-
-  if (!transactionList) {
-    return {
-      notFound: true,
-    };
-  }
-
   return {
-    props: {
-      chainId: chainId,
-      transactionList: transactionList,
-      ...(await serverSideTranslations(locale as string, ['common'])),
-    },
+    props: {chainId, ...(await serverSideTranslations(locale as string, ['common']))},
   };
 };
 
