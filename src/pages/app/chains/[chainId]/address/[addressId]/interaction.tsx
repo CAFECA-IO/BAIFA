@@ -163,7 +163,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
     setFilteredInteractedList(searchResult);
     setActivePage(1);
     setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
-  }, [filteredInteractedList, filteredType, search, period, sorting]);
+  }, [interactedList, filteredType, search, period, sorting]);
 
   const displayedHeader = (
     <div className="flex w-full items-center justify-start">

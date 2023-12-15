@@ -5,7 +5,7 @@ import {IChain, IChainDetail} from '../interfaces/chain';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
-import {IBlockDetail} from '../interfaces/block';
+import {IBlockDetail, IBlock} from '../interfaces/block';
 import {ITransaction, ITransactionDetail} from '../interfaces/transaction';
 import {IAddress} from '../interfaces/address';
 import {IReviews} from '../interfaces/review';
@@ -26,15 +26,17 @@ export interface IMarketContext {
   chainList: IChain[];
   currencyList: ICurrency[];
   blacklist: IBlacklist[];
+  blocksOfChain: IBlock[];
 
   getChains: () => Promise<void>;
   getChainDetail: (chainId: string) => Promise<IChainDetail>;
-  getChainDetailByPeriod: (
-    chainId: string,
-    startDate: number,
-    endDate: number
-  ) => Promise<IChainDetail>;
   getBlockDetail: (chainId: string, blockId: string) => Promise<IBlockDetail>;
+  regetBlockByPeriod: (chainId: string, startDate: number, endDate: number) => Promise<void>;
+  getInteractionTransaction: (
+    chainId: string,
+    addressA: string,
+    addressB: string
+  ) => Promise<ITransaction[]>;
   getTransactionList: (chainId: string, blockId: string) => Promise<ITransaction[]>;
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
   getAddressDetail: (chainId: string, addressId: string) => Promise<IAddress>;
@@ -59,11 +61,13 @@ export const MarketContext = createContext<IMarketContext>({
   chainList: [],
   currencyList: [],
   blacklist: [],
+  blocksOfChain: [],
 
   getChains: () => Promise.resolve(),
   getChainDetail: () => Promise.resolve({} as IChainDetail),
-  getChainDetailByPeriod: () => Promise.resolve({} as IChainDetail),
   getBlockDetail: () => Promise.resolve({} as IBlockDetail),
+  regetBlockByPeriod: () => Promise.resolve(),
+  getInteractionTransaction: () => Promise.resolve([] as ITransaction[]),
   getTransactionList: () => Promise.resolve({} as ITransaction[]),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressDetail: () => Promise.resolve({} as IAddress),
@@ -83,6 +87,11 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const [chainList, setChainList, chainListRef] = useStateRef<IChain[]>([]);
   const [currencyList, setCurrencyList, currencyListRef] = useStateRef<ICurrency[]>([]);
   const [blacklist, setBlacklist, blacklistRef] = useStateRef<IBlacklist[]>([]);
+
+  const [blocksOfChain, setBlocksOfChain, blocksOfChainRef] = useStateRef<IBlock[]>([]);
+  const [transactionOfChain, setTransactionOfChain, transactionOfChainRef] = useStateRef<
+    ITransaction[]
+  >([]);
 
   const getPromotion = async () => {
     let data: IPromotion = defaultPromotion;
@@ -182,26 +191,6 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
-  // --------------------------------------------------------------------------------???
-  const getChainDetailByPeriod = useCallback(
-    async (chainId: string, startDate: number, endDate: number) => {
-      let data: IChainDetail = {} as IChainDetail;
-      try {
-        const response = await fetch(
-          `${APIURL.CHAINS}/${chainId}?start_date=${startDate}&end_date=${endDate}`,
-          {
-            method: 'GET',
-          }
-        );
-        data = await response.json();
-      } catch (error) {
-        //console.log('getChainDetail error', error);
-      }
-      return data;
-    },
-    []
-  );
-
   const getBlockDetail = useCallback(async (chainId: string, blockId: string) => {
     let data: IBlockDetail = {} as IBlockDetail;
     try {
@@ -214,6 +203,44 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     }
     return data;
   }, []);
+
+  const regetBlockByPeriod = useCallback(
+    async (chainId: string, startDate: number, endDate: number) => {
+      let data: IBlock[] = [];
+      try {
+        const response = await fetch(
+          `${APIURL.CHAINS}/${chainId}/blocks?start_date=${startDate}&end_date=${endDate}`,
+          {
+            method: 'GET',
+          }
+        );
+        data = await response.json();
+      } catch (error) {
+        //console.log('regetBlockByPeriod error', error);
+      }
+      setBlocksOfChain(data);
+    },
+    []
+  );
+
+  const getInteractionTransaction = useCallback(
+    async (chainId: string, addressA: string, addressB: string) => {
+      let data: ITransaction[] = [];
+      try {
+        const response = await fetch(
+          `${APIURL.CHAINS}/${chainId}/transactions?address=${addressA},${addressB}`,
+          {
+            method: 'GET',
+          }
+        );
+        data = await response.json();
+      } catch (error) {
+        //console.log('getInteractionTransaction error', error);
+      }
+      return data;
+    },
+    []
+  );
 
   const getTransactionList = useCallback(async (chainId: string, blockId: string) => {
     let data: ITransaction[] = [];
@@ -354,11 +381,13 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     chainList: chainListRef.current,
     currencyList: currencyListRef.current,
     blacklist: blacklistRef.current,
+    blocksOfChain: blocksOfChainRef.current,
 
     getChains,
     getChainDetail,
-    getChainDetailByPeriod,
     getBlockDetail,
+    regetBlockByPeriod,
+    getInteractionTransaction,
     getTransactionList,
     getTransactionDetail,
     getAddressDetail,
