@@ -324,7 +324,7 @@
     "TOP_100_HOLDER_PLACEHOLDER": "Search Address",
     "TRANSACTION_HISTORY_TITLE": "Transaction History",
     "TRANSACTION_HISTORY_PLACEHOLDER": "Search in Transaction History",
-    "TRANSACTION_HISTORY_TO_ADDRESS": "To Address",
+    "TRANSACTION_HISTORY_TRANSACTION_ID": "Transaction",
     "BLOCK_PRODUCED_HISTORY_TITLE": "Block Produced History",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "Search in Block Produced History"
   },

@@ -41,11 +41,15 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
         const searchTerm = searchRef.current.toLowerCase();
         const transactionId = transaction.id.toString().toLowerCase();
         const status = transaction.status.toLowerCase();
+        const fromAddress = transaction.from
+          ? transaction.from.map(f => f.address.toLowerCase())
+          : [];
         const toAddress = transaction.to ? transaction.to.map(t => t.address.toLowerCase()) : [];
 
         return searchTerm !== ''
           ? transactionId.includes(searchTerm) ||
               status.includes(searchTerm) ||
+              fromAddress.includes(searchTerm) ||
               toAddress.includes(searchTerm)
           : true;
       })
@@ -110,9 +114,8 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
           {/* Info: (20231113 - Julian) Transaction ID & Type */}
           <Link href={transactionLink} className="inline-flex flex-1 items-baseline space-x-2">
             <h2 className="text-sm lg:text-xl">
-              {t('COMMON.TRANSACTION_HISTORY_TO_ADDRESS')}
-              {/* ToDo: (20231113 - Julian) To Address */}
-              <span className="text-primaryBlue"> {`234234`}</span>
+              {t('COMMON.TRANSACTION_HISTORY_TRANSACTION_ID')}
+              <span className="text-primaryBlue"> {transaction.id}</span>
             </h2>
           </Link>
           {/* Info: (20231113 - Julian) Status */}
