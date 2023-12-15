@@ -25,6 +25,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     transactionCount,
     miner,
     reward,
+    unit,
     size,
   } = blockData;
   const [sinceTime, setSinceTime] = useState(0);
@@ -127,8 +128,8 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
           height={24}
         />
         <p>
-          {reward} {/* ToDo:(20230912 - Julian) unit */}
-          <span> {chainId}</span>
+          {reward}
+          <span> {unit}</span>
         </p>
       </div>
     </div>

@@ -21,7 +21,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     chainId,
     createdTimestamp,
     latestActiveTime,
-    relatedAddressIds,
+    relatedAddresses,
     interactedAddressCount,
     interactedContactCount,
     flaggingCount,
@@ -65,15 +65,13 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     </div>
   );
 
-  const displayRelatedAddress = relatedAddressIds ? (
-    relatedAddressIds.map((id, index) => {
-      // ToDo: (20231214 - Julian) get target chain id
-      const targetChainId = '232424';
-      const addressLink = getDynamicUrl(targetChainId, `${id}`).ADDRESS;
+  const displayRelatedAddress = relatedAddresses ? (
+    relatedAddresses.map((address, index) => {
+      const addressLink = getDynamicUrl(address.chainId, `${address.id}`).ADDRESS;
       return (
         <Link href={addressLink} key={index}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
-            {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {id}
+            {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {address.id}
           </BoltButton>
         </Link>
       );

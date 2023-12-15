@@ -31,16 +31,20 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
 
   // Info: (20231215 - Julian) Print all from/to address
   const fromList = from
-    ? from.map((from, index) => {
+    ? from.map((data, index) => {
         const fromLink =
-          from.type === 'ADDRESS'
-            ? getDynamicUrl(chainId, `${from}`).ADDRESS
-            : getDynamicUrl(chainId, `${from}`).CONTRACT;
+          data.type === 'address'
+            ? getDynamicUrl(chainId, `${data.address}`).ADDRESS
+            : getDynamicUrl(chainId, `${data.address}`).CONTRACT;
 
+        const fromText =
+          data.type === 'address'
+            ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')
+            : t('CONTRACT_DETAIL_PAGE.MAIN_TITLE');
         return (
           <Link href={fromLink} key={index}>
             <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-              {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {from.address}
+              {fromText} {data.address}
             </BoltButton>
           </Link>
         );
@@ -48,16 +52,20 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     : [];
 
   const toList = to
-    ? to.map((to, index) => {
+    ? to.map((data, index) => {
         const toLink =
-          to.type === 'ADDRESS'
-            ? getDynamicUrl(chainId, `${from}`).ADDRESS
-            : getDynamicUrl(chainId, `${from}`).CONTRACT;
+          data.type === 'address'
+            ? getDynamicUrl(chainId, `${data.address}`).ADDRESS
+            : getDynamicUrl(chainId, `${data.address}`).CONTRACT;
 
+        const toText =
+          data.type === 'address'
+            ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')
+            : t('CONTRACT_DETAIL_PAGE.MAIN_TITLE');
         return (
           <Link href={toLink} key={index}>
             <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-              {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {to.address}
+              {toText} {data.address}
             </BoltButton>
           </Link>
         );
