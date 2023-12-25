@@ -42,6 +42,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   }, [sinceTime]);
 
   const transactionsLink = `${getDynamicUrl(chainId, blockId).TRANSACTIONS_IN_BLOCK}`;
+  const minerLink = `${getDynamicUrl(chainId, miner).ADDRESS}`;
 
   const displayStability =
     stability === StabilityLevel.HIGH ? (
@@ -113,7 +114,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   const displayMinerAndReward = (
     <div className="flex items-center space-x-3">
       {/* Info: (20230912 - Julian) Miner */}
-      <Link href={BFAURL.COMING_SOON}>
+      <Link href={minerLink}>
         <BoltButton className="px-3 py-1" color="blue" style="solid">
           {miner}
         </BoltButton>
