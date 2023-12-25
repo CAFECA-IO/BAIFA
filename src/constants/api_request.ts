@@ -23,9 +23,9 @@ export const APIName: IAPINameConstant = {
 };
 
 export const APIURL = {
-  BALANCE_SHEET: `${API_URL}/${API_VERSION}/balance-sheet`,
-  COMPREHENSIVE_INCOME_STATEMENTS: `${API_URL}/${API_VERSION}/comprehensive-income`,
-  STATEMENTS_OF_CASH_FLOWS: `${API_URL}/${API_VERSION}/cash-flow`,
+  BALANCE_SHEET: `${API_URL}/${API_VERSION}/balance_sheet`,
+  COMPREHENSIVE_INCOME_STATEMENTS: `${API_URL}/${API_VERSION}/comprehensive_income`,
+  STATEMENTS_OF_CASH_FLOWS: `${API_URL}/${API_VERSION}/cash_flow`,
   EXCHANGE_RATES: `${API_URL}/${API_VERSION}/exchange-rates`,
 
   WEBSITE_RESERVE: 'https://api.tidebit-defi.com/public/reserve',

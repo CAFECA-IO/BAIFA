@@ -101,8 +101,8 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   const income_statements_p7_1 = createRevenueTable(
     'Trading fee',
     revenueDate,
-    endIncomeData?.income.details.transactionFee,
-    startIncomeData?.income.details.transactionFee,
+    endIncomeData?.income.details.tradingFee,
+    startIncomeData?.income.details.tradingFee,
     numeroOfTradingFee
   );
 
@@ -157,8 +157,8 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   const income_statements_p12_1 = createRevenueTable(
     'Guaranteed stop-loss fee',
     revenueDate,
-    endIncomeData?.income.details.guaranteedStopFee,
-    startIncomeData?.income.details.guaranteedStopFee,
+    endIncomeData?.income.details.guaranteedStopLossFee,
+    startIncomeData?.income.details.guaranteedStopLossFee,
     numeroOfGuaranteedStopLossFee
   );
 
@@ -167,8 +167,8 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   const income_statements_p13_1 = createRevenueTable(
     'Rebate expenses',
     revenueDate,
-    endIncomeData?.operatingExpenses.details.commissionRebates,
-    startIncomeData?.operatingExpenses.details.commissionRebates,
+    endIncomeData?.operatingExpenses.details.rebateExpenses,
+    startIncomeData?.operatingExpenses.details.rebateExpenses,
     numeroOfRebateExpenses
   );
 

@@ -122,8 +122,8 @@ export const createCISFirstPart = (
         rowType: RowType.bookkeeping,
         rowData: [
           'B011 Trading fee',
-          `$ ${roundToDecimal(+dataA.income.details.transactionFee.weightedAverageCost, 2)}`,
-          `$ ${roundToDecimal(+dataB.income.details.transactionFee.weightedAverageCost, 2)}`,
+          `$ ${roundToDecimal(+dataA.income.details.tradingFee.weightedAverageCost, 2)}`,
+          `$ ${roundToDecimal(+dataB.income.details.tradingFee.weightedAverageCost, 2)}`,
         ],
       },
       {
@@ -162,8 +162,8 @@ export const createCISFirstPart = (
         rowType: RowType.bookkeeping,
         rowData: [
           'B014 Guaranteed stop-loss fee',
-          `${roundToDecimal(+dataA.income.details.guaranteedStopFee.weightedAverageCost, 2)}`,
-          `${roundToDecimal(+dataB.income.details.guaranteedStopFee.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+dataA.income.details.guaranteedStopLossFee.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+dataB.income.details.guaranteedStopLossFee.weightedAverageCost, 2)}`,
         ],
       },
       {
@@ -243,11 +243,11 @@ export const createCISFirstPart = (
         rowData: [
           'B020 Rebate expenses',
           `${roundToDecimal(
-            +dataA.operatingExpenses.details.commissionRebates.weightedAverageCost,
+            +dataA.operatingExpenses.details.rebateExpenses.weightedAverageCost,
             2
           )}`,
           `${roundToDecimal(
-            +dataB.operatingExpenses.details.commissionRebates.weightedAverageCost,
+            +dataB.operatingExpenses.details.rebateExpenses.weightedAverageCost,
             2
           )}`,
         ],
@@ -662,8 +662,8 @@ export const createRevenueChangeTable = (
   };
   if (!thisYearData || !lastYearData) return defaultTable;
 
-  const thisYearTradingFee = +thisYearData.income.details.transactionFee.weightedAverageCost;
-  const lastYearTradingFee = +lastYearData.income.details.transactionFee.weightedAverageCost;
+  const thisYearTradingFee = +thisYearData.income.details.tradingFee.weightedAverageCost;
+  const lastYearTradingFee = +lastYearData.income.details.tradingFee.weightedAverageCost;
   const tradingFeeChange = getChange(thisYearTradingFee, lastYearTradingFee) * 100;
 
   const thisYearSpreadFee = +thisYearData.income.details.spreadFee.weightedAverageCost;
@@ -683,9 +683,9 @@ export const createRevenueChangeTable = (
   const liquidationFeeChange = getChange(thisYearLiquidationFee, lastYearLiquidationFee) * 100;
 
   const thisYearGuaranteedStopLossFee =
-    +thisYearData.income.details.guaranteedStopFee.weightedAverageCost;
+    +thisYearData.income.details.guaranteedStopLossFee.weightedAverageCost;
   const lastYearGuaranteedStopLossFee =
-    +lastYearData.income.details.guaranteedStopFee.weightedAverageCost;
+    +lastYearData.income.details.guaranteedStopLossFee.weightedAverageCost;
   const guaranteedStopLossFeeChange =
     getChange(thisYearGuaranteedStopLossFee, lastYearGuaranteedStopLossFee) * 100;
 
