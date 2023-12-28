@@ -24,7 +24,7 @@ type ResponseData = {
   creatorAddressId: string;
   createdTimestamp: number;
   sourceCode: string;
-  transactionData: TransactionData[];
+  transactionHistoryData: TransactionData[];
   publicTag: string[];
 };
 
@@ -37,7 +37,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'creatorAddressId': '130008',
     'createdTimestamp': 1688341795,
     'sourceCode': '',
-    'transactionData': [
+    'transactionHistoryData': [
       {
         'id': '931314',
         'chainId': 'isun',

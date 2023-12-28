@@ -7,6 +7,11 @@ type AddressInfo = {
   address: string;
 };
 
+type InteractedAddress = {
+  id: string;
+  chainId: string;
+};
+
 type TransactionData = {
   id: string;
   chainId: string;
@@ -19,26 +24,39 @@ type TransactionData = {
 type ResponseData = {
   id: string;
   chainId: string;
+  chainIcon: string;
   addressId: string;
   address: string;
   redFlagType: string;
   createdTimestamp: number;
-  interactedAddressCount: string[];
+  interactedAddresses: InteractedAddress[];
   totalAmount: number;
-  transactionData: TransactionData[];
+  unit: string;
+  transactionHistoryData: TransactionData[];
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const result: ResponseData = {
     'id': '140050038',
     'chainId': 'usdt',
+    'chainIcon': '/currencies/usdt.svg',
     'addressId': '140052',
     'address': '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
     'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_WITHDRAW',
     'createdTimestamp': 1686579200,
-    'interactedAddressCount': ['140197', '141253', '144282', '149371'],
+    'interactedAddresses': [
+      {
+        'id': '122134',
+        'chainId': 'eth',
+      },
+      {
+        'id': '134325',
+        'chainId': 'usdt',
+      },
+    ],
     'totalAmount': 100,
-    'transactionData': [
+    'unit': 'USDT',
+    'transactionHistoryData': [
       {
         'id': '918402',
         'chainId': 'btc',

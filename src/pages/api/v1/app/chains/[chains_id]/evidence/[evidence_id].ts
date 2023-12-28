@@ -24,7 +24,7 @@ type ResponseData = {
   creatorAddressId: string;
   createdTimestamp: number;
   content: string;
-  transactionData: TransactionData[];
+  transactionHistoryData: TransactionData[];
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
@@ -36,7 +36,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'creatorAddressId': '114007',
     'createdTimestamp': 1687103913,
     'content': '',
-    'transactionData': [
+    'transactionHistoryData': [
       {
         'id': '915024',
         'chainId': 'btc',

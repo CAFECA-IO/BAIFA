@@ -28,6 +28,8 @@ type ResponseData = {
   currencyId: string;
   currencyName: string;
   rank: number;
+  chainIcon: string;
+  holderCount: number;
   price: number;
   volumeIn24h: number;
   unit: string;
@@ -44,6 +46,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'currencyId': 'btc',
     'currencyName': 'Bitcoin',
     'rank': 1,
+    'chainIcon': '/currencies/btc.svg',
+    'holderCount': 324,
     'price': 27755.4,
     'volumeIn24h': 14867304472,
     'unit': 'BTC',
