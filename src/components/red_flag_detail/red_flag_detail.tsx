@@ -14,21 +14,21 @@ interface IRedFlagDetailProps {
 
 const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {chainId, address, redFlagType, interactedAddressCount, createdTimestamp, totalAmount} =
+  const {chainId, address, redFlagType, interactedAddresses, createdTimestamp, totalAmount} =
     redFlagData;
 
   // ToDo: (20231215 - Julian) Get chainIcon & unit from api
   const chainIcon = getChainIcon(chainId);
   const unit = getUnit(chainId);
 
-  const displayInteractedAddresses = interactedAddressCount
-    ? interactedAddressCount.map((id, index) => {
+  const displayInteractedAddresses = interactedAddresses
+    ? interactedAddresses.map((address, index) => {
         // ToDo: (20231215 - Julian) Get chainId from api
-        const addressLink = getDynamicUrl(chainId, `${id}`).ADDRESS;
+        const addressLink = getDynamicUrl(address.chainId, `${address.id}`).ADDRESS;
         return (
           <Link href={addressLink} key={index}>
             <BoltButton className="px-3 py-1" color="blue" style="solid">
-              {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {id}
+              {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {address.id}
             </BoltButton>
           </Link>
         );

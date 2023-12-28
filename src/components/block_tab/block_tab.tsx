@@ -7,7 +7,7 @@ import {IBlock} from '../../interfaces/block';
 import DatePicker from '../date_picker/date_picker';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
-import {sortOldAndNewOptions, defaultPeriod} from '../../constants/config';
+import {sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
 
 interface IBlockTabProps {
   blockList: IBlock[];
@@ -17,7 +17,7 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [search, setSearch, searchRef] = useStateRef('');
-  const [period, setPeriod] = useState(defaultPeriod);
+  const [period, setPeriod] = useState(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredBlockData, setFilteredBlockData] = useState<IBlock[]>(blockList);
 
