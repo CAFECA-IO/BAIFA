@@ -12,12 +12,12 @@ export interface IBlockItemProps {
 
 const BlockItem = ({block}: IBlockItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {id, chainId, createdTimestamp, stabilityLevel} = block;
+  const {id, chainId, createdTimestamp, stability} = block;
 
   const stabilityColor =
-    stabilityLevel === StabilityLevel.LOW
+    stability === StabilityLevel.LOW
       ? '#FC8181'
-      : stabilityLevel === StabilityLevel.MEDIUM
+      : stability === StabilityLevel.MEDIUM
       ? '#FFA600'
       : '#3DD08C';
 

@@ -5,7 +5,7 @@ import Tooltip from '../tooltip/tooltip';
 import {timestampToString, getTimeString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IAddress, dummyAddressData} from '../../interfaces/address';
+import {IAddress} from '../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
 
@@ -17,14 +17,14 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     id,
-    addressHash,
+    address,
     chainId,
     createdTimestamp,
-    lastestActiveTime,
-    relatedAddressIds,
-    interactedAddressIds,
-    interactedContactIds,
-    flagging,
+    latestActiveTime,
+    relatedAddresses,
+    interactedAddressCount,
+    interactedContactCount,
+    flaggingCount,
     riskLevel,
     balance,
     totalSent,
@@ -37,10 +37,10 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   useEffect(() => {
     clearTimeout(timer);
 
-    // Info: (20231017 - Julian) 算出 lastestActiveTime 距離現在過了多少時間
+    // Info: (20231017 - Julian) 算出 latestActiveTime 距離現在過了多少時間
     timer = setTimeout(() => {
       const now = Math.ceil(Date.now() / 1000);
-      const timeSpan = now - lastestActiveTime;
+      const timeSpan = now - latestActiveTime;
       setSinceTime(timeSpan);
     }, 1000);
 
@@ -65,41 +65,44 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     </div>
   );
 
-  const displayRelatedAddress = relatedAddressIds.map((id, index) => {
-    const targetChainId = dummyAddressData.find(address => address.id === id)?.chainId ?? '';
-    const addressLink = getDynamicUrl(targetChainId, `${id}`).ADDRESS;
-    return (
-      <Link href={addressLink} key={index}>
-        <BoltButton className="px-3 py-1" color="blue" style="solid">
-          {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {id}
-        </BoltButton>
-      </Link>
-    );
-  });
+  const displayRelatedAddress = relatedAddresses ? (
+    relatedAddresses.map((address, index) => {
+      const addressLink = getDynamicUrl(address.chainId, `${address.id}`).ADDRESS;
+      return (
+        <Link href={addressLink} key={index}>
+          <BoltButton className="px-3 py-1" color="blue" style="solid">
+            {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {address.id}
+          </BoltButton>
+        </Link>
+      );
+    })
+  ) : (
+    <></>
+  );
 
   const displayInteractedWith = (
     <div className="flex items-center space-x-2 text-base">
       <div className="flex items-center whitespace-nowrap">
-        {interactedAddressIds.length > 0 ? (
+        {interactedAddressCount > 0 ? (
           <Link href={`${dynamicUrl.INTERACTION}?type=address`}>
             <span className="mr-2 text-primaryBlue underline underline-offset-2">
-              {interactedAddressIds.length}
+              {interactedAddressCount}
             </span>
           </Link>
         ) : (
-          <span className="mr-2 text-primaryBlue">{interactedAddressIds.length}</span>
+          <span className="mr-2 text-primaryBlue">{interactedAddressCount}</span>
         )}
         <p>{t('COMMON.ADDRESSES')} /</p>
       </div>
       <div className="flex items-center whitespace-nowrap">
-        {interactedContactIds.length > 0 ? (
+        {interactedContactCount > 0 ? (
           <Link href={`${dynamicUrl.INTERACTION}?type=contract`}>
             <span className="mr-2 text-primaryBlue underline underline-offset-2">
-              {interactedContactIds.length}
+              {interactedContactCount}
             </span>
           </Link>
         ) : (
-          <span className="mr-2 text-primaryBlue">{interactedContactIds.length}</span>
+          <span className="mr-2 text-primaryBlue">{interactedContactCount}</span>
         )}
         <p>{t('COMMON.CONTRACTS')}</p>
       </div>
@@ -120,14 +123,12 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
       : t('COMMON.RISK_LOW');
 
   const flaggingLink =
-    flagging.length > 0 ? (
+    flaggingCount > 0 ? (
       <Link href={dynamicUrl.RED_FLAG}>
-        <span className="mr-2 text-primaryBlue underline underline-offset-2">
-          {flagging.length}
-        </span>
+        <span className="mr-2 text-primaryBlue underline underline-offset-2">{flaggingCount}</span>
       </Link>
     ) : (
-      <span className="mr-2 text-primaryBlue">{flagging.length}</span>
+      <span className="mr-2 text-primaryBlue">{flaggingCount}</span>
     );
 
   const displayRedFlag = (
@@ -175,7 +176,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <p className="break-all">{addressHash}</p>
+        <p className="break-all">{address}</p>
       </div>
       {/* Info: (20231017 - Julian) Sign Up time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

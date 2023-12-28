@@ -1,15 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import {useContext} from 'react';
+import {MarketContext} from '../../contexts/market_context';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {getDummyPromotion} from '../../interfaces/promotion';
 import {BFAURL} from '../../constants/url';
 
 const MainMenu = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-
-  // ToDo: (20231117 - Julian) Get Data from API
-  const promotionData = getDummyPromotion();
+  const {promotionData} = useContext(MarketContext);
 
   const mainMenuContent = [
     {
@@ -37,7 +36,6 @@ const MainMenu = () => {
 
   const mainMenu = mainMenuContent.map(({icon, title, description, link, alt}) => {
     return (
-      /* ToDo: (20230727 - Julian) page link */
       <Link href={link} key={title}>
         <div className="flex h-200px w-300px flex-col items-center justify-between rounded-lg border border-transparent bg-darkPurple p-6 text-center shadow-xl hover:border-primaryBlue">
           <Image src={icon} width={80} height={80} alt={alt} />

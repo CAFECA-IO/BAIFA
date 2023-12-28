@@ -1,5 +1,7 @@
 import Head from 'next/head';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
+import {AppContext} from '../../contexts/app_context';
+import {MarketContext} from '../../contexts/market_context';
 import useStateRef from 'react-usestateref';
 import {useRouter} from 'next/router';
 import NavBar from '../../components/nav_bar/nav_bar';
@@ -9,14 +11,22 @@ import DatePicker from '../../components/date_picker/date_picker';
 import SortingMenu from '../../components/sorting_menu/sorting_menu';
 import SearchingResultItem from '../../components/searching_result_item/searching_result_item';
 import Pagination from '../../components/pagination/pagination';
-import {sortOldAndNewOptions, ITEM_PER_PAGE} from '../../constants/config';
+import {sortOldAndNewOptions, ITEM_PER_PAGE, default30DayPeriod} from '../../constants/config';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {ILocale, TranslateFunction} from '../../interfaces/locale';
-import {dummySearchResult} from '../../interfaces/search_result';
+import {ISearchResult} from '../../interfaces/search_result';
 
 const SearchingResultPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const appCtx = useContext(AppContext);
+  const {getSearchResult} = useContext(MarketContext);
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+  }, []);
 
   const router = useRouter();
   const {search} = router.query;
@@ -24,14 +34,14 @@ const SearchingResultPage = () => {
 
   const headTitle = `${t('SEARCHING_RESULT_PAGE.MAIN_TITLE')} - BAIFA`;
   const filterTabs = [
-    'SEARCHING_RESULT_PAGE.ALL_TAB', // All
-    'SEARCHING_RESULT_PAGE.BLOCKS_TAB', // Blocks
-    'SEARCHING_RESULT_PAGE.ADDRESSES_TAB', // Addresses
-    'SEARCHING_RESULT_PAGE.CONTRACTS_TAB', // Contracts
-    'SEARCHING_RESULT_PAGE.EVIDENCES_TAB', // Evidences
-    'SEARCHING_RESULT_PAGE.TRANSACTIONS_TAB', // Transactions
-    'SEARCHING_RESULT_PAGE.BLACK_LIST_TAB', // Black List
-    'SEARCHING_RESULT_PAGE.RED_FLAGS_TAB', // Red Flags
+    'SEARCHING_RESULT_PAGE.ALL_TAB', // Info:(20231228 - Julian) All
+    'SEARCHING_RESULT_PAGE.BLOCKS_TAB', // Info:(20231228 - Julian) Blocks
+    'SEARCHING_RESULT_PAGE.ADDRESSES_TAB', // Info:(20231228 - Julian) Addresses
+    'SEARCHING_RESULT_PAGE.CONTRACTS_TAB', // Info:(20231228 - Julian) Contracts
+    'SEARCHING_RESULT_PAGE.EVIDENCES_TAB', // Info:(20231228 - Julian) Evidences
+    'SEARCHING_RESULT_PAGE.TRANSACTIONS_TAB', // Info:(20231228 - Julian) Transactions
+    'SEARCHING_RESULT_PAGE.BLACKLIST_TAB', // Info:(20231228 - Julian) Black List
+    'SEARCHING_RESULT_PAGE.RED_FLAGS_TAB', // Info:(20231228 - Julian) Red Flags
   ];
   // Info: (20231114 - Julian) Sorting Menu Options
   const sortingOptions = ['SORTING.RELEVANCY', ...sortOldAndNewOptions];
@@ -41,49 +51,38 @@ const SearchingResultPage = () => {
   const shadowClassNameR =
     'after:absolute after:-inset-1 after:ml-auto after:top-0 after:block xl:after:hidden after:w-5 after:bg-gradient-to-l after:from-black after:to-transparent';
 
+  const [searchResult, setSearchResult] = useState<ISearchResult[]>([]);
+  const [filteredResult, setFilteredResult] = useState<ISearchResult[]>([]);
   // Info: (20231114 - Julian) Filter State
   const [searchText, setSearchText, searchTextRef] = useStateRef<string>(keyWord);
   const [sorting, setSorting] = useState(sortingOptions[0]);
   const [activeTab, setActiveTab] = useState(filterTabs[0]);
-  const [period, setPeriod] = useState({
-    startTimeStamp: 0,
-    endTimeStamp: 0,
-  });
+  const [period, setPeriod] = useState(default30DayPeriod);
   // Info: (20231114 - Julian) Pagination State
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(dummySearchResult.length / ITEM_PER_PAGE));
-  const [filteredResult, setFilteredResult] = useState(dummySearchResult);
+  const [totalPages, setTotalPages] = useState(Math.ceil(filteredResult.length / ITEM_PER_PAGE));
 
   // Info: (20231115 - Julian) Pagination Index
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
-  const displayedFilterTabs = filterTabs.map((tab, index) => {
-    const tabClickHandler = () => setActiveTab(tab);
-    const tabClassName = `whitespace-nowrap px-4 py-3 text-base border-b-3px ${
-      activeTab === tab
-        ? 'text-primaryBlue border-primaryBlue'
-        : 'text-hoverWhite border-darkPurple4'
-    } hover:text-primaryBlue cursor-pointer transition-all duration-150 ease-in-out`;
-
-    return (
-      <li key={index} className={tabClassName} onClick={tabClickHandler}>
-        {t(tab)}
-      </li>
-    );
-  });
+  useEffect(() => {
+    getSearchResult(searchTextRef.current).then(data => {
+      setSearchResult(data);
+    });
+  }, [searchText]);
 
   useEffect(() => {
-    const result = dummySearchResult
+    const result = searchResult
       .filter(searchResult => {
         // Info: (20231115 - Julian) filter by Search bar
         const searchTerm = searchTextRef.current.toLowerCase();
         const id = searchResult.data.id.toLowerCase();
         const chainId = searchResult.data.chainId.toLowerCase();
         const type = searchResult.type.toLowerCase();
-        return searchTerm !== ''
-          ? id.includes(searchTerm) || chainId.includes(searchTerm) || type.includes(searchTerm)
-          : true;
+        return searchTerm === ''
+          ? true
+          : id.includes(searchTerm) || chainId.includes(searchTerm) || type.includes(searchTerm);
       })
       .filter(searchResult => {
         // Info: (20231115 - Julian) filter by Filter Tabs
@@ -112,10 +111,25 @@ const SearchingResultPage = () => {
     setFilteredResult(result);
     setTotalPages(Math.ceil(result.length / ITEM_PER_PAGE));
     setActivePage(1);
-  }, [searchText, sorting, activeTab, period]);
+  }, [searchText, sorting, activeTab, period, searchResult]);
 
   const resultList = filteredResult.slice(startIdx, endIdx).map((searchResult, index) => {
     return <SearchingResultItem key={index} searchResult={searchResult} />;
+  });
+
+  const displayedFilterTabs = filterTabs.map((tab, index) => {
+    const tabClickHandler = () => setActiveTab(tab);
+    const tabClassName = `whitespace-nowrap px-4 py-3 text-base border-b-3px ${
+      activeTab === tab
+        ? 'text-primaryBlue border-primaryBlue'
+        : 'text-hoverWhite border-darkPurple4'
+    } hover:text-primaryBlue cursor-pointer transition-all duration-150 ease-in-out`;
+
+    return (
+      <li key={index} className={tabClassName} onClick={tabClickHandler}>
+        {t(tab)}
+      </li>
+    );
   });
 
   return (
@@ -153,7 +167,7 @@ const SearchingResultPage = () => {
                 {/* Info: (20231114 - Julian) Date Picker */}
                 <div className="flex w-full items-center space-x-2 text-base lg:w-fit">
                   <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-                  <DatePicker setFilteredPeriod={setPeriod} />
+                  <DatePicker period={period} setFilteredPeriod={setPeriod} />
                 </div>
                 {/* Info: (20231114 - Julian) Sorting Menu */}
                 <div className="my-2 flex w-full items-center text-base lg:my-0 lg:w-fit lg:space-x-2">

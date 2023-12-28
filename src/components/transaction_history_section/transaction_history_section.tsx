@@ -19,10 +19,9 @@ interface ITransactionHistorySectionProps {
 const TransactionHistorySection = ({transactions}: ITransactionHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  const addressOptions = [
-    'All',
-    ...transactions.map((transaction: ITransaction) => `${transaction.fromAddressId}`),
-  ];
+  const addressOptions = ['All'];
+  // Info: (20231215 - Julian) 取得所有的 to address
+  if (transactions) addressOptions.push(...transactions.map(transaction => transaction.id));
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(1 / ITEM_PER_PAGE));
@@ -40,23 +39,18 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
         const searchTerm = searchRef.current.toLowerCase();
         const transactionId = transaction.id.toString().toLowerCase();
         const status = transaction.status.toLowerCase();
-        const blockId = transaction.blockId.toString().toLowerCase();
-        const fromAddress = transaction.fromAddressId.toString().toLowerCase();
-        const toAddress = transaction.toAddressId.toString().toLowerCase();
+        const toAddress = transaction.to ? transaction.to.map(t => t.address).join(',') : '';
 
         return searchTerm !== ''
           ? transactionId.includes(searchTerm) ||
               status.includes(searchTerm) ||
-              blockId.includes(searchTerm) ||
-              fromAddress.includes(searchTerm) ||
               toAddress.includes(searchTerm)
           : true;
       })
-      // Info: (20231113 - Julian) filter by address
+      //Info: (20231113 - Julian) filter by to
       .filter((transaction: ITransaction) => {
-        return filterAddress !== addressOptions[0]
-          ? transaction.fromAddressId === filterAddress
-          : true;
+        const toAddress = transaction.to ? transaction.to.map(t => t.address) : [];
+        return filterAddress !== addressOptions[0] ? toAddress.includes(filterAddress) : true;
       })
       .sort((a: ITransaction, b: ITransaction) => {
         return sorting === sortOldAndNewOptions[0]
@@ -73,7 +67,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
 
   // Info: (20231113 - Julian) Pagination
   const transactionList = filteredTransactions.slice(startIdx, endIdx).map((transaction, index) => {
-    const {id, chainId, createdTimestamp, status, fromAddressId} = transaction;
+    const {id, chainId, createdTimestamp, status} = transaction;
     const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
 
     const createdStr = timestampToString(createdTimestamp);
@@ -113,8 +107,8 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
           {/* Info: (20231113 - Julian) Transaction ID & Type */}
           <Link href={transactionLink} className="inline-flex flex-1 items-baseline space-x-2">
             <h2 className="text-sm lg:text-xl">
-              {t('COMMON.TRANSACTION_HISTORY_TO_ADDRESS')}
-              <span className="text-primaryBlue"> {fromAddressId}</span>
+              {t('COMMON.TRANSACTION_HISTORY_TRANSACTION_ID')}
+              <span className="text-primaryBlue"> {transaction.id}</span>
             </h2>
           </Link>
           {/* Info: (20231113 - Julian) Status */}

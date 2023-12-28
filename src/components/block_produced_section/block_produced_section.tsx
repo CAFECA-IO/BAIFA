@@ -6,59 +6,51 @@ import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
-import {getChainIcon, roundToDecimal, timestampToString} from '../../lib/common';
+import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
+import {roundToDecimal, timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 import DatePicker from '../date_picker/date_picker';
-import {IBlock} from '../../interfaces/block';
+import {IProductionBlock} from '../../interfaces/block';
 
 interface IBlockProducedHistorySectionProps {
-  blocks: IBlock[];
-  unit: string;
+  blocks: IProductionBlock[];
 }
 
-const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectionProps) => {
+const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(1 / ITEM_PER_PAGE));
-  const [filteredBlocks, setFilteredBlocks] = useState<IBlock[]>(blocks);
+  const [filteredBlocks, setFilteredBlocks] = useState<IProductionBlock[]>(blocks);
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [period, setPeriod] = useState({
-    startTimeStamp: 0,
-    endTimeStamp: 0,
-  });
+  const [period, setPeriod] = useState(default30DayPeriod);
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
   useEffect(() => {
     const searchResult = blocks // Info: (20231103 - Julian) filter by search term
-      .filter((block: IBlock) => {
+      .filter((block: IProductionBlock) => {
         const searchTerm = searchRef.current.toLowerCase();
-        const managementTeam = block.managementTeam.map(team => team.toLowerCase());
-        const stabilityLevel = block.stabilityLevel.toLowerCase();
-        const miner = block.miner.toString().toLowerCase();
+        const stability = block.stability.toLowerCase();
+
         return searchTerm !== ''
-          ? block.id.toString().includes(searchTerm) ||
-              managementTeam.includes(searchTerm) ||
-              stabilityLevel.includes(searchTerm) ||
-              miner.toString().includes(searchTerm)
+          ? block.id.toString().includes(searchTerm) || stability.includes(searchTerm)
           : true;
       })
       // Info: (20231103 - Julian) filter by date range
-      .filter((block: IBlock) => {
-        const createdTimestamp = block.createdTimestamp;
-        const start = period.startTimeStamp;
-        const end = period.endTimeStamp;
-        // Info: (20231103 - Julian) if start and end are 0, it means that there is no period filter
-        const isCreatedTimestampInRange =
-          start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-        return isCreatedTimestampInRange;
-      })
-      .sort((a: IBlock, b: IBlock) => {
+      // .filter((block: IBlock) => {
+      //   const createdTimestamp = block.createdTimestamp;
+      //   const start = period.startTimeStamp;
+      //   const end = period.endTimeStamp;
+      //   // Info: (20231103 - Julian) if start and end are 0, it means that there is no period filter
+      //   const isCreatedTimestampInRange =
+      //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+      //   return isCreatedTimestampInRange;
+      // })
+      .sort((a: IProductionBlock, b: IProductionBlock) => {
         return sorting === sortOldAndNewOptions[0]
           ? // Info: (20231101 - Julian) Newest
             b.createdTimestamp - a.createdTimestamp
@@ -72,8 +64,7 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
 
   // Info: (20231103 - Julian) Pagination
   const blockList = filteredBlocks.slice(startIdx, endIdx).map((block, index) => {
-    const {id, chainId, createdTimestamp, reward} = block;
-    const icon = getChainIcon(chainId);
+    const {id, chainId, createdTimestamp, reward, unit, chainIcon} = block;
 
     const createdStr = timestampToString(createdTimestamp);
     // Info: (20231103 - Julian) If month is longer than 3 letters, slice it and add a dot
@@ -99,9 +90,10 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
           </Link>
           {/* Info: (20231103 - Julian) Mine */}
           <div className="flex items-center space-x-2">
-            <Image src={icon.src} width={24} height={24} alt={icon.alt} />
+            <Image src={chainIcon} width={24} height={24} alt={`icon`} />
             <p className="text-sm">
-              +{roundToDecimal(reward, 2)} {unit}
+              +{roundToDecimal(reward, 2)}
+              {unit}
             </p>
           </div>
         </div>
@@ -117,12 +109,12 @@ const BlockProducedHistorySection = ({blocks, unit}: IBlockProducedHistorySectio
       </h2>
       <div className="flex w-full flex-col rounded-lg bg-darkPurple p-4 drop-shadow-xl lg:h-950px">
         {/* Info: (20231103 - Julian) Search Filter */}
-        <div className="flex w-full flex-col items-end space-y-4">
-          <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+        <div className="flex w-full flex-col items-end gap-4">
+          <div className="flex w-full flex-col items-start justify-between xl:flex-row">
             {/* Info: (20231101 - Julian) Date Picker */}
             <div className="flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-              <DatePicker setFilteredPeriod={setPeriod} isLinearBg />
+              <DatePicker period={period} setFilteredPeriod={setPeriod} isLinearBg />
             </div>
             {/* Info: (20231103 - Julian) Sorting Menu */}
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">

@@ -1,7 +1,10 @@
 import {REPORT_PATH} from '../constants/url';
 
-export const API_URL = 'https://api.tidebit-defi.com/api';
-export const API_VERSION = 'v1';
+export const TBD_API_URL = 'https://api.tidebit-defi.com/api';
+export const TBD_API_VERSION = 'v1';
+
+export const BFA_API_URL = '/api';
+export const BFA_API_VERSION = 'v1';
 
 export const MONTH_LIST = [
   'DATE_PICKER.JAN',
@@ -29,9 +32,12 @@ export const WEEK_LIST = [
 ];
 
 export const sortOldAndNewOptions = ['SORTING.NEWEST', 'SORTING.OLDEST'];
+export const default30DayPeriod = {
+  startTimeStamp: Math.floor(Date.now() / 1000) - 86400 * 30,
+  endTimeStamp: Math.floor(Date.now() / 1000),
+};
 
 export const ITEM_PER_PAGE = 10;
-export const REVIEW_SECTION_LIMIT = 3;
 
 export const copyright = 'BAIFA @ 2023. All rights reserved.';
 
@@ -176,4 +182,15 @@ export const pluginReportsList = [
     imageSrc: '/icons/red_flags_icon.svg',
     linkPath: `${REPORT_PATH.RED_FLAGS}`,
   },
+];
+
+/* Info: (20230814 - Julian) ----- Chains ----- */
+export const chainList = ['eth', 'bit', 'usdt', 'bnb', 'isun'];
+
+export const chainIdToCurrencyName = [
+  {id: 'eth', name: 'Ethereum'},
+  {id: 'btc', name: 'Bitcoin'},
+  {id: 'usdt', name: 'Tether'},
+  {id: 'bnb', name: 'Binance Coin'},
+  {id: 'isun', name: 'iSunCloud'},
 ];

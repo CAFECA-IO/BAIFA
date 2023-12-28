@@ -8,20 +8,22 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 import {ITEM_PER_PAGE} from '../../constants/config';
 import {getChainIcon, roundToDecimal, withCommas} from '../../lib/common';
-import {ICurrency, IHolder} from '../../interfaces/currency';
+import {ICurrencyDetail, IHolder} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 
 interface ITop100HolderSectionProps {
-  currencyData: ICurrency;
+  currencyData: ICurrencyDetail;
 }
 
 const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {currencyId, holders, totalAmount, unit} = currencyData;
+  const {currencyId, holders, unit} = currencyData;
+
+  const holdersCount = 234; // ToDo: (20231214 - Julian) get holders count from API
 
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(holders.length / ITEM_PER_PAGE));
+  const [totalPages, setTotalPages] = useState(Math.ceil(holdersCount / ITEM_PER_PAGE));
   const [filteredHolderData, setFilteredHolderData] = useState<IHolder[]>(holders);
   const [search, setSearch, searchRef] = useStateRef('');
 
@@ -29,17 +31,23 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
   const startIdx = endIdx - ITEM_PER_PAGE;
   const chainIcon = getChainIcon(currencyId);
 
-  const maxholdingAmount = holders.reduce((prev, current) =>
-    prev.holdingAmount > current.holdingAmount ? prev : current
-  ).holdingAmount;
+  const maxholdingAmount = holders
+    ? holders.reduce((prev, current) =>
+        prev.holdingAmount > current.holdingAmount ? prev : current
+      ).holdingAmount
+    : 0;
 
   useEffect(() => {
     const searchResult = holders.filter(holder => {
       // Info: (20231101 - Julian) filter by search term
       const searchTerm = searchRef.current.toLowerCase();
       const addressId = holder.addressId.toString().toLowerCase();
-      const type = holder.type.toLowerCase();
-      return searchTerm !== '' ? addressId.includes(searchTerm) || type.includes(searchTerm) : true;
+      const publicTag = holder.publicTag
+        ? holder.publicTag.map(tag => tag.toLowerCase()).join(',')
+        : '';
+      return searchTerm !== ''
+        ? addressId.includes(searchTerm) || publicTag.includes(searchTerm)
+        : true;
     });
 
     setFilteredHolderData(searchResult);
@@ -48,10 +56,18 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
 
   // Info: (20231102 - Julian) Pagination
   const holderList = filteredHolderData.slice(startIdx, endIdx).map((holder, index) => {
-    const holdingPercentage = roundToDecimal((holder.holdingAmount / totalAmount) * 100, 2);
+    const holdingPercentage = roundToDecimal(holder.holdingPercentage, 2);
     const holdingBarWidth = (holder.holdingAmount / maxholdingAmount) * 100;
 
     const addressLink = getDynamicUrl(currencyId, holder.addressId).ADDRESS;
+
+    const displayedPublicTag = holder.publicTag ? (
+      <BoltButton className="px-3 py-2 text-sm" style="solid" color="purple">
+        {t(holder.publicTag[0])}
+      </BoltButton>
+    ) : (
+      <></>
+    );
 
     return (
       // Info: (20231102 - Julian) Top 100 Holder Item
@@ -61,9 +77,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
       >
         {/* Info: (20231102 - Julian) Address ID (Desktop) */}
         <Link href={addressLink} className="hidden flex-1 items-center space-x-4 lg:flex">
-          <BoltButton className="px-3 py-2 text-sm" style="solid" color="purple">
-            {holder.type}
-          </BoltButton>
+          {displayedPublicTag}
           <div className="flex items-center space-x-2 text-xl">
             <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
             <p>

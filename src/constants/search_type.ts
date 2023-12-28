@@ -4,7 +4,7 @@ export type ISearchType =
   | 'CONTRACT'
   | 'EVIDENCE'
   | 'TRANSACTION'
-  | 'BLACK_LIST'
+  | 'BLACKLIST'
   | 'RED_FLAG';
 
 export type ISearchTypeConstant = {
@@ -13,7 +13,7 @@ export type ISearchTypeConstant = {
   CONTRACT: ISearchType;
   EVIDENCE: ISearchType;
   TRANSACTION: ISearchType;
-  BLACK_LIST: ISearchType;
+  BLACKLIST: ISearchType;
   RED_FLAG: ISearchType;
 };
 
@@ -23,6 +23,6 @@ export const SearchType: ISearchTypeConstant = {
   CONTRACT: 'CONTRACT',
   EVIDENCE: 'EVIDENCE',
   TRANSACTION: 'TRANSACTION',
-  BLACK_LIST: 'BLACK_LIST',
+  BLACKLIST: 'BLACKLIST',
   RED_FLAG: 'RED_FLAG',
 };

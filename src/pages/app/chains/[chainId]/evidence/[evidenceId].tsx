@@ -1,12 +1,16 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import {useState, useEffect, useContext} from 'react';
+import {AppContext} from '../../../../../contexts/app_context';
+import {MarketContext} from '../../../../../contexts/market_context';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../components/bolt_button/bolt_button';
 import EvidenceDetail from '../../../../../components/evidence_detail/evidence_detail';
 import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
+import TransactionHistorySection from '../../../../../components/transaction_history_section/transaction_history_section';
 import Footer from '../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
@@ -15,24 +19,64 @@ import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
 import {IEvidence, dummyEvidenceData} from '../../../../../interfaces/evidence';
-import TransactionHistorySection from '../../../../../components/transaction_history_section/transaction_history_section';
-import {dummyTransactionData} from '../../../../../interfaces/transaction';
 
 interface IEvidenceDetailPageProps {
   evidenceId: string;
-  evidenceData: IEvidence;
 }
 
-const EvidenceDetailPage = ({evidenceId, evidenceData}: IEvidenceDetailPageProps) => {
+const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {chainId, transactionIds} = evidenceData;
-  const headTitle = `${t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} ${evidenceId} - BAIFA`;
-
   const router = useRouter();
+  const appCtx = useContext(AppContext);
+  const {getEvidenceDetail} = useContext(MarketContext);
+
+  const headTitle = `${t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} ${evidenceId} - BAIFA`;
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [evidenceData, setEvidenceData] = useState<IEvidence>({} as IEvidence);
+
+  const {transactionHistoryData, chainId} = evidenceData;
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+
+    const getEvidenceData = async (chainId: string, evidenceId: string) => {
+      const evidenceData = await getEvidenceDetail(chainId, evidenceId);
+      setEvidenceData(evidenceData);
+    };
+
+    getEvidenceData(chainId, evidenceId);
+  }, []);
+
+  let timer: NodeJS.Timeout;
+
+  useEffect(() => {
+    clearTimeout(timer);
+
+    if (evidenceData) {
+      setEvidenceData(evidenceData);
+    }
+    timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [evidenceData]);
+
   const backClickHandler = () => router.back();
 
-  const transactionHistory = dummyTransactionData.filter(transaction =>
-    transactionIds.includes(transaction.id)
+  const displayedEvidenceDetail = !isLoading ? (
+    <EvidenceDetail evidenceData={evidenceData} />
+  ) : (
+    // ToDo: (20231214 - Julian) Evidence Detail
+    <h1>Loading...</h1>
+  );
+
+  const displayedTransactionHistory = !isLoading ? (
+    <></>
+  ) : (
+    // ToDo: (20231214 - Julian) Evidence Transaction History
+    // <TransactionHistorySection transactions={transactionHistoryData} />
+    // ToDo: (20231214 - Julian) Add loading animation
+    <h1>Loading...</h1>
   );
 
   return (
@@ -88,9 +132,7 @@ const EvidenceDetailPage = ({evidenceId, evidenceData}: IEvidenceDetailPageProps
             </div>
 
             {/* Info: (20231107 - Julian) Evidence Detail */}
-            <div className="w-full pt-10">
-              <EvidenceDetail evidenceData={evidenceData} />
-            </div>
+            <div className="w-full pt-10">{displayedEvidenceDetail}</div>
 
             {/* Info: (20231107 - Julian) Private Note Section */}
             <div className="w-full">
@@ -98,9 +140,7 @@ const EvidenceDetailPage = ({evidenceId, evidenceData}: IEvidenceDetailPageProps
             </div>
 
             {/* Info: (20231107 - Julian) Transaction History Section */}
-            <div className="w-full">
-              <TransactionHistorySection transactions={transactionHistory} />
-            </div>
+            <div className="w-full">{displayedTransactionHistory}</div>
 
             {/* Info: (20231107 - Julian) Back Button */}
             <div className="">
@@ -143,26 +183,21 @@ export const getStaticPaths: GetStaticPaths = async ({locales}) => {
 };
 
 export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+  if (!params || !params.chainId || typeof params.chainId !== 'string') {
+    return {
+      notFound: true,
+    };
+  }
   if (!params || !params.evidenceId || typeof params.evidenceId !== 'string') {
     return {
       notFound: true,
     };
   }
 
-  const evidenceData = dummyEvidenceData.find(evidence => `${evidence.id}` === params.evidenceId);
-
-  if (!evidenceData) {
-    return {
-      notFound: true,
-    };
-  }
+  const evidenceId = params.evidenceId;
 
   return {
-    props: {
-      evidenceId: params.evidenceId,
-      evidenceData: evidenceData,
-      ...(await serverSideTranslations(locale as string, ['common'])),
-    },
+    props: {evidenceId, ...(await serverSideTranslations(locale as string, ['common']))},
   };
 };
 
