@@ -1,10 +1,11 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import {useState, useEffect, useContext} from 'react';
 import {useRouter} from 'next/router';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../../../components/footer/footer';
 import ReviewSection from '../../../../../../components/review_section/review_section';
-import {IReview, getDummyReviewData} from '../../../../../../interfaces/review';
+import {IReviews} from '../../../../../../interfaces/review';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {getChainIcon} from '../../../../../../lib/common';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
@@ -12,23 +13,60 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
-import {dummyAddressData} from '../../../../../../interfaces/address';
+import {AppContext} from '../../../../../../contexts/app_context';
+import {MarketContext} from '../../../../../../contexts/market_context';
 
-interface IReviewsPageProps {
+interface IReviewDetailsPageProps {
   addressId: string;
   chainId: string;
-  reviews: IReview[];
 }
 
-const ReviewsPage = ({addressId, chainId, reviews}: IReviewsPageProps) => {
+const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const router = useRouter();
+  const appCtx = useContext(AppContext);
+  const {getReviews} = useContext(MarketContext);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [reviews, setReviews] = useState<IReviews>({} as IReviews);
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+
+    const getReviewData = async (chainId: string, blockId: string) => {
+      try {
+        const data = await getReviews(chainId, blockId);
+        setReviews(data);
+      } catch (error) {
+        //console.log('getAddressData error', error);
+      }
+    };
+
+    getReviewData(chainId, addressId);
+  }, []);
+
+  let timer: NodeJS.Timeout;
+
+  useEffect(() => {
+    clearTimeout(timer);
+
+    if (reviews) {
+      setReviews(reviews);
+    }
+    timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [reviews]);
+
   const headTitle = `${t('REVIEWS_PAGE.TITLE')} ${t('COMMON.OF')} ${t(
     'ADDRESS_DETAIL_PAGE.MAIN_TITLE'
   )} ${addressId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
-  const router = useRouter();
   const backClickHandler = () => router.back();
+
+  const displayedReviews = !isLoading ? <ReviewSection reviews={reviews} /> : <h1>Loading...</h1>;
 
   return (
     <>
@@ -60,9 +98,7 @@ const ReviewsPage = ({addressId, chainId, reviews}: IReviewsPageProps) => {
             </div>
 
             {/* Info: (20231031 - Julian) Review List */}
-            <div className="mt-10 flex w-full flex-col lg:mt-20">
-              <ReviewSection reviews={reviews} />
-            </div>
+            <div className="mt-10 flex w-full flex-col lg:mt-20">{displayedReviews}</div>
 
             {/* Info: (20231006 - Julian) Back button */}
             <div className="mt-10">
@@ -87,24 +123,18 @@ const ReviewsPage = ({addressId, chainId, reviews}: IReviewsPageProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyAddressData
-    .flatMap(address => {
-      return locales?.map(locale => ({
-        params: {chainId: `${address.chainId}`, addressId: `${address.id}`},
-        locale,
-      }));
-    })
-    .filter(
-      (path): path is {params: {chainId: string; addressId: string}; locale: string} => !!path
-    );
+  // ToDo: (20231213 - Julian) Add dynamic paths
+  const paths = [
+    {
+      params: {chainId: 'isun', addressId: '1'},
+      locale: 'en',
+    },
+  ];
 
-  return {
-    paths,
-    fallback: 'blocking',
-  };
+  return {paths, fallback: 'blocking'};
 };
 
-export const getStaticProps: GetStaticProps<IReviewsPageProps> = async ({params, locale}) => {
+export const getStaticProps: GetStaticProps<IReviewDetailsPageProps> = async ({params, locale}) => {
   if (!params || !params.addressId || typeof params.addressId !== 'string') {
     return {
       notFound: true,
@@ -116,19 +146,13 @@ export const getStaticProps: GetStaticProps<IReviewsPageProps> = async ({params,
     };
   }
 
-  const reviews = getDummyReviewData(params.addressId);
-
-  if (!reviews) {
-    return {
-      notFound: true,
-    };
-  }
+  const addressId = params.addressId;
+  const chainId = params.chainId;
 
   return {
     props: {
-      addressId: params.addressId,
-      chainId: params.chainId,
-      reviews,
+      addressId,
+      chainId,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };

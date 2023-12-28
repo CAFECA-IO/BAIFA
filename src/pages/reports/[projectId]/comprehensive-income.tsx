@@ -29,6 +29,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   const reportTitle = BaifaReports.COMPREHENSIVE_INCOME_STATEMENTS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
   const projectName = projectId;
+  const headTitle = `${reportTitle} of ${projectName} - BAIFA`;
 
   // Info: (20231002 - Julian) Set scale for mobile view
   const pageRef = useRef<HTMLDivElement>(null);
@@ -247,9 +248,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   return (
     <>
       <Head>
-        <title>
-          {reportTitle} of {projectName} - BAIFA
-        </title>
+        <title>{headTitle}</title>
       </Head>
 
       <div className="flex h-1000px flex-col items-center a4:h-auto">

@@ -1,14 +1,15 @@
+import {useContext} from 'react';
 import Footer from '../footer/footer';
 import ChainsCard from '../chain_card/chain_card';
 import Breadcrumb from '../../components/breadcrumb/breadcrumb';
-import {dummyChains} from '../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
-import {getChainIcon} from '../../lib/common';
+import {MarketContext} from '../../contexts/market_context';
 
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const {chainList} = useContext(MarketContext);
 
   const crumbs = [
     {
@@ -20,6 +21,10 @@ const AllChainPageBody = () => {
       path: BFAURL.CHAINS,
     },
   ];
+
+  const displayChains = chainList.map((chain, index) => (
+    <ChainsCard key={index} chainData={chain} />
+  ));
 
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
@@ -35,17 +40,8 @@ const AllChainPageBody = () => {
         </div>
 
         {/* Info: (20230829 - Julian) Chain list */}
-        <div className="mx-auto grid grid-cols-1 gap-6 pt-5 lg:grid-cols-2 xl:grid-cols-4">
-          {dummyChains.map((chain, index) => (
-            <ChainsCard
-              key={index}
-              chainId={chain.chainId}
-              chainName={chain.chainName}
-              icon={getChainIcon(chain.chainId).src}
-              blocks={chain.blocks.length}
-              transactions={chain.transactions.length}
-            />
-          ))}
+        <div className="mx-auto grid grid-cols-1 gap-6 pt-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {displayChains}
         </div>
       </div>
 

@@ -1,42 +1,53 @@
-import {IBlock, getDummyBlockData} from './block';
-import {ITransaction, getDummyTransactionData} from './transaction';
+import {IBlock} from './block';
+import {ITransaction} from './transaction';
 
 export interface IChain {
   chainId: string;
   chainName: string;
-  blocks: IBlock[];
-  transactions: ITransaction[];
+  chainIcon: string;
+  blocks: number;
+  transactions: number;
+}
+
+export interface IChainDetail extends IChain {
+  blockData: IBlock[];
+  transactionData: ITransaction[];
 }
 
 export const dummyChains: IChain[] = [
   {
     chainId: 'isun',
     chainName: 'iSunCloud',
-    blocks: getDummyBlockData('isun'),
-    transactions: getDummyTransactionData('isun'),
+    chainIcon: '/currencies/isun.svg',
+    blocks: 213,
+    transactions: 123,
   },
   {
     chainId: 'eth',
     chainName: 'Ethereum',
-    blocks: getDummyBlockData('eth'),
-    transactions: getDummyTransactionData('eth'),
+    chainIcon: '/currencies/eth.svg',
+    blocks: 2841,
+    transactions: 19713,
   },
   {
     chainId: 'btc',
     chainName: 'Bitcoin',
-    blocks: getDummyBlockData('btc'),
-    transactions: getDummyTransactionData('btc'),
+    chainIcon: '/currencies/btc.svg',
+    blocks: 5413,
+    transactions: 81364,
   },
   {
     chainId: 'usdt',
     chainName: 'Tether',
-    blocks: getDummyBlockData('usdt'),
-    transactions: getDummyTransactionData('usdt'),
+    chainIcon: '/currencies/usdt.svg',
+    blocks: 1355,
+    transactions: 13874,
   },
   {
     chainId: 'bnb',
     chainName: 'Binance',
-    blocks: getDummyBlockData('bnb'),
-    transactions: getDummyTransactionData('bnb'),
+    chainIcon: '/currencies/bnb.svg',
+    blocks: 134,
+    transactions: 4872,
   },
 ];

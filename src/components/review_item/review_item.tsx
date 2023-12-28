@@ -1,15 +1,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import {IReview} from '../../interfaces/review';
+import {IReviewDetail} from '../../interfaces/review';
 import {getDynamicUrl} from '../../constants/url';
-import {dummyAddressData} from '../../interfaces/address';
 import BoltButton from '../bolt_button/bolt_button';
 import {timestampToString} from '../../lib/common';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 
 interface ReviewItemProps {
-  review: IReview;
+  review: IReviewDetail;
 }
 
 const ReviewItem = (review: ReviewItemProps) => {
@@ -19,8 +18,7 @@ const ReviewItem = (review: ReviewItemProps) => {
   // Info: (20231031 - Julian) Transaction Link
   const transactionLink = getDynamicUrl(chainId, `${transactionId}`).TRANSACTION;
   // Info: (20231031 - Julian) Author Address Link
-  const authorChainId =
-    dummyAddressData.find(address => address.id === authorAddressId)?.chainId ?? '';
+  const authorChainId = chainId;
   const authorLink = getDynamicUrl(authorChainId, `${authorAddressId}`).ADDRESS;
 
   // Info: (20231031 - Julian) Stars
@@ -45,7 +43,7 @@ const ReviewItem = (review: ReviewItemProps) => {
       {/* Info: (20231031 - Julian) Divider */}
       <span className="my-2 h-px w-full bg-darkPurple4 lg:mx-10 lg:h-full lg:w-px"></span>
       {/* Info: (20231031 - Julian) Review Content */}
-      <div className="line-clamp-4 flex-1 text-sm lg:line-clamp-2">{content}</div>
+      <div className="line-clamp-3 flex-1 text-sm leading-5">{content}</div>
       {/* Info: (20231031 - Julian) Reviewer & Date */}
       <div className="mt-2 flex h-full flex-col items-start space-y-2 text-sm text-lilac lg:ml-10 lg:mt-0 lg:items-end lg:justify-between">
         <p>{timestampToString(createdTimestamp).date}</p>

@@ -237,7 +237,7 @@
     "CONTRACTS_TAB": "合約",
     "EVIDENCES_TAB": "證據",
     "TRANSACTIONS_TAB": "交易",
-    "BLACK_LIST_TAB": "黑名單",
+    "BLACKLIST_TAB": "黑名單",
     "RED_FLAGS_TAB": "警示記錄",
     "ITEM_TITLE_BLOCK": "區塊",
     "ITEM_SUBTITLE_BLOCK": "區塊",
@@ -259,10 +259,10 @@
     "ITEM_SUBTITLE_TRANSACTION": "交易",
     "ITEM_LINE_1_TRANSACTION": "Hash 值",
     "ITEM_LINE_2_TRANSACTION": "交易時間",
-    "ITEM_TITLE_BLACK_LIST": "地址",
-    "ITEM_SUBTITLE_BLACK_LIST": "黑名單",
-    "ITEM_LINE_1_BLACK_LIST": "地址",
-    "ITEM_LINE_2_BLACK_LIST": "公開標籤",
+    "ITEM_TITLE_BLACKLIST": "地址",
+    "ITEM_SUBTITLE_BLACKLIST": "黑名單",
+    "ITEM_LINE_1_BLACKLIST": "地址",
+    "ITEM_LINE_2_BLACKLIST": "公開標籤",
     "ITEM_TITLE_RED_FLAG": "警示地址",
     "ITEM_SUBTITLE_RED_FLAG": "警示記錄",
     "ITEM_LINE_1_RED_FLAG": "警示記錄",
@@ -324,14 +324,15 @@
     "TOP_100_HOLDER_PLACEHOLDER": "查詢地址",
     "TRANSACTION_HISTORY_TITLE": "交易歷史記錄",
     "TRANSACTION_HISTORY_PLACEHOLDER": "在交易記錄中搜尋",
-    "TRANSACTION_HISTORY_TO_ADDRESS": "收件地址",
+    "TRANSACTION_HISTORY_TRANSACTION_ID": "交易",
     "BLOCK_PRODUCED_HISTORY_TITLE": "區塊生成歷史記錄",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在區塊生成記錄中搜尋"
   },
   "PUBLIC_TAG": {
     "TITLE": "公開標籤",
     "UNKNOWN_USER": "未知用戶",
-    "HACKER": "駭客"
+    "HACKER": "駭客",
+    "BINANCE_COLDWALLET": "幣安冷錢包"
   },
   "FOOTER": {
     "POWERED_BY": "技術支持 稗法",
