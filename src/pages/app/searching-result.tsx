@@ -34,14 +34,14 @@ const SearchingResultPage = () => {
 
   const headTitle = `${t('SEARCHING_RESULT_PAGE.MAIN_TITLE')} - BAIFA`;
   const filterTabs = [
-    'SEARCHING_RESULT_PAGE.ALL_TAB', // All
-    'SEARCHING_RESULT_PAGE.BLOCKS_TAB', // Blocks
-    'SEARCHING_RESULT_PAGE.ADDRESSES_TAB', // Addresses
-    'SEARCHING_RESULT_PAGE.CONTRACTS_TAB', // Contracts
-    'SEARCHING_RESULT_PAGE.EVIDENCES_TAB', // Evidences
-    'SEARCHING_RESULT_PAGE.TRANSACTIONS_TAB', // Transactions
-    'SEARCHING_RESULT_PAGE.BLACKLIST_TAB', // Black List
-    'SEARCHING_RESULT_PAGE.RED_FLAGS_TAB', // Red Flags
+    'SEARCHING_RESULT_PAGE.ALL_TAB', // Info:(20231228 - Julian) All
+    'SEARCHING_RESULT_PAGE.BLOCKS_TAB', // Info:(20231228 - Julian) Blocks
+    'SEARCHING_RESULT_PAGE.ADDRESSES_TAB', // Info:(20231228 - Julian) Addresses
+    'SEARCHING_RESULT_PAGE.CONTRACTS_TAB', // Info:(20231228 - Julian) Contracts
+    'SEARCHING_RESULT_PAGE.EVIDENCES_TAB', // Info:(20231228 - Julian) Evidences
+    'SEARCHING_RESULT_PAGE.TRANSACTIONS_TAB', // Info:(20231228 - Julian) Transactions
+    'SEARCHING_RESULT_PAGE.BLACKLIST_TAB', // Info:(20231228 - Julian) Black List
+    'SEARCHING_RESULT_PAGE.RED_FLAGS_TAB', // Info:(20231228 - Julian) Red Flags
   ];
   // Info: (20231114 - Julian) Sorting Menu Options
   const sortingOptions = ['SORTING.RELEVANCY', ...sortOldAndNewOptions];

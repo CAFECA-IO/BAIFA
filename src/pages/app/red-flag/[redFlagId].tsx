@@ -41,7 +41,8 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
         const data = await getRedFlagDetail(redFlagId);
         setRedFlagData(data);
       } catch (error) {
-        //console.log('getRedFlagDetail error', error);
+        // ToDo:(20231228 - Julian) Error handling
+        // console.log('getRedFlagDetail error', error);
       }
     };
 
