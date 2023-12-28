@@ -4,17 +4,15 @@ import {BFAURL} from '../../constants/url';
 import {withCommas} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
+import {IChain} from '../../interfaces/chain';
 
 interface IChainCardProps {
-  chainId: string;
-  chainName: string;
-  icon: string;
-  blocks: number;
-  transactions: number;
+  chainData: IChain;
 }
 
-const ChainsCard = ({chainId, chainName, icon, blocks, transactions}: IChainCardProps) => {
+const ChainsCard = ({chainData}: IChainCardProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const {chainId, chainName, chainIcon, blocks, transactions} = chainData;
 
   return (
     <>
@@ -23,7 +21,7 @@ const ChainsCard = ({chainId, chainName, icon, blocks, transactions}: IChainCard
         className="flex w-250px flex-col space-y-3 rounded-xl border border-transparent bg-darkPurple p-4 shadow-xl transition-all duration-150 ease-in-out hover:border-primaryBlue hover:bg-purpleLinear"
       >
         <div className="flex flex-1 items-center space-x-4">
-          <Image src={icon} width={60} height={60} alt={`${chainName}_icon`} />
+          <Image src={chainIcon} width={60} height={60} alt={`${chainName}_icon`} />
           <h2 className="text-xl font-semibold text-hoverWhite">{chainName}</h2>
         </div>
         <div className="flex flex-col space-y-2 text-sm font-normal">

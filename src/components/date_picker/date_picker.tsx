@@ -25,6 +25,7 @@ interface IPopulateDatesParams {
 }
 
 interface IDatePickerProps {
+  period: IDatePeriod;
   setFilteredPeriod: Dispatch<SetStateAction<IDatePeriod>>;
   isLinearBg?: boolean;
 }
@@ -138,7 +139,7 @@ const PopulateDates = ({
   );
 };
 
-const DatePicker = ({setFilteredPeriod, isLinearBg}: IDatePickerProps) => {
+const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const {targetRef, componentVisible, setComponentVisible} = useOuterClick<HTMLDivElement>(false);
@@ -146,8 +147,8 @@ const DatePicker = ({setFilteredPeriod, isLinearBg}: IDatePickerProps) => {
   const today = new Date();
   const maxDate = today;
 
-  const [dateOne, setDateOne] = useState<Date | null>(null);
-  const [dateTwo, setDateTwo] = useState<Date | null>(null);
+  const [dateOne, setDateOne] = useState<Date | null>(new Date(period.startTimeStamp * 1000));
+  const [dateTwo, setDateTwo] = useState<Date | null>(new Date(period.endTimeStamp * 1000));
 
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // 0 (January) to 11 (December).
   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
@@ -265,6 +266,9 @@ const DatePicker = ({setFilteredPeriod, isLinearBg}: IDatePickerProps) => {
 
   // Info: (20230830 - Julian) 顯示時間區間
   const displayPeriod =
+    // `${timestampToString(period.startTimeStamp).date} ${t('DATE_PICKER.TO')} ${
+    //   timestampToString(period.endTimeStamp).date
+    // }`;
     dateOne && dateTwo
       ? `${timestampToString(dateOne.getTime() / 1000).date} ${t('DATE_PICKER.TO')} ${
           timestampToString(dateTwo.getTime() / 1000).date

@@ -8,12 +8,13 @@ import {ILocale, TranslateFunction} from '../interfaces/locale';
 
 const ComingSoonPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const headTitle = `${t('COMING_SOON_PAGE.TITLE')} - BAIFA`;
 
   return (
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>{t('COMING_SOON_PAGE.TITLE')} - BAIFA</title>
+        <title>{headTitle}</title>
       </Head>
 
       {/* Info:(20230711 - Julian) Navbar */}

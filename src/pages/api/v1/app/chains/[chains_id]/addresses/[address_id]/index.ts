@@ -37,7 +37,7 @@ type BlockProducedData = {
   createdTimestamp: number;
   stability: 'LOW' | 'MEDIUM' | 'HIGH';
   reward: number;
-  uint: string;
+  unit: string;
   chainIcon: string;
 };
 
@@ -132,7 +132,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
         'createdTimestamp': 1678940724,
         'stability': 'MEDIUM',
         'reward': 2.4,
-        'uint': 'btc',
+        'unit': 'btc',
         'chainIcon': '/currencies/btc.svg',
       },
       {
@@ -140,7 +140,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
         'createdTimestamp': 1684176283,
         'stability': 'LOW',
         'reward': 2.4,
-        'uint': 'btc',
+        'unit': 'btc',
         'chainIcon': '/currencies/btc.svg',
       },
       //...

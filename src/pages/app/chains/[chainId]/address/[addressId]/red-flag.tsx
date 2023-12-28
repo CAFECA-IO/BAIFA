@@ -10,25 +10,64 @@ import Footer from '../../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {getChainIcon} from '../../../../../../lib/common';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {dummyAddressData} from '../../../../../../interfaces/address';
 import {IRedFlag} from '../../../../../../interfaces/red_flag';
 import RedFlagList from '../../../../../../components/red_flag_list/red_flag_list';
+import {useContext, useEffect, useState} from 'react';
+import {AppContext} from '../../../../../../contexts/app_context';
+import {MarketContext} from '../../../../../../contexts/market_context';
 
 interface IRedFlagOfAddressPageProps {
   chainId: string;
   addressId: string;
-  redFlagData: IRedFlag[];
 }
 
-const RedFlagOfAddressPage = ({chainId, addressId, redFlagData}: IRedFlagOfAddressPageProps) => {
+const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const router = useRouter();
+  const appCtx = useContext(AppContext);
+  const {getRedFlagsFromAddress} = useContext(MarketContext);
+
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} ${t('COMMON.OF')} ${t(
     'ADDRESS_DETAIL_PAGE.MAIN_TITLE'
   )} ${addressId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [redFlagData, setRedFlagData] = useState<IRedFlag[]>([]);
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+
+    const getRedFlagData = async (chainId: string, addressId: string) => {
+      const redFlagData = await getRedFlagsFromAddress(chainId, addressId);
+      setRedFlagData(redFlagData);
+    };
+
+    getRedFlagData(chainId, addressId);
+  }, []);
+
+  let timer: NodeJS.Timeout;
+
+  useEffect(() => {
+    clearTimeout(timer);
+
+    if (redFlagData) {
+      setRedFlagData(redFlagData);
+    }
+    timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [redFlagData]);
+
   const backClickHandler = () => router.back();
+
+  const displayedRedFlagList = !isLoading ? (
+    <RedFlagList redFlagData={redFlagData} />
+  ) : (
+    // ToDo: (20231214 - Julian) Add loading animation
+    <h1>Loading...</h1>
+  );
 
   return (
     <>
@@ -65,9 +104,7 @@ const RedFlagOfAddressPage = ({chainId, addressId, redFlagData}: IRedFlagOfAddre
             </div>
 
             {/* Info: (20231109 - Julian) Red Flag List */}
-            <div className="w-full">
-              <RedFlagList redFlagData={redFlagData} />
-            </div>
+            <div className="w-full">{displayedRedFlagList}</div>
 
             {/* Info: (20231109 - Julian) Back button */}
             <div className="">
@@ -94,21 +131,15 @@ const RedFlagOfAddressPage = ({chainId, addressId, redFlagData}: IRedFlagOfAddre
 export default RedFlagOfAddressPage;
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyAddressData
-    .flatMap(address => {
-      return locales?.map(locale => ({
-        params: {chainId: `${address.chainId}`, addressId: `${address.id}`},
-        locale,
-      }));
-    })
-    .filter(
-      (path): path is {params: {chainId: string; addressId: string}; locale: string} => !!path
-    );
+  // ToDo: (20231213 - Julian) Add dynamic paths
+  const paths = [
+    {
+      params: {chainId: 'isun', addressId: '1'},
+      locale: 'en',
+    },
+  ];
 
-  return {
-    paths,
-    fallback: 'blocking',
-  };
+  return {paths, fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps<IRedFlagOfAddressPageProps> = async ({
@@ -126,20 +157,10 @@ export const getStaticProps: GetStaticProps<IRedFlagOfAddressPageProps> = async 
     };
   }
 
-  const originAddressData = dummyAddressData.find(address => `${address.id}` === params.addressId);
-
-  if (!originAddressData) {
-    return {
-      notFound: true,
-    };
-  }
+  const addressId = params.addressId;
+  const chainId = params.chainId;
 
   return {
-    props: {
-      addressId: params.addressId,
-      chainId: params.chainId,
-      redFlagData: originAddressData.flagging,
-      ...(await serverSideTranslations(locale as string, ['common'])),
-    },
+    props: {addressId, chainId, ...(await serverSideTranslations(locale as string, ['common']))},
   };
 };

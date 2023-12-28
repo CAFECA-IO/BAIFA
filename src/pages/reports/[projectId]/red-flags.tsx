@@ -19,6 +19,7 @@ interface IStatementOfRedFlagsProps {
 const StatementOfRedFlags = ({projectId}: IStatementOfRedFlagsProps) => {
   const reportTitle = BaifaReports.STATEMENTS_OF_RED_FLAGS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
+  const headTitle = `${reportTitle} of ${projectId} - BAIFA`;
 
   // Info: (20231002 - Julian) Set scale for mobile view
   const pageRef = useRef<HTMLDivElement>(null);
@@ -174,9 +175,7 @@ const StatementOfRedFlags = ({projectId}: IStatementOfRedFlagsProps) => {
   return (
     <>
       <Head>
-        <title>
-          {reportTitle} of {projectId} - BAIFA
-        </title>
+        <title>{headTitle}</title>
       </Head>
 
       <div className="flex h-1000px flex-col items-center a4:h-auto">

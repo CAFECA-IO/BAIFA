@@ -4,34 +4,36 @@ import Tooltip from '../tooltip/tooltip';
 import BoltButton from '../bolt_button/bolt_button';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IRedFlag} from '../../interfaces/red_flag';
+import {IRedFlagDetail} from '../../interfaces/red_flag';
 import {getChainIcon, getUnit, timestampToString} from '../../lib/common';
-import {dummyAddressData} from '../../interfaces/address';
 import {getDynamicUrl} from '../../constants/url';
 
 interface IRedFlagDetailProps {
-  redFlagData: IRedFlag;
+  redFlagData: IRedFlagDetail;
 }
 
 const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {chainId, addressHash, redFlagType, interactedAddressIds, createdTimestamp, totalAmount} =
+  const {chainId, address, redFlagType, interactedAddresses, createdTimestamp, totalAmount} =
     redFlagData;
 
+  // ToDo: (20231215 - Julian) Get chainIcon & unit from api
   const chainIcon = getChainIcon(chainId);
   const unit = getUnit(chainId);
 
-  const displayInteractedAddresses = interactedAddressIds.map((id, index) => {
-    const targetChainId = dummyAddressData.find(address => address.id === id)?.chainId ?? '';
-    const addressLink = getDynamicUrl(targetChainId, `${id}`).ADDRESS;
-    return (
-      <Link href={addressLink} key={index}>
-        <BoltButton className="px-3 py-1" color="blue" style="solid">
-          {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {id}
-        </BoltButton>
-      </Link>
-    );
-  });
+  const displayInteractedAddresses = interactedAddresses
+    ? interactedAddresses.map((address, index) => {
+        // ToDo: (20231215 - Julian) Get chainId from api
+        const addressLink = getDynamicUrl(address.chainId, `${address.id}`).ADDRESS;
+        return (
+          <Link href={addressLink} key={index}>
+            <BoltButton className="px-3 py-1" color="blue" style="solid">
+              {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {address.id}
+            </BoltButton>
+          </Link>
+        );
+      })
+    : [];
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
@@ -43,7 +45,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        {addressHash}
+        {address}
       </div>
       {/* Info: (20231110 - Julian) Red Flag Type */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

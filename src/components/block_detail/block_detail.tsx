@@ -6,25 +6,26 @@ import Tooltip from '../tooltip/tooltip';
 import {timestampToString, getTimeString, getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IBlock} from '../../interfaces/block';
+import {IBlockDetail} from '../../interfaces/block';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {StabilityLevel} from '../../constants/stability_level';
 
 interface IBlockDetailProps {
-  blockData: IBlock;
+  blockData: IBlockDetail;
 }
 
 const BlockDetail = ({blockData}: IBlockDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     id: blockId,
-    stabilityLevel,
+    stability,
     createdTimestamp,
     chainId,
     managementTeam,
     transactionCount,
     miner,
     reward,
+    unit,
     size,
   } = blockData;
   const [sinceTime, setSinceTime] = useState(0);
@@ -41,9 +42,10 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   }, [sinceTime]);
 
   const transactionsLink = `${getDynamicUrl(chainId, blockId).TRANSACTIONS_IN_BLOCK}`;
+  const minerLink = `${getDynamicUrl(chainId, miner).ADDRESS}`;
 
   const displayStability =
-    stabilityLevel === StabilityLevel.HIGH ? (
+    stability === StabilityLevel.HIGH ? (
       <div className="flex items-center text-hoverWhite">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +58,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
         </svg>
         <p className="ml-2">{t('BLOCK_DETAIL_PAGE.STABILITY_HIGH')}</p>
       </div>
-    ) : stabilityLevel === StabilityLevel.MEDIUM ? (
+    ) : stability === StabilityLevel.MEDIUM ? (
       <div className="flex items-center text-hoverWhite">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -94,20 +96,25 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     </div>
   );
 
-  const displayTeam = managementTeam.map((team, index) => {
-    return (
-      <Link href={BFAURL.COMING_SOON} key={index}>
-        <BoltButton className="px-3 py-1" color="blue" style="solid">
-          {team}
-        </BoltButton>
-      </Link>
-    );
-  });
+  const displayTeam = managementTeam ? (
+    managementTeam.map((team, index) => {
+      return (
+        <Link href={BFAURL.COMING_SOON} key={index}>
+          <BoltButton className="px-3 py-1" color="blue" style="solid">
+            {team}
+          </BoltButton>
+        </Link>
+      );
+    })
+  ) : (
+    // Info: (20231213 - Julian) If there is no management team
+    <p>None</p>
+  );
 
   const displayMinerAndReward = (
     <div className="flex items-center space-x-3">
       {/* Info: (20230912 - Julian) Miner */}
-      <Link href={BFAURL.COMING_SOON}>
+      <Link href={minerLink}>
         <BoltButton className="px-3 py-1" color="blue" style="solid">
           {miner}
         </BoltButton>
@@ -122,8 +129,8 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
           height={24}
         />
         <p>
-          {reward} {/* ToDo:(20230912 - Julian) unit */}
-          <span> {chainId}</span>
+          {reward}
+          <span> {unit}</span>
         </p>
       </div>
     </div>
@@ -191,7 +198,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
           </Tooltip>
         </div>
         <p>
-          {size} {/* ToDo: (20230912 - Julian) uint */}
+          {size}
           <span> bytes</span>
         </p>
       </div>

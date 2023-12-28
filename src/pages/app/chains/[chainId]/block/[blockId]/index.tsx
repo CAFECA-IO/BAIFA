@@ -1,5 +1,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import {useState, useEffect, useContext} from 'react';
+import {AppContext} from '../../../../../../contexts/app_context';
+import {MarketContext} from '../../../../../../contexts/market_context';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
@@ -9,7 +12,7 @@ import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import BlockDetail from '../../../../../../components/block_detail/block_detail';
 import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyBlockData, IBlock} from '../../../../../../interfaces/block';
+import {IBlockDetail} from '../../../../../../interfaces/block';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {getChainIcon} from '../../../../../../lib/common';
@@ -17,24 +20,51 @@ import {getDynamicUrl} from '../../../../../../constants/url';
 
 interface IBlockDetailPageProps {
   blockId: string;
-  blockData: IBlock;
-  previousBlockId?: number;
-  nextBlockId?: number;
   chainId: string;
-  blocksOfChain: IBlock[];
 }
 
-const BlockDetailPage = ({
-  blockId,
-  blockData,
-  previousBlockId,
-  nextBlockId,
-  chainId,
-}: IBlockDetailPageProps) => {
+const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
+  const appCtx = useContext(AppContext);
+  const {getBlockDetail} = useContext(MarketContext);
   const router = useRouter();
 
+  const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [blockData, setBlockData] = useState<IBlockDetail>({} as IBlockDetail);
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+
+    const getBlockData = async (chainId: string, blockId: string) => {
+      try {
+        const data = await getBlockDetail(chainId, blockId);
+        setBlockData(data);
+      } catch (error) {
+        //console.log('getBlockDetail error', error);
+      }
+    };
+
+    getBlockData(chainId, blockId);
+  }, []);
+
+  let timer: NodeJS.Timeout;
+
+  useEffect(() => {
+    clearTimeout(timer);
+
+    if (blockData) {
+      setBlockData(blockData);
+    }
+    timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [blockData]);
+
+  const previousBlockId = blockData.previousBlockId;
+  const nextBlockId = blockData.nextBlockId;
   const previousLink = getDynamicUrl(chainId, `${previousBlockId}`).BLOCK;
   const nextLink = getDynamicUrl(chainId, `${nextBlockId}`).BLOCK;
 
@@ -45,8 +75,16 @@ const BlockDetailPage = ({
   const buttonStyle =
     'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
 
+  // Info: (20231213 - Julian) To check if the previousBlock or nextBlock exist
   const previousId = previousBlockId ? previousBlockId : undefined;
   const nextId = nextBlockId ? nextBlockId : undefined;
+
+  const displayBlockDetail = !isLoading ? (
+    <BlockDetail blockData={blockData} />
+  ) : (
+    // ToDo: (20231213 - Julian) Add loading animation
+    <h1>Loading...</h1>
+  );
 
   return (
     <>
@@ -93,9 +131,7 @@ const BlockDetailPage = ({
             </div>
 
             {/* Info: (20230912 - Julian) Block Detail */}
-            <div className="my-10 w-full">
-              <BlockDetail blockData={blockData} />
-            </div>
+            <div className="my-10 w-full">{displayBlockDetail}</div>
 
             {/* Info: (20231017 - Julian) Back Button */}
             <div className="mt-10">
@@ -120,19 +156,15 @@ const BlockDetailPage = ({
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyBlockData
-    .flatMap(block => {
-      return locales?.map(locale => ({
-        params: {chainId: block.chainId, blockId: `${block.id}`},
-        locale,
-      }));
-    })
-    .filter((path): path is {params: {chainId: string; blockId: string}; locale: string} => !!path);
+  // ToDo: (20231213 - Julian) Add dynamic paths
+  const paths = [
+    {
+      params: {chainId: 'isun', blockId: '1'},
+      locale: 'en',
+    },
+  ];
 
-  return {
-    paths: paths,
-    fallback: 'blocking',
-  };
+  return {paths, fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps = async ({params, locale}) => {
@@ -142,17 +174,10 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
-  // Info: (20231018 - Julian) Get block data in the same chain
-  const blocksOfChain = dummyBlockData.filter(block => block.chainId === params.chainId);
+  const blockId = params.blockId;
+  const chainId = params.chainId;
 
-  const blockData = blocksOfChain.find(block => `${block.id}` === params.blockId);
-  const chainId = blockData?.chainId ?? null;
-
-  const blockIndex = blocksOfChain.findIndex(block => `${block.id}` === params.blockId);
-  const previousBlockId = blocksOfChain[blockIndex - 1]?.id ?? null;
-  const nextBlockId = blocksOfChain[blockIndex + 1]?.id ?? null;
-
-  if (!blockData || !chainId) {
+  if (!blockId || !chainId) {
     return {
       notFound: true,
     };
@@ -160,11 +185,8 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
 
   return {
     props: {
-      blockId: params.blockId,
-      blockData: blockData,
-      previousBlockId: previousBlockId,
-      nextBlockId: nextBlockId,
-      chainId: chainId,
+      blockId,
+      chainId,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };

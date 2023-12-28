@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import {BFAURL, getDynamicUrl} from '../../constants/url';
+import {getDynamicUrl} from '../../constants/url';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {getChainIcon} from '../../lib/common';
@@ -13,7 +13,7 @@ interface IInteractionItemProps {
 
 const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {id, type, chainId, transactionIds, publicTag} = interactedData;
+  const {id, type, chainId, transactionCount, publicTag} = interactedData;
 
   const chainIcon = getChainIcon(chainId);
   const itemLink = getDynamicUrl(`${chainId}`, `${id}`);
@@ -22,10 +22,12 @@ const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemPro
   const transactionQuery = `?addressId=${orignalAddressId}&addressId=${id}`;
   const transactionLink = `${transactionUrl}${transactionQuery}`;
 
-  const displayPublicTag = (
+  const displayPublicTag = publicTag ? (
     <div className="whitespace-nowrap rounded border-violet bg-violet px-4 py-2 text-sm lg:text-base">
       {t(publicTag[0])}
     </div>
+  ) : (
+    <></>
   );
 
   const displayIds =
@@ -56,7 +58,7 @@ const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemPro
       <div className="hidden items-center lg:flex">
         <p className="text-sm">
           <Link href={transactionLink} className="text-primaryBlue underline underline-offset-2">
-            {transactionIds.length}
+            {transactionCount}
           </Link>{' '}
           {t('COMMON.TRANSACTIONS')}
         </p>

@@ -1,4 +1,7 @@
 import Head from 'next/head';
+import {useEffect, useState, useContext} from 'react';
+import {AppContext} from '../../../contexts/app_context';
+import {MarketContext} from '../../../contexts/market_context';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import NavBar from '../../../components/nav_bar/nav_bar';
@@ -7,13 +10,47 @@ import Footer from '../../../components/footer/footer';
 import {ILocale, TranslateFunction} from '../../../interfaces/locale';
 import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import {BFAURL} from '../../../constants/url';
-import {dummyAddressData} from '../../../interfaces/address';
 
 const RedFlagListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
+  const appCtx = useContext(AppContext);
+  const {getAllRedFlags} = useContext(MarketContext);
 
-  const dummyAllRedFlags = dummyAddressData.flatMap(addressData => addressData.flagging);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [redFlagData, setRedFlagData] = useState<any>([]);
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+
+    const getRedFlagData = async () => {
+      try {
+        const data = await getAllRedFlags();
+        setRedFlagData(data);
+      } catch (error) {
+        //console.log('getAllRedFlags error', error);
+      }
+    };
+
+    getRedFlagData();
+  }, []);
+
+  let timer: NodeJS.Timeout;
+  useEffect(() => {
+    clearTimeout(timer);
+
+    if (redFlagData) {
+      setRedFlagData(redFlagData);
+      setIsLoading(false);
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [redFlagData]);
+
+  const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
 
   const crumbs = [
     {
@@ -25,6 +62,13 @@ const RedFlagListPage = () => {
       path: BFAURL.RED_FLAG,
     },
   ];
+
+  const displayedRedFlagList = !isLoading ? (
+    <RedFlagList redFlagData={redFlagData} />
+  ) : (
+    // ToDo: (20231215 -Julian) Loading animation
+    <h1>Loading...</h1>
+  );
 
   return (
     <>
@@ -53,9 +97,7 @@ const RedFlagListPage = () => {
             </div>
 
             {/* Info: (20231109 - Julian) Red Flag List */}
-            <div className="w-full">
-              <RedFlagList redFlagData={dummyAllRedFlags} />
-            </div>
+            <div className="w-full">{displayedRedFlagList}</div>
           </div>
         </div>
       </main>

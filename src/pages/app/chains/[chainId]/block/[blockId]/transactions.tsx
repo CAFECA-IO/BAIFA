@@ -1,5 +1,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import {useEffect, useState, useContext} from 'react';
+import {AppContext} from '../../../../../../contexts/app_context';
+import {MarketContext} from '../../../../../../contexts/market_context';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../../../components/footer/footer';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
@@ -11,26 +14,62 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {getChainIcon} from '../../../../../../lib/common';
-import {dummyTransactionData, ITransaction} from '../../../../../../interfaces/transaction';
+import {ITransaction} from '../../../../../../interfaces/transaction';
 
 interface ITransitionsInBlockPageProps {
   chainId: string;
   blockId: string;
-  transactionList: ITransaction[];
 }
 
-const TransitionsInBlockPage = ({
-  chainId,
-  blockId,
-  transactionList,
-}: ITransitionsInBlockPageProps) => {
+const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const appCtx = useContext(AppContext);
+  const {getTransactionList} = useContext(MarketContext);
   const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [transactionData, setTransitionData] = useState<ITransaction[]>([]);
 
   const headTitle = `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_BLOCK')} ${blockId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
   const backClickHandler = () => router.back();
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+
+    const getTransactionData = async (chainId: string, blockId: string) => {
+      try {
+        const data = await getTransactionList(chainId, blockId);
+        setTransitionData(data);
+      } catch (error) {
+        //console.log('getTransactionList error', error);
+      }
+    };
+
+    getTransactionData(chainId, blockId);
+  }, []);
+
+  let timer: NodeJS.Timeout;
+
+  useEffect(() => {
+    clearTimeout(timer);
+
+    if (transactionData) {
+      setTransitionData(transactionData);
+    }
+    timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [transactionData]);
+
+  const displayedTransactions = !isLoading ? (
+    <TransactionTab transactionList={transactionData} />
+  ) : (
+    // ToDo: (20231213 - Julian) Add loading animation
+    <h1>Loading...</h1>
+  );
 
   return (
     <>
@@ -67,7 +106,7 @@ const TransitionsInBlockPage = ({
             </div>
 
             {/* Info: (20231211 - Julian) Transaction List */}
-            <TransactionTab transactionList={transactionList} />
+            {displayedTransactions}
 
             <div className="pt-10">
               <BoltButton
@@ -91,19 +130,15 @@ const TransitionsInBlockPage = ({
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyTransactionData
-    .flatMap(transaction => {
-      return locales?.map(locale => ({
-        params: {chainId: transaction.chainId, blockId: `${transaction.blockId}`},
-        locale,
-      }));
-    })
-    .filter((path): path is {params: {chainId: string; blockId: string}; locale: string} => !!path);
+  // ToDo: (20231213 - Julian) Add dynamic paths
+  const paths = [
+    {
+      params: {chainId: 'isun', blockId: '1'},
+      locale: 'en',
+    },
+  ];
 
-  return {
-    paths: paths,
-    fallback: 'blocking',
-  };
+  return {paths, fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps = async ({params, locale}) => {
@@ -116,12 +151,7 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
   const chainId = params.chainId;
   const blockId = params.blockId;
 
-  // Info: (20231211 - Julian) Get transaction list in block
-  const transactionList = dummyTransactionData.filter(
-    transaction => transaction.blockId === blockId
-  );
-
-  if (!transactionList) {
+  if (!chainId || !blockId) {
     return {
       notFound: true,
     };
@@ -129,9 +159,8 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
 
   return {
     props: {
-      chainId: chainId,
-      blockId: blockId,
-      transactionList: transactionList,
+      chainId,
+      blockId,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };

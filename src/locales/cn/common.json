@@ -237,7 +237,7 @@
     "CONTRACTS_TAB": "合约",
     "EVIDENCES_TAB": "证据",
     "TRANSACTIONS_TAB": "交易",
-    "BLACK_LIST_TAB": "黑名单",
+    "BLACKLIST_TAB": "黑名单",
     "RED_FLAGS_TAB": "警示记录",
     "ITEM_TITLE_BLOCK": "区块",
     "ITEM_SUBTITLE_BLOCK": "区块",
@@ -260,9 +260,9 @@
     "ITEM_LINE_1_TRANSACTION": "Hash 值",
     "ITEM_LINE_2_TRANSACTION": "交易时间",
     "ITEM_TITLE_BLACK_LIST": "地址",
-    "ITEM_SUBTITLE_BLACK_LIST": "黑名单",
-    "ITEM_LINE_1_BLACK_LIST": "地址",
-    "ITEM_LINE_2_BLACK_LIST": "公开标签",
+    "ITEM_SUBTITLE_BLACKLIST": "黑名单",
+    "ITEM_LINE_1_BLACKLIST": "地址",
+    "ITEM_LINE_2_BLACKLIST": "公开标签",
     "ITEM_TITLE_RED_FLAG": "警示地址",
     "ITEM_SUBTITLE_RED_FLAG": "警示记录",
     "ITEM_LINE_1_RED_FLAG": "警示记录",
@@ -324,14 +324,15 @@
     "TOP_100_HOLDER_PLACEHOLDER": "查询地址",
     "TRANSACTION_HISTORY_TITLE": "交易历史记录",
     "TRANSACTION_HISTORY_PLACEHOLDER": "在交易记录中搜寻",
-    "TRANSACTION_HISTORY_TO_ADDRESS": "收件地址",
+    "TRANSACTION_HISTORY_TRANSACTION_ID": "交易",
     "BLOCK_PRODUCED_HISTORY_TITLE": "区块生成历史记录",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在区块生成记录中搜寻"
   },
   "PUBLIC_TAG": {
     "TITLE": "公开标签",
     "UNKNOWN_USER": "未知用户",
-    "HACKER": "黑客"
+    "HACKER": "黑客",
+    "BINANCE_COLDWALLET": "币安冷钱包"
   },
   "FOOTER": {
     "POWERED_BY": "技术支持 稗法",

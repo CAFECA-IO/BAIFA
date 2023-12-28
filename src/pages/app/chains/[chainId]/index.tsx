@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState} from 'react';
+import {AppContext} from '../../../../contexts/app_context';
+import {MarketContext} from '../../../../contexts/market_context';
+import {useState, useEffect, useContext} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../components/footer/footer';
@@ -8,24 +10,66 @@ import Breadcrumb from '../../../../components/breadcrumb/breadcrumb';
 import BlockTab from '../../../../components/block_tab/block_tab';
 import TransactionTab from '../../../../components/transaction_tab/transaction_tab';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {dummyChains, IChain} from '../../../../interfaces/chain';
+import {IChainDetail} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
 import {getChainIcon} from '../../../../lib/common';
+import {chainList} from '../../../../constants/config';
+import {IBlock} from '../../../../interfaces/block';
+import {ITransaction} from '../../../../interfaces/transaction';
 
 export interface IChainDetailPageProps {
   chainId: string;
-  chainData: IChain;
 }
 
-const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
+const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const appCtx = useContext(AppContext);
+  const {getChainDetail} = useContext(MarketContext);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<'blocks' | 'transactions'>('blocks');
+  const [chainData, setChainData] = useState<IChainDetail>({} as IChainDetail);
+  const [blockData, setBlockData] = useState<IBlock[]>([]);
+  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+
+  useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+
+    const getChainData = async (chainId: string) => {
+      try {
+        const data = await getChainDetail(chainId);
+        setChainData(data);
+        setBlockData(data.blockData);
+        setTransactionData(data.transactionData);
+      } catch (error) {
+        //console.log('getChainDetail error', error);
+      }
+    };
+
+    getChainData(chainId);
+  }, []);
+
+  let timer: NodeJS.Timeout;
+
+  useEffect(() => {
+    clearTimeout(timer);
+
+    if (chainData.blockData) {
+      setBlockData(chainData.blockData);
+      setTransactionData(chainData.transactionData);
+    }
+
+    timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [chainData.blockData, chainData.transactionData]);
+
   const chainName = chainData.chainName;
   const chainIcon = getChainIcon(chainData.chainId).src;
   const headTitle = `${chainName} - BAIFA`;
-
-  const [activeTab, setActiveTab] = useState<'blocks' | 'transactions'>('blocks');
 
   const crumbs = [
     {
@@ -45,19 +89,27 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
     },
   ];
 
-  const mobileTitle = (
-    <div className="flex items-center justify-center space-x-4 text-2xl font-bold lg:hidden">
-      <Image src={chainIcon} alt={`${chainName}_icon`} width={30} height={30} />
-
+  const displayedTitle = !isLoading ? (
+    <div className="flex items-center justify-center space-x-4 py-5 text-2xl font-bold lg:text-48px">
+      <Image
+        className="block lg:hidden"
+        src={chainIcon}
+        alt={`${chainName}_icon`}
+        width={30}
+        height={30}
+      />
+      <Image
+        className="hidden lg:block"
+        src={chainIcon}
+        alt={`${chainName}_icon`}
+        width={60}
+        height={60}
+      />
       <h1>{chainName}</h1>
     </div>
-  );
-
-  const desktopTitle = (
-    <div className="hidden items-center justify-center space-x-4 py-5 text-48px font-bold lg:flex">
-      <Image src={chainIcon} alt={`${chainName}_icon`} width={60} height={60} />
-      <h1>{chainName}</h1>
-    </div>
+  ) : (
+    // ToDo: (20231213 - Julian) Loading Animation
+    <></>
   );
 
   const blocksButton = (
@@ -86,12 +138,16 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
     </div>
   );
 
-  const tabContent =
+  const tabContent = !isLoading ? (
     activeTab === 'blocks' ? (
-      <BlockTab blockList={chainData.blocks} />
+      <BlockTab blockList={blockData} />
     ) : (
-      <TransactionTab transactionList={chainData.transactions} />
-    );
+      <TransactionTab transactionList={transactionData} />
+    )
+  ) : (
+    // ToDo: (20231213 - Julian) Loading Animation
+    <h1>Loading...</h1>
+  );
 
   return (
     <>
@@ -110,8 +166,7 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
               <Breadcrumb crumbs={crumbs} />
             </div>
             {/* Info: (20230904 - Julian) Page Title */}
-            {mobileTitle}
-            {desktopTitle}
+            {displayedTitle}
             {/* Info: (20230904 - Julian) Tabs */}
             <div className="flex items-center justify-center space-x-6 lg:py-7">
               {blocksButton}
@@ -131,9 +186,9 @@ const ChainDetailPage = ({chainData}: IChainDetailPageProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyChains
+  const paths = chainList
     .flatMap(chain => {
-      return locales?.map(locale => ({params: {chainId: chain.chainId}, locale}));
+      return locales?.map(locale => ({params: {chainId: chain}, locale}));
     })
     .filter((path): path is {params: {chainId: string}; locale: string} => !!path);
 
@@ -150,18 +205,9 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
-  const chainData = dummyChains.find(chain => chain.chainId === params.chainId);
-
-  if (!chainData) {
-    return {
-      notFound: true,
-    };
-  }
-
   return {
     props: {
       chainId: params.chainId,
-      chainData: chainData,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };

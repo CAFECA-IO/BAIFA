@@ -7,7 +7,7 @@ import {IBlock} from '../../interfaces/block';
 import DatePicker from '../date_picker/date_picker';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
-import {sortOldAndNewOptions} from '../../constants/config';
+import {sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
 
 interface IBlockTabProps {
   blockList: IBlock[];
@@ -17,36 +17,29 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [search, setSearch, searchRef] = useStateRef('');
-  const [period, setPeriod] = useState({
-    startTimeStamp: 0,
-    endTimeStamp: 0,
-  });
+  const [period, setPeriod] = useState(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredBlockData, setFilteredBlockData] = useState<IBlock[]>(blockList);
 
   useEffect(() => {
     const searchResult = blockList
       // Info: (20230905 - Julian) filter by date range
-      .filter((block: IBlock) => {
-        const createdTimestamp = block.createdTimestamp;
-        const start = period.startTimeStamp;
-        const end = period.endTimeStamp;
-        // Info: (20230905 - Julian) if start and end are 0, it means that there is no period filter
-        const isCreatedTimestampInRange =
-          start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-        return isCreatedTimestampInRange;
-      })
+      // .filter((block: IBlock) => {
+      //   const createdTimestamp = block.createdTimestamp;
+      //   const start = period.startTimeStamp;
+      //   const end = period.endTimeStamp;
+      //   // Info: (20230905 - Julian) if start and end are 0, it means that there is no period filter
+      //   const isCreatedTimestampInRange =
+      //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+      //   return isCreatedTimestampInRange;
+      // })
       // Info: (20230905 - Julian) filter by search term
       .filter((block: IBlock) => {
         const searchTerm = searchRef.current.toLowerCase();
-        const managementTeam = block.managementTeam.map(team => team.toLowerCase());
-        const stabilityLevel = block.stabilityLevel.toLowerCase();
-        const miner = block.miner.toString().toLowerCase();
+        const stability = block.stability.toLowerCase();
+
         return searchTerm !== ''
-          ? block.id.toString().includes(searchTerm) ||
-              managementTeam.includes(searchTerm) ||
-              stabilityLevel.includes(searchTerm) ||
-              miner.toString().includes(searchTerm)
+          ? block.id.toString().includes(searchTerm) || stability.includes(searchTerm)
           : true;
       })
       .sort((a: IBlock, b: IBlock) => {
@@ -74,7 +67,7 @@ const BlockTab = ({blockList}: IBlockTabProps) => {
           {/* Info: (20231101 - Julian) Date Picker */}
           <div className="flex w-full items-center text-base lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-            <DatePicker setFilteredPeriod={setPeriod} />
+            <DatePicker period={period} setFilteredPeriod={setPeriod} />
           </div>
 
           {/* Info: (20230904 - Julian) Sorting Menu */}

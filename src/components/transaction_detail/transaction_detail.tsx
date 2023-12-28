@@ -5,11 +5,11 @@ import Tooltip from '../tooltip/tooltip';
 import {timestampToString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {ITransaction} from '../../interfaces/transaction';
+import {ITransactionDetail} from '../../interfaces/transaction';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 
 interface ITransactionDetailProps {
-  transactionData: ITransaction;
+  transactionData: ITransactionDetail;
 }
 
 const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
@@ -20,16 +20,57 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     chainId,
     blockId,
     createdTimestamp,
-    fromAddressId,
-    toAddressId,
+    from,
+    to,
     evidenceId,
     fee,
-    flagging,
+    flaggingType,
   } = transactionData;
 
   const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
-  const addressLink = getDynamicUrl(chainId, `${fromAddressId}`).ADDRESS;
-  const contractLink = getDynamicUrl(chainId, `${toAddressId}`).CONTRACT;
+
+  // Info: (20231215 - Julian) Print all from/to address
+  const fromList = from
+    ? from.map((data, index) => {
+        const fromLink =
+          data.type === 'address'
+            ? getDynamicUrl(chainId, `${data.address}`).ADDRESS
+            : getDynamicUrl(chainId, `${data.address}`).CONTRACT;
+
+        const fromText =
+          data.type === 'address'
+            ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')
+            : t('CONTRACT_DETAIL_PAGE.MAIN_TITLE');
+        return (
+          <Link href={fromLink} key={index}>
+            <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
+              {fromText} {data.address}
+            </BoltButton>
+          </Link>
+        );
+      })
+    : [];
+
+  const toList = to
+    ? to.map((data, index) => {
+        const toLink =
+          data.type === 'address'
+            ? getDynamicUrl(chainId, `${data.address}`).ADDRESS
+            : getDynamicUrl(chainId, `${data.address}`).CONTRACT;
+
+        const toText =
+          data.type === 'address'
+            ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')
+            : t('CONTRACT_DETAIL_PAGE.MAIN_TITLE');
+        return (
+          <Link href={toLink} key={index}>
+            <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
+              {toText} {data.address}
+            </BoltButton>
+          </Link>
+        );
+      })
+    : [];
 
   const displayStatus =
     status === 'PROCESSING' ? (
@@ -61,10 +102,10 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     );
 
   // ToDo: (20230911 - Julian) flagging
-  const displayFlagging = !!flagging ? (
+  const displayFlagging = !!flaggingType ? (
     <Link href={BFAURL.COMING_SOON}>
       <BoltButton className="w-fit px-3 py-1" color="red" style="solid">
-        {t(flagging)}
+        {t(flaggingType)}
       </BoltButton>
     </Link>
   ) : (
@@ -128,22 +169,14 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.FROM')}
         </p>
-        <Link href={addressLink}>
-          <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {fromAddressId}
-          </BoltButton>
-        </Link>
+        <div className="flex flex-wrap items-center space-x-2">{fromList}</div>
       </div>
       {/* Info: (20230911 - Julian) To */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.TO')}
         </p>
-        <Link href={contractLink}>
-          <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-            {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} {toAddressId}
-          </BoltButton>
-        </Link>
+        <div className="flex flex-wrap items-center space-x-2">{toList}</div>
       </div>
       {/* Info: (20230911 - Julian) Content */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
