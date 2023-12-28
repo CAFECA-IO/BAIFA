@@ -934,7 +934,7 @@ const getCurrenciesData = (data: IConsiderationDetail, currency: string) => {
   if (data.type === 'STABLECOIN_TO_CRYPTO') {
     // Info: (20230922 - Julian) STABLECOIN_TO_CRYPTO: purchase of cryptocurrencies with non-cash consideration
     // Info: (20230922 - Julian) 找出買入(to)的資料
-    const toData = data.details.filter(item => item.to.name === currency);
+    const toData = data.details ? data.details.filter(item => item.to.name === currency) : [];
     return {
       // Info: (20230922 - Julian) 將 amount 加總
       amount: toData.reduce((acc, cur) => acc + +cur.to.amount, 0) ?? 0,
@@ -944,7 +944,7 @@ const getCurrenciesData = (data: IConsiderationDetail, currency: string) => {
   } else {
     // Info: (20230922 - Julian) CRYPTO_TO_STABLECOIN: disposal of cryptocurrencies for non-cash consideration
     // Info: (20230922 - Julian) 找出賣出(from)的資料
-    const fromData = data.details.filter(item => item.from.name === currency);
+    const fromData = data.details ? data.details.filter(item => item.from.name === currency) : [];
     return {
       // Info: (20230922 - Julian) 將 amount 加總
       amount: fromData.reduce((acc, cur) => acc + +cur.from.amount, 0) ?? 0,

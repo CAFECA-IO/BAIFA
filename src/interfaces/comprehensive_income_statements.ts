@@ -18,9 +18,9 @@ export interface IComprehensiveIncomeStatements {
   income: {
     weightedAverageCost: number;
     details: {
-      transactionFee: IIncomeAccountingDetail;
+      tradingFee: IIncomeAccountingDetail;
       spreadFee: IIncomeAccountingDetail;
-      guaranteedStopFee: IIncomeAccountingDetail;
+      guaranteedStopLossFee: IIncomeAccountingDetail;
       liquidationFee: IIncomeAccountingDetail;
       withdrawalFee: IIncomeAccountingDetail;
       depositFee: IIncomeAccountingDetail;
@@ -40,7 +40,7 @@ export interface IComprehensiveIncomeStatements {
       salaries: number;
       rent: number;
       marketing: number;
-      commissionRebates: IIncomeAccountingDetail;
+      rebateExpenses: IIncomeAccountingDetail;
     };
   };
   financialCosts: {

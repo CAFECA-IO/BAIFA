@@ -37,9 +37,9 @@ export const APIName: IAPINameConstant = {
 };
 
 export const APIURL = {
-  BALANCE_SHEET: `${TBD_API_URL}/${TBD_API_VERSION}/balance-sheet`,
-  COMPREHENSIVE_INCOME_STATEMENTS: `${TBD_API_URL}/${TBD_API_VERSION}/comprehensive-income`,
-  STATEMENTS_OF_CASH_FLOWS: `${TBD_API_URL}/${TBD_API_VERSION}/cash-flow`,
+  BALANCE_SHEET: `${TBD_API_URL}/${TBD_API_VERSION}/balance_sheet`,
+  COMPREHENSIVE_INCOME_STATEMENTS: `${TBD_API_URL}/${TBD_API_VERSION}/comprehensive_income`,
+  STATEMENTS_OF_CASH_FLOWS: `${TBD_API_URL}/${TBD_API_VERSION}/cash_flow`,
   EXCHANGE_RATES: `${TBD_API_URL}/${TBD_API_VERSION}/exchange-rates`,
 
   PROMOTION: `${BFA_API_URL}/${BFA_API_VERSION}/app`,
