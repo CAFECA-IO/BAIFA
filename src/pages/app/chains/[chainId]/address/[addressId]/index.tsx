@@ -73,7 +73,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
     return () => clearTimeout(timer);
   }, [addressData]);
 
-  const {chainIcon, transactionHistoryData, blockProducedData, publicTag, reviewData} = addressData;
+  const {chainIcon, transactionHistoryData, blockProducedData, publicTag, score, reviewData} =
+    addressData;
 
   const backClickHandler = () => router.back();
 
@@ -151,7 +152,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
     <div className="flex w-full flex-col space-y-4">
       <h2 className="text-xl text-lilac">
         {t('REVIEWS_PAGE.TITLE')}
-        <span className="ml-2">({roundToDecimal(1.31, 1)})</span>
+        <span className="ml-2">({roundToDecimal(score, 1)})</span>
       </h2>
       <div className="flex w-full flex-col rounded bg-darkPurple p-4">
         {/* Info: (20231020 - Julian) Sort & Leave review button */}

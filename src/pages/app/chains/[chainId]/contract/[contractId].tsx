@@ -20,6 +20,7 @@ import TransactionHistorySection from '../../../../../components/transaction_his
 import Tooltip from '../../../../../components/tooltip/tooltip';
 import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
+import {ITransaction} from '../../../../../interfaces/transaction';
 
 interface IContractDetailPageProps {
   contractId: string;
@@ -36,6 +37,8 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
 
   const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
   const {transactionHistoryData, publicTag, chainId} = contractData;
+
+  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
   const backClickHandler = () => router.back();
 
@@ -60,9 +63,13 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
     if (contractData) {
       setContractData(contractData);
     }
+    if (transactionHistoryData) {
+      setTransactionData(transactionHistoryData);
+    }
+
     timer = setTimeout(() => setIsLoading(false), 500);
     return () => clearTimeout(timer);
-  }, [contractData]);
+  }, [contractData, transactionHistoryData]);
 
   const displayPublicTag = publicTag ? (
     publicTag.map((tag, index) => (
@@ -85,10 +92,8 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
   );
 
   const displayedTransactionHistory = !isLoading ? (
-    <></>
+    <TransactionHistorySection transactions={transactionData} />
   ) : (
-    // ToDo: (20231215 - Julian) #394
-    //<TransactionHistorySection transactions={transactionHistoryData} />
     // ToDo: (20231214 - Julian) Add loading animation
     <h1>Loading...</h1>
   );

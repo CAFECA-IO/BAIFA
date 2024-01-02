@@ -4,6 +4,7 @@ import {getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {RiskLevel} from '../../constants/risk_level';
+import {BFAURL} from '../../constants/url';
 
 interface ICurrencyItemProps {
   currencyId: string;
@@ -34,7 +35,10 @@ const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItem
       {/* Info: (20230927 - Julian) Rank */}
       <div className="w-50px text-xl font-semibold">#{rank}</div>
       {/* Info: (20230927 - Julian) Currency Name & Icon */}
-      <Link href={`/app/currencies/${currencyId}`} className="flex flex-1 items-center space-x-2">
+      <Link
+        href={`${BFAURL.CURRENCIES}/${currencyId}`}
+        className="flex flex-1 items-center space-x-2"
+      >
         <Image src={chainIcon.src} width={30} height={30} alt={chainIcon.alt} />
         <p className="text-sm font-semibold lg:text-xl">{currencyName}</p>
       </Link>
