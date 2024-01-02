@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, Dispatch, SetStateAction} from 'react';
 import useStateRef from 'react-usestateref';
 import TransactionList from '../transaction_list/transaction_list';
 import {useTranslation} from 'next-i18next';
@@ -8,16 +8,23 @@ import SearchBar from '../search_bar/search_bar';
 import DatePicker from '../date_picker/date_picker';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
+import {IDatePeriod} from '../../interfaces/date_period';
 
 interface ITransactionTabProps {
+  datePeriod?: IDatePeriod;
+  setDatePeriod?: Dispatch<SetStateAction<IDatePeriod>>;
   transactionList: ITransaction[];
 }
 
-const TransactionTab = ({transactionList}: ITransactionTabProps) => {
+const TransactionTab = ({datePeriod, setDatePeriod, transactionList}: ITransactionTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [search, setSearch, searchRef] = useStateRef('');
-  const [period, setPeriod] = useState(default30DayPeriod);
+  const [period, setPeriod] =
+    typeof datePeriod !== 'object' || typeof setDatePeriod !== 'function'
+      ? // Info: (20240102 - Julian) if datePeriod and setDatePeriod are not provided, use default30DayPeriod
+        useState(default30DayPeriod)
+      : [datePeriod, setDatePeriod];
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactionList);
 

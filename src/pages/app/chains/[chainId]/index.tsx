@@ -15,7 +15,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
 import {getChainIcon} from '../../../../lib/common';
-import {chainList} from '../../../../constants/config';
+import {chainList, default30DayPeriod} from '../../../../constants/config';
 import {IBlock} from '../../../../interfaces/block';
 import {ITransaction} from '../../../../interfaces/transaction';
 
@@ -26,13 +26,30 @@ export interface IChainDetailPageProps {
 const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
-  const {getChainDetail} = useContext(MarketContext);
+  const {getChainDetail, getBlocks, getTransactions} = useContext(MarketContext);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'blocks' | 'transactions'>('blocks');
   const [chainData, setChainData] = useState<IChainDetail>({} as IChainDetail);
   const [blockData, setBlockData] = useState<IBlock[]>([]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+  const [period, setPeriod] = useState(default30DayPeriod);
+
+  // Info: (20240102 - Julian) Call API to get block and transaction data
+  const getBlockData = async () => {
+    const data =
+      period.startTimeStamp === 0 && period.endTimeStamp === 0
+        ? await getBlocks(chainId)
+        : await getBlocks(chainId, period.startTimeStamp, period.endTimeStamp);
+    setBlockData(data);
+  };
+  const getTransactionData = async () => {
+    const data =
+      period.startTimeStamp === 0 && period.endTimeStamp === 0
+        ? await getTransactions(chainId)
+        : await getTransactions(chainId, period.startTimeStamp, period.endTimeStamp);
+    setTransactionData(data);
+  };
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -43,14 +60,14 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
       try {
         const data = await getChainDetail(chainId);
         setChainData(data);
-        setBlockData(data.blockData);
-        setTransactionData(data.transactionData);
       } catch (error) {
         //console.log('getChainDetail error', error);
       }
     };
 
     getChainData(chainId);
+    getBlockData();
+    getTransactionData();
   }, []);
 
   let timer: NodeJS.Timeout;
@@ -58,14 +75,15 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   useEffect(() => {
     clearTimeout(timer);
 
-    if (chainData.blockData) {
-      setBlockData(chainData.blockData);
-      setTransactionData(chainData.transactionData);
+    if (activeTab === 'blocks') {
+      getBlockData();
+    } else {
+      getTransactionData();
     }
 
     timer = setTimeout(() => setIsLoading(false), 500);
     return () => clearTimeout(timer);
-  }, [chainData.blockData, chainData.transactionData]);
+  }, [period.startTimeStamp, period.endTimeStamp, activeTab]);
 
   const chainName = chainData.chainName;
   const chainIcon = getChainIcon(chainData.chainId).src;
@@ -140,9 +158,13 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
 
   const tabContent = !isLoading ? (
     activeTab === 'blocks' ? (
-      <BlockTab blockList={blockData} />
+      <BlockTab datePeriod={period} setDatePeriod={setPeriod} blockList={blockData} />
     ) : (
-      <TransactionTab transactionList={transactionData} />
+      <TransactionTab
+        datePeriod={period}
+        setDatePeriod={setPeriod}
+        transactionList={transactionData}
+      />
     )
   ) : (
     // ToDo: (20231213 - Julian) Loading Animation
