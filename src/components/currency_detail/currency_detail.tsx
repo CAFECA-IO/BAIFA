@@ -13,8 +13,16 @@ interface ICurrencyDetailProps {
 
 const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {price, volumeIn24h, totalAmount, unit, holders, totalTransfers, flaggingCount, riskLevel} =
-    currencyData;
+  const {
+    price,
+    volumeIn24h,
+    totalAmount,
+    unit,
+    holderCount,
+    totalTransfers,
+    flaggingCount,
+    riskLevel,
+  } = currencyData;
 
   const riskColor =
     riskLevel === RiskLevel.HIGH_RISK
@@ -28,9 +36,6 @@ const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
       : riskLevel === RiskLevel.MEDIUM_RISK
       ? t('COMMON.RISK_MEDIUM')
       : t('COMMON.RISK_LOW');
-
-  // Todo: (20231214 - Julian) get holders count from API
-  const holderCount = holders ? withCommas(holders.length) : '—';
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">

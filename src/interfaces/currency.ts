@@ -20,6 +20,8 @@ export interface ICurrencyDetail extends ICurrency {
   volumeIn24h: number;
   unit: string;
   totalAmount: number;
+  chainIcon: string;
+  holderCount: number;
   holders: IHolder[];
   totalTransfers: number;
   flagging: IRedFlag[];

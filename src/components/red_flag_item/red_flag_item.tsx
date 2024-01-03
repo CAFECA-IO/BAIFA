@@ -12,9 +12,9 @@ interface IRedFlagItemProps {
 
 const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const chainIcon = getChainIcon(redFlagData.chainId);
+  const {id, chainId, chainIcon, addressId, createdTimestamp, redFlagType} = redFlagData;
 
-  const flaggingTime = timestampToString(redFlagData.createdTimestamp);
+  const flaggingTime = timestampToString(createdTimestamp);
   // Info: (20231109 - Julian) If month is longer than 3 letters, slice it and add a dot
   const monthStr =
     t(flaggingTime.month).length > 3
@@ -32,21 +32,20 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
       <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
         {/* Info: (20231109 - Julian) Address ID */}
         <Link
-          // ToDo: (20231109 - Julian) link
-          href={`${BFAURL.RED_FLAG}/${redFlagData.id}`}
+          href={`${BFAURL.RED_FLAG}/${id}`}
           className="flex flex-1 items-center space-x-2 text-sm font-bold lg:text-xl"
         >
-          <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
+          <Image src={chainIcon} alt={`${chainId}_icon`} width={30} height={30} />
           <h2>
-            {/* {redFlagData.chainName} */}
+            {/* ToDo:(20240103 - Julian) {redFlagData.chainName} */}
             {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-            <span className="text-primaryBlue"> {redFlagData.addressId}</span>
+            <span className="text-primaryBlue"> {addressId}</span>
           </h2>
         </Link>
         {/* Info: (20231109 - Julian) Flag Type */}
         <div className="flex items-center space-x-2 px-2">
           <Image src="/icons/red_flag.svg" alt="red_flag_icon" width={24} height={24} />
-          <p className="hidden text-sm lg:block">{t(redFlagData.redFlagType)}</p>
+          <p className="hidden text-sm lg:block">{t(redFlagType)}</p>
         </div>
       </div>
     </div>

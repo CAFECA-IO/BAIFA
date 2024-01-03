@@ -92,7 +92,6 @@ const NavBar = () => {
         <I18n />
       </div>
       <ul className="flex items-center">
-        {/* ToDo: (20230727 - Julian) page link */}
         {navbarContent.map((item, index) => (
           <li
             key={index}

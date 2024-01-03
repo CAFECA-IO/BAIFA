@@ -7,7 +7,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 import {ITEM_PER_PAGE} from '../../constants/config';
-import {getChainIcon, roundToDecimal, withCommas} from '../../lib/common';
+import {roundToDecimal, withCommas} from '../../lib/common';
 import {ICurrencyDetail, IHolder} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
@@ -18,18 +18,15 @@ interface ITop100HolderSectionProps {
 
 const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {currencyId, holders, unit} = currencyData;
-
-  const holdersCount = 234; // ToDo: (20231214 - Julian) get holders count from API
+  const {currencyId, chainIcon, holders, holderCount, unit} = currencyData;
 
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(holdersCount / ITEM_PER_PAGE));
+  const [totalPages, setTotalPages] = useState(Math.ceil(holderCount / ITEM_PER_PAGE));
   const [filteredHolderData, setFilteredHolderData] = useState<IHolder[]>(holders);
   const [search, setSearch, searchRef] = useStateRef('');
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
-  const chainIcon = getChainIcon(currencyId);
 
   const maxholdingAmount = holders
     ? holders.reduce((prev, current) =>
@@ -79,7 +76,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
         <Link href={addressLink} className="hidden flex-1 items-center space-x-4 lg:flex">
           {displayedPublicTag}
           <div className="flex items-center space-x-2 text-xl">
-            <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
+            <Image src={chainIcon} alt={`${currencyId}_icon`} width={30} height={30} />
             <p>
               {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
               <span className="ml-2 font-semibold text-primaryBlue">{holder.addressId}</span>
@@ -92,7 +89,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
             {/* Info: (20231102 - Julian) Address ID (Mobile) */}
             <Link href={addressLink} className="flex space-x-4 lg:hidden">
               <div className="flex items-center space-x-2 text-sm">
-                <Image src={chainIcon.src} alt={chainIcon.alt} width={20} height={20} />
+                <Image src={chainIcon} alt={`${currencyId}_icon`} width={20} height={20} />
                 <p>
                   {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
                   <span className="ml-2 font-semibold text-primaryBlue">{holder.addressId}</span>

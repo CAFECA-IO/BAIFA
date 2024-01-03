@@ -12,6 +12,8 @@ export interface IRedFlag {
 
 export interface IRedFlagDetail extends IRedFlag {
   address: string;
+  chainIcon: string;
+  unit: string;
   interactedAddresses: {
     id: string;
     chainId: string;
