@@ -151,9 +151,6 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
       })
     : [];
 
-  console.log('filteredTransactions', filteredTransactions);
-  console.log('transactions', transactions);
-
   return (
     <div className="flex w-full flex-col space-y-4">
       {/* Info: (20231113 - Julian) Title */}
