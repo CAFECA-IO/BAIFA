@@ -18,7 +18,7 @@ interface ITop100HolderSectionProps {
 
 const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {currencyId, chainIcon, holders, holderCount, unit} = currencyData;
+  const {currencyId, currencyName, chainIcon, holders, holderCount, unit} = currencyData;
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(holderCount / ITEM_PER_PAGE));
@@ -89,7 +89,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
             {/* Info: (20231102 - Julian) Address ID (Mobile) */}
             <Link href={addressLink} className="flex space-x-4 lg:hidden">
               <div className="flex items-center space-x-2 text-sm">
-                <Image src={chainIcon} alt={`${currencyId}_icon`} width={20} height={20} />
+                <Image src={chainIcon} alt={`${currencyName}_icon`} width={20} height={20} />
                 <p>
                   {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
                   <span className="ml-2 font-semibold text-primaryBlue">{holder.addressId}</span>

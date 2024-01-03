@@ -10,6 +10,7 @@ import Footer from '../../../components/footer/footer';
 import {ILocale, TranslateFunction} from '../../../interfaces/locale';
 import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import {BFAURL} from '../../../constants/url';
+import {IRedFlag} from '../../../interfaces/red_flag';
 
 const RedFlagListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -17,7 +18,7 @@ const RedFlagListPage = () => {
   const {getAllRedFlags} = useContext(MarketContext);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [redFlagData, setRedFlagData] = useState<any>([]);
+  const [redFlagData, setRedFlagData] = useState<IRedFlag[]>([]);
 
   useEffect(() => {
     if (!appCtx.isInit) {

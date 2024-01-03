@@ -9,7 +9,6 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ICurrencyDetail} from '../../../../interfaces/currency';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
-import {getChainIcon} from '../../../../lib/common';
 import Top100HolderSection from '../../../../components/top_100_holder_section/top_100_holder_section';
 import TransactionHistorySection from '../../../../components/transaction_history_section/transaction_history_section';
 import BoltButton from '../../../../components/bolt_button/bolt_button';
@@ -60,9 +59,8 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     return () => clearTimeout(timer);
   }, [currencyData]);
 
-  const {currencyName, transactionHistoryData} = currencyData;
+  const {currencyName, transactionHistoryData, chainIcon} = currencyData;
   const headTitle = `${currencyName} - BAIFA`;
-  const chainIcon = getChainIcon(currencyId); // ToDo: (20231214 -Julian) Get icon from API
 
   const backClickHandler = () => router.back();
 
@@ -74,7 +72,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
       </button>
       {/* Info: (20231018 -Julian) Block Title */}
       <div className="flex flex-1 items-center justify-center space-x-2">
-        <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+        <Image src={chainIcon} alt={`${currencyName}_icon`} width={40} height={40} />
         <h1 className="text-2xl font-bold lg:text-32px">
           <span className="ml-2"> {currencyName}</span>
         </h1>

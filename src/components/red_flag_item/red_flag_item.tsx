@@ -12,8 +12,9 @@ interface IRedFlagItemProps {
 
 const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {id, chainId, chainIcon, addressId, createdTimestamp, redFlagType} = redFlagData;
+  const {id, chainId, addressId, createdTimestamp, redFlagType} = redFlagData;
 
+  const chainIcon = getChainIcon(chainId);
   const flaggingTime = timestampToString(createdTimestamp);
   // Info: (20231109 - Julian) If month is longer than 3 letters, slice it and add a dot
   const monthStr =
@@ -35,7 +36,7 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
           href={`${BFAURL.RED_FLAG}/${id}`}
           className="flex flex-1 items-center space-x-2 text-sm font-bold lg:text-xl"
         >
-          <Image src={chainIcon} alt={`${chainId}_icon`} width={30} height={30} />
+          <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
           <h2>
             {/* ToDo:(20240103 - Julian) {redFlagData.chainName} */}
             {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}

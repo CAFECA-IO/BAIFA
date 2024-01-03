@@ -1,10 +1,9 @@
-import {IRedFlagType, RedFlagType} from '../constants/red_flag_type';
+import {IRedFlagType} from '../constants/red_flag_type';
 import {ITransaction} from './transaction';
 
 export interface IRedFlag {
   id: string;
   chainId: string;
-  chainIcon: string;
   addressId: string;
   redFlagType: IRedFlagType;
   createdTimestamp: number; // Info:(20231228 - Julian) 被警示的日期
