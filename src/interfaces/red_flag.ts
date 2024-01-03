@@ -17,5 +17,5 @@ export interface IRedFlagDetail extends IRedFlag {
     chainId: string;
   }[]; // Info:(20231228 - Julian) 被警示交易的交易對象
   totalAmount: number; // Info:(20231228 - Julian) 交易總金額
-  transactionData: ITransaction[]; // Info:(20231228 - Julian) 被警示的交易記錄
+  transactionHistoryData: ITransaction[]; // Info:(20231228 - Julian) 被警示的交易記錄
 }

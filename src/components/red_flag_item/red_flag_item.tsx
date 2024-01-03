@@ -38,6 +38,7 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
         >
           <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
           <h2>
+            {/* {redFlagData.chainName} */}
             {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
             <span className="text-primaryBlue"> {redFlagData.addressId}</span>
           </h2>

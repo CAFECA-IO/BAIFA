@@ -37,7 +37,7 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
 
   const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
   const {transactionHistoryData, publicTag, chainId} = contractData;
-
+  // Info: (20240102 - Julian) Transaction history
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
   const backClickHandler = () => router.back();
@@ -97,6 +97,7 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
     // ToDo: (20231214 - Julian) Add loading animation
     <h1>Loading...</h1>
   );
+
   return (
     <>
       <Head>

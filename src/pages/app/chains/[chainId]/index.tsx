@@ -83,7 +83,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
 
     timer = setTimeout(() => setIsLoading(false), 500);
     return () => clearTimeout(timer);
-  }, [period.startTimeStamp, period.endTimeStamp, activeTab]);
+  }, [period.startTimeStamp, period.endTimeStamp]);
 
   const chainName = chainData.chainName;
   const chainIcon = getChainIcon(chainData.chainId).src;

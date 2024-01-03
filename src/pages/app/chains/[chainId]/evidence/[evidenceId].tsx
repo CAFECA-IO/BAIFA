@@ -19,6 +19,7 @@ import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
 import {IEvidence, dummyEvidenceData} from '../../../../../interfaces/evidence';
+import {ITransaction} from '../../../../../interfaces/transaction';
 
 interface IEvidenceDetailPageProps {
   evidenceId: string;
@@ -35,6 +36,8 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
   const [evidenceData, setEvidenceData] = useState<IEvidence>({} as IEvidence);
 
   const {transactionHistoryData, chainId} = evidenceData;
+  // Info: (20240102 - Julian) Transaction history
+  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -57,6 +60,10 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
     if (evidenceData) {
       setEvidenceData(evidenceData);
     }
+    if (transactionHistoryData) {
+      setTransactionData(transactionHistoryData);
+    }
+
     timer = setTimeout(() => setIsLoading(false), 500);
     return () => clearTimeout(timer);
   }, [evidenceData]);
@@ -66,15 +73,13 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
   const displayedEvidenceDetail = !isLoading ? (
     <EvidenceDetail evidenceData={evidenceData} />
   ) : (
-    // ToDo: (20231214 - Julian) Evidence Detail
+    // ToDo: (20231214 - Julian) Add loading animation
     <h1>Loading...</h1>
   );
 
   const displayedTransactionHistory = !isLoading ? (
-    <></>
+    <TransactionHistorySection transactions={transactionData} />
   ) : (
-    // ToDo: (20231214 - Julian) Evidence Transaction History
-    // <TransactionHistorySection transactions={transactionHistoryData} />
     // ToDo: (20231214 - Julian) Add loading animation
     <h1>Loading...</h1>
   );

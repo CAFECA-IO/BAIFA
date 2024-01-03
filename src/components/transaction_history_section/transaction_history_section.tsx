@@ -19,12 +19,11 @@ interface ITransactionHistorySectionProps {
 const TransactionHistorySection = ({transactions}: ITransactionHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  const addressOptions = ['All'];
-  // Info: (20231215 - Julian) 取得所有的 to address
-  if (transactions) addressOptions.push(...transactions.map(transaction => transaction.id));
-
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(1 / ITEM_PER_PAGE));
+  // Info: (20240103 - Julian) To Address Menu Options
+  const [addressOptions, setAddressOptions] = useState<string[]>(['All']);
+
   const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactions);
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
@@ -32,6 +31,24 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
+
+  useEffect(() => {
+    // Info: (20231215 - Julian) 取得所有的 to address 並加入選單
+    const toList = addressOptions;
+
+    if (transactions) {
+      transactions.forEach(transaction => {
+        if (transaction.to) {
+          transaction.to.forEach(to => {
+            if (!toList.includes(to.address)) {
+              toList.push(to.address);
+            }
+          });
+        }
+      });
+    }
+    setAddressOptions(toList);
+  }, [transactions]);
 
   useEffect(() => {
     const searchResult = transactions // Info: (20231113 - Julian) filter by search term
