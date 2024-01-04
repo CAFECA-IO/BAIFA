@@ -66,12 +66,12 @@ const GlobalSearch = () => {
   return (
     <div className="flex w-full flex-col items-center space-y-4">
       {/* Info: (20230712 - Julian) Desktop Image */}
-      <div className="hidden p-10 lg:block">
+      <div className="hidden p-10 mix-blend-screen lg:block">
         <Image src="/elements/main_pic_1.svg" width={250} height={250} alt="global" />
       </div>
 
       {/* Info: (20230712 - Julian) Mobile Image */}
-      <div className="block p-10 lg:hidden">
+      <div className="block p-10 mix-blend-screen lg:hidden">
         <Image src="/elements/main_pic_1.svg" width={150} height={150} alt="global" />
       </div>
 
