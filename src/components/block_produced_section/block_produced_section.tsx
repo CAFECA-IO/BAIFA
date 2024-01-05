@@ -62,50 +62,57 @@ const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps
     setActivePage(1);
   }, [search, sorting, period]);
 
+  // Info: (20240103 - Julian) The count of blocks
+  const blockCount = blocks ? blocks.length : 0;
+
   // Info: (20231103 - Julian) Pagination
-  const blockList = filteredBlocks.slice(startIdx, endIdx).map((block, index) => {
-    const {id, chainId, createdTimestamp, reward, unit, chainIcon} = block;
+  const blockList = filteredBlocks
+    ? filteredBlocks.slice(startIdx, endIdx).map((block, index) => {
+        const {id, chainId, createdTimestamp, reward, unit, chainIcon} = block;
 
-    const createdStr = timestampToString(createdTimestamp);
-    // Info: (20231103 - Julian) If month is longer than 3 letters, slice it and add a dot
-    const monthStr =
-      t(createdStr.month).length > 3 ? `${t(createdStr.month).slice(0, 3)}.` : t(createdStr.month);
+        const createdStr = timestampToString(createdTimestamp);
+        // Info: (20231103 - Julian) If month is longer than 3 letters, slice it and add a dot
+        const monthStr =
+          t(createdStr.month).length > 3
+            ? `${t(createdStr.month).slice(0, 3)}.`
+            : t(createdStr.month);
 
-    const blockLink = getDynamicUrl(chainId, `${id}`).BLOCK;
+        const blockLink = getDynamicUrl(chainId, `${id}`).BLOCK;
 
-    return (
-      <div key={index} className="flex h-60px w-full items-center">
-        {/* Info: (20231103 - Julian) Create Time square */}
-        <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-purpleLinear">
-          <p className="text-xl">{createdStr.day}</p>
-          <p className="text-xs">{monthStr}</p>
-          <p className="text-xs text-lilac">{createdStr.time}</p>
-        </div>
-        <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
-          {/* Info: (20231103 - Julian) Block ID */}
-          <Link href={blockLink} className="flex-1 text-sm lg:text-xl">
-            <h2>
-              {t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')} <span className="text-primaryBlue">{id}</span>
-            </h2>
-          </Link>
-          {/* Info: (20231103 - Julian) Mine */}
-          <div className="flex items-center space-x-2">
-            <Image src={chainIcon} width={24} height={24} alt={`icon`} />
-            <p className="text-sm">
-              +{roundToDecimal(reward, 2)}
-              {unit}
-            </p>
+        return (
+          <div key={index} className="flex h-60px w-full items-center">
+            {/* Info: (20231103 - Julian) Create Time square */}
+            <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-purpleLinear">
+              <p className="text-xl">{createdStr.day}</p>
+              <p className="text-xs">{monthStr}</p>
+              <p className="text-xs text-lilac">{createdStr.time}</p>
+            </div>
+            <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
+              {/* Info: (20231103 - Julian) Block ID */}
+              <Link href={blockLink} className="flex-1 text-sm lg:text-xl">
+                <h2>
+                  {t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')} <span className="text-primaryBlue">{id}</span>
+                </h2>
+              </Link>
+              {/* Info: (20231103 - Julian) Mine */}
+              <div className="flex items-center space-x-2">
+                <Image src={chainIcon} width={24} height={24} alt={`icon`} />
+                <p className="text-sm">
+                  +{roundToDecimal(reward, 2)}
+                  {unit}
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    );
-  });
+        );
+      })
+    : [];
 
   return (
     <div className="flex w-full flex-col space-y-4">
       {/* Info: (20231103 - Julian) Title */}
       <h2 className="text-xl text-lilac">
-        {t('COMMON.BLOCK_PRODUCED_HISTORY_TITLE')} ({blocks.length})
+        {t('COMMON.BLOCK_PRODUCED_HISTORY_TITLE')} ({blockCount})
       </h2>
       <div className="flex w-full flex-col rounded-lg bg-darkPurple p-4 drop-shadow-xl lg:h-950px">
         {/* Info: (20231103 - Julian) Search Filter */}

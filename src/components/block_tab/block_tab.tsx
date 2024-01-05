@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, Dispatch, SetStateAction} from 'react';
 import useStateRef from 'react-usestateref';
 import BlockList from '../block_list/block_list';
 import {useTranslation} from 'next-i18next';
@@ -8,16 +8,23 @@ import DatePicker from '../date_picker/date_picker';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
+import {IDatePeriod} from '../../interfaces/date_period';
 
 interface IBlockTabProps {
+  datePeriod?: IDatePeriod;
+  setDatePeriod?: Dispatch<SetStateAction<IDatePeriod>>;
   blockList: IBlock[];
 }
 
-const BlockTab = ({blockList}: IBlockTabProps) => {
+const BlockTab = ({datePeriod, setDatePeriod, blockList}: IBlockTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [search, setSearch, searchRef] = useStateRef('');
-  const [period, setPeriod] = useState(default30DayPeriod);
+  const [period, setPeriod] =
+    typeof datePeriod !== 'object' || typeof setDatePeriod !== 'function'
+      ? // Info: (20240102 - Julian) if datePeriod and setDatePeriod are not provided, use default30DayPeriod
+        useState(default30DayPeriod)
+      : [datePeriod, setDatePeriod];
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredBlockData, setFilteredBlockData] = useState<IBlock[]>(blockList);
 

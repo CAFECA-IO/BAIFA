@@ -5,7 +5,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IRedFlagDetail} from '../../interfaces/red_flag';
-import {getChainIcon, getUnit, timestampToString} from '../../lib/common';
+import {timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 
 interface IRedFlagDetailProps {
@@ -14,16 +14,19 @@ interface IRedFlagDetailProps {
 
 const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {chainId, address, redFlagType, interactedAddresses, createdTimestamp, totalAmount} =
-    redFlagData;
-
-  // ToDo: (20231215 - Julian) Get chainIcon & unit from api
-  const chainIcon = getChainIcon(chainId);
-  const unit = getUnit(chainId);
+  const {
+    chainId,
+    address,
+    chainIcon,
+    unit,
+    redFlagType,
+    interactedAddresses,
+    createdTimestamp,
+    totalAmount,
+  } = redFlagData;
 
   const displayInteractedAddresses = interactedAddresses
     ? interactedAddresses.map((address, index) => {
-        // ToDo: (20231215 - Julian) Get chainId from api
         const addressLink = getDynamicUrl(address.chainId, `${address.id}`).ADDRESS;
         return (
           <Link href={addressLink} key={index}>
@@ -87,7 +90,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
           <p>{t('RED_FLAG_ADDRESS_PAGE.TOTAL_AMOUNT')}</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Image src={chainIcon.src} alt={chainIcon.alt} width={24} height={24} />
+          <Image src={chainIcon} alt={`${chainId}_icon`} width={24} height={24} />
           <p>
             {totalAmount} {unit}
           </p>

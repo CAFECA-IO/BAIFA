@@ -18,6 +18,7 @@ export interface IAddress extends IInteractionItem {
   totalSent?: number;
   totalReceived?: number;
   blockProducedData: IProductionBlock[];
+  score: number;
   reviewData: IReviewDetail[];
 }
 
@@ -43,6 +44,7 @@ export const dummyBlacklistAddressData: IAddress[] = [
     blockProducedData: [],
     flagging: [],
     flaggingCount: 10,
+    score: 2.34,
     reviewData: [],
     riskLevel: RiskLevel.HIGH_RISK,
     publicTag: ['PUBLIC_TAG.HACKER'],

@@ -18,6 +18,7 @@ import {IRedFlagDetail} from '../../../interfaces/red_flag';
 import {getChainIcon} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
+import {ITransaction} from '../../../interfaces/transaction';
 
 interface IRedFlagDetailPageProps {
   redFlagId: string;
@@ -30,6 +31,8 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [redFlagData, setRedFlagData] = useState<IRedFlagDetail>({} as IRedFlagDetail);
+  // Info: (20240102 - Julian) Transaction history
+  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -49,6 +52,8 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     getRedFlagData(redFlagId);
   }, []);
 
+  const {chainId, addressId, transactionHistoryData} = redFlagData;
+
   let timer: NodeJS.Timeout;
 
   useEffect(() => {
@@ -57,11 +62,13 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     if (redFlagData) {
       setRedFlagData(redFlagData);
     }
+    if (transactionHistoryData) {
+      setTransactionData(transactionHistoryData);
+    }
+
     timer = setTimeout(() => setIsLoading(false), 500);
     return () => clearTimeout(timer);
   }, [redFlagData]);
-
-  const {chainId, addressId, transactionData} = redFlagData;
 
   const headTitle = `${t('RED_FLAG_ADDRESS_PAGE.MAIN_TITLE')} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
@@ -70,10 +77,8 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const backClickHandler = () => router.back();
 
   const displayedTransactionHistory = !isLoading ? (
-    <></>
+    <TransactionHistorySection transactions={transactionData} />
   ) : (
-    // ToDo: (20231215 - Julian) #394
-    //<TransactionHistorySection transactions={transactionData} />
     // ToDo: (20231215 - Julian) Add loading animation
     <h1>Loading...</h1>
   );

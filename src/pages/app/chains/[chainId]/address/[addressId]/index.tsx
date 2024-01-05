@@ -26,6 +26,8 @@ import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {sortOldAndNewOptions} from '../../../../../../constants/config';
 import {roundToDecimal} from '../../../../../../lib/common';
+import {ITransaction} from '../../../../../../interfaces/transaction';
+import {IProductionBlock} from '../../../../../../interfaces/block';
 
 interface IAddressDetailPageProps {
   addressId: string;
@@ -43,6 +45,11 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [addressData, setAddressData] = useState<IAddress>({} as IAddress);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
+  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+  const [blockData, setBlockData] = useState<IProductionBlock[]>([]);
+
+  const {chainIcon, transactionHistoryData, blockProducedData, publicTag, score, reviewData} =
+    addressData;
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -69,11 +76,16 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
     if (addressData) {
       setAddressData(addressData);
     }
+    if (transactionHistoryData) {
+      setTransactionData(transactionHistoryData);
+    }
+    if (blockProducedData) {
+      setBlockData(blockProducedData);
+    }
+
     timer = setTimeout(() => setIsLoading(false), 500);
     return () => clearTimeout(timer);
   }, [addressData]);
-
-  const {chainIcon, transactionHistoryData, blockProducedData, publicTag, reviewData} = addressData;
 
   const backClickHandler = () => router.back();
 
@@ -134,14 +146,14 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
   );
 
   const displayedTransactionHistory = !isLoading ? (
-    <TransactionHistorySection transactions={transactionHistoryData} />
+    <TransactionHistorySection transactions={transactionData} />
   ) : (
     // ToDo: (20231213 - Julian) Add loading animation
     <h1>Loading..</h1>
   );
 
   const displayedBlockProducedHistory = !isLoading ? (
-    <BlockProducedHistorySection blocks={blockProducedData} />
+    <BlockProducedHistorySection blocks={blockData} />
   ) : (
     // ToDo: (20231213 - Julian) Add loading animation
     <h1>Loading..</h1>
@@ -151,7 +163,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
     <div className="flex w-full flex-col space-y-4">
       <h2 className="text-xl text-lilac">
         {t('REVIEWS_PAGE.TITLE')}
-        <span className="ml-2">({roundToDecimal(1.31, 1)})</span>
+        <span className="ml-2">({roundToDecimal(score, 1)})</span>
       </h2>
       <div className="flex w-full flex-col rounded bg-darkPurple p-4">
         {/* Info: (20231020 - Julian) Sort & Leave review button */}
