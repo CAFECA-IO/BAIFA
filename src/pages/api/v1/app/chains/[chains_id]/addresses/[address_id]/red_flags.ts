@@ -5,6 +5,7 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 type ResponseData = {
   id: string;
   chainId: string;
+  chainName: string;
   chainIcon: string;
   addressId: string;
   redFlagType: string;
@@ -16,6 +17,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'id': '1300200001',
       'chainId': 'isun',
+      'chainName': 'iSunCloud',
       'chainIcon': '/currencies/isun.svg',
       'addressId': '130020',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_WITHDRAW',
@@ -24,6 +26,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'id': '1300200002',
       'chainId': 'isun',
+      'chainName': 'iSunCloud',
       'chainIcon': '/currencies/isun.svg',
       'addressId': '130020',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
@@ -32,6 +35,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'id': '1300200003',
       'chainId': 'isun',
+      'chainName': 'iSunCloud',
       'chainIcon': '/currencies/isun.svg',
       'addressId': '130020',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_WITHDRAW',
@@ -40,6 +44,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'id': '1300200004',
       'chainId': 'isun',
+      'chainName': 'iSunCloud',
       'chainIcon': '/currencies/isun.svg',
       'addressId': '130020',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_WITHDRAW',

@@ -5,6 +5,7 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 type ResponseData = {
   id: string;
   chainId: string;
+  chainName: string;
   addressId: string;
   redFlagType: string;
   createdTimestamp: number;
@@ -15,6 +16,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'id': '1223724980',
       'chainId': 'eth',
+      'chainName': 'Ethereum',
       'addressId': '122372',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_TRANSFER',
       'createdTimestamp': 1677769870,
@@ -22,6 +24,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'id': '1132480029',
       'chainId': 'btc',
+      'chainName': 'Bitcoin',
       'addressId': '113248',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_WITHDRAW',
       'createdTimestamp': 1682172429,
@@ -29,6 +32,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'id': '1468697785',
       'chainId': 'usdt',
+      'chainName': 'Tether',
       'addressId': '146869',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_GAMBLING_SITE',
       'createdTimestamp': 1686548904,
@@ -36,6 +40,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'id': '1378976701',
       'chainId': 'isun',
+      'chainName': 'iSunCloud',
       'addressId': '137897',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_DEPOSIT',
       'createdTimestamp': 1690657412,
