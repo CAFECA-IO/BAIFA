@@ -5,6 +5,7 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 type ResponseData = {
   id: string;
   chainId: string;
+  chainName: string;
   addressId: string;
   redFlagType: string;
   createdTimestamp: number;
@@ -15,6 +16,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'id': '1183720028',
       'chainId': 'btc',
+      'chainName': 'Bitcoin',
       'addressId': '118372',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
       'createdTimestamp': 1679099781,
@@ -22,6 +24,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'id': '1132480029',
       'chainId': 'btc',
+      'chainName': 'Bitcoin',
       'addressId': '113248',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_WITHDRAW',
       'createdTimestamp': 1682172429,
@@ -29,6 +32,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'id': '1182740004',
       'chainId': 'btc',
+      'chainName': 'Bitcoin',
       'addressId': '118274',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_BLACK_LIST',
       'createdTimestamp': 1689427103,
@@ -36,6 +40,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     {
       'id': '1192830192',
       'chainId': 'btc',
+      'chainName': 'Bitcoin',
       'addressId': '119283',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MIXING_SERVICE',
       'createdTimestamp': 1689424291,

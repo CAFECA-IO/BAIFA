@@ -7,6 +7,11 @@ type AddressInfo = {
   address: string;
 };
 
+type FlaggingRecords = {
+  redFlagId: string;
+  redFlagType: string;
+};
+
 type ResponseData = {
   id: string;
   hash: string;
@@ -21,7 +26,8 @@ type ResponseData = {
   evidenceId: string;
   value: number;
   fee: number;
-  flaggingType: 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES';
+  unit: string;
+  flaggingRecords: FlaggingRecords[];
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
@@ -39,7 +45,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'evidenceId': '530029',
     'value': 0.01,
     'fee': 0.01,
-    'flaggingType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
+    'unit': 'ETH',
+    'flaggingRecords': [
+      {
+        'redFlagId': '1378976701',
+        'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_DEPOSIT',
+      },
+    ],
   };
 
   res.status(200).json(result);
