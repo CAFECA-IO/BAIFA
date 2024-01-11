@@ -68,8 +68,11 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
 
   const backClickHandler = () => router.back();
 
-  // Info: (20231017 - Julian) 有 flagging 的話就顯示 Add in Tracing Tool 按鈕
-  const isAddInTracingTool = !!transactionData.flaggingType ? 'block' : 'hidden';
+  // Info: (20231017 - Julian) 有 flagging 的話，就顯示 Add in Tracing Tool 按鈕
+  const isAddInTracingTool =
+    !!transactionData.flaggingRecords && transactionData.flaggingRecords.length !== 0
+      ? 'block'
+      : 'hidden';
 
   const displayedHeader = !isLoading ? (
     <div className="relative flex w-full flex-col items-center justify-start lg:flex-row">

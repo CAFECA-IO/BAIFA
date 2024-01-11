@@ -16,5 +16,9 @@ export interface ITransactionDetail extends ITransaction {
   evidenceId?: string;
   value: number;
   fee: number;
-  flaggingType?: IRedFlagType;
+  flaggingRecords: {
+    redFlagId: string;
+    redFlagType: IRedFlagType;
+  }[];
+  unit: string;
 }
