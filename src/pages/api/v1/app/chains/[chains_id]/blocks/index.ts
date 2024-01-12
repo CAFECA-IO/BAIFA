@@ -1,6 +1,7 @@
 // 006 - GET /app/chains/:chain_id/blocks?start_date=${startTimestamp}&end_date=${endTimestamp}
 
 import type {NextApiRequest, NextApiResponse} from 'next';
+import client from '../../../../../../../lib/utils/dbConnection';
 
 type BlockData = {
   id: string;
@@ -12,7 +13,22 @@ type BlockData = {
 type ResponseData = BlockData[];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const result: ResponseData = [
+  client.connect();
+  client.query(
+    `SELECT hash as id,
+            chain_id as chainId,
+            created_timestamp as createdTimestamp,
+            number
+      FROM blocks`,
+    (err: Error, response: any) => {
+      client.end();
+      if (!err) {
+        res.status(200).json(response.rows);
+      }
+    }
+  );
+
+  /*   const result: ResponseData = [
     {
       'id': '230020',
       'chainId': 'isun',
@@ -33,5 +49,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     },
   ];
 
-  res.status(200).json(result);
+  res.status(200).json(result); */
 }
