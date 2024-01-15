@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import Tooltip from '../tooltip/tooltip';
