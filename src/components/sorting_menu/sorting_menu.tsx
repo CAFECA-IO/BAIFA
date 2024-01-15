@@ -1,18 +1,34 @@
-import {Dispatch, SetStateAction} from 'react';
+import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import {FaChevronDown} from 'react-icons/fa';
 
 interface ISearchFilter {
+  sortingType: string; // Info: (20240115 - Julian) query string
   sortingOptions: string[];
   sorting: string;
   setSorting: Dispatch<SetStateAction<string>>;
   bgColor: string;
 }
 
-const SortingMenu = ({sortingOptions, sorting, setSorting, bgColor}: ISearchFilter) => {
+const SortingMenu = ({
+  sortingType,
+  sortingOptions,
+  sorting,
+  setSorting,
+  bgColor,
+}: ISearchFilter) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+
+  const [url, setUrl] = useState<URL | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const currentUrl = new URL(window.location.href);
+      setUrl(currentUrl);
+    }
+  }, []);
 
   // Info: (20231101 - Julian) close sorting menu when click outer
   const {
@@ -25,6 +41,11 @@ const SortingMenu = ({sortingOptions, sorting, setSorting, bgColor}: ISearchFilt
     const clickHandler = () => {
       setSorting(option);
       setSortingVisible(false);
+      // Info: (20240115 - Julian) change url query
+      if (url) {
+        url.searchParams.set(sortingType, option);
+        window.history.replaceState({}, '', url.toString());
+      }
     };
     return (
       <li

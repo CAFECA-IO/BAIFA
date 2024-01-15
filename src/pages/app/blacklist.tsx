@@ -134,6 +134,7 @@ const BlackListPage = () => {
                   {/* Info: (20231113 - Julian) Flagging Select Menu */}
                   <div className="relative flex w-full items-center space-y-2 text-base lg:w-fit">
                     <SortingMenu
+                      sortingType="flagging"
                       sortingOptions={flaggingOptions}
                       sorting={filteredFlagging}
                       setSorting={setFilteredFlagging}
@@ -144,6 +145,7 @@ const BlackListPage = () => {
                   <div className="relative flex w-full items-center text-sm lg:w-fit lg:space-x-2">
                     <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
                     <SortingMenu
+                      sortingType="sort"
                       sortingOptions={sortOldAndNewOptions}
                       sorting={sorting}
                       setSorting={setSorting}

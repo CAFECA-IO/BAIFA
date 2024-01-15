@@ -82,6 +82,7 @@ const TransactionTab = ({datePeriod, setDatePeriod, transactionList}: ITransacti
           <div className="relative flex w-full items-center pb-2 text-base lg:w-fit lg:space-x-2 lg:pb-0">
             <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
             <SortingMenu
+              sortingType="sort"
               sortingOptions={sortOldAndNewOptions}
               sorting={sorting}
               setSorting={setSorting}

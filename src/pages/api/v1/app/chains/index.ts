@@ -1,6 +1,7 @@
 // 004 - GET /app/chains
 
 import type {NextApiRequest, NextApiResponse} from 'next';
+//import client from '../../../../../lib/utils/dbConnection';
 
 type ResponseData = {
   chainId: string;
@@ -11,6 +12,21 @@ type ResponseData = {
 }[];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  /*   client.connect();
+  client.query(
+    `SELECT id as "chainId",
+            chain_name as "chainName",
+            chain_icon as "chainIcon"
+     FROM chains`,
+    (err: Error, response: any) => {
+      client.end();
+      if (!err) {
+        res.status(200).json(response.rows);
+      }
+    }
+  ); */
+  // ToDo: (20240112 - Julian) 補上 blocks 和 transactions 的數量
+
   const result: ResponseData = [
     {
       'chainId': 'eth',

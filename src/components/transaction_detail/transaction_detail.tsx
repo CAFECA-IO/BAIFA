@@ -24,7 +24,8 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     to,
     evidenceId,
     fee,
-    flaggingType,
+    flaggingRecords,
+    unit,
   } = transactionData;
 
   const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
@@ -102,15 +103,22 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     );
 
   // ToDo: (20230911 - Julian) flagging
-  const displayFlagging = !!flaggingType ? (
-    <Link href={BFAURL.COMING_SOON}>
-      <BoltButton className="w-fit px-3 py-1" color="red" style="solid">
-        {t(flaggingType)}
-      </BoltButton>
-    </Link>
-  ) : (
-    <p>{t('COMMON.NONE')}</p>
-  );
+  const displayFlagging =
+    // Info: (20240111 - Julian) If flaggingRecords is not null and length is not 0, then display flaggingRecords
+    !!flaggingRecords && flaggingRecords.length !== 0 ? (
+      flaggingRecords.map((flaggingRecord, index) => {
+        const redFlagLink = getDynamicUrl(chainId, `${flaggingRecord.redFlagId}`).RED_FLAG;
+        return (
+          <Link key={index} href={redFlagLink}>
+            <BoltButton className="w-fit px-3 py-1" color="red" style="solid">
+              {t(flaggingRecord.redFlagType)}
+            </BoltButton>
+          </Link>
+        );
+      })
+    ) : (
+      <p>{t('COMMON.NONE')}</p>
+    );
 
   const displayTime = (
     <div className="flex flex-wrap items-center space-x-2">
@@ -209,8 +217,9 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        {/* ToDo: (20230911 - Julian) unit */}
-        <p>{fee} BLT</p>
+        <p>
+          {fee} {unit}
+        </p>
       </div>
       {/* Info: (20230911 - Julian) Flagging */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

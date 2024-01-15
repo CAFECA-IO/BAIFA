@@ -169,6 +169,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
         {/* Info: (20231020 - Julian) Sort & Leave review button */}
         <div className="flex flex-col-reverse items-center justify-between lg:flex-row">
           <SortingMenu
+            sortingType="sort"
             sortingOptions={sortOldAndNewOptions}
             sorting={reviewSorting}
             setSorting={setReviewSorting}

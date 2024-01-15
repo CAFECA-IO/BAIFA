@@ -54,15 +54,15 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
           : true;
       })
       // Info: (20231109 - Julian) filter by date range
-      .filter((redFlagData: IRedFlag) => {
-        const createdTimestamp = redFlagData.createdTimestamp;
-        const start = period.startTimeStamp;
-        const end = period.endTimeStamp;
-        // Info: (20231109 - Julian) if start and end are 0, it means that there is no period filter
-        const isCreatedTimestampInRange =
-          start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-        return isCreatedTimestampInRange;
-      })
+      // .filter((redFlagData: IRedFlag) => {
+      //   const createdTimestamp = redFlagData.createdTimestamp;
+      //   const start = period.startTimeStamp;
+      //   const end = period.endTimeStamp;
+      //   // Info: (20231109 - Julian) if start and end are 0, it means that there is no period filter
+      //   const isCreatedTimestampInRange =
+      //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+      //   return isCreatedTimestampInRange;
+      // })
       // Info: (20231109 - Julian) filter by type
       .filter((redFlagData: IRedFlag) => {
         const type = redFlagData.redFlagType.toLowerCase();
@@ -95,6 +95,7 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
           {/* Info: (20231109 - Julian) Type Select Menu */}
           <div className="relative flex w-full items-center space-y-2 text-base lg:w-fit">
             <SortingMenu
+              sortingType="flagging"
               sortingOptions={typeOptions}
               sorting={filteredType}
               setSorting={setFilteredType}
@@ -110,6 +111,7 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
           <div className="relative flex w-full items-center text-sm lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
             <SortingMenu
+              sortingType="sort"
               sortingOptions={sortOldAndNewOptions}
               sorting={sorting}
               setSorting={setSorting}
