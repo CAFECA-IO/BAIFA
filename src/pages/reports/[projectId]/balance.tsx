@@ -17,8 +17,8 @@ import {
   createFairValueTable,
 } from '../../../lib/reports/balance_sheet';
 import {IResult} from '../../../interfaces/result';
-import {APIURL} from '../../../constants/api_request';
 import {A4_SIZE} from '../../../constants/config';
+import {getApiRoute} from '../../../constants/project_api_route';
 
 interface IBalanceSheetsProps {
   projectId: string;
@@ -29,6 +29,9 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
   const contentList = [reportTitle, `Note To ${reportTitle}`];
   const projectName = projectId;
   const headTitle = `${reportTitle} of ${projectName} - BAIFA`;
+
+  // Info: (20240115 - Julian) Get API URL
+  const apiURL = getApiRoute(projectId);
 
   // Info: (20231002 - Julian) Set scale for mobile view
   const pageRef = useRef<HTMLDivElement>(null);
@@ -53,7 +56,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
   const getBalanceSheet = async (date: string) => {
     let reportData;
     try {
-      const response = await fetch(`${APIURL.BALANCE_SHEET}?date=${date}`, {
+      const response = await fetch(`${apiURL.BALANCE_SHEET}?date=${date}`, {
         method: 'GET',
       });
       const result: IResult = await response.json();

@@ -1,22 +1,29 @@
 import {useEffect, useState} from 'react';
 import {timestampToString, getReportTimeSpan, roundToDecimal} from '../../lib/common';
-import {APIURL} from '../../constants/api_request';
 import {IResult} from '../../interfaces/result';
 import {IExchangeRates} from '../../interfaces/exchange_rates';
 import {CLOSING_TIME} from '../../constants/config';
+import {getApiRoute} from '../../constants/project_api_route';
 
-const ReportExchageRateForm = () => {
+interface IReportExchageRateFormProps {
+  projectId: string;
+}
+
+const ReportExchageRateForm = ({projectId}: IReportExchageRateFormProps) => {
   const colStyle = 'border-darkPurple3 border py-3px';
   const [exchangeRatesData, setExchangeRatesData] = useState<IExchangeRates>();
   // Info: (20230913 - Julian) Get timespan of report
   const startDateStr = timestampToString(getReportTimeSpan().start);
   const endDateStr = timestampToString(getReportTimeSpan().end);
 
+  // Info: (20240115 - Julian) Get API URL
+  const apiURL = getApiRoute(projectId).EXCHANGE_RATES;
+
   const getExchangeRate = async () => {
     let reportData;
     try {
       const response = await fetch(
-        `${APIURL.EXCHANGE_RATES}?startDate=${startDateStr.date}&endDate=${endDateStr.date}`,
+        `${apiURL}?startDate=${startDateStr.date}&endDate=${endDateStr.date}`,
         {
           method: 'GET',
         }
@@ -26,7 +33,7 @@ const ReportExchageRateForm = () => {
         reportData = result.data as IExchangeRates;
       }
     } catch (error) {
-      // console.log('Get balance sheet error');
+      // console.log('Get exchange rate error');
     }
     return reportData;
   };

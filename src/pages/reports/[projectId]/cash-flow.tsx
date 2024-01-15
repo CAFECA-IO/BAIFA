@@ -21,8 +21,8 @@ import {
   createCashActivities,
 } from '../../../lib/reports/cash_flow';
 import {IResult} from '../../../interfaces/result';
-import {APIURL} from '../../../constants/api_request';
 import {A4_SIZE} from '../../../constants/config';
+import {getApiRoute} from '../../../constants/project_api_route';
 
 interface IStatementsOfCashFlowProps {
   projectId: string;
@@ -32,6 +32,9 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
   const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOWS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
   const projectName = projectId;
+
+  // Info: (20240115 - Julian) Get API URL
+  const apiURL = getApiRoute(projectId);
 
   // Info: (20231002 - Julian) Set scale for mobile view
   const pageRef = useRef<HTMLDivElement>(null);
@@ -57,7 +60,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
   const getStatementsOfCashFlow = async (date: string) => {
     let reportData;
     try {
-      const response = await fetch(`${APIURL.STATEMENTS_OF_CASH_FLOWS}?date=${date}`, {
+      const response = await fetch(`${apiURL.STATEMENTS_OF_CASH_FLOWS}?date=${date}`, {
         method: 'GET',
       });
       const result: IResult = await response.json();
@@ -750,7 +753,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
                 The table represents the exchange rates at 00:00 in the UTC+0 time zone. The
                 exchange rates are used in revenue recognization.
               </p>
-              <ReportExchageRateForm />
+              <ReportExchageRateForm projectId={projectId} />
             </div>
           </ReportPageBody>
           <hr className="break-before-page" />

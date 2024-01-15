@@ -17,9 +17,9 @@ import {
   createRevenueTable,
   createRevenueChangeTable,
 } from '../../../lib/reports/comprehensive_income';
-import {APIURL} from '../../../constants/api_request';
 import {IResult} from '../../../interfaces/result';
 import {A4_SIZE} from '../../../constants/config';
+import {getApiRoute} from '../../../constants/project_api_route';
 
 interface IComprehensiveIncomeStatementsProps {
   projectId: string;
@@ -30,6 +30,9 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   const contentList = [reportTitle, `Note To ${reportTitle}`];
   const projectName = projectId;
   const headTitle = `${reportTitle} of ${projectName} - BAIFA`;
+
+  // Info: (20240115 - Julian) Get API URL
+  const apiURL = getApiRoute(projectId);
 
   // Info: (20231002 - Julian) Set scale for mobile view
   const pageRef = useRef<HTMLDivElement>(null);
@@ -56,7 +59,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
   const getComprehensiveIncomeStatements = async (date: string) => {
     let reportData;
     try {
-      const response = await fetch(`${APIURL.COMPREHENSIVE_INCOME_STATEMENTS}?date=${date}`, {
+      const response = await fetch(`${apiURL.COMPREHENSIVE_INCOME_STATEMENTS}?date=${date}`, {
         method: 'GET',
       });
       const result: IResult = await response.json();
@@ -589,7 +592,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
                 The table represents the exchange rates at 00:00 in the UTC+0 time zone. The
                 exchange rates are used in revenue recognization.
               </p>
-              <ReportExchageRateForm />
+              <ReportExchageRateForm projectId={projectId} />
             </div>
           </ReportPageBody>
           <hr className="break-before-page" />

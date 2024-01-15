@@ -101,7 +101,6 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
         </div>
       </div>
       {/* Info: (20231107 - Julian) Content */}
-      {/* ToDo: (20231107 - Julian) Content */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-start lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('EVIDENCE_DETAIL_PAGE.CONTENT')}</p>
@@ -109,9 +108,17 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <div className="max-h-200px flex-1 overflow-scroll bg-darkPurple3 p-4 text-sm">
-          <Image src="/elements/sample_evidence.jpeg" alt="" width={419} height={592} />
+        <div className="w-full">
+          {/* Info: (20240115 - Julian) Balance Sheet */}
+          {/* ToDo: (20240115 - Julian) Reports API */}
+          <iframe src="https://baifa.io/reports/tbd/balance" className="h-200px w-full" />
+          {/* ToDo: (20240115 - Julian) Cash Flow Statement */}
+          {/* ToDo: (20240115 - Julian) Comprehensive Income Statement */}
         </div>
+
+        {/* <div className="max-h-200px flex-1 overflow-scroll bg-darkPurple3 p-4 text-sm">
+          <Image src="/elements/sample_evidence.jpeg" alt="" width={419} height={592} />
+        </div> */}
       </div>
     </div>
   );
