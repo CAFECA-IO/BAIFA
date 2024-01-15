@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useState} from 'react';
+import {Dispatch, SetStateAction, useState, useEffect} from 'react';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
 
 interface IPagination {
@@ -8,10 +8,36 @@ interface IPagination {
 }
 
 const Pagination = ({activePage, setActivePage, totalPages}: IPagination) => {
+  const [url, setUrl] = useState<URL | null>(null);
   const [targetPage, setTargetPage] = useState<number>(1);
 
   const buttonStyle =
     'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const currentUrl = new URL(window.location.href);
+      setUrl(currentUrl);
+    }
+  }, []);
+
+  const previousHandler = () => {
+    setActivePage(activePage - 1);
+    // Info: (20240115 - Julian) change url query
+    if (url) {
+      url.searchParams.set('page', `${activePage - 1}`);
+      window.history.replaceState({}, '', url.toString());
+    }
+  };
+
+  const nextHandler = () => {
+    setActivePage(activePage + 1);
+    // Info: (20240115 - Julian) change url query
+    if (url) {
+      url.searchParams.set('page', `${activePage + 1}`);
+      window.history.replaceState({}, '', url.toString());
+    }
+  };
 
   // Info: (20230907 - Julian) 將在 input 輸入的數字放入 targetPage
   const pageChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,12 +56,17 @@ const Pagination = ({activePage, setActivePage, totalPages}: IPagination) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       setActivePage(targetPage);
+      // Info: (20240115 - Julian) change url query
+      if (url) {
+        url.searchParams.set('page', `${targetPage}`);
+        window.history.replaceState({}, '', url.toString());
+      }
     }
   };
 
   const previousBtn = (
     <button
-      onClick={() => setActivePage(activePage - 1)}
+      onClick={previousHandler}
       disabled={activePage === 1 || totalPages === 0 ? true : false}
       className={buttonStyle}
     >
@@ -45,7 +76,7 @@ const Pagination = ({activePage, setActivePage, totalPages}: IPagination) => {
 
   const nextBtn = (
     <button
-      onClick={() => setActivePage(activePage + 1)}
+      onClick={nextHandler}
       disabled={activePage === totalPages || totalPages === 0 ? true : false}
       className={buttonStyle}
     >
