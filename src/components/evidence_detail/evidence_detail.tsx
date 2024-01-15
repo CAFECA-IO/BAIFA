@@ -110,7 +110,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
         <div className="w-full">
           {/* Info: (20240115 - Julian) Balance Sheet */}
           {/* ToDo: (20240115 - Julian) Reports API */}
-          <iframe src="https://baifa.io/reports/bfa/balance" className="h-200px w-full" />
+          <iframe src="https://baifa.io/reports/BFA/balance" className="h-200px w-full" />
           {/* ToDo: (20240115 - Julian) Cash Flow Statement */}
           {/* ToDo: (20240115 - Julian) Comprehensive Income Statement */}
         </div>

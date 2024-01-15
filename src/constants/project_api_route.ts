@@ -18,13 +18,13 @@ const defaultApiRoute = {
 
 export const API_ROUTES: IProjectIdToApiRoute = {
   TBD: {
-    BALANCE_SHEET: `${TBD_API_URL}/${TBD_API_VERSION}/balance`,
+    BALANCE_SHEET: `${TBD_API_URL}/${TBD_API_VERSION}/balance_sheet`,
     COMPREHENSIVE_INCOME_STATEMENTS: `${TBD_API_URL}/${TBD_API_VERSION}/comprehensive_income`,
     STATEMENTS_OF_CASH_FLOWS: `${TBD_API_URL}/${TBD_API_VERSION}/cash_flow`,
     EXCHANGE_RATES: `${TBD_API_URL}/${TBD_API_VERSION}/exchange-rates`,
   },
   BFA: {
-    BALANCE_SHEET: `https://baifa.io/api/balance`,
+    BALANCE_SHEET: `https://baifa.io/api/balance_sheet`,
     COMPREHENSIVE_INCOME_STATEMENTS: `https://baifa.io/api/comprehensive_income`,
     STATEMENTS_OF_CASH_FLOWS: `https://baifa.io/api/cash_flow`,
     EXCHANGE_RATES: `https://baifa.io/api/exchange-rates`,
