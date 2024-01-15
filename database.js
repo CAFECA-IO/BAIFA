@@ -10,9 +10,9 @@ const client = new Client({
 
 client.connect();
 
-client.query(`SELECT * FROM transaction_raw`, (err, res) => {
+client.query(`SELECT hash,chain_id,created_timestamp,number FROM blocks`, (err, res) => {
   if (!err) {
-    console.log(res.rows[0]);
+    console.log(res.rows);
   } else {
     console.log(err);
   }
