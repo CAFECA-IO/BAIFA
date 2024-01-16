@@ -19,7 +19,7 @@ type ResponseData = {
   nextBlockId: string;
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240116 - Julian) 解構 URL 參數，同時進行類型轉換
   const block_id = typeof req.query.block_id === 'string' ? req.query.block_id : undefined;
 
