@@ -22,7 +22,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
   //   typeof req.query.end_date === 'string' ? parseInt(req.query.end_date) : undefined;
 
   pool.query(
-    `SELECT hash as "id",
+    `SELECT id,
+            hash,
             chain_id as "chainId",
             created_timestamp as "createdTimestamp",
             number
