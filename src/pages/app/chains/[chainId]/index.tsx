@@ -14,7 +14,6 @@ import {IChainDetail} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
-import {getChainIcon} from '../../../../lib/common';
 import {chainList, default30DayPeriod} from '../../../../constants/config';
 import {IBlock} from '../../../../interfaces/block';
 import {ITransaction} from '../../../../interfaces/transaction';
@@ -28,7 +27,8 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const appCtx = useContext(AppContext);
   const {getChainDetail, getBlocks, getTransactions} = useContext(MarketContext);
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isHeadLoading, setIsHeadLoading] = useState<boolean>(true);
+  const [isTabLoading, setIsTabLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'blocks' | 'transactions'>('blocks');
   const [chainData, setChainData] = useState<IChainDetail>({} as IChainDetail);
   const [blockData, setBlockData] = useState<IBlock[]>([]);
@@ -70,10 +70,14 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     getTransactionData();
   }, []);
 
+  const {chainId: chainIdFromData, chainName, chainIcon} = chainData;
+  const headTitle = `${chainName} - BAIFA`;
+
   let timer: NodeJS.Timeout;
 
   useEffect(() => {
     clearTimeout(timer);
+    setIsTabLoading(true);
 
     if (activeTab === 'blocks') {
       getBlockData();
@@ -81,13 +85,14 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
       getTransactionData();
     }
 
-    timer = setTimeout(() => setIsLoading(false), 500);
+    timer = setTimeout(() => setIsTabLoading(false), 500);
     return () => clearTimeout(timer);
-  }, [period.startTimeStamp, period.endTimeStamp]);
+  }, [period.startTimeStamp, period.endTimeStamp, activeTab]);
 
-  const chainName = chainData.chainName;
-  const chainIcon = getChainIcon(chainData.chainId).src;
-  const headTitle = `${chainName} - BAIFA`;
+  useEffect(() => {
+    if (!chainIcon) setIsHeadLoading(true);
+    else setIsHeadLoading(false);
+  }, [chainIcon]);
 
   const crumbs = [
     {
@@ -103,11 +108,11 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
         activeTab === 'blocks'
           ? t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')
           : t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB'),
-      path: BFAURL.CHAINS + '/' + chainData.chainId,
+      path: BFAURL.CHAINS + '/' + chainIdFromData,
     },
   ];
 
-  const displayedTitle = !isLoading ? (
+  const displayedTitle = !isHeadLoading ? (
     <div className="flex items-center justify-center space-x-4 py-5 text-2xl font-bold lg:text-48px">
       <Image
         className="block lg:hidden"
@@ -156,7 +161,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     </div>
   );
 
-  const tabContent = !isLoading ? (
+  const tabContent = !isTabLoading ? (
     activeTab === 'blocks' ? (
       <BlockTab datePeriod={period} setDatePeriod={setPeriod} blockList={blockData} />
     ) : (
