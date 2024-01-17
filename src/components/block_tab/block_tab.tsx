@@ -43,7 +43,7 @@ const BlockTab = ({datePeriod, setDatePeriod, blockList}: IBlockTabProps) => {
       // Info: (20230905 - Julian) filter by search term
       .filter((block: IBlock) => {
         const searchTerm = searchRef.current.toLowerCase();
-        const stability = block.stability.toLowerCase();
+        const stability = block.stability ? block.stability.toLowerCase() : 'low'; // ToDo: (20240116 - Julian) remove this after API is fixed
 
         return searchTerm !== ''
           ? block.id.toString().includes(searchTerm) || stability.includes(searchTerm)

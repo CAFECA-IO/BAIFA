@@ -1,6 +1,7 @@
 // 009 - GET /app/chains/:chain_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
+import pool from '../../../../../../../lib/utils/dbConnection';
 
 type Transaction = {
   id: string;
@@ -13,6 +14,39 @@ type Transaction = {
 type ResponseData = Transaction[];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
+  const chain_id =
+    typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
+  // const start_date =
+  //   typeof req.query.start_date === 'string' ? parseInt(req.query.start_date) : undefined;
+  // const end_date =
+  //   typeof req.query.end_date === 'string' ? parseInt(req.query.end_date) : undefined;
+
+  pool.query(
+    `SELECT id,
+            hash,
+            chain_id as "chainId",
+            created_timestamp as "createdTimestamp",
+            type,
+            status
+    FROM transactions
+    WHERE chain_id = $1`,
+    [chain_id],
+    // ToDo: (20240116 - Julian) 這裡要加上條件
+    // 1. Filter by chain_id ✅
+    // 2. Filter by start_date and end_date
+    // 3. Order by newest to oldest
+    // 4. pagination
+    // AND created_timestamp >= start_date
+    // AND created_timestamp <= end_date
+    (err: Error, response: any) => {
+      if (!err) {
+        res.status(200).json(response.rows);
+      }
+    }
+  );
+
+  /* 
   const result: ResponseData = [
     {
       'id': '930071',
@@ -37,5 +71,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     },
   ];
 
-  res.status(200).json(result);
+  res.status(200).json(result); */
 }
