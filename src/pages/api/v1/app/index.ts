@@ -41,7 +41,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
       res.status(200).json({chains, cryptoCurrencies, blackList});
     })
     .catch(error => {
-      console.log('error:', error);
       res.status(500).json(error);
     });
 
