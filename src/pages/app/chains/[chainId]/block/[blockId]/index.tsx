@@ -15,7 +15,6 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {IBlockDetail} from '../../../../../../interfaces/block';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {getChainIcon} from '../../../../../../lib/common';
 import {getDynamicUrl} from '../../../../../../constants/url';
 
 interface IBlockDetailPageProps {
@@ -63,8 +62,8 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
     return () => clearTimeout(timer);
   }, [blockData]);
 
-  const previousBlockId = blockData.previousBlockId;
-  const nextBlockId = blockData.nextBlockId;
+  const {previousBlockId, nextBlockId, chainIcon} = blockData;
+
   const previousLink = getDynamicUrl(chainId, `${previousBlockId}`).BLOCK;
   const nextLink = getDynamicUrl(chainId, `${nextBlockId}`).BLOCK;
 
@@ -105,12 +104,7 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
               </button>
               {/* Info: (20230912 -Julian) Block Title */}
               <div className="flex flex-1 items-center justify-center space-x-2">
-                <Image
-                  src={getChainIcon(blockData.chainId).src}
-                  alt={getChainIcon(blockData.chainId).alt}
-                  width={40}
-                  height={40}
-                />
+                <Image src={chainIcon} alt={`${chainId}_icon`} width={40} height={40} />
                 <h1 className="text-2xl font-bold lg:text-32px">
                   {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')}
                   <span className="ml-2 text-primaryBlue"> {blockId}</span>
