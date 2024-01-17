@@ -63,8 +63,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
         OR to_address
         IN ($1, $2)`,
       // ToDo: (20240117 - Julian) 加上排序條件
-      ['0x2390b5b1da7a78266111143d503d50c4636f5680', '0x2390b5b1da7a78266111143d503d50c4636f5680'],
-      //[addressId[0], addressId[1]],
+      [addressId[0], addressId[1]],
       (err: Error, response: any) => {
         if (!err) {
           res.status(200).json(response.rows);
