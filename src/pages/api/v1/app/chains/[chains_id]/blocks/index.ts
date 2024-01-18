@@ -2,7 +2,6 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
-//import {ITEM_PER_PAGE} from '../../../../../../../constants/config';
 
 type BlockData = {
   id: string;
@@ -23,15 +22,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     typeof req.query.start_date === 'string' ? parseInt(req.query.start_date) : undefined;
   const end_date =
     typeof req.query.end_date === 'string' ? parseInt(req.query.end_date) : undefined;
-  //const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
   //const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
 
   // Info: (20240112 - Julian) 將 timestamp 轉換成 Date 物件
   const startDate = start_date ? new Date(start_date * 1000) : undefined;
   const endDate = end_date ? new Date(end_date * 1000) : undefined;
-
-  // Info: (20240112 - Julian) 將 sort 轉換成 SQL 的排序參數
-  // const sortArgument = sort ? (sort === 'SORTING.NEWEST' ? 'desc' : 'asc') : undefined;
 
   const blocks = await prisma.blocks.findMany({
     where: {
@@ -47,10 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       chain_id: true,
       created_timestamp: true,
     },
-    // ToDo: (20240118 - Julian) 新舊排序
-    // orderBy: {
-    //   created_timestamp: sortArgument,
-    // },
     // ToDo: (20240118 - Julian) 分頁
   });
 
@@ -60,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       id: `${block.id}`,
       chainId: `${block.chain_id}`,
       createdTimestamp: new Date(block.created_timestamp).getTime() / 1000,
-      // ToDo: (20240118 - Julian) 等 DB 補上這個欄位
+      // ToDo: (20240118 - Julian) 參考 codes Table，補上這個欄位
       stability: 'HIGH',
     };
   });

@@ -111,7 +111,6 @@ const AllCurrenciesPageBody = () => {
           <div className="flex w-full flex-col items-center justify-between lg:flex-row">
             <div className="w-full lg:w-fit">
               <SortingMenu
-                sortingType="currency"
                 sortingOptions={currenciesOptions}
                 sorting={currencies}
                 setSorting={setCurrencies}
@@ -122,7 +121,6 @@ const AllCurrenciesPageBody = () => {
             <div className="my-2 flex w-full items-center text-base lg:my-0 lg:w-fit lg:space-x-2">
               <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
               <SortingMenu
-                sortingType="sort"
                 sortingOptions={sortingOptions}
                 sorting={sorting}
                 setSorting={setSorting}

@@ -127,7 +127,6 @@ const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
               <SortingMenu
-                sortingType="sort"
                 sortingOptions={sortOldAndNewOptions}
                 sorting={sorting}
                 setSorting={setSorting}
