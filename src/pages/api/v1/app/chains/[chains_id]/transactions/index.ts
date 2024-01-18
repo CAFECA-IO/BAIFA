@@ -1,7 +1,7 @@
 // 009 - GET /app/chains/:chain_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import pool from '../../../../../../../lib/utils/dbConnection';
+import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
 
 type Transaction = {
   id: string;
@@ -13,7 +13,8 @@ type Transaction = {
 
 type ResponseData = Transaction[];
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  const prisma = getPrismaInstance();
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
@@ -25,51 +26,61 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
 
   if (!addressId) {
     // Info: (20240117 - Julian) ========= Transactions of a chain =========
-    pool.query(
-      `SELECT id,
-            hash,
-            chain_id as "chainId",
-            created_timestamp as "createdTimestamp",
-            type,
-            status
-    FROM transactions
-    WHERE chain_id = $1`,
-      [chain_id],
-      // ToDo: (20240116 - Julian) 這裡要加上條件
-      // 1. Filter by chain_id ✅
-      // 2. Filter by start_date and end_date
-      // 3. Order by newest to oldest
-      // 4. pagination
-      // AND created_timestamp >= start_date
-      // AND created_timestamp <= end_date
-      (err: Error, response: any) => {
-        if (!err) {
-          res.status(200).json(response.rows);
-        }
-      }
-    );
+    const transactionsOfChain = await prisma.transactions.findMany({
+      where: {
+        chain_id: chain_id,
+      },
+      select: {
+        id: true,
+        chain_id: true,
+        created_timestamp: true,
+        type: true,
+        status: true,
+      },
+    });
+
+    const resultOfChain: ResponseData = transactionsOfChain.map(transaction => {
+      return {
+        id: `${transaction.id}`,
+        chainId: `${transaction.chain_id}`,
+        createdTimestamp: transaction.created_timestamp.getTime() / 1000,
+        type: transaction.type,
+        status: transaction.status,
+      };
+    });
+
+    res.status(200).json(resultOfChain);
   } else {
     // Info: (20240117 - Julian) ========= Transaction History bewteen two addresses =========
-    pool.query(
-      `SELECT id,
-            hash,
-            chain_id as "chainId",
-            created_timestamp as "createdTimestamp",
-            type,
-            status
-        FROM transactions
-        WHERE from_address
-        IN ($1, $2)
-        OR to_address
-        IN ($1, $2)`,
-      // ToDo: (20240117 - Julian) 加上排序條件
-      [addressId[0], addressId[1]],
-      (err: Error, response: any) => {
-        if (!err) {
-          res.status(200).json(response.rows);
-        }
-      }
-    );
+    const transactionsBetweenAddresses = await prisma.transactions.findMany({
+      where: {
+        chain_id: chain_id,
+        OR: [
+          // Info: (20240118 - Julian) 選出 from_address 或 to_address 有包含 addressId 的交易
+          {from_address: {equals: addressId[0] || addressId[1]}},
+          {to_address: {equals: addressId[0] || addressId[1]}},
+        ],
+      },
+      select: {
+        id: true,
+        chain_id: true,
+        created_timestamp: true,
+        type: true,
+        status: true,
+      },
+    });
+
+    const resultBetweenAddresses: ResponseData = transactionsBetweenAddresses.map(transaction => {
+      return {
+        id: `${transaction.id}`,
+        chainId: `${transaction.chain_id}`,
+        createdTimestamp: transaction.created_timestamp.getTime() / 1000,
+        type: transaction.type,
+        status: transaction.status,
+      };
+    });
+
+    res.status(200).json(resultBetweenAddresses);
   }
 
   /* 

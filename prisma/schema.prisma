@@ -96,13 +96,15 @@ model public_tags {
 }
 
 model evidences {
-  id                  Int      @id @default(autoincrement())
-  chain_id            Int 
+  id                  Int @id      
+  chain_id            Int
+  evidence_id         String
   created_timestamp   DateTime
-  evidence_address    String
+  contract_address    String
   state               String
   content             String
-  creator_address     String    
+  creator_address     String
+  token_id            String
 }
 
 model chains {
@@ -118,12 +120,12 @@ model transactions {
   hash                String
   type                String
   status              String
-  block_id            Int 
+  block_hash          String 
   from_address        String
   to_address          String
   evidence_id         Int
   value               Int
-  fee                 Int
+  fee                 BigInt
   related_addresses   String[]        
 }
 

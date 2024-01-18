@@ -1,7 +1,7 @@
 // 016 - GET /app/chains/:chain_id/evidence/:evidence_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import pool from '../../../../../../../lib/utils/dbConnection';
+import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
 
 type AddressInfo = {
   type: 'address' | 'contract';
@@ -28,29 +28,52 @@ type ResponseData = {
   transactionHistoryData: TransactionData[];
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  const prisma = getPrismaInstance();
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
-  const evidence_id =
+  const evidenceId =
     typeof req.query.evidence_id === 'string' ? parseInt(req.query.evidence_id) : undefined;
 
-  pool.query(
-    `SELECT id,
-            evidence_id as "evidenceAddress",
-            chain_id as "chainId",
-            state,
-            creator_address as "creatorAddressId",
-            created_timestamp as "createdTimestamp",
-            content
-     FROM evidences
-     WHERE id = $1`,
-    [evidence_id],
-    // ToDo: (20240117 - Julian) 補上 transactionHistoryData
-    (err: Error, response: any) => {
-      if (!err) {
-        res.status(200).json(response.rows[0]);
+  const evidenceData = await prisma.evidences.findUnique({
+    where: {
+      id: evidenceId,
+    },
+    select: {
+      id: true,
+      //evidence_id: true,
+      chain_id: true,
+      state: true,
+      creator_address: true,
+      created_timestamp: true,
+      content: true,
+    },
+  });
+
+  console.log(evidenceData);
+
+  const result: ResponseData = evidenceData
+    ? {
+        id: `${evidenceData.id}`,
+        chainId: `${evidenceData.chain_id}`,
+        evidenceAddress: '', //`${evidenceData.evidence_id}`,
+        state: 'Active', // Info: (20240118 - Julian) 需要參考 codes Table 並補上 state 的轉換
+        creatorAddressId: `${evidenceData.creator_address}`,
+        createdTimestamp: evidenceData.created_timestamp.getTime() / 1000,
+        content: evidenceData.content,
+        transactionHistoryData: [], // ToDo: (20240118 - Julian) 補上這個欄位
       }
-    }
-  );
+    : {
+        id: '',
+        chainId: '',
+        evidenceAddress: '',
+        state: 'Inactive',
+        creatorAddressId: '',
+        createdTimestamp: 0,
+        content: '',
+        transactionHistoryData: [],
+      };
+
+  res.status(200).json(result);
 
   /* 
   const result: ResponseData = {

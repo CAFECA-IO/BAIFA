@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       chainId: `${chain.id}`,
       chainName: chain.chain_name,
       chainIcon: chain.chain_icon,
-      // ToDo: (20240118 - Julian) 等 DB 補上這兩個欄位
+      // ToDo: (20240118 - Julian) 補上這兩個欄位
       blocks: 0,
       transactions: 0,
     };
