@@ -1,7 +1,6 @@
 // 010 - GET /app/chains/:chain_id/transactions/:transaction_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import pool from '../../../../../../../lib/utils/dbConnection';
 
 type AddressInfo = {
   type: 'address' | 'contract';
@@ -33,37 +32,9 @@ type ResponseData = {
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240116 - Julian) 解構 URL 參數，同時進行類型轉換
-  const transaction_id =
-    typeof req.query.transaction_id === 'string' ? req.query.transaction_id : undefined;
+  // const transaction_id =
+  //   typeof req.query.transaction_id === 'string' ? req.query.transaction_id : undefined;
 
-  pool.query(
-    `SELECT id,
-            hash,
-            type,
-            status,
-            chain_id as "chainId",
-            block_hash as "blockId",
-            created_timestamp as "createdTimestamp",
-            from_address as "from",
-            to_address as "to",
-            evidence_id as "evidenceId",
-            value,
-            fee
-    FROM transactions
-    WHERE id = $1`,
-    [transaction_id],
-    // ToDo: (20240116 - Julian) 補上欄位
-    // 1. chainIcon
-    // 2. flaggingRecords
-    // 3. unit
-    (err: Error, response: any) => {
-      if (!err) {
-        res.status(200).json(response.rows[0]);
-      }
-    }
-  );
-
-  /*   
   const result: ResponseData = {
     'id': '930071',
     'hash': '0xE47Dcf8aF9829AD3c4E31409eB6ECfecd046d1BD',
@@ -87,5 +58,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     ],
   };
 
-  res.status(200).json(result); */
+  res.status(200).json(result);
 }
