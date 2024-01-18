@@ -228,7 +228,6 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
                 {/* Info: (20231108 - Julian) Type Select Menu */}
                 <div className="relative flex w-full items-center space-y-2 text-base lg:w-fit">
                   <SortingMenu
-                    sortingType="flagging"
                     sortingOptions={sortingOptions}
                     sorting={filteredType}
                     setSorting={setFilteredType}
@@ -244,7 +243,6 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
                 <div className="relative flex w-full items-center text-sm lg:w-fit lg:space-x-2">
                   <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
                   <SortingMenu
-                    sortingType="sort"
                     sortingOptions={sortOldAndNewOptions}
                     sorting={sorting}
                     setSorting={setSorting}
