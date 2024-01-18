@@ -144,6 +144,7 @@ model review_datas {
   created_timestamp   DateTime
   content             String
   stars               Int   
+  author_address      String
 }
 
 model red_flags {
@@ -167,7 +168,9 @@ model blocks {
   symbol              String
   transaction_count   Int
   parent_hash         String
-  burnt_fees          Int          
+  burnt_fees          Int      
+  hash                String   
+  number              Int @unique 
 }
 
 model token_balances {
@@ -206,7 +209,6 @@ model addresses {
   chain_id            Int 
   created_timestamp   DateTime
   address             String @unique
-  type                String
   score               Int
   latest_active_time  DateTime     
 }
