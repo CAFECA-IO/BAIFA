@@ -31,47 +31,47 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
   const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
 
   // Info: (20231215 - Julian) Print all from/to address
-  // const fromList = from
-  //   ? from.map((data, index) => {
-  //       const fromLink =
-  //         data.type === 'address'
-  //           ? getDynamicUrl(chainId, `${data.address}`).ADDRESS
-  //           : getDynamicUrl(chainId, `${data.address}`).CONTRACT;
+  const fromList = from
+    ? from.map((data, index) => {
+        const fromLink =
+          data.type === 'address'
+            ? getDynamicUrl(chainId, `${data.address}`).ADDRESS
+            : getDynamicUrl(chainId, `${data.address}`).CONTRACT;
 
-  //       const fromText =
-  //         data.type === 'address'
-  //           ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')
-  //           : t('CONTRACT_DETAIL_PAGE.MAIN_TITLE');
-  //       return (
-  //         <Link href={fromLink} key={index}>
-  //           <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-  //             {fromText} {data.address}
-  //           </BoltButton>
-  //         </Link>
-  //       );
-  //     })
-  //   : [];
+        const fromText =
+          data.type === 'address'
+            ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')
+            : t('CONTRACT_DETAIL_PAGE.MAIN_TITLE');
+        return (
+          <Link href={fromLink} key={index}>
+            <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
+              {fromText} {data.address}
+            </BoltButton>
+          </Link>
+        );
+      })
+    : [];
 
-  // const toList = to
-  //   ? to.map((data, index) => {
-  //       const toLink =
-  //         data.type === 'address'
-  //           ? getDynamicUrl(chainId, `${data.address}`).ADDRESS
-  //           : getDynamicUrl(chainId, `${data.address}`).CONTRACT;
+  const toList = to
+    ? to.map((data, index) => {
+        const toLink =
+          data.type === 'address'
+            ? getDynamicUrl(chainId, `${data.address}`).ADDRESS
+            : getDynamicUrl(chainId, `${data.address}`).CONTRACT;
 
-  //       const toText =
-  //         data.type === 'address'
-  //           ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')
-  //           : t('CONTRACT_DETAIL_PAGE.MAIN_TITLE');
-  //       return (
-  //         <Link href={toLink} key={index}>
-  //           <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-  //             {toText} {data.address}
-  //           </BoltButton>
-  //         </Link>
-  //       );
-  //     })
-  //   : [];
+        const toText =
+          data.type === 'address'
+            ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')
+            : t('CONTRACT_DETAIL_PAGE.MAIN_TITLE');
+        return (
+          <Link href={toLink} key={index}>
+            <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
+              {toText} {data.address}
+            </BoltButton>
+          </Link>
+        );
+      })
+    : [];
 
   const displayStatus =
     status === 'PROCESSING' ? (
@@ -177,14 +177,14 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
         <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.FROM')}
         </p>
-        <div className="flex flex-wrap items-center space-x-2">{/* fromList */}</div>
+        <div className="flex flex-wrap items-center space-x-2">{fromList}</div>
       </div>
       {/* Info: (20230911 - Julian) To */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
           {t('TRANSACTION_DETAIL_PAGE.TO')}
         </p>
-        <div className="flex flex-wrap items-center space-x-2">{/* toList */}</div>
+        <div className="flex flex-wrap items-center space-x-2">{toList}</div>
       </div>
       {/* Info: (20230911 - Julian) Content */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
