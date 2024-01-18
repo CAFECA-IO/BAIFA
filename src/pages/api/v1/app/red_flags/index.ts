@@ -24,9 +24,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       chain_id: true,
       created_timestamp: true,
       red_flag_type: true,
-      // ToDo: (20420118 - Liz) 沒有下面這兩個欄位，要去哪找？
-      // chain_name: true,
-      // address_id: true,
+      // ToDo: (20420118 - Liz) red_flags 表格沒有下面這兩個欄位，要去哪找？
+      // chain_name: true, // ToDo: (20420118 - Liz) 先拿到全部的 chain，再去找 chain_name
+      // address_id: true, // ToDo: (20420118 - Liz) 在 DB 文件 找 related_addresses 格式
     },
   });
   // Info:(20240118 - Liz) 將撈出來的資料轉換成 API 要的格式
@@ -39,8 +39,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return {
       id,
       chainId,
-      chainName: 'Ethereum', // ToDo: (20240118 - Liz)找到欄位後補回變數
-      addressId: '122372', // ToDo: (20240118 - Liz)找到欄位後補回變數
+      chainName: '', // ToDo: (20240118 - Liz)找到欄位後補回變數
+      addressId: '', // ToDo: (20240118 - Liz)找到欄位後補回變數
       redFlagType: redFlag.red_flag_type,
       createdTimestamp,
     };
