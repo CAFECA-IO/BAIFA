@@ -1,7 +1,6 @@
 // 004 - GET /app/chains
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-
 import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
