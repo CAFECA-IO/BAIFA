@@ -1,30 +1,41 @@
 // 004 - GET /app/chains
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import pool from '../../../../../lib/utils/dbConnection';
+
+import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
-  chainId: string;
+  chainId: number; // Info:(20240118 - Julian) 根據 DB 做調整，原本是 string;
   chainName: string;
   chainIcon: string;
   blocks: number;
   transactions: number;
 }[];
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  pool.query(
-    `SELECT id as "chainId",
-            chain_name as "chainName",
-            chain_icon as "chainIcon"
-     FROM chains`,
-    (err: Error, response: any) => {
-      if (!err) {
-        res.status(200).json(response.rows);
-      }
-    }
-  );
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  const prisma = getPrismaInstance();
 
-  // ToDo: (20240112 - Julian) 補上 blocks 和 transactions 的數量
+  const chains = await prisma.chains.findMany({
+    select: {
+      id: true,
+      chain_name: true,
+      chain_icon: true,
+    },
+  });
+
+  const result: ResponseData = chains.map(chain => {
+    return {
+      chainId: chain.id,
+      chainName: chain.chain_name,
+      chainIcon: chain.chain_icon,
+      // ToDo: (20240118 - Julian) 等 DB 補上這兩個欄位
+      blocks: 0,
+      transactions: 0,
+    };
+  });
+
+  res.status(200).json(result);
+
   /* 
   const result: ResponseData = [
     {
