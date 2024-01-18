@@ -9,8 +9,8 @@ import {BFAURL} from '../../constants/url';
 const PrivateNoteSection = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  // Info: (20231117 - Julian) API
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+  // ToDo: (20231117 - Julian) API
+  const [isLogin /* setIsLogin */] = useState<boolean>(false);
 
   const [tags, setTags] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
