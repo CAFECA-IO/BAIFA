@@ -16,6 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const chains_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
 
+  // Info: (20240118 - Julian) 從 DB 撈出 chainData
   const chainData = await prisma.chains.findUnique({
     where: {
       id: chains_id,
@@ -27,6 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
+  // Info: (20240118 - Julian) 轉換成 API 要的格式
   const result: ResponseData = chainData
     ? {
         chainId: `${chainData.id}`,
