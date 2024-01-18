@@ -4,7 +4,7 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
-  chainId: number; // Info:(20240118 - Julian) 根據 DB 做調整，原本是 string;
+  chainId: string;
   chainName: string;
   chainIcon: string;
 };
@@ -29,13 +29,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const result: ResponseData = chainData
     ? {
-        chainId: chainData.id,
+        chainId: `${chainData.id}`,
         chainName: chainData.chain_name,
         chainIcon: chainData.chain_icon,
       }
     : // Info: (20240118 - Julian) 如果沒有找到資料，回傳空物件
       {
-        chainId: 0,
+        chainId: '',
         chainName: '',
         chainIcon: '',
       };

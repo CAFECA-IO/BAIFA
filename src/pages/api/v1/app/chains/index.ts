@@ -4,7 +4,7 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
-  chainId: number; // Info:(20240118 - Julian) 根據 DB 做調整，原本是 string;
+  chainId: string;
   chainName: string;
   chainIcon: string;
   blocks: number;
@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info:(20240118 - Julian) 將撈出來的資料轉換成 API 要的格式
   const result: ResponseData = chains.map(chain => {
     return {
-      chainId: chain.id,
+      chainId: `${chain.id}`,
       chainName: chain.chain_name,
       chainIcon: chain.chain_icon,
       // ToDo: (20240118 - Julian) 等 DB 補上這兩個欄位
