@@ -16,12 +16,24 @@ type ResponseData = TransactionData[];
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
   // Info: (20240116 - Julian) 解構 URL 參數，同時進行類型轉換
-  // const block_id =
-  //   typeof req.query.block_id === 'string' ? parseInt(req.query.block_id) : undefined;
+  const block_id =
+    typeof req.query.block_id === 'string' ? parseInt(req.query.block_id) : undefined;
 
-  // Info: (20240116 - Julian) 從 DB 撈出所有位於 block_id 下的 transaction 的資料
+  // Info: (20240119 - Julian) 從 blocks Table 撈出 block_id 對應的 blockhash
+  const blockHash = await prisma.blocks.findUnique({
+    where: {
+      id: block_id,
+    },
+    select: {
+      hash: true,
+    },
+  });
+
+  // Info: (20240119 - Julian) 再從 transactions 撈出位於 block_id 下的所有 transaction 的資料
   const transactions = await prisma.transactions.findMany({
-    // ToDo: (20240118 - Julian) 要補上 block_id 的條件
+    where: {
+      block_hash: blockHash?.hash,
+    },
     select: {
       id: true,
       chain_id: true,
