@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     typeof req.query.end_date === 'string' ? parseInt(req.query.end_date) : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
 
-  // Info: (20240112 - Julian) 計算分頁的 skip 與 take
+  // Info: (20240119 - Julian) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // (20240119 - Julian) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // (20240119 - Julian) 取幾筆
 
@@ -47,11 +47,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       chain_id: true,
       created_timestamp: true,
     },
-    // Info: (20240118 - Julian) 從新到舊排序
+    // Info: (20240119 - Julian) 從新到舊排序
     orderBy: {
       created_timestamp: 'desc',
     },
-    // Info: (20240118 - Julian) 分頁
+    // Info: (20240119 - Julian) 分頁
     skip: skip,
     take: take,
   });

@@ -36,21 +36,19 @@ const BlockTab = () => {
 
   const apiQueryStr = `${pageQuery}${dateQuery}`;
 
-  // Info: (20240102 - Julian) Call API to get block and transaction data
+  // Info: (20240119 - Julian) Call API to get block data
   const getBlockData = async () => {
     const data = await getBlocks(chainId, apiQueryStr);
     setBlockData(data);
   };
 
   useEffect(() => {
-    if (blockData.length === 0) {
-      getBlockData();
-    }
+    if (blockData.length === 0) getBlockData();
   }, []);
 
   useEffect(() => {
     getBlockData();
-  }, [period, activePage]);
+  }, [period, activePage, chainId]);
 
   // Info: (20240119 - Julian) 關鍵字搜尋 & 排序
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);

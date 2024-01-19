@@ -14,9 +14,7 @@ import {IChainDetail} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
-import {chainList, default30DayPeriod} from '../../../../constants/config';
-import {IBlock} from '../../../../interfaces/block';
-import {ITransaction} from '../../../../interfaces/transaction';
+import {chainList} from '../../../../constants/config';
 
 export interface IChainDetailPageProps {
   chainId: string;
@@ -25,31 +23,11 @@ export interface IChainDetailPageProps {
 const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
-  const {getChainDetail, getBlocks, getTransactions} = useContext(MarketContext);
+  const {getChainDetail} = useContext(MarketContext);
 
-  const [isHeadLoading, setIsHeadLoading] = useState<boolean>(true);
-  const [isTabLoading, setIsTabLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'blocks' | 'transactions'>('blocks');
   const [chainData, setChainData] = useState<IChainDetail>({} as IChainDetail);
-  const [blockData, setBlockData] = useState<IBlock[]>([]);
-  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
-  const [period, setPeriod] = useState(default30DayPeriod);
-
-  // Info: (20240102 - Julian) Call API to get block and transaction data
-  const getBlockData = async () => {
-    const data =
-      period.startTimeStamp === 0 && period.endTimeStamp === 0
-        ? await getBlocks(chainId)
-        : await getBlocks(chainId, period.startTimeStamp, period.endTimeStamp);
-    setBlockData(data);
-  };
-  const getTransactionData = async () => {
-    const data =
-      period.startTimeStamp === 0 && period.endTimeStamp === 0
-        ? await getTransactions(chainId)
-        : await getTransactions(chainId, period.startTimeStamp, period.endTimeStamp);
-    setTransactionData(data);
-  };
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -66,32 +44,14 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     };
 
     getChainData(chainId);
-    getBlockData();
-    getTransactionData();
   }, []);
 
   const {chainId: chainIdFromData, chainName, chainIcon} = chainData;
   const headTitle = `${chainName} - BAIFA`;
 
-  let timer: NodeJS.Timeout;
-
   useEffect(() => {
-    clearTimeout(timer);
-    setIsTabLoading(true);
-
-    if (activeTab === 'blocks') {
-      getBlockData();
-    } else {
-      getTransactionData();
-    }
-
-    timer = setTimeout(() => setIsTabLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, [period.startTimeStamp, period.endTimeStamp, activeTab]);
-
-  useEffect(() => {
-    if (!chainIcon) setIsHeadLoading(true);
-    else setIsHeadLoading(false);
+    if (!chainIcon) setIsLoading(true);
+    else setIsLoading(false);
   }, [chainIcon]);
 
   const crumbs = [
@@ -112,7 +72,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     },
   ];
 
-  const displayedTitle = !isHeadLoading ? (
+  const displayedTitle = !isLoading ? (
     <div className="flex items-center justify-center space-x-4 py-5 text-2xl font-bold lg:text-48px">
       <Image
         className="block lg:hidden"
@@ -161,20 +121,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     </div>
   );
 
-  const tabContent = !isTabLoading ? (
-    activeTab === 'blocks' ? (
-      <BlockTab datePeriod={period} setDatePeriod={setPeriod} blockList={blockData} />
-    ) : (
-      <TransactionTab
-        datePeriod={period}
-        setDatePeriod={setPeriod}
-        transactionList={transactionData}
-      />
-    )
-  ) : (
-    // ToDo: (20231213 - Julian) Loading Animation
-    <h1>Loading...</h1>
-  );
+  const tabContent = activeTab === 'blocks' ? <BlockTab /> : <TransactionTab />;
 
   return (
     <>

@@ -36,11 +36,7 @@ export interface IMarketContext {
     addressA: string,
     addressB: string
   ) => Promise<ITransaction[]>;
-  getTransactions: (
-    chainId: string,
-    startDate?: number,
-    endDate?: number
-  ) => Promise<ITransaction[]>;
+  getTransactions: (chainId: string, queryStr?: string) => Promise<ITransaction[]>;
   getTransactionList: (chainId: string, blockId: string) => Promise<ITransaction[]>;
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
   getAddressDetail: (chainId: string, addressId: string) => Promise<IAddress>;
@@ -243,29 +239,22 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     []
   );
 
-  const getTransactions = useCallback(
-    async (chainId: string, startDate?: number, endDate?: number) => {
-      let data: ITransaction[] = [];
-      try {
-        const response =
-          startDate && endDate
-            ? await fetch(
-                `${APIURL.CHAINS}/${chainId}/transactions?start_date=${startDate}&end_date=${endDate}`,
-                {
-                  method: 'GET',
-                }
-              )
-            : await fetch(`${APIURL.CHAINS}/${chainId}/transactions`, {
-                method: 'GET',
-              });
-        data = await response.json();
-      } catch (error) {
-        //console.log('getTransactions error', error);
-      }
-      return data;
-    },
-    []
-  );
+  const getTransactions = useCallback(async (chainId: string, queryStr?: string) => {
+    let data: ITransaction[] = [];
+    try {
+      const response = queryStr
+        ? await fetch(`${APIURL.CHAINS}/${chainId}/transactions?${queryStr}`, {
+            method: 'GET',
+          })
+        : await fetch(`${APIURL.CHAINS}/${chainId}/transactions`, {
+            method: 'GET',
+          });
+      data = await response.json();
+    } catch (error) {
+      //console.log('getTransactions error', error);
+    }
+    return data;
+  }, []);
 
   const getTransactionList = useCallback(async (chainId: string, blockId: string) => {
     let data: ITransaction[] = [];
