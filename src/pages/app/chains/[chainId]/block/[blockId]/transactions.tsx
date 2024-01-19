@@ -65,7 +65,7 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   }, [transactionData]);
 
   const displayedTransactions = !isLoading ? (
-    <TransactionTab transactionList={transactionData} />
+    <TransactionTab />
   ) : (
     // ToDo: (20231213 - Julian) Add loading animation
     <h1>Loading...</h1>

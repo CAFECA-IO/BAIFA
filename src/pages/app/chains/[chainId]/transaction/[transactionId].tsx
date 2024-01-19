@@ -14,7 +14,6 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ITransactionDetail} from '../../../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
-import {getChainIcon} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
 import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
@@ -83,8 +82,8 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
       {/* Info: (20230912 -Julian) Transaction Title */}
       <div className="flex flex-1 items-center justify-center space-x-2">
         <Image
-          src={getChainIcon(chainId).src}
-          alt={getChainIcon(chainId).alt}
+          src={transactionData.chainIcon}
+          alt={`${transactionData.chainId}_icon`}
           width={40}
           height={40}
         />

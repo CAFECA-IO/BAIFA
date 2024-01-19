@@ -46,6 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       id: true,
       chain_id: true,
       created_timestamp: true,
+      number: true,
     },
     // Info: (20240119 - Julian) 從新到舊排序
     orderBy: {
@@ -59,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240118 - Julian) 轉換成 API 要的格式
   const result: ResponseData = blocks.map(block => {
     return {
-      id: `${block.id}`,
+      id: `${block.number}`,
       chainId: `${block.chain_id}`,
       createdTimestamp: new Date(block.created_timestamp).getTime() / 1000,
       // ToDo: (20240118 - Julian) 參考 codes Table，補上這個欄位

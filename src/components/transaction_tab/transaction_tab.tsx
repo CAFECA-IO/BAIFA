@@ -1,4 +1,5 @@
-import {useState, useEffect, Dispatch, SetStateAction} from 'react';
+import {useState, useEffect, useContext} from 'react';
+import {useRouter} from 'next/router';
 import useStateRef from 'react-usestateref';
 import TransactionList from '../transaction_list/transaction_list';
 import {useTranslation} from 'next-i18next';
@@ -8,48 +9,62 @@ import SearchBar from '../search_bar/search_bar';
 import DatePicker from '../date_picker/date_picker';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
-import {IDatePeriod} from '../../interfaces/date_period';
+import {MarketContext} from '../../contexts/market_context';
+import Pagination from '../pagination/pagination';
 
-interface ITransactionTabProps {
-  datePeriod?: IDatePeriod;
-  setDatePeriod?: Dispatch<SetStateAction<IDatePeriod>>;
-  transactionList: ITransaction[];
-}
-
-const TransactionTab = ({datePeriod, setDatePeriod, transactionList}: ITransactionTabProps) => {
+const TransactionTab = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const router = useRouter();
+  const {getTransactions} = useContext(MarketContext);
 
+  // Info: (20240119 - Julian) get chainId from URL
+  const chainId = router.query.chainId as string;
+
+  const totalPages = 100; // ToDo: (20240119 - Julian) 如何從 API 取得總頁數？
+  const [activePage, setActivePage] = useState(1);
+
+  const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch, searchRef] = useStateRef('');
-  const [period, setPeriod] =
-    typeof datePeriod !== 'object' || typeof setDatePeriod !== 'function'
-      ? // Info: (20240102 - Julian) if datePeriod and setDatePeriod are not provided, use default30DayPeriod
-        useState(default30DayPeriod)
-      : [datePeriod, setDatePeriod];
-  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactionList);
+  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+
+  // Info: (20240119 - Julian) 設定 API 查詢參數
+  const dateQuery =
+    period.startTimeStamp === 0 || period.endTimeStamp === 0
+      ? ''
+      : `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`;
+  const pageQuery = `page=${activePage}`;
+
+  const apiQueryStr = `${pageQuery}${dateQuery}`;
+
+  // Info: (20240119 - Julian) Call API to get block and transaction data
+  const getTransactionData = async () => {
+    const data = await getTransactions(chainId, apiQueryStr);
+    setTransactionData(data);
+  };
 
   useEffect(() => {
-    const searchResult = transactionList
-      // Info: (20230905 - Julian) filter by date range
-      // .filter((transaction: ITransaction) => {
-      //   const createdTimestamp = transaction.createdTimestamp;
-      //   const start = period.startTimeStamp;
-      //   const end = period.endTimeStamp;
-      //   // Info: (20230905 - Julian) if start and end are 0, it means that there is no period filter
-      //   const isCreatedTimestampInRange =
-      //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-      //   return isCreatedTimestampInRange;
-      // })
-      // Info: (20230905 - Julian) filter by search term
-      .filter((transaction: ITransaction) => {
-        const searchTerm = searchRef.current.toLowerCase();
-        const transactionId = transaction.id.toString().toLowerCase();
-        const status = transaction.status.toLowerCase();
+    if (transactionData.length === 0) getTransactionData();
+  }, []);
 
-        return searchTerm !== ''
-          ? transactionId.includes(searchTerm) || status.includes(searchTerm)
-          : true;
-      })
+  useEffect(() => {
+    getTransactionData();
+  }, [period, activePage, chainId]);
+
+  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+  const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactionData);
+
+  useEffect(() => {
+    const searchResult = transactionData
+      // Info: (20230905 - Julian) filter by search term
+      // .filter((transaction: ITransaction) => {
+      //   const searchTerm = searchRef.current.toLowerCase();
+      //   const transactionId = transaction.id.toString().toLowerCase();
+      //   const status = transaction.status.toLowerCase();
+
+      //   return searchTerm !== ''
+      //     ? transactionId.includes(searchTerm) || status.includes(searchTerm)
+      //     : true;
+      // })
       .sort((a: ITransaction, b: ITransaction) => {
         return sorting === sortOldAndNewOptions[0]
           ? // Info: (20231101 - Julian) Newest
@@ -58,7 +73,7 @@ const TransactionTab = ({datePeriod, setDatePeriod, transactionList}: ITransacti
             a.createdTimestamp - b.createdTimestamp;
       });
     setFilteredTransactions(searchResult);
-  }, [period, search, sorting]);
+  }, [transactionData, search, sorting]);
 
   return (
     <div className="flex w-full flex-col items-center font-inter">
@@ -91,7 +106,10 @@ const TransactionTab = ({datePeriod, setDatePeriod, transactionList}: ITransacti
         </div>
       </div>
       {/* Info: (20230907 - Julian) Transaction List */}
-      <TransactionList transactions={filteredTransactions} />
+      <div className="flex w-full flex-col items-center">
+        <TransactionList transactions={filteredTransactions} />
+        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
+      </div>
     </div>
   );
 };
