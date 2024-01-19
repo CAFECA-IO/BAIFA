@@ -214,7 +214,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const getBlockDetail = useCallback(async (chainId: string, blockId: string) => {
     let data: IBlockDetail = {} as IBlockDetail;
     try {
-      const response = await fetch(`${APIURL.CHAINS}/${chainId}/blocks/${blockId}`, {
+      const response = await fetch(`${APIURL.CHAINS}/${chainId}/block/${blockId}`, {
         method: 'GET',
       });
       data = await response.json();
@@ -270,7 +270,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const getTransactionList = useCallback(async (chainId: string, blockId: string) => {
     let data: ITransaction[] = [];
     try {
-      const response = await fetch(`${APIURL.CHAINS}/${chainId}/blocks/${blockId}/transactions`, {
+      const response = await fetch(`${APIURL.CHAINS}/${chainId}/block/${blockId}/transactions`, {
         method: 'GET',
       });
       data = await response.json();

@@ -21,6 +21,6 @@ export interface IBlockDetail extends IBlock {
   reward: number;
   unit: string;
   size: number;
-  previousBlockId: string;
-  nextBlockId: string;
+  previousBlockId?: string;
+  nextBlockId?: string;
 }
