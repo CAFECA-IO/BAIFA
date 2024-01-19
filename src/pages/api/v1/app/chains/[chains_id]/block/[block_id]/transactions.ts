@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       id: `${transaction.id}`,
       chainId: `${transaction.chain_id}`,
       createdTimestamp: transaction.created_timestamp.getTime() / 1000,
-      type: transaction.type,
+      type: transaction.type, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 type 的轉換
       status: 'SUCCESS', // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 status 的轉換
     };
   });
