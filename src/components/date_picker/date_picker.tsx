@@ -85,7 +85,6 @@ const PopulateDates = ({
 
     /* Info: (20230830 - Julian) 只有可選擇的日期才能點擊 */
     const dateClickHandler = () => {
-      const url = new URL(window.location.href);
       if (el?.date && !el?.disable) {
         // Info: (20230831 - Julian) elTemp 是點擊的日期
         const elTime = new Date(`${selectedYear}/${selectedMonth}/${el.date} 00:00:00`).getTime();
@@ -248,7 +247,6 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
   const openCalendeHandler = () => setComponentVisible(!componentVisible);
   // Info: (20230830 - Julian) 選擇今天
   const todayClickHandler = () => {
-    const url = new URL(window.location.href);
     const dateOfToday = new Date(
       `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()} 00:00:00`
     );
