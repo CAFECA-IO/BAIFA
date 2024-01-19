@@ -29,7 +29,7 @@ export interface IMarketContext {
 
   getChains: () => Promise<void>;
   getChainDetail: (chainId: string) => Promise<IChainDetail>;
-  getBlocks: (chainId: string, startDate?: number, endDate?: number) => Promise<IBlock[]>;
+  getBlocks: (chainId: string, queryStr?: string) => Promise<IBlock[]>;
   getBlockDetail: (chainId: string, blockId: string) => Promise<IBlockDetail>;
   getInteractionTransaction: (
     chainId: string,
@@ -194,20 +194,16 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
-  const getBlocks = useCallback(async (chainId: string, startDate?: number, endDate?: number) => {
+  const getBlocks = useCallback(async (chainId: string, queryStr?: string) => {
     let data: IBlock[] = [];
     try {
-      const response =
-        startDate && endDate
-          ? await fetch(
-              `${APIURL.CHAINS}/${chainId}/blocks?start_date=${startDate}&end_date=${endDate}`,
-              {
-                method: 'GET',
-              }
-            )
-          : await fetch(`${APIURL.CHAINS}/${chainId}/blocks`, {
-              method: 'GET',
-            });
+      const response = queryStr
+        ? await fetch(`${APIURL.CHAINS}/${chainId}/block?${queryStr}`, {
+            method: 'GET',
+          })
+        : await fetch(`${APIURL.CHAINS}/${chainId}/block`, {
+            method: 'GET',
+          });
       data = await response.json();
     } catch (error) {
       //console.log('getBlocks error', error);

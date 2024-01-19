@@ -111,20 +111,11 @@ const PopulateDates = ({
               ).getTime(),
               disable: true,
             });
-
-            // Info: (20240115 - Julian) set url query
-            url.searchParams.set('start', (elTime / 1000).toString());
-            url.searchParams.set('end', (selectTimeOne / 1000).toString());
           } else {
             // Info: (20230831 - Julian) 如果 TimeOne 小於 TimeTwo，則直接填入
             selectDateTwo(el);
-            // Info: (20240115 - Julian) set url query
-            url.searchParams.set('start', (selectTimeOne / 1000).toString());
-            url.searchParams.set('end', (elTime / 1000).toString());
           }
           setComponentVisible(false);
-          // Info: (20240115 - Julian) change url query
-          window.history.replaceState({}, '', url.toString());
         }
       }
     };
@@ -178,12 +169,7 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
           endTimeStamp: dateTwo.getTime() / 1000 + 86399,
         });
       }
-    } /* else {
-      setFilteredPeriod({
-        startTimeStamp: 0,
-        endTimeStamp: 0,
-      });
-    } */
+    }
   }, [dateOne, dateTwo]);
 
   // Info: (20230601 - Julian) 取得該月份第一天是星期幾
@@ -273,10 +259,6 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
     setSelectedMonth(today.getMonth() + 1);
     setSelectedYear(today.getFullYear());
     setComponentVisible(false);
-    // Info: (20240115 - Julian) change url query
-    url.searchParams.set('start', (dateOfToday.getTime() / 1000).toString());
-    url.searchParams.set('end', (dateOfToday.getTime() / 1000).toString());
-    window.history.replaceState({}, '', url.toString());
   };
 
   // Info: (20230830 - Julian) 顯示時間區間
