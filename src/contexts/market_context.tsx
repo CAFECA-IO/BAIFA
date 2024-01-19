@@ -233,7 +233,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       let data: ITransaction[] = [];
       try {
         const response = await fetch(
-          `${APIURL.CHAINS}/${chainId}/transactions?address=${addressA},${addressB}`,
+          `${APIURL.CHAINS}/${chainId}/transactions?addressId=${addressA}&addressId=${addressB}`,
           {
             method: 'GET',
           }

@@ -1,6 +1,7 @@
 // 008 - GET /app/chains/:chain_id/blocks/:block_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
+import pool from '../../../../../../../../lib/utils/dbConnection';
 
 type TransactionData = {
   id: string;
@@ -13,6 +14,27 @@ type TransactionData = {
 type ResponseData = TransactionData[];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  // Info: (20240116 - Julian) 解構 URL 參數，同時進行類型轉換
+  // const block_id = typeof req.query.block_id === 'string' ? req.query.block_id : undefined;
+
+  pool.query(
+    `SELECT id,
+            chain_id as "chainId",
+            created_timestamp as "createdTimestamp",
+            type,
+            status
+      FROM transactions
+    WHERE block_hash = $1`,
+    ['0x424be71ddfe81a40cf6c005a546f4d2f09fce2fa05b9bcf5ca3eff3b6fc23738'],
+    // ToDo: (20240117 - Julian) 這邊先寫死，之後再補上 block_id
+    (err: Error, response: any) => {
+      if (!err) {
+        res.status(200).json(response.rows);
+      }
+    }
+  );
+
+  /*   
   const result: ResponseData = [
     {
       'id': '916841',
@@ -52,5 +74,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     // ...other transactions
   ];
 
-  res.status(200).json(result);
+  res.status(200).json(result); */
 }

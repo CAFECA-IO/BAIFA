@@ -1,6 +1,7 @@
 // 016 - GET /app/chains/:chain_id/evidence/:evidence_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
+import pool from '../../../../../../../lib/utils/dbConnection';
 
 type AddressInfo = {
   type: 'address' | 'contract';
@@ -28,6 +29,30 @@ type ResponseData = {
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
+  const evidence_id =
+    typeof req.query.evidence_id === 'string' ? parseInt(req.query.evidence_id) : undefined;
+
+  pool.query(
+    `SELECT id,
+            evidence_id as "evidenceAddress",
+            chain_id as "chainId",
+            state,
+            creator_address as "creatorAddressId",
+            created_timestamp as "createdTimestamp",
+            content
+     FROM evidences
+     WHERE id = $1`,
+    [evidence_id],
+    // ToDo: (20240117 - Julian) 補上 transactionHistoryData
+    (err: Error, response: any) => {
+      if (!err) {
+        res.status(200).json(response.rows[0]);
+      }
+    }
+  );
+
+  /* 
   const result: ResponseData = {
     'id': '510071',
     'chainId': 'btc',
@@ -69,5 +94,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     ],
   };
 
-  res.status(200).json(result);
+  res.status(200).json(result); */
 }
