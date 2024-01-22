@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 import Link from 'next/link';
 import BoltButton from '../bolt_button/bolt_button';
 import Tooltip from '../tooltip/tooltip';
-import {timestampToString, getTimeString} from '../../lib/common';
+import {timestampToString, getTimeString, truncateText} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IAddress} from '../../interfaces/address';
@@ -69,9 +69,9 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     relatedAddresses.map((address, index) => {
       const addressLink = getDynamicUrl(address.chainId, `${address.id}`).ADDRESS;
       return (
-        <Link href={addressLink} key={index}>
+        <Link href={addressLink} key={index} title={address.id}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
-            {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {address.id}
+            {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {truncateText(address.id, 10)}
           </BoltButton>
         </Link>
       );

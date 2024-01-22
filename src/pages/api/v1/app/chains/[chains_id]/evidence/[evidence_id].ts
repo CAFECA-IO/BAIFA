@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     ? {
         id: `${evidenceData.id}`,
         chainId: `${evidenceData.chain_id}`,
-        evidenceAddress: `${evidenceData.evidence_id}`,
+        evidenceAddress: evidenceData.evidence_id,
         state: 'Active', // Info: (20240118 - Julian) 需要參考 codes Table 並補上 state 的轉換
         creatorAddressId: `${evidenceData.creator_address}`,
         createdTimestamp: evidenceData.created_timestamp.getTime() / 1000,

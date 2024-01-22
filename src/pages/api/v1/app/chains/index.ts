@@ -23,15 +23,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
+  const blockCount = await prisma.blocks.count();
+  const transactionCount = await prisma.transactions.count();
+
   // Info:(20240118 - Julian) 將撈出來的資料轉換成 API 要的格式
   const result: ResponseData = chains.map(chain => {
     return {
       chainId: `${chain.id}`,
       chainName: chain.chain_name,
       chainIcon: chain.chain_icon,
-      // ToDo: (20240118 - Julian) 補上這兩個欄位
-      blocks: 0,
-      transactions: 0,
+      blocks: blockCount,
+      transactions: transactionCount,
     };
   });
 

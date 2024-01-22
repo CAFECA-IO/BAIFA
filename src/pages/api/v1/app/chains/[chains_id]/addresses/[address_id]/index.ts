@@ -1,6 +1,7 @@
 // 011 - GET /app/chains/:chain_id/addresses/:address_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
+import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 
 type RelatedAddressInfo = {
   id: string;
@@ -61,7 +62,104 @@ type ResponseData = {
   publicTag: string[];
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  const prisma = getPrismaInstance();
+
+  // Info: (20240122 - Julian) 解構 URL 參數，同時進行類型轉換
+  const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
+
+  const addressData = await prisma.addresses.findUnique({
+    where: {
+      address: address_id,
+    },
+    select: {
+      id: true,
+      chain_id: true,
+      created_timestamp: true,
+      address: true,
+      score: true,
+      latest_active_time: true,
+    },
+  });
+
+  const chainData = await prisma.chains.findUnique({
+    where: {
+      id: addressData?.chain_id,
+    },
+    select: {
+      chain_icon: true,
+    },
+  });
+
+  const chainIcon = chainData?.chain_icon ? chainData.chain_icon : '';
+
+  // SELECT * FROM transactions WHERE related_addresses LIKE '%address_id%'
+  const relatedAddressesData = address_id
+    ? await prisma.transactions.findMany({
+        where: {
+          related_addresses: {
+            hasSome: [address_id],
+          },
+        },
+        select: {
+          related_addresses: true,
+        },
+      })
+    : [];
+
+  // Info: (20240122 - Julian) 透過 transactions Table 的 related_addresses 欄位找出所有相關的 address
+  const relatedAddresses: string[] = [];
+  relatedAddressesData.forEach(transaction => {
+    transaction.related_addresses.forEach(address => {
+      if (address !== address_id && address !== 'null' && !relatedAddresses.includes(address)) {
+        relatedAddresses.push(address);
+      }
+    });
+  });
+
+  const result: ResponseData = addressData
+    ? {
+        id: `${addressData.id}`,
+        type: 'address',
+        address: addressData.address,
+        chainId: `${addressData.chain_id}`,
+        chainIcon: chainIcon,
+        createdTimestamp: new Date(addressData.created_timestamp).getTime() / 1000,
+        latestActiveTime: new Date(addressData.latest_active_time).getTime() / 1000,
+        relatedAddresses: [], // ToDo: (20240122 - Julian) 可能廢除
+        interactedAddressCount: relatedAddresses.length,
+        interactedContactCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位
+        score: addressData.score,
+        reviewData: [], // ToDo: (20240122 - Julian) 補上這個欄位
+        transactionHistoryData: [], // ToDo: (20240122 - Julian) 補上這個欄位
+        blockProducedData: [], // ToDo: (20240122 - Julian) 補上這個欄位
+        flaggingCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位
+        riskLevel: 'LOW_RISK', // ToDo: (20240122 - Julian) 補上這個欄位
+        publicTag: [], // ToDo: (20240122 - Julian) 補上這個欄位
+      }
+    : {
+        id: '',
+        type: '',
+        address: '',
+        chainId: '',
+        chainIcon: '',
+        createdTimestamp: 0,
+        latestActiveTime: 0,
+        relatedAddresses: [],
+        interactedAddressCount: 0,
+        interactedContactCount: 0,
+        score: 0,
+        reviewData: [],
+        transactionHistoryData: [],
+        blockProducedData: [],
+        flaggingCount: 0,
+        riskLevel: 'LOW_RISK',
+        publicTag: [],
+      };
+
+  res.status(200).json(result);
+
+  /*   
   const result: ResponseData = {
     'id': '110132',
     'type': 'address',
@@ -150,5 +248,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'publicTag': ['PUBLIC_TAG.UNKNOWN_USER'],
   };
 
-  res.status(200).json(result);
+  res.status(200).json(result); */
 }
