@@ -64,10 +64,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
       path: BFAURL.CHAINS,
     },
     {
-      label:
-        activeTab === 'blocks'
-          ? t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')
-          : t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB'),
+      label: chainName,
       path: BFAURL.CHAINS + '/' + chainIdFromData,
     },
   ];
