@@ -33,8 +33,8 @@ export const WEEK_LIST = [
 
 export const sortOldAndNewOptions = ['SORTING.NEWEST', 'SORTING.OLDEST'];
 export const default30DayPeriod = {
-  startTimeStamp: Math.floor(Date.now() / 1000) - 86400 * 30,
-  endTimeStamp: Math.floor(Date.now() / 1000),
+  startTimeStamp: 0,
+  endTimeStamp: 0,
 };
 
 export const ITEM_PER_PAGE = 10;
