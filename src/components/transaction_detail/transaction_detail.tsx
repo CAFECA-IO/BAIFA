@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import BoltButton from '../bolt_button/bolt_button';
 import Tooltip from '../tooltip/tooltip';
-import {timestampToString} from '../../lib/common';
+import {timestampToString, truncateText} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {ITransactionDetail} from '../../interfaces/transaction';
@@ -43,9 +43,9 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
             ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')
             : t('CONTRACT_DETAIL_PAGE.MAIN_TITLE');
         return (
-          <Link href={fromLink} key={index}>
-            <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-              {fromText} {data.address}
+          <Link href={fromLink} key={index} title={data.address}>
+            <BoltButton className="px-3 py-1" color="blue" style="solid">
+              {fromText} {truncateText(data.address, 10)}
             </BoltButton>
           </Link>
         );
@@ -64,9 +64,9 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
             ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')
             : t('CONTRACT_DETAIL_PAGE.MAIN_TITLE');
         return (
-          <Link href={toLink} key={index}>
+          <Link href={toLink} key={index} title={data.address}>
             <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-              {toText} {data.address}
+              {toText} {truncateText(data.address, 10)}
             </BoltButton>
           </Link>
         );

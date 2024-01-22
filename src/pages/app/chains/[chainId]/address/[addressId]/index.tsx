@@ -25,7 +25,7 @@ import {MarketContext} from '../../../../../../contexts/market_context';
 import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {sortOldAndNewOptions} from '../../../../../../constants/config';
-import {roundToDecimal} from '../../../../../../lib/common';
+import {roundToDecimal, truncateText} from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
 
@@ -130,7 +130,9 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
         <Image src={chainIcon} alt={`${chainId}_icon`} width={40} height={40} />
         <h1 className="text-2xl font-bold lg:text-32px">
           {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-          <span className="ml-2 text-primaryBlue">{addressId}</span>
+          <span title={addressId} className="ml-2 text-primaryBlue">
+            {truncateText(addressId, 10)}
+          </span>
         </h1>
       </div>
     </div>
