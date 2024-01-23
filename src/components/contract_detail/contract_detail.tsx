@@ -67,17 +67,23 @@ const ContractDetail = ({contractData}: IContractDetailProps) => {
         </div>
         <pre className="max-h-200px flex-1 overflow-scroll bg-darkPurple3 p-4 text-sm">
           <code>
-            <p>// SPDX-FileCopyrightText: 2021 Lido &lt;info@lido.fi&gt;</p>
+            <p>{'// SPDX-FileCopyrightText: 2021 Lido <info@lido.fi>'}</p>
             <br />
             <br />
-            <p>// SPDX-License-Identifier: GPL-3.0</p>
+            <p>{'// SPDX-License-Identifier: GPL-3.0'}</p>
             <br />
             <br />
-            <p>/* See contracts/COMPILERS.md */</p>
+            <p>{'/* See contracts/COMPILERS.md */'}</p>
             <p>pragma solidity 0.8.9;</p>
-            <p>import "@openzeppelin/contracts-v4.4/token/ERC20/IERC20.sol";</p>
-            <p>import "@openzeppelin/contracts-v4.4/token/ERC721/IERC721.sol";</p>
-            <p>import "@openzeppelin/contracts-v4.4/token/ERC20/utils/SafeERC20.sol";</p>
+            <p>
+              import {'"'}@openzeppelin/contracts-v4.4/token/ERC20/IERC20.sol{'"'};
+            </p>
+            <p>
+              import {'"'}@openzeppelin/contracts-v4.4/token/ERC721/IERC721.sol{'"'};
+            </p>
+            <p>
+              import {'"'}@openzeppelin/contracts-v4.4/token/ERC20/utils/SafeERC20.sol{'"'};
+            </p>
           </code>
         </pre>
       </div>
