@@ -68,6 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240122 - Julian) 解構 URL 參數，同時進行類型轉換
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
 
+  // Info: (20240122 - Julian) -------------- 透過 addresses Table 找出 address_id 的資料 --------------
   const addressData = await prisma.addresses.findUnique({
     where: {
       address: address_id,
@@ -93,8 +94,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const chainIcon = chainData?.chain_icon ? chainData.chain_icon : '';
 
+  // Info: (20240122 - Julian) -------------- 在 transactions Table 找出所有與 address_id 相關的交易 --------------
   // SELECT * FROM transactions WHERE related_addresses LIKE '%address_id%'
-  const relatedAddressesData = address_id
+  const transactionData = address_id
     ? await prisma.transactions.findMany({
         where: {
           related_addresses: {
@@ -102,19 +104,78 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           },
         },
         select: {
+          id: true,
+          chain_id: true,
+          type: true,
+          status: true,
+          created_timestamp: true,
           related_addresses: true,
         },
       })
     : [];
 
+  // Info: (20240122 - Julian) 將 transactionData 轉換成 transactionHistoryData 格式
+  const transactionHistoryData: TransactionHistoryData[] = transactionData.map(transaction => {
+    const from: AddressInfo[] = [];
+    const to: AddressInfo[] = [];
+    transaction.related_addresses.forEach(address => {
+      if (address !== address_id && address !== 'null') {
+        from.push({
+          type: 'address',
+          address: address,
+        });
+      } else if (address !== 'null') {
+        to.push({
+          type: 'address',
+          address: address,
+        });
+      }
+    });
+
+    return {
+      id: `${transaction.id}`,
+      chainId: `${transaction.chain_id}`,
+      createdTimestamp: new Date(transaction.created_timestamp).getTime() / 1000,
+      from: from,
+      to: to,
+      type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
+      status: 'PENDING', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 status 的轉換
+    };
+  });
+
   // Info: (20240122 - Julian) 透過 transactions Table 的 related_addresses 欄位找出所有相關的 address
   const relatedAddresses: string[] = [];
-  relatedAddressesData.forEach(transaction => {
+  transactionData.forEach(transaction => {
     transaction.related_addresses.forEach(address => {
       if (address !== address_id && address !== 'null' && !relatedAddresses.includes(address)) {
         relatedAddresses.push(address);
       }
     });
+  });
+
+  // Info: (20240122 - Julian) -------------- 在 blocks Table 找出所有與 address_id 相關的區塊 --------------
+  const blockData = address_id
+    ? await prisma.blocks.findMany({
+        where: {
+          miner: address_id,
+        },
+        select: {
+          id: true,
+          created_timestamp: true,
+          reward: true,
+        },
+      })
+    : [];
+
+  const blockProducedData: BlockProducedData[] = blockData.map(block => {
+    return {
+      id: `${block.id}`,
+      createdTimestamp: new Date(block.created_timestamp).getTime() / 1000,
+      stability: 'MEDIUM', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 stability 的轉換
+      reward: block.reward,
+      unit: 'isun', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 unit 的轉換
+      chainIcon: chainIcon,
+    };
   });
 
   const result: ResponseData = addressData
@@ -131,8 +192,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         interactedContactCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位
         score: addressData.score,
         reviewData: [], // ToDo: (20240122 - Julian) 補上這個欄位
-        transactionHistoryData: [], // ToDo: (20240122 - Julian) 補上這個欄位
-        blockProducedData: [], // ToDo: (20240122 - Julian) 補上這個欄位
+        transactionHistoryData: transactionHistoryData,
+        blockProducedData: blockProducedData,
         flaggingCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位
         riskLevel: 'LOW_RISK', // ToDo: (20240122 - Julian) 補上這個欄位
         publicTag: [], // ToDo: (20240122 - Julian) 補上這個欄位

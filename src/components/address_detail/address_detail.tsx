@@ -58,6 +58,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
 
   const displayLatestActiveTime = (
     <div className="flex flex-wrap items-center">
+      <p className="mr-2">{timestampToString(latestActiveTime).date}</p>
       <div className="mr-2 flex items-center space-x-2">
         <p>{getTimeString(sinceTime)}</p>
         <p>{t('COMMON.AGO')}</p>
@@ -198,8 +199,8 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
         </div>
         {displayLatestActiveTime}
       </div>
-      {/* Info: (20231017 - Julian) Related Address */}
-      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+      {/* Deprecated: (20240201 - Julian) Related Address */}
+      {/* <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('ADDRESS_DETAIL_PAGE.RELATED_ADDRESS')}</p>
           <Tooltip>
@@ -207,7 +208,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
           </Tooltip>
         </div>
         <div className="flex flex-wrap items-center gap-3">{displayRelatedAddress}</div>
-      </div>
+      </div> */}
       {/* Info: (20231017 - Julian) Interacted With */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">

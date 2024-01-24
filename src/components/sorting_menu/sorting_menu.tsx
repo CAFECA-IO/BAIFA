@@ -3,6 +3,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import {FaChevronDown} from 'react-icons/fa';
+import {truncateText} from '../../lib/common';
 
 interface ISearchFilter {
   sortingOptions: string[];
@@ -32,7 +33,8 @@ const SortingMenu = ({sortingOptions, sorting, setSorting, bgColor}: ISearchFilt
         onClick={clickHandler}
         className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
       >
-        {t(option)}
+        {/* Info: (20240124 - Julian) 將選項字數限制在 10 個字 */}
+        {truncateText(t(option), 10)}
       </li>
     );
   });
@@ -52,7 +54,7 @@ const SortingMenu = ({sortingOptions, sorting, setSorting, bgColor}: ISearchFilt
           sortingVisible ? 'opacity-0' : 'opacity-100'
         } transition-all duration-300 ease-in-out`}
       >
-        {t(sorting)}
+        {truncateText(t(sorting), 10)}
       </p>
       <FaChevronDown />
 
