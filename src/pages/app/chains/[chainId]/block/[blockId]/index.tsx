@@ -48,7 +48,7 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
     };
 
     getBlockData(chainId, blockId);
-  }, []);
+  }, [blockId, chainId]);
 
   let timer: NodeJS.Timeout;
 

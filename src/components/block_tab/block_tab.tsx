@@ -1,4 +1,5 @@
-import {useState, useEffect, Dispatch, SetStateAction} from 'react';
+import {useState, useEffect, useContext} from 'react';
+import {useRouter} from 'next/router';
 import useStateRef from 'react-usestateref';
 import BlockList from '../block_list/block_list';
 import {useTranslation} from 'next-i18next';
@@ -8,38 +9,53 @@ import DatePicker from '../date_picker/date_picker';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
-import {IDatePeriod} from '../../interfaces/date_period';
+import {MarketContext} from '../../contexts/market_context';
+import Pagination from '../pagination/pagination';
 
-interface IBlockTabProps {
-  datePeriod?: IDatePeriod;
-  setDatePeriod?: Dispatch<SetStateAction<IDatePeriod>>;
-  blockList: IBlock[];
-}
-
-const BlockTab = ({datePeriod, setDatePeriod, blockList}: IBlockTabProps) => {
+const BlockTab = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const {getBlocks} = useContext(MarketContext);
+
+  // Info: (20240119 - Julian) get chainId from URL
+  const router = useRouter();
+  const chainId = router.query.chainId as string;
+
+  const totalPages = 100; // ToDo: (20240119 - Julian) 如何從 API 取得總頁數？
+  const [activePage, setActivePage] = useState(1);
 
   const [search, setSearch, searchRef] = useStateRef('');
-  const [period, setPeriod] =
-    typeof datePeriod !== 'object' || typeof setDatePeriod !== 'function'
-      ? // Info: (20240102 - Julian) if datePeriod and setDatePeriod are not provided, use default30DayPeriod
-        useState(default30DayPeriod)
-      : [datePeriod, setDatePeriod];
-  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [filteredBlockData, setFilteredBlockData] = useState<IBlock[]>(blockList);
+  const [period, setPeriod] = useState(default30DayPeriod);
+  const [blockData, setBlockData] = useState<IBlock[]>([]);
+
+  // Info: (20240119 - Julian) 設定 API 查詢參數
+  const dateQuery =
+    period.startTimeStamp === 0 || period.endTimeStamp === 0
+      ? ''
+      : `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`;
+  const pageQuery = `page=${activePage}`;
+
+  const apiQueryStr = `${pageQuery}${dateQuery}`;
+
+  // Info: (20240119 - Julian) Call API to get block data
+  const getBlockData = async () => {
+    const data = await getBlocks(chainId, apiQueryStr);
+    setBlockData(data);
+  };
 
   useEffect(() => {
-    const searchResult = blockList
-      // Info: (20230905 - Julian) filter by date range
-      // .filter((block: IBlock) => {
-      //   const createdTimestamp = block.createdTimestamp;
-      //   const start = period.startTimeStamp;
-      //   const end = period.endTimeStamp;
-      //   // Info: (20230905 - Julian) if start and end are 0, it means that there is no period filter
-      //   const isCreatedTimestampInRange =
-      //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-      //   return isCreatedTimestampInRange;
-      // })
+    if (blockData.length === 0) getBlockData();
+  }, []);
+
+  useEffect(() => {
+    getBlockData();
+  }, [period, activePage, chainId]);
+
+  // Info: (20240119 - Julian) 關鍵字搜尋 & 排序
+  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+  const [filteredBlockData, setFilteredBlockData] = useState<IBlock[]>(blockData);
+
+  useEffect(() => {
+    const searchResult = blockData
       // Info: (20230905 - Julian) filter by search term
       .filter((block: IBlock) => {
         const searchTerm = searchRef.current.toLowerCase();
@@ -57,7 +73,7 @@ const BlockTab = ({datePeriod, setDatePeriod, blockList}: IBlockTabProps) => {
             a.createdTimestamp - b.createdTimestamp;
       });
     setFilteredBlockData(searchResult);
-  }, [period, search, sorting]);
+  }, [blockData, search, sorting]);
 
   return (
     <div className="flex w-full flex-col items-center font-inter">
@@ -76,7 +92,6 @@ const BlockTab = ({datePeriod, setDatePeriod, blockList}: IBlockTabProps) => {
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
             <DatePicker period={period} setFilteredPeriod={setPeriod} />
           </div>
-
           {/* Info: (20230904 - Julian) Sorting Menu */}
           <div className="relative flex w-full items-center pb-2 text-base lg:w-fit lg:space-x-2 lg:pb-0">
             <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
@@ -90,7 +105,10 @@ const BlockTab = ({datePeriod, setDatePeriod, blockList}: IBlockTabProps) => {
         </div>
       </div>
       {/* Info: (20230904 - Julian) Block List */}
-      <BlockList blockData={filteredBlockData} />
+      <div className="flex w-full flex-col items-center">
+        <BlockList blockData={filteredBlockData} />
+        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
+      </div>
     </div>
   );
 };

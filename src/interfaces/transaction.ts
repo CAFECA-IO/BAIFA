@@ -11,6 +11,7 @@ export interface ITransaction {
 }
 
 export interface ITransactionDetail extends ITransaction {
+  chainIcon: string;
   hash: string;
   blockId: string;
   evidenceId?: string;

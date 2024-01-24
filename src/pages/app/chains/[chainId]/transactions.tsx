@@ -105,7 +105,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
 
   const isShowTransactionList =
     transactionData && !isLoading ? (
-      <TransactionTab transactionList={transactionData} />
+      <TransactionTab />
     ) : (
       <h2 className="text-2xl font-bold">{t('ERROR_PAGE.HEAD_TITLE')}</h2>
     );

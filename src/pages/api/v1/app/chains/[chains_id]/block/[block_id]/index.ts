@@ -15,8 +15,8 @@ type ResponseData = {
   reward: number;
   unit: string;
   size: number; // bytes
-  previousBlockId: string;
-  nextBlockId: string;
+  previousBlockId: string | undefined;
+  nextBlockId: string | undefined;
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
@@ -27,8 +27,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     typeof req.query.block_id === 'string' ? parseInt(req.query.block_id) : undefined;
 
   const blockData = await prisma.blocks.findUnique({
+    // Info: (20240119 - Julian) 前端傳過來的 block_id 是 number，所以要轉換
     where: {
-      id: block_id,
+      number: block_id,
     },
     select: {
       id: true,
@@ -38,14 +39,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       miner: true,
       reward: true,
       size: true,
+      number: true,
     },
   });
 
+  // Info: (20240119 - Julian) 從 chains Table 撈出 chain_icon
+  const chain_id = blockData?.chain_id ?? 0;
+  const chainData = await prisma.chains.findUnique({
+    where: {
+      id: chain_id,
+    },
+    select: {
+      chain_icon: true,
+    },
+  });
+  const chainIcon = chainData?.chain_icon ?? '';
+
+  // Info: (20240119 - Julian) 取得上一個與下一個區塊的編號，如果沒有就 undefined
+  const previousBlockNumber = blockData?.number ? `${blockData?.number - 1}` : undefined;
+  const nextBlockNumber = blockData?.number ? `${blockData?.number + 1}` : undefined;
+
   const result: ResponseData = blockData
     ? {
-        id: `${blockData.id}`,
+        id: `${blockData.number}`,
         chainId: `${blockData.chain_id}`,
-        chainIcon: '/currencies/isun.svg', // ToDo: (20240118 - Julian) 補上這個欄位
+        chainIcon: chainIcon,
         stability: 'HIGH', // ToDo: (20240118 - Julian) 補上這個欄位
         createdTimestamp: blockData.created_timestamp.getTime() / 1000,
         managementTeam: ['Alice', 'Bob', 'Charlie'], // ToDo: (20240118 - Julian) 補上這個欄位
@@ -54,8 +72,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         reward: blockData.reward,
         unit: 'isun', // ToDo: (20240118 - Julian) 補上這個欄位
         size: blockData.size,
-        previousBlockId: '230020', // ToDo: (20240118 - Julian) 補上這個欄位
-        nextBlockId: '230022', // ToDo: (20240118 - Julian) 補上這個欄位
+        previousBlockId: previousBlockNumber,
+        nextBlockId: nextBlockNumber,
       }
     : {
         id: '',

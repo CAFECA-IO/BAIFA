@@ -12,31 +12,16 @@ type ResponseData = {
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
 
-  let chains = 0;
-  let cryptoCurrencies = 0;
-  let blackList = 0;
+  // Info: (20240119 - Julian) 計算這三個 Table 的資料筆數
+  const chainsLength = prisma.chains.count();
+  const currenciesLength = prisma.currencies.count();
+  const blackListLength = prisma.black_lists.count();
 
-  // Info:(20240118 - Julian) 撈出所有 chain 的資料
-  const getChainsLength = prisma.chains
-    .findMany({select: {id: true}})
-    .then(result => (chains = result.length));
-
-  // Info:(20240118 - Julian) 撈出所有 currencies 的資料
-  const getCurrenciesLength = prisma.currencies
-    .findMany({select: {id: true}})
-    .then(result => (cryptoCurrencies = result.length));
-
-  // Info:(20240118 - Julian) 撈出所有 blackList 的資料
-  const getBlackListLength = prisma.black_lists
-    .findMany({select: {id: true}})
-    .then(result => (blackList = result.length));
-
-  Promise.all([getChainsLength, getCurrenciesLength, getBlackListLength]).then(() => {
-    // Info:(20240118 - Julian) 轉換成 API 要的格式
+  Promise.all([chainsLength, currenciesLength, blackListLength]).then(values => {
     const result: ResponseData = {
-      chains,
-      cryptoCurrencies,
-      blackList,
+      chains: values[0],
+      cryptoCurrencies: values[1],
+      blackList: values[2],
     };
     res.status(200).json(result);
   });
