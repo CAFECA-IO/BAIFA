@@ -106,6 +106,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         select: {
           id: true,
           chain_id: true,
+          from_address: true,
+          to_address: true,
           type: true,
           status: true,
           created_timestamp: true,
@@ -118,18 +120,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const transactionHistoryData: TransactionHistoryData[] = transactionData.map(transaction => {
     const from: AddressInfo[] = [];
     const to: AddressInfo[] = [];
-    transaction.related_addresses.forEach(address => {
-      if (address !== address_id && address !== 'null') {
-        from.push({
-          type: 'address',
-          address: address,
-        });
-      } else if (address !== 'null') {
-        to.push({
-          type: 'address',
-          address: address,
-        });
-      }
+    from.push({
+      type: 'address', // ToDo: (20240124 - Julian) 先寫死
+      address: transaction.from_address,
+    });
+    to.push({
+      type: 'address', // ToDo: (20240124 - Julian) 先寫死
+      address: transaction.to_address,
     });
 
     return {
