@@ -305,11 +305,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
                 traditional financial intermediaries like banks and brokerages.
               </p>
               <p>
-                Operating on a global scale, TideBit DeFi's platform allows users to trade a variety
-                of digital assets in a secure and decentralized manner. This means that rather than
-                relying on a central authority to facilitate transactions, trades are executed
-                directly between users through smart contracts on the blockchain. This not only
-                enhances security but also increases transaction speed and reduces costs.
+                {`Operating on a global scale, TideBit DeFi's platform allows users to trade a variety of digital assets in a secure and decentralized manner. This means that rather than relying on a central authority to facilitate transactions, trades are executed directly between users through smart contracts on the blockchain. This not only enhances security but also increases transaction speed and reduces costs.`}
               </p>
               <p>
                 By harnessing the power of blockchain technology and the principles of
@@ -323,15 +319,11 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
               </h2>
               <p className="font-bold">Foundation for Presentation and Consolidation Principles </p>
               <p>
-                The attached financial statements of the Company are not audited. These non-audited
-                financial statements are prepared following the United States Generally Accepted
-                Accounting Principles ("GAAP") in the same manner as the audited financial
-                statements. In the management's view, they include all necessary adjustments, which
-                are only regular, recurring adjustments, for a fair representation of the Company's
-                financial statements for the periods shown. The non-audited operational results for
-                the 30 days ending{' '}
-                <span className="font-bold text-violet">{endDateStr.dateFormatInUS}</span>, may not
-                necessarily predict the results for the full year or any other period.
+                {`The attached financial statements of the Company are not audited. These non-audited financial statements are prepared following the United States Generally Accepted Accounting Principles ("GAAP") in the same manner as the audited financial statements. In the management's view, they include all necessary adjustments, which are only regular, recurring adjustments, for a fair representation of the Company's financial statements for the periods shown. The non-audited operational results for
+                the 30 days ending `}
+                <span className="font-bold text-violet">{endDateStr.dateFormatInUS}</span>
+                {`, may not
+                necessarily predict the results for the full year or any other period.`}
               </p>
               <p className="font-bold">Use of estimates</p>
               <p>
@@ -372,12 +364,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
                 anticipates to receive in return for those products or services.
               </p>
               <p>
-                It is essential to provide our investors with a granular view of our financial
-                activities. By breaking down each revenue and cost category associated with fiat
-                currencies and cryptocurrencies, we aim to offer a comprehensive understanding of
-                our operations and financial health. This detailed approach ensures that our
-                stakeholders can make informed decisions based on a thorough analysis of our income
-                streams and expenditures. Below, you'll find specific breakdowns for each category:
+                {`It is essential to provide our investors with a granular view of our financial activities. By breaking down each revenue and cost category associated with fiat currencies and cryptocurrencies, we aim to offer a comprehensive understanding of our operations and financial health. This detailed approach ensures that our stakeholders can make informed decisions based on a thorough analysis of our income streams and expenditures. Below, you'll find specific breakdowns for each category:`}
               </p>
             </div>
           </ReportPageBody>
@@ -607,27 +594,16 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
               {/* Info: (20230906 - Julian) Note 6 */}
               <h2 className="font-bold uppercase">6. Market price risk of cryptocurrencies</h2>
               <p>
-                Our revenue model primarily hinges on transaction fees, which can be a flat fee or
-                calculated as a percentage of the transaction value. The exact fee may fluctuate
-                depending on the payment type and the transaction value.
+                {`Our revenue model primarily hinges on transaction fees, which can be a flat fee or calculated as a percentage of the transaction value. The exact fee may fluctuate depending on the payment type and the transaction value.`}
               </p>
               <p>
-                However, it's important to be cognizant of the risks associated with cryptocurrency
-                price volatility, which could negatively impact our operational results. Market
-                prices of Bitcoin, Ethereum, and other cryptocurrencies play a crucial role in
-                determining our future profitability. These prices have shown significant
-                fluctuation month over month, matching the pattern of our operational results, and
-                there is no certainty that they will follow historical trends.
+                {`However, it's important to be cognizant of the risks associated with cryptocurrency price volatility, which could negatively impact our operational results. Market prices of Bitcoin, Ethereum, and other cryptocurrencies play a crucial role in determining our future profitability. These prices have shown significant fluctuation month over month, matching the pattern of our operational results, and there is no certainty that they will follow historical trends.`}
               </p>
               <p>
-                A downturn in the market price of Bitcoin, Ethereum, and other cryptocurrencies
-                could negatively affect our earnings, the carrying value of our cryptocurrencies,
-                and our projected future cash flows. It could also pose a challenge to our liquidity
-                and capability to fulfill ongoing obligations.
+                {`A downturn in the market price of Bitcoin, Ethereum, and other cryptocurrencies could negatively affect our earnings, the carrying value of our cryptocurrencies, and our projected future cash flows. It could also pose a challenge to our liquidity and capability to fulfill ongoing obligations.`}
               </p>
               <p>
-                In terms of accounting procedures, we record impairment charges on our
-                cryptocurrencies when the market prices fall below the assets' carrying value.
+                {`In terms of accounting procedures, we record impairment charges on our cryptocurrencies when the market prices fall below the assets' carrying value.`}
               </p>
             </div>
           </ReportPageBody>
