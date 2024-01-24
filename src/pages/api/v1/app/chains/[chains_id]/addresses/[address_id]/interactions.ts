@@ -1,6 +1,7 @@
 // 014 - GET /app/chains/:chain_id/addresses/:address_id/interactions?type=address
 
 import type {NextApiRequest, NextApiResponse} from 'next';
+import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
   id: string;
@@ -12,7 +13,78 @@ type ResponseData = {
   transactionCount: number;
 }[];
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  const prisma = getPrismaInstance();
+
+  // Info: (20240122 - Julian) 解構 URL 參數，同時進行類型轉換
+  const chain_id =
+    typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
+  const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
+
+  // Info: (20240122 - Julian) -------------- 透過 transactions Table 找出有關聯項目 --------------
+  const interactedData = address_id
+    ? await prisma.transactions.findMany({
+        where: {
+          related_addresses: {
+            hasSome: [address_id],
+          },
+        },
+        select: {
+          related_addresses: true,
+        },
+      })
+    : [];
+
+  // Info: (20240124 - Julian) 將關聯 addresses 整理成一個 array
+  const interactedList: string[] = [];
+  interactedData.forEach(transaction => {
+    transaction.related_addresses.forEach(address => {
+      if (address !== address_id && address !== 'null' && !interactedList.includes(address))
+        interactedList.push(address);
+    });
+  });
+  // Info: (20240124 - Julian) -------------- 透過 addresses Table 找出關聯資料 --------------
+  const addressData = await prisma.addresses.findMany({
+    where: {
+      address: {
+        in: interactedList,
+      },
+    },
+    select: {
+      id: true,
+      chain_id: true,
+      created_timestamp: true,
+      address: true,
+    },
+  });
+
+  // Info: (20240124 - Julian) 取得 chain_icon
+  const chainData = await prisma.chains.findUnique({
+    where: {
+      id: chain_id,
+    },
+    select: {
+      chain_icon: true,
+    },
+  });
+  const chainIcon = chainData ? chainData.chain_icon : '';
+
+  const result: ResponseData = addressData
+    ? addressData.map(address => {
+        return {
+          'id': address.address,
+          'type': 'address',
+          'chainId': `${chain_id}`,
+          'chainIcon': chainIcon,
+          'publicTag': [], // ToDo: (20240124 - Julian) 補上這個欄位
+          'createdTimestamp': new Date(address.created_timestamp).getTime() / 1000,
+          'transactionCount': 0, // ToDo: (20240124 - Julian) 補上這個欄位
+        };
+      })
+    : [];
+
+  res.status(200).json(result);
+  /*  
   const result: ResponseData = [
     {
       'id': '122134',
@@ -53,5 +125,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     //...
   ];
 
-  res.status(200).json(result);
+  res.status(200).json(result); */
 }

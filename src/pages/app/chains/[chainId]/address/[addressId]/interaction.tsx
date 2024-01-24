@@ -14,7 +14,7 @@ import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import InteractionItem from '../../../../../../components/interaction_item/interaction_item';
 import Footer from '../../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {getChainIcon} from '../../../../../../lib/common';
+import {getChainIcon, truncateText} from '../../../../../../lib/common';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {IInteractionItem} from '../../../../../../interfaces/interaction_item';
 import {
@@ -181,8 +181,8 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
         </h1>
         <div className="flex items-center space-x-2">
           <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
-          <p className="text-xl">
-            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {addressId}
+          <p className="text-xl" title={addressId}>
+            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {truncateText(addressId, 10)}
           </p>
         </div>
       </div>
@@ -224,7 +224,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
                   setSearch={setSearch}
                 />
               </div>
-              <div className="flex w-full flex-col items-center gap-2 lg:flex-row lg:justify-between">
+              <div className="flex w-full flex-col items-center gap-2 lg:h-72px lg:flex-row lg:justify-between">
                 {/* Info: (20231108 - Julian) Type Select Menu */}
                 <div className="relative flex w-full items-center space-y-2 text-base lg:w-fit">
                   <SortingMenu

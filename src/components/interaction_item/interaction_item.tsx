@@ -4,6 +4,7 @@ import {getDynamicUrl} from '../../constants/url';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IInteractionItem} from '../../interfaces/interaction_item';
+import {truncateText} from '../../lib/common';
 
 interface IInteractionItemProps {
   orignalAddressId: string;
@@ -34,17 +35,17 @@ const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemPro
     type === 'address' ? (
       <Link href={itemLink.ADDRESS} className="flex flex-1 items-center space-x-2">
         {displayIcon}
-        <p className="text-xl">
+        <p className="text-sm lg:text-xl" title={id}>
           {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-          <span className="text-primaryBlue"> {id}</span>
+          <span className="text-primaryBlue"> {truncateText(id, 10)}</span>
         </p>
       </Link>
     ) : (
       <Link href={itemLink.CONTRACT} className="flex flex-1 items-center space-x-2">
         {displayIcon}
-        <p className="text-xl">
+        <p className="text-sm lg:text-xl" title={id}>
           {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')}
-          <span className="text-primaryBlue"> {id}</span>
+          <span className="text-primaryBlue"> {truncateText(id, 10)}</span>
         </p>
       </Link>
     );
