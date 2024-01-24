@@ -133,30 +133,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       };
 
   res.status(200).json(result);
-
-  /* 
-  const result: ResponseData = {
-    'id': '930071',
-    'hash': '0xE47Dcf8aF9829AD3c4E31409eB6ECfecd046d1BD',
-    'type': 'NFT',
-    'status': 'PROCESSING',
-    'chainId': 'isun',
-    'chainIcon': '/currencies/isun.svg',
-    'blockId': '230021',
-    'createdTimestamp': 1688342795,
-    'from': [{'type': 'address', 'address': '130294'}],
-    'to': [{'type': 'contract', 'address': '310071'}],
-    'evidenceId': '530029',
-    'value': 0.01,
-    'fee': 0.01,
-    'unit': 'ETH',
-    'flaggingRecords': [
-      {
-        'redFlagId': '1378976701',
-        'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_DEPOSIT',
-      },
-    ],
-  };
-
-  res.status(200).json(result); */
 }
