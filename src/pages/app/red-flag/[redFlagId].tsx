@@ -185,7 +185,7 @@ export const getStaticPaths: GetStaticPaths = async ({locales}) => {
   const paths = [
     {
       params: {redFlagId: '1'},
-      locale: 'en',
+      //locale: 'en',
     },
   ];
 

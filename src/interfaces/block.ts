@@ -1,4 +1,4 @@
-import {IStabilityLevel, StabilityLevel} from '../constants/stability_level';
+import {IStabilityLevel} from '../constants/stability_level';
 
 export interface IBlock {
   id: string;

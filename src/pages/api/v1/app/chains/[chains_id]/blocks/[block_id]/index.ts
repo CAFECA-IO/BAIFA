@@ -1,7 +1,7 @@
 // 007 - GET /app/chains/:chain_id/blocks/:block_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import pool from '../../../../../../../../lib/utils/dbConnection';
+import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
   id: string;
@@ -19,34 +19,61 @@ type ResponseData = {
   nextBlockId: string;
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  // Info: (20240116 - Julian) 解構 URL 參數，同時進行類型轉換
-  const block_id = typeof req.query.block_id === 'string' ? req.query.block_id : undefined;
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  const prisma = getPrismaInstance();
 
-  pool.query(
-    `SELECT id,
-            chain_id as "chainId",
-            created_timestamp as "createdTimestamp",
-            transaction_count as "transactionCount",
-            miner,
-            reward,
-            size
-    FROM blocks
-    WHERE id = $1`,
-    [block_id],
-    // ToDo: (20240116 - Julian) 補上欄位
-    // 1. chainIcon
-    // 2. stability
-    // 3. managementTeam
-    // 4. unit
-    // 5. previousBlockId
-    // 6. nextBlockId
-    (err: Error, response: any) => {
-      if (!err) {
-        res.status(200).json(response.rows[0]);
+  // Info: (20240116 - Julian) 解構 URL 參數，同時進行類型轉換
+  const block_id =
+    typeof req.query.block_id === 'string' ? parseInt(req.query.block_id) : undefined;
+
+  const blockData = await prisma.blocks.findUnique({
+    where: {
+      id: block_id,
+    },
+    select: {
+      id: true,
+      chain_id: true,
+      created_timestamp: true,
+      transaction_count: true,
+      miner: true,
+      reward: true,
+      size: true,
+    },
+  });
+
+  const result: ResponseData = blockData
+    ? {
+        id: `${blockData.id}`,
+        chainId: `${blockData.chain_id}`,
+        chainIcon: '/currencies/isun.svg', // ToDo: (20240118 - Julian) 補上這個欄位
+        stability: 'HIGH', // ToDo: (20240118 - Julian) 補上這個欄位
+        createdTimestamp: blockData.created_timestamp.getTime() / 1000,
+        managementTeam: ['Alice', 'Bob', 'Charlie'], // ToDo: (20240118 - Julian) 補上這個欄位
+        transactionCount: blockData.transaction_count,
+        miner: blockData.miner,
+        reward: blockData.reward,
+        unit: 'isun', // ToDo: (20240118 - Julian) 補上這個欄位
+        size: blockData.size,
+        previousBlockId: '230020', // ToDo: (20240118 - Julian) 補上這個欄位
+        nextBlockId: '230022', // ToDo: (20240118 - Julian) 補上這個欄位
       }
-    }
-  );
+    : {
+        id: '',
+        chainId: '',
+        chainIcon: '',
+        stability: 'HIGH',
+        createdTimestamp: 0,
+        managementTeam: [],
+        transactionCount: 0,
+        miner: '',
+        reward: 0,
+        unit: '',
+        size: 0,
+        previousBlockId: '',
+        nextBlockId: '',
+      };
+
+  res.status(200).json(result);
 
   /*   
   const result: ResponseData = {

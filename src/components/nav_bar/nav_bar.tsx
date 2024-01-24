@@ -51,7 +51,7 @@ const NavBar = () => {
   } = useOuterClick<HTMLDivElement>(false);
 
   // ToDo: (20230614 - Julian) log in function
-  const loginHandler = () => setIsLogin(!isLogin);
+  //const loginHandler = () => setIsLogin(!isLogin);
   const hamburgerClickHandler = () => setHamburgerVisible(!hamburgerVisible);
   const profileClickHandler = () => setProfileVisible(!profileVisible);
 

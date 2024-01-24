@@ -165,7 +165,6 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} :</p>
               <SortingMenu
-                sortingType="address"
                 sortingOptions={addressOptions}
                 sorting={filterAddress}
                 setSorting={setFilterAddress}
@@ -176,7 +175,6 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
               <SortingMenu
-                sortingType="sort"
                 sortingOptions={sortOldAndNewOptions}
                 sorting={sorting}
                 setSorting={setSorting}

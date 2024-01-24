@@ -1,7 +1,7 @@
 // 006 - GET /app/chains/:chain_id/blocks?start_date=${startTimestamp}&end_date=${endTimestamp}
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import pool from '../../../../../../../lib/utils/dbConnection';
+import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
 
 type BlockData = {
   id: string;
@@ -12,37 +12,51 @@ type BlockData = {
 
 type ResponseData = BlockData[];
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  const prisma = getPrismaInstance();
+
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
-  // const start_date =
-  //   typeof req.query.start_date === 'string' ? parseInt(req.query.start_date) : undefined;
-  // const end_date =
-  //   typeof req.query.end_date === 'string' ? parseInt(req.query.end_date) : undefined;
+  const start_date =
+    typeof req.query.start_date === 'string' ? parseInt(req.query.start_date) : undefined;
+  const end_date =
+    typeof req.query.end_date === 'string' ? parseInt(req.query.end_date) : undefined;
+  //const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
 
-  pool.query(
-    `SELECT id,
-            hash,
-            chain_id as "chainId",
-            created_timestamp as "createdTimestamp",
-            number
-    FROM blocks
-    WHERE chain_id = $1`,
-    [chain_id],
-    // ToDo: (20240112 - Julian) 這裡要加上條件
-    // 1. Filter by chain_id ✅
-    // 2. Filter by start_date and end_date
-    // 3. Order by newest to oldest
-    // 4. pagination
-    // AND created_timestamp >= start_date
-    // AND created_timestamp <= end_date
-    (err: Error, response: any) => {
-      if (!err) {
-        res.status(200).json(response.rows);
-      }
-    }
-  );
+  // Info: (20240112 - Julian) 將 timestamp 轉換成 Date 物件
+  const startDate = start_date ? new Date(start_date * 1000) : undefined;
+  const endDate = end_date ? new Date(end_date * 1000) : undefined;
+
+  const blocks = await prisma.blocks.findMany({
+    where: {
+      chain_id: chain_id,
+      // Info: (20240118 - Julian) 日期區間
+      created_timestamp: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+    select: {
+      id: true,
+      chain_id: true,
+      created_timestamp: true,
+    },
+    // ToDo: (20240118 - Julian) 分頁
+  });
+
+  // Info: (20240118 - Julian) 轉換成 API 要的格式
+  const result: ResponseData = blocks.map(block => {
+    return {
+      id: `${block.id}`,
+      chainId: `${block.chain_id}`,
+      createdTimestamp: new Date(block.created_timestamp).getTime() / 1000,
+      // ToDo: (20240118 - Julian) 參考 codes Table，補上這個欄位
+      stability: 'HIGH',
+    };
+  });
+
+  res.status(200).json(result);
 
   /* 
   const result: ResponseData = [

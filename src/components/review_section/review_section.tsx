@@ -54,7 +54,6 @@ const ReviewSection = ({reviews}: IReviewDetailSection) => {
         <div className="flex flex-col items-end space-y-10 lg:space-y-4">
           {leaveReviewButton}
           <SortingMenu
-            sortingType="sort"
             sortingOptions={sortOldAndNewOptions}
             sorting={sorting}
             setSorting={setSorting}
