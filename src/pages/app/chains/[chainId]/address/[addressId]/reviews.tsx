@@ -7,7 +7,7 @@ import Footer from '../../../../../../components/footer/footer';
 import ReviewSection from '../../../../../../components/review_section/review_section';
 import {IReviews} from '../../../../../../interfaces/review';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {getChainIcon} from '../../../../../../lib/common';
+import {getChainIcon, truncateText} from '../../../../../../lib/common';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {useTranslation} from 'next-i18next';
@@ -90,8 +90,8 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
                 <h1 className="text-2xl font-bold lg:text-48px">{t('REVIEWS_PAGE.TITLE')}</h1>
                 <div className="flex items-center space-x-2">
                   <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
-                  <p className="text-xl">
-                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {addressId}
+                  <p className="text-xl" title={addressId}>
+                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {truncateText(addressId, 10)}
                   </p>
                 </div>
               </div>
