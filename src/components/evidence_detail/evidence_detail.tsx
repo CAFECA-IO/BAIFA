@@ -4,7 +4,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import Tooltip from '../tooltip/tooltip';
 import BoltButton from '../bolt_button/bolt_button';
 import {getDynamicUrl} from '../../constants/url';
-import {timestampToString} from '../../lib/common';
+import {timestampToString, truncateText} from '../../lib/common';
 import {IEvidence} from '../../interfaces/evidence';
 
 interface IEvidenceDetailProps {
@@ -80,9 +80,9 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <Link href={addressLink}>
+        <Link href={addressLink} title={creatorAddressId}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
-            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {creatorAddressId}
+            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {truncateText(creatorAddressId, 10)}
           </BoltButton>
         </Link>
       </div>
