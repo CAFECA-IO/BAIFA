@@ -12,7 +12,7 @@ import ContractDetail from '../../../../../components/contract_detail/contract_d
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
-import {getChainIcon} from '../../../../../lib/common';
+import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
 import {IContract} from '../../../../../interfaces/contract';
 import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
@@ -124,9 +124,9 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
                     width={40}
                     height={40}
                   />
-                  <h1 className="text-2xl font-bold lg:text-32px">
+                  <h1 className="text-2xl font-bold lg:text-32px" title={contractId}>
                     {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')}
-                    <span className="ml-2 text-primaryBlue"> {contractId}</span>
+                    <span className="ml-2 text-primaryBlue"> {truncateText(contractId, 10)}</span>
                   </h1>
                 </div>
                 {/* Info: (20231109 - Julian) Public Tag */}

@@ -5,7 +5,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IRedFlagDetail} from '../../interfaces/red_flag';
-import {timestampToString} from '../../lib/common';
+import {timestampToString, truncateText} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 
 interface IRedFlagDetailProps {
@@ -29,9 +29,9 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
     ? interactedAddresses.map((address, index) => {
         const addressLink = getDynamicUrl(address.chainId, `${address.id}`).ADDRESS;
         return (
-          <Link href={addressLink} key={index}>
+          <Link href={addressLink} key={index} title={address.id}>
             <BoltButton className="px-3 py-1" color="blue" style="solid">
-              {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {address.id}
+              {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {truncateText(address.id, 10)}
             </BoltButton>
           </Link>
         );
@@ -48,7 +48,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        {address}
+        <p className="break-all">{address}</p>
       </div>
       {/* Info: (20231110 - Julian) Red Flag Type */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

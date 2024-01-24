@@ -43,12 +43,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       };
 
   res.status(200).json(result);
-
-  /*   const result: ResponseData = {
-    'chainId': 'isun',
-    'chainName': 'iSunCloud',
-    'chainIcon': '/currencies/isun.svg',
-  };
-
-  res.status(200).json(result); */
 }

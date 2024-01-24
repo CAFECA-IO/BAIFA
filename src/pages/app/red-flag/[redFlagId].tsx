@@ -15,7 +15,7 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {IRedFlagDetail} from '../../../interfaces/red_flag';
-import {getChainIcon} from '../../../lib/common';
+import {getChainIcon, truncateText} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
 import {ITransaction} from '../../../interfaces/transaction';
@@ -105,9 +105,9 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
                 <h1>{t('RED_FLAG_ADDRESS_PAGE.RED_FLAG')}</h1>
                 <div className="flex items-center justify-center gap-4">
                   <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
-                  <h1>
+                  <h1 title={addressId}>
                     {t('RED_FLAG_ADDRESS_PAGE.ADDRESS')}
-                    <span className="text-primaryBlue"> {addressId}</span>
+                    <span className="text-primaryBlue"> {truncateText(addressId, 10)}</span>
                   </h1>
                 </div>
               </div>

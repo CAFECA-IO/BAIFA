@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 import Link from 'next/link';
 import BoltButton from '../bolt_button/bolt_button';
 import Tooltip from '../tooltip/tooltip';
-import {timestampToString, getTimeString} from '../../lib/common';
+import {timestampToString, getTimeString, truncateText} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IAddress} from '../../interfaces/address';
@@ -58,6 +58,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
 
   const displayLatestActiveTime = (
     <div className="flex flex-wrap items-center">
+      <p className="mr-2">{timestampToString(latestActiveTime).date}</p>
       <div className="mr-2 flex items-center space-x-2">
         <p>{getTimeString(sinceTime)}</p>
         <p>{t('COMMON.AGO')}</p>
@@ -69,9 +70,9 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     relatedAddresses.map((address, index) => {
       const addressLink = getDynamicUrl(address.chainId, `${address.id}`).ADDRESS;
       return (
-        <Link href={addressLink} key={index}>
+        <Link href={addressLink} key={index} title={address.id}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
-            {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {address.id}
+            {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {truncateText(address.id, 10)}
           </BoltButton>
         </Link>
       );
@@ -198,8 +199,8 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
         </div>
         {displayLatestActiveTime}
       </div>
-      {/* Info: (20231017 - Julian) Related Address */}
-      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+      {/* Deprecated: (20240201 - Julian) Related Address */}
+      {/* <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('ADDRESS_DETAIL_PAGE.RELATED_ADDRESS')}</p>
           <Tooltip>
@@ -207,7 +208,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
           </Tooltip>
         </div>
         <div className="flex flex-wrap items-center gap-3">{displayRelatedAddress}</div>
-      </div>
+      </div> */}
       {/* Info: (20231017 - Julian) Interacted With */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">

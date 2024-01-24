@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import BoltButton from '../bolt_button/bolt_button';
 import Tooltip from '../tooltip/tooltip';
-import {timestampToString, getTimeString} from '../../lib/common';
+import {timestampToString, getTimeString, truncateText} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IBlockDetail} from '../../interfaces/block';
@@ -115,9 +115,9 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   const displayMinerAndReward = (
     <div className="flex items-center space-x-3">
       {/* Info: (20230912 - Julian) Miner */}
-      <Link href={minerLink}>
+      <Link href={minerLink} title={miner}>
         <BoltButton className="px-3 py-1" color="blue" style="solid">
-          {miner}
+          {truncateText(miner, 10)}
         </BoltButton>
       </Link>
       <p>+</p>

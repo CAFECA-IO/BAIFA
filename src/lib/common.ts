@@ -122,6 +122,12 @@ export const withCommas = (x: number | string) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
+export const truncateText = (text: string | undefined, length: number) => {
+  if (!text) return '';
+  if (text.length <= length) return text;
+  return `${text.slice(0, length)}...`;
+};
+
 export const roundToDecimal = (x: number, decimal: number) => {
   // Info: (20231214 - Julian) 如果 x 為 NaN 或 undefined，顯示 '—'
   // Info: (20231214 - Julian) 如果 x 為 0 就直接回傳 '0'

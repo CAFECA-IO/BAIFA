@@ -168,6 +168,11 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
           endTimeStamp: dateTwo.getTime() / 1000 + 86399,
         });
       }
+    } else {
+      setFilteredPeriod({
+        startTimeStamp: 0,
+        endTimeStamp: 0,
+      });
     }
   }, [dateOne, dateTwo]);
 
@@ -262,9 +267,11 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
   // Info: (20230830 - Julian) 顯示時間區間
   const displayPeriod =
     dateOne && dateTwo
-      ? `${timestampToString(dateOne.getTime() / 1000).date} ${t('DATE_PICKER.TO')} ${
-          timestampToString(dateTwo.getTime() / 1000).date
-        }`
+      ? dateOne.getTime() !== 0 && dateTwo.getTime() !== 0
+        ? `${timestampToString(dateOne.getTime() / 1000).date} ${t('DATE_PICKER.TO')} ${
+            timestampToString(dateTwo.getTime() / 1000).date
+          }`
+        : t('DATE_PICKER.SELECT_PERIOD')
       : t('DATE_PICKER.SELECT_PERIOD');
 
   // Info: (20230830 - Julian) 顯示月份和年份

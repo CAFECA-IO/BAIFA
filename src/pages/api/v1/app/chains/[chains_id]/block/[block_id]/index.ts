@@ -92,23 +92,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       };
 
   res.status(200).json(result);
-
-  /*   
-  const result: ResponseData = {
-    'id': '230021',
-    'chainId': 'isun',
-    'chainIcon': '/currencies/isun.svg',
-    'stability': 'HIGH', //"MEDIUM" | "HIGH" | "LOW"
-    'createdTimestamp': 1679978900,
-    'managementTeam': ['Alice', 'Bob', 'Charlie'],
-    'transactionCount': 25,
-    'miner': '0x1234567890',
-    'reward': 2.5,
-    'unit': 'isun',
-    'size': 3523, //bytes
-    'previousBlockId': '230020',
-    'nextBlockId': '230022',
-  };
-
-  res.status(200).json(result); */
 }

@@ -47,8 +47,13 @@ const TransactionTab = () => {
   }, []);
 
   useEffect(() => {
+    setActivePage(1);
     getTransactionData();
-  }, [period, activePage, chainId]);
+  }, [period, chainId]);
+
+  useEffect(() => {
+    getTransactionData();
+  }, [activePage]);
 
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactionData);

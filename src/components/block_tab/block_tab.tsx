@@ -47,8 +47,13 @@ const BlockTab = () => {
   }, []);
 
   useEffect(() => {
+    setActivePage(1);
     getBlockData();
-  }, [period, activePage, chainId]);
+  }, [period, chainId]);
+
+  useEffect(() => {
+    getBlockData();
+  }, [activePage]);
 
   // Info: (20240119 - Julian) 關鍵字搜尋 & 排序
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);

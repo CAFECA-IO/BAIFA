@@ -130,7 +130,7 @@ const BlackListPage = () => {
                     setSearch={setSearch}
                   />
                 </div>
-                <div className="flex h-72px w-full flex-col items-center gap-2 lg:flex-row lg:justify-between">
+                <div className="flex w-full flex-col items-center gap-2 lg:h-72px lg:flex-row lg:justify-between">
                   {/* Info: (20231113 - Julian) Flagging Select Menu */}
                   <div className="relative flex w-full items-center space-y-2 text-base lg:w-fit">
                     <SortingMenu

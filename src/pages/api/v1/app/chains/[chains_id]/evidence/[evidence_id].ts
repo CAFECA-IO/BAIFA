@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     ? {
         id: `${evidenceData.id}`,
         chainId: `${evidenceData.chain_id}`,
-        evidenceAddress: `${evidenceData.evidence_id}`,
+        evidenceAddress: evidenceData.evidence_id,
         state: 'Active', // Info: (20240118 - Julian) 需要參考 codes Table 並補上 state 的轉換
         creatorAddressId: `${evidenceData.creator_address}`,
         createdTimestamp: evidenceData.created_timestamp.getTime() / 1000,
@@ -72,48 +72,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       };
 
   res.status(200).json(result);
-
-  /* 
-  const result: ResponseData = {
-    'id': '510071',
-    'chainId': 'btc',
-    'evidenceAddress': '0x2326ce42a513a427a1ab5045a684e0a8ee8e96a13',
-    'state': 'Active',
-    'creatorAddressId': '114007',
-    'createdTimestamp': 1687103913,
-    'content': '',
-    'transactionHistoryData': [
-      {
-        'id': '915024',
-        'chainId': 'btc',
-        'createdTimestamp': 1682817342,
-        'from': [
-          {'type': 'address', 'address': '114007'},
-          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
-        ],
-        'to': [
-          {'type': 'contract', 'address': '311382'},
-          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
-        ],
-        'status': 'SUCCESS',
-      },
-      {
-        'id': '912299',
-        'chainId': 'btc',
-        'createdTimestamp': 1684029313,
-        'from': [
-          {'type': 'address', 'address': '110132'},
-          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
-        ],
-        'to': [
-          {'type': 'contract', 'address': '310683'},
-          // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
-        ],
-        'status': 'FAILED',
-      },
-      //...
-    ],
-  };
-
-  res.status(200).json(result); */
 }

@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useState, useEffect} from 'react';
 import BoltButton from '../../components/bolt_button/bolt_button';
-import {getChainIcon, getTimeString} from '../../lib/common';
+import {getChainIcon, getTimeString, truncateText} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import {IBlacklist} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
@@ -42,11 +42,11 @@ const BlacklistItem = ({blacklistAddress}: IBlacklistItemProps) => {
         <BoltButton className="px-3 py-2 text-sm" style="solid" color="purple">
           {t(publicTag[0])}
         </BoltButton>
-        <div className="flex items-center space-x-2 text-xl">
+        <div className="flex items-center space-x-2 text-sm lg:text-xl">
           <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
-          <p>
+          <p title={id}>
             {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-            <span className="ml-2 font-semibold text-primaryBlue">{id}</span>
+            <span className="ml-2 font-semibold text-primaryBlue">{truncateText(id, 10)}</span>
           </p>
         </div>
       </Link>

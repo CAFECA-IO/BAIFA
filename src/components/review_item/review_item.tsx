@@ -3,7 +3,7 @@ import Image from 'next/image';
 import {IReviewDetail} from '../../interfaces/review';
 import {getDynamicUrl} from '../../constants/url';
 import BoltButton from '../bolt_button/bolt_button';
-import {timestampToString} from '../../lib/common';
+import {timestampToString, truncateText} from '../../lib/common';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 
@@ -49,8 +49,12 @@ const ReviewItem = (review: ReviewItemProps) => {
         <p>{timestampToString(createdTimestamp).date}</p>
         <p>
           {t('REVIEWS_PAGE.BY')}{' '}
-          <Link href={authorLink} className="text-primaryBlue underline underline-offset-2">
-            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {authorAddressId}
+          <Link
+            href={authorLink}
+            title={authorAddressId}
+            className="text-primaryBlue underline underline-offset-2"
+          >
+            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {truncateText(authorAddressId, 10)}
           </Link>
         </p>
       </div>
