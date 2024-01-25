@@ -57,6 +57,7 @@ const BlockTab = ({datePeriod, setDatePeriod, blockList}: IBlockTabProps) => {
             a.createdTimestamp - b.createdTimestamp;
       });
     setFilteredBlockData(searchResult);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, search, sorting]);
 
   return (

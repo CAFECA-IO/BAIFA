@@ -79,6 +79,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
     getStatementsOfCashFlow(endDateStr.dateOfLastYear).then(data =>
       setHistoricalCashFlowData(data)
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Info: (20230922 - Julian) ------------- Cash Flow table -------------

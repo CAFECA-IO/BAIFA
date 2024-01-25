@@ -26,6 +26,7 @@ const SearchingResultPage = () => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const router = useRouter();
@@ -70,6 +71,7 @@ const SearchingResultPage = () => {
     getSearchResult(searchTextRef.current).then(data => {
       setSearchResult(data);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText]);
 
   useEffect(() => {
@@ -111,6 +113,7 @@ const SearchingResultPage = () => {
     setFilteredResult(result);
     setTotalPages(Math.ceil(result.length / ITEM_PER_PAGE));
     setActivePage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText, sorting, activeTab, period, searchResult]);
 
   const resultList = filteredResult.slice(startIdx, endIdx).map((searchResult, index) => {

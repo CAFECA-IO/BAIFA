@@ -53,6 +53,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
     if (addressId) {
       getTransactionData(chainId, addressId as string[]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressId]);
 
   let timer: NodeJS.Timeout;

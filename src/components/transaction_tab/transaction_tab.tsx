@@ -58,6 +58,7 @@ const TransactionTab = ({datePeriod, setDatePeriod, transactionList}: ITransacti
             a.createdTimestamp - b.createdTimestamp;
       });
     setFilteredTransactions(searchResult);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, search, sorting]);
 
   return (

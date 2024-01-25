@@ -78,6 +78,7 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
     getComprehensiveIncomeStatements(endDateStr.dateOfLastYear).then(data =>
       setHistoricalIncomeData(data)
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Info: (20230922 - Julian) ------------ Comprehensive Income Statements Data ------------

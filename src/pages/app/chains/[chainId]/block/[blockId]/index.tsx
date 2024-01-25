@@ -48,6 +48,7 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
     };
 
     getBlockData(chainId, blockId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let timer: NodeJS.Timeout;

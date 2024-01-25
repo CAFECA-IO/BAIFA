@@ -184,6 +184,7 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
         endTimeStamp: 0,
       });
     } */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateOne, dateTwo]);
 
   // Info: (20230601 - Julian) 取得該月份第一天是星期幾
