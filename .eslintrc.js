@@ -20,7 +20,7 @@ module.exports = {
       plugins: ['@typescript-eslint'],
     },
   ],
-  extends: ['plugin:import/typescript', 'plugin:tailwindcss/recommended'],
+  extends: ['plugin:import/typescript', 'plugin:tailwindcss/recommended', 'next/core-web-vitals'],
   // 加上 no console log 規則
   rules: {
     'no-console': 'error',

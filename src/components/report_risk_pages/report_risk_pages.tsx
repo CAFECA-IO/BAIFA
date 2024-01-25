@@ -34,8 +34,10 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
             </li>
             <li>Fluctuations in interest rates could have a negative impact on us.</li>
             <li>
-              The future growth of cryptocurrency is subject to unpredictable factors. If crypto
-              doesn't grow as we expect, our business could be negatively affected.
+              <li>
+                The future growth of cryptocurrency is subject to unpredictable factors. If crypto
+                doesn&apos;t grow as we expect, our business could be negatively affected.
+              </li>
             </li>
             <li>
               Cyberattacks and security breaches could harm our brand and reputation and negatively
@@ -47,7 +49,7 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
             </li>
             <li>
               We operate in a highly competitive industry and compete against unregulated companies
-              and companies with greater resources. If we can't effectively respond to our
+              and companies with greater resources. If we can&apos;t effectively respond to our
               competitors, our business could be negatively affected.
             </li>
             <li>
@@ -55,9 +57,9 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
               Failure to compete effectively against them could negatively affect our business.
             </li>
             <li>
-              As we expand internationally, our obligations to comply with various jurisdictions'
-              laws will increase, and we may be subject to inquiries, investigations, and
-              enforcement actions.
+              As we expand internationally, our obligations to comply with various
+              jurisdictions&apos; laws will increase, and we may be subject to inquiries,
+              investigations, and enforcement actions.
             </li>
             <li>
               We are subject to material litigation, including individual and class action lawsuits,
@@ -73,14 +75,14 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
         <div className="flex flex-col gap-y-12px py-8px text-xs leading-5">
           <ul className="ml-5 list-disc">
             <li>
-              If we can't keep pace with rapid industry changes to provide new and innovative
+              If we can&apos;t keep pace with rapid industry changes to provide new and innovative
               products and services, our net revenue could decline, negatively impacting our
               business.
             </li>
             <li>
-              The status of a particular cryptocurrency as a "security" is highly uncertain. If we
-              incorrectly characterize a cryptocurrency, we may face regulatory scrutiny,
-              investigations, fines, and other penalties.
+              The status of a particular cryptocurrency as a &quot;security&quot; is highly
+              uncertain. If we incorrectly characterize a cryptocurrency, we may face regulatory
+              scrutiny, investigations, fines, and other penalties.
             </li>
             <li>
               We rely on third-party service providers for certain operations. Any service
@@ -97,7 +99,7 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
               negatively impact our brand and reputation.
             </li>
             <li>
-              Our failure to safeguard and manage our and our customers’ fiat currencies and
+              Our failure to safeguard and manage our and our customers&apos; fiat currencies and
               cryptocurrencies could negatively impact our business.
             </li>
             <li>

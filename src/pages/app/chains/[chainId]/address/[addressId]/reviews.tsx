@@ -45,6 +45,7 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
     };
 
     getReviewData(chainId, addressId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let timer: NodeJS.Timeout;

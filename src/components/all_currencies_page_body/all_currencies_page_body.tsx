@@ -67,6 +67,7 @@ const AllCurrenciesPageBody = () => {
       });
 
     setFilteredCurrencyData(searchResult);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, currencies, sorting]);
 
   useEffect(() => {

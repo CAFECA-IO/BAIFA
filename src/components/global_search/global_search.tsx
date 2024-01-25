@@ -28,6 +28,7 @@ const GlobalSearch = () => {
 
   useEffect(() => {
     getSuggestions(inputValue).then(data => setSuggestionData(data));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue]);
 
   // Info: (20231212 - Julian) focus 搜尋欄位時，顯示搜尋建議

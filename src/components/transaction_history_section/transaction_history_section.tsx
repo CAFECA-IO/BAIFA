@@ -49,6 +49,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
     }
     setAddressOptions(toList);
     setFilteredTransactions(transactions);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactions]);
 
   useEffect(() => {
@@ -81,6 +82,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
     setFilteredTransactions(searchResult);
     setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
     setActivePage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, sorting, filterAddress]);
 
   // Info: (20240103 - Julian) The count of transaction history

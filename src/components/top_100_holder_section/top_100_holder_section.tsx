@@ -49,6 +49,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
 
     setFilteredHolderData(searchResult);
     setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
   // Info: (20231102 - Julian) Pagination
