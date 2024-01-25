@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       from_address: true,
       to_address: true,
       // ToDo: (20240119 - Julian) 目前 DB 裡這欄是 null，所以先註解掉
-      //evidence_id: true,
+      evidence_id: true,
       value: true,
       fee: true,
     },
@@ -108,7 +108,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             address: transactionData.to_address,
           },
         ],
-        evidenceId: '1390', // ToDo: (20240119 - Julian) 補上這個欄位
+        evidenceId: `${transactionData.evidence_id}`,
         value: transactionData.value,
         fee: fee,
         unit: 'isun', // ToDo: (20240119 - Julian) 補上這個欄位
