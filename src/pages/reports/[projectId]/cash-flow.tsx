@@ -296,8 +296,8 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
               <ReportTable tableData={cash_flow_p4_1} />
               <p>
                 For a crypto exchange, the distinction between cash and non-cash activities by
-                cryptocurrencies in its cash flow statement isn't just a matter of accounting
-                formality; it's a reflection of its operational, regulatory, and strategic
+                cryptocurrencies in its cash flow statement isn&apos;t just a matter of accounting
+                formality; it&apos;s a reflection of its operational, regulatory, and strategic
                 imperatives. Here are the reasons why this distinction is crucial:
               </p>
               <p className="italic text-lilac">Next Page</p>
@@ -316,9 +316,9 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
                       Cash Activities:{' '}
                       <span className="font-normal">
                         These represent the traditional flow of fiat money (like USD) in and out of
-                        the business. It's a universal measure of liquidity and is used for general
-                        business operations, including paying suppliers or receiving cash from
-                        customers.
+                        the business. It&apos;s a universal measure of liquidity and is used for
+                        general business operations, including paying suppliers or receiving cash
+                        from customers.
                       </span>
                     </li>
                     <li>
@@ -365,9 +365,9 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
                     <li>
                       <span className="font-normal">
                         By separating these activities, the exchange offers greater transparency to
-                        its investors and stakeholders. It allows them to understand the business's
-                        health in terms of both its traditional cash holdings and its holdings in
-                        the more speculative world of cryptocurrencies.
+                        its investors and stakeholders. It allows them to understand the
+                        business&apos;s health in terms of both its traditional cash holdings and
+                        its holdings in the more speculative world of cryptocurrencies.
                       </span>
                     </li>
                   </ul>
@@ -405,11 +405,11 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
                 traditional financial intermediaries like banks and brokerages.
               </p>
               <p>
-                Operating on a global scale, TideBit DeFi's platform allows users to trade a variety
-                of digital assets in a secure and decentralized manner. This means that rather than
-                relying on a central authority to facilitate transactions, trades are executed
-                directly between users through smart contracts on the blockchain. This not only
-                enhances security but also increases transaction speed and reduces costs.
+                Operating on a global scale, TideBit DeFi&apos;s platform allows users to trade a
+                variety of digital assets in a secure and decentralized manner. This means that
+                rather than relying on a central authority to facilitate transactions, trades are
+                executed directly between users through smart contracts on the blockchain. This not
+                only enhances security but also increases transaction speed and reduces costs.
               </p>
               <p>
                 By harnessing the power of blockchain technology and the principles of
@@ -425,11 +425,11 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
               <p>
                 The attached financial statements of the Company are not audited. These non-audited
                 financial statements are prepared following the United States Generally Accepted
-                Accounting Principles ("GAAP") in the same manner as the audited financial
-                statements. In the management's view, they include all necessary adjustments, which
-                are only regular, recurring adjustments, for a fair representation of the Company's
-                financial statements for the periods shown. The non-audited operational results for
-                the 30 days ending
+                Accounting Principles (&quot;GAAP&quot;) in the same manner as the audited financial
+                statements. In the management&apos;s view, they include all necessary adjustments,
+                which are only regular, recurring adjustments, for a fair representation of the
+                Company&apos;s financial statements for the periods shown. The non-audited
+                operational results for the 30 days ending
                 <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span>, may not
                 necessarily predict the results for the full year or any other period.
               </p>
@@ -456,24 +456,25 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
                 cryptocurrencies deposits held by customers on TideBit DeFi and unsettled crypto
                 deposits and withdrawals. The Company restricts the use of the assets underlying the
                 user deposits to meet regulatory requirements and classifies the assets as current
-                based on their purpose and availability to fulfill the Company’s direct obligation
+                based on their purpose and availability to fulfill the Company&apos;s direct obligation
                 under user deposits. As of{' '}
                 <span className="font-bold text-violet"> {endDateStr.dateFormatInUS}</span> and
                 <span className="font-bold text-violet"> {startDateStr.dateFormatInUS}</span>, the
-                Company’s eligible liquid assets were greater than the aggregate amount of user
+                Company&apos;s eligible liquid assets were greater than the aggregate amount of user
                 deposits.
               </p>
               {/* Info: (20230906 - Julian) Note 3 */}
               <h2 className="font-bold uppercase">3. P3 TECHNOLOGY</h2>
               <p>
-                TideBit DeFi employs a "P3 (Partial Private-Key Protection)" system of
-                <span className="font-bold text-violet"> BOLT</span> to safeguard the client's
+                TideBit DeFi employs a &quot;P3 (Partial Private-Key Protection)&quot; system of
+                <span className="font-bold text-violet"> BOLT</span> to safeguard the client&apos;s
                 cryptocurrencies, held in digital wallets, alongside essential fragments of
-                cryptographic keys required for accessing these assets on our platform. 'P3 (Partial
-                Private-Key Protection)' protocol allows us to safeguard the user's private key. In
-                the event of a loss of the private key, through user authentication, a new set of
-                authorized private key combinations can be reconstituted from other private key
-                fragments, thereby ensuring the retrieval of the user's assets.
+                cryptographic keys required for accessing these assets on our platform. &apos;P3
+                (Partial Private-Key Protection)&apos; protocol allows us to safeguard the
+                user&apos;s private key. In the event of a loss of the private key, through user
+                authentication, a new set of authorized private key combinations can be
+                reconstituted from other private key fragments, thereby ensuring the retrieval of
+                the user&apos;s assets.
               </p>
               <p>
                 These assets and keys are shielded from loss, theft, or any form of misuse. The Firm
@@ -481,10 +482,10 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
                 crypto liabilities, adhering to the recently enforced SAB 121. We keep track of all
                 assets in digital wallets and parts or the entirety of private keys, including
                 backup keys, managed on behalf of clients on our platform. Cryptocurrencies for
-                which the TideBit DeFi can't recover a client's access to, are not recorded , as
-                there is no related safeguarding obligation in accordance with SAB 121. TideBit DeFi
-                regularly updates and initially recognizes the assets and liabilities at the fair
-                value of the cryptocurrencies safeguarded for our clients.
+                which the TideBit DeFi can&apos;t recover a client&apos;s access to, are not
+                recorded , as there is no related safeguarding obligation in accordance with SAB
+                121. TideBit DeFi regularly updates and initially recognizes the assets and
+                liabilities at the fair value of the cryptocurrencies safeguarded for our clients.
               </p>
             </div>
           </ReportPageBody>
@@ -773,12 +774,12 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
                 depending on the payment type and the transaction value.
               </p>
               <p>
-                However, it's important to be cognizant of the risks associated with cryptocurrency
-                price volatility, which could negatively impact our operational results. Market
-                prices of Bitcoin, Ethereum, and other cryptocurrencies play a crucial role in
-                determining our future profitability. These prices have shown significant
-                fluctuation month over month, matching the pattern of our operational results, and
-                there is no certainty that they will follow historical trends.
+                However, it&apos;s important to be cognizant of the risks associated with
+                cryptocurrency price volatility, which could negatively impact our operational
+                results. Market prices of Bitcoin, Ethereum, and other cryptocurrencies play a
+                crucial role in determining our future profitability. These prices have shown
+                significant fluctuation month over month, matching the pattern of our operational
+                results, and there is no certainty that they will follow historical trends.
               </p>
               <p>
                 A downturn in the market price of Bitcoin, Ethereum, and other cryptocurrencies
@@ -788,7 +789,7 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
               </p>
               <p>
                 In terms of accounting procedures, we record impairment charges on our
-                cryptocurrencies when the market prices fall below the assets' carrying value.
+                cryptocurrencies when the market prices fall below the assets&apos; carrying value.
               </p>
             </div>
           </ReportPageBody>
