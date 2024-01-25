@@ -40,6 +40,7 @@ const ReportExchageRateForm = ({projectId}: IReportExchageRateFormProps) => {
 
   useEffect(() => {
     getExchangeRate().then(data => setExchangeRatesData(data));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Info: (20230919  - Julian) BTC exchange rate

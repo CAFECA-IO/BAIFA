@@ -40,6 +40,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     setSinceTime(timeSpan);
 
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sinceTime]);
 
   const transactionsLink = `${getDynamicUrl(chainId, blockId).TRANSACTIONS_IN_BLOCK}`;

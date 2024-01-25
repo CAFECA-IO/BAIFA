@@ -96,6 +96,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -105,6 +106,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
     };
 
     getInteractionData(chainId, addressId, queryType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredType]);
 
   let timer: NodeJS.Timeout;
@@ -163,6 +165,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
     setFilteredInteractedList(searchResult);
     setActivePage(1);
     setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactedList, filteredType, search, period, sorting]);
 
   const displayedHeader = (

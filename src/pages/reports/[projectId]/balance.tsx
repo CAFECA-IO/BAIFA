@@ -72,6 +72,7 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
   useEffect(() => {
     getBalanceSheet(startDateStr.date).then(data => setStartBalanceData(data));
     getBalanceSheet(endDateStr.date).then(data => setEndBalanceData(data));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const theadDate = [endDateStr.dateFormatForForm, startDateStr.dateFormatForForm];
