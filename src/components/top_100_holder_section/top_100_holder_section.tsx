@@ -7,7 +7,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 import {ITEM_PER_PAGE} from '../../constants/config';
-import {roundToDecimal, withCommas} from '../../lib/common';
+import {roundToDecimal, truncateText, withCommas} from '../../lib/common';
 import {ICurrencyDetail, IHolder} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
@@ -77,9 +77,11 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
           {displayedPublicTag}
           <div className="flex items-center space-x-2 text-xl">
             <Image src={chainIcon} alt={`${currencyId}_icon`} width={30} height={30} />
-            <p>
+            <p title={holder.addressId}>
               {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-              <span className="ml-2 font-semibold text-primaryBlue">{holder.addressId}</span>
+              <span className="ml-2 font-semibold text-primaryBlue">
+                {truncateText(holder.addressId, 10)}
+              </span>
             </p>
           </div>
         </Link>

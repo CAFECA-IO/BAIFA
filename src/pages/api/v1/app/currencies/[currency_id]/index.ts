@@ -54,31 +54,31 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'totalAmount': 19388600,
     'holders': [
       {
-        'addressId': '110029',
+        'addressId': '0x356f9537631A773Ab9069fEc25f74Cd884132776',
         'holdingAmount': 248597,
         'holdingPercentage': 1.28,
         'publicTag': ['PUBLIC_TAG.BINANCE_COLDWALLET'],
       },
       {
-        'addressId': '110132',
+        'addressId': '0x356f9537631A773Ab9069fEc25f74Cd884132776',
         'holdingAmount': 178010,
         'holdingPercentage': 0.92,
         'publicTag': ['PUBLIC_TAG.BINANCE_COLDWALLET'],
       },
       {
-        'addressId': '112840',
+        'addressId': '0x356f9537631A773Ab9069fEc25f74Cd884132776',
         'holdingAmount': 117351,
         'holdingPercentage': 0.61,
         'publicTag': ['PUBLIC_TAG.UNKNOWN_USER'],
       },
       {
-        'addressId': '114007',
+        'addressId': '0x356f9537631A773Ab9069fEc25f74Cd884132776',
         'holdingAmount': 93109,
         'holdingPercentage': 0.48,
         'publicTag': ['PUBLIC_TAG.UNKNOWN_USER'],
       },
       {
-        'addressId': '115588',
+        'addressId': '0x356f9537631A773Ab9069fEc25f74Cd884132776',
         'holdingAmount': 62352,
         'holdingPercentage': 0.32,
         'publicTag': ['PUBLIC_TAG.UNKNOWN_USER'],
@@ -93,8 +93,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
         'id': '916841',
         'chainId': 'btc',
         'createdTimestamp': 1679978987,
-        'from': [{'type': 'address', 'address': '115588'}], // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
-        'to': [{'type': 'contract', 'address': '311382'}],
+        'from': [{'type': 'address', 'address': '0x356f9537631A773Ab9069fEc25f74Cd884132776'}], // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        'to': [{'type': 'contract', 'address': '0x356f9537631A773Ab9069fEc25f74Cd884132776'}],
         'type': 'Evidence',
         'status': 'FAILED',
       },
@@ -102,8 +102,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
         'id': '914025',
         'chainId': 'btc',
         'createdTimestamp': 1687909392,
-        'from': [{'type': 'address', 'address': '114007'}], // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
-        'to': [{'type': 'contract', 'address': '311025'}],
+        'from': [{'type': 'address', 'address': '0x356f9537631A773Ab9069fEc25f74Cd884132776'}], // FIXME:address like 0x356f9537631A773Ab9069fEc25f74Cd884132776
+        'to': [{'type': 'contract', 'address': '0x356f9537631A773Ab9069fEc25f74Cd884132776'}],
         'type': 'Crypto Currency',
         'status': 'SUCCESS',
       },

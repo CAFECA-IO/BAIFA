@@ -118,7 +118,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         id: '',
         hash: '',
         type: 'Crypto Currency',
-        status: 'SUCCESS',
+        status: 'FAILED',
         chainId: '',
         chainIcon: '',
         blockId: '',
