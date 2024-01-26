@@ -7,6 +7,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {ITransactionDetail} from '../../interfaces/transaction';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface ITransactionDetailProps {
   transactionData: ITransactionDetail;
@@ -45,7 +46,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
         return (
           <Link href={fromLink} key={index} title={data.address}>
             <BoltButton className="px-3 py-1" color="blue" style="solid">
-              {fromText} {truncateText(data.address, 10)}
+              {fromText} {truncateText(data.address, DEFAULT_TRUNCATE_LENGTH)}
             </BoltButton>
           </Link>
         );
@@ -66,7 +67,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
         return (
           <Link href={toLink} key={index} title={data.address}>
             <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-              {toText} {truncateText(data.address, 10)}
+              {toText} {truncateText(data.address, DEFAULT_TRUNCATE_LENGTH)}
             </BoltButton>
           </Link>
         );

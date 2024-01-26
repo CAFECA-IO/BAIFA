@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Tooltip from '../../components/tooltip/tooltip';
 import {SearchType} from '../../constants/search_type';
-import {getChainIcon, timestampToString} from '../../lib/common';
+import {getChainIcon, timestampToString, truncateText} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
 import {ISearchResult} from '../../interfaces/search_result';
@@ -15,6 +15,7 @@ import {IContract} from '../../interfaces/contract';
 import {IEvidence} from '../../interfaces/evidence';
 import {ITransactionDetail} from '../../interfaces/transaction';
 import {IRedFlagDetail} from '../../interfaces/red_flag';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface ISearchingResultItemProps {
   searchResult: ISearchResult;
@@ -182,7 +183,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
           </div>
         );
         return {
-          LINE_1: <p className="text-base">{blackListaddress}</p>,
+          LINE_1: <p className="break-all text-base">{blackListaddress}</p>,
           LINE_2: displayedPublicTag,
           LINK: dynamicUrl.ADDRESS,
         };
@@ -201,7 +202,9 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
         <h2>{t(`SEARCHING_RESULT_PAGE.ITEM_TITLE_${type}`)}</h2>
       </div>
-      <h2 className="text-primaryBlue">{data.id}</h2>
+      <h2 title={data.id} className="text-primaryBlue">
+        {truncateText(data.id, DEFAULT_TRUNCATE_LENGTH)}
+      </h2>
     </div>
   );
 
@@ -225,7 +228,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
     <div className="">
       <Link href={link}>
         {/* Info: (20231115 - Julian) Link */}
-        <div className="rounded-lg bg-darkPurple p-8 shadow-xl transition-all duration-300 ease-in-out hover:bg-purpleLinear">
+        <div className="rounded-lg bg-darkPurple p-6 shadow-xl transition-all duration-300 ease-in-out hover:bg-purpleLinear lg:p-8">
           {/* Info: (20231115 - Julian) Title */}
           <div className="flex w-full items-center lg:w-4/5">
             {/* Info: (20231115 - Julian) ID */}

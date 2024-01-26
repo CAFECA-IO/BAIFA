@@ -6,6 +6,8 @@ export const TBD_API_VERSION = 'v1';
 export const BFA_API_URL = '/api';
 export const BFA_API_VERSION = 'v1';
 
+export const DEFAULT_TRUNCATE_LENGTH = 10;
+
 export const MONTH_LIST = [
   'DATE_PICKER.JAN',
   'DATE_PICKER.FEB',

@@ -6,7 +6,7 @@ import SearchBar from '../search_bar/search_bar';
 import BoltButton from '../bolt_button/bolt_button';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {ITEM_PER_PAGE} from '../../constants/config';
+import {DEFAULT_TRUNCATE_LENGTH, ITEM_PER_PAGE} from '../../constants/config';
 import {roundToDecimal, truncateText, withCommas} from '../../lib/common';
 import {ICurrencyDetail, IHolder} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
@@ -80,7 +80,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
             <p title={holder.addressId}>
               {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
               <span className="ml-2 font-semibold text-primaryBlue">
-                {truncateText(holder.addressId, 10)}
+                {truncateText(holder.addressId, DEFAULT_TRUNCATE_LENGTH)}
               </span>
             </p>
           </div>

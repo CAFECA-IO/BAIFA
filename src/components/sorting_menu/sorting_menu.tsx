@@ -4,6 +4,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import {FaChevronDown} from 'react-icons/fa';
 import {truncateText} from '../../lib/common';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface ISearchFilter {
   sortingOptions: string[];
@@ -34,7 +35,7 @@ const SortingMenu = ({sortingOptions, sorting, setSorting, bgColor}: ISearchFilt
         className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
       >
         {/* Info: (20240124 - Julian) 將選項字數限制在 10 個字 */}
-        {truncateText(t(option), 10)}
+        {truncateText(t(option), DEFAULT_TRUNCATE_LENGTH)}
       </li>
     );
   });
@@ -54,7 +55,7 @@ const SortingMenu = ({sortingOptions, sorting, setSorting, bgColor}: ISearchFilt
           sortingVisible ? 'opacity-0' : 'opacity-100'
         } transition-all duration-300 ease-in-out`}
       >
-        {truncateText(t(sorting), 10)}
+        {truncateText(t(sorting), DEFAULT_TRUNCATE_LENGTH)}
       </p>
       <FaChevronDown />
 

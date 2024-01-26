@@ -6,6 +6,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {timestampToString, truncateText} from '../../lib/common';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface ReviewItemProps {
   review: IReviewDetail;
@@ -54,7 +55,8 @@ const ReviewItem = (review: ReviewItemProps) => {
             title={authorAddressId}
             className="text-primaryBlue underline underline-offset-2"
           >
-            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {truncateText(authorAddressId, 10)}
+            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}{' '}
+            {truncateText(authorAddressId, DEFAULT_TRUNCATE_LENGTH)}
           </Link>
         </p>
       </div>

@@ -6,6 +6,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {getDynamicUrl} from '../../constants/url';
 import {timestampToString, truncateText} from '../../lib/common';
 import {IEvidence} from '../../interfaces/evidence';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IEvidenceDetailProps {
   evidenceData: IEvidence;
@@ -82,7 +83,8 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
         </div>
         <Link href={addressLink} title={creatorAddressId}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
-            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {truncateText(creatorAddressId, 10)}
+            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}{' '}
+            {truncateText(creatorAddressId, DEFAULT_TRUNCATE_LENGTH)}
           </BoltButton>
         </Link>
       </div>
