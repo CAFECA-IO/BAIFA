@@ -61,21 +61,70 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       total_transfers: true,
       total_amount: true,
       risk_level: true,
+      chain_id: true,
     },
   });
 
-  // ToDo: (20240125 - Julian) 如何透過 currency_id 取得 chainIcon 資料?
   // ToDo: (20240125 - Julian) 如何取得 holders 資料?
-  // ToDo: (20240125 - Julian) 如何取得 transactionHistoryData 資料?
 
+  // Info: (20240125 - Julian) 從 red_flags Table 中取得 redFlagCount
   const redFlagCount = await prisma.red_flags.count();
+
+  // Info: (20240125 - Julian) 從 transactions Table 中取得 transactionHistoryData
+  const chainId = currencyData?.chain_id;
+  const transactionData = await prisma.transactions.findMany({
+    where: {
+      chain_id: chainId,
+    },
+    select: {
+      id: true,
+      chain_id: true,
+      created_timestamp: true,
+      from_address: true,
+      to_address: true,
+      type: true,
+      status: true,
+    },
+  });
+  const transactionHistoryData: TransactionHistoryData[] = transactionData.map(transaction => {
+    return {
+      id: `${transaction.id}`,
+      chainId: `${transaction.chain_id}`,
+      createdTimestamp: new Date(transaction.created_timestamp).getTime() / 1000,
+      from: [
+        {
+          type: 'address',
+          address: transaction.from_address,
+        },
+      ],
+      to: [
+        {
+          type: 'address',
+          address: transaction.to_address,
+        },
+      ],
+      type: 'Crypto Currency', // ToDo: (20240126 - Julian) 需要參考 codes Table 並補上 type 的轉換
+      status: 'SUCCESS', // ToDo: (20240126 - Julian) 需要參考 codes Table 並補上 status 的轉換
+    };
+  });
+
+  // Info: (20240125 - Julian) 從 chains Table 中取得 chainIcon
+  const chainData = await prisma.chains.findUnique({
+    where: {
+      id: chainId,
+    },
+    select: {
+      chain_icon: true,
+    },
+  });
+  const chainIcon = chainData?.chain_icon ?? '';
 
   const result: ResponseData = currencyData
     ? {
         currencyId: currencyData.id,
         currencyName: currencyData.name,
-        rank: 1, // ToDo: (20240125 - Julian) 討論去留
-        chainIcon: '/currencies/btc.svg', // ToDo: (20240125 - Julian) 補上這個欄位
+        rank: 0, // ToDo: (20240125 - Julian) 討論去留
+        chainIcon: chainIcon,
         holderCount: currencyData.holder_count,
         price: currencyData.price,
         volumeIn24h: currencyData.volume_in_24h,
@@ -85,12 +134,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         totalTransfers: currencyData.total_transfers,
         flaggingCount: redFlagCount,
         riskLevel: 'LOW_RISK', // ToDo: (20240125 - Julian) 需要參考 codes Table 並補上 riskLevel 的轉換
-        transactionHistoryData: [], // ToDo: (20240125 - Julian) 補上這個欄位
+        transactionHistoryData: transactionHistoryData,
       }
     : {
         currencyId: '',
         currencyName: '',
-        rank: 1,
+        rank: 0,
         chainIcon: '',
         holderCount: 0,
         price: 0,
