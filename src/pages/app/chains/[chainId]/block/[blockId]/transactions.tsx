@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useEffect, useState, useContext} from 'react';
+import {useEffect, useState, useContext, useRef} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
@@ -53,16 +53,18 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     if (transactionData) {
       setTransitionData(transactionData);
     }
-    timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
+    timerRef.current = setTimeout(() => setIsLoading(false), 500);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [transactionData]);
 
   const displayedTransactions = !isLoading ? (

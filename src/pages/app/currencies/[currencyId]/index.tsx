@@ -3,7 +3,7 @@ import Image from 'next/image';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../components/footer/footer';
 import CurrencyDetail from '../../../../components/currency_detail/currency_detail';
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ICurrencyDetail} from '../../../../interfaces/currency';
@@ -48,16 +48,18 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     if (currencyData) {
       setCurrencyData(currencyData);
     }
-    timer = setTimeout(() => setIsLoading(false), 700);
-    return () => clearTimeout(timer);
+    timerRef.current = setTimeout(() => setIsLoading(false), 700);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [currencyData]);
 
   const {currencyName, transactionHistoryData, chainIcon} = currencyData;

@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect, useContext, useRef} from 'react';
 import {AppContext} from '../../../../contexts/app_context';
 import {MarketContext} from '../../../../contexts/market_context';
 import {useRouter} from 'next/router';
@@ -56,16 +56,18 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressId]);
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     if (transactionData) {
       setTransactionData(transactionData);
     }
-    timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
+    timerRef.current = setTimeout(() => setIsLoading(false), 500);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [transactionData]);
 
   const headTitle = isShowData

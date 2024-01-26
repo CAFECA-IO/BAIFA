@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect, useContext, useRef} from 'react';
 import useStateRef from 'react-usestateref';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
@@ -109,16 +109,18 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredType]);
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     if (interactedList) {
       setInteractedList(interactedList);
     }
-    timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
+    timerRef.current = setTimeout(() => setIsLoading(false), 500);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [interactedList]);
 
   const endIdx = activePage * ITEM_PER_PAGE;

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import BoltButton from '../../components/bolt_button/bolt_button';
 import {getChainIcon, getTimeString, truncateText} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
@@ -21,19 +21,22 @@ const BlacklistItem = ({blacklistAddress}: IBlacklistItemProps) => {
   const addressLink = getDynamicUrl(chainId, id).ADDRESS;
   const chainIcon = getChainIcon(chainId);
 
-  let timer: NodeJS.Timeout;
-  useEffect(() => {
-    clearTimeout(timer);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  useEffect(() => {
     // Info: (20231113 - Julian) 算出 latestActiveTime 距離現在過了多少時間
-    timer = setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       const now = Math.ceil(Date.now() / 1000);
       const timeSpan = now - latestActiveTime;
       setSinceTime(timeSpan);
     }, 1000);
 
-    return () => clearTimeout(timer);
-  }, [sinceTime]);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [latestActiveTime, sinceTime]);
 
   return (
     <div className="flex flex-col items-start border-b border-darkPurple4 px-4 py-2 lg:h-60px lg:flex-row lg:items-center">

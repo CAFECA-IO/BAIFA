@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
 import BoltButton from '../bolt_button/bolt_button';
 import Tooltip from '../tooltip/tooltip';
@@ -32,20 +32,22 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   } = addressData;
   const [sinceTime, setSinceTime] = useState(0);
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     // Info: (20231017 - Julian) 算出 latestActiveTime 距離現在過了多少時間
-    timer = setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       const now = Math.ceil(Date.now() / 1000);
       const timeSpan = now - latestActiveTime;
       setSinceTime(timeSpan);
     }, 1000);
 
-    return () => clearTimeout(timer);
-  }, [sinceTime]);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [latestActiveTime, sinceTime]);
 
   const dynamicUrl = getDynamicUrl(`${chainId}`, `${id}`);
 
