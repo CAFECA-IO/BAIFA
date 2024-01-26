@@ -24,7 +24,7 @@ type ResponseData = {
   createdTimestamp: number;
   from: AddressInfo[];
   to: AddressInfo[];
-  evidenceId: string;
+  evidenceId: string | null;
   value: number;
   fee: number;
   unit: string;
@@ -59,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // Info: (20240119 - Julian) 從 chains Table 撈出 chain_icon
+  // Info: (20240119 - Julian) 從 chains Table 撈出 chain_icon 和 decimals
   const chain_id = transactionData?.chain_id ?? 0;
   const chainData = await prisma.chains.findUnique({
     where: {
@@ -67,9 +67,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
     select: {
       chain_icon: true,
+      decimals: true,
     },
   });
   const chainIcon = chainData?.chain_icon ?? '';
+  const decimals = chainData?.decimals ?? 0;
 
   // Info: (20240119 - Julian) 從 blocks Table 撈出 block_id
   const blockHash = transactionData?.block_hash ?? '';
@@ -83,7 +85,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
   const blockId = `${blockData?.number}` ?? '';
 
+  // Info: (20240126 - Julian) 計算 fee
   const fee = transactionData ? parseInt(`${transactionData.fee}`) : 0;
+  const feeDecimal = fee / Math.pow(10, decimals);
 
   // Info: (20240119 - Julian) 轉換成 API 要的格式
   const result: ResponseData = transactionData
@@ -108,9 +112,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             address: transactionData.to_address,
           },
         ],
-        evidenceId: `${transactionData.evidence_id}`,
+        evidenceId: transactionData.evidence_id ? `${transactionData.evidence_id}` : null,
         value: transactionData.value,
-        fee: fee,
+        fee: feeDecimal,
         unit: 'isun', // ToDo: (20240119 - Julian) 補上這個欄位
         flaggingRecords: [], // ToDo: (20240119 - Julian) 補上這個欄位
       }

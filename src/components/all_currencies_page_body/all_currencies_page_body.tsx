@@ -18,7 +18,7 @@ const AllCurrenciesPageBody = () => {
   const {currencyList} = useContext(MarketContext);
 
   const currenciesOptions = ['SORTING.ALL', 'Ethereum', 'Bitcoin', 'iSunCloud', 'BNB', 'Tether'];
-  const sortingOptions = ['A to Z', 'Z to A'];
+  const sortingOptions = ['A to Z', 'Z to A']; // Info: (20240125 - Julian) 暫時以字母排序
 
   const [search, setSearch, searchRef] = useStateRef('');
   const [currencies, setCurrencies] = useState(currenciesOptions[0]);

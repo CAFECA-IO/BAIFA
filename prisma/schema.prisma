@@ -126,7 +126,7 @@ model transactions {
   block_hash          String 
   from_address        String
   to_address          String
-  evidence_id         Int
+  evidence_id         Int?
   value               Int
   fee                 BigInt
   related_addresses   String[]        
