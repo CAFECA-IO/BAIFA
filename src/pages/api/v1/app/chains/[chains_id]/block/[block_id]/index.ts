@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // Info: (20240119 - Julian) 從 chains Table 撈出 chain_icon
+  // Info: (20240119 - Julian) 從 chains Table 撈出 chain_icon 與 decimals
   const chain_id = blockData?.chain_id ?? 0;
   const chainData = await prisma.chains.findUnique({
     where: {
@@ -51,13 +51,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
     select: {
       chain_icon: true,
+      decimals: true,
     },
   });
+
   const chainIcon = chainData?.chain_icon ?? '';
+  const decimals = chainData?.decimals ?? 0;
 
   // Info: (20240119 - Julian) 取得上一個與下一個區塊的編號，如果沒有就 undefined
   const previousBlockNumber = blockData?.number ? `${blockData?.number - 1}` : undefined;
   const nextBlockNumber = blockData?.number ? `${blockData?.number + 1}` : undefined;
+
+  // Info: (20240119 - Julian) 計算 reward
+  const reward = blockData ? blockData.reward / Math.pow(10, decimals) : 0;
 
   const result: ResponseData = blockData
     ? {
@@ -66,10 +72,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         chainIcon: chainIcon,
         stability: 'HIGH', // ToDo: (20240118 - Julian) 補上這個欄位
         createdTimestamp: blockData.created_timestamp.getTime() / 1000,
-        managementTeam: ['Alice', 'Bob', 'Charlie'], // ToDo: (20240118 - Julian) 補上這個欄位
+        managementTeam: [], // ToDo: (20240118 - Julian) 補上這個欄位
         transactionCount: blockData.transaction_count,
         miner: blockData.miner,
-        reward: blockData.reward,
+        reward: reward,
         unit: 'isun', // ToDo: (20240118 - Julian) 補上這個欄位
         size: blockData.size,
         previousBlockId: previousBlockNumber,

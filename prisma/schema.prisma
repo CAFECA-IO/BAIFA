@@ -111,6 +111,9 @@ model chains {
   id                  Int      @id @default(autoincrement())
   chain_name          String
   chain_icon          String    
+  decimals            Int
+  rpc                 String
+  symbol              String
 }
 
 model transactions {

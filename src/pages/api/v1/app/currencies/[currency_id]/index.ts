@@ -68,6 +68,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // ToDo: (20240125 - Julian) 如何取得 holders 資料?
   // ToDo: (20240125 - Julian) 如何取得 transactionHistoryData 資料?
 
+  const redFlagCount = await prisma.red_flags.count();
+
   const result: ResponseData = currencyData
     ? {
         currencyId: currencyData.id,
@@ -81,7 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         totalAmount: currencyData.total_amount,
         holders: [], // ToDo: (20240125 - Julian) 補上這個欄位
         totalTransfers: currencyData.total_transfers,
-        flaggingCount: 24, // ToDo: (20240125 - Julian) 補上這個欄位
+        flaggingCount: redFlagCount,
         riskLevel: 'LOW_RISK', // ToDo: (20240125 - Julian) 需要參考 codes Table 並補上 riskLevel 的轉換
         transactionHistoryData: [], // ToDo: (20240125 - Julian) 補上這個欄位
       }

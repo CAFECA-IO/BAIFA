@@ -36,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240119 - Julian) 從 blocks Table 撈出 block_id 對應的 blockhash
   const blockHash = await prisma.blocks.findUnique({
     where: {
-      id: block_id,
+      number: block_id,
     },
     select: {
       hash: true,
