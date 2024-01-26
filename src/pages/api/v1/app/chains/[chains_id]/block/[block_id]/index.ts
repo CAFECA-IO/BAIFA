@@ -51,11 +51,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
     select: {
       chain_icon: true,
+      symbol: true,
       decimals: true,
     },
   });
 
   const chainIcon = chainData?.chain_icon ?? '';
+  const unit = chainData?.symbol ?? '';
   const decimals = chainData?.decimals ?? 0;
 
   // Info: (20240119 - Julian) 取得上一個與下一個區塊的編號，如果沒有就 undefined
@@ -76,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         transactionCount: blockData.transaction_count,
         miner: blockData.miner,
         reward: reward,
-        unit: 'isun', // ToDo: (20240118 - Julian) 補上這個欄位
+        unit: unit,
         size: blockData.size,
         previousBlockId: previousBlockNumber,
         nextBlockId: nextBlockNumber,

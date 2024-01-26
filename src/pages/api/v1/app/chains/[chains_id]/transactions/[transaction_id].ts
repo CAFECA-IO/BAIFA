@@ -67,10 +67,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
     select: {
       chain_icon: true,
+      symbol: true,
       decimals: true,
     },
   });
   const chainIcon = chainData?.chain_icon ?? '';
+  const unit = chainData?.symbol ?? '';
   const decimals = chainData?.decimals ?? 0;
 
   // Info: (20240119 - Julian) 從 blocks Table 撈出 block_id
@@ -115,7 +117,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         evidenceId: transactionData.evidence_id,
         value: transactionData.value,
         fee: feeDecimal,
-        unit: 'isun', // ToDo: (20240119 - Julian) 補上這個欄位
+        unit: unit,
         flaggingRecords: [], // ToDo: (20240119 - Julian) 補上這個欄位
       }
     : {

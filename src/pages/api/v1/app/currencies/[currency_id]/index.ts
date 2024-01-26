@@ -135,9 +135,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
     select: {
       chain_icon: true,
+      symbol: true,
     },
   });
   const chainIcon = chainData?.chain_icon ?? '';
+  const unit = chainData?.symbol ?? '';
 
   const result: ResponseData = currencyData
     ? {
@@ -148,7 +150,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         holderCount: currencyData.holder_count,
         price: currencyData.price,
         volumeIn24h: currencyData.volume_in_24h,
-        unit: 'BTC', // ToDo: (20240125 - Julian) 補上這個欄位
+        unit: unit, // ToDo: (20240125 - Julian) 補上這個欄位
         totalAmount: currencyData.total_amount,
         holders: holders,
         totalTransfers: currencyData.total_transfers,
