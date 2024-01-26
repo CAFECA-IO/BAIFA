@@ -112,7 +112,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             address: transactionData.to_address,
           },
         ],
-        evidenceId: transactionData.evidence_id ? `${transactionData.evidence_id}` : null,
+        evidenceId: transactionData.evidence_id,
         value: transactionData.value,
         fee: feeDecimal,
         unit: 'isun', // ToDo: (20240119 - Julian) 補上這個欄位

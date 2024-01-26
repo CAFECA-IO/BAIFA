@@ -98,7 +98,7 @@ model public_tags {
 model evidences {
   id                  Int @id      
   chain_id            Int
-  evidence_id         String
+  evidence_id         String @unique
   created_timestamp   DateTime
   contract_address    String
   state               String
@@ -126,7 +126,7 @@ model transactions {
   block_hash          String 
   from_address        String
   to_address          String
-  evidence_id         Int?
+  evidence_id         String?
   value               Int
   fee                 BigInt
   related_addresses   String[]        

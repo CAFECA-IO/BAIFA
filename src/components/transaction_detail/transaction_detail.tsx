@@ -129,9 +129,9 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
   );
 
   const displayEvidence = evidenceId ? (
-    <Link href={getDynamicUrl(`${chainId}`, `${evidenceId}`).EVIDENCE}>
+    <Link title={evidenceId} href={getDynamicUrl(`${chainId}`, `${evidenceId}`).EVIDENCE}>
       <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-        {t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} {evidenceId}
+        {t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} {truncateText(evidenceId, 10)}
       </BoltButton>
     </Link>
   ) : (

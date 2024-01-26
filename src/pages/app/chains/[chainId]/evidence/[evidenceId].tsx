@@ -16,9 +16,9 @@ import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
-import {getChainIcon} from '../../../../../lib/common';
+import {truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
-import {IEvidence, dummyEvidenceData} from '../../../../../interfaces/evidence';
+import {IEvidence} from '../../../../../interfaces/evidence';
 import {ITransaction} from '../../../../../interfaces/transaction';
 
 interface IEvidenceDetailPageProps {
@@ -104,14 +104,14 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
               {/* Info: (20231107 -Julian) Evidence Title */}
               <div className="flex flex-1 items-center justify-center space-x-2">
                 <Image
-                  src={getChainIcon(chainId).src}
-                  alt={getChainIcon(chainId).alt}
+                  src={evidenceData.chainIcon}
+                  alt={`${evidenceData.chainId} icon`}
                   width={40}
                   height={40}
                 />
-                <h1 className="text-2xl font-bold lg:text-32px">
+                <h1 title={evidenceId} className="text-2xl font-bold lg:text-32px">
                   {t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')}
-                  <span className="ml-2 text-primaryBlue"> {evidenceId}</span>
+                  <span className="ml-2 text-primaryBlue"> {truncateText(evidenceId, 10)}</span>
                 </h1>
               </div>
 
@@ -170,16 +170,13 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = dummyEvidenceData
-    .flatMap(evidence => {
-      return locales?.map(locale => ({
-        params: {chainId: evidence.chainId, evidenceId: `${evidence.id}`},
-        locale,
-      }));
-    })
-    .filter(
-      (path): path is {params: {chainId: string; evidenceId: string}; locale: string} => !!path
-    );
+  // ToDo: (20231213 - Julian) Add dynamic paths
+  const paths = [
+    {
+      params: {chainId: 'isun', evidenceId: '1'},
+      locale: 'en',
+    },
+  ];
 
   return {
     paths: paths,
