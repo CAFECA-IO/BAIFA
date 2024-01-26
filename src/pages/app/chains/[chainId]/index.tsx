@@ -44,6 +44,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     };
 
     getChainData(chainId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const {chainId: chainIdFromData, chainName, chainIcon} = chainData;
