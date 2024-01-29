@@ -87,6 +87,11 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
     return () => clearTimeout(timer);
   }, [addressData]);
 
+  // ToDo: (20240129 - Julian) 如果拿到的資料是空的，就顯示 Data not found
+  if (!addressData.address) {
+    return <h1>Data not found</h1>;
+  }
+
   const backClickHandler = () => router.back();
 
   const reviewLink = getDynamicUrl(chainId, addressId).REVIEWS;
