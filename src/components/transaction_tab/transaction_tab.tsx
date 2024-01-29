@@ -43,10 +43,6 @@ const TransactionTab = () => {
   };
 
   useEffect(() => {
-    if (transactionData.length === 0) getTransactionData();
-  }, []);
-
-  useEffect(() => {
     setActivePage(1);
     getTransactionData();
   }, [period, chainId]);
