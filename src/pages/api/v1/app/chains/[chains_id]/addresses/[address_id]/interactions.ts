@@ -36,18 +36,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     : [];
 
   // Info: (20240124 - Julian) 將關聯 addresses 整理成一個 array
-  const interactedList: string[] = [];
+  const interactedAddresses: string[] = [];
   interactedData.forEach(transaction => {
-    transaction.related_addresses.forEach(address => {
-      if (address !== address_id && address !== 'null' && !interactedList.includes(address))
-        interactedList.push(address);
+    transaction.related_addresses.forEach(a => {
+      if (a !== address_id && a !== 'null' && interactedAddresses.indexOf(a) === -1) {
+        interactedAddresses.push(a);
+      }
     });
   });
   // Info: (20240124 - Julian) -------------- 透過 addresses Table 找出關聯資料 --------------
-  const addressData = await prisma.addresses.findMany({
+  const interactedList = await prisma.addresses.findMany({
     where: {
       address: {
-        in: interactedList,
+        in: interactedAddresses,
       },
     },
     select: {
@@ -69,16 +70,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
   const chainIcon = chainData ? chainData.chain_icon : '';
 
-  const result: ResponseData = addressData
-    ? addressData.map(address => {
+  const result: ResponseData = interactedList
+    ? interactedList.map(address => {
         return {
-          'id': address.address,
-          'type': 'address',
-          'chainId': `${chain_id}`,
-          'chainIcon': chainIcon,
-          'publicTag': [], // ToDo: (20240124 - Julian) 補上這個欄位
-          'createdTimestamp': new Date(address.created_timestamp).getTime() / 1000,
-          'transactionCount': 0, // ToDo: (20240124 - Julian) 補上這個欄位
+          id: address.address,
+          type: 'address',
+          chainId: `${chain_id}`,
+          chainIcon: chainIcon,
+          publicTag: [], // ToDo: (20240124 - Julian) 補上這個欄位
+          createdTimestamp: new Date(address.created_timestamp).getTime() / 1000,
+          transactionCount: 0, // ToDo: (20240124 - Julian) 補上這個欄位
         };
       })
     : [];

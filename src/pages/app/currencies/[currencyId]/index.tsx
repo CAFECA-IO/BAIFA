@@ -48,16 +48,13 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let timer: NodeJS.Timeout;
-
   useEffect(() => {
-    clearTimeout(timer);
-
-    if (currencyData) {
+    if (currencyData.holders && currencyData.transactionHistoryData) {
       setCurrencyData(currencyData);
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
     }
-    timer = setTimeout(() => setIsLoading(false), 700);
-    return () => clearTimeout(timer);
   }, [currencyData]);
 
   const {currencyName, transactionHistoryData, chainIcon} = currencyData;

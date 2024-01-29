@@ -1,6 +1,7 @@
 // 020 - GET /app/blacklist
 
 import type {NextApiRequest, NextApiResponse} from 'next';
+import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
   id: string;
@@ -10,37 +11,28 @@ type ResponseData = {
   publicTag: string[];
 }[];
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const result: ResponseData = [
-    {
-      'id': '120008',
-      'chainId': 'eth',
-      'latestActiveTime': 1686710310,
-      'flaggingRecords': ['RED_FLAG_DETAIL_PAGE.FLAG_TYPE_HIGH_RISK_LOCATION'],
-      'publicTag': ['PUBLIC_TAG.HACKER'],
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  const prisma = getPrismaInstance();
+
+  const blacklistData = await prisma.black_lists.findMany({
+    select: {
+      id: true,
+      chain_id: true,
+      address_id: true,
+      created_timestamp: true,
+      public_tag: true,
     },
-    {
-      'id': '143281',
-      'chainId': 'usdt',
-      'latestActiveTime': 1690283421,
-      'flaggingRecords': [
-        'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_WITHDRAW',
-        'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_WITHDRAW',
-      ],
-      'publicTag': ['PUBLIC_TAG.HACKER'],
-    },
-    {
-      'id': '117263',
-      'chainId': 'btc',
-      'latestActiveTime': 1682740134,
-      'flaggingRecords': [
-        'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_TRANSFER',
-        'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
-      ],
-      'publicTag': ['PUBLIC_TAG.HACKER'],
-    },
-    // ...other blacklisted addresses
-  ];
+  });
+
+  const result: ResponseData = blacklistData.map(item => {
+    return {
+      id: `${item.address_id}`,
+      chainId: `${item.chain_id}`,
+      latestActiveTime: new Date(item.created_timestamp).getTime() / 1000,
+      flaggingRecords: [],
+      publicTag: [item.public_tag],
+    };
+  });
 
   res.status(200).json(result);
 }

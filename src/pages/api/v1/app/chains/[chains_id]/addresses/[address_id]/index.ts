@@ -89,10 +89,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
     select: {
       chain_icon: true,
+      symbol: true,
     },
   });
 
   const chainIcon = chainData?.chain_icon ? chainData.chain_icon : '';
+  const unit = chainData?.symbol ? chainData.symbol : '';
 
   // Info: (20240122 - Julian) -------------- 在 transactions Table 找出所有與 address_id 相關的交易 --------------
   // SELECT * FROM transactions WHERE related_addresses LIKE '%address_id%'
@@ -170,7 +172,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       createdTimestamp: new Date(block.created_timestamp).getTime() / 1000,
       stability: 'MEDIUM', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 stability 的轉換
       reward: block.reward,
-      unit: 'isun', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 unit 的轉換
+      unit: unit,
       chainIcon: chainIcon,
     };
   });

@@ -19,6 +19,7 @@ import {getChainIcon, truncateText} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
 import {ITransaction} from '../../../interfaces/transaction';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../../constants/config';
 
 interface IRedFlagDetailPageProps {
   redFlagId: string;
@@ -108,7 +109,10 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
                   <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
                   <h1 title={addressId}>
                     {t('RED_FLAG_ADDRESS_PAGE.ADDRESS')}
-                    <span className="text-primaryBlue"> {truncateText(addressId, 10)}</span>
+                    <span className="text-primaryBlue">
+                      {' '}
+                      {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
+                    </span>
                   </h1>
                 </div>
               </div>

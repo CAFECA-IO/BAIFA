@@ -8,6 +8,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {IAddress} from '../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IAddressDetailProps {
   addressData: IAddress;
@@ -72,7 +73,8 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
       return (
         <Link href={addressLink} key={index} title={address.id}>
           <BoltButton className="px-3 py-1" color="blue" style="solid">
-            {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {truncateText(address.id, 10)}
+            {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')}{' '}
+            {truncateText(address.id, DEFAULT_TRUNCATE_LENGTH)}
           </BoltButton>
         </Link>
       );

@@ -5,6 +5,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
 import {getChainIcon, timestampToString, truncateText} from '../../lib/common';
 import {IRedFlag} from '../../interfaces/red_flag';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IRedFlagItemProps {
   redFlagData: IRedFlag;
@@ -39,7 +40,10 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
           <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
           <h2 title={addressId}>
             {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-            <span className="text-primaryBlue"> {truncateText(addressId, 10)}</span>
+            <span className="text-primaryBlue">
+              {' '}
+              {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
+            </span>
           </h2>
         </Link>
         {/* Info: (20231109 - Julian) Flag Type */}
