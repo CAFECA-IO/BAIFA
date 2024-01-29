@@ -35,6 +35,7 @@ const RedFlagListPage = () => {
     };
 
     getRedFlagData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let timer: NodeJS.Timeout;
@@ -49,6 +50,7 @@ const RedFlagListPage = () => {
     return () => {
       clearTimeout(timer);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [redFlagData]);
 
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} - BAIFA`;

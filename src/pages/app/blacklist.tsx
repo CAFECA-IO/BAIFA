@@ -25,6 +25,7 @@ const BlackListPage = () => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Info: (20231113 - Julian) Flagging Options
@@ -88,6 +89,7 @@ const BlackListPage = () => {
     setFilteredBlacklist(result);
     setTotalPages(Math.ceil(result.length / 10));
     setActivePage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, filteredFlagging, sorting]);
 
   const displayBlacklist = filteredBlacklist.slice(0, 10).map((address, index) => {

@@ -66,15 +66,18 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
       appCtx.init();
     }
     getTransactionData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setActivePage(1);
     getTransactionData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, chainId]);
 
   useEffect(() => {
     getTransactionData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePage]);
 
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);

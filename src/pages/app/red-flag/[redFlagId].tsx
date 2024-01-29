@@ -51,6 +51,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     };
 
     getRedFlagData(redFlagId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const {chainId, addressId, transactionHistoryData} = redFlagData;

@@ -53,6 +53,7 @@ const RedFlagOfCurrencyPage = ({currencyId, currencyName}: IRedFlagOfCurrencyPag
     };
 
     getRedFlagData(currencyId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let timer: NodeJS.Timeout;

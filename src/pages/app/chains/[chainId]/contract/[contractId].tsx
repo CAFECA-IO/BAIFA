@@ -54,6 +54,7 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
     };
 
     getContractData(chainId, contractId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let timer: NodeJS.Timeout;

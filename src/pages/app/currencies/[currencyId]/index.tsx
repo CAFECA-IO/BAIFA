@@ -45,6 +45,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     };
 
     getCurrencyData(currencyId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

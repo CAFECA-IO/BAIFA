@@ -51,6 +51,7 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
     };
 
     getTransactionData(chainId, transactionId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let timer: NodeJS.Timeout;

@@ -66,6 +66,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
     };
 
     getAddressData(chainId, addressId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let timer: NodeJS.Timeout;
