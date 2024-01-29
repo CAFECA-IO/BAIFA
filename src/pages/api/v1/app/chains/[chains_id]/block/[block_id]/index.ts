@@ -44,16 +44,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
 
   // Info: (20240119 - Julian) 從 chains Table 撈出 chain_icon
-  const chain_id = blockData?.chain_id ?? 0;
-  const chainData = await prisma.chains.findUnique({
-    where: {
-      id: chain_id,
-    },
-    select: {
-      chain_icon: true,
-    },
-  });
-  const chainIcon = chainData?.chain_icon ?? '';
+
+  const chainIcon = '';
 
   // Info: (20240119 - Julian) 取得上一個與下一個區塊的編號，如果沒有就 undefined
   const previousBlockNumber = blockData?.number ? `${blockData?.number - 1}` : undefined;

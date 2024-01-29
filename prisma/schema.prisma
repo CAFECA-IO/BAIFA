@@ -19,7 +19,7 @@ model transaction_raw {
   gas_price            String
   max_fee_per_gas        String
   max_priority_fee_per_gas String
-  hash                String @unique   
+  hash                String @unique
   input               String
   nonce               String
   to                  String
@@ -40,12 +40,12 @@ model block_raw {
   extra_data        String
   gas_limit         String
   gas_used          String
-  hash             String    
+  hash             String
   logs_bloom        String
   miner            String
   mix_hash          String
   nonce            String
-  number           Int @unique    
+  number           Int @unique
   parent_hash       String
   receipts_root     String
   sha3_uncles       String
@@ -55,7 +55,7 @@ model block_raw {
   total_difficulty  String
   transactions_root String
   uncles           String
-  burnt_fees Int 
+  burnt_fees Int
   transaction_count Int
   transaction_finished        Boolean  @default(false)
   transaction_receipt_finished Boolean  @default(false)
@@ -82,21 +82,21 @@ model transaction_receipt_raw {
 model contracts {
   id                  Int      @id @default(autoincrement())
   chain_id            Int
-  contract_address    String 
+  contract_address    String
   source_code         String
   creator_address     String
-  created_timestamp   DateTime       
+  created_timestamp   DateTime
 }
 
 model public_tags {
   id                  Int      @id @default(autoincrement())
   name                String
   target              String
-  target_type         String     
+  target_type         String
 }
 
 model evidences {
-  id                  Int @id      
+  id                  Int @id
   chain_id            Int
   evidence_id         String
   created_timestamp   DateTime
@@ -110,31 +110,30 @@ model evidences {
 model chains {
   id                  Int      @id @default(autoincrement())
   chain_name          String
-  chain_icon          String    
 }
 
 model transactions {
   id                  Int      @id @default(autoincrement())
-  chain_id            Int 
+  chain_id            Int
   created_timestamp   DateTime
   hash                String
   type                String
   status              String
-  block_hash          String 
+  block_hash          String
   from_address        String
   to_address          String
   evidence_id         Int
   value               Int
   fee                 BigInt
-  related_addresses   String[]        
+  related_addresses   String[]
 }
 
 model black_lists {
   id                  Int      @id @default(autoincrement())
-  chain_id            Int 
+  chain_id            Int
   created_timestamp   DateTime
-  address_id          Int 
-  public_tag          String              
+  address_id          Int
+  public_tag          String
 }
 
 model review_datas {
@@ -143,24 +142,24 @@ model review_datas {
   target_type         String
   created_timestamp   DateTime
   content             String
-  stars               Int   
+  stars               Int
   author_address      String
 }
 
 model red_flags {
   id                  Int      @id @default(autoincrement())
-  chain_id            Int 
+  chain_id            Int
   created_timestamp   DateTime
   red_flag_type       String
   total_amount        Int
   symbol              String
   related_addresses   String[]
-  related_transactions String[]                
+  related_transactions String[]
 }
 
 model blocks {
   id                  Int      @id @default(autoincrement())
-  chain_id            Int 
+  chain_id            Int
   created_timestamp   DateTime
   miner               String
   reward              Int
@@ -168,17 +167,17 @@ model blocks {
   symbol              String
   transaction_count   Int
   parent_hash         String
-  burnt_fees          Int      
-  hash                String   
-  number              Int @unique 
+  burnt_fees          Int
+  hash                String
+  number              Int @unique
 }
 
 model token_balances {
   id                  Int      @id @default(autoincrement())
   address             String
   value               Int
-  chain_id            Int 
-  currency_id         Int  
+  chain_id            Int
+  currency_id         Int
 }
 
 model token_transfers {
@@ -186,10 +185,10 @@ model token_transfers {
   from_address        String
   to_address          String
   value               Int
-  chain_id            Int 
-  currency_id         Int 
+  chain_id            Int
+  currency_id         Int
   transaction_hash    String
-  index               Int            
+  index               Int
 }
 
 model currencies {
@@ -201,21 +200,21 @@ model currencies {
   total_amount        Int
   holder_count        Int
   total_transfers     Int
-  chain_id            Int                
+  chain_id            Int
 }
 
 model addresses {
   id                  Int      @id @default(autoincrement())
-  chain_id            Int 
+  chain_id            Int
   created_timestamp   DateTime
   address             String @unique
   score               Int
-  latest_active_time  DateTime     
+  latest_active_time  DateTime
 }
 
 model risk_records {
   id                  Int      @id @default(autoincrement())
   name                String
-  address_id          Int 
-  created_timestamp   DateTime              
+  address_id          Int
+  created_timestamp   DateTime
 }

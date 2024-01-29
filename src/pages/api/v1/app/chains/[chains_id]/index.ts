@@ -6,7 +6,6 @@ import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
 type ResponseData = {
   chainId: string;
   chainName: string;
-  chainIcon: string;
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
@@ -24,7 +23,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     select: {
       id: true,
       chain_name: true,
-      chain_icon: true,
     },
   });
 
@@ -33,13 +31,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     ? {
         chainId: `${chainData.id}`,
         chainName: chainData.chain_name,
-        chainIcon: chainData.chain_icon,
       }
     : // Info: (20240118 - Julian) 如果沒有找到資料，回傳空物件
       {
         chainId: '',
         chainName: '',
-        chainIcon: '',
       };
 
   res.status(200).json(result);

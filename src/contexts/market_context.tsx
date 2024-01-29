@@ -92,7 +92,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const [currencyList, setCurrencyList, currencyListRef] = useStateRef<ICurrency[]>([]);
   const [blacklist, setBlacklist, blacklistRef] = useStateRef<IBlacklist[]>([]);
 
-  const getPromotion = async () => {
+  const getPromotion = useCallback(async () => {
     let data: IPromotion = defaultPromotion;
     try {
       const response = await fetch(`${APIURL.PROMOTION}`, {
@@ -103,7 +103,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       //console.log('getPromotion error', error);
     }
     setPromotion(data);
-  };
+  }, [setPromotion]);
 
   const getChains = useCallback(async () => {
     let data: IChain[] = [];
@@ -116,7 +116,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       //console.log('getChains error', error);
     }
     setChainList(data);
-  }, []);
+  }, [setChainList]);
 
   const getCurrencies = useCallback(async () => {
     let data: ICurrency[] = [];
@@ -129,7 +129,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       //console.log('getCurrencies error', error);
     }
     setCurrencyList(data);
-  }, []);
+  }, [setCurrencyList]);
 
   const getBlacklist = useCallback(async () => {
     let data: IBlacklist[] = [];
@@ -142,14 +142,14 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       //console.log('getBlacklist error', error);
     }
     setBlacklist(data);
-  }, []);
+  }, [setBlacklist]);
 
   const init = useCallback(async () => {
     await getPromotion();
     await getChains();
     await getCurrencies();
     await getBlacklist();
-  }, []);
+  }, [getBlacklist, getChains, getCurrencies, getPromotion]);
 
   const getSuggestions = useCallback(async (searchInput: string) => {
     let data: ISuggestions = defaultSuggestions;

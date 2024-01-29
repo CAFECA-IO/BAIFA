@@ -83,16 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  const chainData = await prisma.chains.findUnique({
-    where: {
-      id: addressData?.chain_id,
-    },
-    select: {
-      chain_icon: true,
-    },
-  });
-
-  const chainIcon = chainData?.chain_icon ? chainData.chain_icon : '';
+  const chainIcon = '';
 
   // Info: (20240122 - Julian) -------------- 在 transactions Table 找出所有與 address_id 相關的交易 --------------
   // SELECT * FROM transactions WHERE related_addresses LIKE '%address_id%'

@@ -59,15 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
 
   // Info: (20240124 - Julian) 取得 chain_icon
-  const chainData = await prisma.chains.findUnique({
-    where: {
-      id: chain_id,
-    },
-    select: {
-      chain_icon: true,
-    },
-  });
-  const chainIcon = chainData ? chainData.chain_icon : '';
+  const chainIcon = '';
 
   const result: ResponseData = addressData
     ? addressData.map(address => {
@@ -84,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     : [];
 
   res.status(200).json(result);
-  /*  
+  /*
   const result: ResponseData = [
     {
       'id': '122134',

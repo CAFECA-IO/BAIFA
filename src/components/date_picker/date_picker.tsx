@@ -229,25 +229,19 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
     setSelectedYear(year);
   }, [selectedMonth, selectedYear]);
 
-  const selectDateOne = useCallback(
-    (el: Dates | null) => {
-      if (!el) return setDateOne(null);
-      let newDate = new Date(el.time);
-      newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth() + 1}/${newDate.getDate()}`);
-      setDateOne(newDate);
-    },
-    [maxDate, selectedMonth, selectedYear, dateOne, dateTwo]
-  );
+  const selectDateOne = useCallback((el: Dates | null) => {
+    if (!el) return setDateOne(null);
+    let newDate = new Date(el.time);
+    newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth() + 1}/${newDate.getDate()}`);
+    setDateOne(newDate);
+  }, []);
 
-  const selectDateTwo = useCallback(
-    (el: Dates | null) => {
-      if (!el) return setDateTwo(null);
-      let newDate = new Date(el.time);
-      newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth() + 1}/${newDate.getDate()}`);
-      setDateTwo(newDate);
-    },
-    [maxDate, selectedMonth, selectedYear, dateOne, dateTwo]
-  );
+  const selectDateTwo = useCallback((el: Dates | null) => {
+    if (!el) return setDateTwo(null);
+    let newDate = new Date(el.time);
+    newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth() + 1}/${newDate.getDate()}`);
+    setDateTwo(newDate);
+  }, []);
 
   // Info: (20230830 - Julian) 選單開關
   const openCalendeHandler = () => setComponentVisible(!componentVisible);
