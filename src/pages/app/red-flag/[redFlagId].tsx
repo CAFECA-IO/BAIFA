@@ -53,7 +53,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     getRedFlagData(redFlagId);
   }, []);
 
-  const {chainId, addressId, transactionHistoryData} = redFlagData;
+  const {id, chainId, transactionHistoryData} = redFlagData;
 
   let timer: NodeJS.Timeout;
 
@@ -106,12 +106,9 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
                 <h1>{t('RED_FLAG_ADDRESS_PAGE.RED_FLAG')}</h1>
                 <div className="flex items-center justify-center gap-4">
                   <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
-                  <h1 title={addressId}>
+                  <h1>
                     {t('RED_FLAG_ADDRESS_PAGE.ADDRESS')}
-                    <span className="text-primaryBlue">
-                      {' '}
-                      {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
-                    </span>
+                    <span className="text-primaryBlue"> {id}</span>
                   </h1>
                 </div>
               </div>

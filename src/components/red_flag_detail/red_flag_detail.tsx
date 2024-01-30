@@ -17,7 +17,6 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     chainId,
-    address,
     chainIcon,
     unit,
     redFlagType,
@@ -42,16 +41,6 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
-      {/* Info: (20231110 - Julian) Address Hash */}
-      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          <p>{t('RED_FLAG_ADDRESS_PAGE.ADDRESS_ID')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
-        </div>
-        <p className="break-all">{address}</p>
-      </div>
       {/* Info: (20231110 - Julian) Red Flag Type */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">

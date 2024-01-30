@@ -161,7 +161,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- RED FLAG -----------------
       case SearchType.RED_FLAG:
-        const {address: redFlagaddress, redFlagType} = data as IRedFlagDetail;
+        const {redFlagType} = data as IRedFlagDetail;
         const displayedRedFlagType = (
           <div className="flex items-center gap-2">
             <Image src="/icons/red_flag.svg" alt="red_flag_icon" width={24} height={24} />
@@ -170,8 +170,8 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         );
 
         return {
-          LINE_1: <p className="break-all text-base">{redFlagaddress}</p>,
-          LINE_2: displayedRedFlagType,
+          LINE_1: displayedRedFlagType,
+          LINE_2: displayedTime,
           LINK: dynamicUrl.RED_FLAG,
         };
       // Info: (20231115 - Julian) ----------------- BLACK LIST -----------------

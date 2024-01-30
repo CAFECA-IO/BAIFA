@@ -46,12 +46,9 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
       .filter((redFlagData: IRedFlag) => {
         const searchTerm = searchRef.current.toLowerCase();
         const type = redFlagData.redFlagType.toLowerCase();
-        const addressId = redFlagData.addressId.toLowerCase();
         const id = redFlagData.id.toLowerCase();
 
-        return searchTerm !== ''
-          ? type.includes(searchTerm) || addressId.includes(searchTerm) || id.includes(searchTerm)
-          : true;
+        return searchTerm !== '' ? type.includes(searchTerm) || id.includes(searchTerm) : true;
       })
       // Info: (20231109 - Julian) filter by date range
       // .filter((redFlagData: IRedFlag) => {
