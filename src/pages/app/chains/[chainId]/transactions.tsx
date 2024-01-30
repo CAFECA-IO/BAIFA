@@ -6,7 +6,6 @@ import {MarketContext} from '../../../../contexts/market_context';
 import {useRouter} from 'next/router';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../components/bolt_button/bolt_button';
-import TransactionTab from '../../../../components/transaction_tab/transaction_tab';
 import Footer from '../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
@@ -15,6 +14,13 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {getChainIcon} from '../../../../lib/common';
 import {GetStaticPaths, GetStaticProps} from 'next';
+import useStateRef from 'react-usestateref';
+import TransactionList from '../../../../components/transaction_list/transaction_list';
+import SearchBar from '../../../../components/search_bar/search_bar';
+import DatePicker from '../../../../components/date_picker/date_picker';
+import SortingMenu from '../../../../components/sorting_menu/sorting_menu';
+import Pagination from '../../../../components/pagination/pagination';
+import {default30DayPeriod, sortOldAndNewOptions} from '../../../../constants/config';
 
 interface ITransactionsPageProps {
   chainId: string;
@@ -28,47 +34,84 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   const appCtx = useContext(AppContext);
   const {getInteractionTransaction} = useContext(MarketContext);
 
-  //  Info: (20231114 - Julian) 如果取得 addressId，且 addressId 是陣列，則顯示資料
-  const isShowData = !!addressId && typeof addressId === 'object';
+  const totalPages = 100; // ToDo: (20240129 - Julian) 如何從 API 取得總頁數？
+  const [activePage, setActivePage] = useState(1);
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [period, setPeriod] = useState(default30DayPeriod);
+  const [search, setSearch, searchRef] = useStateRef('');
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+
+  // Info: (20240119 - Julian) 設定 API 查詢參數
+  const dateQuery =
+    period.startTimeStamp === 0 || period.endTimeStamp === 0
+      ? ''
+      : `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`;
+  const pageQuery = `page=${activePage}`;
+
+  const apiQueryStr = `${pageQuery}${dateQuery}`;
+
+  // Info: (20240129 - Julian) call API 並將資料存入 transactionData
+  const getTransactionData = async () => {
+    try {
+      // Info: (20240129 - Julian) 如果有取得 addressId，則轉換成 query string
+      const addressA = typeof addressId === 'object' ? `addressId=${addressId[0]}` : undefined;
+      const addressB = typeof addressId === 'object' ? `&addressId=${addressId[1]}` : undefined;
+      const data = await getInteractionTransaction(chainId, addressA, addressB, apiQueryStr);
+      setTransactionData(data);
+    } catch (error) {
+      //console.log('getInteractionTransaction error', error);
+    }
+  };
+
+  //  Info: (20231114 - Julian) 如果有取得 addressId，且 addressId 是陣列，則顯示資料
+  const isAddressIds = !!addressId && typeof addressId === 'object';
 
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
 
-    const getTransactionData = async (chainId: string, addressId: string[]) => {
-      try {
-        const addressA = addressId[0];
-        const addressB = addressId[1];
-        const data = await getInteractionTransaction(chainId, addressA, addressB);
-        setTransactionData(data);
-      } catch (error) {
-        //console.log('getInteractionTransaction error', error);
-      }
-    };
-
     if (addressId) {
-      getTransactionData(chainId, addressId as string[]);
+      getTransactionData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressId]);
 
-  let timer: NodeJS.Timeout;
+  useEffect(() => {
+    setActivePage(1);
+    getTransactionData();
+  }, [period, chainId]);
 
   useEffect(() => {
-    clearTimeout(timer);
+    getTransactionData();
+  }, [activePage]);
 
-    if (transactionData) {
-      setTransactionData(transactionData);
-    }
-    timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, [transactionData]);
+  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+  const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactionData);
 
-  const headTitle = isShowData
+  useEffect(() => {
+    const searchResult = transactionData
+      // Info: (20230905 - Julian) filter by search term
+      // .filter((transaction: ITransaction) => {
+      //   const searchTerm = searchRef.current.toLowerCase();
+      //   const transactionId = transaction.id.toString().toLowerCase();
+      //   const status = transaction.status.toLowerCase();
+
+      //   return searchTerm !== ''
+      //     ? transactionId.includes(searchTerm) || status.includes(searchTerm)
+      //     : true;
+      // })
+      .sort((a: ITransaction, b: ITransaction) => {
+        return sorting === sortOldAndNewOptions[0]
+          ? // Info: (20231101 - Julian) Newest
+            b.createdTimestamp - a.createdTimestamp
+          : // Info: (20231101 - Julian) Oldest
+            a.createdTimestamp - b.createdTimestamp;
+      });
+    setFilteredTransactions(searchResult);
+  }, [transactionData, search, sorting]);
+
+  const headTitle = isAddressIds
     ? `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_ADDRESS_1')} ${addressId[0]} ${t(
         'TRANSACTION_LIST_PAGE.HEAD_TITLE_ADDRESS_2'
       )} ${addressId[1]} - BAIFA`
@@ -84,7 +127,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
     </h1>
   );
 
-  const subTitle = isShowData ? (
+  const subTitle = isAddressIds ? (
     <div className="flex items-center space-x-4">
       <div className="flex items-center space-x-2">
         <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
@@ -104,12 +147,45 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
     <></>
   );
 
-  const isShowTransactionList =
-    transactionData && !isLoading ? (
-      <TransactionTab />
-    ) : (
-      <h2 className="text-2xl font-bold">{t('ERROR_PAGE.HEAD_TITLE')}</h2>
-    );
+  const isShowTransactionList = transactionData ? (
+    <div className="flex w-full flex-col items-center font-inter">
+      {/* Info: (20231101 - Julian) Search Filter */}
+      <div className="flex w-full flex-col items-center">
+        {/* Info: (20231101 - Julian) Search Bar */}
+        <div className="flex w-full items-center justify-center lg:w-7/10">
+          <SearchBar
+            searchBarPlaceholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_TRANSACTIONS')}
+            setSearch={setSearch}
+          />
+        </div>
+        <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
+          {/* Info: (20231101 - Julian) Date Picker */}
+          <div className="flex w-full items-center text-base lg:w-fit lg:space-x-2">
+            <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
+            <DatePicker period={period} setFilteredPeriod={setPeriod} />
+          </div>
+
+          {/* Info: (20230904 - Julian) Sorting Menu */}
+          <div className="relative flex w-full items-center pb-2 text-base lg:w-fit lg:space-x-2 lg:pb-0">
+            <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
+            <SortingMenu
+              sortingOptions={sortOldAndNewOptions}
+              sorting={sorting}
+              setSorting={setSorting}
+              bgColor="bg-darkPurple"
+            />
+          </div>
+        </div>
+      </div>
+      {/* Info: (20230907 - Julian) Transaction List */}
+      <div className="flex w-full flex-col items-center">
+        <TransactionList transactions={filteredTransactions} />
+        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
+      </div>
+    </div>
+  ) : (
+    <h2 className="text-2xl font-bold">{t('ERROR_PAGE.HEAD_TITLE')}</h2>
+  );
 
   return (
     <>

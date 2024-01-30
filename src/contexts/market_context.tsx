@@ -33,8 +33,9 @@ export interface IMarketContext {
   getBlockDetail: (chainId: string, blockId: string) => Promise<IBlockDetail>;
   getInteractionTransaction: (
     chainId: string,
-    addressA: string,
-    addressB: string
+    addressA: string | undefined,
+    addressB: string | undefined,
+    queryStr?: string
   ) => Promise<ITransaction[]>;
   getTransactions: (chainId: string, queryStr?: string) => Promise<ITransaction[]>;
   getTransactionList: (
@@ -225,16 +226,28 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, []);
 
   const getInteractionTransaction = useCallback(
-    async (chainId: string, addressA: string, addressB: string) => {
+    async (
+      chainId: string,
+      addressA: string | undefined,
+      addressB: string | undefined,
+      queryStr?: string
+    ) => {
       let data: ITransaction[] = [];
       try {
-        const response = await fetch(
-          `${APIURL.CHAINS}/${chainId}/transactions?addressId=${addressA}&addressId=${addressB}`,
-          {
+        if (addressA && addressB) {
+          const response = await fetch(
+            `${APIURL.CHAINS}/${chainId}/transactions?${addressA}${addressB}${queryStr}`,
+            {
+              method: 'GET',
+            }
+          );
+          data = await response.json();
+        } else {
+          const response = await fetch(`${APIURL.CHAINS}/${chainId}/transactions?${queryStr}`, {
             method: 'GET',
-          }
-        );
-        data = await response.json();
+          });
+          data = await response.json();
+        }
       } catch (error) {
         //console.log('getInteractionTransaction error', error);
       }

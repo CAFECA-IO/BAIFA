@@ -42,25 +42,27 @@ type BlockProducedData = {
   chainIcon: string;
 };
 
-type ResponseData = {
-  id: string;
-  type: string;
-  address: string;
-  chainId: string;
-  chainIcon: string;
-  createdTimestamp: number;
-  latestActiveTime: number;
-  relatedAddresses: RelatedAddressInfo[];
-  interactedAddressCount: number;
-  interactedContactCount: number;
-  score: number;
-  reviewData: ReviewData[];
-  transactionHistoryData: TransactionHistoryData[];
-  blockProducedData: BlockProducedData[];
-  flaggingCount: number;
-  riskLevel: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK';
-  publicTag: string[];
-};
+type ResponseData =
+  | {
+      id: string;
+      type: string;
+      address: string;
+      chainId: string;
+      chainIcon: string;
+      createdTimestamp: number;
+      latestActiveTime: number;
+      relatedAddresses: RelatedAddressInfo[];
+      interactedAddressCount: number;
+      interactedContactCount: number;
+      score: number;
+      reviewData: ReviewData[];
+      transactionHistoryData: TransactionHistoryData[];
+      blockProducedData: BlockProducedData[];
+      flaggingCount: number;
+      riskLevel: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK';
+      publicTag: string[];
+    }
+  | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -197,25 +199,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         riskLevel: 'LOW_RISK', // ToDo: (20240122 - Julian) 補上這個欄位
         publicTag: [], // ToDo: (20240122 - Julian) 補上這個欄位
       }
-    : {
-        id: '',
-        type: '',
-        address: '',
-        chainId: '',
-        chainIcon: '',
-        createdTimestamp: 0,
-        latestActiveTime: 0,
-        relatedAddresses: [],
-        interactedAddressCount: 0,
-        interactedContactCount: 0,
-        score: 0,
-        reviewData: [],
-        transactionHistoryData: [],
-        blockProducedData: [],
-        flaggingCount: 0,
-        riskLevel: 'LOW_RISK',
-        publicTag: [],
-      };
+    : undefined;
 
   res.status(200).json(result);
 }
