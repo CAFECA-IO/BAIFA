@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   try {
-    let suggestions = new Set();
+    const suggestions = new Set();
 
     // Info:Search in transaction_receipt_raw for contract_address (20240130 - Shirley)
     const transactionReceipts = await prisma.transaction_receipt_raw.findMany({
@@ -69,6 +69,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     res.status(200).json({suggestions: limitedSuggestions} as ResponseData);
   } catch (error) {
+    // Info: (20240130 - Shirley) Request error
+    // eslint-disable-next-line no-console
     console.error('Request error', error);
     res.status(500).json({suggestions: []});
   }
