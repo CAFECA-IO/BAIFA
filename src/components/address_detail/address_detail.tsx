@@ -1,8 +1,11 @@
 import {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
-import BoltButton from '../bolt_button/bolt_button';
+// ToDo: (20231017 - Julian) import BoltButton
+// import BoltButton from '../bolt_button/bolt_button';
 import Tooltip from '../tooltip/tooltip';
-import {timestampToString, getTimeString, truncateText} from '../../lib/common';
+import {timestampToString, getTimeString} from '../../lib/common';
+// ToDo: (20231017 - Julian) import truncateText
+// import {truncateText} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IAddress} from '../../interfaces/address';
@@ -21,7 +24,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     chainId,
     createdTimestamp,
     latestActiveTime,
-    relatedAddresses,
+    // relatedAddresses, // To Do: (20231017 - Julian) relatedAddresses
     interactedAddressCount,
     interactedContactCount,
     flaggingCount,
@@ -68,6 +71,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     </div>
   );
 
+  /*
   const displayRelatedAddress = relatedAddresses ? (
     relatedAddresses.map((address, index) => {
       const addressLink = getDynamicUrl(address.chainId, `${address.id}`).ADDRESS;
@@ -82,6 +86,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   ) : (
     <></>
   );
+  */
 
   const displayInteractedWith = (
     <div className="flex items-center space-x-2 text-base">

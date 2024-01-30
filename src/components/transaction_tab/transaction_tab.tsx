@@ -1,6 +1,5 @@
 import {useState, useEffect, useContext} from 'react';
 import {useRouter} from 'next/router';
-import useStateRef from 'react-usestateref';
 import TransactionList from '../transaction_list/transaction_list';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -24,7 +23,7 @@ const TransactionTab = () => {
   const [activePage, setActivePage] = useState(1);
 
   const [period, setPeriod] = useState(default30DayPeriod);
-  const [search, setSearch, searchRef] = useStateRef('');
+  const [search, setSearch] = useState('');
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
   // Info: (20240119 - Julian) 設定 API 查詢參數

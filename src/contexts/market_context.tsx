@@ -1,5 +1,4 @@
-import React, {createContext, useCallback} from 'react';
-import useStateRef from 'react-usestateref';
+import React, {createContext, useCallback, useState} from 'react';
 import {APIURL} from '../constants/api_request';
 import {IChain, IChainDetail} from '../interfaces/chain';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
@@ -87,10 +86,10 @@ export const MarketContext = createContext<IMarketContext>({
 });
 
 export const MarketProvider = ({children}: IMarketProvider) => {
-  const [promotion, setPromotion, promotionRef] = useStateRef<IPromotion>(defaultPromotion);
-  const [chainList, setChainList, chainListRef] = useStateRef<IChain[]>([]);
-  const [currencyList, setCurrencyList, currencyListRef] = useStateRef<ICurrency[]>([]);
-  const [blacklist, setBlacklist, blacklistRef] = useStateRef<IBlacklist[]>([]);
+  const [promotion, setPromotion] = useState<IPromotion>(defaultPromotion);
+  const [chainList, setChainList] = useState<IChain[]>([]);
+  const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
+  const [blacklist, setBlacklist] = useState<IBlacklist[]>([]);
 
   const getPromotion = useCallback(async () => {
     let data: IPromotion = defaultPromotion;
@@ -417,10 +416,10 @@ export const MarketProvider = ({children}: IMarketProvider) => {
 
   const defaultValues = {
     init,
-    promotionData: promotionRef.current,
-    chainList: chainListRef.current,
-    currencyList: currencyListRef.current,
-    blacklist: blacklistRef.current,
+    promotionData: promotion,
+    chainList: chainList,
+    currencyList: currencyList,
+    blacklist: blacklist,
 
     getChains,
     getChainDetail,
