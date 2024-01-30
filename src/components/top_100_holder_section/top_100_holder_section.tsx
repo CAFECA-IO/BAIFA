@@ -18,7 +18,7 @@ interface ITop100HolderSectionProps {
 
 const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {currencyId, currencyName, holders, holderCount, unit} = currencyData;
+  const {currencyId, holders, holderCount, unit} = currencyData;
 
   const chainIcon = getChainIcon(currencyId);
 

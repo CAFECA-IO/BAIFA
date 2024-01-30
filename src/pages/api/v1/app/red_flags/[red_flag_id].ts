@@ -25,8 +25,6 @@ type ResponseData =
   | {
       id: string;
       chainId: string;
-      addressId: string;
-      address: string;
       redFlagType: string;
       createdTimestamp: number;
       interactedAddresses: InteractedAddress[];
@@ -40,8 +38,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
   const result: ResponseData = {
     'id': '140050038',
     'chainId': 'usdt',
-    'addressId': '140052',
-    'address': '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
     'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_WITHDRAW',
     'createdTimestamp': 1686579200,
     'interactedAddresses': [
