@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const result: ResponseData = chainData
     ? {
         chainId: `${chainData.id}`,
-        chainName: chainData.chain_name,
+        chainName: `${chainData.chain_name}`,
       }
     : // Info: (20240118 - Julian) 如果沒有找到資料，回傳 undefined
       undefined;

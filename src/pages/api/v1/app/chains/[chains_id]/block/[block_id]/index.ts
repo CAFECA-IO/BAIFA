@@ -64,20 +64,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const nextBlockNumber = blockData?.number ? `${blockData?.number + 1}` : undefined;
 
   // Info: (20240119 - Julian) 計算 reward
-  const reward = blockData ? blockData.reward / Math.pow(10, decimals) : 0;
+  const rewardRaw = blockData?.reward ? parseInt(blockData?.reward) : 0;
+  const reward = rewardRaw / Math.pow(10, decimals);
+
+  // Info: (20240130 - Julian) 日期轉換
+  const createdTimestamp = blockData?.created_timestamp
+    ? new Date(blockData?.created_timestamp).getDate() / 1000
+    : 0;
 
   const result: ResponseData = blockData
     ? {
         id: `${blockData.number}`,
         chainId: `${blockData.chain_id}`,
         stability: 'HIGH', // ToDo: (20240118 - Julian) 補上這個欄位
-        createdTimestamp: blockData.created_timestamp.getTime() / 1000,
+        createdTimestamp: createdTimestamp,
         managementTeam: [], // ToDo: (20240118 - Julian) 補上這個欄位
-        transactionCount: blockData.transaction_count,
-        miner: blockData.miner,
+        transactionCount: blockData.transaction_count ?? 0,
+        miner: `${blockData.miner}`,
         reward: reward,
         unit: unit,
-        size: blockData.size,
+        size: blockData.size ?? 0,
         previousBlockId: previousBlockNumber,
         nextBlockId: nextBlockNumber,
       }
