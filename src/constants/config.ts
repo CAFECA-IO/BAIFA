@@ -196,3 +196,5 @@ export const chainIdToCurrencyName = [
   {id: 'bnb', name: 'Binance Coin'},
   {id: 'isun', name: 'iSunCloud'},
 ];
+
+export const INPUT_SUGGESTION_LIMIT = 20;

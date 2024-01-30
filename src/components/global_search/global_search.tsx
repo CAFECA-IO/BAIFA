@@ -27,6 +27,7 @@ const GlobalSearch = () => {
   } = useOuterClick<HTMLInputElement>(false);
 
   useEffect(() => {
+    if (inputValue.length === 0) return;
     getSuggestions(inputValue).then(data => setSuggestionData(data));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue]);
