@@ -26,7 +26,6 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const appCtx = useContext(AppContext);
   const {getChainDetail} = useContext(MarketContext);
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'blocks' | 'transactions'>('blocks');
   const [chainData, setChainData] = useState<IChainDetail>({} as IChainDetail);
 
@@ -69,7 +68,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     },
   ];
 
-  const displayedTitle = !isLoading ? (
+  const displayedTitle = (
     <div className="flex items-center justify-center space-x-4 py-5 text-2xl font-bold lg:text-48px">
       <Image
         className="block lg:hidden"
@@ -87,9 +86,6 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
       />
       <h1>{chainName}</h1>
     </div>
-  ) : (
-    // ToDo: (20231213 - Julian) Loading Animation
-    <></>
   );
 
   const blocksButton = (

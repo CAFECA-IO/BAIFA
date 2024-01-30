@@ -59,7 +59,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       chain_icon: true,
     },
   });
-  const chainIcon = chainData?.chain_icon ?? '';
 
   const result: ResponseData = evidenceData
     ? {

@@ -1,4 +1,4 @@
-import {IRiskLevel, RiskLevel} from '../constants/risk_level';
+import {IRiskLevel} from '../constants/risk_level';
 import {IProductionBlock} from './block';
 import {IInteractionItem} from './interaction_item';
 import {IRedFlag} from './red_flag';

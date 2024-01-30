@@ -7,7 +7,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 import {DEFAULT_TRUNCATE_LENGTH, ITEM_PER_PAGE} from '../../constants/config';
-import {roundToDecimal, truncateText, withCommas} from '../../lib/common';
+import {getChainIcon, roundToDecimal, truncateText, withCommas} from '../../lib/common';
 import {ICurrencyDetail, IHolder} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
@@ -18,7 +18,9 @@ interface ITop100HolderSectionProps {
 
 const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {currencyId, currencyName, chainIcon, holders, holderCount, unit} = currencyData;
+  const {currencyId, currencyName, holders, holderCount, unit} = currencyData;
+
+  const chainIcon = getChainIcon(currencyId);
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(holderCount / ITEM_PER_PAGE));
@@ -76,7 +78,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
         <Link href={addressLink} className="hidden flex-1 items-center space-x-4 lg:flex">
           {displayedPublicTag}
           <div className="flex items-center space-x-2 text-xl">
-            <Image src={chainIcon} alt={`${currencyId}_icon`} width={30} height={30} />
+            <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
             <p title={holder.addressId}>
               {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
               <span className="ml-2 font-semibold text-primaryBlue">
@@ -91,7 +93,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
             {/* Info: (20231102 - Julian) Address ID (Mobile) */}
             <Link href={addressLink} className="flex space-x-4 lg:hidden">
               <div className="flex items-center space-x-2 text-sm">
-                <Image src={chainIcon} alt={`${currencyName}_icon`} width={20} height={20} />
+                <Image src={chainIcon.src} alt={chainIcon.alt} width={20} height={20} />
                 <p>
                   {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
                   <span className="ml-2 font-semibold text-primaryBlue">{holder.addressId}</span>

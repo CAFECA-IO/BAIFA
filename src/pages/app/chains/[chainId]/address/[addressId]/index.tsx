@@ -25,7 +25,7 @@ import {MarketContext} from '../../../../../../contexts/market_context';
 import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {DEFAULT_TRUNCATE_LENGTH, sortOldAndNewOptions} from '../../../../../../constants/config';
-import {roundToDecimal, truncateText} from '../../../../../../lib/common';
+import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
 
@@ -48,8 +48,9 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
   const [blockData, setBlockData] = useState<IProductionBlock[]>([]);
 
-  const {chainIcon, transactionHistoryData, blockProducedData, publicTag, score, reviewData} =
-    addressData;
+  const {transactionHistoryData, blockProducedData, publicTag, score, reviewData} = addressData;
+
+  const chainIcon = getChainIcon(chainId);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -132,7 +133,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
       </button>
       {/* Info: (20230912 -Julian) Address Title */}
       <div className="flex flex-1 items-center justify-center space-x-2">
-        <Image src={chainIcon} alt={`${chainId}_icon`} width={40} height={40} />
+        <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
         <h1 className="text-2xl font-bold lg:text-32px">
           {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
           <span title={addressId} className="ml-2 text-primaryBlue">

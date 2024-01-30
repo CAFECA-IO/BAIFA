@@ -15,11 +15,10 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {IRedFlagDetail} from '../../../interfaces/red_flag';
-import {getChainIcon, truncateText} from '../../../lib/common';
+import {getChainIcon} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
 import {ITransaction} from '../../../interfaces/transaction';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../../constants/config';
 
 interface IRedFlagDetailPageProps {
   redFlagId: string;
