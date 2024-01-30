@@ -21,21 +21,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const suggestions = new Set();
 
     // Info:Search in transaction_receipt_raw for contract_address (20240130 - Shirley)
-    const transactionReceipts = await prisma.transaction_receipt_raw.findMany({
+    const transactionReceipts = await prisma.transactions.findMany({
       where: {
-        contract_address: {
-          startsWith: searchInput,
-        },
+        // contract_address: {
+        //   startsWith: searchInput,
+        // },
+        OR: [{from_address: {startsWith: searchInput}}, {to_address: {startsWith: searchInput}}],
       },
       take: INPUT_SUGGESTION_LIMIT,
       select: {
-        contract_address: true,
+        from_address: true,
+        to_address: true,
       },
     });
 
     transactionReceipts.forEach(item => {
-      if (item.contract_address && item.contract_address.startsWith(searchInput)) {
-        suggestions.add(item.contract_address);
+      if (item.from_address && item.from_address.startsWith(searchInput)) {
+        suggestions.add(item.from_address);
+      }
+
+      if (item.to_address && item.to_address.startsWith(searchInput)) {
+        suggestions.add(item.to_address);
       }
     });
 
@@ -61,6 +67,73 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         }
         if (item.creator_address && item.creator_address.startsWith(searchInput)) {
           suggestions.add(item.creator_address);
+        }
+      });
+    }
+
+    // Search in evidences for contract_address
+    if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
+      const evidences = await prisma.evidences.findMany({
+        where: {
+          contract_address: {
+            startsWith: searchInput,
+          },
+        },
+        take: INPUT_SUGGESTION_LIMIT - suggestions.size,
+        select: {
+          contract_address: true,
+        },
+      });
+
+      evidences.forEach(item => {
+        if (item.contract_address) {
+          suggestions.add(item.contract_address);
+        }
+      });
+    }
+
+    // Search in red_flags for related_addresses
+    if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
+      const redFlags = await prisma.red_flags.findMany({
+        where: {
+          related_addresses: {
+            has: searchInput,
+          },
+        },
+        take: INPUT_SUGGESTION_LIMIT - suggestions.size,
+        select: {
+          related_addresses: true,
+        },
+      });
+
+      redFlags.forEach(item => {
+        if (item.related_addresses && item.related_addresses.includes(searchInput)) {
+          item.related_addresses.forEach(address => {
+            if (address.startsWith(searchInput)) {
+              suggestions.add(address);
+            }
+          });
+        }
+      });
+    }
+
+    // Search in block_raw for hash
+    if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
+      const blockRaw = await prisma.block_raw.findMany({
+        where: {
+          hash: {
+            startsWith: searchInput,
+          },
+        },
+        take: INPUT_SUGGESTION_LIMIT - suggestions.size,
+        select: {
+          hash: true,
+        },
+      });
+
+      blockRaw.forEach(item => {
+        if (item.hash) {
+          suggestions.add(item.hash);
         }
       });
     }
