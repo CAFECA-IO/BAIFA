@@ -206,8 +206,6 @@
   "RED_FLAG_ADDRESS_PAGE": {
     "MAIN_TITLE": "警示地址",
     "RED_FLAG": "警示",
-    "ADDRESS": "地址",
-    "ADDRESS_ID": "地址",
     "RED_FLAG_TYPE": "警示类型",
     "FLAGGING_TIME": "警示时间",
     "INTERACTED_WITH": "互动对象",
@@ -263,10 +261,10 @@
     "ITEM_SUBTITLE_BLACKLIST": "黑名单",
     "ITEM_LINE_1_BLACKLIST": "地址",
     "ITEM_LINE_2_BLACKLIST": "公开标签",
-    "ITEM_TITLE_RED_FLAG": "警示地址",
+    "ITEM_TITLE_RED_FLAG": "警示记录",
     "ITEM_SUBTITLE_RED_FLAG": "警示记录",
-    "ITEM_LINE_1_RED_FLAG": "警示记录",
-    "ITEM_LINE_2_RED_FLAG": "警示类型"
+    "ITEM_LINE_1_RED_FLAG": "警示类型",
+    "ITEM_LINE_2_RED_FLAG": "警示时间"
   },
   "DATE_PICKER": {
     "DATE": "日期",
@@ -326,7 +324,8 @@
     "TRANSACTION_HISTORY_PLACEHOLDER": "在交易记录中搜寻",
     "TRANSACTION_HISTORY_TRANSACTION_ID": "交易",
     "BLOCK_PRODUCED_HISTORY_TITLE": "区块生成历史记录",
-    "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在区块生成记录中搜寻"
+    "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在区块生成记录中搜寻",
+    "RED_FLAG_ITEM_TITLE": "警示记录"
   },
   "PUBLIC_TAG": {
     "TITLE": "公开标签",
