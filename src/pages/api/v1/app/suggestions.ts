@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     let suggestions = new Set();
 
-    // Search in transaction_receipt_raw for contract_address
+    // Info:Search in transaction_receipt_raw for contract_address (20240130 - Shirley)
     const transactionReceipts = await prisma.transaction_receipt_raw.findMany({
       where: {
         contract_address: {
@@ -34,12 +34,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     transactionReceipts.forEach(item => {
-      if (item.contract_address) {
+      if (item.contract_address && item.contract_address.startsWith(searchInput)) {
         suggestions.add(item.contract_address);
       }
     });
 
-    // If fewer than INPUT_SUGGESTION_LIMIT results, search in contracts for contract_address and creator_address
+    // Info:If fewer than INPUT_SUGGESTION_LIMIT results, search in contracts for contract_address and creator_address (20240130 - Shirley)
     if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
       const contracts = await prisma.contracts.findMany({
         where: {
@@ -56,16 +56,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
 
       contracts.forEach(item => {
-        if (item.contract_address) {
+        if (item.contract_address && item.contract_address.startsWith(searchInput)) {
           suggestions.add(item.contract_address);
         }
-        if (item.creator_address) {
+        if (item.creator_address && item.creator_address.startsWith(searchInput)) {
           suggestions.add(item.creator_address);
         }
       });
     }
-
-    console.log('suggestions', suggestions);
 
     const limitedSuggestions = Array.from(suggestions).slice(0, INPUT_SUGGESTION_LIMIT) as string[];
 

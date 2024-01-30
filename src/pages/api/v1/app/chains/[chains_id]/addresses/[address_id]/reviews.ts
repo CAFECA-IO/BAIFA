@@ -72,8 +72,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       })),
     };
 
-    console.log('result in reviews', result);
-
     /* Deprecated: (20240205 - Shirley) -------------- Mock Data -------------- 
     const result: ResponseData = {
       'id': '115588',
