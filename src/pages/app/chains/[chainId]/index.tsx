@@ -15,6 +15,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
 import {chainList} from '../../../../constants/config';
+import {getChainIcon} from '../../../../lib/common';
 
 export interface IChainDetailPageProps {
   chainId: string;
@@ -46,13 +47,12 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     getChainData(chainId);
   }, []);
 
-  const {chainId: chainIdFromData, chainName, chainIcon} = chainData;
+  if (!chainData.chainId) return <h1>Data not found</h1>;
+
+  const {chainId: chainIdFromData, chainName} = chainData;
   const headTitle = `${chainName} - BAIFA`;
 
-  useEffect(() => {
-    if (!chainIcon) setIsLoading(true);
-    else setIsLoading(false);
-  }, [chainIcon]);
+  const chainIcon = getChainIcon(chainIdFromData);
 
   const crumbs = [
     {
@@ -73,15 +73,15 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     <div className="flex items-center justify-center space-x-4 py-5 text-2xl font-bold lg:text-48px">
       <Image
         className="block lg:hidden"
-        src={chainIcon}
-        alt={`${chainName}_icon`}
+        src={chainIcon.src}
+        alt={chainIcon.alt}
         width={30}
         height={30}
       />
       <Image
         className="hidden lg:block"
-        src={chainIcon}
-        alt={`${chainName}_icon`}
+        src={chainIcon.src}
+        alt={chainIcon.alt}
         width={60}
         height={60}
       />

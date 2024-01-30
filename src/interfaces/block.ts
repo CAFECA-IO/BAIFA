@@ -10,11 +10,9 @@ export interface IBlock {
 export interface IProductionBlock extends IBlock {
   reward: number;
   unit: string;
-  chainIcon: string;
 }
 
 export interface IBlockDetail extends IBlock {
-  chainIcon: string;
   managementTeam: string[];
   transactionCount: number;
   miner: string;

@@ -10,7 +10,6 @@ export interface IRedFlag {
 }
 
 export interface IRedFlagDetail extends IRedFlag {
-  chainIcon: string;
   unit: string;
   interactedAddresses: {
     id: string;

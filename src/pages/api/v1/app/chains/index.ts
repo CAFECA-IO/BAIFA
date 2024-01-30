@@ -6,7 +6,6 @@ import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
 type ResponseData = {
   chainId: string;
   chainName: string;
-  chainIcon: string;
   blocks: number;
   transactions: number;
 }[];
@@ -19,7 +18,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     select: {
       id: true,
       chain_name: true,
-      chain_icon: true,
     },
   });
 
@@ -31,7 +29,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return {
       chainId: `${chain.id}`,
       chainName: chain.chain_name,
-      chainIcon: chain.chain_icon,
       blocks: blockCount,
       transactions: transactionCount,
     };
