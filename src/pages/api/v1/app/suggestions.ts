@@ -65,7 +65,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
     }
 
-    const limitedSuggestions = Array.from(suggestions).slice(0, INPUT_SUGGESTION_LIMIT) as string[];
+    const limitedSuggestions = Array.from(suggestions)
+      .filter(suggestion => suggestion !== 'null')
+      .slice(0, INPUT_SUGGESTION_LIMIT) as string[];
 
     res.status(200).json({suggestions: limitedSuggestions} as ResponseData);
   } catch (error) {
