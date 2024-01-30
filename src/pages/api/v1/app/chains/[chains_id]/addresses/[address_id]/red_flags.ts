@@ -7,7 +7,6 @@ type ResponseData = {
   id: string;
   chainId: string;
   chainName: string;
-  chainIcon: string;
   addressId: string;
   redFlagType: string;
   createdTimestamp: number;
@@ -44,19 +43,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     select: {
       id: true,
       chain_name: true,
-      chain_icon: true,
     },
   });
 
   const chainName = chainData?.chain_name ?? '';
-  const chainIcon = chainData?.chain_icon ?? '';
 
   const result: ResponseData = redFlagData.map(redFlag => {
     return {
       id: `${redFlag.id}`,
       chainId: `${redFlag.chain_id}`,
       chainName: chainName,
-      chainIcon: chainIcon,
       addressId: address_id ?? '',
       redFlagType: redFlag.red_flag_type,
       createdTimestamp: new Date(redFlag.created_timestamp).getTime() / 1000,

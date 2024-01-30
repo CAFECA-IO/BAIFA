@@ -25,22 +25,23 @@ type TransactionHistoryData = {
   status: 'PENDING' | 'SUCCESS' | 'FAILED';
 };
 
-type ResponseData = {
-  currencyId: string;
-  currencyName: string;
-  rank: number;
-  chainIcon: string;
-  holderCount: number;
-  price: number;
-  volumeIn24h: number;
-  unit: string;
-  totalAmount: number;
-  holders: HolderData[];
-  totalTransfers: number;
-  flaggingCount: number;
-  riskLevel: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK';
-  transactionHistoryData: TransactionHistoryData[];
-};
+type ResponseData =
+  | {
+      currencyId: string;
+      currencyName: string;
+      rank: number;
+      holderCount: number;
+      price: number;
+      volumeIn24h: number;
+      unit: string;
+      totalAmount: number;
+      holders: HolderData[];
+      totalTransfers: number;
+      flaggingCount: number;
+      riskLevel: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK';
+      transactionHistoryData: TransactionHistoryData[];
+    }
+  | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -128,17 +129,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     };
   });
 
-  // Info: (20240125 - Julian) 從 chains Table 中取得 chainIcon
+  // Info: (20240125 - Julian) 從 chains Table 中取得 unit
   const chainData = await prisma.chains.findUnique({
     where: {
       id: chainId,
     },
     select: {
-      chain_icon: true,
       symbol: true,
     },
   });
-  const chainIcon = chainData?.chain_icon ?? '';
   const unit = chainData?.symbol ?? '';
 
   const result: ResponseData = currencyData
@@ -146,7 +145,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         currencyId: currencyData.id,
         currencyName: currencyData.name,
         rank: 0, // ToDo: (20240125 - Julian) 討論去留
-        chainIcon: chainIcon,
         holderCount: currencyData.holder_count,
         price: currencyData.price,
         volumeIn24h: currencyData.volume_in_24h,
@@ -158,22 +156,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         riskLevel: 'LOW_RISK', // ToDo: (20240125 - Julian) 需要參考 codes Table 並補上 riskLevel 的轉換
         transactionHistoryData: transactionHistoryData,
       }
-    : {
-        currencyId: '',
-        currencyName: '',
-        rank: 0,
-        chainIcon: '',
-        holderCount: 0,
-        price: 0,
-        volumeIn24h: 0,
-        unit: '',
-        totalAmount: 0,
-        holders: [],
-        totalTransfers: 0,
-        flaggingCount: 0,
-        riskLevel: 'LOW_RISK',
-        transactionHistoryData: [],
-      };
+    : // Info: (20240130 - Julian) 如果沒有找到資料，回傳 undefined
+      undefined;
 
   res.status(200).json(result);
 }

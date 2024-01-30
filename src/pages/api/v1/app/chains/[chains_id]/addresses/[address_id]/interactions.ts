@@ -7,7 +7,6 @@ type ResponseData = {
   id: string;
   type: 'address' | 'contract';
   chainId: string;
-  chainIcon: string;
   publicTag: string[];
   createdTimestamp: number;
   transactionCount: number;
@@ -59,24 +58,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // Info: (20240124 - Julian) 取得 chain_icon
-  const chainData = await prisma.chains.findUnique({
-    where: {
-      id: chain_id,
-    },
-    select: {
-      chain_icon: true,
-    },
-  });
-  const chainIcon = chainData ? chainData.chain_icon : '';
-
   const result: ResponseData = interactedList
     ? interactedList.map(address => {
         return {
           id: address.address,
           type: 'address',
           chainId: `${chain_id}`,
-          chainIcon: chainIcon,
           publicTag: [], // ToDo: (20240124 - Julian) 補上這個欄位
           createdTimestamp: new Date(address.created_timestamp).getTime() / 1000,
           transactionCount: 0, // ToDo: (20240124 - Julian) 補上這個欄位

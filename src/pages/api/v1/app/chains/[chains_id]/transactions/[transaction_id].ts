@@ -13,23 +13,24 @@ type FlaggingRecords = {
   redFlagType: string;
 };
 
-type ResponseData = {
-  id: string;
-  hash: string;
-  type: 'Crypto Currency' | 'Evidence' | 'NFT';
-  status: 'PENDING' | 'SUCCESS' | 'FAILED' | 'PROCESSING';
-  chainId: string;
-  chainIcon: string;
-  blockId: string;
-  createdTimestamp: number;
-  from: AddressInfo[];
-  to: AddressInfo[];
-  evidenceId: string | null;
-  value: number;
-  fee: number;
-  unit: string;
-  flaggingRecords: FlaggingRecords[];
-};
+type ResponseData =
+  | {
+      id: string;
+      hash: string;
+      type: 'Crypto Currency' | 'Evidence' | 'NFT';
+      status: 'PENDING' | 'SUCCESS' | 'FAILED' | 'PROCESSING';
+      chainId: string;
+      blockId: string;
+      createdTimestamp: number;
+      from: AddressInfo[];
+      to: AddressInfo[];
+      evidenceId: string | null;
+      value: number;
+      fee: number;
+      unit: string;
+      flaggingRecords: FlaggingRecords[];
+    }
+  | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -66,12 +67,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       id: chain_id,
     },
     select: {
-      chain_icon: true,
       symbol: true,
       decimals: true,
     },
   });
-  const chainIcon = chainData?.chain_icon ?? '';
   const unit = chainData?.symbol ?? '';
   const decimals = chainData?.decimals ?? 0;
 
@@ -99,7 +98,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         type: 'Crypto Currency', // ToDo: (20240119 - Julian) 須參考 codes Table 並補上 type 的轉換
         status: 'SUCCESS', // ToDo: (20240119 - Julian) 須參考 codes Table 並補上 status 的轉換
         chainId: `${transactionData.chain_id}`,
-        chainIcon: chainIcon,
         blockId: blockId,
         createdTimestamp: transactionData.created_timestamp.getTime() / 1000,
         from: [
@@ -120,23 +118,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         unit: unit,
         flaggingRecords: [], // ToDo: (20240119 - Julian) 補上這個欄位
       }
-    : {
-        id: '',
-        hash: '',
-        type: 'Crypto Currency',
-        status: 'FAILED',
-        chainId: '',
-        chainIcon: '',
-        blockId: '',
-        createdTimestamp: 0,
-        from: [],
-        to: [],
-        evidenceId: '',
-        value: 0,
-        fee: 0,
-        unit: '',
-        flaggingRecords: [],
-      };
+    : // Info: (20240130 - Julian) 如果沒有找到資料，回傳 undefined
+      undefined;
 
   res.status(200).json(result);
 }

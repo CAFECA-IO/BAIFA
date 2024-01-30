@@ -17,17 +17,18 @@ type TransactionData = {
   status: 'PENDING' | 'SUCCESS' | 'FAILED';
 };
 
-type ResponseData = {
-  id: string;
-  chainId: string;
-  chainIcon: string;
-  evidenceAddress: string;
-  state: 'Active' | 'Inactive';
-  creatorAddressId: string;
-  createdTimestamp: number;
-  content: string;
-  transactionHistoryData: TransactionData[];
-};
+type ResponseData =
+  | {
+      id: string;
+      chainId: string;
+      evidenceAddress: string;
+      state: 'Active' | 'Inactive';
+      creatorAddressId: string;
+      createdTimestamp: number;
+      content: string;
+      transactionHistoryData: TransactionData[];
+    }
+  | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -64,7 +65,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     ? {
         id: `${evidenceData.id}`,
         chainId: `${evidenceData.chain_id}`,
-        chainIcon: chainIcon,
         evidenceAddress: evidenceData.evidence_id,
         state: 'Active', // Info: (20240118 - Julian) 需要參考 codes Table 並補上 state 的轉換
         creatorAddressId: `${evidenceData.creator_address}`,
@@ -72,17 +72,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         content: evidenceData.content, // ToDo: (20240119 - Julian) 這裡應該會是 JSON 格式
         transactionHistoryData: [], // ToDo: (20240118 - Julian) 補上這個欄位
       }
-    : {
-        id: '',
-        chainId: '',
-        chainIcon: '',
-        evidenceAddress: '',
-        state: 'Inactive',
-        creatorAddressId: '',
-        createdTimestamp: 0,
-        content: '',
-        transactionHistoryData: [],
-      };
+    : // Info: (20240130 - Julian) 如果沒有找到資料，就回傳 undefined
+      undefined;
 
   res.status(200).json(result);
 }

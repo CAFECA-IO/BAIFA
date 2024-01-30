@@ -39,7 +39,6 @@ type BlockProducedData = {
   stability: 'LOW' | 'MEDIUM' | 'HIGH';
   reward: number;
   unit: string;
-  chainIcon: string;
 };
 
 type ResponseData =
@@ -48,7 +47,6 @@ type ResponseData =
       type: string;
       address: string;
       chainId: string;
-      chainIcon: string;
       createdTimestamp: number;
       latestActiveTime: number;
       relatedAddresses: RelatedAddressInfo[];
@@ -90,12 +88,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       id: addressData?.chain_id,
     },
     select: {
-      chain_icon: true,
       symbol: true,
     },
   });
 
-  const chainIcon = chainData?.chain_icon ? chainData.chain_icon : '';
   const unit = chainData?.symbol ? chainData.symbol : '';
 
   // Info: (20240122 - Julian) -------------- 在 transactions Table 找出所有與 address_id 相關的交易 --------------
@@ -175,7 +171,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       stability: 'MEDIUM', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 stability 的轉換
       reward: block.reward,
       unit: unit,
-      chainIcon: chainIcon,
     };
   });
 
@@ -185,7 +180,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         type: 'address',
         address: addressData.address,
         chainId: `${addressData.chain_id}`,
-        chainIcon: chainIcon,
         createdTimestamp: new Date(addressData.created_timestamp).getTime() / 1000,
         latestActiveTime: new Date(addressData.latest_active_time).getTime() / 1000,
         relatedAddresses: [], // ToDo: (20240122 - Julian) 可能廢除
