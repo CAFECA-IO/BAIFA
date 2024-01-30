@@ -103,14 +103,11 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
               </button>
               {/* Info: (20231110 -Julian) Red Flag Address Title */}
               <div className="flex flex-1 flex-col items-center justify-center gap-4 text-2xl font-bold lg:flex-row lg:text-32px">
-                <h1>{t('RED_FLAG_ADDRESS_PAGE.RED_FLAG')}</h1>
-                <div className="flex items-center justify-center gap-4">
-                  <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
-                  <h1>
-                    {t('RED_FLAG_ADDRESS_PAGE.ADDRESS')}
-                    <span className="text-primaryBlue"> {id}</span>
-                  </h1>
-                </div>
+                <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+                <h1>
+                  {t('RED_FLAG_ADDRESS_PAGE.RED_FLAG')}
+                  <span className="text-primaryBlue"> {id}</span>
+                </h1>
               </div>
             </div>
 

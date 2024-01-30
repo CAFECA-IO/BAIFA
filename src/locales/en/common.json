@@ -264,7 +264,7 @@
     "ITEM_TITLE_RED_FLAG": "Red Flag",
     "ITEM_SUBTITLE_RED_FLAG": "Red Flag",
     "ITEM_LINE_1_RED_FLAG": "Red Flag Type",
-    "ITEM_LINE_2_RED_FLAG": "Red Flag Time"
+    "ITEM_LINE_2_RED_FLAG": "Interacted With"
   },
   "DATE_PICKER": {
     "DATE": "Date",

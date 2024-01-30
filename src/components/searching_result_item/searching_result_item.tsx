@@ -161,17 +161,30 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- RED FLAG -----------------
       case SearchType.RED_FLAG:
-        const {redFlagType} = data as IRedFlagDetail;
+        const {redFlagType, interactedAddresses} = data as IRedFlagDetail;
         const displayedRedFlagType = (
           <div className="flex items-center gap-2">
             <Image src="/icons/red_flag.svg" alt="red_flag_icon" width={24} height={24} />
             <p>{t(redFlagType)}</p>
           </div>
         );
+        const displayedInteractedAddresses = interactedAddresses.map((address, index) => (
+          <div
+            key={index}
+            className="whitespace-nowrap rounded-lg border-primaryBlue bg-primaryBlue px-3 py-2 text-sm text-darkPurple3"
+          >
+            <p>
+              {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')}{' '}
+              {truncateText(address.id, DEFAULT_TRUNCATE_LENGTH)}
+            </p>
+          </div>
+        ));
 
         return {
           LINE_1: displayedRedFlagType,
-          LINE_2: displayedTime,
+          LINE_2: (
+            <div className="flex flex-wrap items-center gap-3">{displayedInteractedAddresses}</div>
+          ),
           LINK: dynamicUrl.RED_FLAG,
         };
       // Info: (20231115 - Julian) ----------------- BLACK LIST -----------------
