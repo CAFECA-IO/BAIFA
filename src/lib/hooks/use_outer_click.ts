@@ -18,6 +18,7 @@ function useOuterClick<T extends HTMLElement>(initialVisibleState: boolean) {
     return () => {
       document.removeEventListener('click', handleClickOutside, true);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {targetRef: targetRef, componentVisible: componentVisibleRef.current, setComponentVisible};

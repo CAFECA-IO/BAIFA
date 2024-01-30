@@ -52,6 +52,7 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
     };
 
     getEvidenceData(chainId, evidenceId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let timer: NodeJS.Timeout;

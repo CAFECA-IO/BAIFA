@@ -74,6 +74,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
     if (addressId) {
       getTransactionData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressId]);
 
   useEffect(() => {

@@ -47,6 +47,7 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
     };
 
     getRedFlagData(chainId, addressId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let timer: NodeJS.Timeout;

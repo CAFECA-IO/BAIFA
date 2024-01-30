@@ -75,6 +75,7 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
     setFilteredRedFlagList(searchResult);
     setActivePage(1);
     setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [redFlagData, filteredType, search, period, sorting]);
 
   return (

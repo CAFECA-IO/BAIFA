@@ -60,6 +60,7 @@ const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps
     setFilteredBlocks(searchResult);
     setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
     setActivePage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, sorting, period]);
 
   // Info: (20240103 - Julian) The count of blocks
