@@ -72,6 +72,9 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
     return () => clearTimeout(timer);
   }, [contractData, transactionHistoryData]);
 
+  // Info: (20240130 - Julian) 如果沒拿到 contractData ，就顯示 Data not found
+  if (!contractData.id) return <h1>Data not found</h1>;
+
   const displayPublicTag = publicTag ? (
     publicTag.map((tag, index) => (
       <div
