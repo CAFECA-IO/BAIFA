@@ -66,36 +66,59 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
     }
 
-    // Info: Search transaction has in transaction_raw (20240130 - Shirley)
-    const transactionRaw = await prisma.transaction_raw.findMany({
-      where: {
-        OR: [
-          {hash: {startsWith: searchInput}},
-          {from: {startsWith: searchInput}},
-          {to: {startsWith: searchInput}},
-          {block_hash: {startsWith: searchInput}},
-        ],
-      },
-      take: INPUT_SUGGESTION_LIMIT,
-      select: {
-        hash: true,
-        from: true,
-        to: true,
-        block_hash: true,
-      },
-    });
+    if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
+      // Info: Search transaction has in transaction_raw (20240130 - Shirley)
+      const transactionRaw = await prisma.transaction_raw.findMany({
+        where: {
+          OR: [
+            {hash: {startsWith: searchInput}},
+            {from: {startsWith: searchInput}},
+            {to: {startsWith: searchInput}},
+            {block_hash: {startsWith: searchInput}},
+          ],
+        },
+        take: INPUT_SUGGESTION_LIMIT,
+        select: {
+          hash: true,
+          from: true,
+          to: true,
+          block_hash: true,
+        },
+      });
 
-    transactionRaw.forEach(item => {
-      if (item.hash && item.hash.startsWith(searchInput)) {
-        suggestions.add(item.hash);
-      } else if (item.from && item.from.startsWith(searchInput)) {
-        suggestions.add(item.from);
-      } else if (item.to && item.to.startsWith(searchInput)) {
-        suggestions.add(item.to);
-      } else if (item.block_hash && item.block_hash.startsWith(searchInput)) {
-        suggestions.add(item.block_hash);
-      }
-    });
+      transactionRaw.forEach(item => {
+        if (item.hash && item.hash.startsWith(searchInput)) {
+          suggestions.add(item.hash);
+        } else if (item.from && item.from.startsWith(searchInput)) {
+          suggestions.add(item.from);
+        } else if (item.to && item.to.startsWith(searchInput)) {
+          suggestions.add(item.to);
+        } else if (item.block_hash && item.block_hash.startsWith(searchInput)) {
+          suggestions.add(item.block_hash);
+        }
+      });
+    }
+
+    if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
+      // search block_hash in blocks (20240130 - Shirley)
+      const blocks = await prisma.blocks.findMany({
+        where: {
+          hash: {
+            startsWith: searchInput,
+          },
+        },
+        take: INPUT_SUGGESTION_LIMIT - suggestions.size,
+        select: {
+          hash: true,
+        },
+      });
+
+      blocks.forEach(item => {
+        if (item.hash) {
+          suggestions.add(item.hash);
+        }
+      });
+    }
 
     // Info: If fewer than INPUT_SUGGESTION_LIMIT results, search in contracts for contract_address and creator_address (20240130 - Shirley)
     if (suggestions.size < INPUT_SUGGESTION_LIMIT) {

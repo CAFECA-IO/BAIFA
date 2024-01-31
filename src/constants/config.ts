@@ -198,3 +198,6 @@ export const chainIdToCurrencyName = [
 ];
 
 export const INPUT_SUGGESTION_LIMIT = 20;
+
+export const THRESHOLD_FOR_HIGH_BLOCK_STABILITY = 20;
+export const THRESHOLD_FOR_MEDIUM_AND_LOW_BLOCK_STABILITY = 10;
