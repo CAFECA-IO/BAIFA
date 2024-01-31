@@ -118,11 +118,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   // Info: (20240122 - Julian) ================== transactionHistoryData ==================
   const transactionHistoryData: TransactionHistoryData[] = transactionData.map(transaction => {
-    // Info: (20240130 - Julian) 日期轉換
-    const transactionTimestamp = transaction.created_timestamp
-      ? new Date(transaction.created_timestamp).getTime() / 1000
-      : 0;
-
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
     const from: AddressInfo[] = fromAddresses
@@ -150,7 +145,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return {
       id: `${transaction.id}`,
       chainId: `${transaction.chain_id}`,
-      createdTimestamp: transactionTimestamp,
+      createdTimestamp: transaction.created_timestamp ?? 0,
       from: from,
       to: to,
       type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
@@ -183,18 +178,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     : [];
 
   const blockProducedData: BlockProducedData[] = blockData.map(block => {
-    // Info: (20240130 - Julian) 日期轉換
-    const blockCreatedTimestamp = block.created_timestamp
-      ? new Date(block.created_timestamp).getTime() / 1000
-      : 0;
-
     // Info: (20240130 - Julian) reward 轉換
     const rewardRaw = block.reward ? parseInt(block.reward) : 0;
     const reward = rewardRaw / Math.pow(10, decimals);
 
     return {
       id: `${block.id}`,
-      createdTimestamp: blockCreatedTimestamp,
+      createdTimestamp: block.created_timestamp ?? 0,
       stability: 'MEDIUM', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 stability 的轉換
       reward: reward,
       unit: unit,
@@ -215,15 +205,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
   const reviewData: ReviewData[] = reviewDataRaw.map(review => {
-    const reviewTimestamp = review.created_timestamp
-      ? new Date(review.created_timestamp).getTime() / 1000
-      : 0;
-
     return {
       id: `${review.id}`,
       transactionId: `${review.id}`,
       chainId: `${review.id}`,
-      createdTimestamp: reviewTimestamp,
+      createdTimestamp: review.created_timestamp ?? 0,
       authorAddressId: `${review.author_address}`,
       content: `${review.content}`,
       stars: review.stars ?? 0,
@@ -242,22 +228,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // Info: (20240130 - Julian) 日期轉換
-  const addressCreatedTimestamp = addressData?.created_timestamp
-    ? new Date(addressData?.created_timestamp).getTime() / 1000
-    : 0;
-  const addressLatestActiveTime = addressData?.latest_active_time
-    ? new Date(addressData?.latest_active_time).getTime() / 1000
-    : 0;
-
   const result: ResponseData = addressData
     ? {
         id: `${addressData.id}`,
         type: 'address',
         address: `${addressData.address}`,
         chainId: `${addressData.chain_id}`,
-        createdTimestamp: addressCreatedTimestamp,
-        latestActiveTime: addressLatestActiveTime,
+        createdTimestamp: addressData.created_timestamp ?? 0,
+        latestActiveTime: addressData.latest_active_time ?? 0,
         relatedAddresses: [], // ToDo: (20240122 - Julian) 可能廢除
         interactedAddressCount: relatedAddresses.length,
         interactedContactCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位

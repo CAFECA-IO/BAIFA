@@ -71,11 +71,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       })
     : [];
   const transactionHistoryData: TransactionData[] = transactionData.map(transaction => {
-    // Info: (20240130 - Julian) 日期轉換
-    const transactionTimestamp = transaction.created_timestamp
-      ? new Date(transaction.created_timestamp).getTime() / 1000
-      : 0;
-
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
     const from: AddressInfo[] = fromAddresses
@@ -103,17 +98,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return {
       id: `${transaction.id}`,
       chainId: `${transaction.chain_id}`,
-      createdTimestamp: transactionTimestamp,
+      createdTimestamp: transaction.created_timestamp ?? 0,
       from: from,
       to: to,
       type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
       status: 'PENDING', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 status 的轉換
     };
   });
-
-  const contractCreatedTimestamp = contractData?.created_timestamp
-    ? new Date(contractData?.created_timestamp).getTime() / 1000
-    : 0;
 
   const result: ResponseData = contractData
     ? {
@@ -122,7 +113,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         contractAddress: `${contractData.contract_address}`,
         chainId: `${contractData.chain_id}`,
         creatorAddressId: `${contractData.creator_address}`,
-        createdTimestamp: contractCreatedTimestamp,
+        createdTimestamp: contractData.created_timestamp ?? 0,
         sourceCode: `${contractData.source_code}`,
         transactionHistoryData: transactionHistoryData,
         publicTag: [], // ToDo: (20240124 - Julian) 補上這個欄位

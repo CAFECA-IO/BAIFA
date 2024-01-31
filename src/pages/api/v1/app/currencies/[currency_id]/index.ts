@@ -65,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
 
   // Info: (20240125 - Julian) currency 的總量
-  const totalAmount = currencyData?.total_amount ?? 0;
+  const totalAmount = parseInt(`${currencyData?.total_amount ?? 0}`);
   // Info: (20240125 - Julian) 從 token_balances Table 中取得 holders
   const holderData = await prisma.token_balances.findMany({
     where: {
@@ -78,11 +78,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
   const holders: HolderData[] = holderData.map(holder => {
     // Info: (20240130 - Julian) 計算持有比例
-    const holdingPercentage = (holder.value ?? 0) / totalAmount;
+    const value = parseInt(`${holder.value}` ?? 0);
+    const holdingPercentage = value / totalAmount;
 
     return {
       addressId: `${holder.address}`,
-      holdingAmount: holder.value ?? 0,
+      holdingAmount: parseInt(`${holder.value}` ?? 0),
       holdingPercentage: holdingPercentage,
       publicTag: [], // ToDo: (20240130 - Julian) 待補上
     };
@@ -110,7 +111,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240130 - Julian) 轉換 timestamp
     // ToDo: (20240131 - Julian) 待 DB 補上這個欄位
     const transactionCreatedTimestamp = 0;
-    //transaction.created_timestamp? new Date(transaction.created_timestamp).getTime() / 1000: 0;
 
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
@@ -158,6 +158,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
   const unit = chainData?.symbol ?? '';
 
+  const volumeIn24h = parseInt(`${currencyData?.volume_in_24h ?? 0}`);
+
   const result: ResponseData = currencyData
     ? {
         currencyId: currencyData.id,
@@ -165,9 +167,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         rank: 0, // ToDo: (20240125 - Julian) 討論去留
         holderCount: currencyData.holder_count ?? 0,
         price: currencyData.price ?? 0,
-        volumeIn24h: currencyData.volume_in_24h ?? 0,
+        volumeIn24h: volumeIn24h,
         unit: unit, // ToDo: (20240125 - Julian) 補上這個欄位
-        totalAmount: currencyData.total_amount ?? 0,
+        totalAmount: totalAmount,
         holders: holders,
         totalTransfers: currencyData.total_transfers ?? 0,
         flaggingCount: redFlagCount,

@@ -50,10 +50,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  const createdTimestamp = evidenceData?.created_timestamp
-    ? new Date(evidenceData?.created_timestamp).getTime() / 1000
-    : 0;
-
   const result: ResponseData = evidenceData
     ? {
         id: `${evidenceData.id}`,
@@ -61,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         evidenceAddress: `${evidenceData.evidence_id}`,
         state: 'Active', // Info: (20240118 - Julian) 需要參考 codes Table 並補上 state 的轉換
         creatorAddressId: `${evidenceData.creator_address}`,
-        createdTimestamp: createdTimestamp,
+        createdTimestamp: evidenceData.created_timestamp ?? 0,
         content: `${evidenceData.content}`, // ToDo: (20240119 - Julian) 這裡應該會是 JSON 格式
         transactionHistoryData: [], // ToDo: (20240118 - Julian) 補上這個欄位
       }

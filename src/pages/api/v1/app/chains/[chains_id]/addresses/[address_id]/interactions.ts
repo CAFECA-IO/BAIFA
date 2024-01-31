@@ -59,16 +59,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const result: ResponseData = interactedList
     ? interactedList.map(address => {
-        const interactedTimestamp = address.created_timestamp
-          ? new Date(address.created_timestamp).getTime() / 1000
-          : 0;
-
         return {
           id: `${address.address}`,
           type: 'address',
           chainId: `${chain_id}`,
           publicTag: [], // ToDo: (20240124 - Julian) 補上這個欄位
-          createdTimestamp: interactedTimestamp,
+          createdTimestamp: address.created_timestamp ?? 0,
           transactionCount: 0, // ToDo: (20240124 - Julian) 補上這個欄位
         };
       })

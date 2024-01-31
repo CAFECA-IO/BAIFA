@@ -85,13 +85,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const blockId = `${blockData?.number}` ?? '';
 
   // Info: (20240126 - Julian) 計算 fee
-  const fee = transactionData ? parseInt(`${transactionData.fee}`) : 0;
+  const fee = parseInt(`${transactionData?.fee ?? 0}`);
   const feeDecimal = fee / Math.pow(10, decimals);
 
-  // Info: (20240130 - Julian) 日期轉換
-  const createdTimestamp = transactionData?.created_timestamp
-    ? new Date(transactionData?.created_timestamp).getTime() / 1000
-    : 0;
+  const value = parseInt(`${transactionData?.value ?? 0}`);
 
   // Info: (20240130 - Julian) from / to address 轉換
   const fromAddresses = transactionData?.from_address
@@ -147,11 +144,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         status: 'SUCCESS', // ToDo: (20240119 - Julian) 須參考 codes Table 並補上 status 的轉換
         chainId: `${transactionData.chain_id}`,
         blockId: blockId,
-        createdTimestamp: createdTimestamp,
+        createdTimestamp: transactionData.created_timestamp ?? 0,
         from: from,
         to: to,
         evidenceId: transactionData.evidence_id,
-        value: transactionData.value ?? 0,
+        value: value,
         fee: feeDecimal,
         unit: unit,
         flaggingRecords: flaggingRecords,
