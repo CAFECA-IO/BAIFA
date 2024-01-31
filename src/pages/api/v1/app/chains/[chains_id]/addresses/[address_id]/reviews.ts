@@ -123,7 +123,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   } catch (error) {
     // Info: (20240130 - Shirley) Request error
     // eslint-disable-next-line no-console
-    console.error('getReviewData', error);
+    console.error('review request', error);
     res.status(500).json({} as ResponseData);
   }
 }

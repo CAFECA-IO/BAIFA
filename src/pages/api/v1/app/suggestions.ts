@@ -20,58 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     const suggestions = new Set();
 
-    // Info:Search in transaction_receipt_raw for contract_address (20240130 - Shirley)
-    const transactionReceipts = await prisma.transactions.findMany({
-      where: {
-        // contract_address: {
-        //   startsWith: searchInput,
-        // },
-        OR: [{from_address: {startsWith: searchInput}}, {to_address: {startsWith: searchInput}}],
-      },
-      take: INPUT_SUGGESTION_LIMIT,
-      select: {
-        from_address: true,
-        to_address: true,
-      },
-    });
-
-    transactionReceipts.forEach(item => {
-      if (item.from_address && item.from_address.startsWith(searchInput)) {
-        suggestions.add(item.from_address);
-      }
-
-      if (item.to_address && item.to_address.startsWith(searchInput)) {
-        suggestions.add(item.to_address);
-      }
-    });
-
-    // Info:If fewer than INPUT_SUGGESTION_LIMIT results, search in contracts for contract_address and creator_address (20240130 - Shirley)
-    if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
-      const contracts = await prisma.contracts.findMany({
-        where: {
-          OR: [
-            {contract_address: {startsWith: searchInput}},
-            {creator_address: {startsWith: searchInput}},
-          ],
-        },
-        take: INPUT_SUGGESTION_LIMIT - suggestions.size,
-        select: {
-          contract_address: true,
-          creator_address: true,
-        },
-      });
-
-      contracts.forEach(item => {
-        if (item.contract_address && item.contract_address.startsWith(searchInput)) {
-          suggestions.add(item.contract_address);
-        }
-        if (item.creator_address && item.creator_address.startsWith(searchInput)) {
-          suggestions.add(item.creator_address);
-        }
-      });
-    }
-
-    // Search in evidences for contract_address
+    // Info: Search in evidences for contract_address (20240130 - Shirley)
     if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
       const evidences = await prisma.evidences.findMany({
         where: {
@@ -92,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
     }
 
-    // Search in red_flags for related_addresses
+    // Info: Search in red_flags for related_addresses (20240130 - Shirley)
     if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
       const redFlags = await prisma.red_flags.findMany({
         where: {
@@ -117,26 +66,107 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
     }
 
-    // Search in block_raw for hash
+    // Info: Search transaction has in transaction_raw (20240130 - Shirley)
+    const transactionRaw = await prisma.transaction_raw.findMany({
+      where: {
+        OR: [
+          {hash: {startsWith: searchInput}},
+          {from: {startsWith: searchInput}},
+          {to: {startsWith: searchInput}},
+          {block_hash: {startsWith: searchInput}},
+        ],
+      },
+      take: INPUT_SUGGESTION_LIMIT,
+      select: {
+        hash: true,
+        from: true,
+        to: true,
+        block_hash: true,
+      },
+    });
+
+    transactionRaw.forEach(item => {
+      if (item.hash && item.hash.startsWith(searchInput)) {
+        suggestions.add(item.hash);
+      } else if (item.from && item.from.startsWith(searchInput)) {
+        suggestions.add(item.from);
+      } else if (item.to && item.to.startsWith(searchInput)) {
+        suggestions.add(item.to);
+      } else if (item.block_hash && item.block_hash.startsWith(searchInput)) {
+        suggestions.add(item.block_hash);
+      }
+    });
+
+    // // Info: Search in transaction_receipt_raw for contract_address (20240130 - Shirley)
+    // const transactionReceipts = await prisma.transactions.findMany({
+    //   where: {
+    //     // contract_address: {
+    //     //   startsWith: searchInput,
+    //     // },
+    //     OR: [{from_address: {startsWith: searchInput}}, {to_address: {startsWith: searchInput}}],
+    //   },
+    //   take: INPUT_SUGGESTION_LIMIT,
+    //   select: {
+    //     from_address: true,
+    //     to_address: true,
+    //   },
+    // });
+
+    // transactionReceipts.forEach(item => {
+    //   if (item.from_address && item.from_address.startsWith(searchInput)) {
+    //     suggestions.add(item.from_address);
+    //   }
+
+    //   if (item.to_address && item.to_address.startsWith(searchInput)) {
+    //     suggestions.add(item.to_address);
+    //   }
+    // });
+
+    // Info: If fewer than INPUT_SUGGESTION_LIMIT results, search in contracts for contract_address and creator_address (20240130 - Shirley)
     if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
-      const blockRaw = await prisma.block_raw.findMany({
+      const contracts = await prisma.contracts.findMany({
         where: {
-          hash: {
-            startsWith: searchInput,
-          },
+          OR: [
+            {contract_address: {startsWith: searchInput}},
+            {creator_address: {startsWith: searchInput}},
+          ],
         },
         take: INPUT_SUGGESTION_LIMIT - suggestions.size,
         select: {
-          hash: true,
+          contract_address: true,
+          creator_address: true,
         },
       });
 
-      blockRaw.forEach(item => {
-        if (item.hash) {
-          suggestions.add(item.hash);
+      contracts.forEach(item => {
+        if (item.contract_address && item.contract_address.startsWith(searchInput)) {
+          suggestions.add(item.contract_address);
+        } else if (item.creator_address && item.creator_address.startsWith(searchInput)) {
+          suggestions.add(item.creator_address);
         }
       });
     }
+
+    // // Search in block_raw for hash
+    // if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
+    //   const blockRaw = await prisma.block_raw.findMany({
+    //     where: {
+    //       hash: {
+    //         startsWith: searchInput,
+    //       },
+    //     },
+    //     take: INPUT_SUGGESTION_LIMIT - suggestions.size,
+    //     select: {
+    //       hash: true,
+    //     },
+    //   });
+
+    //   blockRaw.forEach(item => {
+    //     if (item.hash) {
+    //       suggestions.add(item.hash);
+    //     }
+    //   });
+    // }
 
     const limitedSuggestions = Array.from(suggestions)
       .filter(suggestion => suggestion !== 'null')
@@ -146,7 +176,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   } catch (error) {
     // Info: (20240130 - Shirley) Request error
     // eslint-disable-next-line no-console
-    console.error('Request error', error);
+    console.error('Suggestion request', error);
     res.status(500).json({suggestions: []});
   }
 }
