@@ -26,13 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  const chainId = currencyData?.chain_id ?? 0;
-  const chainName = currencyData?.name ?? '';
-
   const redFlagData = currency_id
     ? await prisma.red_flags.findMany({
         where: {
-          chain_id: chainId,
+          currency_id: currency_id,
         },
         select: {
           id: true,
@@ -51,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return {
       id: `${redFlag.id}`,
       chainId: `${redFlag.chain_id}`,
-      chainName: `${chainName}`,
+      chainName: currencyData?.name ?? '',
       redFlagType: `${redFlag.red_flag_type}`,
       createdTimestamp: createdTimestamp,
     };

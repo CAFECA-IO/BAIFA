@@ -143,9 +143,10 @@ export const roundToDecimal = (x: number, decimal: number) => {
 };
 
 export const getChainIcon = (chainId: string) => {
+  if (!chainId) return {src: '/chains/default.svg', alt: 'chain_icon'};
   return {
-    src: `/currencies/${chainId}.svg`,
-    alt: `${chainId}_icon`,
+    src: `/chains/${chainId}.svg`,
+    alt: `chain_icon`,
   };
 };
 
