@@ -1,7 +1,7 @@
 // 015 - GET /app/chains/:chain_id/contracts/:contract_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../../lib/utils/prismaUtils';
 
 type AddressInfo = {
   type: 'address' | 'contract';
@@ -33,8 +33,6 @@ type ResponseData =
   | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
   const contractId =
     typeof req.query.contract_id === 'string' ? parseInt(req.query.contract_id) : undefined;

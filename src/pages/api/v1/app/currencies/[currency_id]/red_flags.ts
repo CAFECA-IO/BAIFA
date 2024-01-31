@@ -1,7 +1,7 @@
 // 019 - GET /app/currencies/:currency_id/red_flags
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
   id: string;
@@ -12,8 +12,6 @@ type ResponseData = {
 }[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
   // Info: (20240129 - Julian) 解構 URL 參數，同時進行類型轉換
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
 

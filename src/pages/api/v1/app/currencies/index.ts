@@ -1,7 +1,7 @@
 // 017 - GET /app/currencies
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
   currencyId: string;
@@ -11,8 +11,6 @@ type ResponseData = {
 }[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
   const currencies = await prisma.currencies.findMany({
     select: {
       id: true,

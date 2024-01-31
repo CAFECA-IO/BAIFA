@@ -1,7 +1,7 @@
 // 020 - GET /app/blacklist
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
+import prisma from '../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
   id: string;
@@ -12,8 +12,6 @@ type ResponseData = {
 }[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
   const blacklistData = await prisma.black_lists.findMany({
     select: {
       id: true,

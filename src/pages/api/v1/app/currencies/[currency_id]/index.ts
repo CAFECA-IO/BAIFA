@@ -1,7 +1,7 @@
 // 018 - GET /app/currencies/:currency_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../lib/utils/prismaUtils';
 
 type AddressInfo = {
   type: 'address' | 'contract';
@@ -44,8 +44,6 @@ type ResponseData =
   | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
 
