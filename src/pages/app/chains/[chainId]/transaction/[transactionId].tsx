@@ -17,6 +17,7 @@ import {TranslateFunction} from '../../../../../interfaces/locale';
 import {BFAURL} from '../../../../../constants/url';
 import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
+import {getChainIcon} from '../../../../../lib/common';
 
 interface ITransactionDetailPageProps {
   transactionId: string;
@@ -35,6 +36,8 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
   const [transactionData, setTransactionData] = useState<ITransactionDetail>(
     {} as ITransactionDetail
   );
+
+  const chainIcon = getChainIcon(chainId);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -68,6 +71,9 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
 
   const backClickHandler = () => router.back();
 
+  // Info: (20240130 - Julian) 如果拿不到 transactionData，就顯示 Data not found
+  if (!transactionData.id) return <h1>Data not found</h1>;
+
   // Info: (20231017 - Julian) 有 flagging 的話，就顯示 Add in Tracing Tool 按鈕
   const isAddInTracingTool =
     !!transactionData.flaggingRecords && transactionData.flaggingRecords.length !== 0
@@ -82,12 +88,7 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
       </button>
       {/* Info: (20230912 -Julian) Transaction Title */}
       <div className="flex flex-1 items-center justify-center space-x-2">
-        <Image
-          src={transactionData.chainIcon}
-          alt={`${transactionData.chainId}_icon`}
-          width={40}
-          height={40}
-        />
+        <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
         <h1 className="text-2xl font-bold lg:text-32px">
           {t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')}
           <span className="ml-2 text-primaryBlue"> {transactionId}</span>

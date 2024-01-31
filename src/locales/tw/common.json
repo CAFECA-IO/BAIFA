@@ -155,7 +155,7 @@
     "SIGN_UP_TIME": "註冊時間",
     "LATEST_ACTIVE_TIME": "最後活動時間",
     "RELATED_ADDRESS": "關聯地址",
-    "INTERACTED_WITH": "互動對象",
+    "INTERACTED_WITH": "關聯地址",
     "RED_FLAG": "警示記錄",
     "BALANCE": "餘額",
     "TOTAL_SENT": "總發送金額",
@@ -206,11 +206,9 @@
   "RED_FLAG_ADDRESS_PAGE": {
     "MAIN_TITLE": "警示地址",
     "RED_FLAG": "警示",
-    "ADDRESS": "地址",
-    "ADDRESS_ID": "地址",
     "RED_FLAG_TYPE": "警示類型",
     "FLAGGING_TIME": "警示時間",
-    "INTERACTED_WITH": "互動對象",
+    "INTERACTED_WITH": "關聯地址",
     "TOTAL_AMOUNT": "總金額",
     "DOWNLOAD_REPORT_BUTTON": "下載報告",
     "OPEN_IN_TRACING_TOOL_BUTTON": "在追蹤工具中開啟"
@@ -263,10 +261,10 @@
     "ITEM_SUBTITLE_BLACKLIST": "黑名單",
     "ITEM_LINE_1_BLACKLIST": "地址",
     "ITEM_LINE_2_BLACKLIST": "公開標籤",
-    "ITEM_TITLE_RED_FLAG": "警示地址",
+    "ITEM_TITLE_RED_FLAG": "警示記錄",
     "ITEM_SUBTITLE_RED_FLAG": "警示記錄",
-    "ITEM_LINE_1_RED_FLAG": "警示記錄",
-    "ITEM_LINE_2_RED_FLAG": "警示類型"
+    "ITEM_LINE_1_RED_FLAG": "警示類型",
+    "ITEM_LINE_2_RED_FLAG": "關聯地址"
   },
   "DATE_PICKER": {
     "DATE": "日期",
@@ -326,7 +324,8 @@
     "TRANSACTION_HISTORY_PLACEHOLDER": "在交易記錄中搜尋",
     "TRANSACTION_HISTORY_TRANSACTION_ID": "交易",
     "BLOCK_PRODUCED_HISTORY_TITLE": "區塊生成歷史記錄",
-    "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在區塊生成記錄中搜尋"
+    "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在區塊生成記錄中搜尋",
+    "RED_FLAG_ITEM_TITLE": "警示記錄"
   },
   "PUBLIC_TAG": {
     "TITLE": "公開標籤",

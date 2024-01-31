@@ -27,7 +27,7 @@
     "MAIN_SUBTITLE": "区块链人工智慧鉴识会计与审计",
     "BAIFA_101_TITLE": "稗法基础入门",
     "BAIFA_101_SUBTITLE": "通往成功的指南",
-    "BAIFA_101_CONTENT": "整合区块链与人工智慧，稗法为法务会计与审计提供完美的合规解决方案。实时资产监控、智能异常检测和迅速的会计申报，以保障虚拟货币资产的安全。凭藉稗法，专注于业务发展，免于合规担忧。",
+    "BAIFA_101_CONTENT": "稗法整合区块链与人工智慧，为鉴识会计与审计提供完美的合规解决方案。稗法提供即时帐务与资产监控、智能异常检测和持续审计服务，以保障企业资产的安全，使一切活动符合监管标准。凭藉稗法让投资人放心，免除合规担忧，企业得以专注于创新发展。",
     "FEATURES_SUBTITLE": "我们的特色",
     "FEATURES_TITLE": "庞大数据即时比对",
     "MASSIVE_DATA_WALLET": "分析超过 2 亿个交易地址",
@@ -155,7 +155,7 @@
     "SIGN_UP_TIME": "注册时间",
     "LATEST_ACTIVE_TIME": "最后活动时间",
     "RELATED_ADDRESS": "关联地址",
-    "INTERACTED_WITH": "互动对象",
+    "INTERACTED_WITH": "关联地址",
     "RED_FLAG": "警示记录",
     "BALANCE": "余额",
     "TOTAL_SENT": "总发送金额",
@@ -206,11 +206,9 @@
   "RED_FLAG_ADDRESS_PAGE": {
     "MAIN_TITLE": "警示地址",
     "RED_FLAG": "警示",
-    "ADDRESS": "地址",
-    "ADDRESS_ID": "地址",
     "RED_FLAG_TYPE": "警示类型",
     "FLAGGING_TIME": "警示时间",
-    "INTERACTED_WITH": "互动对象",
+    "INTERACTED_WITH": "关联地址",
     "TOTAL_AMOUNT": "总金额",
     "DOWNLOAD_REPORT_BUTTON": "下载报告",
     "OPEN_IN_TRACING_TOOL_BUTTON": "在追踪工具中开启"
@@ -259,14 +257,14 @@
     "ITEM_SUBTITLE_TRANSACTION": "交易",
     "ITEM_LINE_1_TRANSACTION": "Hash 值",
     "ITEM_LINE_2_TRANSACTION": "交易时间",
-    "ITEM_TITLE_BLACK_LIST": "地址",
+    "ITEM_TITLE_BLACKLIST": "地址",
     "ITEM_SUBTITLE_BLACKLIST": "黑名单",
     "ITEM_LINE_1_BLACKLIST": "地址",
     "ITEM_LINE_2_BLACKLIST": "公开标签",
-    "ITEM_TITLE_RED_FLAG": "警示地址",
+    "ITEM_TITLE_RED_FLAG": "警示记录",
     "ITEM_SUBTITLE_RED_FLAG": "警示记录",
-    "ITEM_LINE_1_RED_FLAG": "警示记录",
-    "ITEM_LINE_2_RED_FLAG": "警示类型"
+    "ITEM_LINE_1_RED_FLAG": "警示类型",
+    "ITEM_LINE_2_RED_FLAG": "关联地址"
   },
   "DATE_PICKER": {
     "DATE": "日期",
@@ -326,7 +324,8 @@
     "TRANSACTION_HISTORY_PLACEHOLDER": "在交易记录中搜寻",
     "TRANSACTION_HISTORY_TRANSACTION_ID": "交易",
     "BLOCK_PRODUCED_HISTORY_TITLE": "区块生成历史记录",
-    "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在区块生成记录中搜寻"
+    "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在区块生成记录中搜寻",
+    "RED_FLAG_ITEM_TITLE": "警示记录"
   },
   "PUBLIC_TAG": {
     "TITLE": "公开标签",

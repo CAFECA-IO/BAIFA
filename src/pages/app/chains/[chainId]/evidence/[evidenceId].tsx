@@ -16,7 +16,7 @@ import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
-import {truncateText} from '../../../../../lib/common';
+import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
 import {IEvidence} from '../../../../../interfaces/evidence';
 import {ITransaction} from '../../../../../interfaces/transaction';
@@ -38,6 +38,8 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
   const {transactionHistoryData, chainId} = evidenceData;
   // Info: (20240102 - Julian) Transaction history
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+
+  const chainIcon = getChainIcon(chainId);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -70,6 +72,9 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
   }, [evidenceData]);
 
   const backClickHandler = () => router.back();
+
+  // Info: (20240130 - Julian) 如果回傳資料為空，顯示 Data not found
+  if (!evidenceData.id) return <h1>Data not found</h1>;
 
   const displayedEvidenceDetail = !isLoading ? (
     <EvidenceDetail evidenceData={evidenceData} />
@@ -104,12 +109,7 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
               </button>
               {/* Info: (20231107 -Julian) Evidence Title */}
               <div className="flex flex-1 items-center justify-center space-x-2">
-                <Image
-                  src={evidenceData.chainIcon}
-                  alt={`${evidenceData.chainId} icon`}
-                  width={40}
-                  height={40}
-                />
+                <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
                 <h1 title={evidenceId} className="text-2xl font-bold lg:text-32px">
                   {t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')}
                   <span className="ml-2 text-primaryBlue"> {truncateText(evidenceId, 10)}</span>
