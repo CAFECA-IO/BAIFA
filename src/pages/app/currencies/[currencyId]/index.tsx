@@ -3,7 +3,7 @@ import Image from 'next/image';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../components/footer/footer';
 import CurrencyDetail from '../../../../components/currency_detail/currency_detail';
-import {useContext, useEffect, useRef, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ICurrencyDetail} from '../../../../interfaces/currency';

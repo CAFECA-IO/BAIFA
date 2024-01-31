@@ -11,7 +11,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {IAddress} from '../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+// import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IAddressDetailProps {
   addressData: IAddress;

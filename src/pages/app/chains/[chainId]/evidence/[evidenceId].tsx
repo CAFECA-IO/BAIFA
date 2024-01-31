@@ -172,7 +172,7 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   // ToDo: (20231213 - Julian) Add dynamic paths
   const paths = [
     {
