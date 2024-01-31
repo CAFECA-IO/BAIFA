@@ -1,7 +1,7 @@
 // 004 - GET /app/chains
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
   chainId: string;
@@ -11,8 +11,6 @@ type ResponseData = {
 }[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
   // Info:(20240118 - Julian) 從 DB 撈出所有 chain 的資料
   const chains = await prisma.chains.findMany({
     select: {

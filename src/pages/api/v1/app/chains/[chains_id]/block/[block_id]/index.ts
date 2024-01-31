@@ -1,7 +1,7 @@
 // 007 - GET /app/chains/:chain_id/blocks/:block_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../../../lib/utils/prismaUtils';
 
 type ResponseData =
   | {
@@ -21,8 +21,6 @@ type ResponseData =
   | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
   // Info: (20240116 - Julian) 解構 URL 參數，同時進行類型轉換
   const block_id =
     typeof req.query.block_id === 'string' ? parseInt(req.query.block_id) : undefined;
