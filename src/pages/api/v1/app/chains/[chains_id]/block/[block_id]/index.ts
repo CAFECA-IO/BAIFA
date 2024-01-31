@@ -3,21 +3,22 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 
-type ResponseData = {
-  id: string;
-  chainId: string;
-  chainIcon: string;
-  stability: 'MEDIUM' | 'HIGH' | 'LOW';
-  createdTimestamp: number;
-  managementTeam: string[];
-  transactionCount: number;
-  miner: string;
-  reward: number;
-  unit: string;
-  size: number; // bytes
-  previousBlockId: string | undefined;
-  nextBlockId: string | undefined;
-};
+type ResponseData =
+  | {
+      id: string;
+      chainId: string;
+      stability: 'MEDIUM' | 'HIGH' | 'LOW';
+      createdTimestamp: number;
+      managementTeam: string[];
+      transactionCount: number;
+      miner: string;
+      reward: number;
+      unit: string;
+      size: number; // bytes
+      previousBlockId: string | undefined;
+      nextBlockId: string | undefined;
+    }
+  | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -50,13 +51,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       id: chain_id,
     },
     select: {
-      chain_icon: true,
       symbol: true,
       decimals: true,
     },
   });
 
-  const chainIcon = chainData?.chain_icon ?? '';
   const unit = chainData?.symbol ?? '';
   const decimals = chainData?.decimals ?? 0;
 
@@ -65,39 +64,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const nextBlockNumber = blockData?.number ? `${blockData?.number + 1}` : undefined;
 
   // Info: (20240119 - Julian) 計算 reward
-  const reward = blockData ? blockData.reward / Math.pow(10, decimals) : 0;
+  const rewardRaw = blockData?.reward ? parseInt(blockData?.reward) : 0;
+  const reward = rewardRaw / Math.pow(10, decimals);
+
+  // Info: (20240130 - Julian) 日期轉換
+  const createdTimestamp = blockData?.created_timestamp
+    ? new Date(blockData?.created_timestamp).getDate() / 1000
+    : 0;
 
   const result: ResponseData = blockData
     ? {
         id: `${blockData.number}`,
         chainId: `${blockData.chain_id}`,
-        chainIcon: chainIcon,
         stability: 'HIGH', // ToDo: (20240118 - Julian) 補上這個欄位
-        createdTimestamp: blockData.created_timestamp.getTime() / 1000,
+        createdTimestamp: createdTimestamp,
         managementTeam: [], // ToDo: (20240118 - Julian) 補上這個欄位
-        transactionCount: blockData.transaction_count,
-        miner: blockData.miner,
+        transactionCount: blockData.transaction_count ?? 0,
+        miner: `${blockData.miner}`,
         reward: reward,
         unit: unit,
-        size: blockData.size,
+        size: blockData.size ?? 0,
         previousBlockId: previousBlockNumber,
         nextBlockId: nextBlockNumber,
       }
-    : {
-        id: '',
-        chainId: '',
-        chainIcon: '',
-        stability: 'HIGH',
-        createdTimestamp: 0,
-        managementTeam: [],
-        transactionCount: 0,
-        miner: '',
-        reward: 0,
-        unit: '',
-        size: 0,
-        previousBlockId: '',
-        nextBlockId: '',
-      };
+    : // Info: (20240119 - Julian) 如果沒有找到資料，回傳 undefined
+      undefined;
 
   res.status(200).json(result);
 }

@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const result: ResponseData = currencies.map(currencies => {
     return {
       currencyId: currencies.id,
-      currencyName: currencies.name,
+      currencyName: `${currencies.name}`,
       rank: 0, // ToDo: (20240125 - Julian) 討論去留
       riskLevel: 'LOW_RISK', // ToDo: (20240125 - Julian) 需要參考 codes Table 並補上 riskLevel 的轉換
     };

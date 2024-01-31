@@ -16,7 +16,6 @@ type ResponseData = {
   id: string;
   address: string;
   score: number;
-  chainIcon: string;
   reviewData: ReviewData[];
 };
 
@@ -25,7 +24,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
     'id': '115588',
     'address': '0x2775D3190693fEc256d156f9f74Cd8843A79',
     'score': 2.8,
-    'chainIcon': '/currencies/eth.svg',
     'reviewData': [
       {
         'id': 'T99283100001',
