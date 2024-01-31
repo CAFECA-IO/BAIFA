@@ -20,7 +20,7 @@ model transaction_raw {
   gas_price            String
   max_fee_per_gas        String
   max_priority_fee_per_gas String
-  hash                String @unique   
+  hash                String @unique
   input               String
   nonce               String
   to                  String
@@ -47,7 +47,7 @@ model block_raw {
   miner            String
   mix_hash          String
   nonce            String
-  number           Int @unique    
+  number           Int @unique
   parent_hash       String
   receipts_root     String
   sha3_uncles       String

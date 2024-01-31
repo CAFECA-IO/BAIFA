@@ -14,7 +14,6 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {getChainIcon} from '../../../../lib/common';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import useStateRef from 'react-usestateref';
 import TransactionList from '../../../../components/transaction_list/transaction_list';
 import SearchBar from '../../../../components/search_bar/search_bar';
 import DatePicker from '../../../../components/date_picker/date_picker';
@@ -38,7 +37,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   const [activePage, setActivePage] = useState(1);
 
   const [period, setPeriod] = useState(default30DayPeriod);
-  const [search, setSearch, searchRef] = useStateRef('');
+  const [search, setSearch] = useState('');
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
   // Info: (20240119 - Julian) 設定 API 查詢參數
@@ -235,7 +234,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   // ToDo: (20231213 - Julian) Add dynamic paths
   const paths = [
     {

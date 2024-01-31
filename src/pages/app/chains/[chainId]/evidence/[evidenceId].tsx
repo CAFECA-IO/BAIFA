@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect, useContext, useRef} from 'react';
 import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
 import {useRouter} from 'next/router';
@@ -55,11 +55,9 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     if (evidenceData) {
       setEvidenceData(evidenceData);
     }
@@ -67,9 +65,13 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
       setTransactionData(transactionHistoryData);
     }
 
-    timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, [evidenceData]);
+    timerRef.current = setTimeout(() => setIsLoading(false), 500);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [evidenceData, transactionHistoryData]);
 
   const backClickHandler = () => router.back();
 
@@ -170,7 +172,7 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   // ToDo: (20231213 - Julian) Add dynamic paths
   const paths = [
     {

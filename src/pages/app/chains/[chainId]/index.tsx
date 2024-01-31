@@ -44,6 +44,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     };
 
     getChainData(chainId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!chainData.chainId) return <h1>Data not found</h1>;

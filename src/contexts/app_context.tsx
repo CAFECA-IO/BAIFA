@@ -1,5 +1,4 @@
-import React, {useContext, createContext} from 'react';
-import useState from 'react-usestateref';
+import React, {useContext, createContext, useState} from 'react';
 import {MarketContext} from './market_context';
 
 interface IAppProvider {
@@ -18,10 +17,10 @@ export const AppContext = createContext<IAppContext>({
 
 export const AppProvider = ({children}: IAppProvider) => {
   const marketCtx = useContext(MarketContext);
-  const [isInit, setIsInit, isInitRef] = useState<boolean>(false);
+  const [isInit, setIsInit] = useState<boolean>(false);
 
   const init = async () => {
-    if (!isInitRef.current) {
+    if (!isInit) {
       await marketCtx.init();
       setIsInit(true);
     }
@@ -29,7 +28,7 @@ export const AppProvider = ({children}: IAppProvider) => {
   };
 
   const defaultValue = {
-    isInit: isInitRef.current,
+    isInit: isInit,
     init,
   };
 

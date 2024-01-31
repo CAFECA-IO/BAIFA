@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect, useContext, useRef} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {useRouter} from 'next/router';
@@ -49,18 +49,21 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
     };
 
     getBlockData(chainId, blockId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blockId, chainId]);
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     if (blockData) {
       setBlockData(blockData);
     }
-    timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
+    timerRef.current = setTimeout(() => setIsLoading(false), 500);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [blockData]);
 
   // Info: (20240130 - Julian) 如果回傳資料為空，顯示 Data not found
@@ -155,7 +158,7 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   // ToDo: (20231213 - Julian) Add dynamic paths
   const paths = [
     {
