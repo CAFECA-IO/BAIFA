@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
-import {useState, useContext, useEffect} from 'react';
+import {useState, useContext, useEffect, useRef} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
@@ -70,11 +70,9 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     if (addressData) {
       setAddressData(addressData);
     }
@@ -85,9 +83,14 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
       setBlockData(blockProducedData);
     }
 
-    timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, [addressData]);
+    timerRef.current = setTimeout(() => setIsLoading(false), 500);
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [addressData, blockProducedData, transactionHistoryData]);
 
   // ToDo: (20240129 - Julian) 如果拿到的資料是空的，就顯示 Data not found
   if (!addressData.address) {
@@ -290,7 +293,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   // ToDo: (20231213 - Julian) Add dynamic paths
   const paths = [
     {

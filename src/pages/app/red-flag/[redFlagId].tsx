@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect, useContext, useRef} from 'react';
 import {AppContext} from '../../../contexts/app_context';
 import {MarketContext} from '../../../contexts/market_context';
 import {useRouter} from 'next/router';
@@ -55,21 +55,23 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
 
   const {id, chainId, transactionHistoryData} = redFlagData;
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     if (redFlagData) {
       setRedFlagData(redFlagData);
     }
     if (transactionHistoryData) {
       setTransactionData(transactionHistoryData);
     }
+    timerRef.current = setTimeout(() => setIsLoading(false), 500);
 
-    timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, [redFlagData]);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [redFlagData, transactionHistoryData]);
 
   const headTitle = `${t('RED_FLAG_ADDRESS_PAGE.MAIN_TITLE')} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
@@ -178,7 +180,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   // ToDo: (20231213 - Julian) Add dynamic paths
   const paths = [
     {
