@@ -93,26 +93,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   // Info: (20240125 - Julian) 從 transactions Table 中取得 transactionHistoryData
   const chainId = currencyData?.chain_id;
-  const transactionData = await prisma.transactions.findMany({
+  const transactionData = await prisma.token_transfers.findMany({
     where: {
       chain_id: chainId,
     },
     select: {
       id: true,
       chain_id: true,
-      created_timestamp: true,
+      // created_timestamp: true, ToDo: (20240131 - Julian) 待 DB 補上這個欄位
       from_address: true,
       to_address: true,
-      type: true,
-      status: true,
     },
   });
 
   const transactionHistoryData: TransactionHistoryData[] = transactionData.map(transaction => {
     // Info: (20240130 - Julian) 轉換 timestamp
-    const transactionCreatedTimestamp = transaction.created_timestamp
-      ? new Date(transaction.created_timestamp).getTime() / 1000
-      : 0;
+    // ToDo: (20240131 - Julian) 待 DB 補上這個欄位
+    const transactionCreatedTimestamp = 0;
+    //transaction.created_timestamp? new Date(transaction.created_timestamp).getTime() / 1000: 0;
 
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
@@ -144,8 +142,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       createdTimestamp: transactionCreatedTimestamp,
       from: from,
       to: to,
-      type: 'Crypto Currency', // ToDo: (20240126 - Julian) 需要參考 codes Table 並補上 type 的轉換
-      status: 'SUCCESS', // ToDo: (20240126 - Julian) 需要參考 codes Table 並補上 status 的轉換
+      type: 'Crypto Currency', // ToDo: (20240131 - Julian) 畫面需要調整，此欄位可能刪除
+      status: 'SUCCESS', // ToDo: (20240131 - Julian) 畫面需要調整，此欄位可能刪除
     };
   });
 
