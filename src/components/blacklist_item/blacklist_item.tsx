@@ -7,6 +7,7 @@ import {getDynamicUrl} from '../../constants/url';
 import {IBlacklist} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IBlacklistItemProps {
   blacklistAddress: IBlacklist;
@@ -49,7 +50,10 @@ const BlacklistItem = ({blacklistAddress}: IBlacklistItemProps) => {
           <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
           <p title={id}>
             {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-            <span className="ml-2 font-semibold text-primaryBlue">{truncateText(id, 10)}</span>
+            <span className="ml-2 font-semibold text-primaryBlue">
+              {' '}
+              {truncateText(id, DEFAULT_TRUNCATE_LENGTH)}
+            </span>
           </p>
         </div>
       </Link>

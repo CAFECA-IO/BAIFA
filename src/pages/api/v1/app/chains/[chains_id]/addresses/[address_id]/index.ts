@@ -42,25 +42,27 @@ type BlockProducedData = {
   chainIcon: string;
 };
 
-type ResponseData = {
-  id: string;
-  type: string;
-  address: string;
-  chainId: string;
-  chainIcon: string;
-  createdTimestamp: number;
-  latestActiveTime: number;
-  relatedAddresses: RelatedAddressInfo[];
-  interactedAddressCount: number;
-  interactedContactCount: number;
-  score: number;
-  reviewData: ReviewData[];
-  transactionHistoryData: TransactionHistoryData[];
-  blockProducedData: BlockProducedData[];
-  flaggingCount: number;
-  riskLevel: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK';
-  publicTag: string[];
-};
+type ResponseData =
+  | {
+      id: string;
+      type: string;
+      address: string;
+      chainId: string;
+      chainIcon: string;
+      createdTimestamp: number;
+      latestActiveTime: number;
+      relatedAddresses: RelatedAddressInfo[];
+      interactedAddressCount: number;
+      interactedContactCount: number;
+      score: number;
+      reviewData: ReviewData[];
+      transactionHistoryData: TransactionHistoryData[];
+      blockProducedData: BlockProducedData[];
+      flaggingCount: number;
+      riskLevel: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK';
+      publicTag: string[];
+    }
+  | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -83,7 +85,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  const chainIcon = '';
+  const chainData = await prisma.chains.findUnique({
+    where: {
+      id: addressData?.chain_id ?? undefined,
+    },
+    select: {
+      symbol: true,
+    },
+  });
+
+  const unit = chainData?.symbol ? chainData.symbol : '';
 
   // Info: (20240122 - Julian) -------------- 在 transactions Table 找出所有與 address_id 相關的交易 --------------
   // SELECT * FROM transactions WHERE related_addresses LIKE '%address_id%'
@@ -113,17 +124,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const to: AddressInfo[] = [];
     from.push({
       type: 'address', // ToDo: (20240124 - Julian) 先寫死
-      address: transaction.from_address,
+      address: `${transaction.from_address}`,
     });
     to.push({
       type: 'address', // ToDo: (20240124 - Julian) 先寫死
-      address: transaction.to_address,
+      address: `${transaction.to_address}`,
     });
 
     return {
       id: `${transaction.id}`,
       chainId: `${transaction.chain_id}`,
-      createdTimestamp: new Date(transaction.created_timestamp).getTime() / 1000,
+      createdTimestamp: 0,
       from: from,
       to: to,
       type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
@@ -158,11 +169,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const blockProducedData: BlockProducedData[] = blockData.map(block => {
     return {
       id: `${block.id}`,
-      createdTimestamp: new Date(block.created_timestamp).getTime() / 1000,
+      createdTimestamp: 0,
       stability: 'MEDIUM', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 stability 的轉換
-      reward: block.reward,
-      unit: 'isun', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 unit 的轉換
-      chainIcon: chainIcon,
+      reward: 0,
+      unit: unit,
+      chainIcon: '',
     };
   });
 
@@ -170,15 +181,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     ? {
         id: `${addressData.id}`,
         type: 'address',
-        address: addressData.address,
+        address: `${addressData.address}`,
         chainId: `${addressData.chain_id}`,
-        chainIcon: chainIcon,
-        createdTimestamp: new Date(addressData.created_timestamp).getTime() / 1000,
-        latestActiveTime: new Date(addressData.latest_active_time).getTime() / 1000,
+        chainIcon: '',
+        createdTimestamp: 0,
+        latestActiveTime: 0,
         relatedAddresses: [], // ToDo: (20240122 - Julian) 可能廢除
         interactedAddressCount: relatedAddresses.length,
         interactedContactCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位
-        score: addressData.score,
+        score: addressData.score ?? 0,
         reviewData: [], // ToDo: (20240122 - Julian) 補上這個欄位
         transactionHistoryData: transactionHistoryData,
         blockProducedData: blockProducedData,
@@ -186,25 +197,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         riskLevel: 'LOW_RISK', // ToDo: (20240122 - Julian) 補上這個欄位
         publicTag: [], // ToDo: (20240122 - Julian) 補上這個欄位
       }
-    : {
-        id: '',
-        type: '',
-        address: '',
-        chainId: '',
-        chainIcon: '',
-        createdTimestamp: 0,
-        latestActiveTime: 0,
-        relatedAddresses: [],
-        interactedAddressCount: 0,
-        interactedContactCount: 0,
-        score: 0,
-        reviewData: [],
-        transactionHistoryData: [],
-        blockProducedData: [],
-        flaggingCount: 0,
-        riskLevel: 'LOW_RISK',
-        publicTag: [],
-      };
+    : undefined;
 
   res.status(200).json(result);
 }

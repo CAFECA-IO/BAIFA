@@ -9,6 +9,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {IBlockDetail} from '../../interfaces/block';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {StabilityLevel} from '../../constants/stability_level';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IBlockDetailProps {
   blockData: IBlockDetail;
@@ -118,7 +119,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       {/* Info: (20230912 - Julian) Miner */}
       <Link href={minerLink} title={miner}>
         <BoltButton className="px-3 py-1" color="blue" style="solid">
-          {truncateText(miner, 10)}
+          {truncateText(miner, DEFAULT_TRUNCATE_LENGTH)}
         </BoltButton>
       </Link>
       <p>+</p>

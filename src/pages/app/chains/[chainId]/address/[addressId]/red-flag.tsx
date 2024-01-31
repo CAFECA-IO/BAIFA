@@ -8,13 +8,14 @@ import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import Footer from '../../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {getChainIcon} from '../../../../../../lib/common';
+import {getChainIcon, truncateText} from '../../../../../../lib/common';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {IRedFlag} from '../../../../../../interfaces/red_flag';
 import RedFlagList from '../../../../../../components/red_flag_list/red_flag_list';
 import {useContext, useEffect, useRef, useState} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../../../../../constants/config';
 
 interface IRedFlagOfAddressPageProps {
   chainId: string;
@@ -100,7 +101,8 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
                 <div className="flex items-center space-x-2">
                   <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
                   <p className="text-xl">
-                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {addressId}
+                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}{' '}
+                    {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
                   </p>
                 </div>
               </div>

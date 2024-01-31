@@ -24,7 +24,7 @@ type ResponseData = {
   createdTimestamp: number;
   from: AddressInfo[];
   to: AddressInfo[];
-  evidenceId: string;
+  evidenceId: string | null;
   value: number;
   fee: number;
   unit: string;
@@ -53,15 +53,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       from_address: true,
       to_address: true,
       // ToDo: (20240119 - Julian) 目前 DB 裡這欄是 null，所以先註解掉
-      //evidence_id: true,
+      evidence_id: true,
       value: true,
       fee: true,
     },
   });
 
-  // Info: (20240119 - Julian) 從 chains Table 撈出 chain_icon
+  // Info: (20240119 - Julian) 從 chains Table 撈出 chain_icon 和 decimals
+  const chain_id = transactionData?.chain_id ?? 0;
+  const chainData = await prisma.chains.findUnique({
+    where: {
+      id: chain_id,
+    },
+    select: {
+      symbol: true,
+      decimals: true,
+    },
+  });
 
-  const chainIcon ='';
+  const unit = chainData?.symbol ?? '';
+  const decimals = chainData?.decimals ?? 0;
 
   // Info: (20240119 - Julian) 從 blocks Table 撈出 block_id
   const blockHash = transactionData?.block_hash ?? '';
@@ -75,42 +86,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
   const blockId = `${blockData?.number}` ?? '';
 
+  // Info: (20240126 - Julian) 計算 fee
   const fee = transactionData ? parseInt(`${transactionData.fee}`) : 0;
+  const feeDecimal = fee / Math.pow(10, decimals);
 
   // Info: (20240119 - Julian) 轉換成 API 要的格式
   const result: ResponseData = transactionData
     ? {
         id: `${transactionData.id}`,
-        hash: transactionData.hash,
+        hash: `${transactionData.hash}`,
         type: 'Crypto Currency', // ToDo: (20240119 - Julian) 須參考 codes Table 並補上 type 的轉換
         status: 'SUCCESS', // ToDo: (20240119 - Julian) 須參考 codes Table 並補上 status 的轉換
         chainId: `${transactionData.chain_id}`,
-        chainIcon: chainIcon,
+        chainIcon: '',
         blockId: blockId,
-        createdTimestamp: transactionData.created_timestamp.getTime() / 1000,
+        createdTimestamp: 0,
         from: [
           {
             type: 'address', // ToDo: (20240119 - Julian) 先寫死，等待後續補上 contract
-            address: transactionData.from_address,
+            address: `${transactionData.from_address}`,
           },
         ],
         to: [
           {
             type: 'address', // ToDo: (20240119 - Julian) 先寫死，等待後續補上 contract
-            address: transactionData.to_address,
+            address: `${transactionData.to_address}`,
           },
         ],
-        evidenceId: '1390', // ToDo: (20240119 - Julian) 補上這個欄位
-        value: transactionData.value,
-        fee: fee,
-        unit: 'isun', // ToDo: (20240119 - Julian) 補上這個欄位
+        evidenceId: transactionData.evidence_id,
+        value: transactionData.value ?? 0,
+        fee: feeDecimal,
+        unit: unit,
         flaggingRecords: [], // ToDo: (20240119 - Julian) 補上這個欄位
       }
     : {
         id: '',
         hash: '',
         type: 'Crypto Currency',
-        status: 'SUCCESS',
+        status: 'FAILED',
         chainId: '',
         chainIcon: '',
         blockId: '',

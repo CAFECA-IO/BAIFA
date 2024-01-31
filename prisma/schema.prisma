@@ -98,7 +98,7 @@ model public_tags {
 model evidences {
   id                  Int @id
   chain_id            Int
-  evidence_id         String
+  evidence_id         String @unique
   created_timestamp   DateTime
   contract_address    String
   state               String
@@ -110,6 +110,10 @@ model evidences {
 model chains {
   id                  Int      @id @default(autoincrement())
   chain_name          String
+  chain_icon          String    
+  decimals            Int
+  rpc                 String
+  symbol              String
 }
 
 model transactions {
@@ -122,7 +126,7 @@ model transactions {
   block_hash          String
   from_address        String
   to_address          String
-  evidence_id         Int
+  evidence_id         String?
   value               Int
   fee                 BigInt
   related_addresses   String[]
@@ -176,8 +180,8 @@ model token_balances {
   id                  Int      @id @default(autoincrement())
   address             String
   value               Int
-  chain_id            Int
-  currency_id         Int
+  chain_id            Int 
+  currency_id         String 
 }
 
 model token_transfers {
@@ -185,14 +189,14 @@ model token_transfers {
   from_address        String
   to_address          String
   value               Int
-  chain_id            Int
-  currency_id         Int
+  chain_id            Int 
+  currency_id         String
   transaction_hash    String
   index               Int
 }
 
 model currencies {
-  id                  Int      @id @default(autoincrement())
+  id                  String      @id
   risk_level          String
   price               Int
   volume_in_24h       Int
@@ -200,7 +204,8 @@ model currencies {
   total_amount        Int
   holder_count        Int
   total_transfers     Int
-  chain_id            Int
+  chain_id            Int           
+  name                String
 }
 
 model addresses {

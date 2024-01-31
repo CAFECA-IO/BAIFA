@@ -24,7 +24,7 @@ import TransactionHistorySection from '../../../../../../components/transaction_
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
-import {sortOldAndNewOptions} from '../../../../../../constants/config';
+import {DEFAULT_TRUNCATE_LENGTH, sortOldAndNewOptions} from '../../../../../../constants/config';
 import {roundToDecimal, truncateText} from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
@@ -91,6 +91,11 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
     };
   }, [addressData, blockProducedData, transactionHistoryData]);
 
+  // ToDo: (20240129 - Julian) 如果拿到的資料是空的，就顯示 Data not found
+  if (!addressData.address) {
+    return <h1>Data not found</h1>;
+  }
+
   const backClickHandler = () => router.back();
 
   const reviewLink = getDynamicUrl(chainId, addressId).REVIEWS;
@@ -135,7 +140,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
         <h1 className="text-2xl font-bold lg:text-32px">
           {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
           <span title={addressId} className="ml-2 text-primaryBlue">
-            {truncateText(addressId, 10)}
+            {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
           </span>
         </h1>
       </div>

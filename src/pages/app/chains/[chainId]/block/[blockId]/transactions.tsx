@@ -6,7 +6,6 @@ import {MarketContext} from '../../../../../../contexts/market_context';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../../../components/footer/footer';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
-import TransactionTab from '../../../../../../components/transaction_tab/transaction_tab';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
@@ -15,6 +14,13 @@ import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {getChainIcon} from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
+import DatePicker from '../../../../../../components/date_picker/date_picker';
+import Pagination from '../../../../../../components/pagination/pagination';
+import SearchBar from '../../../../../../components/search_bar/search_bar';
+import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
+import TransactionList from '../../../../../../components/transaction_list/transaction_list';
+import {default30DayPeriod, sortOldAndNewOptions} from '../../../../../../constants/config';
+import useStateRef from 'react-usestateref';
 
 interface ITransitionsInBlockPageProps {
   chainId: string;
@@ -27,51 +33,103 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   const {getTransactionList} = useContext(MarketContext);
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const totalPages = 100; // ToDo: (20240119 - Julian) 如何從 API 取得總頁數？
+  const [activePage, setActivePage] = useState(1);
+
+  const [period, setPeriod] = useState(default30DayPeriod);
+  const [search, setSearch, searchRef] = useStateRef('');
   const [transactionData, setTransitionData] = useState<ITransaction[]>([]);
 
   const headTitle = `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_BLOCK')} ${blockId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
+  // Info: (20240119 - Julian) 設定 API 查詢參數
+  const dateQuery =
+    period.startTimeStamp === 0 || period.endTimeStamp === 0
+      ? ''
+      : `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`;
+  const pageQuery = `page=${activePage}`;
+  const apiQueryStr = `${pageQuery}${dateQuery}`;
+
   const backClickHandler = () => router.back();
+  const getTransactionData = async () => {
+    try {
+      const data = await getTransactionList(chainId, blockId, apiQueryStr);
+      setTransitionData(data);
+    } catch (error) {
+      //console.log('getTransactionList error', error);
+    }
+  };
 
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
-
-    const getTransactionData = async (chainId: string, blockId: string) => {
-      try {
-        const data = await getTransactionList(chainId, blockId);
-        setTransitionData(data);
-      } catch (error) {
-        //console.log('getTransactionList error', error);
-      }
-    };
-
-    getTransactionData(chainId, blockId);
+    getTransactionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  useEffect(() => {
+    setActivePage(1);
+    getTransactionData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period, chainId]);
 
   useEffect(() => {
-    if (transactionData) {
-      setTransitionData(transactionData);
-    }
-    timerRef.current = setTimeout(() => setIsLoading(false), 500);
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [transactionData]);
+    getTransactionData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activePage]);
 
-  const displayedTransactions = !isLoading ? (
-    <TransactionTab />
-  ) : (
-    // ToDo: (20231213 - Julian) Add loading animation
-    <h1>Loading...</h1>
+  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+  const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactionData);
+
+  useEffect(() => {
+    const searchResult = transactionData.sort((a: ITransaction, b: ITransaction) => {
+      return sorting === sortOldAndNewOptions[0]
+        ? // Info: (20231101 - Julian) Newest
+          b.createdTimestamp - a.createdTimestamp
+        : // Info: (20231101 - Julian) Oldest
+          a.createdTimestamp - b.createdTimestamp;
+    });
+    setFilteredTransactions(searchResult);
+  }, [transactionData, search, sorting]);
+
+  const displayedTransactions = (
+    <div className="flex w-full flex-col items-center font-inter">
+      {/* Info: (20240125 - Julian) Search Filter */}
+      <div className="flex w-full flex-col items-center">
+        {/* Info: (20240125 - Julian) Search Bar */}
+        <div className="flex w-full items-center justify-center lg:w-7/10">
+          <SearchBar
+            searchBarPlaceholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_TRANSACTIONS')}
+            setSearch={setSearch}
+          />
+        </div>
+        <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
+          {/* Info: (20240125 - Julian) Date Picker */}
+          <div className="flex w-full items-center text-base lg:w-fit lg:space-x-2">
+            <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
+            <DatePicker period={period} setFilteredPeriod={setPeriod} />
+          </div>
+
+          {/* Info: (20230904 - Julian) Sorting Menu */}
+          <div className="relative flex w-full items-center pb-2 text-base lg:w-fit lg:space-x-2 lg:pb-0">
+            <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
+            <SortingMenu
+              sortingOptions={sortOldAndNewOptions}
+              sorting={sorting}
+              setSorting={setSorting}
+              bgColor="bg-darkPurple"
+            />
+          </div>
+        </div>
+      </div>
+      {/* Info: (20230907 - Julian) Transaction List */}
+      <div className="flex w-full flex-col items-center">
+        <TransactionList transactions={filteredTransactions} />
+        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
+      </div>
+    </div>
   );
 
   return (

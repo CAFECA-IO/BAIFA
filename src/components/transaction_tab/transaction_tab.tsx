@@ -42,11 +42,6 @@ const TransactionTab = () => {
   };
 
   useEffect(() => {
-    if (transactionData.length === 0) getTransactionData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     setActivePage(1);
     getTransactionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps

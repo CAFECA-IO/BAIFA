@@ -18,7 +18,7 @@ const AllCurrenciesPageBody = () => {
   const {currencyList} = useContext(MarketContext);
 
   const currenciesOptions = ['SORTING.ALL', 'Ethereum', 'Bitcoin', 'iSunCloud', 'BNB', 'Tether'];
-  const sortingOptions = ['SORTING.POPULAR', 'SORTING.UNPOPULAR'];
+  const sortingOptions = ['A to Z', 'Z to A']; // Info: (20240125 - Julian) 暫時以字母排序
 
   const [search, setSearch, searchRef] = useStateRef('');
   const [currencies, setCurrencies] = useState(currenciesOptions[0]);
@@ -62,8 +62,10 @@ const AllCurrenciesPageBody = () => {
           : true;
       })
       .sort((a, b) => {
-        // Info: (20231101 - Julian) sort by popularity
-        return sorting === sortingOptions[0] ? a.rank - b.rank : b.rank - a.rank;
+        // Info: (20231101 - Julian) sort by alphabet
+        return sorting === sortingOptions[0]
+          ? a.currencyName.localeCompare(b.currencyName)
+          : b.currencyName.localeCompare(a.currencyName);
       });
 
     setFilteredCurrencyData(searchResult);
@@ -81,7 +83,7 @@ const AllCurrenciesPageBody = () => {
         key={index}
         currencyId={currency.currencyId}
         currencyName={currency.currencyName}
-        rank={currency.rank}
+        rank={index + 1} // Info: (20240126 - Julian) DB 並沒有 rank，所以暫時用 index + 1 代替
         riskLevel={currency.riskLevel}
       />
     ))

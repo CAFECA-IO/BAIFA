@@ -7,6 +7,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {IRedFlagDetail} from '../../interfaces/red_flag';
 import {timestampToString, truncateText} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IRedFlagDetailProps {
   redFlagData: IRedFlagDetail;
@@ -31,7 +32,8 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
         return (
           <Link href={addressLink} key={index} title={address.id}>
             <BoltButton className="px-3 py-1" color="blue" style="solid">
-              {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')} {truncateText(address.id, 10)}
+              {t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')}{' '}
+              {truncateText(address.id, DEFAULT_TRUNCATE_LENGTH)}
             </BoltButton>
           </Link>
         );

@@ -21,6 +21,7 @@ import Tooltip from '../../../../../components/tooltip/tooltip';
 import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
 import {ITransaction} from '../../../../../interfaces/transaction';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../../../../constants/config';
 
 interface IContractDetailPageProps {
   contractId: string;
@@ -129,7 +130,10 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
                   />
                   <h1 className="text-2xl font-bold lg:text-32px" title={contractId}>
                     {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')}
-                    <span className="ml-2 text-primaryBlue"> {truncateText(contractId, 10)}</span>
+                    <span className="ml-2 text-primaryBlue">
+                      {' '}
+                      {truncateText(contractId, DEFAULT_TRUNCATE_LENGTH)}
+                    </span>
                   </h1>
                 </div>
                 {/* Info: (20231109 - Julian) Public Tag */}
