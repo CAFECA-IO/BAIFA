@@ -97,31 +97,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       }
     });
 
-    // // Info: Search in transaction_receipt_raw for contract_address (20240130 - Shirley)
-    // const transactionReceipts = await prisma.transactions.findMany({
-    //   where: {
-    //     // contract_address: {
-    //     //   startsWith: searchInput,
-    //     // },
-    //     OR: [{from_address: {startsWith: searchInput}}, {to_address: {startsWith: searchInput}}],
-    //   },
-    //   take: INPUT_SUGGESTION_LIMIT,
-    //   select: {
-    //     from_address: true,
-    //     to_address: true,
-    //   },
-    // });
-
-    // transactionReceipts.forEach(item => {
-    //   if (item.from_address && item.from_address.startsWith(searchInput)) {
-    //     suggestions.add(item.from_address);
-    //   }
-
-    //   if (item.to_address && item.to_address.startsWith(searchInput)) {
-    //     suggestions.add(item.to_address);
-    //   }
-    // });
-
     // Info: If fewer than INPUT_SUGGESTION_LIMIT results, search in contracts for contract_address and creator_address (20240130 - Shirley)
     if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
       const contracts = await prisma.contracts.findMany({
@@ -146,27 +121,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         }
       });
     }
-
-    // // Search in block_raw for hash
-    // if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
-    //   const blockRaw = await prisma.block_raw.findMany({
-    //     where: {
-    //       hash: {
-    //         startsWith: searchInput,
-    //       },
-    //     },
-    //     take: INPUT_SUGGESTION_LIMIT - suggestions.size,
-    //     select: {
-    //       hash: true,
-    //     },
-    //   });
-
-    //   blockRaw.forEach(item => {
-    //     if (item.hash) {
-    //       suggestions.add(item.hash);
-    //     }
-    //   });
-    // }
 
     const limitedSuggestions = Array.from(suggestions)
       .filter(suggestion => suggestion !== 'null')
