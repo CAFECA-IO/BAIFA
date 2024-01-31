@@ -34,15 +34,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       })
     : [];
 
-  // Info: (20240124 - Julian) 將關聯 addresses 整理成一個 array
-  const interactedAddresses: string[] = [];
-  interactedData.forEach(transaction => {
-    transaction.related_addresses.forEach(a => {
-      if (a !== address_id && a !== 'null' && interactedAddresses.indexOf(a) === -1) {
-        interactedAddresses.push(a);
-      }
-    });
+  // Info: (20240131 - Julian) 將關聯 addresses 整理成一個 array
+  const interactedAddressesRaw = interactedData.flatMap(transaction => {
+    // Info: (20240131 - Julian) 過濾 address_id 以及 null
+    return transaction.related_addresses.filter(
+      address => address !== address_id && address !== 'null'
+    );
   });
+  // Info: (20240131 - Julian) 過濾重複的 address
+  const interactedAddresses = Array.from(new Set(interactedAddressesRaw));
+
   // Info: (20240124 - Julian) -------------- 透過 addresses Table 找出關聯資料 --------------
   const interactedList = await prisma.addresses.findMany({
     where: {

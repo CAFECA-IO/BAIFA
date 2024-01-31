@@ -53,7 +53,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     };
   }, [latestActiveTime, sinceTime]);
 
-  const dynamicUrl = getDynamicUrl(`${chainId}`, `${id}`);
+  const dynamicUrl = getDynamicUrl(`${chainId}`, `${address}`);
 
   const displaySignUpTime = (
     <div className="flex flex-wrap items-center">

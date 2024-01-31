@@ -161,14 +161,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
 
   // Info: (20240122 - Julian) 透過 transactions Table 的 related_addresses 欄位找出所有相關的 address
-  const relatedAddresses: string[] = [];
-  transactionData.forEach(transaction => {
-    transaction.related_addresses.forEach(address => {
-      if (address !== address_id && address !== 'null' && !relatedAddresses.includes(address)) {
-        relatedAddresses.push(address);
-      }
-    });
+  const relatedAddressesRaw = transactionData.flatMap(transaction => {
+    // Info: (20240131 - Julian) 過濾掉 null 和 address_id
+    return transaction.related_addresses.filter(
+      address => address !== address_id && address !== 'null'
+    );
   });
+  // Info: (20240131 - Julian) 過濾重複的 address
+  const relatedAddresses = Array.from(new Set(relatedAddressesRaw));
 
   // Info: (20240122 - Julian) ================== blockProducedData ==================
   const blockData = address_id
