@@ -29,6 +29,9 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const appCtx = useContext(AppContext);
   const {getRedFlagDetail} = useContext(MarketContext);
 
+  const router = useRouter();
+  const backClickHandler = () => router.back();
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [redFlagData, setRedFlagData] = useState<IRedFlagDetail>({} as IRedFlagDetail);
   // Info: (20240102 - Julian) Transaction history
@@ -73,11 +76,10 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     };
   }, [redFlagData, transactionHistoryData]);
 
+  if (!redFlagData.id) return <h1>Data not found</h1>;
+
   const headTitle = `${t('RED_FLAG_ADDRESS_PAGE.MAIN_TITLE')} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
-
-  const router = useRouter();
-  const backClickHandler = () => router.back();
 
   const displayedTransactionHistory = !isLoading ? (
     <TransactionHistorySection transactions={transactionData} />
