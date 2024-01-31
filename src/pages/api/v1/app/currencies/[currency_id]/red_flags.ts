@@ -7,7 +7,6 @@ type ResponseData = {
   id: string;
   chainId: string;
   chainName: string;
-  addressId: string;
   redFlagType: string;
   createdTimestamp: number;
 }[];
@@ -47,52 +46,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     : [];
 
   const result: ResponseData = redFlagData.map(redFlag => {
+    const createdTimestamp = redFlag.created_timestamp
+      ? new Date(redFlag.created_timestamp).getTime() / 1000
+      : 0;
+
     return {
       id: `${redFlag.id}`,
       chainId: `${redFlag.chain_id}`,
-      chainName: chainName,
-      addressId: '',
-      redFlagType: redFlag.red_flag_type,
-      createdTimestamp: new Date(redFlag.created_timestamp).getTime() / 1000,
+      chainName: `${chainName}`,
+      redFlagType: `${redFlag.red_flag_type}`,
+      createdTimestamp: createdTimestamp,
     };
   });
-
-  /*   
-  const result: ResponseData = [
-    {
-      'id': '1183720028',
-      'chainId': 'btc',
-      'chainName': 'Bitcoin',
-      'addressId': '118372',
-      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
-      'createdTimestamp': 1679099781,
-    },
-    {
-      'id': '1132480029',
-      'chainId': 'btc',
-      'chainName': 'Bitcoin',
-      'addressId': '113248',
-      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_WITHDRAW',
-      'createdTimestamp': 1682172429,
-    },
-    {
-      'id': '1182740004',
-      'chainId': 'btc',
-      'chainName': 'Bitcoin',
-      'addressId': '118274',
-      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_BLACK_LIST',
-      'createdTimestamp': 1689427103,
-    },
-    {
-      'id': '1192830192',
-      'chainId': 'btc',
-      'chainName': 'Bitcoin',
-      'addressId': '119283',
-      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MIXING_SERVICE',
-      'createdTimestamp': 1689424291,
-    },
-    // ... other red flags
-  ]; */
 
   res.status(200).json(result);
 }

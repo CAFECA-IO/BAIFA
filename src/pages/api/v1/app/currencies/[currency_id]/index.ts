@@ -25,22 +25,23 @@ type TransactionHistoryData = {
   status: 'PENDING' | 'SUCCESS' | 'FAILED';
 };
 
-type ResponseData = {
-  currencyId: string;
-  currencyName: string;
-  rank: number;
-  chainIcon: string;
-  holderCount: number;
-  price: number;
-  volumeIn24h: number;
-  unit: string;
-  totalAmount: number;
-  holders: HolderData[];
-  totalTransfers: number;
-  flaggingCount: number;
-  riskLevel: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK';
-  transactionHistoryData: TransactionHistoryData[];
-};
+type ResponseData =
+  | {
+      currencyId: string;
+      currencyName: string;
+      rank: number;
+      holderCount: number;
+      price: number;
+      volumeIn24h: number;
+      unit: string;
+      totalAmount: number;
+      holders: HolderData[];
+      totalTransfers: number;
+      flaggingCount: number;
+      riskLevel: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK';
+      transactionHistoryData: TransactionHistoryData[];
+    }
+  | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -65,7 +66,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  const holders: HolderData[] = [];
   // Info: (20240125 - Julian) currency 的總量
   const totalAmount = currencyData?.total_amount ?? 0;
   // Info: (20240125 - Julian) 從 token_balances Table 中取得 holders
@@ -78,13 +78,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       value: true,
     },
   });
-  holderData.forEach(holder => {
-    holders.push({
-      addressId: holder.address,
-      holdingAmount: holder.value,
-      holdingPercentage: (holder.value / totalAmount) * 100,
-      publicTag: [], // ToDo: (20240125 - Julian) 補上這個欄位
-    });
+  const holders: HolderData[] = holderData.map(holder => {
+    // Info: (20240130 - Julian) 計算持有比例
+    const holdingPercentage = (holder.value ?? 0) / totalAmount;
+
+    return {
+      addressId: `${holder.address}`,
+      holdingAmount: holder.value ?? 0,
+      holdingPercentage: holdingPercentage,
+      publicTag: [], // ToDo: (20240130 - Julian) 待補上
+    };
   });
 
   // Info: (20240125 - Julian) 從 red_flags Table 中取得 redFlagCount
@@ -106,74 +109,77 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       status: true,
     },
   });
+
   const transactionHistoryData: TransactionHistoryData[] = transactionData.map(transaction => {
+    // Info: (20240130 - Julian) 轉換 timestamp
+    const transactionCreatedTimestamp = transaction.created_timestamp
+      ? new Date(transaction.created_timestamp).getTime() / 1000
+      : 0;
+
+    // Info: (20240130 - Julian) from address 轉換
+    const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
+    const from: AddressInfo[] = fromAddresses
+      // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+      .filter(address => address !== 'null')
+      .map(address => {
+        return {
+          type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+          address: address,
+        };
+      });
+
+    // Info: (20240130 - Julian) to address 轉換
+    const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
+    const to: AddressInfo[] = toAddresses
+      // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+      .filter(address => address !== 'null')
+      .map(address => {
+        return {
+          type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+          address: address,
+        };
+      });
+
     return {
       id: `${transaction.id}`,
       chainId: `${transaction.chain_id}`,
-      createdTimestamp: new Date(transaction.created_timestamp).getTime() / 1000,
-      from: [
-        {
-          type: 'address',
-          address: transaction.from_address,
-        },
-      ],
-      to: [
-        {
-          type: 'address',
-          address: transaction.to_address,
-        },
-      ],
+      createdTimestamp: transactionCreatedTimestamp,
+      from: from,
+      to: to,
       type: 'Crypto Currency', // ToDo: (20240126 - Julian) 需要參考 codes Table 並補上 type 的轉換
       status: 'SUCCESS', // ToDo: (20240126 - Julian) 需要參考 codes Table 並補上 status 的轉換
     };
   });
 
-  // Info: (20240125 - Julian) 從 chains Table 中取得 chainIcon
+  // Info: (20240125 - Julian) 從 chains Table 中取得 unit
   const chainData = await prisma.chains.findUnique({
     where: {
-      id: chainId,
+      id: chainId ?? undefined,
     },
     select: {
-      chain_icon: true,
       symbol: true,
     },
   });
-  const chainIcon = chainData?.chain_icon ?? '';
   const unit = chainData?.symbol ?? '';
 
   const result: ResponseData = currencyData
     ? {
         currencyId: currencyData.id,
-        currencyName: currencyData.name,
+        currencyName: `${currencyData.name}`,
         rank: 0, // ToDo: (20240125 - Julian) 討論去留
-        chainIcon: chainIcon,
-        holderCount: currencyData.holder_count,
-        price: currencyData.price,
-        volumeIn24h: currencyData.volume_in_24h,
+        holderCount: currencyData.holder_count ?? 0,
+        price: currencyData.price ?? 0,
+        volumeIn24h: currencyData.volume_in_24h ?? 0,
         unit: unit, // ToDo: (20240125 - Julian) 補上這個欄位
-        totalAmount: currencyData.total_amount,
+        totalAmount: currencyData.total_amount ?? 0,
         holders: holders,
-        totalTransfers: currencyData.total_transfers,
+        totalTransfers: currencyData.total_transfers ?? 0,
         flaggingCount: redFlagCount,
         riskLevel: 'LOW_RISK', // ToDo: (20240125 - Julian) 需要參考 codes Table 並補上 riskLevel 的轉換
         transactionHistoryData: transactionHistoryData,
       }
-    : {
-        currencyId: '',
-        currencyName: '',
-        rank: 0,
-        chainIcon: '',
-        holderCount: 0,
-        price: 0,
-        volumeIn24h: 0,
-        unit: '',
-        totalAmount: 0,
-        holders: [],
-        totalTransfers: 0,
-        flaggingCount: 0,
-        riskLevel: 'LOW_RISK',
-        transactionHistoryData: [],
-      };
+    : // Info: (20240130 - Julian) 如果沒有找到資料，回傳 undefined
+      undefined;
 
   res.status(200).json(result);
 }

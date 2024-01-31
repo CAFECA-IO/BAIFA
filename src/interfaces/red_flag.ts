@@ -5,14 +5,11 @@ export interface IRedFlag {
   id: string;
   chainId: string;
   chainName: string;
-  addressId: string;
   redFlagType: IRedFlagType;
   createdTimestamp: number; // Info:(20231228 - Julian) 被警示的日期
 }
 
 export interface IRedFlagDetail extends IRedFlag {
-  address: string;
-  chainIcon: string;
   unit: string;
   interactedAddresses: {
     id: string;

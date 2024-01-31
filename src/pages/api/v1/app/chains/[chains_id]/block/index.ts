@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return {
       id: `${block.number}`,
       chainId: `${block.chain_id}`,
-      createdTimestamp: new Date(block.created_timestamp).getTime() / 1000,
+      createdTimestamp: new Date(block.created_timestamp ?? 0).getTime() / 1000,
       // ToDo: (20240118 - Julian) 參考 codes Table，補上這個欄位
       stability: 'HIGH',
     };

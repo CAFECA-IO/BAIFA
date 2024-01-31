@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const result: ResponseData = chains.map(chain => {
     return {
       chainId: `${chain.id}`,
-      chainName: chain.chain_name,
+      chainName: `${chain.chain_name}`,
       blocks: blockCount,
       transactions: transactionCount,
     };

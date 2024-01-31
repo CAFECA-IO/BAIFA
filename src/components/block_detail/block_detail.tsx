@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import BoltButton from '../bolt_button/bolt_button';
 import Tooltip from '../tooltip/tooltip';
-import {timestampToString, getTimeString, truncateText} from '../../lib/common';
+import {timestampToString, getTimeString, truncateText, getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IBlockDetail} from '../../interfaces/block';
@@ -22,7 +22,6 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     stability,
     createdTimestamp,
     chainId,
-    chainIcon,
     managementTeam,
     transactionCount,
     miner,
@@ -44,6 +43,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sinceTime]);
 
+  const chainIcon = getChainIcon(chainId);
   const transactionsLink = `${getDynamicUrl(chainId, blockId).TRANSACTIONS_IN_BLOCK}`;
   const minerLink = `${getDynamicUrl(chainId, miner).ADDRESS}`;
 
@@ -125,7 +125,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       <p>+</p>
       {/* Info: (20230912 - Julian) Reward */}
       <div className="flex items-center space-x-2">
-        <Image src={chainIcon} alt={`${chainId}_icon`} width={24} height={24} />
+        <Image src={chainIcon.src} alt={chainIcon.alt} width={24} height={24} />
         <p>
           {reward}
           <span> {unit}</span>

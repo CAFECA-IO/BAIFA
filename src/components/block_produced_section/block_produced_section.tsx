@@ -7,7 +7,7 @@ import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
-import {roundToDecimal, timestampToString} from '../../lib/common';
+import {getChainIcon, roundToDecimal, timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 import DatePicker from '../date_picker/date_picker';
@@ -69,7 +69,8 @@ const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps
   // Info: (20231103 - Julian) Pagination
   const blockList = filteredBlocks
     ? filteredBlocks.slice(startIdx, endIdx).map((block, index) => {
-        const {id, chainId, createdTimestamp, reward, unit, chainIcon} = block;
+        const {id, chainId, createdTimestamp, reward, unit} = block;
+        const chainIcon = getChainIcon(chainId);
 
         const createdStr = timestampToString(createdTimestamp);
         // Info: (20231103 - Julian) If month is longer than 3 letters, slice it and add a dot
@@ -97,7 +98,7 @@ const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps
               </Link>
               {/* Info: (20231103 - Julian) Mine */}
               <div className="flex items-center space-x-2">
-                <Image src={chainIcon} width={24} height={24} alt={`icon`} />
+                <Image src={chainIcon.src} width={24} height={24} alt={chainIcon.alt} />
                 <p className="text-sm">
                   +{roundToDecimal(reward, 2)}
                   {unit}

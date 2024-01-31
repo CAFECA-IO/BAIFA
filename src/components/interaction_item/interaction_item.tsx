@@ -4,7 +4,7 @@ import {getDynamicUrl} from '../../constants/url';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IInteractionItem} from '../../interfaces/interaction_item';
-import {truncateText} from '../../lib/common';
+import {getChainIcon, truncateText} from '../../lib/common';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IInteractionItemProps {
@@ -14,15 +14,16 @@ interface IInteractionItemProps {
 
 const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {id, type, chainId, chainIcon, transactionCount, publicTag} = interactedData;
+  const {id, type, chainId, transactionCount, publicTag} = interactedData;
 
+  const chainIcon = getChainIcon(chainId);
   const itemLink = getDynamicUrl(`${chainId}`, `${id}`);
 
   const transactionUrl = `${getDynamicUrl(`${chainId}`, `${orignalAddressId}`).TRANSACTION_LIST}`;
   const transactionQuery = `?addressId=${orignalAddressId}&addressId=${id}`;
   const transactionLink = `${transactionUrl}${transactionQuery}`;
 
-  const displayIcon = <Image src={chainIcon} alt={`${chainId}_icon`} width={30} height={30} />;
+  const displayIcon = <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />;
 
   const displayPublicTag = publicTag ? (
     <div className="whitespace-nowrap rounded border-violet bg-violet px-4 py-2 text-sm lg:text-base">

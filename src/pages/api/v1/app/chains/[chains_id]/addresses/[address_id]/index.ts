@@ -39,7 +39,6 @@ type BlockProducedData = {
   stability: 'LOW' | 'MEDIUM' | 'HIGH';
   reward: number;
   unit: string;
-  chainIcon: string;
 };
 
 type ResponseData =
@@ -48,7 +47,6 @@ type ResponseData =
       type: string;
       address: string;
       chainId: string;
-      chainIcon: string;
       createdTimestamp: number;
       latestActiveTime: number;
       relatedAddresses: RelatedAddressInfo[];
@@ -91,10 +89,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
     select: {
       symbol: true,
+      decimals: true,
     },
   });
 
   const unit = chainData?.symbol ? chainData.symbol : '';
+  const decimals = chainData?.decimals ? chainData.decimals : 0;
 
   // Info: (20240122 - Julian) -------------- 在 transactions Table 找出所有與 address_id 相關的交易 --------------
   // SELECT * FROM transactions WHERE related_addresses LIKE '%address_id%'
@@ -118,23 +118,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       })
     : [];
 
-  // Info: (20240122 - Julian) 將 transactionData 轉換成 transactionHistoryData 格式
+  // Info: (20240122 - Julian) ================== transactionHistoryData ==================
   const transactionHistoryData: TransactionHistoryData[] = transactionData.map(transaction => {
-    const from: AddressInfo[] = [];
-    const to: AddressInfo[] = [];
-    from.push({
-      type: 'address', // ToDo: (20240124 - Julian) 先寫死
-      address: `${transaction.from_address}`,
-    });
-    to.push({
-      type: 'address', // ToDo: (20240124 - Julian) 先寫死
-      address: `${transaction.to_address}`,
-    });
+    // Info: (20240130 - Julian) 日期轉換
+    const transactionTimestamp = transaction.created_timestamp
+      ? new Date(transaction.created_timestamp).getTime() / 1000
+      : 0;
+
+    // Info: (20240130 - Julian) from address 轉換
+    const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
+    const from: AddressInfo[] = fromAddresses
+      // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+      .filter(address => address !== 'null')
+      .map(address => {
+        return {
+          type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+          address: address,
+        };
+      });
+
+    // Info: (20240130 - Julian) to address 轉換
+    const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
+    const to: AddressInfo[] = toAddresses
+      // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+      .filter(address => address !== 'null')
+      .map(address => {
+        return {
+          type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+          address: address,
+        };
+      });
 
     return {
       id: `${transaction.id}`,
       chainId: `${transaction.chain_id}`,
-      createdTimestamp: 0,
+      createdTimestamp: transactionTimestamp,
       from: from,
       to: to,
       type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
@@ -152,7 +170,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
   });
 
-  // Info: (20240122 - Julian) -------------- 在 blocks Table 找出所有與 address_id 相關的區塊 --------------
+  // Info: (20240122 - Julian) ================== blockProducedData ==================
   const blockData = address_id
     ? await prisma.blocks.findMany({
         where: {
@@ -167,15 +185,72 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     : [];
 
   const blockProducedData: BlockProducedData[] = blockData.map(block => {
+    // Info: (20240130 - Julian) 日期轉換
+    const blockCreatedTimestamp = block.created_timestamp
+      ? new Date(block.created_timestamp).getTime() / 1000
+      : 0;
+
+    // Info: (20240130 - Julian) reward 轉換
+    const rewardRaw = block.reward ? parseInt(block.reward) : 0;
+    const reward = rewardRaw / Math.pow(10, decimals);
+
     return {
       id: `${block.id}`,
-      createdTimestamp: 0,
+      createdTimestamp: blockCreatedTimestamp,
       stability: 'MEDIUM', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 stability 的轉換
-      reward: 0,
+      reward: reward,
       unit: unit,
-      chainIcon: '',
     };
   });
+
+  // Info: (20240130 - Julian) ================== reviewData ==================
+  const reviewDataRaw = await prisma.review_datas.findMany({
+    where: {
+      target: address_id,
+    },
+    select: {
+      id: true,
+      created_timestamp: true,
+      author_address: true,
+      content: true,
+      stars: true,
+    },
+  });
+  const reviewData: ReviewData[] = reviewDataRaw.map(review => {
+    const reviewTimestamp = review.created_timestamp
+      ? new Date(review.created_timestamp).getTime() / 1000
+      : 0;
+
+    return {
+      id: `${review.id}`,
+      transactionId: `${review.id}`,
+      chainId: `${review.id}`,
+      createdTimestamp: reviewTimestamp,
+      authorAddressId: `${review.author_address}`,
+      content: `${review.content}`,
+      stars: review.stars ?? 0,
+    };
+  });
+
+  // Info: (20240130 - Julian) ================== flaggingCount ==================
+  const flaggingRecords = await prisma.red_flags.findMany({
+    where: {
+      related_addresses: {
+        hasSome: [`${address_id}`],
+      },
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  // Info: (20240130 - Julian) 日期轉換
+  const addressCreatedTimestamp = addressData?.created_timestamp
+    ? new Date(addressData?.created_timestamp).getTime() / 1000
+    : 0;
+  const addressLatestActiveTime = addressData?.latest_active_time
+    ? new Date(addressData?.latest_active_time).getTime() / 1000
+    : 0;
 
   const result: ResponseData = addressData
     ? {
@@ -183,17 +258,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         type: 'address',
         address: `${addressData.address}`,
         chainId: `${addressData.chain_id}`,
-        chainIcon: '',
-        createdTimestamp: 0,
-        latestActiveTime: 0,
+        createdTimestamp: addressCreatedTimestamp,
+        latestActiveTime: addressLatestActiveTime,
         relatedAddresses: [], // ToDo: (20240122 - Julian) 可能廢除
         interactedAddressCount: relatedAddresses.length,
         interactedContactCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位
         score: addressData.score ?? 0,
-        reviewData: [], // ToDo: (20240122 - Julian) 補上這個欄位
+        reviewData: reviewData,
         transactionHistoryData: transactionHistoryData,
         blockProducedData: blockProducedData,
-        flaggingCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位
+        flaggingCount: flaggingRecords.length,
         riskLevel: 'LOW_RISK', // ToDo: (20240122 - Julian) 補上這個欄位
         publicTag: [], // ToDo: (20240122 - Julian) 補上這個欄位
       }

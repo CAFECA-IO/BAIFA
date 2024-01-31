@@ -65,12 +65,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const resultOfChain: ResponseData = transactionsOfChain.map(transaction => {
+      // Info: (20240130 - Julian) 日期轉換
+      const createdTimestamp = transaction?.created_timestamp
+        ? new Date(transaction?.created_timestamp).getDate() / 1000
+        : 0;
+
       return {
         id: `${transaction.id}`,
         chainId: `${transaction.chain_id}`,
-        createdTimestamp: transaction.created_timestamp.getTime() / 1000,
-        type: transaction.type, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 type 的轉換
-        status: transaction.status, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 status 的轉換
+        createdTimestamp: createdTimestamp,
+        type: `${transaction.type}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 type 的轉換
+        status: `${transaction.status}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 status 的轉換
       };
     });
 
@@ -107,12 +112,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const resultBetweenAddresses: ResponseData = transactionsBetweenAddresses.map(transaction => {
+      // Info: (20240130 - Julian) 日期轉換
+      const createdTimestamp = transaction?.created_timestamp
+        ? new Date(transaction?.created_timestamp).getDate() / 1000
+        : 0;
+
       return {
         id: `${transaction.id}`,
         chainId: `${transaction.chain_id}`,
-        createdTimestamp: transaction.created_timestamp.getTime() / 1000,
-        type: transaction.type, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 type 的轉換
-        status: transaction.status, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 status 的轉換
+        createdTimestamp: createdTimestamp,
+        type: `${transaction.type}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 type 的轉換
+        status: `${transaction.status}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 status 的轉換
       };
     });
 

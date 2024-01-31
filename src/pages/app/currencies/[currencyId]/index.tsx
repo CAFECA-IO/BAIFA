@@ -16,6 +16,7 @@ import {TranslateFunction} from '../../../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 import {AppContext} from '../../../../contexts/app_context';
 import {MarketContext} from '../../../../contexts/market_context';
+import {getChainIcon} from '../../../../lib/common';
 
 interface ICurrencyDetailPageProps {
   currencyId: string;
@@ -29,6 +30,8 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currencyData, setCurrencyData] = useState<ICurrencyDetail>({} as ICurrencyDetail);
+
+  const chainIcon = getChainIcon(currencyId);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -57,7 +60,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     }
   }, [currencyData]);
 
-  const {currencyName, transactionHistoryData, chainIcon} = currencyData;
+  const {currencyName, transactionHistoryData} = currencyData;
   const headTitle = `${currencyName} - BAIFA`;
 
   const backClickHandler = () => router.back();
@@ -70,7 +73,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
       </button>
       {/* Info: (20231018 -Julian) Block Title */}
       <div className="flex flex-1 items-center justify-center space-x-2">
-        <Image src={chainIcon} alt={`${currencyName}_icon`} width={40} height={40} />
+        <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
         <h1 className="text-2xl font-bold lg:text-32px">
           <span className="ml-2"> {currencyName}</span>
         </h1>

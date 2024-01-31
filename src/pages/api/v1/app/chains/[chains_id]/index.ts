@@ -3,10 +3,12 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
 
-type ResponseData = {
-  chainId: string;
-  chainName: string;
-};
+type ResponseData =
+  | {
+      chainId: string;
+      chainName: string;
+    }
+  | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -30,13 +32,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const result: ResponseData = chainData
     ? {
         chainId: `${chainData.id}`,
-        chainName: chainData.chain_name,
+        chainName: `${chainData.chain_name}`,
       }
-    : // Info: (20240118 - Julian) 如果沒有找到資料，回傳空物件
-      {
-        chainId: '',
-        chainName: '',
-      };
+    : // Info: (20240118 - Julian) 如果沒有找到資料，回傳 undefined
+      undefined;
 
   res.status(200).json(result);
 }

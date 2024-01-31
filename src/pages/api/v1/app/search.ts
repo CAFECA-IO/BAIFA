@@ -17,6 +17,10 @@ type ResponseData = {
     hash?: string;
     publicTag?: string[];
     redFlagType?: string;
+    interactedAddresses?: {
+      id: string;
+      chainId: string;
+    }[];
   };
 }[];
 
@@ -85,7 +89,16 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
         'id': '1138290086',
         'chainId': 'btc',
         'createdTimestamp': 1689244021,
-        'address': '0x383488493',
+        'interactedAddresses': [
+          {
+            'id': '148208',
+            'chainId': 'usdt',
+          },
+          {
+            'id': '142523',
+            'chainId': 'usdt',
+          },
+        ],
         'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
       },
     },

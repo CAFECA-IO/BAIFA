@@ -3,9 +3,8 @@ import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
-import {getChainIcon, timestampToString, truncateText} from '../../lib/common';
+import {getChainIcon, timestampToString} from '../../lib/common';
 import {IRedFlag} from '../../interfaces/red_flag';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IRedFlagItemProps {
   redFlagData: IRedFlag;
@@ -13,7 +12,7 @@ interface IRedFlagItemProps {
 
 const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {id, chainId, addressId, createdTimestamp, redFlagType} = redFlagData;
+  const {id, chainId, createdTimestamp, redFlagType} = redFlagData;
 
   const chainIcon = getChainIcon(chainId);
   const flaggingTime = timestampToString(createdTimestamp);
@@ -38,12 +37,9 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
           className="flex flex-1 items-center space-x-2 text-sm font-bold lg:text-xl"
         >
           <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
-          <h2 title={addressId}>
-            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-            <span className="text-primaryBlue">
-              {' '}
-              {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
-            </span>
+          <h2>
+            {t('COMMON.RED_FLAG_ITEM_TITLE')}
+            <span className="text-primaryBlue"> {id}</span>
           </h2>
         </Link>
         {/* Info: (20231109 - Julian) Flag Type */}
