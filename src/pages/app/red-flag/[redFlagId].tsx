@@ -20,6 +20,12 @@ import {BFAURL} from '../../../constants/url';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
 import {ITransaction} from '../../../interfaces/transaction';
 
+/* Info: (20240201 - Liz) Red Flag Detail Page workflow
+- step 1: Loading
+- step 2: Get red flag detail data
+- step 3: Display red flag detail data or error handling(data not found)
+*/
+
 interface IRedFlagDetailPageProps {
   redFlagId: string;
 }
@@ -76,8 +82,6 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     };
   }, [redFlagData, transactionHistoryData]);
 
-  if (!redFlagData.id) return <h1>Data not found</h1>;
-
   const headTitle = `${t('RED_FLAG_ADDRESS_PAGE.MAIN_TITLE')} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
@@ -87,6 +91,9 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     // ToDo: (20231215 - Julian) Add loading animation
     <h1>Loading...</h1>
   );
+
+  // ToDo: (20240201 - Liz) Add error handling for data not found
+  if (!redFlagData.id) return <h1>Data not found</h1>;
 
   return (
     <>

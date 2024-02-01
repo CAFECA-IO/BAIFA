@@ -5,17 +5,18 @@ import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
 import {ITransaction} from '../../../../../interfaces/transaction';
 import {IRedFlagDetail} from '../../../../../interfaces/red_flag';
 
-type ResponseData = IRedFlagDetail;
+type ResponseData = IRedFlagDetail | string;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
 
-  // Info: (20240131 - Liz) 解構 URL 參數，同時進行類型轉換
-  const red_flag_id = req.query.red_flag_id as unknown as number;
+  // Info: (20240131 - Liz) 解構 URL 參數，並將字串轉換成數字
+  const red_flag_id = parseInt(req.query.red_flag_id as string, 10);
 
-  // Info: (20240131 - Liz) 若 URL 參數不符合預期，回傳 400
-  if (red_flag_id === undefined) {
-    return res.status(400);
+  // Info: (20240131 - Liz) 若 URL 參數沒有成功轉換成數字，回傳 400
+  if (Number.isNaN(red_flag_id)) {
+    res.status(400).send('400 - typeof red_flag_id must be Number');
+    return;
   }
 
   const codes = await prisma.codes.findMany({
@@ -27,52 +28,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // // Info: (20240131 - Liz) 取得 red flag type 對照表
-  // const codesRedFlagType = await prisma.codes.findMany({
-  //   where: {
-  //     table_name: 'red_flags',
-  //     table_column: 'red_flag_type',
-  //   },
-  //   select: {
-  //     value: true,
-  //     meaning: true,
-  //   },
-  // });
-
-  // // Info: (20240131 - Liz) 取得 transaction status 對照表
-  // const codesTransactionStatus = await prisma.codes.findMany({
-  //   where: {
-  //     table_name: 'transactions',
-  //     table_column: 'status',
-  //   },
-  //   select: {
-  //     value: true,
-  //     meaning: true,
-  //   },
-  // });
-
-  // // Info: (20240131 - Liz) 取得 transaction type 對照表
-  // const codesTransactionType = await prisma.codes.findMany({
-  //   where: {
-  //     table_name: 'transactions',
-  //     table_column: 'type',
-  //   },
-  //   select: {
-  //     value: true,
-  //     meaning: true,
-  //   },
-  // });
-
-  // Info: (20240131 - Liz) 透過 Prisma 查詢資料庫
-
-  // Deprecated: (丟棄日 - Liz)
-  // eslint-disable-next-line no-console
-  console.log('TYPE ', typeof red_flag_id);
-  // Todo: (20240131 - Liz) 這裡的 red_flag_id 會是 string，但是 Prisma 需要的是 number，所以要轉換
-
   const redFlagData = await prisma.red_flags.findUnique({
     where: {
-      id: red_flag_id as unknown as number,
+      id: red_flag_id,
     },
     select: {
       id: true,
@@ -86,6 +44,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
+  // Info: (20240131 - Liz) 若查無資料，回傳 404
+  if (redFlagData === null) {
+    res.status(404).send('404 - redFlagData Not Found');
+    return;
+  }
+
   // Info: (20240131 - Liz) 根據 redFlagData.chain_id 取得 chainName
   const chainNameObj = await prisma.chains.findUnique({
     where: {
@@ -95,11 +59,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       chain_name: true,
     },
   });
-
-  // Info: (20240131 - Liz) 若查無資料，回傳 404
-  if (redFlagData === null) {
-    return res.status(404);
-  }
 
   // Info: (20240131 - Liz) 透過 redFlagData.related_transactions 從 transactions 表格讀取相關交易
   const transactions = await prisma.transactions.findMany({
