@@ -1,10 +1,7 @@
-import {useEffect, useRef} from 'react';
-import useStateRef from 'react-usestateref';
+import {useEffect, useRef, useState} from 'react';
 
 function useOuterClick<T extends HTMLElement>(initialVisibleState: boolean) {
-  const [componentVisible, setComponentVisible, componentVisibleRef] =
-    useStateRef<boolean>(initialVisibleState);
-
+  const [componentVisible, setComponentVisible] = useState<boolean>(initialVisibleState);
   const targetRef = useRef<T>(null);
 
   function handleClickOutside(this: Document, event: MouseEvent): void {
@@ -21,7 +18,7 @@ function useOuterClick<T extends HTMLElement>(initialVisibleState: boolean) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return {targetRef: targetRef, componentVisible: componentVisibleRef.current, setComponentVisible};
+  return {targetRef: targetRef, componentVisible: componentVisible, setComponentVisible};
 }
 
 export default useOuterClick;

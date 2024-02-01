@@ -8,13 +8,14 @@ import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import Footer from '../../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {getChainIcon} from '../../../../../../lib/common';
+import {getChainIcon, truncateText} from '../../../../../../lib/common';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {IRedFlag} from '../../../../../../interfaces/red_flag';
 import RedFlagList from '../../../../../../components/red_flag_list/red_flag_list';
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../../../../../constants/config';
 
 interface IRedFlagOfAddressPageProps {
   chainId: string;
@@ -49,16 +50,18 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     if (redFlagData) {
       setRedFlagData(redFlagData);
     }
-    timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
+    timerRef.current = setTimeout(() => setIsLoading(false), 500);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [redFlagData]);
 
   const backClickHandler = () => router.back();
@@ -98,7 +101,8 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
                 <div className="flex items-center space-x-2">
                   <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
                   <p className="text-xl">
-                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {addressId}
+                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}{' '}
+                    {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
                   </p>
                 </div>
               </div>
@@ -131,7 +135,7 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
 
 export default RedFlagOfAddressPage;
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   // ToDo: (20231213 - Julian) Add dynamic paths
   const paths = [
     {

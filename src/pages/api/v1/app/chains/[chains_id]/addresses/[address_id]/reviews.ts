@@ -17,7 +17,6 @@ type ResponseData = {
   id: string;
   address: string;
   score: number;
-  chainIcon: string;
   reviewData: ReviewData[];
 };
 

@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect, useContext, useRef} from 'react';
 import {AppContext} from '../../../contexts/app_context';
 import {MarketContext} from '../../../contexts/market_context';
 import {useRouter} from 'next/router';
@@ -15,11 +15,10 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {IRedFlagDetail} from '../../../interfaces/red_flag';
-import {getChainIcon, truncateText} from '../../../lib/common';
+import {getChainIcon} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
 import {ITransaction} from '../../../interfaces/transaction';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../../constants/config';
 
 interface IRedFlagDetailPageProps {
   redFlagId: string;
@@ -54,23 +53,25 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const {chainId, addressId, transactionHistoryData} = redFlagData;
+  const {id, chainId, transactionHistoryData} = redFlagData;
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     if (redFlagData) {
       setRedFlagData(redFlagData);
     }
     if (transactionHistoryData) {
       setTransactionData(transactionHistoryData);
     }
+    timerRef.current = setTimeout(() => setIsLoading(false), 500);
 
-    timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, [redFlagData]);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [redFlagData, transactionHistoryData]);
 
   const headTitle = `${t('RED_FLAG_ADDRESS_PAGE.MAIN_TITLE')} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
@@ -104,17 +105,11 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
               </button>
               {/* Info: (20231110 -Julian) Red Flag Address Title */}
               <div className="flex flex-1 flex-col items-center justify-center gap-4 text-2xl font-bold lg:flex-row lg:text-32px">
-                <h1>{t('RED_FLAG_ADDRESS_PAGE.RED_FLAG')}</h1>
-                <div className="flex items-center justify-center gap-4">
-                  <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
-                  <h1 title={addressId}>
-                    {t('RED_FLAG_ADDRESS_PAGE.ADDRESS')}
-                    <span className="text-primaryBlue">
-                      {' '}
-                      {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
-                    </span>
-                  </h1>
-                </div>
+                <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+                <h1>
+                  {t('RED_FLAG_ADDRESS_PAGE.RED_FLAG')}
+                  <span className="text-primaryBlue"> {id}</span>
+                </h1>
               </div>
             </div>
 
@@ -185,7 +180,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   // ToDo: (20231213 - Julian) Add dynamic paths
   const paths = [
     {

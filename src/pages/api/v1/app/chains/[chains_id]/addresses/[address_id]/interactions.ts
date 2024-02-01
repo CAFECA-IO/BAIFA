@@ -7,7 +7,6 @@ type ResponseData = {
   id: string;
   type: 'address' | 'contract';
   chainId: string;
-  chainIcon: string;
   publicTag: string[];
   createdTimestamp: number;
   transactionCount: number;
@@ -59,72 +58,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // Info: (20240124 - Julian) 取得 chain_icon
-  const chainData = await prisma.chains.findUnique({
-    where: {
-      id: chain_id,
-    },
-    select: {
-      chain_icon: true,
-    },
-  });
-  const chainIcon = chainData ? chainData.chain_icon : '';
-
   const result: ResponseData = interactedList
     ? interactedList.map(address => {
+        const interactedTimestamp = address.created_timestamp
+          ? new Date(address.created_timestamp).getTime() / 1000
+          : 0;
+
         return {
-          id: address.address,
+          id: `${address.address}`,
           type: 'address',
           chainId: `${chain_id}`,
-          chainIcon: chainIcon,
           publicTag: [], // ToDo: (20240124 - Julian) 補上這個欄位
-          createdTimestamp: new Date(address.created_timestamp).getTime() / 1000,
+          createdTimestamp: interactedTimestamp,
           transactionCount: 0, // ToDo: (20240124 - Julian) 補上這個欄位
         };
       })
     : [];
 
   res.status(200).json(result);
-  /*  
-  const result: ResponseData = [
-    {
-      'id': '122134',
-      'type': 'address',
-      'chainId': 'eth',
-      'chainIcon': '/currencies/eth.svg',
-      'publicTag': ['PUBLIC_TAG.UNKNOWN_USER'],
-      'createdTimestamp': 167823123,
-      'transactionCount': 2,
-    },
-    {
-      'id': '129381',
-      'type': 'address',
-      'chainId': 'eth',
-      'chainIcon': '/currencies/eth.svg',
-      'publicTag': ['PUBLIC_TAG.UNKNOWN_USER'],
-      'createdTimestamp': 167538231,
-      'transactionCount': 3,
-    },
-    {
-      'id': '322738',
-      'type': 'contract',
-      'chainId': 'eth',
-      'chainIcon': '/currencies/eth.svg',
-      'publicTag': ['PUBLIC_TAG.UNKNOWN_USER'],
-      'createdTimestamp': 1678273194,
-      'transactionCount': 2,
-    },
-    {
-      'id': '324472',
-      'type': 'contract',
-      'chainId': 'eth',
-      'chainIcon': '/currencies/eth.svg',
-      'publicTag': ['PUBLIC_TAG.UNKNOWN_USER'],
-      'createdTimestamp': 1681310427,
-      'transactionCount': 1,
-    },
-    //...
-  ];
-
-  res.status(200).json(result); */
 }

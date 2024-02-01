@@ -25,12 +25,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
 
   const result: ResponseData = blacklistData.map(item => {
+    const createdTimestamp = item.created_timestamp
+      ? new Date(item.created_timestamp).getTime() / 1000
+      : 0;
     return {
       id: `${item.address_id}`,
       chainId: `${item.chain_id}`,
-      latestActiveTime: new Date(item.created_timestamp).getTime() / 1000,
-      flaggingRecords: [],
-      publicTag: [item.public_tag],
+      latestActiveTime: createdTimestamp,
+      flaggingRecords: [], // ToDo: (20240130 - Julian) 補上這個欄位
+      publicTag: [], // ToDo: (20240130 - Julian) 這邊要串 public tag 的資料
     };
   });
 
