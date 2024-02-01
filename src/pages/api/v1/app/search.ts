@@ -45,6 +45,10 @@ interface ResponseDataBlacklist extends BaseResponseData {
 interface ResponseDataRedFlag extends BaseResponseData {
   address: string;
   redFlagType: string;
+  interactedAddresses?: {
+    id: string;
+    chainId: string;
+  }[];
 }
 
 // Combining all types into a single union type
@@ -207,7 +211,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     blocks.forEach(item => {
-      if (latestBlock) {
+      if (latestBlock && latestBlock.number && item.number) {
         if (THRESHOLD_FOR_HIGH_BLOCK_STABILITY < latestBlock.number - item.number) {
           stability = STABILITY.HIGH;
         } else if (
@@ -227,7 +231,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
-          createdTimestamp: item?.created_timestamp?.getTime() / 1000 ?? 0,
+          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
           stability: stability,
         },
       });
@@ -284,7 +288,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
-          createdTimestamp: item?.created_timestamp?.getTime() / 1000 ?? 0,
+          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
           contractAddress: `${item.contract_address}`,
         },
       });
@@ -310,7 +314,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
-          createdTimestamp: item?.created_timestamp?.getTime() / 1000 ?? 0,
+          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
           evidenceAddress: `${item.contract_address}`,
         },
       });
@@ -336,7 +340,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
-          createdTimestamp: item?.created_timestamp?.getTime() / 1000 ?? 0,
+          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
           hash: `${item.hash}`,
         },
       });
@@ -388,7 +392,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           data: {
             id: `${item.id}`,
             chainId: `${item.chain_id}`,
-            createdTimestamp: item?.created_timestamp?.getTime() / 1000 ?? 0,
+            createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
             address: item.related_addresses.join(', '), // Or handle array as needed
             redFlagType: `${item.red_flag_type}`,
           },
