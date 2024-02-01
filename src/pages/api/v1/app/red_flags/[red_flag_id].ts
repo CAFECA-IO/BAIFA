@@ -4,6 +4,8 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
 import {ITransaction} from '../../../../../interfaces/transaction';
 import {IRedFlagDetail} from '../../../../../interfaces/red_flag';
+import { IAddress } from '../../../../../interfaces/address';
+import { IAddressInfo } from '../../../../../interfaces/address_info';
 
 type ResponseData = IRedFlagDetail | string;
 
@@ -101,13 +103,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const from = [
       {
         address: transaction.from_address as unknown as string,
-        type: 'address',
+        type: 'address' as IAddressInfo['type'],
       },
     ];
     const to = [
       {
         address: transaction.to_address as unknown as string,
-        type: 'address',
+        type: 'address' as IAddressInfo['type'],
       },
     ];
 
@@ -139,7 +141,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const result: ResponseData = {
     id,
     chainId,
-    chainName,
     redFlagType,
     createdTimestamp,
     interactedAddresses,
