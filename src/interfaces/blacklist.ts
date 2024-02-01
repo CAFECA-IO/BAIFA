@@ -9,5 +9,4 @@ export interface IBlackList extends ICommonData {
 export interface IBlackListDetail extends IBlackList {
   latestActiveTime: number;
   flaggingRecords: IRedFlagType[];
-  publicTag: string[];
 }

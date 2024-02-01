@@ -178,7 +178,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
           createdTimestamp: item.created_timestamp
-            ? Math.floor(item.created_timestamp.getTime())
+            ? item.created_timestamp
             : 0,
           stability: stability,
         },
@@ -205,7 +205,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
-          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() : 0,
+          createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
           hash: `${item.hash}`,
         },
       });
@@ -231,7 +231,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
-          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() : 0,
+          createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
           contractAddress: `${item.contract_address}`,
         },
       });
@@ -256,7 +256,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         data: {
           id: `${item.evidence_id}`,
           chainId: `${item.chain_id}`,
-          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() : 0,
+          createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
           evidenceAddress: `${item.contract_address}`,
         },
       });
@@ -284,7 +284,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           data: {
             id: `${item.id}`,
             chainId: `${item.chain_id}`,
-            createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() : 0,
+            createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
             redFlagType: `${item.red_flag_type}`,
             interactedAddresses: item.related_addresses.map(address => {
               return {
@@ -327,7 +327,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
-          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() : 0,
+          createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
           address: `${item.address}`,
           flaggingCount: redFlags.length,
           riskLevel: RISK_LEVEL.LOW_RISK,
@@ -356,7 +356,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             data: {
               id: `${item.id}`,
               chainId: `${item.chain_id}`,
-              createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() : 0,
+              createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
               address: `${item.address_id}`,
               publicTag: item.public_tag ? item.public_tag.split(',') : [], // TODO: 假設 public_tag 是以逗號分隔的字串，如果 schema 改成 string[] 要再改回來 (20240201 - Shirley)
             },
@@ -383,7 +383,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           data: {
             id: `${item.id}`,
             chainId: `${item.chain_id}`,
-            createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() : 0,
+            createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
             address: `${item.address_id}`,
             publicTag: item.public_tag ? item.public_tag.split(',') : [], // TODO: 假設 public_tag 是以逗號分隔的字串，如果 schema 改成 string[] 要再改回來 (20240201 - Shirley)
           },
