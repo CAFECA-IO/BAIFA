@@ -1,5 +1,5 @@
 import {IBlock} from './block';
-import {ITransaction} from './transaction';
+import {IDisplayTransaction} from './transaction';
 
 export interface IChain {
   chainId: string;
@@ -10,5 +10,5 @@ export interface IChain {
 
 export interface IChainDetail extends IChain {
   blockData: IBlock[];
-  transactionData: ITransaction[];
+  transactionData: IDisplayTransaction[];
 }

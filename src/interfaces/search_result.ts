@@ -3,11 +3,18 @@ import {IBlock} from './block';
 import {IAddress} from './address';
 import {IContract} from './contract';
 import {IEvidence} from './evidence';
+import {IRedFlagSearchResult} from './red_flag';
+import {ITransactionSearchResult} from './transaction';
+import {IBlacklist} from './blacklist';
 
 export interface ISearchResult {
   type: ISearchType;
-  data: IBlock | IAddress | IContract | IEvidence;
-  //| ISearchTransaction
-  //| ISearchRedFlag
-  //| ISearchBlacklist;
+  data:
+    | IBlock
+    | IAddress
+    | IContract
+    | IEvidence
+    | ITransactionSearchResult
+    | IRedFlagSearchResult
+    | IBlacklist;
 }

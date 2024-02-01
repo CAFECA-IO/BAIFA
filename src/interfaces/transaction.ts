@@ -1,11 +1,18 @@
 import {IRedFlagType} from '../constants/red_flag_type';
 import {ICommonData} from './common_data';
 
-export interface ITransaction extends ICommonData {
+export interface IDisplayTransaction extends ICommonData {
   status: string;
   type: string;
-  from?: {type: string; address: string}[];
-  to?: {type: string; address: string}[];
+}
+
+export interface ITransactionSearchResult extends ICommonData {
+  hash: string;
+}
+
+export interface ITransaction extends IDisplayTransaction {
+  from: {type: string; address: string}[];
+  to: {type: string; address: string}[];
 }
 
 export interface ITransactionDetail extends ITransaction {

@@ -3,16 +3,9 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 import {ITEM_PER_PAGE} from '../../../../../../../../constants/config';
+import {IDisplayTransaction} from '../../../../../../../../interfaces/transaction';
 
-type TransactionData = {
-  id: string;
-  chainId: string;
-  createdTimestamp: number;
-  type: string;
-  status: 'SUCCESS' | 'FAILED' | 'PENDING';
-};
-
-type ResponseData = TransactionData[];
+type ResponseData = IDisplayTransaction[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -72,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       chainId: `${transaction.chain_id}`,
       createdTimestamp: transaction.created_timestamp ?? 0,
       type: `${transaction.type}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 type 的轉換
-      status: 'SUCCESS', // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 status 的轉換
+      status: `${transaction.status}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 status 的轉換
     };
   });
 
