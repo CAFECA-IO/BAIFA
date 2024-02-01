@@ -1,8 +1,8 @@
 import TransactionItem from '../transaction_item/transaction_item';
-import {ITransaction} from '../../interfaces/transaction';
+import {IDisplayTransaction} from '../../interfaces/transaction';
 
 export interface ITransactionListProps {
-  transactions: ITransaction[];
+  transactions: IDisplayTransaction[];
 }
 
 // Info: (20240119 - Julian) 考慮是否廢棄這個 component

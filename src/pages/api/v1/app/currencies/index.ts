@@ -2,17 +2,13 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
+import {ICurrency} from '../../../../../interfaces/currency';
 
-type ResponseData = {
-  currencyId: string;
-  currencyName: string;
-  rank: number;
-  riskLevel: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK';
-}[];
+type ResponseData = ICurrency[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
-
+  // Info: (20240201 - Julian) 從 DB 撈出所有 currencies 的資料
   const currencies = await prisma.currencies.findMany({
     select: {
       id: true,
@@ -30,5 +26,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     };
   });
 
+  prisma.$connect();
   res.status(200).json(result);
 }

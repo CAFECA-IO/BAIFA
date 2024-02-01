@@ -2,17 +2,12 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
+import {IChain} from '../../../../../interfaces/chain';
 
-type ResponseData = {
-  chainId: string;
-  chainName: string;
-  blocks: number;
-  transactions: number;
-}[];
+type ResponseData = IChain[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
-
   // Info:(20240118 - Julian) 從 DB 撈出所有 chain 的資料
   const chains = await prisma.chains.findMany({
     select: {
@@ -34,5 +29,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     };
   });
 
+  prisma.$connect();
   res.status(200).json(result);
 }

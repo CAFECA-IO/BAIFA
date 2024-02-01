@@ -151,6 +151,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   res.status(200).json(result);
 
   /*
+import {IRedFlagDetail} from '../../../../../interfaces/red_flag';
+
+type ResponseData = IRedFlagDetail | undefined;
+
+export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const result: ResponseData = {
     'id': '140050038',
     'chainId': 'usdt',
@@ -176,6 +181,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         'from': [{'type': 'address', 'address': '912299'}],
         'to': [{'type': 'contract', 'address': '110132'}],
         'status': 'SUCCESS',
+        'type': 'Crypto Currency',
       },
       {
         'id': '912299',
@@ -184,6 +190,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         'from': [{'type': 'address', 'address': '110132'}],
         'to': [{'type': 'contract', 'address': '310683'}],
         'status': 'PENDING',
+        'type': 'Crypto Currency',
       },
       //...
     ],

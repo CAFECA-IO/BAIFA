@@ -4,16 +4,16 @@ import {useState, useEffect, useRef} from 'react';
 import BoltButton from '../../components/bolt_button/bolt_button';
 import {getChainIcon, getTimeString, truncateText} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
-import {IBlacklist} from '../../interfaces/blacklist';
+import {IBlackListDetail} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
-interface IBlacklistItemProps {
-  blacklistAddress: IBlacklist;
+interface IBlackListItemProps {
+  blacklistAddress: IBlackListDetail;
 }
 
-const BlacklistItem = ({blacklistAddress}: IBlacklistItemProps) => {
+const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {id, chainId, latestActiveTime, publicTag} = blacklistAddress;
 

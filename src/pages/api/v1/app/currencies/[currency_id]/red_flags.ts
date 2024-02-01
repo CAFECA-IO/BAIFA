@@ -2,18 +2,12 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
+import {IRedFlag} from '../../../../../../interfaces/red_flag';
 
-type ResponseData = {
-  id: string;
-  chainId: string;
-  chainName: string;
-  redFlagType: string;
-  createdTimestamp: number;
-}[];
+type ResponseData = IRedFlag[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
-
   // Info: (20240129 - Julian) 解構 URL 參數，同時進行類型轉換
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
 
@@ -28,13 +22,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  const chainId = currencyData?.chain_id ?? 0;
-  const chainName = currencyData?.name ?? '';
-
   const redFlagData = currency_id
     ? await prisma.red_flags.findMany({
         where: {
-          chain_id: chainId,
+          currency_id: currency_id,
         },
         select: {
           id: true,
@@ -46,18 +37,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     : [];
 
   const result: ResponseData = redFlagData.map(redFlag => {
-    const createdTimestamp = redFlag.created_timestamp
-      ? new Date(redFlag.created_timestamp).getTime() / 1000
-      : 0;
-
     return {
       id: `${redFlag.id}`,
       chainId: `${redFlag.chain_id}`,
-      chainName: `${chainName}`,
+      chainName: currencyData?.name ?? '',
       redFlagType: `${redFlag.red_flag_type}`,
-      createdTimestamp: createdTimestamp,
+      createdTimestamp: redFlag.created_timestamp ?? 0,
     };
   });
 
+  prisma.$connect();
   res.status(200).json(result);
 }

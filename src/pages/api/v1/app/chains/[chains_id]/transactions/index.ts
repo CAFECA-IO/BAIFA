@@ -3,20 +3,12 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
 import {ITEM_PER_PAGE} from '../../../../../../../constants/config';
+import {IDisplayTransaction} from '../../../../../../../interfaces/transaction';
 
-type Transaction = {
-  id: string;
-  chainId: string;
-  createdTimestamp: number;
-  type: string;
-  status: string;
-};
-
-type ResponseData = Transaction[];
+type ResponseData = IDisplayTransaction[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
-
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
@@ -30,10 +22,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // (20240119 - Julian) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // (20240119 - Julian) 取幾筆
 
-  // Info: (20240112 - Julian) 將 timestamp 轉換成 Date 物件
-  const startDate = start_date ? new Date(start_date * 1000) : undefined;
-  const endDate = end_date ? new Date(end_date * 1000) : undefined;
-
   // Info: (20240119 - Julian) 判斷是否有 addressId
   const addressId = typeof req.query.addressId === 'object' ? req.query.addressId : undefined;
 
@@ -44,8 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         chain_id: chain_id,
         // Info: (20240119 - Julian) 日期區間
         created_timestamp: {
-          gte: startDate,
-          lte: endDate,
+          gte: start_date,
+          lte: end_date,
         },
       },
       select: {
@@ -65,20 +53,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const resultOfChain: ResponseData = transactionsOfChain.map(transaction => {
-      // Info: (20240130 - Julian) 日期轉換
-      const createdTimestamp = transaction?.created_timestamp
-        ? new Date(transaction?.created_timestamp).getDate() / 1000
-        : 0;
-
       return {
         id: `${transaction.id}`,
         chainId: `${transaction.chain_id}`,
-        createdTimestamp: createdTimestamp,
+        createdTimestamp: transaction?.created_timestamp ?? 0,
         type: `${transaction.type}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 type 的轉換
         status: `${transaction.status}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 status 的轉換
       };
     });
 
+    prisma.$connect();
     res.status(200).json(resultOfChain);
   } else {
     // Info: (20240117 - Julian) ========= Transaction History bewteen two addresses =========
@@ -91,8 +75,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           {to_address: {equals: addressId[0] || addressId[1]}},
         ],
         created_timestamp: {
-          gte: startDate,
-          lte: endDate,
+          gte: start_date,
+          lte: end_date,
         },
       },
       select: {
@@ -112,20 +96,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const resultBetweenAddresses: ResponseData = transactionsBetweenAddresses.map(transaction => {
-      // Info: (20240130 - Julian) 日期轉換
-      const createdTimestamp = transaction?.created_timestamp
-        ? new Date(transaction?.created_timestamp).getDate() / 1000
-        : 0;
-
       return {
         id: `${transaction.id}`,
         chainId: `${transaction.chain_id}`,
-        createdTimestamp: createdTimestamp,
+        createdTimestamp: transaction?.created_timestamp ?? 0,
         type: `${transaction.type}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 type 的轉換
         status: `${transaction.status}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 status 的轉換
       };
     });
 
+    prisma.$connect();
     res.status(200).json(resultBetweenAddresses);
   }
 }

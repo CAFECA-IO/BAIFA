@@ -2,16 +2,12 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
+import {IPromotion} from '../../../../interfaces/promotion';
 
-type ResponseData = {
-  chains: number;
-  cryptoCurrencies: number;
-  blackList: number;
-};
+type ResponseData = IPromotion;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
-
   // Info: (20240119 - Julian) 計算這三個 Table 的資料筆數
   const chainsLength = await prisma.chains.count();
   const currenciesLength = await prisma.currencies.count();
@@ -23,5 +19,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     blackList: blackListLength,
   };
 
+  prisma.$connect();
   res.status(200).json(result);
 }

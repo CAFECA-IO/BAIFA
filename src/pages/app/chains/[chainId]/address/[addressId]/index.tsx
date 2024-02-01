@@ -16,7 +16,7 @@ import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {IAddress} from '../../../../../../interfaces/address';
+import {IAddressDetail} from '../../../../../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
 import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
@@ -29,12 +29,12 @@ import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/
 import {ITransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
 
-interface IAddressDetailPageProps {
+interface IAddressDetailDetailPageProps {
   addressId: string;
   chainId: string;
 }
 
-const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
+const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
@@ -43,7 +43,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [addressData, setAddressData] = useState<IAddress>({} as IAddress);
+  const [addressData, setAddressData] = useState<IAddressDetail>({} as IAddressDetail);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
   const [blockData, setBlockData] = useState<IProductionBlock[]>([]);
