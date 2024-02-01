@@ -33,5 +33,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     };
   });
 
+  prisma.$connect();
   res.status(200).json(result);
 }

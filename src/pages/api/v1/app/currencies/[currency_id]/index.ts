@@ -180,5 +180,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     : // Info: (20240130 - Julian) 如果沒有找到資料，回傳 undefined
       undefined;
 
+  prisma.$connect();
   res.status(200).json(result);
 }
