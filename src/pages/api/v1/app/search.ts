@@ -242,15 +242,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const evidences = await prisma.evidences.findMany({
       where: {
-        contract_address: {
-          contains: searchInput,
-        },
+        OR: [{evidence_id: {contains: searchInput}}, {contract_address: {contains: searchInput}}],
       },
       select: {
         id: true,
         chain_id: true,
         created_timestamp: true,
         contract_address: true,
+        evidence_id: true,
       },
     });
 
@@ -258,7 +257,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       result.push({
         type: RESPONSE_DATA_TYPE.EVIDENCE,
         data: {
-          id: `${item.id}`,
+          id: `${item.evidence_id}`,
           chainId: `${item.chain_id}`,
           createdTimestamp: item.created_timestamp
             ? Math.floor(item.created_timestamp.getTime() / 1000)
