@@ -8,13 +8,13 @@ import {timestampToString, getTimeString} from '../../lib/common';
 // import {truncateText} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IAddress} from '../../interfaces/address';
+import {IAddressDetail} from '../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
 // import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IAddressDetailProps {
-  addressData: IAddress;
+  addressData: IAddressDetail;
 }
 
 const AddressDetail = ({addressData}: IAddressDetailProps) => {

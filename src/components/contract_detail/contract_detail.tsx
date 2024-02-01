@@ -1,18 +1,18 @@
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IContract} from '../../interfaces/contract';
+import {IContractDetail} from '../../interfaces/contract';
 import Tooltip from '../tooltip/tooltip';
 import BoltButton from '../bolt_button/bolt_button';
 import {getDynamicUrl} from '../../constants/url';
 import {timestampToString, truncateText} from '../../lib/common';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
-interface IContractDetailProps {
-  contractData: IContract;
+interface IContractDetailDetailProps {
+  contractData: IContractDetail;
 }
 
-const ContractDetail = ({contractData}: IContractDetailProps) => {
+const ContractDetail = ({contractData}: IContractDetailDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {contractAddress, chainId, creatorAddressId, createdTimestamp, sourceCode} = contractData;
 

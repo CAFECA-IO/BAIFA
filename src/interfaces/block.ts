@@ -1,10 +1,8 @@
+import {ICommonData} from './common_data';
 import {IStabilityLevel} from '../constants/stability_level';
 
-export interface IBlock {
-  id: string;
-  chainId: string;
+export interface IBlock extends ICommonData {
   stability: IStabilityLevel;
-  createdTimestamp: number;
 }
 
 export interface IProductionBlock extends IBlock {
