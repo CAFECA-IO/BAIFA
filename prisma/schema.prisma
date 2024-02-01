@@ -6,11 +6,9 @@ generator client {
 }
 
 datasource dbPostgresql {
-datasource dbPostgresql {
   provider = "postgresql"
   url = env("DATABASE_URL")
 }
-
 
 
 model transaction_raw {
@@ -30,12 +28,10 @@ model transaction_raw {
   value               String
   type                String
   access_list          Json
-  access_list          Json
   chain_id             String
   v                   String
   r                   String
   s                   String
-  parse_finished  Boolean  @default(false)
   parse_finished  Boolean  @default(false)
 }
 
@@ -46,7 +42,6 @@ model block_raw {
   extra_data        String
   gas_limit         String
   gas_used          String
-  hash             String @unique   
   hash             String @unique   
   logs_bloom        String
   miner            String
@@ -61,7 +56,6 @@ model block_raw {
   timestamp        String
   total_difficulty  String
   transactions_root String
-  uncles           Json
   uncles           Json
   burnt_fees Int 
   transaction_count Int
