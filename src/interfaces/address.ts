@@ -1,8 +1,8 @@
 import {IProductionBlock} from './block';
 import {ICommonData} from './common_data';
 import {IInteractionItem} from './interaction_item';
-import {IRedFlag} from './red_flag';
 import {IReviewDetail} from './review';
+import {ITransaction} from './transaction';
 
 export interface IAddress extends ICommonData {
   address: string;
@@ -19,6 +19,7 @@ export interface IAddressDetail extends IInteractionItem, IAddress {
   totalSent?: number;
   totalReceived?: number;
   blockProducedData: IProductionBlock[];
+  transactionHistoryData: ITransaction[];
   score: number;
   reviewData: IReviewDetail[];
 }

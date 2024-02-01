@@ -2,15 +2,9 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
+import {IInteractionItem} from '../../../../../../../../interfaces/interaction_item';
 
-type ResponseData = {
-  id: string;
-  type: 'address' | 'contract';
-  chainId: string;
-  publicTag: string[];
-  createdTimestamp: number;
-  transactionCount: number;
-}[];
+type ResponseData = IInteractionItem[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();

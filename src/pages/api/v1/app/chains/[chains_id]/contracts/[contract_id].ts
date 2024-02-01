@@ -2,35 +2,11 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
+import {IAddressInfo} from '../../../../../../../interfaces/address_info';
+import {IContractDetail} from '../../../../../../../interfaces/contract';
+import {ITransaction} from '../../../../../../../interfaces/transaction';
 
-type AddressInfo = {
-  type: 'address' | 'contract';
-  address: string;
-};
-
-type TransactionData = {
-  id: string;
-  chainId: string;
-  createdTimestamp: number;
-  from: AddressInfo[];
-  to: AddressInfo[];
-  type: 'Crypto Currency' | 'Evidence' | 'NFT';
-  status: 'PENDING' | 'SUCCESS' | 'FAILED';
-};
-
-type ResponseData =
-  | {
-      id: string;
-      type: 'contract';
-      contractAddress: string;
-      chainId: string;
-      creatorAddressId: string;
-      createdTimestamp: number;
-      sourceCode: string;
-      transactionHistoryData: TransactionData[];
-      publicTag: string[];
-    }
-  | undefined;
+type ResponseData = IContractDetail | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -71,10 +47,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
       })
     : [];
-  const transactionHistoryData: TransactionData[] = transactionData.map(transaction => {
+  const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
-    const from: AddressInfo[] = fromAddresses
+    const from: IAddressInfo[] = fromAddresses
       // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
       .filter(address => address !== 'null')
       .map(address => {
@@ -86,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // Info: (20240130 - Julian) to address 轉換
     const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
-    const to: AddressInfo[] = toAddresses
+    const to: IAddressInfo[] = toAddresses
       // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
       .filter(address => address !== 'null')
       .map(address => {
@@ -117,6 +93,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         createdTimestamp: contractData.created_timestamp ?? 0,
         sourceCode: `${contractData.source_code}`,
         transactionHistoryData: transactionHistoryData,
+        transactionCount: transactionHistoryData.length,
         publicTag: [], // ToDo: (20240124 - Julian) 補上這個欄位
       }
     : undefined;
