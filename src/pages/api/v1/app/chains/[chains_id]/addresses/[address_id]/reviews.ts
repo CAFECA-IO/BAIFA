@@ -2,23 +2,9 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
+import {IReviews} from '../../../../../../../../interfaces/review';
 
-type ReviewData = {
-  id: string;
-  transactionId: string;
-  chainId: string;
-  createdTimestamp: number;
-  authorAddressId: string;
-  content: string;
-  stars: number;
-};
-
-type ResponseData = {
-  id: string;
-  address: string;
-  score: number;
-  reviewData: ReviewData[];
-};
+type ResponseData = IReviews;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();

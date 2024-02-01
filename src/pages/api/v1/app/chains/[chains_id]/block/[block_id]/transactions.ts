@@ -3,16 +3,9 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 import {ITEM_PER_PAGE} from '../../../../../../../../constants/config';
+import {IDisplayTransaction} from '../../../../../../../../interfaces/transaction';
 
-type TransactionData = {
-  id: string;
-  chainId: string;
-  createdTimestamp: number;
-  type: string;
-  status: 'SUCCESS' | 'FAILED' | 'PENDING';
-};
-
-type ResponseData = TransactionData[];
+type ResponseData = IDisplayTransaction[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -28,10 +21,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240125 - Julian) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // (20240119 - Julian) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // (20240119 - Julian) 取幾筆
-
-  // Info: (20240125 - Julian) 將 timestamp 轉換成 Date 物件
-  const startDate = start_date ? new Date(start_date * 1000) : undefined;
-  const endDate = end_date ? new Date(end_date * 1000) : undefined;
 
   // Info: (20240119 - Julian) 從 blocks Table 撈出 block_id 對應的 blockhash
   const blockHash = await prisma.blocks.findUnique({
@@ -49,8 +38,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       block_hash: blockHash?.hash,
       // Info: (20240125 - Julian) 日期區間
       created_timestamp: {
-        gte: startDate,
-        lte: endDate,
+        gte: start_date,
+        lte: end_date,
       },
     },
     select: {
@@ -71,19 +60,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   // Info: (20240118 - Julian) 轉換成 API 要的格式
   const result: ResponseData = transactions.map(transaction => {
-    // Info: (20240130 - Julian) 日期轉換
-    const createdTimestamp = transaction?.created_timestamp
-      ? new Date(transaction?.created_timestamp).getDate() / 1000
-      : 0;
-
     return {
       id: `${transaction.id}`,
       chainId: `${transaction.chain_id}`,
-      createdTimestamp: createdTimestamp,
+      createdTimestamp: transaction.created_timestamp ?? 0,
       type: `${transaction.type}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 type 的轉換
-      status: 'SUCCESS', // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 status 的轉換
+      status: `${transaction.status}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 status 的轉換
     };
   });
 
+  prisma.$connect();
   res.status(200).json(result);
 }

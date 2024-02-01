@@ -1,31 +1,25 @@
 import {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
-// ToDo: (20231017 - Julian) import BoltButton
-// import BoltButton from '../bolt_button/bolt_button';
 import Tooltip from '../tooltip/tooltip';
 import {timestampToString, getTimeString} from '../../lib/common';
-// ToDo: (20231017 - Julian) import truncateText
-// import {truncateText} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IAddress} from '../../interfaces/address';
+import {IAddressDetail} from '../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
-// import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IAddressDetailProps {
-  addressData: IAddress;
+  addressData: IAddressDetail;
 }
 
 const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
-    id,
     address,
     chainId,
     createdTimestamp,
     latestActiveTime,
-    // relatedAddresses, // To Do: (20231017 - Julian) relatedAddresses
+    // relatedAddresses, // ToDo: (20240201 - Julian) 可能移除
     interactedAddressCount,
     interactedContactCount,
     flaggingCount,
@@ -53,7 +47,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     };
   }, [latestActiveTime, sinceTime]);
 
-  const dynamicUrl = getDynamicUrl(`${chainId}`, `${id}`);
+  const dynamicUrl = getDynamicUrl(`${chainId}`, `${address}`);
 
   const displaySignUpTime = (
     <div className="flex flex-wrap items-center">

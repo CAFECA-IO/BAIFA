@@ -2,39 +2,14 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
+import {IAddressInfo} from '../../../../../../../interfaces/address_info';
+import {IContractDetail} from '../../../../../../../interfaces/contract';
+import {ITransaction} from '../../../../../../../interfaces/transaction';
 
-type AddressInfo = {
-  type: 'address' | 'contract';
-  address: string;
-};
-
-type TransactionData = {
-  id: string;
-  chainId: string;
-  createdTimestamp: number;
-  from: AddressInfo[];
-  to: AddressInfo[];
-  type: 'Crypto Currency' | 'Evidence' | 'NFT';
-  status: 'PENDING' | 'SUCCESS' | 'FAILED';
-};
-
-type ResponseData =
-  | {
-      id: string;
-      type: 'contract';
-      contractAddress: string;
-      chainId: string;
-      creatorAddressId: string;
-      createdTimestamp: number;
-      sourceCode: string;
-      transactionHistoryData: TransactionData[];
-      publicTag: string[];
-    }
-  | undefined;
+type ResponseData = IContractDetail | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
-
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
   const contractId =
     typeof req.query.contract_id === 'string' ? parseInt(req.query.contract_id) : undefined;
@@ -72,15 +47,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
       })
     : [];
-  const transactionHistoryData: TransactionData[] = transactionData.map(transaction => {
-    // Info: (20240130 - Julian) 日期轉換
-    const transactionTimestamp = transaction.created_timestamp
-      ? new Date(transaction.created_timestamp).getTime() / 1000
-      : 0;
-
+  const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
-    const from: AddressInfo[] = fromAddresses
+    const from: IAddressInfo[] = fromAddresses
       // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
       .filter(address => address !== 'null')
       .map(address => {
@@ -92,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // Info: (20240130 - Julian) to address 轉換
     const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
-    const to: AddressInfo[] = toAddresses
+    const to: IAddressInfo[] = toAddresses
       // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
       .filter(address => address !== 'null')
       .map(address => {
@@ -105,17 +75,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return {
       id: `${transaction.id}`,
       chainId: `${transaction.chain_id}`,
-      createdTimestamp: transactionTimestamp,
+      createdTimestamp: transaction.created_timestamp ?? 0,
       from: from,
       to: to,
       type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
       status: 'PENDING', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 status 的轉換
     };
   });
-
-  const contractCreatedTimestamp = contractData?.created_timestamp
-    ? new Date(contractData?.created_timestamp).getTime() / 1000
-    : 0;
 
   const result: ResponseData = contractData
     ? {
@@ -124,12 +90,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         contractAddress: `${contractData.contract_address}`,
         chainId: `${contractData.chain_id}`,
         creatorAddressId: `${contractData.creator_address}`,
-        createdTimestamp: contractCreatedTimestamp,
+        createdTimestamp: contractData.created_timestamp ?? 0,
         sourceCode: `${contractData.source_code}`,
         transactionHistoryData: transactionHistoryData,
+        transactionCount: transactionHistoryData.length,
         publicTag: [], // ToDo: (20240124 - Julian) 補上這個欄位
       }
     : undefined;
 
+  prisma.$connect();
   res.status(200).json(result);
 }

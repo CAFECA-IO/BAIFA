@@ -1,12 +1,20 @@
 import {ISearchType} from '../constants/search_type';
-import {IAddress} from './address';
 import {IBlock} from './block';
+import {IAddress} from './address';
 import {IContract} from './contract';
 import {IEvidence} from './evidence';
-import {IRedFlagDetail} from './red_flag';
-import {ITransactionDetail} from './transaction';
+import {IRedFlagSearchResult} from './red_flag';
+import {ITransactionSearchResult} from './transaction';
+import {IBlackList} from './blacklist';
 
 export interface ISearchResult {
   type: ISearchType;
-  data: IBlock | IAddress | IContract | IEvidence | ITransactionDetail | IRedFlagDetail;
+  data:
+    | IBlock
+    | IAddress
+    | IContract
+    | IEvidence
+    | ITransactionSearchResult
+    | IRedFlagSearchResult
+    | IBlackList;
 }

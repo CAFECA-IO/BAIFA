@@ -147,9 +147,18 @@ export const roundToDecimal = (x: number, decimal: number) => {
 };
 
 export const getChainIcon = (chainId: string) => {
+  if (!chainId) return {src: '/chains/default_chain.svg', alt: 'chain_icon'};
   return {
-    src: `/currencies/${chainId}.svg`,
-    alt: `${chainId}_icon`,
+    src: `/chains/${chainId}.svg`,
+    alt: `chain_icon`,
+  };
+};
+
+export const getCurrencyIcon = (currencyId: string) => {
+  if (!currencyId) return {src: '/currencies/default_currency.svg', alt: 'currency_icon'};
+  return {
+    src: `/currencies/${currencyId}.svg`,
+    alt: `currency_icon`,
   };
 };
 

@@ -5,6 +5,7 @@ import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
 import {THRESHOLD_FOR_BLOCK_STABILITY} from '../../../../constants/config';
 import {isValid64BitInteger} from '../../../../lib/common';
 import {PrismaClient} from '@prisma/client';
+import {ISearchResult} from '../../../../interfaces/search_result';
 
 // Info: Base type for common fields (20240131 - Shirley)
 interface BaseResponseData {
