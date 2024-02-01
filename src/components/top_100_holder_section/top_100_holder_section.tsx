@@ -7,7 +7,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 import {DEFAULT_TRUNCATE_LENGTH, ITEM_PER_PAGE} from '../../constants/config';
-import {getChainIcon, roundToDecimal, truncateText, withCommas} from '../../lib/common';
+import {getCurrencyIcon, roundToDecimal, truncateText, withCommas} from '../../lib/common';
 import {ICurrencyDetail, IHolder} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
@@ -20,7 +20,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {currencyId, holders, holderCount, unit} = currencyData;
 
-  const chainIcon = getChainIcon(currencyId);
+  const chainIcon = getCurrencyIcon(currencyId);
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(holderCount / ITEM_PER_PAGE));

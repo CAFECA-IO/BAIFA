@@ -159,7 +159,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
       <h2 className="text-xl text-lilac">
         {t('COMMON.TRANSACTION_HISTORY_TITLE')} ({transactionCount})
       </h2>
-      <div className="flex w-full flex-col rounded-lg bg-darkPurple px-6 py-4 drop-shadow-xl lg:h-950px">
+      <div className="flex w-full flex-col rounded-lg bg-darkPurple px-6 py-4 drop-shadow-xl lg:h-1050px">
         {/* Info: (20231113 - Julian) Search Filter */}
         <div className="flex w-full flex-col items-end space-y-4">
           <div className="flex w-full flex-col items-center justify-between lg:flex-row">

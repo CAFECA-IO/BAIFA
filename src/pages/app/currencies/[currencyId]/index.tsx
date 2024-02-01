@@ -16,7 +16,7 @@ import {TranslateFunction} from '../../../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 import {AppContext} from '../../../../contexts/app_context';
 import {MarketContext} from '../../../../contexts/market_context';
-import {getChainIcon} from '../../../../lib/common';
+import {getCurrencyIcon} from '../../../../lib/common';
 
 interface ICurrencyDetailPageProps {
   currencyId: string;
@@ -31,7 +31,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currencyData, setCurrencyData] = useState<ICurrencyDetail>({} as ICurrencyDetail);
 
-  const chainIcon = getChainIcon(currencyId);
+  const chainIcon = getCurrencyIcon(currencyId);
 
   useEffect(() => {
     if (!appCtx.isInit) {
