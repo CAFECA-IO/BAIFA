@@ -1,7 +1,7 @@
 // 011 - GET /app/chains/:chain_id/addresses/:address_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../../lib/utils/prismaUtils';
+import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 
 type RelatedAddressInfo = {
   id: string;
@@ -63,6 +63,7 @@ type ResponseData =
   | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  const prisma = getPrismaInstance();
   // Info: (20240122 - Julian) 解構 URL 參數，同時進行類型轉換
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
 

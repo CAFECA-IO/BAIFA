@@ -1,7 +1,7 @@
 // 020 - GET /app/blacklist
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../lib/utils/prismaUtils';
+import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
   id: string;
@@ -12,6 +12,8 @@ type ResponseData = {
 }[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  const prisma = getPrismaInstance();
+  // Info: (20240201 - Julian) 從 DB 撈出所有 black_lists 的資料
   const blacklistData = await prisma.black_lists.findMany({
     select: {
       id: true,
