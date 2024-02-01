@@ -2,65 +2,13 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
+import {IAddressInfo} from '../../../../../../../../interfaces/address_info';
+import {IAddressDetail} from '../../../../../../../../interfaces/address';
+import {IReviewDetail} from '../../../../../../../../interfaces/review';
+import {IProductionBlock} from '../../../../../../../../interfaces/block';
+import {ITransaction} from '../../../../../../../../interfaces/transaction';
 
-type RelatedAddressInfo = {
-  id: string;
-  chainId: string;
-};
-
-type AddressInfo = {
-  type: 'address' | 'contract';
-  address: string;
-};
-
-type ReviewData = {
-  id: string;
-  transactionId: string;
-  chainId: string;
-  createdTimestamp: number;
-  authorAddressId: string;
-  content: string;
-  stars: number;
-};
-
-type TransactionHistoryData = {
-  id: string;
-  chainId: string;
-  createdTimestamp: number;
-  from: AddressInfo[];
-  to: AddressInfo[];
-  type: 'Crypto Currency' | 'Evidence' | 'NFT';
-  status: 'PENDING' | 'SUCCESS' | 'FAILED';
-};
-
-type BlockProducedData = {
-  id: string;
-  createdTimestamp: number;
-  stability: 'LOW' | 'MEDIUM' | 'HIGH';
-  reward: number;
-  unit: string;
-};
-
-type ResponseData =
-  | {
-      id: string;
-      type: string;
-      address: string;
-      chainId: string;
-      createdTimestamp: number;
-      latestActiveTime: number;
-      relatedAddresses: RelatedAddressInfo[];
-      interactedAddressCount: number;
-      interactedContactCount: number;
-      score: number;
-      reviewData: ReviewData[];
-      transactionHistoryData: TransactionHistoryData[];
-      blockProducedData: BlockProducedData[];
-      flaggingCount: number;
-      riskLevel: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK';
-      publicTag: string[];
-    }
-  | undefined;
+type ResponseData = IAddressDetail | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -118,10 +66,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     : [];
 
   // Info: (20240122 - Julian) ================== transactionHistoryData ==================
-  const transactionHistoryData: TransactionHistoryData[] = transactionData.map(transaction => {
+  const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
-    const from: AddressInfo[] = fromAddresses
+    const from: IAddressInfo[] = fromAddresses
       // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
       .filter(address => address !== 'null')
       .map(address => {
@@ -133,7 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // Info: (20240130 - Julian) to address 轉換
     const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
-    const to: AddressInfo[] = toAddresses
+    const to: IAddressInfo[] = toAddresses
       // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
       .filter(address => address !== 'null')
       .map(address => {
@@ -172,19 +120,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
         select: {
           id: true,
+          chain_id: true,
           created_timestamp: true,
           reward: true,
         },
       })
     : [];
 
-  const blockProducedData: BlockProducedData[] = blockData.map(block => {
+  const blockProducedData: IProductionBlock[] = blockData.map(block => {
     // Info: (20240130 - Julian) reward 轉換
     const rewardRaw = block.reward ? parseInt(block.reward) : 0;
     const reward = rewardRaw / Math.pow(10, decimals);
 
     return {
       id: `${block.id}`,
+      chainId: `${block.chain_id}`,
       createdTimestamp: block.created_timestamp ?? 0,
       stability: 'MEDIUM', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 stability 的轉換
       reward: reward,
@@ -205,7 +155,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       stars: true,
     },
   });
-  const reviewData: ReviewData[] = reviewDataRaw.map(review => {
+  const reviewData: IReviewDetail[] = reviewDataRaw.map(review => {
     return {
       id: `${review.id}`,
       transactionId: `${review.id}`,
@@ -226,6 +176,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
     select: {
       id: true,
+      red_flag_type: true,
     },
   });
 
@@ -237,12 +188,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         chainId: `${addressData.chain_id}`,
         createdTimestamp: addressData.created_timestamp ?? 0,
         latestActiveTime: addressData.latest_active_time ?? 0,
-        relatedAddresses: [], // ToDo: (20240122 - Julian) 可能廢除
         interactedAddressCount: relatedAddresses.length,
         interactedContactCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位
         score: addressData.score ?? 0,
         reviewData: reviewData,
         transactionHistoryData: transactionHistoryData,
+        transactionCount: transactionHistoryData.length,
         blockProducedData: blockProducedData,
         flaggingCount: flaggingRecords.length,
         riskLevel: 'LOW_RISK', // ToDo: (20240122 - Julian) 補上這個欄位

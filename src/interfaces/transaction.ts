@@ -1,4 +1,4 @@
-import {IRedFlagType} from '../constants/red_flag_type';
+import {IAddressInfo} from './address_info';
 import {ICommonData} from './common_data';
 
 export interface IDisplayTransaction extends ICommonData {
@@ -11,8 +11,8 @@ export interface ITransactionSearchResult extends ICommonData {
 }
 
 export interface ITransaction extends IDisplayTransaction {
-  from: {type: string; address: string}[];
-  to: {type: string; address: string}[];
+  from: IAddressInfo[];
+  to: IAddressInfo[];
 }
 
 export interface ITransactionDetail extends ITransaction {
@@ -23,7 +23,7 @@ export interface ITransactionDetail extends ITransaction {
   fee: number;
   flaggingRecords: {
     redFlagId: string;
-    redFlagType: IRedFlagType;
+    redFlagType: string;
   }[];
   unit: string;
 }

@@ -2,13 +2,9 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
+import {IChain} from '../../../../../../interfaces/chain';
 
-type ResponseData =
-  | {
-      chainId: string;
-      chainName: string;
-    }
-  | undefined;
+type ResponseData = IChain | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();

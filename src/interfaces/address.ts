@@ -15,7 +15,6 @@ export interface IAddressDetail extends IInteractionItem, IAddress {
   //relatedAddresses: {id: string; chainId: string}[]; // ToDo: (20240201 - Julian) 可能移除
   interactedAddressCount: number;
   interactedContactCount: number;
-  flagging: IRedFlag[];
   balance?: number;
   totalSent?: number;
   totalReceived?: number;

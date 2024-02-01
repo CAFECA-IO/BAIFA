@@ -4,10 +4,10 @@ import {BFAURL} from '../../constants/url';
 import {getChainIcon, withCommas} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IChain} from '../../interfaces/chain';
+import {IDisplayChain} from '../../interfaces/chain';
 
 interface IChainCardProps {
-  chainData: IChain;
+  chainData: IDisplayChain;
 }
 
 const ChainsCard = ({chainData}: IChainCardProps) => {

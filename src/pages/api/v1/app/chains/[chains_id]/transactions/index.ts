@@ -3,16 +3,9 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
 import {ITEM_PER_PAGE} from '../../../../../../../constants/config';
+import {IDisplayTransaction} from '../../../../../../../interfaces/transaction';
 
-type Transaction = {
-  id: string;
-  chainId: string;
-  createdTimestamp: number;
-  type: string;
-  status: string;
-};
-
-type ResponseData = Transaction[];
+type ResponseData = IDisplayTransaction[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();

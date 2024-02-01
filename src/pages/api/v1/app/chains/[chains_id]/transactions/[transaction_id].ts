@@ -2,35 +2,10 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
+import {ITransactionDetail} from '../../../../../../../interfaces/transaction';
+import {IAddressInfo} from '../../../../../../../interfaces/address_info';
 
-type AddressInfo = {
-  type: 'address' | 'contract';
-  address: string;
-};
-
-type FlaggingRecords = {
-  redFlagId: string;
-  redFlagType: string;
-};
-
-type ResponseData =
-  | {
-      id: string;
-      hash: string;
-      type: 'Crypto Currency' | 'Evidence' | 'NFT';
-      status: 'PENDING' | 'SUCCESS' | 'FAILED' | 'PROCESSING';
-      chainId: string;
-      blockId: string;
-      createdTimestamp: number;
-      from: AddressInfo[];
-      to: AddressInfo[];
-      evidenceId: string | null;
-      value: number;
-      fee: number;
-      unit: string;
-      flaggingRecords: FlaggingRecords[];
-    }
-  | undefined;
+type ResponseData = ITransactionDetail | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -95,7 +70,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const fromAddresses = transactionData?.from_address
     ? transactionData?.from_address.split(',')
     : [];
-  const from: AddressInfo[] = fromAddresses
+  const from: IAddressInfo[] = fromAddresses
     // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
     .filter(address => address !== 'null')
     .map(address => {
@@ -106,7 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
   const toAddresses = transactionData?.to_address ? transactionData?.to_address.split(',') : [];
-  const to: AddressInfo[] = toAddresses
+  const to: IAddressInfo[] = toAddresses
     // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
     .filter(address => address !== 'null')
     .map(address => {
@@ -136,6 +111,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     };
   });
 
+  // Info: (20240201 - Julian) 如果 evidence_id 為 null，就不回傳
+  const evidenceId =
+    transactionData?.evidence_id !== null ? transactionData?.evidence_id : undefined;
+
   // Info: (20240119 - Julian) 轉換成 API 要的格式
   const result: ResponseData = transactionData
     ? {
@@ -148,7 +127,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         createdTimestamp: transactionData.created_timestamp ?? 0,
         from: from,
         to: to,
-        evidenceId: transactionData.evidence_id,
+        evidenceId: evidenceId,
         value: value,
         fee: feeDecimal,
         unit: unit,
