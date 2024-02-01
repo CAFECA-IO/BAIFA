@@ -66,41 +66,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
     }
 
+    // Info: Search hash, addresses in transactions (20240201 - Shirley)
     if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
-      // Info: Search transaction has in transaction_raw (20240130 - Shirley)
-      const transactionRaw = await prisma.transaction_raw.findMany({
+      const transactions = await prisma.transactions.findMany({
         where: {
           OR: [
             {hash: {startsWith: searchInput}},
-            {from: {startsWith: searchInput}},
-            {to: {startsWith: searchInput}},
-            {block_hash: {startsWith: searchInput}},
+            {from_address: {startsWith: searchInput}},
+            {to_address: {startsWith: searchInput}},
           ],
         },
-        take: INPUT_SUGGESTION_LIMIT,
+        take: INPUT_SUGGESTION_LIMIT - suggestions.size,
         select: {
           hash: true,
-          from: true,
-          to: true,
-          block_hash: true,
+          from_address: true,
+          to_address: true,
         },
       });
 
-      transactionRaw.forEach(item => {
+      transactions.forEach(item => {
         if (item.hash && item.hash.startsWith(searchInput)) {
           suggestions.add(item.hash);
-        } else if (item.from && item.from.startsWith(searchInput)) {
-          suggestions.add(item.from);
-        } else if (item.to && item.to.startsWith(searchInput)) {
-          suggestions.add(item.to);
-        } else if (item.block_hash && item.block_hash.startsWith(searchInput)) {
-          suggestions.add(item.block_hash);
+        }
+        if (item.from_address && item.from_address.startsWith(searchInput)) {
+          suggestions.add(item.from_address);
+        }
+        if (item.to_address && item.to_address.startsWith(searchInput)) {
+          suggestions.add(item.to_address);
         }
       });
     }
 
+    // Info: search hash in blocks (20240130 - Shirley)
     if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
-      // search block_hash in blocks (20240130 - Shirley)
       const blocks = await prisma.blocks.findMany({
         where: {
           hash: {
@@ -139,7 +137,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       contracts.forEach(item => {
         if (item.contract_address && item.contract_address.startsWith(searchInput)) {
           suggestions.add(item.contract_address);
-        } else if (item.creator_address && item.creator_address.startsWith(searchInput)) {
+        }
+        if (item.creator_address && item.creator_address.startsWith(searchInput)) {
           suggestions.add(item.creator_address);
         }
       });

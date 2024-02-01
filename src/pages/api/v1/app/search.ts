@@ -2,10 +2,7 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
-import {
-  THRESHOLD_FOR_HIGH_BLOCK_STABILITY,
-  THRESHOLD_FOR_MEDIUM_AND_LOW_BLOCK_STABILITY,
-} from '../../../../constants/config';
+import {THRESHOLD_FOR_BLOCK_STABILITY} from '../../../../constants/config';
 import {isValid64BitInteger} from '../../../../lib/common';
 import {PrismaClient} from '@prisma/client';
 
@@ -246,17 +243,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     blocks.forEach(item => {
       if (latestBlock && latestBlock.number && item.number) {
-        if (THRESHOLD_FOR_HIGH_BLOCK_STABILITY < latestBlock.number - item.number) {
+        if (THRESHOLD_FOR_BLOCK_STABILITY.HIGH < latestBlock.number - item.number) {
           stability = STABILITY.HIGH;
-        } else if (
-          THRESHOLD_FOR_MEDIUM_AND_LOW_BLOCK_STABILITY <
-          latestBlock.number - item.number
-        ) {
+        } else if (THRESHOLD_FOR_BLOCK_STABILITY.MEDIUM < latestBlock.number - item.number) {
           stability = STABILITY.MEDIUM;
-        } else if (
-          latestBlock.number - item.number <
-          THRESHOLD_FOR_MEDIUM_AND_LOW_BLOCK_STABILITY
-        ) {
+        } else if (latestBlock.number - item.number < THRESHOLD_FOR_BLOCK_STABILITY.MEDIUM) {
           stability = STABILITY.LOW;
         }
       }
@@ -389,9 +380,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const addresses = await prisma.addresses.findMany({
       where: {
-        address: {
-          startsWith: searchInput,
-        },
+        OR: [
+          {
+            address: {
+              startsWith: searchInput,
+            },
+          },
+          {
+            id:
+              !searchInput.startsWith('0x') && isValid64BitInteger(searchInput)
+                ? +searchInput
+                : undefined,
+          },
+        ],
       },
       select: {
         id: true,
