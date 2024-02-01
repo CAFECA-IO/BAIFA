@@ -2,14 +2,9 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
+import {IBlackList} from '../../../../interfaces/blacklist';
 
-type ResponseData = {
-  id: string;
-  chainId: string;
-  latestActiveTime: number;
-  flaggingRecords: string[];
-  publicTag: string[];
-}[];
+type ResponseData = IBlackList[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -26,9 +21,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const result: ResponseData = blacklistData.map(item => {
     return {
-      id: `${item.address_id}`,
+      id: `${item.id}`,
       chainId: `${item.chain_id}`,
+      address: `${item.address_id}`,
       latestActiveTime: item.created_timestamp ?? 0,
+      createdTimestamp: item.created_timestamp ?? 0,
       flaggingRecords: [], // ToDo: (20240130 - Julian) 補上這個欄位
       publicTag: [], // ToDo: (20240130 - Julian) 這邊要串 public tag 的資料
     };

@@ -2,33 +2,9 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
+import {IEvidenceDetail} from '../../../../../../../interfaces/evidence';
 
-type AddressInfo = {
-  type: 'address' | 'contract';
-  address: string;
-};
-
-type TransactionData = {
-  id: string;
-  chainId: string;
-  createdTimestamp: number;
-  from: AddressInfo[];
-  to: AddressInfo[];
-  status: 'PENDING' | 'SUCCESS' | 'FAILED';
-};
-
-type ResponseData =
-  | {
-      id: string;
-      chainId: string;
-      evidenceAddress: string;
-      state: 'Active' | 'Inactive';
-      creatorAddressId: string;
-      createdTimestamp: number;
-      content: string;
-      transactionHistoryData: TransactionData[];
-    }
-  | undefined;
+type ResponseData = IEvidenceDetail | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();

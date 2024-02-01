@@ -2,6 +2,8 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
+import {ICurrencyDetail} from '../../../../../../interfaces/currency';
+import {IRedFlag} from '../../../../../../interfaces/red_flag';
 
 type AddressInfo = {
   type: 'address' | 'contract';
@@ -25,23 +27,7 @@ type TransactionHistoryData = {
   status: 'PENDING' | 'SUCCESS' | 'FAILED';
 };
 
-type ResponseData =
-  | {
-      currencyId: string;
-      currencyName: string;
-      rank: number;
-      holderCount: number;
-      price: number;
-      volumeIn24h: number;
-      unit: string;
-      totalAmount: number;
-      holders: HolderData[];
-      totalTransfers: number;
-      flaggingCount: number;
-      riskLevel: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK';
-      transactionHistoryData: TransactionHistoryData[];
-    }
-  | undefined;
+type ResponseData = ICurrencyDetail | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -90,8 +76,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     };
   });
 
-  // Info: (20240125 - Julian) 從 red_flags Table 中取得 redFlagCount
-  const redFlagCount = await prisma.red_flags.count();
+  // Info: (20240125 - Julian) 從 red_flags Table 中取得資料
+  const flaggingData = await prisma.red_flags.findMany({
+    select: {
+      id: true,
+      chain_id: true,
+      red_flag_type: true,
+      created_timestamp: true,
+    },
+  });
+  const flagging: IRedFlag[] = flaggingData.map(flag => {
+    return {
+      id: `${flag.id}`,
+      chainId: `${flag.chain_id}`,
+      redFlagType: `${flag.red_flag_type}`,
+      createdTimestamp: flag.created_timestamp ?? 0,
+    };
+  });
 
   // Info: (20240125 - Julian) 從 transactions Table 中取得 transactionHistoryData
   const chainId = currencyData?.chain_id;
@@ -173,7 +174,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         totalAmount: totalAmount,
         holders: holders,
         totalTransfers: currencyData.total_transfers ?? 0,
-        flaggingCount: redFlagCount,
+        flagging: flagging,
+        flaggingCount: flagging.length,
         riskLevel: 'LOW_RISK', // ToDo: (20240125 - Julian) 需要參考 codes Table 並補上 riskLevel 的轉換
         transactionHistoryData: transactionHistoryData,
       }

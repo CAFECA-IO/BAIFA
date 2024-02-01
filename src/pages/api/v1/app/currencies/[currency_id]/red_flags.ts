@@ -2,14 +2,9 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
+import {IRedFlag} from '../../../../../../interfaces/red_flag';
 
-type ResponseData = {
-  id: string;
-  chainId: string;
-  chainName: string;
-  redFlagType: string;
-  createdTimestamp: number;
-}[];
+type ResponseData = IRedFlag[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();

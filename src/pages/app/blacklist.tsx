@@ -9,7 +9,7 @@ import SortingMenu from '../../components/sorting_menu/sorting_menu';
 import Pagination from '../../components/pagination/pagination';
 import SearchBar from '../../components/search_bar/search_bar';
 import BlacklistItem from '../../components/blacklist_item/blacklist_item';
-import {IBlacklistDetail} from '../../interfaces/blacklist';
+import {IBlackListDetail} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ILocale, TranslateFunction} from '../../interfaces/locale';
@@ -47,7 +47,7 @@ const BlackListPage = () => {
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredFlagging, setFilteredFlagging] = useState<string>(flaggingOptions[0]);
   // Info: (20231113 - Julian) Blacklist State
-  const [filteredBlacklist, setFilteredBlacklist] = useState<IBlacklistDetail[]>(blacklist);
+  const [filteredBlacklist, setFilteredBlacklist] = useState<IBlackListDetail[]>(blacklist);
 
   const headTitle = `${t('BLACKLIST_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
   const crumbs = [

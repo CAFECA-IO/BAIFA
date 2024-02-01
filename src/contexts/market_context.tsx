@@ -13,7 +13,7 @@ import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContractDetail} from '../interfaces/contract';
 import {IEvidenceDetail} from '../interfaces/evidence';
 import {ICurrency, ICurrencyDetail} from '../interfaces/currency';
-import {IBlacklistDetail} from '../interfaces/blacklist';
+import {IBlackListDetail} from '../interfaces/blacklist';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -24,7 +24,7 @@ export interface IMarketContext {
   promotionData: IPromotion;
   chainList: IChain[];
   currencyList: ICurrency[];
-  blacklist: IBlacklistDetail[];
+  blacklist: IBlackListDetail[];
 
   getChains: () => Promise<void>;
   getChainDetail: (chainId: string) => Promise<IChainDetail>;
@@ -94,7 +94,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const [promotion, setPromotion] = useState<IPromotion>(defaultPromotion);
   const [chainList, setChainList] = useState<IChain[]>([]);
   const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
-  const [blacklist, setBlacklist] = useState<IBlacklistDetail[]>([]);
+  const [blacklist, setBlacklist] = useState<IBlackListDetail[]>([]);
 
   const getPromotion = useCallback(async () => {
     let data: IPromotion = defaultPromotion;
@@ -136,7 +136,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, [setCurrencyList]);
 
   const getBlacklist = useCallback(async () => {
-    let data: IBlacklistDetail[] = [];
+    let data: IBlackListDetail[] = [];
     try {
       const response = await fetch(`${APIURL.BLACKLIST}`, {
         method: 'GET',

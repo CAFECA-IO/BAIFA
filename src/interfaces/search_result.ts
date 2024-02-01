@@ -5,7 +5,7 @@ import {IContract} from './contract';
 import {IEvidence} from './evidence';
 import {IRedFlagSearchResult} from './red_flag';
 import {ITransactionSearchResult} from './transaction';
-import {IBlacklist} from './blacklist';
+import {IBlackList} from './blacklist';
 
 export interface ISearchResult {
   type: ISearchType;
@@ -16,5 +16,5 @@ export interface ISearchResult {
     | IEvidence
     | ITransactionSearchResult
     | IRedFlagSearchResult
-    | IBlacklist;
+    | IBlackList;
 }

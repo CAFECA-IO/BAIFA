@@ -2,13 +2,9 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
+import {ICurrency} from '../../../../../interfaces/currency';
 
-type ResponseData = {
-  currencyId: string;
-  currencyName: string;
-  rank: number;
-  riskLevel: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK';
-}[];
+type ResponseData = ICurrency[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();

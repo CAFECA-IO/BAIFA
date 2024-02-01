@@ -10,7 +10,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IAddress} from '../../interfaces/address';
 import {IBlock} from '../../interfaces/block';
-import {IBlacklist} from '../../interfaces/blacklist';
+import {IBlackList} from '../../interfaces/blacklist';
 import {StabilityLevel} from '../../constants/stability_level';
 import {IContract} from '../../interfaces/contract';
 import {IEvidence} from '../../interfaces/evidence';
@@ -190,7 +190,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- BLACK LIST -----------------
       case SearchType.BLACKLIST:
-        const {address: blackListaddress, publicTag} = data as IBlacklist;
+        const {address: blackListaddress, publicTag} = data as IBlackList;
         const displayedPublicTag = (
           <div className="whitespace-nowrap rounded-lg border-violet bg-violet px-3 py-2 text-sm text-hoverWhite">
             {t(publicTag[0])}
