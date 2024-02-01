@@ -140,7 +140,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         OR: [
           {
             hash: {
-              startsWith: searchInput,
+              contains: searchInput,
             },
           },
           {
@@ -187,7 +187,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const transactions = await prisma.transactions.findMany({
       where: {
         hash: {
-          startsWith: searchInput,
+          contains: searchInput,
         },
       },
       select: {
@@ -213,7 +213,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const contracts = await prisma.contracts.findMany({
       where: {
         contract_address: {
-          startsWith: searchInput,
+          contains: searchInput,
         },
       },
       select: {
@@ -236,48 +236,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
     });
 
-    const addresses = await prisma.addresses.findMany({
-      where: {
-        OR: [
-          {
-            address: {
-              startsWith: searchInput,
-            },
-          },
-          {
-            id:
-              !searchInput.startsWith('0x') && isValid64BitInteger(searchInput)
-                ? +searchInput
-                : undefined,
-          },
-        ],
-      },
-      select: {
-        id: true,
-        chain_id: true,
-        created_timestamp: true,
-        address: true,
-      },
-    });
-
-    addresses.forEach(item => {
-      result.push({
-        type: RESPONSE_DATA_TYPE.ADDRESS,
-        data: {
-          id: `${item.id}`,
-          chainId: `${item.chain_id}`,
-          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
-          address: `${item.address}`,
-          flaggingCount: redFlags.length,
-          riskLevel: RISK_LEVEL.LOW_RISK,
-        },
-      });
-    });
-
     const evidences = await prisma.evidences.findMany({
       where: {
         contract_address: {
-          startsWith: searchInput,
+          contains: searchInput,
         },
       },
       select: {
@@ -333,6 +295,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           },
         });
       }
+    });
+
+    const addresses = await prisma.addresses.findMany({
+      where: {
+        OR: [
+          {
+            address: {
+              contains: searchInput,
+            },
+          },
+          {
+            id:
+              !searchInput.startsWith('0x') && isValid64BitInteger(searchInput)
+                ? +searchInput
+                : undefined,
+          },
+        ],
+      },
+      select: {
+        id: true,
+        chain_id: true,
+        created_timestamp: true,
+        address: true,
+      },
+    });
+
+    addresses.forEach(item => {
+      result.push({
+        type: RESPONSE_DATA_TYPE.ADDRESS,
+        data: {
+          id: `${item.id}`,
+          chainId: `${item.chain_id}`,
+          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
+          address: `${item.address}`,
+          flaggingCount: redFlags.length,
+          riskLevel: RISK_LEVEL.LOW_RISK,
+        },
+      });
     });
 
     if (addresses.length > 0) {
