@@ -17,7 +17,6 @@ type ResponseData = {
   id: string;
   address: string;
   score: number;
-  chainIcon: string;
   reviewData: ReviewData[];
 };
 
@@ -60,7 +59,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       id: `${addressData?.id ?? address_id}`,
       address: `${addressData?.address ?? address_id}`,
       score: addressData?.score ?? 0,
-      chainIcon: '', // TODO: to be removed (20240130 - Shirley)
       reviewData: reviews.map(r => ({
         id: `${r.id ?? ''}`,
         transactionId: '', // TODO: no property named transaction_id in review_datas table (20240130 - Shirley)

@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
-import {useContext, useState, useEffect} from 'react';
+import {useContext, useState, useEffect, useRef} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
@@ -57,11 +57,9 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     if (contractData) {
       setContractData(contractData);
     }
@@ -69,9 +67,16 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
       setTransactionData(transactionHistoryData);
     }
 
-    timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
+    timerRef.current = setTimeout(() => setIsLoading(false), 500);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [contractData, transactionHistoryData]);
+
+  // Info: (20240130 - Julian) 如果沒拿到 contractData ，就顯示 Data not found
+  if (!contractData.id) return <h1>Data not found</h1>;
 
   const displayPublicTag = publicTag ? (
     publicTag.map((tag, index) => (
@@ -201,7 +206,7 @@ const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   // ToDo: (20231213 - Julian) Add dynamic paths
   const paths = [
     {

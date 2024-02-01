@@ -44,15 +44,18 @@ const BlockTab = () => {
 
   useEffect(() => {
     if (blockData.length === 0) getBlockData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setActivePage(1);
     getBlockData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, chainId]);
 
   useEffect(() => {
     getBlockData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePage]);
 
   // Info: (20240119 - Julian) 關鍵字搜尋 & 排序
@@ -78,6 +81,7 @@ const BlockTab = () => {
             a.createdTimestamp - b.createdTimestamp;
       });
     setFilteredBlockData(searchResult);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blockData, search, sorting]);
 
   return (

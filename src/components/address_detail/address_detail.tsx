@@ -1,14 +1,17 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
-import BoltButton from '../bolt_button/bolt_button';
+// ToDo: (20231017 - Julian) import BoltButton
+// import BoltButton from '../bolt_button/bolt_button';
 import Tooltip from '../tooltip/tooltip';
-import {timestampToString, getTimeString, truncateText} from '../../lib/common';
+import {timestampToString, getTimeString} from '../../lib/common';
+// ToDo: (20231017 - Julian) import truncateText
+// import {truncateText} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IAddress} from '../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+// import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IAddressDetailProps {
   addressData: IAddress;
@@ -22,7 +25,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     chainId,
     createdTimestamp,
     latestActiveTime,
-    relatedAddresses,
+    // relatedAddresses, // To Do: (20231017 - Julian) relatedAddresses
     interactedAddressCount,
     interactedContactCount,
     flaggingCount,
@@ -33,20 +36,22 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   } = addressData;
   const [sinceTime, setSinceTime] = useState(0);
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     // Info: (20231017 - Julian) 算出 latestActiveTime 距離現在過了多少時間
-    timer = setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       const now = Math.ceil(Date.now() / 1000);
       const timeSpan = now - latestActiveTime;
       setSinceTime(timeSpan);
     }, 1000);
 
-    return () => clearTimeout(timer);
-  }, [sinceTime]);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [latestActiveTime, sinceTime]);
 
   const dynamicUrl = getDynamicUrl(`${chainId}`, `${id}`);
 
@@ -67,6 +72,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     </div>
   );
 
+  /*
   const displayRelatedAddress = relatedAddresses ? (
     relatedAddresses.map((address, index) => {
       const addressLink = getDynamicUrl(address.chainId, `${address.id}`).ADDRESS;
@@ -82,6 +88,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   ) : (
     <></>
   );
+  */
 
   const displayInteractedWith = (
     <div className="flex items-center space-x-2 text-base">
@@ -127,7 +134,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
 
   const flaggingLink =
     flaggingCount > 0 ? (
-      <Link href={dynamicUrl.RED_FLAG}>
+      <Link href={dynamicUrl.RED_FLAG_OF_ADDRESS}>
         <span className="mr-2 text-primaryBlue underline underline-offset-2">{flaggingCount}</span>
       </Link>
     ) : (

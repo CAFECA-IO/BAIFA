@@ -13,23 +13,24 @@ type FlaggingRecords = {
   redFlagType: string;
 };
 
-type ResponseData = {
-  id: string;
-  hash: string;
-  type: 'Crypto Currency' | 'Evidence' | 'NFT';
-  status: 'PENDING' | 'SUCCESS' | 'FAILED' | 'PROCESSING';
-  chainId: string;
-  chainIcon: string;
-  blockId: string;
-  createdTimestamp: number;
-  from: AddressInfo[];
-  to: AddressInfo[];
-  evidenceId: string | null;
-  value: number;
-  fee: number;
-  unit: string;
-  flaggingRecords: FlaggingRecords[];
-};
+type ResponseData =
+  | {
+      id: string;
+      hash: string;
+      type: 'Crypto Currency' | 'Evidence' | 'NFT';
+      status: 'PENDING' | 'SUCCESS' | 'FAILED' | 'PROCESSING';
+      chainId: string;
+      blockId: string;
+      createdTimestamp: number;
+      from: AddressInfo[];
+      to: AddressInfo[];
+      evidenceId: string | null;
+      value: number;
+      fee: number;
+      unit: string;
+      flaggingRecords: FlaggingRecords[];
+    }
+  | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -66,12 +67,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       id: chain_id,
     },
     select: {
-      chain_icon: true,
       symbol: true,
       decimals: true,
     },
   });
-  const chainIcon = chainData?.chain_icon ?? '';
   const unit = chainData?.symbol ?? '';
   const decimals = chainData?.decimals ?? 0;
 
@@ -91,52 +90,76 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const fee = transactionData ? parseInt(`${transactionData.fee}`) : 0;
   const feeDecimal = fee / Math.pow(10, decimals);
 
+  // Info: (20240130 - Julian) 日期轉換
+  const createdTimestamp = transactionData?.created_timestamp
+    ? new Date(transactionData?.created_timestamp).getTime() / 1000
+    : 0;
+
+  // Info: (20240130 - Julian) from / to address 轉換
+  const fromAddresses = transactionData?.from_address
+    ? transactionData?.from_address.split(',')
+    : [];
+  const from: AddressInfo[] = fromAddresses
+    // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+    .filter(address => address !== 'null')
+    .map(address => {
+      return {
+        type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+        address: address,
+      };
+    });
+
+  const toAddresses = transactionData?.to_address ? transactionData?.to_address.split(',') : [];
+  const to: AddressInfo[] = toAddresses
+    // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+    .filter(address => address !== 'null')
+    .map(address => {
+      return {
+        type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+        address: address,
+      };
+    });
+
+  // Info: (20240130 - Julian) 警示紀錄
+  const flaggings = await prisma.red_flags.findMany({
+    where: {
+      related_transactions: {
+        hasSome: [`${transaction_id}`],
+      },
+    },
+    select: {
+      id: true,
+      red_flag_type: true,
+    },
+  });
+
+  const flaggingRecords = flaggings.map(flagging => {
+    return {
+      redFlagId: `${flagging.id}`,
+      redFlagType: `${flagging.red_flag_type}`,
+    };
+  });
+
   // Info: (20240119 - Julian) 轉換成 API 要的格式
   const result: ResponseData = transactionData
     ? {
         id: `${transactionData.id}`,
-        hash: transactionData.hash,
+        hash: `${transactionData.hash}`,
         type: 'Crypto Currency', // ToDo: (20240119 - Julian) 須參考 codes Table 並補上 type 的轉換
         status: 'SUCCESS', // ToDo: (20240119 - Julian) 須參考 codes Table 並補上 status 的轉換
         chainId: `${transactionData.chain_id}`,
-        chainIcon: chainIcon,
         blockId: blockId,
-        createdTimestamp: transactionData.created_timestamp.getTime() / 1000,
-        from: [
-          {
-            type: 'address', // ToDo: (20240119 - Julian) 先寫死，等待後續補上 contract
-            address: transactionData.from_address,
-          },
-        ],
-        to: [
-          {
-            type: 'address', // ToDo: (20240119 - Julian) 先寫死，等待後續補上 contract
-            address: transactionData.to_address,
-          },
-        ],
+        createdTimestamp: createdTimestamp,
+        from: from,
+        to: to,
         evidenceId: transactionData.evidence_id,
-        value: transactionData.value,
+        value: transactionData.value ?? 0,
         fee: feeDecimal,
         unit: unit,
-        flaggingRecords: [], // ToDo: (20240119 - Julian) 補上這個欄位
+        flaggingRecords: flaggingRecords,
       }
-    : {
-        id: '',
-        hash: '',
-        type: 'Crypto Currency',
-        status: 'FAILED',
-        chainId: '',
-        chainIcon: '',
-        blockId: '',
-        createdTimestamp: 0,
-        from: [],
-        to: [],
-        evidenceId: '',
-        value: 0,
-        fee: 0,
-        unit: '',
-        flaggingRecords: [],
-      };
+    : // Info: (20240130 - Julian) 如果沒有找到資料，回傳 undefined
+      undefined;
 
   res.status(200).json(result);
 }

@@ -4,7 +4,6 @@ export interface IInteractionItem {
   id: string;
   type: 'address' | 'contract';
   chainId: string;
-  chainIcon: string;
   createdTimestamp: number;
   transactionCount: number;
   transactionHistoryData: ITransaction[];

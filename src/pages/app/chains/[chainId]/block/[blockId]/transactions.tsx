@@ -20,7 +20,6 @@ import SearchBar from '../../../../../../components/search_bar/search_bar';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import TransactionList from '../../../../../../components/transaction_list/transaction_list';
 import {default30DayPeriod, sortOldAndNewOptions} from '../../../../../../constants/config';
-import useStateRef from 'react-usestateref';
 
 interface ITransitionsInBlockPageProps {
   chainId: string;
@@ -37,7 +36,7 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   const [activePage, setActivePage] = useState(1);
 
   const [period, setPeriod] = useState(default30DayPeriod);
-  const [search, setSearch, searchRef] = useStateRef('');
+  const [search, setSearch] = useState('');
   const [transactionData, setTransitionData] = useState<ITransaction[]>([]);
 
   const headTitle = `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_BLOCK')} ${blockId} - BAIFA`;
@@ -190,7 +189,7 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   // ToDo: (20231213 - Julian) Add dynamic paths
   const paths = [
     {

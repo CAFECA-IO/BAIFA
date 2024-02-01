@@ -206,8 +206,6 @@
   "RED_FLAG_ADDRESS_PAGE": {
     "MAIN_TITLE": "Red Flag Address",
     "RED_FLAG": "Red Flag",
-    "ADDRESS": "Address",
-    "ADDRESS_ID": "Address",
     "RED_FLAG_TYPE": "Red Flag Type",
     "FLAGGING_TIME": "Flagging Time",
     "INTERACTED_WITH": "Interacted With",
@@ -263,10 +261,10 @@
     "ITEM_SUBTITLE_BLACKLIST": "Black List",
     "ITEM_LINE_1_BLACKLIST": "Address",
     "ITEM_LINE_2_BLACKLIST": "Public Tag",
-    "ITEM_TITLE_RED_FLAG": "Red Flag of Address",
+    "ITEM_TITLE_RED_FLAG": "Red Flag",
     "ITEM_SUBTITLE_RED_FLAG": "Red Flag",
-    "ITEM_LINE_1_RED_FLAG": "Address",
-    "ITEM_LINE_2_RED_FLAG": "Red Flag Type"
+    "ITEM_LINE_1_RED_FLAG": "Red Flag Type",
+    "ITEM_LINE_2_RED_FLAG": "Interacted With"
   },
   "DATE_PICKER": {
     "DATE": "Date",
@@ -326,7 +324,8 @@
     "TRANSACTION_HISTORY_PLACEHOLDER": "Search in Transaction History",
     "TRANSACTION_HISTORY_TRANSACTION_ID": "Transaction",
     "BLOCK_PRODUCED_HISTORY_TITLE": "Block Produced History",
-    "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "Search in Block Produced History"
+    "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "Search in Block Produced History",
+    "RED_FLAG_ITEM_TITLE": "Red Flag"
   },
   "PUBLIC_TAG": {
     "TITLE": "Public tag",

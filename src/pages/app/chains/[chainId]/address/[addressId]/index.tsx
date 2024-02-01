@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
-import {useState, useContext, useEffect} from 'react';
+import {useState, useContext, useEffect, useRef} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
@@ -25,7 +25,7 @@ import {MarketContext} from '../../../../../../contexts/market_context';
 import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {DEFAULT_TRUNCATE_LENGTH, sortOldAndNewOptions} from '../../../../../../constants/config';
-import {roundToDecimal, truncateText} from '../../../../../../lib/common';
+import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
 
@@ -48,8 +48,9 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
   const [blockData, setBlockData] = useState<IProductionBlock[]>([]);
 
-  const {chainIcon, transactionHistoryData, blockProducedData, publicTag, score, reviewData} =
-    addressData;
+  const {transactionHistoryData, blockProducedData, publicTag, score, reviewData} = addressData;
+
+  const chainIcon = getChainIcon(chainId);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -69,11 +70,9 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let timer: NodeJS.Timeout;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    clearTimeout(timer);
-
     if (addressData) {
       setAddressData(addressData);
     }
@@ -84,9 +83,19 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
       setBlockData(blockProducedData);
     }
 
-    timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, [addressData]);
+    timerRef.current = setTimeout(() => setIsLoading(false), 500);
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [addressData, blockProducedData, transactionHistoryData]);
+
+  // ToDo: (20240129 - Julian) 如果拿到的資料是空的，就顯示 Data not found
+  if (!addressData.address) {
+    return <h1>Data not found</h1>;
+  }
 
   const backClickHandler = () => router.back();
 
@@ -128,7 +137,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
       </button>
       {/* Info: (20230912 -Julian) Address Title */}
       <div className="flex flex-1 items-center justify-center space-x-2">
-        <Image src={chainIcon} alt={`${chainId}_icon`} width={40} height={40} />
+        <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
         <h1 className="text-2xl font-bold lg:text-32px">
           {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
           <span title={addressId} className="ml-2 text-primaryBlue">
@@ -284,7 +293,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   // ToDo: (20231213 - Julian) Add dynamic paths
   const paths = [
     {

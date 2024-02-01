@@ -1,56 +1,67 @@
 // 013 - GET /app/chains/:chain_id/addresses/:address_id/red_flags
 
 import type {NextApiRequest, NextApiResponse} from 'next';
+import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 
 type ResponseData = {
   id: string;
   chainId: string;
   chainName: string;
-  chainIcon: string;
   addressId: string;
   redFlagType: string;
   createdTimestamp: number;
 }[];
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const result: ResponseData = [
-    {
-      'id': '1300200001',
-      'chainId': 'isun',
-      'chainName': 'iSunCloud',
-      'chainIcon': '/currencies/isun.svg',
-      'addressId': '130020',
-      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_WITHDRAW',
-      'createdTimestamp': 1679978900,
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  const prisma = getPrismaInstance();
+  // Info: (20240129 - Julian) 解構 URL 參數，同時進行類型轉換
+  const chain_id =
+    typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
+  const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
+
+  const redFlagData = address_id
+    ? await prisma.red_flags.findMany({
+        where: {
+          related_addresses: {
+            hasSome: [address_id],
+          },
+        },
+        select: {
+          id: true,
+          chain_id: true,
+          red_flag_type: true,
+          created_timestamp: true,
+        },
+      })
+    : [];
+
+  // Info: (20240129 - Julian) 取得 chain 資料
+  const chainData = await prisma.chains.findUnique({
+    where: {
+      id: chain_id,
     },
-    {
-      'id': '1300200002',
-      'chainId': 'isun',
-      'chainName': 'iSunCloud',
-      'chainIcon': '/currencies/isun.svg',
-      'addressId': '130020',
-      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
-      'createdTimestamp': 1680183194,
+    select: {
+      id: true,
+      chain_name: true,
     },
-    {
-      'id': '1300200003',
-      'chainId': 'isun',
-      'chainName': 'iSunCloud',
-      'chainIcon': '/currencies/isun.svg',
-      'addressId': '130020',
-      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_WITHDRAW',
-      'createdTimestamp': 1682194724,
-    },
-    {
-      'id': '1300200004',
-      'chainId': 'isun',
-      'chainName': 'iSunCloud',
-      'chainIcon': '/currencies/isun.svg',
-      'addressId': '130020',
-      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_WITHDRAW',
-      'createdTimestamp': 1682729103,
-    },
-    // ... other red flags
-  ];
+  });
+
+  const chainName = chainData?.chain_name ?? '';
+
+  const result: ResponseData = redFlagData.map(redFlag => {
+    const redFlagTimestamp = redFlag.created_timestamp
+      ? new Date(redFlag.created_timestamp).getTime() / 1000
+      : 0;
+
+    return {
+      id: `${redFlag.id}`,
+      chainId: `${redFlag.chain_id}`,
+      chainName: chainName,
+      addressId: address_id ?? '',
+      redFlagType: `${redFlag.red_flag_type}`,
+      createdTimestamp: redFlagTimestamp,
+    };
+  });
+
   res.status(200).json(result);
 }

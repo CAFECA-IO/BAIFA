@@ -28,9 +28,10 @@ const LandingPageBody = () => {
     const scrollLeft = scrl.current.scrollLeft;
     const onScroll = () => setScrollLeft(scrollLeft);
     scrl.current.addEventListener('scroll', onScroll);
+    const currentScrl = scrl.current;
 
     return () => {
-      if (scrl.current) scrl.current.removeEventListener('scroll', onScroll);
+      if (currentScrl) currentScrl.removeEventListener('scroll', onScroll);
     };
   }, [scrollLeft]);
 
