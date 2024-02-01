@@ -6,9 +6,11 @@ generator client {
 }
 
 datasource dbPostgresql {
+datasource dbPostgresql {
   provider = "postgresql"
   url = env("DATABASE_URL")
 }
+
 
 
 model transaction_raw {
@@ -20,7 +22,7 @@ model transaction_raw {
   gas_price            String
   max_fee_per_gas        String
   max_priority_fee_per_gas String
-  hash                String @unique   
+  hash                String @unique
   input               String
   nonce               String
   to                  String
@@ -28,10 +30,12 @@ model transaction_raw {
   value               String
   type                String
   access_list          Json
+  access_list          Json
   chain_id             String
   v                   String
   r                   String
   s                   String
+  parse_finished  Boolean  @default(false)
   parse_finished  Boolean  @default(false)
 }
 
@@ -43,11 +47,12 @@ model block_raw {
   gas_limit         String
   gas_used          String
   hash             String @unique   
+  hash             String @unique   
   logs_bloom        String
   miner            String
   mix_hash          String
   nonce            String
-  number           Int @unique    
+  number           Int @unique
   parent_hash       String
   receipts_root     String
   sha3_uncles       String
@@ -56,6 +61,7 @@ model block_raw {
   timestamp        String
   total_difficulty  String
   transactions_root String
+  uncles           Json
   uncles           Json
   burnt_fees Int 
   transaction_count Int
@@ -129,6 +135,21 @@ model chains {
   black_lists         black_lists[]
   token_balances      token_balances[]
   token_transfers     token_transfers[]
+  id                  Int      @id
+  chain_name          String?
+  symbol              String?
+  decimals            Int?
+  rpc                 String?
+  currencies          currencies[]
+  blocks              blocks[]
+  addresses           addresses[]
+  evidences           evidences[]
+  contracts           contracts[]
+  transactions        transactions[]
+  red_flags           red_flags[]
+  black_lists         black_lists[]
+  token_balances      token_balances[]
+  token_transfers     token_transfers[]
 }
 
 model transactions {
@@ -180,6 +201,10 @@ model red_flags {
   total_amount        String?
   symbol              String?
   related_addresses   String[]
+  related_transactions String[]
+  currency_id         String?
+  currencies          currencies? @relation(fields: [currency_id], references: [id])                
+  chains               chains? @relation(fields: [chain_id], references: [id])                
   related_transactions String[]
   currency_id         String?
   currencies          currencies? @relation(fields: [currency_id], references: [id])                
