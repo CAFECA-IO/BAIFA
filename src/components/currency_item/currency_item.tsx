@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {getChainIcon} from '../../lib/common';
+import {getCurrencyIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {RiskLevel} from '../../constants/risk_level';
@@ -15,7 +15,7 @@ interface ICurrencyItemProps {
 
 const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const chainIcon = getChainIcon(currencyId);
+  const chainIcon = getCurrencyIcon(currencyId);
 
   const riskColor =
     riskLevel === RiskLevel.HIGH_RISK

@@ -13,7 +13,7 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {getChainIcon} from '../../../../../../lib/common';
-import {ITransaction} from '../../../../../../interfaces/transaction';
+import {IDisplayTransaction} from '../../../../../../interfaces/transaction';
 import DatePicker from '../../../../../../components/date_picker/date_picker';
 import Pagination from '../../../../../../components/pagination/pagination';
 import SearchBar from '../../../../../../components/search_bar/search_bar';
@@ -37,7 +37,7 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
 
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
-  const [transactionData, setTransitionData] = useState<ITransaction[]>([]);
+  const [transactionData, setTransitionData] = useState<IDisplayTransaction[]>([]);
 
   const headTitle = `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_BLOCK')} ${blockId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
@@ -80,10 +80,11 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   }, [activePage]);
 
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactionData);
+  const [filteredTransactions, setFilteredTransactions] =
+    useState<IDisplayTransaction[]>(transactionData);
 
   useEffect(() => {
-    const searchResult = transactionData.sort((a: ITransaction, b: ITransaction) => {
+    const searchResult = transactionData.sort((a, b) => {
       return sorting === sortOldAndNewOptions[0]
         ? // Info: (20231101 - Julian) Newest
           b.createdTimestamp - a.createdTimestamp

@@ -1,38 +1,9 @@
 // 022 - GET /app/red_flags/:red_flag_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
+import {IRedFlagDetail} from '../../../../../interfaces/red_flag';
 
-type AddressInfo = {
-  type: 'address' | 'contract';
-  address: string;
-};
-
-type InteractedAddress = {
-  id: string;
-  chainId: string;
-};
-
-type TransactionData = {
-  id: string;
-  chainId: string;
-  createdTimestamp: number;
-  from: AddressInfo[];
-  to: AddressInfo[];
-  status: 'SUCCESS' | 'PENDING' | 'FAILED';
-};
-
-type ResponseData =
-  | {
-      id: string;
-      chainId: string;
-      redFlagType: string;
-      createdTimestamp: number;
-      interactedAddresses: InteractedAddress[];
-      totalAmount: number;
-      unit: string;
-      transactionHistoryData: TransactionData[];
-    }
-  | undefined;
+type ResponseData = IRedFlagDetail | undefined;
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const result: ResponseData = {
@@ -60,6 +31,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
         'from': [{'type': 'address', 'address': '912299'}],
         'to': [{'type': 'contract', 'address': '110132'}],
         'status': 'SUCCESS',
+        'type': 'Crypto Currency',
       },
       {
         'id': '912299',
@@ -68,6 +40,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
         'from': [{'type': 'address', 'address': '110132'}],
         'to': [{'type': 'contract', 'address': '310683'}],
         'status': 'PENDING',
+        'type': 'Crypto Currency',
       },
       //...
     ],

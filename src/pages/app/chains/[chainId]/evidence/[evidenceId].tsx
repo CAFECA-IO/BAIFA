@@ -18,14 +18,14 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
-import {IEvidence} from '../../../../../interfaces/evidence';
+import {IEvidenceDetail} from '../../../../../interfaces/evidence';
 import {ITransaction} from '../../../../../interfaces/transaction';
 
-interface IEvidenceDetailPageProps {
+interface IEvidenceDetailDetailPageProps {
   evidenceId: string;
 }
 
-const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
+const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
@@ -33,7 +33,7 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailPageProps) => {
 
   const headTitle = `${t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} ${evidenceId} - BAIFA`;
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [evidenceData, setEvidenceData] = useState<IEvidence>({} as IEvidence);
+  const [evidenceData, setEvidenceData] = useState<IEvidenceDetail>({} as IEvidenceDetail);
 
   const {transactionHistoryData, chainId} = evidenceData;
   // Info: (20240102 - Julian) Transaction history

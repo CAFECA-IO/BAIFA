@@ -12,7 +12,7 @@ import {AppContext} from '../../../../contexts/app_context';
 import {MarketContext} from '../../../../contexts/market_context';
 import {chainIdToCurrencyName} from '../../../../constants/config';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {getChainIcon} from '../../../../lib/common';
+import {getCurrencyIcon} from '../../../../lib/common';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {IRedFlag} from '../../../../interfaces/red_flag';
 import RedFlagList from '../../../../components/red_flag_list/red_flag_list';
@@ -33,7 +33,7 @@ const RedFlagOfCurrencyPage = ({currencyId, currencyName}: IRedFlagOfCurrencyPag
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} ${t(
     'COMMON.OF'
   )} ${currencyName} - BAIFA`;
-  const chainIcon = getChainIcon(currencyId);
+  const chainIcon = getCurrencyIcon(currencyId);
 
   const router = useRouter();
   const backClickHandler = () => router.back();

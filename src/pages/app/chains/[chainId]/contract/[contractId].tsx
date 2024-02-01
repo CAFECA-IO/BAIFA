@@ -14,7 +14,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
-import {IContract} from '../../../../../interfaces/contract';
+import {IContractDetail} from '../../../../../interfaces/contract';
 import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
 import TransactionHistorySection from '../../../../../components/transaction_history_section/transaction_history_section';
 import Tooltip from '../../../../../components/tooltip/tooltip';
@@ -23,18 +23,18 @@ import {MarketContext} from '../../../../../contexts/market_context';
 import {ITransaction} from '../../../../../interfaces/transaction';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../../../../constants/config';
 
-interface IContractDetailPageProps {
+interface IContractDetailDetailPageProps {
   contractId: string;
 }
 
-const ContractDetailPage = ({contractId}: IContractDetailPageProps) => {
+const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
   const {getContractDetail} = useContext(MarketContext);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [contractData, setContractData] = useState<IContract>({} as IContract);
+  const [contractData, setContractData] = useState<IContractDetail>({} as IContractDetail);
 
   const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
   const {transactionHistoryData, publicTag, chainId} = contractData;

@@ -1,28 +1,9 @@
 // 003 - GET /app/search?search_input=${searchInput}
 
 import type {NextApiRequest, NextApiResponse} from 'next';
+import {ISearchResult} from '../../../../interfaces/search_result';
 
-type ResponseData = {
-  type: string;
-  data: {
-    id: string;
-    chainId: string;
-    createdTimestamp: number;
-    stability?: string;
-    address?: string;
-    flaggingCount?: number;
-    riskLevel?: string;
-    contractAddress?: string;
-    evidenceAddress?: string;
-    hash?: string;
-    publicTag?: string[];
-    redFlagType?: string;
-    interactedAddresses?: {
-      id: string;
-      chainId: string;
-    }[];
-  };
-}[];
+type ResponseData = ISearchResult[];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const result: ResponseData = [

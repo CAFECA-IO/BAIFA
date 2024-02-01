@@ -1,5 +1,3 @@
-//import {dummyAddressData} from './address';
-
 export interface IReviewDetail {
   id: string;
   transactionId: string;

@@ -5,11 +5,11 @@ import Tooltip from '../tooltip/tooltip';
 import BoltButton from '../bolt_button/bolt_button';
 import {getDynamicUrl} from '../../constants/url';
 import {timestampToString, truncateText} from '../../lib/common';
-import {IEvidence} from '../../interfaces/evidence';
+import {IEvidenceDetail} from '../../interfaces/evidence';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IEvidenceDetailProps {
-  evidenceData: IEvidence;
+  evidenceData: IEvidenceDetail;
 }
 
 const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
