@@ -63,18 +63,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       value: true,
     },
   });
-  const holders: HolderData[] = holderData.map(holder => {
-    // Info: (20240130 - Julian) 計算持有比例
-    const value = parseInt(`${holder.value}` ?? 0);
-    const holdingPercentage = value / totalAmount;
+  const holders: HolderData[] = holderData
+    .map(holder => {
+      // Info: (20240130 - Julian) 計算持有比例
+      const value = parseInt(`${holder.value}` ?? 0);
+      const holdingPercentage = value / totalAmount;
 
-    return {
-      addressId: `${holder.address}`,
-      holdingAmount: parseInt(`${holder.value}` ?? 0),
-      holdingPercentage: holdingPercentage,
-      publicTag: [], // ToDo: (20240130 - Julian) 待補上
-    };
-  });
+      return {
+        addressId: `${holder.address}`,
+        holdingAmount: parseInt(`${holder.value}` ?? 0),
+        holdingPercentage: holdingPercentage,
+        publicTag: [], // ToDo: (20240130 - Julian) 待補上
+      };
+    })
+    .sort((a, b) => {
+      // Info: (20240130 - Julian) 依照持有比例降冪排序
+      return b.holdingPercentage - a.holdingPercentage;
+    });
 
   // Info: (20240125 - Julian) 從 red_flags Table 中取得資料
   const flaggingData = await prisma.red_flags.findMany({
