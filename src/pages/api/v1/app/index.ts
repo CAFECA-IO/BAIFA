@@ -2,12 +2,9 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
+import {IPromotion} from '../../../../interfaces/promotion';
 
-type ResponseData = {
-  chains: number;
-  cryptoCurrencies: number;
-  blackList: number;
-};
+type ResponseData = IPromotion;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();

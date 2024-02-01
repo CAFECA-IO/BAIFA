@@ -3,15 +3,9 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
 import {ITEM_PER_PAGE} from '../../../../../../../constants/config';
+import {IBlock} from '../../../../../../../interfaces/block';
 
-type BlockData = {
-  id: string;
-  chainId: string;
-  createdTimestamp: number;
-  stability: 'LOW' | 'MEDIUM' | 'HIGH';
-};
-
-type ResponseData = BlockData[];
+type ResponseData = IBlock[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();

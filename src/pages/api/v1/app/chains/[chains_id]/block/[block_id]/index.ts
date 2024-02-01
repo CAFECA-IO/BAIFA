@@ -2,23 +2,9 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
+import {IBlockDetail} from '../../../../../../../../interfaces/block';
 
-type ResponseData =
-  | {
-      id: string;
-      chainId: string;
-      stability: 'MEDIUM' | 'HIGH' | 'LOW';
-      createdTimestamp: number;
-      managementTeam: string[];
-      transactionCount: number;
-      miner: string;
-      reward: number;
-      unit: string;
-      size: number; // bytes
-      previousBlockId: string | undefined;
-      nextBlockId: string | undefined;
-    }
-  | undefined;
+type ResponseData = IBlockDetail | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
