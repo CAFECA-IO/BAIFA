@@ -105,87 +105,6 @@ type ResponseDataItem =
 // Info: Array of ResponseDataItem (20240131 - Shirley)
 type ResponseData = ResponseDataItem[];
 
-/* Deprecated: (20240205 - Shirley) -------------- Mock Data --------------
-const dummyResult: ResponseData = [
-  {
-    'type': 'BLOCK',
-    'data': {
-      'id': '210018',
-      'chainId': 'btc',
-      'createdTimestamp': 1665798400,
-      'stability': 'MEDIUM',
-    },
-  },
-  {
-    'type': 'ADDRESS',
-    'data': {
-      'id': '148208',
-      'chainId': 'usdt',
-      'createdTimestamp': 1682940241,
-      'address': '0x278432201',
-      'flaggingCount': 10,
-      'riskLevel': 'MEDIUM_RISK',
-    },
-  },
-  {
-    'type': 'CONTRACT',
-    'data': {
-      'id': '314839',
-      'chainId': 'btc',
-      'createdTimestamp': 1681918401,
-      'contractAddress': '0x444357813',
-    },
-  },
-  {
-    'type': 'EVIDENCE',
-    'data': {
-      'id': '528401',
-      'chainId': 'eth',
-      'createdTimestamp': 1680421348,
-      'evidenceAddress': '0x898765432',
-    },
-  },
-  {
-    'type': 'TRANSACTION',
-    'data': {
-      'id': '924044',
-      'chainId': 'eth',
-      'createdTimestamp': 1684482143,
-      'hash': '0x213456789',
-    },
-  },
-  {
-    'type': 'BLACKLIST',
-    'data': {
-      'id': '142523',
-      'chainId': 'usdt',
-      'createdTimestamp': 1684801889,
-      'address': '0x270183713',
-      'publicTag': ['PUBLIC_TAG.HACKER'],
-    },
-  },
-  {
-    'type': 'RED_FLAG',
-    'data': {
-      'id': '1138290086',
-      'chainId': 'btc',
-      'createdTimestamp': 1689244021,
-      'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
-      'interactedAddresses': [
-        {
-          'id': '148208',
-          'chainId': 'usdt',
-        },
-        {
-          'id': '142523',
-          'chainId': 'usdt',
-        },
-      ],
-    },
-  },
-];
-*/
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
 
@@ -265,58 +184,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
     });
 
-    const contracts = await prisma.contracts.findMany({
-      where: {
-        contract_address: {
-          startsWith: searchInput,
-        },
-      },
-      select: {
-        id: true,
-        chain_id: true,
-        created_timestamp: true,
-        contract_address: true,
-      },
-    });
-
-    contracts.forEach(item => {
-      result.push({
-        type: RESPONSE_DATA_TYPE.CONTRACT,
-        data: {
-          id: `${item.id}`,
-          chainId: `${item.chain_id}`,
-          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
-          contractAddress: `${item.contract_address}`,
-        },
-      });
-    });
-
-    const evidences = await prisma.evidences.findMany({
-      where: {
-        contract_address: {
-          startsWith: searchInput,
-        },
-      },
-      select: {
-        id: true,
-        chain_id: true,
-        created_timestamp: true,
-        contract_address: true,
-      },
-    });
-
-    evidences.forEach(item => {
-      result.push({
-        type: RESPONSE_DATA_TYPE.EVIDENCE,
-        data: {
-          id: `${item.id}`,
-          chainId: `${item.chain_id}`,
-          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
-          evidenceAddress: `${item.contract_address}`,
-        },
-      });
-    });
-
     const transactions = await prisma.transactions.findMany({
       where: {
         hash: {
@@ -343,39 +210,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
     });
 
-    const redFlags = await prisma.red_flags.findMany({
+    const contracts = await prisma.contracts.findMany({
       where: {
-        related_addresses: {
-          hasSome: [`${searchInput}`],
+        contract_address: {
+          startsWith: searchInput,
         },
       },
       select: {
         id: true,
         chain_id: true,
         created_timestamp: true,
-        related_addresses: true,
-        red_flag_type: true,
+        contract_address: true,
       },
     });
 
-    redFlags.forEach(item => {
-      if (item.related_addresses.some(address => address.startsWith(searchInput))) {
-        result.push({
-          type: RESPONSE_DATA_TYPE.RED_FLAG,
-          data: {
-            id: `${item.id}`,
-            chainId: `${item.chain_id}`,
-            createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
-            redFlagType: `${item.red_flag_type}`,
-            interactedAddresses: item.related_addresses.map(address => {
-              return {
-                id: `${address}`,
-                chainId: `${item.chain_id}`,
-              };
-            }),
-          },
-        });
-      }
+    contracts.forEach(item => {
+      result.push({
+        type: RESPONSE_DATA_TYPE.CONTRACT,
+        data: {
+          id: `${item.id}`,
+          chainId: `${item.chain_id}`,
+          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
+          contractAddress: `${item.contract_address}`,
+        },
+      });
     });
 
     const addresses = await prisma.addresses.findMany({
@@ -414,6 +272,67 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           riskLevel: RISK_LEVEL.LOW_RISK,
         },
       });
+    });
+
+    const evidences = await prisma.evidences.findMany({
+      where: {
+        contract_address: {
+          startsWith: searchInput,
+        },
+      },
+      select: {
+        id: true,
+        chain_id: true,
+        created_timestamp: true,
+        contract_address: true,
+      },
+    });
+
+    evidences.forEach(item => {
+      result.push({
+        type: RESPONSE_DATA_TYPE.EVIDENCE,
+        data: {
+          id: `${item.id}`,
+          chainId: `${item.chain_id}`,
+          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
+          evidenceAddress: `${item.contract_address}`,
+        },
+      });
+    });
+
+    const redFlags = await prisma.red_flags.findMany({
+      where: {
+        related_addresses: {
+          hasSome: [`${searchInput}`],
+        },
+      },
+      select: {
+        id: true,
+        chain_id: true,
+        created_timestamp: true,
+        related_addresses: true,
+        red_flag_type: true,
+      },
+    });
+
+    redFlags.forEach(item => {
+      if (item.related_addresses.some(address => address.startsWith(searchInput))) {
+        result.push({
+          type: RESPONSE_DATA_TYPE.RED_FLAG,
+          data: {
+            id: `${item.id}`,
+            chainId: `${item.chain_id}`,
+            createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
+            redFlagType: `${item.red_flag_type}`,
+            interactedAddresses: item.related_addresses.map(address => {
+              return {
+                id: `${address}`, // TODO: addressID or address? (20240201 - Shirley)
+                chainId: `${item.chain_id}`,
+              };
+            }),
+          },
+        });
+      }
     });
 
     if (addresses.length > 0) {

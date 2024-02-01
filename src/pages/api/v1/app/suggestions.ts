@@ -20,48 +20,49 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     const suggestions = new Set();
 
-    // Info: Search in evidences for contract_address (20240130 - Shirley)
+    // Info: If fewer than INPUT_SUGGESTION_LIMIT results, search in contracts for contract_address and creator_address (20240130 - Shirley)
     if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
-      const evidences = await prisma.evidences.findMany({
+      const contracts = await prisma.contracts.findMany({
         where: {
-          contract_address: {
-            startsWith: searchInput,
-          },
+          OR: [
+            {contract_address: {startsWith: searchInput}},
+            {creator_address: {startsWith: searchInput}},
+          ],
         },
         take: INPUT_SUGGESTION_LIMIT - suggestions.size,
         select: {
           contract_address: true,
+          creator_address: true,
         },
       });
 
-      evidences.forEach(item => {
-        if (item.contract_address) {
+      contracts.forEach(item => {
+        if (item.contract_address && item.contract_address.startsWith(searchInput)) {
           suggestions.add(item.contract_address);
+        }
+        if (item.creator_address && item.creator_address.startsWith(searchInput)) {
+          suggestions.add(item.creator_address);
         }
       });
     }
 
-    // Info: Search in red_flags for related_addresses (20240130 - Shirley)
+    // Info: Search in evidences for contract_address (20240130 - Shirley)
     if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
-      const redFlags = await prisma.red_flags.findMany({
+      const evidences = await prisma.evidences.findMany({
         where: {
-          related_addresses: {
-            has: searchInput,
-          },
+          OR: [{evidence_id: {startsWith: searchInput}}],
         },
         take: INPUT_SUGGESTION_LIMIT - suggestions.size,
         select: {
-          related_addresses: true,
+          contract_address: true,
+          creator_address: true,
+          evidence_id: true,
         },
       });
 
-      redFlags.forEach(item => {
-        if (item.related_addresses && item.related_addresses.includes(searchInput)) {
-          item.related_addresses.forEach(address => {
-            if (address.startsWith(searchInput)) {
-              suggestions.add(address);
-            }
-          });
+      evidences.forEach(item => {
+        if (item.evidence_id && item.evidence_id.startsWith(searchInput)) {
+          suggestions.add(item.evidence_id);
         }
       });
     }
@@ -114,32 +115,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       blocks.forEach(item => {
         if (item.hash) {
           suggestions.add(item.hash);
-        }
-      });
-    }
-
-    // Info: If fewer than INPUT_SUGGESTION_LIMIT results, search in contracts for contract_address and creator_address (20240130 - Shirley)
-    if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
-      const contracts = await prisma.contracts.findMany({
-        where: {
-          OR: [
-            {contract_address: {startsWith: searchInput}},
-            {creator_address: {startsWith: searchInput}},
-          ],
-        },
-        take: INPUT_SUGGESTION_LIMIT - suggestions.size,
-        select: {
-          contract_address: true,
-          creator_address: true,
-        },
-      });
-
-      contracts.forEach(item => {
-        if (item.contract_address && item.contract_address.startsWith(searchInput)) {
-          suggestions.add(item.contract_address);
-        }
-        if (item.creator_address && item.creator_address.startsWith(searchInput)) {
-          suggestions.add(item.creator_address);
         }
       });
     }
