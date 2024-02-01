@@ -1,7 +1,6 @@
 // 022 - GET /app/red_flags/:red_flag_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IAddressInfo} from '../../../../../interfaces/address_info';
 import {IRedFlagDetail} from '../../../../../interfaces/red_flag';
 
 type ResponseData = IRedFlagDetail | undefined;

@@ -1,6 +1,6 @@
 import React, {createContext, useCallback, useState} from 'react';
 import {APIURL} from '../constants/api_request';
-import {IChain, IChainDetail} from '../interfaces/chain';
+import {IDisplayChain, IChainDetail} from '../interfaces/chain';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
@@ -22,7 +22,7 @@ export interface IMarketProvider {
 export interface IMarketContext {
   init: () => Promise<void>;
   promotionData: IPromotion;
-  chainList: IChain[];
+  chainList: IDisplayChain[];
   currencyList: ICurrency[];
   blacklist: IBlackListDetail[];
 
@@ -92,7 +92,7 @@ export const MarketContext = createContext<IMarketContext>({
 
 export const MarketProvider = ({children}: IMarketProvider) => {
   const [promotion, setPromotion] = useState<IPromotion>(defaultPromotion);
-  const [chainList, setChainList] = useState<IChain[]>([]);
+  const [chainList, setChainList] = useState<IDisplayChain[]>([]);
   const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
   const [blacklist, setBlacklist] = useState<IBlackListDetail[]>([]);
 
@@ -110,7 +110,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, [setPromotion]);
 
   const getChains = useCallback(async () => {
-    let data: IChain[] = [];
+    let data: IDisplayChain[] = [];
     try {
       const response = await fetch(`${APIURL.CHAINS}`, {
         method: 'GET',
