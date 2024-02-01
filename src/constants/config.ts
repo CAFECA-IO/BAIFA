@@ -196,3 +196,14 @@ export const chainIdToCurrencyName = [
   {id: 'bnb', name: 'Binance Coin'},
   {id: 'isun', name: 'iSunCloud'},
 ];
+
+export const INPUT_SUGGESTION_LIMIT = 20;
+
+export const THRESHOLD_FOR_BLOCK_STABILITY = {
+  HIGH: 20,
+  MEDIUM: 10,
+  LOW: 10,
+};
+
+export const MAX_64_BIT_INTEGER_PARAMETER = '9223372036854775807';
+export const MIN_64_BIT_INTEGER_PARAMETER = '-9223372036854775808';
