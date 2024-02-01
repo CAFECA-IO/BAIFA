@@ -1,4 +1,8 @@
-import {MONTH_LIST} from '../constants/config';
+import {
+  MAX_64_BIT_INTEGER_PARAMETER,
+  MIN_64_BIT_INTEGER_PARAMETER,
+  MONTH_LIST,
+} from '../constants/config';
 
 export const timestampToString = (timestamp: number) => {
   if (timestamp === 0)
@@ -176,3 +180,20 @@ export const getChange = (current: number, previous: number) => {
   if (previous === 0) return 0;
   return (current - previous) / previous;
 };
+
+// Info: 確認 input 在 javascript 有效的 64-bit 範圍內 (20240201 - Shirley)
+export function isValid64BitInteger(input: string | number | bigint) {
+  const MAX_64BIT_INT = BigInt(MAX_64_BIT_INTEGER_PARAMETER);
+  const MIN_64BIT_INT = BigInt(MIN_64_BIT_INTEGER_PARAMETER);
+
+  let num;
+
+  try {
+    num = BigInt(input);
+  } catch (e) {
+    // Info: 如果 input 不能轉換為 BigInt (20240201 - Shirley)
+    return false;
+  }
+
+  return num >= MIN_64BIT_INT && num <= MAX_64BIT_INT;
+}

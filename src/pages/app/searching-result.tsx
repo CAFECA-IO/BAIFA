@@ -68,6 +68,7 @@ const SearchingResultPage = () => {
   const startIdx = endIdx - ITEM_PER_PAGE;
 
   useEffect(() => {
+    if (searchTextRef.current === '') return;
     getSearchResult(searchTextRef.current).then(data => {
       setSearchResult(data);
     });

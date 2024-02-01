@@ -6,6 +6,8 @@ import {
   THRESHOLD_FOR_HIGH_BLOCK_STABILITY,
   THRESHOLD_FOR_MEDIUM_AND_LOW_BLOCK_STABILITY,
 } from '../../../../constants/config';
+import {isValid64BitInteger} from '../../../../lib/common';
+import {PrismaClient} from '@prisma/client';
 
 // Info: Base type for common fields (20240131 - Shirley)
 interface BaseResponseData {
@@ -14,15 +16,37 @@ interface BaseResponseData {
   createdTimestamp: number;
 }
 
+enum RESPONSE_DATA_TYPE {
+  BLOCK = 'BLOCK',
+  ADDRESS = 'ADDRESS',
+  CONTRACT = 'CONTRACT',
+  EVIDENCE = 'EVIDENCE',
+  TRANSACTION = 'TRANSACTION',
+  BLACKLIST = 'BLACKLIST',
+  RED_FLAG = 'RED_FLAG',
+}
+
+enum STABILITY {
+  HIGH = 'HIGH',
+  MEDIUM = 'MEDIUM',
+  LOW = 'LOW',
+}
+
+enum RISK_LEVEL {
+  LOW_RISK = 'LOW_RISK',
+  MEDIUM_RISK = 'MEDIUM_RISK',
+  HIGH_RISK = 'HIGH_RISK',
+}
+
 // Info: Extending BaseResponseData for specific types (20240131 - Shirley)
 interface ResponseDataBlock extends BaseResponseData {
-  stability: string;
+  stability: STABILITY;
 }
 
 interface ResponseDataAddress extends BaseResponseData {
   address: string;
   flaggingCount: number;
-  riskLevel: string;
+  riskLevel: RISK_LEVEL;
 }
 
 interface ResponseDataContract extends BaseResponseData {
@@ -43,7 +67,6 @@ interface ResponseDataBlacklist extends BaseResponseData {
 }
 
 interface ResponseDataRedFlag extends BaseResponseData {
-  address: string;
   redFlagType: string;
   interactedAddresses?: {
     id: string;
@@ -51,38 +74,38 @@ interface ResponseDataRedFlag extends BaseResponseData {
   }[];
 }
 
-// Combining all types into a single union type
+// Info: Combining all types into a single union type (20240201 - Shirley)
 type ResponseDataItem =
   | {
-      type: 'BLOCK';
+      type: RESPONSE_DATA_TYPE.BLOCK;
       data: ResponseDataBlock;
     }
   | {
-      type: 'ADDRESS';
+      type: RESPONSE_DATA_TYPE.ADDRESS;
       data: ResponseDataAddress;
     }
   | {
-      type: 'CONTRACT';
+      type: RESPONSE_DATA_TYPE.CONTRACT;
       data: ResponseDataContract;
     }
   | {
-      type: 'EVIDENCE';
+      type: RESPONSE_DATA_TYPE.EVIDENCE;
       data: ResponseDataEvidence;
     }
   | {
-      type: 'TRANSACTION';
+      type: RESPONSE_DATA_TYPE.TRANSACTION;
       data: ResponseDataTransaction;
     }
   | {
-      type: 'BLACKLIST';
+      type: RESPONSE_DATA_TYPE.BLACKLIST;
       data: ResponseDataBlacklist;
     }
   | {
-      type: 'RED_FLAG';
+      type: RESPONSE_DATA_TYPE.RED_FLAG;
       data: ResponseDataRedFlag;
     };
 
-// Array of ResponseDataItem
+// Info: Array of ResponseDataItem (20240131 - Shirley)
 type ResponseData = ResponseDataItem[];
 
 /* Deprecated: (20240205 - Shirley) -------------- Mock Data --------------
@@ -150,18 +173,21 @@ const dummyResult: ResponseData = [
       'id': '1138290086',
       'chainId': 'btc',
       'createdTimestamp': 1689244021,
-      'address': '0x383488493',
       'redFlagType': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
+      'interactedAddresses': [
+        {
+          'id': '148208',
+          'chainId': 'usdt',
+        },
+        {
+          'id': '142523',
+          'chainId': 'usdt',
+        },
+      ],
     },
   },
 ];
 */
-
-enum STABILITY {
-  HIGH = 'HIGH',
-  MEDIUM = 'MEDIUM',
-  LOW = 'LOW',
-}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -173,12 +199,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   const result: ResponseDataItem[] = [];
-  let stability = '';
+  let stability = STABILITY.LOW;
 
   try {
-    // Info: search table: blocks with hash, addresses with address, contracts with contract_address, evidences with evidence_address, transactions with hash, blacklists with address, red_flags with address (20240131 - Shirley)
-
-    // Select the latest block from blocks table
+    // Info: calculate the stability for the targeted block (20240201 - Shirley)
     const latestBlock = await prisma.blocks.findFirst({
       orderBy: {
         created_timestamp: 'desc',
@@ -197,9 +221,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         created_timestamp: 'desc',
       },
       where: {
-        hash: {
-          startsWith: searchInput,
-        },
+        OR: [
+          {
+            hash: {
+              startsWith: searchInput,
+            },
+          },
+          {
+            id:
+              !searchInput.startsWith('0x') && isValid64BitInteger(searchInput)
+                ? +searchInput
+                : undefined,
+          },
+        ],
       },
       select: {
         id: true,
@@ -226,47 +260,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           stability = STABILITY.LOW;
         }
       }
+
       result.push({
-        type: 'BLOCK',
+        type: RESPONSE_DATA_TYPE.BLOCK,
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
-          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
+          createdTimestamp: item.created_timestamp
+            ? Math.floor(item.created_timestamp.getTime() / 1000)
+            : 0,
           stability: stability,
         },
       });
     });
-
-    // const addresses = await prisma.addresses.findMany({
-    //   where: {
-    //     address: {
-    //       startsWith: searchInput,
-    //     },
-    //   },
-    //   take: 10,
-    //   select: {
-    //     id: true,
-    //     chain_id: true,
-    //     created_timestamp: true,
-    //     address: true,
-    //     flagging_count: true,
-    //     risk_level: true,
-    //   },
-    // });
-
-    // addresses.forEach(item => {
-    //   result.push({
-    //     type: 'ADDRESS',
-    //     data: {
-    //       id: `${item.id}`,
-    //       chainId: `${item.chain_id}`,
-    //       createdTimestamp: item.created_timestamp,
-    //       address: `${item.address}`,
-    //       flaggingCount: item.flagging_count,
-    //       riskLevel: `${item.risk_level}`,
-    //     },
-    //   });
-    // });
 
     const contracts = await prisma.contracts.findMany({
       where: {
@@ -284,7 +290,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     contracts.forEach(item => {
       result.push({
-        type: 'CONTRACT',
+        type: RESPONSE_DATA_TYPE.CONTRACT,
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
@@ -310,7 +316,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     evidences.forEach(item => {
       result.push({
-        type: 'EVIDENCE',
+        type: RESPONSE_DATA_TYPE.EVIDENCE,
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
@@ -336,7 +342,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     transactions.forEach(item => {
       result.push({
-        type: 'TRANSACTION',
+        type: RESPONSE_DATA_TYPE.TRANSACTION,
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
@@ -346,36 +352,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
     });
 
-    // const blacklists = await prisma.black_lists.findMany({
-    //   where: {
-    //     address_id: +searchInput, // TODO: check the data format (20240131 - Shirley)
-    //     // address_id: {
-    //     //   startsWith: searchInput,
-    //     // },
-    //   },
-    //   select: {
-    //     id: true,
-    //     chain_id: true,
-    //     created_timestamp: true,
-    //     address_id: true,
-    //     public_tag: true,
-    //   },
-    // });
-
-    // blacklists.forEach(item => {
-    //   result.push({
-    //     type: 'BLACKLIST',
-    //     data: {
-    //       id: `${item.id}`,
-    //       chainId: `${item.chain_id}`,
-    //       createdTimestamp: item?.created_timestamp?.getTime() / 1000 ?? 0,
-    //       address: `${item.address_id}`,
-    //       publicTag: [item.public_tag], // TODO: check the demand and schema (20240131 - Shirley)
-    //     },
-    //   });
-    // });
-
     const redFlags = await prisma.red_flags.findMany({
+      where: {
+        related_addresses: {
+          hasSome: [`${searchInput}`],
+        },
+      },
       select: {
         id: true,
         chain_id: true,
@@ -388,51 +370,114 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     redFlags.forEach(item => {
       if (item.related_addresses.some(address => address.startsWith(searchInput))) {
         result.push({
-          type: 'RED_FLAG',
+          type: RESPONSE_DATA_TYPE.RED_FLAG,
           data: {
             id: `${item.id}`,
             chainId: `${item.chain_id}`,
             createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
-            address: item.related_addresses.join(', '), // Or handle array as needed
             redFlagType: `${item.red_flag_type}`,
+            interactedAddresses: item.related_addresses.map(address => {
+              return {
+                id: `${address}`,
+                chainId: `${item.chain_id}`,
+              };
+            }),
           },
         });
       }
     });
 
-    // const redFlags = await prisma.red_flags.findMany({
-    //   where: {
-    //     address: {
-    //       startsWith: searchInput,
-    //     },
-    //   },
-    //   select: {
-    //     id: true,
-    //     chain_id: true,
-    //     created_timestamp: true,
-    //     address: true,
-    //     red_flag_type: true,
-    //   },
-    // });
+    const addresses = await prisma.addresses.findMany({
+      where: {
+        address: {
+          startsWith: searchInput,
+        },
+      },
+      select: {
+        id: true,
+        chain_id: true,
+        created_timestamp: true,
+        address: true,
+      },
+    });
 
-    // redFlags.forEach(item => {
-    //   result.push({
-    //     type: 'RED_FLAG',
-    //     data: {
-    //       id: `${item.id}`,
-    //       chainId: `${item.chain_id}`,
-    //       createdTimestamp: item.created_timestamp,
-    //       address: `${item.address}`,
-    //       redFlagType: `${item.red_flag_type}`,
-    //     },
-    //   });
-    // });
+    addresses.forEach(item => {
+      result.push({
+        type: RESPONSE_DATA_TYPE.ADDRESS,
+        data: {
+          id: `${item.id}`,
+          chainId: `${item.chain_id}`,
+          createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
+          address: `${item.address}`,
+          flaggingCount: redFlags.length,
+          riskLevel: RISK_LEVEL.LOW_RISK,
+        },
+      });
+    });
+
+    if (addresses.length > 0) {
+      for (const address of addresses) {
+        const blacklists = await prisma.black_lists.findMany({
+          where: {
+            address_id: address.id,
+          },
+          select: {
+            id: true,
+            chain_id: true,
+            created_timestamp: true,
+            address_id: true,
+            public_tag: true,
+          },
+        });
+
+        blacklists.forEach(item => {
+          result.push({
+            type: RESPONSE_DATA_TYPE.BLACKLIST,
+            data: {
+              id: `${item.id}`,
+              chainId: `${item.chain_id}`,
+              createdTimestamp: item.created_timestamp
+                ? item.created_timestamp.getTime() / 1000
+                : 0,
+              address: `${item.address_id}`,
+              publicTag: item.public_tag ? item.public_tag.split(',') : [], // TODO: 假設 public_tag 是以逗號分隔的字串，如果 schema 改成 string[] 要再改回來 (20240201 - Shirley)
+            },
+          });
+        });
+      }
+    } else if (!searchInput.startsWith('0x') && isValid64BitInteger(searchInput)) {
+      const blacklists = await prisma.black_lists.findMany({
+        where: {
+          address_id: +searchInput,
+        },
+        select: {
+          id: true,
+          chain_id: true,
+          created_timestamp: true,
+          address_id: true,
+          public_tag: true,
+        },
+      });
+
+      blacklists.forEach(item => {
+        result.push({
+          type: RESPONSE_DATA_TYPE.BLACKLIST,
+          data: {
+            id: `${item.id}`,
+            chainId: `${item.chain_id}`,
+            createdTimestamp: item.created_timestamp ? item.created_timestamp.getTime() / 1000 : 0,
+            address: `${item.address_id}`,
+            publicTag: item.public_tag ? item.public_tag.split(',') : [], // TODO: 假設 public_tag 是以逗號分隔的字串，如果 schema 改成 string[] 要再改回來 (20240201 - Shirley)
+          },
+        });
+      });
+    }
 
     res.status(200).json(result);
   } catch (error) {
     // Info: (20240130 - Shirley) Request error
     // eslint-disable-next-line no-console
     console.error('search result request', error);
-    res.status(500).json({} as ResponseData);
+    res.status(500).json([] as ResponseData);
   }
 }
