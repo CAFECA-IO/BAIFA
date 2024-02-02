@@ -105,6 +105,7 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
       .filter(searchResult => {
         // Info: (20231115 - Julian) filter by Search bar
         return true;
+        /* Deprecated: don't filter data out by string (20240201 - Shirley)
         // const searchTerm = searchTextRef.current.toLowerCase();
         // const id = searchResult.data.id.toLowerCase();
         // const chainId = searchResult.data.chainId.toLowerCase();
@@ -113,6 +114,7 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
         // return searchTerm === ''
         //   ? true
         //   : id.includes(searchTerm) || chainId.includes(searchTerm) || type.includes(searchTerm);
+        */
       })
       .filter(searchResult => {
         // Info: (20231115 - Julian) filter by Filter Tabs
