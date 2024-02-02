@@ -100,7 +100,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
                 </div>
               </Link>
               {/* Info: (20231102 - Julian) Holding Amount */}
-              <p className="break-all">
+              <p>
                 {withCommas(holder.holdingAmount)} {unit}
               </p>
             </div>

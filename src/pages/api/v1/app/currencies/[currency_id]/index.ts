@@ -31,8 +31,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // Info: (20240125 - Julian) currency 的總量
-  const totalAmount = parseInt(`${currencyData?.total_amount ?? 0}`);
+  // Info: (20240125 - Julian) 從 chains Table 中取得 unit 和 decimal
+  const chainId = currencyData?.chain_id;
+  const chainData = await prisma.chains.findUnique({
+    where: {
+      id: chainId ?? undefined,
+    },
+    select: {
+      symbol: true,
+      decimals: true,
+    },
+  });
+  const unit = chainData?.symbol ?? '';
+  const decimal = chainData?.decimals ?? 0;
 
   // Info: (20240125 - Julian) 從 token_balances Table 中取得 holders
   const holderData = await prisma.token_balances.findMany({
@@ -53,16 +64,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
   const maxHoldingAmount = parseInt(`${maxHolding._max.value ?? 0}`);
 
+  // Info: (20240125 - Julian) currency 的 24 小時交易量
+  const volumeIn24hRaw = parseInt(`${currencyData?.volume_in_24h ?? 0}`);
+  const volumeIn24h = volumeIn24hRaw / Math.pow(10, decimal);
+
+  // Info: (20240125 - Julian) currency 的總量
+  const totalAmountRaw = parseInt(`${currencyData?.total_amount ?? 0}`);
+  const totalAmount = totalAmountRaw / Math.pow(10, decimal);
+
   const holders: IHolder[] = holderData.map(holder => {
     // Info: (20240130 - Julian) 計算持有比例
     const value = parseInt(`${holder.value ?? 0}`);
     const holdingPercentage = value / totalAmount;
     // Info: (20240202 - Julian) 計算持有比例的 bar 寬度，取到小數點後兩位
     const holdingBarWidth = Math.round((value / maxHoldingAmount) * 10000) / 100;
-
+    // Info: (20240202 - Julian) holdingAmount = value/10^decimal
+    const holdingAmount = value / Math.pow(10, decimal);
     return {
       addressId: `${holder.address}`,
-      holdingAmount: value,
+      holdingAmount: holdingAmount,
       holdingPercentage: holdingPercentage,
       holdingBarWidth: holdingBarWidth,
       publicTag: [], // ToDo: (20240130 - Julian) 待補上
@@ -88,7 +108,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
 
   // Info: (20240125 - Julian) 從 transactions Table 中取得 transactionHistoryData
-  const chainId = currencyData?.chain_id;
   const transactionData = await prisma.token_transfers.findMany({
     where: {
       chain_id: chainId,
@@ -141,19 +160,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       status: 'SUCCESS', // ToDo: (20240131 - Julian) 畫面需要調整，此欄位可能刪除
     };
   });
-
-  // Info: (20240125 - Julian) 從 chains Table 中取得 unit
-  const chainData = await prisma.chains.findUnique({
-    where: {
-      id: chainId ?? undefined,
-    },
-    select: {
-      symbol: true,
-    },
-  });
-  const unit = chainData?.symbol ?? '';
-
-  const volumeIn24h = parseInt(`${currencyData?.volume_in_24h ?? 0}`);
 
   const result: ResponseData = currencyData
     ? {
