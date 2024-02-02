@@ -26,6 +26,23 @@ input[type='number']::-webkit-inner-spin-button {
   margin: 0;
 }
 
+input[type='search']::-webkit-search-decoration,
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-results-button,
+input[type='search']::-webkit-search-results-decoration {
+  display: none;
+}
+
+/* Hide horizontal scrollbar */
+/* For Webkit browser */
+.hideScrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* For Firefox */
+.hideScrollbar {
+  scrollbar-width: none;
+}
+
 h6 {
   -webkit-text-stroke: 1px white;
   color: transparent;

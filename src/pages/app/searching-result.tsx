@@ -16,8 +16,20 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {ILocale, TranslateFunction} from '../../interfaces/locale';
 import {ISearchResult} from '../../interfaces/search_result';
+import GlobalSearch from '../../components/global_search/global_search';
+import {BFAURL} from '../../constants/url';
+import {GetServerSideProps} from 'next';
+import {ParsedUrlQuery} from 'querystring';
 
-const SearchingResultPage = () => {
+interface ISearchingResultPageProps {
+  searchQuery: string;
+}
+
+interface IServerSideProps extends ParsedUrlQuery {
+  search: string;
+}
+
+const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
   const {getSearchResult} = useContext(MarketContext);
@@ -63,29 +75,44 @@ const SearchingResultPage = () => {
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(filteredResult.length / ITEM_PER_PAGE));
 
+  const getInputValue = (value: string) => {
+    setSearchText(value);
+  };
+
   // Info: (20231115 - Julian) Pagination Index
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
+
+  useEffect(() => {
+    if (searchQuery) {
+      setSearchText(searchQuery);
+    } else if (search) {
+      setSearchText(search.toString());
+    }
+  }, []);
 
   useEffect(() => {
     if (searchTextRef.current.length === 0) return;
     getSearchResult(searchTextRef.current).then(data => {
       setSearchResult(data);
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText]);
+  }, [searchTextRef.current]);
 
   useEffect(() => {
     const result = searchResult
       .filter(searchResult => {
         // Info: (20231115 - Julian) filter by Search bar
-        const searchTerm = searchTextRef.current.toLowerCase();
-        const id = searchResult.data.id.toLowerCase();
-        const chainId = searchResult.data.chainId.toLowerCase();
-        const type = searchResult.type.toLowerCase();
-        return searchTerm === ''
-          ? true
-          : id.includes(searchTerm) || chainId.includes(searchTerm) || type.includes(searchTerm);
+        return true;
+        // const searchTerm = searchTextRef.current.toLowerCase();
+        // const id = searchResult.data.id.toLowerCase();
+        // const chainId = searchResult.data.chainId.toLowerCase();
+        // const type = searchResult.type.toLowerCase();
+        // return id.includes(searchTextRef.current);
+        // return searchTerm === ''
+        //   ? true
+        //   : id.includes(searchTerm) || chainId.includes(searchTerm) || type.includes(searchTerm);
       })
       .filter(searchResult => {
         // Info: (20231115 - Julian) filter by Filter Tabs
@@ -152,9 +179,10 @@ const SearchingResultPage = () => {
             <div className="flex w-full flex-col items-center space-y-14 lg:space-y-10">
               {/* Info: (20231114 - Julian) Search Bar */}
               <div className="w-full lg:w-9/10">
-                <SearchBar
-                  searchBarPlaceholder={t('SEARCHING_RESULT_PAGE.SEARCH_PLACEHOLDER')}
-                  setSearch={setSearchText}
+                <GlobalSearch
+                  coverShowed={false}
+                  getInputValue={getInputValue}
+                  inputValueFromParent={searchTextRef.current}
                 />
               </div>
               {/* Info: (20231114 - Julian) Filter Tabs */}
@@ -163,7 +191,7 @@ const SearchingResultPage = () => {
                 <div
                   className={`absolute flex h-full w-full ${shadowClassNameL} ${shadowClassNameR}`}
                 ></div>
-                <ul className="relative flex w-full items-center justify-between space-x-4 overflow-x-auto overflow-y-hidden xl:overflow-x-hidden">
+                <ul className="hideScrollbar relative flex w-full items-center justify-between space-x-4 overflow-x-auto overflow-y-hidden xl:overflow-x-hidden">
                   {displayedFilterTabs}
                 </ul>
               </div>
@@ -204,12 +232,15 @@ const SearchingResultPage = () => {
   );
 };
 
-const getStaticPropsFunction = async ({locale}: ILocale) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['common'])),
-  },
-});
+export const getServerSideProps: GetServerSideProps = async ({query, locale}) => {
+  const {search = ''} = query as IServerSideProps; // Casting query to ensure type safety.
 
-export const getStaticProps = getStaticPropsFunction;
+  return {
+    props: {
+      ...(await serverSideTranslations(locale as string, ['common'])),
+      search,
+    },
+  };
+};
 
 export default SearchingResultPage;
