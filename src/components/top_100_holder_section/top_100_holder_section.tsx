@@ -30,12 +30,6 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
-  const maxholdingAmount = holders
-    ? holders.reduce((prev, current) =>
-        prev.holdingAmount > current.holdingAmount ? prev : current
-      ).holdingAmount
-    : 0;
-
   useEffect(() => {
     const searchResult = holders.filter(holder => {
       // Info: (20231101 - Julian) filter by search term
