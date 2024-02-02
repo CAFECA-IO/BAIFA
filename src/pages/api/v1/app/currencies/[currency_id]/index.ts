@@ -33,6 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   // Info: (20240125 - Julian) currency 的總量
   const totalAmount = parseInt(`${currencyData?.total_amount ?? 0}`);
+
   // Info: (20240125 - Julian) 從 token_balances Table 中取得 holders
   const holderData = await prisma.token_balances.findMany({
     where: {
@@ -43,15 +44,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       value: true,
     },
   });
+
+  // Info: (20240125 - Julian) 取得持有數最多的 value
+  const maxHolding = await prisma.token_balances.aggregate({
+    _max: {
+      value: true,
+    },
+  });
+  const maxHoldingAmount = parseInt(`${maxHolding._max.value ?? 0}`);
+
   const holders: IHolder[] = holderData.map(holder => {
     // Info: (20240130 - Julian) 計算持有比例
     const value = parseInt(`${holder.value ?? 0}`);
     const holdingPercentage = value / totalAmount;
+    // Info: (20240202 - Julian) 計算持有比例的 bar 寬度，取到小數點後兩位
+    const holdingBarWidth = Math.round((value / maxHoldingAmount) * 10000) / 100;
 
     return {
       addressId: `${holder.address}`,
-      holdingAmount: parseInt(`${holder.value ?? 0}`),
+      holdingAmount: value,
       holdingPercentage: holdingPercentage,
+      holdingBarWidth: holdingBarWidth,
       publicTag: [], // ToDo: (20240130 - Julian) 待補上
     };
   });

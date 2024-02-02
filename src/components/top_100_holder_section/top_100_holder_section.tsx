@@ -61,8 +61,6 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
     .sort((a, b) => b.holdingAmount - a.holdingAmount)
     .map((holder, index) => {
       const holdingPercentage = roundToDecimal(holder.holdingPercentage, 2);
-      const holdingBarWidth = (holder.holdingAmount / maxholdingAmount) * 100;
-
       const addressLink = getDynamicUrl(currencyId, holder.addressId).ADDRESS;
 
       const displayedPublicTag = holder.publicTag ? (
@@ -101,12 +99,14 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
                   <Image src={chainIcon.src} alt={chainIcon.alt} width={20} height={20} />
                   <p>
                     {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-                    <span className="ml-2 font-semibold text-primaryBlue">{holder.addressId}</span>
+                    <span className="ml-2 font-semibold text-primaryBlue">
+                      {truncateText(holder.addressId, DEFAULT_TRUNCATE_LENGTH)}
+                    </span>
                   </p>
                 </div>
               </Link>
               {/* Info: (20231102 - Julian) Holding Amount */}
-              <p>
+              <p className="break-all">
                 {withCommas(holder.holdingAmount)} {unit}
               </p>
             </div>
@@ -116,7 +116,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
               {/* Info: (20231102 - Julian) Holding Amount Bar */}
               <span
                 className="absolute right-0 top-0 h-20px bg-lightBlue opacity-50"
-                style={{width: `${holdingBarWidth}%`}}
+                style={{width: `${holder.holdingBarWidth}%`}}
               ></span>
             </div>
           </div>
