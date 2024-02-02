@@ -1,3 +1,5 @@
+// Red Flag Detail Component
+
 import Image from 'next/image';
 import Link from 'next/link';
 import Tooltip from '../tooltip/tooltip';

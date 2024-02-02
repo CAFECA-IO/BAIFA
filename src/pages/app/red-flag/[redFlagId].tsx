@@ -44,10 +44,11 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
   useEffect(() => {
+    // Info: (今天 - Liz) Initialize app context
     if (!appCtx.isInit) {
       appCtx.init();
     }
-
+    // Info: (20240202 - Liz) Get red flag detail data
     const getRedFlagData = async (redFlagId: string) => {
       try {
         const data = await getRedFlagDetail(redFlagId);
@@ -62,10 +63,12 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Info: (20240202 - Liz) Display red flag detail data
   const {id, chainId, transactionHistoryData} = redFlagData;
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Question: (20240202 - Liz) Why do we need to set redFlagData again?
   useEffect(() => {
     if (redFlagData) {
       setRedFlagData(redFlagData);
@@ -85,6 +88,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const headTitle = `${t('RED_FLAG_ADDRESS_PAGE.MAIN_TITLE')} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
+  // Info: (20240202 - Liz) Display transaction history data or loading animation
   const displayedTransactionHistory = !isLoading ? (
     <TransactionHistorySection transactions={transactionData} />
   ) : (

@@ -32,6 +32,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
+  // Info: (20240103 - Julian) Update the address options when transactions are updated
   useEffect(() => {
     // Info: (20231215 - Julian) 取得所有的 to address 並加入選單
     const toList = addressOptions;
@@ -52,6 +53,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactions]);
 
+  // Info: (20231113 - Julian) Filter by search term, to address, and sorting
   useEffect(() => {
     const searchResult = transactions // Info: (20231113 - Julian) filter by search term
       .filter((transaction: ITransaction) => {
@@ -102,13 +104,13 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
             : t(createdStr.month);
 
         const statusStyle =
-          status === 'PROCESSING'
+          status === 'Pending'
             ? {
                 str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
                 icon: '/animations/trade_processing.gif',
                 style: 'text-hoverWhite',
               }
-            : status === 'SUCCESS'
+            : status === 'Success'
             ? {
                 str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
                 icon: '/icons/success_icon.svg',
