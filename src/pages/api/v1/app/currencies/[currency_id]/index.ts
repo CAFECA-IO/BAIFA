@@ -2,30 +2,10 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
-import {ICurrencyDetail} from '../../../../../../interfaces/currency';
+import {ICurrencyDetail, IHolder} from '../../../../../../interfaces/currency';
 import {IRedFlag} from '../../../../../../interfaces/red_flag';
-
-type AddressInfo = {
-  type: 'address' | 'contract';
-  address: string;
-};
-
-type HolderData = {
-  addressId: string;
-  holdingAmount: number;
-  holdingPercentage: number;
-  publicTag: string[];
-};
-
-type TransactionHistoryData = {
-  id: string;
-  chainId: string;
-  createdTimestamp: number;
-  from: AddressInfo[];
-  to: AddressInfo[];
-  type: 'Crypto Currency' | 'Evidence' | 'NFT';
-  status: 'PENDING' | 'SUCCESS' | 'FAILED';
-};
+import {IAddressInfo} from '../../../../../../interfaces/address_info';
+import {ITransaction} from '../../../../../../interfaces/transaction';
 
 type ResponseData = ICurrencyDetail | undefined;
 
@@ -63,23 +43,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       value: true,
     },
   });
-  const holders: HolderData[] = holderData
-    .map(holder => {
-      // Info: (20240130 - Julian) 計算持有比例
-      const value = parseInt(`${holder.value}` ?? 0);
-      const holdingPercentage = value / totalAmount;
+  const holders: IHolder[] = holderData.map(holder => {
+    // Info: (20240130 - Julian) 計算持有比例
+    const value = parseInt(`${holder.value ?? 0}`);
+    const holdingPercentage = value / totalAmount;
 
-      return {
-        addressId: `${holder.address}`,
-        holdingAmount: parseInt(`${holder.value}` ?? 0),
-        holdingPercentage: holdingPercentage,
-        publicTag: [], // ToDo: (20240130 - Julian) 待補上
-      };
-    })
-    .sort((a, b) => {
-      // Info: (20240130 - Julian) 依照持有比例降冪排序
-      return b.holdingPercentage - a.holdingPercentage;
-    });
+    return {
+      addressId: `${holder.address}`,
+      holdingAmount: parseInt(`${holder.value ?? 0}`),
+      holdingPercentage: holdingPercentage,
+      publicTag: [], // ToDo: (20240130 - Julian) 待補上
+    };
+  });
 
   // Info: (20240125 - Julian) 從 red_flags Table 中取得資料
   const flaggingData = await prisma.red_flags.findMany({
@@ -114,14 +89,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  const transactionHistoryData: TransactionHistoryData[] = transactionData.map(transaction => {
+  const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
     // Info: (20240130 - Julian) 轉換 timestamp
     // ToDo: (20240131 - Julian) 待 DB 補上這個欄位
     const transactionCreatedTimestamp = 0;
 
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
-    const from: AddressInfo[] = fromAddresses
+    const from: IAddressInfo[] = fromAddresses
       // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
       .filter(address => address !== 'null')
       .map(address => {
@@ -133,7 +108,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // Info: (20240130 - Julian) to address 轉換
     const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
-    const to: AddressInfo[] = toAddresses
+    const to: IAddressInfo[] = toAddresses
       // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
       .filter(address => address !== 'null')
       .map(address => {
@@ -175,7 +150,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         holderCount: currencyData.holder_count ?? 0,
         price: currencyData.price ?? 0,
         volumeIn24h: volumeIn24h,
-        unit: unit, // ToDo: (20240125 - Julian) 補上這個欄位
+        unit: unit,
         totalAmount: totalAmount,
         holders: holders,
         totalTransfers: currencyData.total_transfers ?? 0,

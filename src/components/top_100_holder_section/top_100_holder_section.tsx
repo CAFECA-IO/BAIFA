@@ -54,71 +54,75 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
-  // Info: (20231102 - Julian) Pagination
-  const holderList = filteredHolderData.slice(startIdx, endIdx).map((holder, index) => {
-    const holdingPercentage = roundToDecimal(holder.holdingPercentage, 2);
-    const holdingBarWidth = (holder.holdingAmount / maxholdingAmount) * 100;
+  const holderList = filteredHolderData
+    // Info: (20231102 - Julian) Pagination
+    .slice(startIdx, endIdx)
+    // Info: (20240202 - Julian) 依照持有比例降冪排序
+    .sort((a, b) => b.holdingAmount - a.holdingAmount)
+    .map((holder, index) => {
+      const holdingPercentage = roundToDecimal(holder.holdingPercentage, 2);
+      const holdingBarWidth = (holder.holdingAmount / maxholdingAmount) * 100;
 
-    const addressLink = getDynamicUrl(currencyId, holder.addressId).ADDRESS;
+      const addressLink = getDynamicUrl(currencyId, holder.addressId).ADDRESS;
 
-    const displayedPublicTag = holder.publicTag ? (
-      <BoltButton className="px-3 py-2 text-sm" style="solid" color="purple">
-        {t(holder.publicTag[0])}
-      </BoltButton>
-    ) : (
-      <></>
-    );
+      const displayedPublicTag = holder.publicTag ? (
+        <BoltButton className="px-3 py-2 text-sm" style="solid" color="purple">
+          {t(holder.publicTag[0])}
+        </BoltButton>
+      ) : (
+        <></>
+      );
 
-    return (
-      // Info: (20231102 - Julian) Top 100 Holder Item
-      <div
-        key={index}
-        className="flex flex-col items-start border-b border-darkPurple4 px-1 lg:h-60px lg:flex-row lg:items-center lg:px-4"
-      >
-        {/* Info: (20231102 - Julian) Address ID (Desktop) */}
-        <Link href={addressLink} className="hidden flex-1 items-center space-x-4 lg:flex">
-          {displayedPublicTag}
-          <div className="flex items-center space-x-2 text-xl">
-            <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
-            <p title={holder.addressId}>
-              {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-              <span className="ml-2 font-semibold text-primaryBlue">
-                {truncateText(holder.addressId, DEFAULT_TRUNCATE_LENGTH)}
-              </span>
-            </p>
-          </div>
-        </Link>
-        {/* Info: (20231102 - Julian) Holding Amount */}
-        <div className="flex w-full flex-col items-end space-y-1 text-sm lg:w-300px lg:space-y-0">
-          <div className="flex w-full items-center justify-between lg:justify-end">
-            {/* Info: (20231102 - Julian) Address ID (Mobile) */}
-            <Link href={addressLink} className="flex space-x-4 lg:hidden">
-              <div className="flex items-center space-x-2 text-sm">
-                <Image src={chainIcon.src} alt={chainIcon.alt} width={20} height={20} />
-                <p>
-                  {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-                  <span className="ml-2 font-semibold text-primaryBlue">{holder.addressId}</span>
-                </p>
-              </div>
-            </Link>
-            {/* Info: (20231102 - Julian) Holding Amount */}
-            <p>
-              {withCommas(holder.holdingAmount)} {unit}
-            </p>
-          </div>
+      return (
+        // Info: (20231102 - Julian) Top 100 Holder Item
+        <div
+          key={index}
+          className="flex flex-col items-start border-b border-darkPurple4 px-1 lg:h-60px lg:flex-row lg:items-center lg:px-4"
+        >
+          {/* Info: (20231102 - Julian) Address ID (Desktop) */}
+          <Link href={addressLink} className="hidden flex-1 items-center space-x-4 lg:flex">
+            {displayedPublicTag}
+            <div className="flex items-center space-x-2 text-xl">
+              <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
+              <p title={holder.addressId}>
+                {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
+                <span className="ml-2 font-semibold text-primaryBlue">
+                  {truncateText(holder.addressId, DEFAULT_TRUNCATE_LENGTH)}
+                </span>
+              </p>
+            </div>
+          </Link>
+          {/* Info: (20231102 - Julian) Holding Amount */}
+          <div className="flex w-full flex-col items-end space-y-1 text-sm lg:w-300px lg:space-y-0">
+            <div className="flex w-full items-center justify-between lg:justify-end">
+              {/* Info: (20231102 - Julian) Address ID (Mobile) */}
+              <Link href={addressLink} className="flex space-x-4 lg:hidden">
+                <div className="flex items-center space-x-2 text-sm">
+                  <Image src={chainIcon.src} alt={chainIcon.alt} width={20} height={20} />
+                  <p>
+                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
+                    <span className="ml-2 font-semibold text-primaryBlue">{holder.addressId}</span>
+                  </p>
+                </div>
+              </Link>
+              {/* Info: (20231102 - Julian) Holding Amount */}
+              <p>
+                {withCommas(holder.holdingAmount)} {unit}
+              </p>
+            </div>
 
-          <div className="relative flex w-full justify-end px-2 py-px">
-            <p className="relative z-10">{holdingPercentage} %</p>
-            {/* Info: (20231102 - Julian) Holding Amount Bar */}
-            <span
-              className="absolute right-0 top-0 h-20px bg-lightBlue opacity-50"
-              style={{width: `${holdingBarWidth}%`}}
-            ></span>
+            <div className="relative flex w-full justify-end px-2 py-px">
+              <p className="relative z-10">{holdingPercentage} %</p>
+              {/* Info: (20231102 - Julian) Holding Amount Bar */}
+              <span
+                className="absolute right-0 top-0 h-20px bg-lightBlue opacity-50"
+                style={{width: `${holdingBarWidth}%`}}
+              ></span>
+            </div>
           </div>
         </div>
-      </div>
-    );
-  });
+      );
+    });
 
   return (
     <div className="flex w-full flex-col space-y-4">
