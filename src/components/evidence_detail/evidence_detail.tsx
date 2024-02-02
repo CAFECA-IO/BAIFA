@@ -6,7 +6,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {getDynamicUrl} from '../../constants/url';
 import {timestampToString, truncateText} from '../../lib/common';
 import {IEvidenceDetail} from '../../interfaces/evidence';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {BFA_EVIDENCE_CONTENT_URL, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IEvidenceDetailProps {
   evidenceData: IEvidenceDetail;
@@ -110,11 +110,8 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
           </Tooltip>
         </div>
         <div className="w-full">
-          {/* Info: (20240115 - Julian) Balance Sheet */}
-          {/* ToDo: (20240115 - Julian) Reports API */}
-          <iframe src="https://baifa.io/reports/BFA/balance" className="h-600px w-full" />
-          {/* ToDo: (20240115 - Julian) Cash Flow Statement */}
-          {/* ToDo: (20240115 - Julian) Comprehensive Income Statement */}
+          {/* Info: (20240202 - Julian) Reports */}
+          <iframe src={BFA_EVIDENCE_CONTENT_URL} className="h-600px w-full" />
         </div>
       </div>
     </div>
