@@ -34,10 +34,8 @@ const ReportRiskPages = ({reportTitle}: IReportRiskPagesProps) => {
             </li>
             <li>Fluctuations in interest rates could have a negative impact on us.</li>
             <li>
-              <li>
-                The future growth of cryptocurrency is subject to unpredictable factors. If crypto
-                doesn&apos;t grow as we expect, our business could be negatively affected.
-              </li>
+              The future growth of cryptocurrency is subject to unpredictable factors. If crypto
+              doesn&apos;t grow as we expect, our business could be negatively affected.
             </li>
             <li>
               Cyberattacks and security breaches could harm our brand and reputation and negatively

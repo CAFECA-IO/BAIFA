@@ -6,6 +6,7 @@ export interface IHolder {
   addressId: string;
   holdingAmount: number;
   holdingPercentage: number;
+  holdingBarWidth: number;
   publicTag: string[];
 }
 
