@@ -8,14 +8,27 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {ISuggestions, defaultSuggestions} from '../../interfaces/suggestions';
 import useOuterClick from '../../lib/hooks/use_outer_click';
+import useStateRef from 'react-usestateref';
 
-const GlobalSearch = () => {
+interface IGlobalSearchProps {
+  coverShowed?: boolean;
+  getInputValue?: (value: string) => void;
+  inputValueFromParent?: string;
+}
+
+const GlobalSearch = ({
+  coverShowed = true,
+  getInputValue,
+  inputValueFromParent,
+}: IGlobalSearchProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const {getSuggestions} = useContext(MarketContext);
 
   // Info: (20231212 - Julian) 搜尋欄位的值
-  const [inputValue, setInputValue] = useState<string>('');
+  const [inputValue, setInputValue, inputValueRef] = useStateRef<string>(
+    inputValueFromParent ? inputValueFromParent : ''
+  );
   // Info: (20231212 - Julian) 搜尋建議的內容
   const [suggestionData, setSuggestionData] = useState<ISuggestions>(defaultSuggestions);
 
@@ -41,12 +54,20 @@ const GlobalSearch = () => {
     if (e.key === 'Enter') {
       // Info: (20231115 - Julian) 按下 Enter 後，導向搜尋結果頁面
       e.preventDefault();
-      router.push(`${BFAURL.SEARCHING_RESULT}?search=${inputValue}`);
+      getInputValue && getInputValue(inputValueRef.current);
+      router.push(`${BFAURL.SEARCHING_RESULT}?search=${inputValueRef.current}`);
     }
   };
 
+  useEffect(() => {
+    if (!!inputValueFromParent) {
+      setInputValue(inputValueFromParent);
+    }
+  }, [inputValueFromParent]);
+
   // Info: (20231212 - Julian) 點擊搜尋建議後，導向搜尋結果頁面
   const clickSuggestionHandler = (suggestion: string) => {
+    getInputValue && getInputValue(suggestion);
     setInputValue(suggestion);
     setSuggestionVisible(false);
     router.push(`${BFAURL.SEARCHING_RESULT}?search=${suggestion}`);
@@ -65,8 +86,8 @@ const GlobalSearch = () => {
           </li>
         ));
 
-  return (
-    <div className="flex w-full flex-col items-center space-y-4">
+  const coverImage = coverShowed ? (
+    <>
       {/* Info: (20230712 - Julian) Desktop Image */}
       <div className="hidden p-10 mix-blend-screen lg:block">
         <Image src="/elements/main_pic_1.svg" width={250} height={250} alt="global" />
@@ -76,8 +97,14 @@ const GlobalSearch = () => {
       <div className="block p-10 mix-blend-screen lg:hidden">
         <Image src="/elements/main_pic_1.svg" width={150} height={150} alt="global" />
       </div>
+    </>
+  ) : null;
 
-      <div className="relative flex flex-col items-center drop-shadow-xl">
+  return (
+    <div className="flex w-full flex-col items-center space-y-4">
+      {coverImage}
+
+      <div className="relative z-50 flex flex-col items-center drop-shadow-xl">
         <input
           ref={searchRef}
           type="search"
@@ -92,7 +119,7 @@ const GlobalSearch = () => {
         <ul
           className={`absolute top-12 w-95% flex-col rounded-sm bg-purpleLinear ${
             suggestionVisible ? 'flex' : 'hidden'
-          } z-10 opacity-90`}
+          } hideScrollbar z-10 max-h-300px overflow-y-auto opacity-90 lg:max-h-500px`}
         >
           {suggestionList}
         </ul>
