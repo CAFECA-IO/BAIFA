@@ -9,12 +9,11 @@ type ResponseData = IEvidenceDetail | undefined;
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
-  const evidenceId =
-    typeof req.query.evidence_id === 'string' ? parseInt(req.query.evidence_id) : undefined;
+  const evidenceId = typeof req.query.evidence_id === 'string' ? req.query.evidence_id : undefined;
 
-  const evidenceData = await prisma.evidences.findUnique({
+  const evidenceData = await prisma.evidences.findFirst({
     where: {
-      id: evidenceId,
+      evidence_id: evidenceId,
     },
     select: {
       id: true,

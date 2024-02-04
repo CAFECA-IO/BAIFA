@@ -1,14 +1,16 @@
 import Head from 'next/head';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import {BaifaReports} from '../../../constants/baifa_reports';
+import BalanceSheets from '../../../components/balance_sheets/balance_sheets';
 import ComprehensiveIncomeStatements from '../../../components/comprehensive_income_statements/comprehensive_income_statements';
+import StatementsOfCashFlow from '../../../components/statements_of_cash_flow/statements_of_cash_flow';
+import {BaifaReports} from '../../../constants/baifa_reports';
 
-interface IComprehensiveIncomeStatementsProps {
+interface IBalanceSheetsProps {
   projectId: string;
 }
 
-const ComprehensiveIncomeStatementsPage = ({projectId}: IComprehensiveIncomeStatementsProps) => {
-  const reportTitle = BaifaReports.COMPREHENSIVE_INCOME_STATEMENTS;
+const BalanceSheetsPage = ({projectId}: IBalanceSheetsProps) => {
+  const reportTitle = BaifaReports.BALANCE_SHEETS;
   const projectName = projectId;
   const headTitle = `${reportTitle} of ${projectName} - BAIFA`;
 
@@ -19,7 +21,12 @@ const ComprehensiveIncomeStatementsPage = ({projectId}: IComprehensiveIncomeStat
       </Head>
 
       <div>
+        {/* Info: (20240202 - Julian) Balance Sheets */}
+        <BalanceSheets projectId={projectId} />
+        {/* Info: (20240202 - Julian) Income Statements */}
         <ComprehensiveIncomeStatements projectId={projectId} />
+        {/* Info: (20240202 - Julian) Statements of Cash Flow */}
+        <StatementsOfCashFlow projectId={projectId} />
       </div>
     </>
   );
@@ -50,4 +57,4 @@ export const getStaticProps: GetStaticProps = async ({params}) => {
   };
 };
 
-export default ComprehensiveIncomeStatementsPage;
+export default BalanceSheetsPage;

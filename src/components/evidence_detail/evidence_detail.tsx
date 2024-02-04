@@ -6,7 +6,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {getDynamicUrl} from '../../constants/url';
 import {timestampToString, truncateText} from '../../lib/common';
 import {IEvidenceDetail} from '../../interfaces/evidence';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {BFA_EVIDENCE_CONTENT_URL, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IEvidenceDetailProps {
   evidenceData: IEvidenceDetail;
@@ -61,7 +61,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <p className="break-all text-sm lg:text-base">{evidenceAddress}</p>
+        <p className="max-w-550px break-all text-sm lg:text-base">{evidenceAddress}</p>
       </div>
       {/* Info: (20231107 - Julian) State */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
@@ -110,16 +110,9 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
           </Tooltip>
         </div>
         <div className="w-full">
-          {/* Info: (20240115 - Julian) Balance Sheet */}
-          {/* ToDo: (20240115 - Julian) Reports API */}
-          <iframe src="https://baifa.io/reports/BFA/balance" className="h-200px w-full" />
-          {/* ToDo: (20240115 - Julian) Cash Flow Statement */}
-          {/* ToDo: (20240115 - Julian) Comprehensive Income Statement */}
+          {/* Info: (20240202 - Julian) Reports */}
+          <iframe src={BFA_EVIDENCE_CONTENT_URL} className="h-600px w-full" />
         </div>
-
-        {/* <div className="max-h-200px flex-1 overflow-scroll bg-darkPurple3 p-4 text-sm">
-          <Image src="/elements/sample_evidence.jpeg" alt="" width={419} height={592} />
-        </div> */}
       </div>
     </div>
   );

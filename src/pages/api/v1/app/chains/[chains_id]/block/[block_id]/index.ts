@@ -44,9 +44,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const unit = chainData?.symbol ?? '';
   const decimals = chainData?.decimals ?? 0;
 
-  // Info: (20240119 - Julian) 取得上一個與下一個區塊的編號，如果沒有就 undefined
-  const previousBlockNumber = blockData?.number ? `${blockData?.number - 1}` : undefined;
-  const nextBlockNumber = blockData?.number ? `${blockData?.number + 1}` : undefined;
+  // Info: (20240202 - Julian) 取得上一個區塊的資料
+  const previousBlockData = await prisma.blocks.findMany({
+    take: -1, // Info: (20240202 - Julian) 代表往前取一筆資料
+    skip: 1, // Info: (20240202 - Julian) 代表跳過第一筆資料，也就是 current block
+    // Info: (20240202 - Julian) cursor: { id: blockData?.id } 代表取資料的起點，這邊是從 current block 的 id 開始
+    cursor: {
+      id: blockData?.id,
+    },
+    select: {
+      number: true,
+    },
+  });
+  // Info: (20240119 - Julian) 取得上一個區塊的編號，如果沒有就 undefined
+  const previousBlockNumber =
+    previousBlockData.length > 0 ? `${previousBlockData[0].number}` : undefined;
+
+  // Info: (20240119 - Julian) 取得下一個區塊的資料
+  const nextBlockData = await prisma.blocks.findMany({
+    take: 1, // Info: (20240202 - Julian) 代表往後取一筆資料
+    skip: 1,
+    cursor: {
+      id: blockData?.id,
+    },
+    select: {
+      number: true,
+    },
+  });
+  // Info: (20240119 - Julian) 取得下一個區塊的編號，如果沒有就 undefined
+  const nextBlockNumber = nextBlockData.length > 0 ? `${nextBlockData[0].number}` : undefined;
 
   // Info: (20240119 - Julian) 計算 reward
   const rewardRaw = blockData?.reward ? parseInt(blockData?.reward) : 0;

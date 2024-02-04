@@ -121,8 +121,8 @@ export const getTimeString = (timeSpan: number) => {
 };
 
 export const withCommas = (x: number | string) => {
-  // Info: (20231214 - Julian) 如果 x 為 NaN 或 undefined，顯示 '—'
-  if (!x || isNaN(Number(x))) return '—';
+  // Info: (20231214 - Julian) 如果 x 為 NaN 或 undefined 或 null，顯示 '—'
+  if (x === undefined || x === null || isNaN(Number(x))) return '—';
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
@@ -133,9 +133,9 @@ export const truncateText = (text: string | undefined, length: number) => {
 };
 
 export const roundToDecimal = (x: number, decimal: number) => {
-  // Info: (20231214 - Julian) 如果 x 為 NaN 或 undefined，顯示 '—'
+  // Info: (20231214 - Julian) 如果 x 為 NaN 或 undefined 或 null，顯示 '—'
   // Info: (20231214 - Julian) 如果 x 為 0 就直接回傳 '0'
-  if (!x || isNaN(x)) return '—';
+  if (x === undefined || x === null || isNaN(x)) return '—';
   if (x === 0 || x.toString() === '0') return '0';
 
   const toDecimal = 10 ** decimal;

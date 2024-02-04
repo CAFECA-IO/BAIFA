@@ -4,8 +4,8 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
 import {ITransaction} from '../../../../../interfaces/transaction';
 import {IRedFlagDetail} from '../../../../../interfaces/red_flag';
-import { IAddress } from '../../../../../interfaces/address';
-import { IAddressInfo } from '../../../../../interfaces/address_info';
+import {IAddress} from '../../../../../interfaces/address';
+import {IAddressInfo} from '../../../../../interfaces/address_info';
 
 type ResponseData = IRedFlagDetail | string;
 
