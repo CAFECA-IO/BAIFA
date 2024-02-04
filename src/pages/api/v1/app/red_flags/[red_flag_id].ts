@@ -4,7 +4,6 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
 import {ITransaction} from '../../../../../interfaces/transaction';
 import {IRedFlagDetail} from '../../../../../interfaces/red_flag';
-import {IAddress} from '../../../../../interfaces/address';
 import {IAddressInfo} from '../../../../../interfaces/address_info';
 
 type ResponseData = IRedFlagDetail | string;
@@ -52,16 +51,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  // Info: (20240131 - Liz) 根據 redFlagData.chain_id 取得 chainName
-  const chainNameObj = await prisma.chains.findUnique({
-    where: {
-      id: redFlagData?.chain_id as unknown as number,
-    },
-    select: {
-      chain_name: true,
-    },
-  });
-
   // Info: (20240131 - Liz) 透過 redFlagData.related_transactions 從 transactions 表格讀取相關交易
   const transactions = await prisma.transactions.findMany({
     where: {
@@ -83,12 +72,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240131 - Liz) 組合回傳資料
   const id = redFlagData.id as unknown as string;
   const chainId = redFlagData.chain_id as unknown as string;
-  const chainName = chainNameObj?.chain_name as unknown as string;
   const redFlagType = codes.find(
     code =>
       code.table_name === 'red_flags' &&
       code.table_column === 'red_flag_type' &&
-      code.value === redFlagData.red_flag_type
+      code.value === (redFlagData.red_flag_type ? parseInt(redFlagData.red_flag_type) : null)
   )?.meaning as unknown as IRedFlagDetail['redFlagType'];
 
   const createdTimestamp = redFlagData.created_timestamp as unknown as number;
@@ -99,6 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const totalAmount = redFlagData.total_amount as unknown as number;
   const unit = redFlagData.symbol as unknown as string;
+
   const transactionHistoryData = transactions.map(transaction => {
     const from = [
       {
@@ -117,14 +106,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       code =>
         code.table_name === 'transactions' &&
         code.table_column === 'status' &&
-        code.value === transaction.status
+        code.value === (transaction.status !== null ? parseInt(transaction.status) : null)
     )?.meaning as unknown as ITransaction['status'];
 
     const type = codes.find(
       code =>
         code.table_name === 'transactions' &&
         code.table_column === 'type' &&
-        code.value === transaction.type
+        code.value === (transaction.type ? parseInt(transaction.type) : null)
     )?.meaning as unknown as ITransaction['type'];
 
     return {
