@@ -178,8 +178,8 @@
     "CREATOR": "建立者",
     "CREATING_TIME": "建立時間",
     "CONTENT": "內容",
-    "STATE_ACTIVE": "有效",
-    "STATE_INACTIVE": "無效",
+    "STATE_PUBLIC": "公開",
+    "STATE_PRIVATE": "私人",
     "DOWNLOAD_EVIDENCE_BUTTON": "下載證據"
   },
   "INTERACTION_LIST_PAGE": {

@@ -26,16 +26,83 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
+  // Info: (20240205 - Julian) 從 codes Table 撈出 evidences state
+  const evidenceCodes = await prisma.codes.findMany({
+    where: {
+      table_name: 'evidences',
+    },
+    select: {
+      table_column: true,
+      value: true,
+      meaning: true,
+    },
+  });
+
+  // Info: (20240205 - Julian) 轉換 state
+  const state =
+    evidenceCodes
+      // Info: (20240205 - Julian) 先過濾出 state
+      .filter(code => code.table_column === 'state')
+      // Info: (20240205 - Julian) 再找出對應的 meaning；由於 state 是數字，所以要先轉換成數字再比對
+      .find(code => code.value === parseInt(evidenceData?.state ?? ''))?.meaning ?? '';
+
+  // Info: (20240205 - Julian) 從 codes Table 撈出 transaction type 和 status
+  const transactionCodes = await prisma.codes.findMany({
+    where: {
+      table_name: 'transactions',
+    },
+    select: {
+      table_column: true,
+      value: true,
+      meaning: true,
+    },
+  });
+
+  // Info: (20240205 - Julian) 轉換 status list
+  const statusList = transactionCodes.filter(code => code.table_column === 'status');
+  // Info: (20240205 - Julian) 轉換 type list
+  const typeList = transactionCodes.filter(code => code.table_column === 'type');
+
+  // Info: (20240205 - Julian) 撈出 transactions
+  const transactions = await prisma.transactions.findMany({
+    where: {
+      evidence_id: evidenceId,
+    },
+    select: {
+      id: true,
+      chain_id: true,
+      created_timestamp: true,
+      type: true,
+      status: true,
+    },
+  });
+
+  const transactionHistoryData = transactions.map(transaction => {
+    // Info: (20240205 - Julian) 找出對應的 type 和 status
+    const status =
+      statusList.find(code => code.value === parseInt(transaction.status ?? ''))?.meaning ?? '';
+    const type =
+      typeList.find(code => code.value === parseInt(transaction.type ?? ''))?.meaning ?? '';
+
+    return {
+      id: `${transaction.id}`,
+      chainId: `${transaction.chain_id}`,
+      createdTimestamp: transaction?.created_timestamp ?? 0,
+      type: type,
+      status: status,
+    };
+  });
+
   const result: ResponseData = evidenceData
     ? {
         id: `${evidenceData.id}`,
         chainId: `${evidenceData.chain_id}`,
         evidenceAddress: `${evidenceData.evidence_id}`,
-        state: 'Active', // Info: (20240118 - Julian) 需要參考 codes Table 並補上 state 的轉換
+        state: state,
         creatorAddressId: `${evidenceData.creator_address}`,
         createdTimestamp: evidenceData.created_timestamp ?? 0,
         content: `${evidenceData.content}`, // ToDo: (20240119 - Julian) 這裡應該會是 JSON 格式
-        transactionHistoryData: [], // ToDo: (20240118 - Julian) 補上這個欄位
+        transactionHistoryData: transactionHistoryData, // ToDo: (20240118 - Julian) 補上這個欄位
       }
     : // Info: (20240130 - Julian) 如果沒有找到資料，就回傳 undefined
       undefined;

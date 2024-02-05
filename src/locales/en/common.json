@@ -178,8 +178,8 @@
     "CREATOR": "Creator",
     "CREATING_TIME": "Creating Time",
     "CONTENT": "Content",
-    "STATE_ACTIVE": "Active",
-    "STATE_INACTIVE": "Inactive",
+    "STATE_PUBLIC": "Public",
+    "STATE_PRIVATE": "Private",
     "DOWNLOAD_EVIDENCE_BUTTON": "Download Evidence"
   },
   "INTERACTION_LIST_PAGE": {

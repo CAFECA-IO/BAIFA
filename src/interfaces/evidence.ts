@@ -1,12 +1,12 @@
-import {ITransaction} from './transaction';
+import {IDisplayTransaction} from './transaction';
 import {ICommonData} from './common_data';
 
 export interface IEvidence extends ICommonData {
   evidenceAddress: string;
 }
 export interface IEvidenceDetail extends IEvidence {
-  state: 'Active' | 'Inactive';
+  state: string;
   creatorAddressId: string;
   content: string;
-  transactionHistoryData: ITransaction[];
+  transactionHistoryData: IDisplayTransaction[];
 }

@@ -6,6 +6,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {getDynamicUrl} from '../../constants/url';
 import {timestampToString, truncateText} from '../../lib/common';
 import {IEvidenceDetail} from '../../interfaces/evidence';
+import {EvidenceState, DefaultEvidenceState} from '../../constants/state';
 import {BFA_EVIDENCE_CONTENT_URL, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IEvidenceDetailProps {
@@ -18,8 +19,23 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
 
   const addressLink = getDynamicUrl(chainId, `${creatorAddressId}`).ADDRESS;
 
-  const displayState =
-    state === 'Active' ? (
+  // Info: (20230205 - Julian) 取得 Evidence State 的文字內容，若無對應的文字內容，則使用預設值
+  const stateContent = EvidenceState[state] ?? DefaultEvidenceState;
+  const displayState = (
+    <div className="flex items-center text-hoverWhite">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="15"
+        height="16"
+        viewBox="0 0 15 16"
+        fill="none"
+      >
+        <circle cx="7.5" cy="8.48853" r="7.5" fill={stateContent.color} />
+      </svg>
+      <p className="ml-2 text-sm text-hoverWhite lg:text-base">{t(stateContent.text)}</p>
+    </div>
+  );
+  /*     state === 'Active' ? (
       <div className="flex items-center text-hoverWhite">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +65,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
           {t('EVIDENCE_DETAIL_PAGE.STATE_INACTIVE')}
         </p>
       </div>
-    );
+    ); */
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
