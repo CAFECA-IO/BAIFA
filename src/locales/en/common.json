@@ -97,7 +97,9 @@
     "STATUS_PROCESSING": "Processing",
     "STATUS_SUCCESS": "Success",
     "STATUS_FAILED": "Failed",
-    "TYPE_CRYPTO": "Crypto Currency",
+    "TYPE_NORMAL": "Normal",
+    "TYPE_CONTRACT": "Create contract",
+    "TYPE_ERC": "ERC-20",
     "TYPE_NFT": "NFT",
     "TYPE_EVIDENCE": "Evidence"
   },

@@ -79,7 +79,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
   const statusContent = TransactionStatus[status] ?? DefaultTransactionStatus;
   const displayStatus = (
     <div className="flex items-center">
-      <Image src={statusContent.icon} alt={`${statusContent.icon}_icon`} width={20} height={20} />
+      <Image src={statusContent.icon} alt={`${statusContent.text}_icon`} width={20} height={20} />
       <p className={`ml-2 text-sm lg:text-base ${statusContent.color}`}>{t(statusContent.text)}</p>
     </div>
   );

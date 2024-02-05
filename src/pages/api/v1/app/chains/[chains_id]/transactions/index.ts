@@ -25,6 +25,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240119 - Julian) 判斷是否有 addressId
   const addressId = typeof req.query.addressId === 'object' ? req.query.addressId : undefined;
 
+  // Info: (20240205 - Julian) 從 codes Table 撈出 type 和 status
+  const codes = await prisma.codes.findMany({
+    where: {
+      table_name: 'transactions',
+    },
+    select: {
+      table_column: true,
+      value: true,
+      meaning: true,
+    },
+  });
+
+  // Info: (20240205 - Julian) 轉換 status list
+  const statusList = codes.filter(code => code.table_column === 'status');
+  // Info: (20240205 - Julian) 轉換 type list
+  const typeList = codes.filter(code => code.table_column === 'type');
+
   if (!addressId) {
     // Info: (20240117 - Julian) ========= Transactions of a chain =========
     const transactionsOfChain = await prisma.transactions.findMany({
@@ -53,12 +70,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const resultOfChain: ResponseData = transactionsOfChain.map(transaction => {
+      // Info: (20240205 - Julian) 找出對應的 type 和 status
+      const status =
+        statusList.find(code => code.value === parseInt(transaction.status ?? ''))?.meaning ?? '';
+      const type =
+        typeList.find(code => code.value === parseInt(transaction.type ?? ''))?.meaning ?? '';
+
       return {
         id: `${transaction.id}`,
         chainId: `${transaction.chain_id}`,
         createdTimestamp: transaction?.created_timestamp ?? 0,
-        type: `${transaction.type}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 type 的轉換
-        status: `${transaction.status}`, // ToDo: (20240118 - Julian) 需要參考 codes Table 並補上 status 的轉換
+        type: type,
+        status: status,
       };
     });
 

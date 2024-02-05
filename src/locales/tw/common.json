@@ -97,7 +97,9 @@
     "STATUS_PROCESSING": "處理中",
     "STATUS_SUCCESS": "成功",
     "STATUS_FAILED": "失敗",
-    "TYPE_CRYPTO": "加密貨幣",
+    "TYPE_NORMAL": "普通",
+    "TYPE_CONTRACT": "創建合約",
+    "TYPE_ERC": "ERC-20",
     "TYPE_NFT": "NFT",
     "TYPE_EVIDENCE": "證據"
   },
