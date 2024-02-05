@@ -7,6 +7,5 @@ export interface IEvidence extends ICommonData {
 export interface IEvidenceDetail extends IEvidence {
   state: string;
   creatorAddressId: string;
-  content: string;
   transactionHistoryData: IDisplayTransaction[];
 }

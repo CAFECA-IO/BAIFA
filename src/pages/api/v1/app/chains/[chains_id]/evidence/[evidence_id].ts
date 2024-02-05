@@ -101,7 +101,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         state: state,
         creatorAddressId: `${evidenceData.creator_address}`,
         createdTimestamp: evidenceData.created_timestamp ?? 0,
-        content: `${evidenceData.content}`, // ToDo: (20240119 - Julian) 這裡應該會是 JSON 格式
         transactionHistoryData: transactionHistoryData, // ToDo: (20240118 - Julian) 補上這個欄位
       }
     : // Info: (20240130 - Julian) 如果沒有找到資料，就回傳 undefined
