@@ -54,8 +54,10 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
       })
     : [];
 
-  const toList = to
-    ? to.map((data, index) => {
+  const toList =
+    // Info: (20240205 - Julian) 如果 to 不為 null 且長度不是 0，則印出 to 的內容；否則顯示 NONE
+    !!to && to.length !== 0 ? (
+      to.map((data, index) => {
         const toLink =
           data.type === 'address'
             ? getDynamicUrl(chainId, `${data.address}`).ADDRESS
@@ -73,7 +75,9 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
           </Link>
         );
       })
-    : [];
+    ) : (
+      <p>{t('COMMON.NONE')}</p>
+    );
 
   // Info: (20240205 - Julian) 根據 status 取得對應的圖示、文字內容和顏色；沒有 status 對應的內容時就使用預設值
   const statusContent = TransactionStatus[status] ?? DefaultTransactionStatus;
