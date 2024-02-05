@@ -30,7 +30,7 @@ interface IDatePickerProps {
   isLinearBg?: boolean;
 }
 
-/* Info:(20230530 - Julian) Safari 只接受 YYYY/MM/DD 格式的日期 */
+// Info:(20230530 - Julian) Safari 只接受 YYYY/MM/DD 格式的日期
 const PopulateDates = ({
   daysInMonth,
   selectedYear,
@@ -155,25 +155,18 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
 
   useEffect(() => {
     // Info: (20230831 - Julian) 如果已取得兩個日期，則將日期區間傳回父層
-    if (dateOne && dateTwo) {
-      if (dateOne.getTime() !== dateTwo.getTime()) {
-        setFilteredPeriod({
-          startTimeStamp: dateOne.getTime() / 1000,
-          endTimeStamp: dateTwo.getTime() / 1000,
-        });
-      } else {
-        // Info: (20230901 - Julian) 如果兩個日期相同，則將日期區間設為當天 00:00:00 ~ 23:59:59
-        setFilteredPeriod({
-          startTimeStamp: dateOne.getTime() / 1000,
-          endTimeStamp: dateTwo.getTime() / 1000 + 86399,
-        });
-      }
-    } else {
+    // Info: (20230901 - Julian) 如果兩個日期相同，則將日期區間設為當天 00:00:00 ~ 23:59:59
+    const dateOneStamp = dateOne ? dateOne.getTime() / 1000 : 0;
+    const dateTwoStamp = dateTwo ? dateTwo.getTime() / 1000 : 0;
+
+    if (dateOneStamp && dateTwoStamp) {
+      const isSameDate = dateOneStamp === dateTwoStamp;
       setFilteredPeriod({
-        startTimeStamp: 0,
-        endTimeStamp: 0,
+        startTimeStamp: dateOneStamp,
+        endTimeStamp: isSameDate ? dateTwoStamp + 86399 : dateTwoStamp,
       });
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateOne, dateTwo]);
 
@@ -231,20 +224,20 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
 
   const selectDateOne = useCallback((el: Dates | null) => {
     if (!el) return setDateOne(null);
-    let newDate = new Date(el.time);
-    newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth() + 1}/${newDate.getDate()}`);
+    const newDate = new Date(el.time);
+    newDate.setHours(0, 0, 0, 0); // Info: (20240205 - Liz) 設定時間為當天的開始（00:00:00）
     setDateOne(newDate);
   }, []);
 
   const selectDateTwo = useCallback((el: Dates | null) => {
     if (!el) return setDateTwo(null);
-    let newDate = new Date(el.time);
-    newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth() + 1}/${newDate.getDate()}`);
+    const newDate = new Date(el.time);
+    newDate.setHours(23, 59, 59, 999); // Info: (20240205 - Liz) 設定時間為當天的最後一秒（23:59:59.999）
     setDateTwo(newDate);
   }, []);
 
   // Info: (20230830 - Julian) 選單開關
-  const openCalendeHandler = () => setComponentVisible(!componentVisible);
+  const openCalenderHandler = () => setComponentVisible(!componentVisible);
   // Info: (20230830 - Julian) 選擇今天
   const todayClickHandler = () => {
     const dateOfToday = new Date(
@@ -277,7 +270,7 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
       {/* Info: (20230830 - Julian) Select Period button */}
 
       <div
-        onClick={openCalendeHandler}
+        onClick={openCalenderHandler}
         className={`flex w-full items-center space-x-3 rounded p-4 font-inter ${
           isLinearBg ? 'bg-purpleLinear' : 'bg-darkPurple'
         } text-hoverWhite hover:cursor-pointer lg:w-250px`}
