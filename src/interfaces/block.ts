@@ -11,7 +11,7 @@ export interface IProductionBlock extends IBlock {
 }
 
 export interface IBlockDetail extends IBlock {
-  managementTeam: string[];
+  extraData: string; // ToDo: (20240205 - Julian) 可能為 Hexs
   transactionCount: number;
   miner: string;
   reward: number;

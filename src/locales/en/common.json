@@ -124,7 +124,7 @@
     "STABILITY_MEDIUM": "Medium",
     "STABILITY_LOW": "Low",
     "TIME": "Created Time",
-    "MANAGEMENT": "Management Team",
+    "EXTRA_DATA": "Extra Data",
     "CONTENT": "Content",
     "MINER_REWARD": "Miner & Reward",
     "SIZE": "Size"

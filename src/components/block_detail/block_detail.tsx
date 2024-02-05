@@ -22,12 +22,12 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     stability,
     createdTimestamp,
     chainId,
-    managementTeam,
     transactionCount,
     miner,
     reward,
     unit,
     size,
+    extraData,
   } = blockData;
   const [sinceTime, setSinceTime] = useState(0);
 
@@ -99,23 +99,15 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     </div>
   );
 
-  const displayTeam = managementTeam ? (
-    managementTeam.map((team, index) => {
-      return (
-        <Link href={BFAURL.COMING_SOON} key={index}>
-          <BoltButton className="px-3 py-1" color="blue" style="solid">
-            {team}
-          </BoltButton>
-        </Link>
-      );
-    })
+  const displayExtraData = extraData ? (
+    <p>{extraData}</p>
   ) : (
     // Info: (20231213 - Julian) If there is no management team
     <p>None</p>
   );
 
   const displayMinerAndReward = (
-    <div className="flex items-center space-x-3">
+    <div className="flex flex-wrap items-center gap-3">
       {/* Info: (20230912 - Julian) Miner */}
       <Link href={minerLink} title={miner}>
         <BoltButton className="px-3 py-1" color="blue" style="solid">
@@ -153,16 +145,6 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
         </p>
         {displayTime}
       </div>
-      {/* Info: (20230912 - Julian) Management Team */}
-      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          <p>{t('BLOCK_DETAIL_PAGE.MANAGEMENT')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
-        </div>
-        <div className="flex flex-wrap items-center space-x-3">{displayTeam}</div>
-      </div>
       {/* Info: (20230912 - Julian) Content */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
@@ -186,6 +168,16 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
           </Tooltip>
         </div>
         {displayMinerAndReward}
+      </div>
+      {/* Info: (20240205 - Julian) Extra Data */}
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('BLOCK_DETAIL_PAGE.EXTRA_DATA')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
+        <div className="flex items-center">{displayExtraData}</div>
       </div>
       {/* Info: (20230912 - Julian) Size */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

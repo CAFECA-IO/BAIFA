@@ -84,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         chainId: `${blockData.chain_id}`,
         stability: 'HIGH', // ToDo: (20240118 - Julian) 補上這個欄位
         createdTimestamp: blockData.created_timestamp ?? 0,
-        managementTeam: [], // ToDo: (20240118 - Julian) 補上這個欄位
+        extraData: '', // ToDo: (20240118 - Julian) 補上這個欄位
         transactionCount: blockData.transaction_count ?? 0,
         miner: `${blockData.miner}`,
         reward: reward,

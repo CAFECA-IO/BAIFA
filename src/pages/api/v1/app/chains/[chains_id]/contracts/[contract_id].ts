@@ -11,12 +11,11 @@ type ResponseData = IContractDetail | undefined;
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
-  const contractId =
-    typeof req.query.contract_id === 'string' ? parseInt(req.query.contract_id) : undefined;
+  const contractId = typeof req.query.contract_id === 'string' ? req.query.contract_id : undefined;
 
-  const contractData = await prisma.contracts.findUnique({
+  const contractData = await prisma.contracts.findFirst({
     where: {
-      id: contractId,
+      contract_address: contractId,
     },
     select: {
       id: true,
@@ -47,6 +46,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
       })
     : [];
+
+  // Info: (20240205 - Julian) 從 codes Table 撈出 transaction type 和 status
+  const transactionCodes = await prisma.codes.findMany({
+    where: {
+      table_name: 'transactions',
+    },
+    select: {
+      table_column: true,
+      value: true,
+      meaning: true,
+    },
+  });
+
+  // Info: (20240205 - Julian) 轉換 type list
+  const typeList = transactionCodes.filter(code => code.table_column === 'type');
+  // Info: (20240205 - Julian) 轉換 status list
+  const statusList = transactionCodes.filter(code => code.table_column === 'status');
+
   const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
@@ -72,14 +89,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         };
       });
 
+    // Info: (20240205 - Julian) 找出對應的 type 和 status
+    const type =
+      typeList.find(code => code.value === parseInt(transaction.type ?? ''))?.meaning ?? '';
+    const status =
+      statusList.find(code => code.value === parseInt(transaction.status ?? ''))?.meaning ?? '';
+
     return {
       id: `${transaction.id}`,
       chainId: `${transaction.chain_id}`,
       createdTimestamp: transaction.created_timestamp ?? 0,
       from: from,
       to: to,
-      type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
-      status: 'PENDING', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 status 的轉換
+      type: type,
+      status: status,
     };
   });
 
