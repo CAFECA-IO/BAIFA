@@ -39,7 +39,20 @@ const MainMenu = () => {
       <Link href={link} key={title}>
         <div className="flex h-200px w-300px flex-col items-center justify-between rounded-lg border border-transparent bg-darkPurple p-6 text-center shadow-xl hover:border-primaryBlue">
           <Image src={icon} width={80} height={80} alt={alt} />
-          <div className="flex text-3xl font-bold text-primaryBlue">{description}</div>
+          {/* Info: if the description is NaN, show the animation */}
+          {description === 'N/A' || isNaN(+description) ? (
+            <div
+              role="status"
+              className="animate-pulse space-y-8 rtl:space-x-reverse md:flex md:items-center md:space-x-8 md:space-y-0"
+            >
+              <div className="w-full">
+                <div className="my-2 h-5 w-20 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+              </div>
+              <span className="sr-only">Loading...</span>
+            </div>
+          ) : (
+            <div className="flex text-3xl font-bold text-primaryBlue">{description}</div>
+          )}{' '}
           <div className="text-sm font-medium text-white">{t(title)}</div>
         </div>
       </Link>
