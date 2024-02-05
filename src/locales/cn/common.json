@@ -97,7 +97,9 @@
     "STATUS_PROCESSING": "处理中",
     "STATUS_SUCCESS": "成功",
     "STATUS_FAILED": "失败",
-    "TYPE_CRYPTO": "加密货币",
+    "TYPE_NORMAL": "普通",
+    "TYPE_CONTRACT": "创建合约",
+    "TYPE_ERC": "ERC-20",
     "TYPE_NFT": "NFT",
     "TYPE_EVIDENCE": "证据"
   },
@@ -122,7 +124,7 @@
     "STABILITY_MEDIUM": "中等",
     "STABILITY_LOW": "低",
     "TIME": "建立时间",
-    "MANAGEMENT": "管理团队",
+    "EXTRA_DATA": "额外资料",
     "CONTENT": "内容",
     "MINER_REWARD": "矿工 & 报酬",
     "SIZE": "区块大小"
@@ -176,8 +178,8 @@
     "CREATOR": "建立者",
     "CREATING_TIME": "建立时间",
     "CONTENT": "内容",
-    "STATE_ACTIVE": "有效",
-    "STATE_INACTIVE": "无效",
+    "STATE_PUBLIC": "公开",
+    "STATE_PRIVATE": "私人",
     "DOWNLOAD_EVIDENCE_BUTTON": "下载证据"
   },
   "INTERACTION_LIST_PAGE": {

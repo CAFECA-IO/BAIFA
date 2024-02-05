@@ -6,14 +6,15 @@ import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
+import {ITEM_PER_PAGE, sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
 import {timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
-import {ITransaction} from '../../interfaces/transaction';
+import {IDisplayTransaction} from '../../interfaces/transaction';
+import DatePicker from '../date_picker/date_picker';
 
 interface ITransactionHistorySectionProps {
-  transactions: ITransaction[];
+  transactions: IDisplayTransaction[];
 }
 
 const TransactionHistorySection = ({transactions}: ITransactionHistorySectionProps) => {
@@ -21,34 +22,18 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(1 / ITEM_PER_PAGE));
-  // Info: (20240103 - Julian) To Address Menu Options
-  const [addressOptions, setAddressOptions] = useState<string[]>(['All']);
 
-  const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>(transactions);
+  const [filteredTransactions, setFilteredTransactions] =
+    useState<IDisplayTransaction[]>(transactions);
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [filterAddress, setFilterAddress] = useState<string>(addressOptions[0]);
+  const [period, setPeriod] = useState(default30DayPeriod);
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
   // Info: (20240103 - Julian) Update the address options when transactions are updated
   useEffect(() => {
-    // Info: (20231215 - Julian) 取得所有的 to address 並加入選單
-    const toList = addressOptions;
-
-    if (transactions) {
-      transactions.forEach(transaction => {
-        if (transaction.to) {
-          transaction.to.forEach(to => {
-            if (!toList.includes(to.address)) {
-              toList.push(to.address);
-            }
-          });
-        }
-      });
-    }
-    setAddressOptions(toList);
     setFilteredTransactions(transactions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactions]);
@@ -56,24 +41,26 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
   // Info: (20231113 - Julian) Filter by search term, to address, and sorting
   useEffect(() => {
     const searchResult = transactions // Info: (20231113 - Julian) filter by search term
-      .filter((transaction: ITransaction) => {
+      .filter((transaction: IDisplayTransaction) => {
         const searchTerm = searchRef.current.toLowerCase();
         const transactionId = transaction.id.toString().toLowerCase();
         const status = transaction.status.toLowerCase();
-        const toAddress = transaction.to ? transaction.to.map(t => t.address).join(',') : '';
 
         return searchTerm !== ''
-          ? transactionId.includes(searchTerm) ||
-              status.includes(searchTerm) ||
-              toAddress.includes(searchTerm)
+          ? transactionId.includes(searchTerm) || status.includes(searchTerm)
           : true;
       })
-      //Info: (20231113 - Julian) filter by to
-      .filter((transaction: ITransaction) => {
-        const toAddress = transaction.to ? transaction.to.map(t => t.address) : [];
-        return filterAddress !== addressOptions[0] ? toAddress.includes(filterAddress) : true;
+      // Info: (20240205 - Julian) filter by date range
+      .filter((transaction: IDisplayTransaction) => {
+        const {createdTimestamp} = transaction;
+        const {startTimeStamp, endTimeStamp} = period;
+        const isSelectingDate = startTimeStamp !== 0 && endTimeStamp !== 0;
+
+        return isSelectingDate
+          ? createdTimestamp >= startTimeStamp && createdTimestamp <= endTimeStamp
+          : true;
       })
-      .sort((a: ITransaction, b: ITransaction) => {
+      .sort((a, b) => {
         return sorting === sortOldAndNewOptions[0]
           ? // Info: (20231113 - Julian) Newest
             b.createdTimestamp - a.createdTimestamp
@@ -85,7 +72,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
     setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, sorting, filterAddress]);
+  }, [search, sorting, period]);
 
   // Info: (20240103 - Julian) The count of transaction history
   const transactionCount = transactions ? transactions.length : 0;
@@ -168,12 +155,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
             {/* Info: (20231101 - Julian) Address Menu */}
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} :</p>
-              <SortingMenu
-                sortingOptions={addressOptions}
-                sorting={filterAddress}
-                setSorting={setFilterAddress}
-                bgColor="bg-purpleLinear"
-              />
+              <DatePicker period={period} setFilteredPeriod={setPeriod} isLinearBg />
             </div>
             {/* Info: (20231113 - Julian) Sorting Menu */}
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">

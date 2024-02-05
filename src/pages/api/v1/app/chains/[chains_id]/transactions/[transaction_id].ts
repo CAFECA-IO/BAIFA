@@ -27,12 +27,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       created_timestamp: true,
       from_address: true,
       to_address: true,
-      // ToDo: (20240119 - Julian) 目前 DB 裡這欄是 null，所以先註解掉
       evidence_id: true,
       value: true,
       fee: true,
     },
   });
+
+  // Info: (20240205 - Julian) 從 codes Table 撈出 type 和 status
+  const codes = await prisma.codes.findMany({
+    where: {
+      table_name: 'transactions',
+    },
+    select: {
+      table_column: true,
+      value: true,
+      meaning: true,
+    },
+  });
+
+  // Info: (20240205 - Julian) 轉換 type
+  const type =
+    codes
+      // Info: (20240205 - Julian) 先過濾出 type
+      .filter(code => code.table_column === 'type')
+      // Info: (20240205 - Julian) 再找出對應的 meaning；由於 type 是數字，所以要先轉換成數字再比對
+      .find(code => code.value === parseInt(transactionData?.type ?? ''))?.meaning ?? '';
+
+  // Info: (20240205 - Julian) 轉換 status
+  const status =
+    codes
+      // Info: (20240205 - Julian) 先過濾出 status
+      .filter(code => code.table_column === 'status')
+      // Info: (20240205 - Julian) 再找出對應的 meaning；由於 status 是數字，所以要先轉換成數字再比對
+      .find(code => code.value === parseInt(transactionData?.status ?? ''))?.meaning ?? '';
 
   // Info: (20240119 - Julian) 從 chains Table 撈出 chain_icon 和 decimals
   const chain_id = transactionData?.chain_id ?? 0;
@@ -120,8 +147,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     ? {
         id: `${transactionData.id}`,
         hash: `${transactionData.hash}`,
-        type: 'Crypto Currency', // ToDo: (20240119 - Julian) 須參考 codes Table 並補上 type 的轉換
-        status: 'SUCCESS', // ToDo: (20240119 - Julian) 須參考 codes Table 並補上 status 的轉換
+        type: type,
+        status: status,
         chainId: `${transactionData.chain_id}`,
         blockId: blockId,
         createdTimestamp: transactionData.created_timestamp ?? 0,

@@ -5,6 +5,8 @@ import {IDisplayTransaction} from '../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {getDynamicUrl} from '../../constants/url';
+import {TransactionType, DefaultTransactionType} from '../../constants/transaction_type';
+import {TransactionStatus, DefaultTransactionStatus} from '../../constants/transaction_status';
 
 interface ITransactionItemProps {
   transaction: IDisplayTransaction;
@@ -22,31 +24,8 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
     t(createdStr.month).length > 3 ? `${t(createdStr.month).slice(0, 3)}.` : t(createdStr.month);
 
   // Info: (20230908 - Julian) Type i18n
-  const typeStr =
-    type === 'Crypto Currency'
-      ? t('CHAIN_DETAIL_PAGE.TYPE_CRYPTO')
-      : type === 'NFT'
-      ? t('CHAIN_DETAIL_PAGE.TYPE_NFT')
-      : t('CHAIN_DETAIL_PAGE.TYPE_EVIDENCE');
-
-  const statusStyle =
-    status === 'PROCESSING'
-      ? {
-          str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
-          icon: '/animations/trade_processing.gif',
-          style: 'text-hoverWhite',
-        }
-      : status === 'SUCCESS'
-      ? {
-          str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
-          icon: '/icons/success_icon.svg',
-          style: 'text-lightGreen',
-        }
-      : {
-          str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
-          icon: '/icons/failed_icon.svg',
-          style: 'text-lightRed',
-        };
+  const typeStr = TransactionType[type] ?? DefaultTransactionType;
+  const statusContent = TransactionStatus[status] ?? DefaultTransactionStatus;
 
   return (
     <div className="flex h-60px w-full items-center">
@@ -62,12 +41,19 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
           <h2 className="text-sm lg:text-xl">
             {t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')} <span className="text-primaryBlue">{id}</span>
           </h2>
-          <p className="hidden text-sm text-lilac lg:block"> - {typeStr}</p>
+          <p className="hidden text-sm text-lilac lg:block"> - {t(typeStr)}</p>
         </Link>
         {/* Info: (20230907 - Julian) Status */}
         <div className="flex items-center space-x-2 px-2">
-          <Image src={statusStyle.icon} width={16} height={16} alt={`${statusStyle.str}_icon`} />
-          <p className={`hidden text-sm lg:block ${statusStyle.style}`}>{statusStyle.str}</p>
+          <Image
+            src={statusContent.icon}
+            width={16}
+            height={16}
+            alt={`${statusContent.text}_icon`}
+          />
+          <p className={`hidden text-sm lg:block ${statusContent.color}`}>
+            {t(statusContent.text)}
+          </p>
         </div>
       </div>
     </div>

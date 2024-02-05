@@ -97,7 +97,9 @@
     "STATUS_PROCESSING": "Processing",
     "STATUS_SUCCESS": "Success",
     "STATUS_FAILED": "Failed",
-    "TYPE_CRYPTO": "Crypto Currency",
+    "TYPE_NORMAL": "Normal",
+    "TYPE_CONTRACT": "Create contract",
+    "TYPE_ERC": "ERC-20",
     "TYPE_NFT": "NFT",
     "TYPE_EVIDENCE": "Evidence"
   },
@@ -122,7 +124,7 @@
     "STABILITY_MEDIUM": "Medium",
     "STABILITY_LOW": "Low",
     "TIME": "Created Time",
-    "MANAGEMENT": "Management Team",
+    "EXTRA_DATA": "Extra Data",
     "CONTENT": "Content",
     "MINER_REWARD": "Miner & Reward",
     "SIZE": "Size"
@@ -176,8 +178,8 @@
     "CREATOR": "Creator",
     "CREATING_TIME": "Creating Time",
     "CONTENT": "Content",
-    "STATE_ACTIVE": "Active",
-    "STATE_INACTIVE": "Inactive",
+    "STATE_PUBLIC": "Public",
+    "STATE_PRIVATE": "Private",
     "DOWNLOAD_EVIDENCE_BUTTON": "Download Evidence"
   },
   "INTERACTION_LIST_PAGE": {
