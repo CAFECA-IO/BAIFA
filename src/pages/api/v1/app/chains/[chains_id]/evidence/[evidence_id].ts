@@ -101,7 +101,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         state: state,
         creatorAddressId: `${evidenceData.creator_address}`,
         createdTimestamp: evidenceData.created_timestamp ?? 0,
-        transactionHistoryData: transactionHistoryData, // ToDo: (20240118 - Julian) 補上這個欄位
+        transactionHistoryData: transactionHistoryData,
       }
     : // Info: (20240130 - Julian) 如果沒有找到資料，就回傳 undefined
       undefined;

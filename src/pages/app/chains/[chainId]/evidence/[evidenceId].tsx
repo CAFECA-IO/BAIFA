@@ -19,7 +19,7 @@ import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
 import {IEvidenceDetail} from '../../../../../interfaces/evidence';
-import {ITransaction} from '../../../../../interfaces/transaction';
+import {IDisplayTransaction} from '../../../../../interfaces/transaction';
 
 interface IEvidenceDetailDetailPageProps {
   evidenceId: string;
@@ -37,7 +37,7 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailDetailPageProps) => {
 
   const {transactionHistoryData, chainId} = evidenceData;
   // Info: (20240102 - Julian) Transaction history
-  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+  const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
 
   const chainIcon = getChainIcon(chainId);
 

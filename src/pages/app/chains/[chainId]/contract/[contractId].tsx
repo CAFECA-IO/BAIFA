@@ -20,7 +20,7 @@ import TransactionHistorySection from '../../../../../components/transaction_his
 import Tooltip from '../../../../../components/tooltip/tooltip';
 import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
-import {ITransaction} from '../../../../../interfaces/transaction';
+import {IDisplayTransaction} from '../../../../../interfaces/transaction';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../../../../constants/config';
 
 interface IContractDetailDetailPageProps {
@@ -39,7 +39,7 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
   const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
   const {transactionHistoryData, publicTag, chainId} = contractData;
   // Info: (20240102 - Julian) Transaction history
-  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+  const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
 
   const backClickHandler = () => router.back();
 
