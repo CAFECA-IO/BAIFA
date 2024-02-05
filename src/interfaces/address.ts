@@ -23,3 +23,22 @@ export interface IAddressDetail extends IInteractionItem, IAddress {
   score: number;
   reviewData: IReviewDetail[];
 }
+
+export const dummyAddress: IAddressDetail = {
+  id: '1',
+  type: 'address',
+  address: '0x',
+  chainId: '1',
+  createdTimestamp: 0,
+  latestActiveTime: 0,
+  interactedAddressCount: 0,
+  interactedContactCount: 0,
+  score: 0,
+  reviewData: [],
+  transactionHistoryData: [],
+  transactionCount: 0,
+  blockProducedData: [],
+  flaggingCount: 0,
+  riskLevel: 'LOW_RISK',
+  publicTag: [],
+};

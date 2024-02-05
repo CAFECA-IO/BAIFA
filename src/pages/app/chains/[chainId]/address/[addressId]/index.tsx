@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
 import {useState, useContext, useEffect, useRef} from 'react';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
@@ -28,6 +28,8 @@ import {DEFAULT_TRUNCATE_LENGTH, sortOldAndNewOptions} from '../../../../../../c
 import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
+import {APIURL} from '../../../../../../constants/api_request';
+import {isAddress} from 'web3-validator';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;
@@ -42,7 +44,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [addressData, setAddressData] = useState<IAddressDetail>({} as IAddressDetail);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
@@ -57,9 +59,9 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       appCtx.init();
     }
 
-    const getAddressData = async (chainId: string, blockId: string) => {
+    const getAddressData = async (chainId: string, addressId: string) => {
       try {
-        const data = await getAddressDetail(chainId, blockId);
+        const data = await getAddressDetail(chainId, addressId);
         setAddressData(data);
       } catch (error) {
         //console.log('getAddressData error', error);
@@ -70,9 +72,12 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  // const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('addressId is valid', isAddress(addressId), addressId);
+
     if (addressData) {
       setAddressData(addressData);
     }
@@ -83,19 +88,19 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       setBlockData(blockProducedData);
     }
 
-    timerRef.current = setTimeout(() => setIsLoading(false), 500);
+    // timerRef.current = setTimeout(() => setIsLoading(false), 500);
 
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
+    // return () => {
+    //   if (timerRef.current) {
+    //     clearTimeout(timerRef.current);
+    //   }
+    // };
   }, [addressData, blockProducedData, transactionHistoryData]);
 
   // ToDo: (20240129 - Julian) 如果拿到的資料是空的，就顯示 Data not found
-  if (!addressData.address) {
-    return <h1>Data not found</h1>;
-  }
+  // if (!addressData.address) {
+  //   return <h1>Data not found</h1>;
+  // }
 
   const backClickHandler = () => router.back();
 
@@ -129,7 +134,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     <></>
   );
 
-  const displayedHeader = !isLoading ? (
+  const displayedHeader = (
     <div className="flex w-full items-center justify-start">
       {/* Info: (20230912 -Julian) Back Arrow Button */}
       <button onClick={backClickHandler} className="hidden lg:block">
@@ -146,8 +151,6 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
         </h1>
       </div>
     </div>
-  ) : (
-    <></>
   );
 
   const displayedAddressDetail = !isLoading ? (
@@ -315,7 +318,7 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
   const addressId = params.addressId;
   const chainId = params.chainId;
 
-  if (!addressId || !chainId) {
+  if (!addressId || !isAddress(addressId) || !chainId) {
     return {
       notFound: true,
     };
