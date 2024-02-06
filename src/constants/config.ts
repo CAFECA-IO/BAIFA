@@ -6,6 +6,10 @@ export const TBD_API_VERSION = 'v1';
 export const BFA_API_URL = '/api';
 export const BFA_API_VERSION = 'v1';
 
+// Info: (20240206 - Julian) default icons
+export const DEFAULT_CHAIN_ICON = '/chains/default_chain.svg';
+export const DEFAULT_CURRENCY_ICON = '/currencies/default_currency.svg';
+
 // ToDo: (20240202 - Julian) Reports API
 export const BFA_EVIDENCE_CONTENT_URL = '/reports/BFA/all-reports';
 

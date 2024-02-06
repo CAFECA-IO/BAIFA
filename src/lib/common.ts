@@ -1,4 +1,6 @@
 import {
+  DEFAULT_CHAIN_ICON,
+  DEFAULT_CURRENCY_ICON,
   MAX_64_BIT_INTEGER_PARAMETER,
   MIN_64_BIT_INTEGER_PARAMETER,
   MONTH_LIST,
@@ -147,7 +149,9 @@ export const roundToDecimal = (x: number, decimal: number) => {
 };
 
 export const getChainIcon = (chainId: string) => {
-  if (!chainId) return {src: '/chains/default_chain.svg', alt: 'chain_icon'};
+  // Info: (20240206 - Julian) 如果沒有 chainId，就顯示 default_chain.svg
+  if (!chainId) return {src: DEFAULT_CHAIN_ICON, alt: 'chain_icon'};
+
   return {
     src: `/chains/${chainId}.svg`,
     alt: `chain_icon`,
@@ -155,7 +159,8 @@ export const getChainIcon = (chainId: string) => {
 };
 
 export const getCurrencyIcon = (currencyId: string) => {
-  if (!currencyId) return {src: '/currencies/default_currency.svg', alt: 'currency_icon'};
+  // Info: (20240206 - Julian) 如果沒有 currencyId，就顯示 default_currency.svg
+  if (!currencyId) return {src: DEFAULT_CURRENCY_ICON, alt: 'currency_icon'};
   return {
     src: `/currencies/${currencyId}.svg`,
     alt: `currency_icon`,
