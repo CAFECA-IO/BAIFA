@@ -42,18 +42,15 @@ const TransactionTab = () => {
     setTransactionData(data);
   };
 
-  let timer: NodeJS.Timeout;
   useEffect(() => {
     setIsLoading(true);
     getTransactionData();
 
-    // Info: (20240206 - Julian) 如果沒有拿到資料或是超過 3 秒，將 isLoading 設為 false
+    // Info: (20240206 - Julian) 如果拿到資料，就將 isLoading 設為 false
     if (transactionData.length > 0) {
       setIsLoading(false);
     } else {
-      timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 3000);
+      setIsLoading(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);
