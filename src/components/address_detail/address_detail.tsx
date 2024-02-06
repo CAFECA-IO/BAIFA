@@ -1,15 +1,17 @@
+/*eslint-disable no-console */
+
 import {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
 import Tooltip from '../tooltip/tooltip';
 import {timestampToString, getTimeString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IAddressDetail} from '../../interfaces/address';
+import {IAddressBrief, IAddressDetail} from '../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
 
 interface IAddressDetailProps {
-  addressData: IAddressDetail;
+  addressData: IAddressBrief;
 }
 
 const AddressDetail = ({addressData}: IAddressDetailProps) => {

@@ -1,13 +1,37 @@
 import {Dispatch, SetStateAction, useState, useEffect} from 'react';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
+import {SortingType} from '../../constants/api_request';
+import {ITEM_PER_PAGE} from '../../constants/config';
 
 interface IPagination {
   activePage: number;
   setActivePage: Dispatch<SetStateAction<number>>;
   totalPages: number;
+  getActivePage?: (page: number) => void;
+  previousFunction?: (
+    chainId: string,
+    addressId: string,
+    order: SortingType,
+    page: number,
+    offset: number
+  ) => Promise<void>;
+  nextFunction?: (
+    chainId: string,
+    addressId: string,
+    order: SortingType,
+    page: number,
+    offset: number
+  ) => Promise<void>;
 }
 
-const Pagination = ({activePage, setActivePage, totalPages}: IPagination) => {
+const Pagination = ({
+  activePage,
+  setActivePage,
+  getActivePage,
+  totalPages,
+  previousFunction,
+  nextFunction,
+}: IPagination) => {
   const [url, setUrl] = useState<URL | null>(null);
   const [targetPage, setTargetPage] = useState<number>(1);
 
@@ -21,10 +45,18 @@ const Pagination = ({activePage, setActivePage, totalPages}: IPagination) => {
     }
   }, []);
 
-  const previousHandler = () => {
+  const previousHandler = async () => {
     setActivePage(activePage - 1);
     // Info: (20240115 - Julian) change url query
     if (url) {
+      previousFunction &&
+        (await previousFunction(
+          '8017',
+          '0x048adee1b0e93b30f9f7b71f18b963ca9ba5de3b',
+          SortingType.DESC,
+          activePage - 1,
+          ITEM_PER_PAGE
+        ));
       url.searchParams.set('page', `${activePage - 1}`);
       window.history.replaceState({}, '', url.toString());
     }
@@ -34,6 +66,14 @@ const Pagination = ({activePage, setActivePage, totalPages}: IPagination) => {
     setActivePage(activePage + 1);
     // Info: (20240115 - Julian) change url query
     if (url) {
+      nextFunction &&
+        nextFunction(
+          '8017',
+          '0x048adee1b0e93b30f9f7b71f18b963ca9ba5de3b',
+          SortingType.DESC,
+          activePage + 1,
+          ITEM_PER_PAGE
+        );
       url.searchParams.set('page', `${activePage + 1}`);
       window.history.replaceState({}, '', url.toString());
     }

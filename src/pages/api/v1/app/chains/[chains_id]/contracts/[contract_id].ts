@@ -2,7 +2,7 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
-import {IAddressInfo} from '../../../../../../../interfaces/address_info';
+import {AddressType, IAddressInfo} from '../../../../../../../interfaces/address_info';
 import {IContractDetail} from '../../../../../../../interfaces/contract';
 import {ITransaction} from '../../../../../../../interfaces/transaction';
 
@@ -72,7 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       .filter(address => address !== 'null')
       .map(address => {
         return {
-          type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+          type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
           address: address,
         };
       });
@@ -84,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       .filter(address => address !== 'null')
       .map(address => {
         return {
-          type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+          type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
           address: address,
         };
       });
@@ -109,7 +109,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const result: ResponseData = contractData
     ? {
         id: `${contractData.id}`,
-        type: 'contract',
+        type: AddressType.CONTRACT,
         contractAddress: `${contractData.contract_address}`,
         chainId: `${contractData.chain_id}`,
         creatorAddressId: `${contractData.creator_address}`,

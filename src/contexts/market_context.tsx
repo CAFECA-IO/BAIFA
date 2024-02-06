@@ -1,12 +1,18 @@
+/*eslint-disable no-console */
 import React, {createContext, useCallback, useState} from 'react';
-import {APIURL} from '../constants/api_request';
+import {APIURL, IPaginationOptions, SortingType} from '../constants/api_request';
 import {IDisplayChain, IChainDetail} from '../interfaces/chain';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
-import {IBlock, IBlockDetail} from '../interfaces/block';
+import {IBlock, IBlockDetail, IProductionBlock} from '../interfaces/block';
 import {ITransaction, ITransactionDetail} from '../interfaces/transaction';
-import {IAddressDetail} from '../interfaces/address';
+import {
+  IAddressBrief,
+  IAddressDetail,
+  IAddressProducedBlock,
+  IAddressRelatedTransaction,
+} from '../interfaces/address';
 import {IReviews} from '../interfaces/review';
 import {IRedFlag, IRedFlagDetail} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
@@ -43,7 +49,17 @@ export interface IMarketContext {
     queryStr?: string
   ) => Promise<ITransaction[]>;
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
-  getAddressDetail: (chainId: string, addressId: string) => Promise<IAddressDetail>;
+  getAddressBrief: (chainId: string, addressId: string) => Promise<IAddressBrief>;
+  getAddressRelatedTransactions: (
+    chainId: string,
+    addressId: string,
+    options?: IPaginationOptions
+  ) => Promise<ITransaction[]>;
+  getAddressProducedBlocks: (
+    chainId: string,
+    addressId: string,
+    options?: IPaginationOptions
+  ) => Promise<{blocks: IProductionBlock[]; blockCount: number}>;
   getReviews: (chainId: string, addressId: string) => Promise<IReviews>;
   getRedFlagsFromAddress: (chainId: string, addressId: string) => Promise<IRedFlag[]>;
   getInteractions: (
@@ -76,7 +92,9 @@ export const MarketContext = createContext<IMarketContext>({
   getTransactions: () => Promise.resolve([] as ITransaction[]),
   getTransactionList: () => Promise.resolve({} as ITransaction[]),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
-  getAddressDetail: () => Promise.resolve({} as IAddressDetail),
+  getAddressBrief: () => Promise.resolve({} as IAddressBrief),
+  getAddressRelatedTransactions: () => Promise.resolve([] as ITransaction[]),
+  getAddressProducedBlocks: () => Promise.resolve({blocks: [], blockCount: 0}),
   getReviews: () => Promise.resolve({} as IReviews),
   getRedFlagsFromAddress: () => Promise.resolve([] as IRedFlag[]),
   getInteractions: () => Promise.resolve([] as IInteractionItem[]),
@@ -304,8 +322,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
-  const getAddressDetail = useCallback(async (chainId: string, addressId: string) => {
-    let data: IAddressDetail = {} as IAddressDetail;
+  const getAddressBrief = useCallback(async (chainId: string, addressId: string) => {
+    let data: IAddressBrief = {} as IAddressBrief;
     try {
       const response = await fetch(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}`, {
         method: 'GET',
@@ -316,6 +334,69 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     }
     return data;
   }, []);
+
+  const getAddressRelatedTransactions = useCallback(
+    async (chainId: string, addressId: string, options?: IPaginationOptions) => {
+      let data: ITransaction[] = [];
+      try {
+        // Build the query string from the options object
+        const queryParams = new URLSearchParams();
+        if (options?.order) {
+          queryParams.set('order', options.order);
+        } else {
+          queryParams.set('order', SortingType.DESC);
+        }
+        if (options?.page !== undefined) queryParams.set('page', options.page.toString());
+        if (options?.offset !== undefined) queryParams.set('offset', options.offset.toString());
+        const apiUrl = `${
+          APIURL.CHAINS
+        }/${chainId}/addresses/${addressId}/transactions?${queryParams.toString()}`;
+
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+        });
+        const result = (await response.json()) as IAddressRelatedTransaction;
+        data = result.transactionHistoryData;
+
+        console.log('apiUrl', apiUrl);
+      } catch (error) {
+        //console.log('getAddressRelatedTransactions error', error);
+      }
+      return data;
+    },
+    []
+  );
+
+  const getAddressProducedBlocks = useCallback(
+    async (chainId: string, addressId: string, options?: IPaginationOptions) => {
+      let data: {blocks: IProductionBlock[]; blockCount: number} = {blocks: [], blockCount: 0};
+      console.log('getAddressProducedBlocks in context', chainId, addressId, options);
+      try {
+        // Build the query string from the options object
+        const queryParams = new URLSearchParams();
+        if (options?.order) {
+          queryParams.set('order', options.order);
+        } else {
+          queryParams.set('order', SortingType.DESC);
+        }
+        if (options?.page !== undefined) queryParams.set('page', options.page.toString());
+        if (options?.offset !== undefined) queryParams.set('offset', options.offset.toString());
+        const apiUrl = `${
+          APIURL.CHAINS
+        }/${chainId}/addresses/${addressId}/produced_blocks?${queryParams.toString()}`;
+
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+        });
+        const result = (await response.json()) as IAddressProducedBlock;
+        data = {blocks: result.blockProducedData, blockCount: result.blockCount};
+      } catch (error) {
+        //console.log('getAddressProducedBlocks error', error);
+      }
+      return data;
+    },
+    []
+  );
 
   const getReviews = useCallback(async (chainId: string, addressId: string) => {
     let data: IReviews = {} as IReviews;
@@ -452,7 +533,9 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getTransactions,
     getTransactionList,
     getTransactionDetail,
-    getAddressDetail,
+    getAddressBrief,
+    getAddressRelatedTransactions,
+    getAddressProducedBlocks,
     getReviews,
     getRedFlagsFromAddress,
     getInteractions,

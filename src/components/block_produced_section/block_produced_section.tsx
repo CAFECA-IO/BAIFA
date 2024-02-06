@@ -1,3 +1,5 @@
+/*eslint-disable no-console */
+
 import Image from 'next/image';
 import Link from 'next/link';
 import {useState, useEffect} from 'react';
@@ -12,17 +14,40 @@ import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 import DatePicker from '../date_picker/date_picker';
 import {IProductionBlock} from '../../interfaces/block';
+import {SortingType} from '../../constants/api_request';
 
 interface IBlockProducedHistorySectionProps {
   blocks: IProductionBlock[];
+  totalBlocks: number;
+  previousFunction?: (
+    chainId: string,
+    addressId: string,
+    order: SortingType,
+    page: number,
+    offset: number
+  ) => Promise<void>;
+  nextFunction?: (
+    chainId: string,
+    addressId: string,
+    order: SortingType,
+    page: number,
+    offset: number
+  ) => Promise<void>;
 }
 
-const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps) => {
+const BlockProducedHistorySection = ({
+  blocks = [],
+  totalBlocks = 0,
+  previousFunction,
+  nextFunction,
+}: IBlockProducedHistorySectionProps) => {
+  console.log('in block_produced_section, blocks data', blocks);
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(1 / ITEM_PER_PAGE));
-  const [filteredBlocks, setFilteredBlocks] = useState<IProductionBlock[]>(blocks);
+  const [activePage, setActivePage, activePageRef] = useStateRef(1);
+  const [totalPages, setTotalPages] = useState(Math.ceil(totalBlocks / ITEM_PER_PAGE));
+  const [filteredBlocks, setFilteredBlocks, filteredBlocksRef] =
+    useStateRef<IProductionBlock[]>(blocks);
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [period, setPeriod] = useState(default30DayPeriod);
@@ -30,45 +55,57 @@ const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
-  useEffect(() => {
-    const searchResult = blocks // Info: (20231103 - Julian) filter by search term
-      .filter((block: IProductionBlock) => {
-        const searchTerm = searchRef.current.toLowerCase();
-        const stability = block.stability.toLowerCase();
+  const getActivePage = (page: number) => {
+    console.log('getActivePage', page);
+    setActivePage(page);
+  };
 
-        return searchTerm !== ''
-          ? block.id.toString().includes(searchTerm) || stability.includes(searchTerm)
-          : true;
-      })
-      // Info: (20231103 - Julian) filter by date range
-      // .filter((block: IBlock) => {
-      //   const createdTimestamp = block.createdTimestamp;
-      //   const start = period.startTimeStamp;
-      //   const end = period.endTimeStamp;
-      //   // Info: (20231103 - Julian) if start and end are 0, it means that there is no period filter
-      //   const isCreatedTimestampInRange =
-      //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-      //   return isCreatedTimestampInRange;
-      // })
-      .sort((a: IProductionBlock, b: IProductionBlock) => {
-        return sorting === sortOldAndNewOptions[0]
-          ? // Info: (20231101 - Julian) Newest
-            b.createdTimestamp - a.createdTimestamp
-          : // Info: (20231101 - Julian) Oldest
-            a.createdTimestamp - b.createdTimestamp;
-      });
+  useEffect(() => {
+    console.log('block data in BlockProducedHistorySection', blocks, blockCount);
+    const searchResult = [...blocks]; // Info: (20231103 - Julian) filter by search term
+    // .filter((block: IProductionBlock) => {
+    //   const searchTerm = searchRef.current.toLowerCase();
+    //   const stability = block.stability.toLowerCase();
+
+    //   return searchTerm !== ''
+    //     ? block.id.toString().includes(searchTerm) || stability.includes(searchTerm)
+    //     : true;
+    // })
+    // // Info: (20231103 - Julian) filter by date range
+    // // .filter((block: IBlock) => {
+    // //   const createdTimestamp = block.createdTimestamp;
+    // //   const start = period.startTimeStamp;
+    // //   const end = period.endTimeStamp;
+    // //   // Info: (20231103 - Julian) if start and end are 0, it means that there is no period filter
+    // //   const isCreatedTimestampInRange =
+    // //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+    // //   return isCreatedTimestampInRange;
+    // // })
+    // .sort((a: IProductionBlock, b: IProductionBlock) => {
+    //   return sorting === sortOldAndNewOptions[0]
+    //     ? // Info: (20231101 - Julian) Newest
+    //       b.createdTimestamp - a.createdTimestamp
+    //     : // Info: (20231101 - Julian) Oldest
+    //       a.createdTimestamp - b.createdTimestamp;
+    // });
     setFilteredBlocks(searchResult);
-    setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
-    setActivePage(1);
+    setTotalPages(Math.ceil(totalBlocks / ITEM_PER_PAGE));
+    // setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
+    // setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, sorting, period]);
+  }, [blocks, totalBlocks, search, sorting, period]);
+
+  useEffect(() => {
+    console.log('activePage changed in block_produced_section', activePage, 'blocks', blocks);
+    setFilteredBlocks([...blocks]);
+  }, [activePage]);
 
   // Info: (20240103 - Julian) The count of blocks
-  const blockCount = blocks ? blocks.length : 0;
+  const blockCount = totalBlocks;
 
   // Info: (20231103 - Julian) Pagination
-  const blockList = filteredBlocks
-    ? filteredBlocks.slice(startIdx, endIdx).map((block, index) => {
+  const blockList = filteredBlocksRef.current
+    ? filteredBlocksRef.current.slice(startIdx, endIdx).map((block, index) => {
         const {id, chainId, createdTimestamp, reward, unit} = block;
         const chainIcon = getChainIcon(chainId);
 
@@ -81,8 +118,21 @@ const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps
 
         const blockLink = getDynamicUrl(chainId, `${id}`).BLOCK;
 
+        console.log(
+          'filteredBlocks',
+          filteredBlocksRef.current,
+          blockLink,
+          chainId,
+          id,
+          createdStr,
+          monthStr,
+          chainIcon,
+          reward,
+          unit
+        );
+
         return (
-          <div key={index} className="flex h-60px w-full items-center">
+          <div key={block.id} className="flex h-60px w-full items-center">
             {/* Info: (20231103 - Julian) Create Time square */}
             <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-purpleLinear">
               <p className="text-xl">{createdStr.day}</p>
@@ -144,7 +194,14 @@ const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps
         </div>
         {/* Info: (20231103 - Julian) Address List */}
         <div className="my-10 flex w-full flex-1 flex-col">{blockList}</div>
-        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
+        <Pagination
+          previousFunction={previousFunction}
+          nextFunction={nextFunction}
+          getActivePage={getActivePage}
+          activePage={activePage}
+          setActivePage={setActivePage}
+          totalPages={totalPages}
+        />
       </div>
     </div>
   );

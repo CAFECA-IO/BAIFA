@@ -3,7 +3,7 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
 import {ITransactionDetail} from '../../../../../../../interfaces/transaction';
-import {IAddressInfo} from '../../../../../../../interfaces/address_info';
+import {AddressType, IAddressInfo} from '../../../../../../../interfaces/address_info';
 
 type ResponseData = ITransactionDetail | undefined;
 
@@ -102,7 +102,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     .filter(address => address !== 'null')
     .map(address => {
       return {
-        type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+        type: AddressType.CONTRACT, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
         address: address,
       };
     });
@@ -113,7 +113,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     .filter(address => address !== 'null')
     .map(address => {
       return {
-        type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+        type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
         address: address,
       };
     });

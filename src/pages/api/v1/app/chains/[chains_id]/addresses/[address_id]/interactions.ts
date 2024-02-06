@@ -3,6 +3,7 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 import {IInteractionItem} from '../../../../../../../../interfaces/interaction_item';
+import {AddressType} from '../../../../../../../../interfaces/address_info';
 
 type ResponseData = IInteractionItem[];
 
@@ -56,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     ? interactedList.map(address => {
         return {
           id: `${address.address}`,
-          type: 'address',
+          type: AddressType.ADDRESS,
           chainId: `${chain_id}`,
           publicTag: [], // ToDo: (20240124 - Julian) 補上這個欄位
           createdTimestamp: address.created_timestamp ?? 0,

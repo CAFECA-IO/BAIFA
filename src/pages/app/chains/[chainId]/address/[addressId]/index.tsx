@@ -1,3 +1,4 @@
+/*eslint-disable no-console */
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,7 +17,7 @@ import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {IAddressDetail} from '../../../../../../interfaces/address';
+import {IAddressBrief, IAddressDetail} from '../../../../../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
 import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
@@ -24,12 +25,18 @@ import TransactionHistorySection from '../../../../../../components/transaction_
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
-import {DEFAULT_TRUNCATE_LENGTH, sortOldAndNewOptions} from '../../../../../../constants/config';
+import {
+  DEFAULT_TRUNCATE_LENGTH,
+  ITEM_PER_PAGE,
+  sortOldAndNewOptions,
+} from '../../../../../../constants/config';
 import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
-import {APIURL} from '../../../../../../constants/api_request';
+import {APIURL, SortingType} from '../../../../../../constants/api_request';
 import {isAddress} from 'web3-validator';
+import {IReviewDetail, IReviews} from '../../../../../../interfaces/review';
+import useStateRef from 'react-usestateref';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;
@@ -37,20 +44,36 @@ interface IAddressDetailDetailPageProps {
 }
 
 const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) => {
+  console.log('addressId, chainId in addressDetailPage', addressId, chainId);
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getAddressDetail} = useContext(MarketContext);
+  const {getAddressBrief, getAddressRelatedTransactions, getAddressProducedBlocks} =
+    useContext(MarketContext);
 
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [addressData, setAddressData] = useState<IAddressDetail>({} as IAddressDetail);
+  const [addressBriefData, setAddressBriefData] = useState<IAddressBrief>({} as IAddressBrief);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
-  const [blockData, setBlockData] = useState<IProductionBlock[]>([]);
+  const [blockData, setBlockData, blockDataRef] = useStateRef<{
+    blocks: IProductionBlock[];
+    blockCount: number;
+  }>(
+    {} as {
+      blocks: IProductionBlock[];
+      blockCount: number;
+    }
+  );
 
-  const {transactionHistoryData, blockProducedData, publicTag, score, reviewData} = addressData;
+  const {publicTag, score} = addressBriefData;
+
+  const reviewData: IReviewDetail[] = [];
+
+  const transactionHistoryData = transactionData;
+
+  const blockProducedData = blockData;
 
   const chainIcon = getChainIcon(chainId);
 
@@ -59,18 +82,65 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       appCtx.init();
     }
 
-    const getAddressData = async (chainId: string, addressId: string) => {
+    const getAddressBriefData = async (chainId: string, addressId: string) => {
       try {
-        const data = await getAddressDetail(chainId, addressId);
-        setAddressData(data);
+        const data = await getAddressBrief(chainId, addressId);
+        setAddressBriefData(data);
       } catch (error) {
         //console.log('getAddressData error', error);
       }
     };
 
-    getAddressData(chainId, addressId);
+    const getTransactionHistoryData = async (chainId: string, addressId: string) => {
+      try {
+        const data = await getAddressRelatedTransactions(chainId, addressId);
+        setTransactionData(data);
+      } catch (error) {
+        //console.log('getTransactionHistoryData error', error);
+      }
+    };
+
+    const getBlockProducedData = async (chainId: string, addressId: string) => {
+      try {
+        console.log('getBlockProducedData in DetailedPage', chainId, addressId);
+        const data = await getAddressProducedBlocks(chainId, addressId, {
+          order: SortingType.DESC,
+          page: 1,
+          offset: ITEM_PER_PAGE,
+        });
+        setBlockData({blocks: data.blocks, blockCount: data.blockCount});
+      } catch (error) {
+        //console.log('getBlockProducedData error', error);
+      }
+    };
+
+    getAddressBriefData(chainId, addressId);
+    getTransactionHistoryData(chainId, addressId);
+    getBlockProducedData(chainId, addressId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const clickBlockPrevious = async (
+    chainId: string,
+    addressId: string,
+    order: SortingType,
+    page: number,
+    offset: number
+  ) => {
+    try {
+      const data = await getAddressProducedBlocks(chainId, addressId, {
+        order,
+        page,
+        offset,
+      });
+
+      console.log('clickBlockPrevious data', data);
+      setBlockData(prevState => ({blocks: data.blocks, blockCount: data.blockCount}));
+      console.log('blockDataRef.current.blocks', blockDataRef.current.blocks);
+    } catch (error) {
+      //console.log('clickBlockPrevious error', error);
+    }
+  };
 
   // const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -78,24 +148,22 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     // eslint-disable-next-line no-console
     console.log('addressId is valid', isAddress(addressId), addressId);
 
-    if (addressData) {
-      setAddressData(addressData);
+    if (addressBriefData) {
+      setAddressBriefData(addressBriefData);
     }
+  }, [addressBriefData]);
+
+  useEffect(() => {
     if (transactionHistoryData) {
       setTransactionData(transactionHistoryData);
     }
+  }, [transactionHistoryData]);
+
+  useEffect(() => {
     if (blockProducedData) {
       setBlockData(blockProducedData);
     }
-
-    // timerRef.current = setTimeout(() => setIsLoading(false), 500);
-
-    // return () => {
-    //   if (timerRef.current) {
-    //     clearTimeout(timerRef.current);
-    //   }
-    // };
-  }, [addressData, blockProducedData, transactionHistoryData]);
+  }, [blockProducedData]);
 
   // ToDo: (20240129 - Julian) 如果拿到的資料是空的，就顯示 Data not found
   // if (!addressData.address) {
@@ -105,21 +173,22 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const backClickHandler = () => router.back();
 
   const reviewLink = getDynamicUrl(chainId, addressId).REVIEWS;
-  const reviewList = reviewData ? (
-    reviewData
-      // Info: (20231214 - Julian) Sort reviews by createdTimestamp
-      .sort((a, b) => {
-        if (reviewSorting === sortOldAndNewOptions[0]) {
-          return b.createdTimestamp - a.createdTimestamp;
-        } else {
-          return a.createdTimestamp - b.createdTimestamp;
-        }
-      })
-      // Info: (20231214 - Julian) Print reviews
-      .map((review, index) => <ReviewItem key={index} review={review} />)
-  ) : (
-    <></>
-  );
+  const reviewList =
+    reviewData.length > 0 ? (
+      reviewData
+        // Info: (20231214 - Julian) Sort reviews by createdTimestamp
+        .sort((a, b) => {
+          if (reviewSorting === sortOldAndNewOptions[0]) {
+            return b.createdTimestamp - a.createdTimestamp;
+          } else {
+            return a.createdTimestamp - b.createdTimestamp;
+          }
+        })
+        // Info: (20231214 - Julian) Print reviews
+        .map((review, index) => <ReviewItem key={index} review={review} />)
+    ) : (
+      <></>
+    );
 
   const displayPublicTag = publicTag ? (
     publicTag.map((tag, index) => (
@@ -154,7 +223,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   );
 
   const displayedAddressDetail = !isLoading ? (
-    <AddressDetail addressData={addressData} />
+    <AddressDetail addressData={addressBriefData} />
   ) : (
     // ToDo: (20231213 - Julian) Add loading animation
     <h1>Loading..</h1>
@@ -168,7 +237,12 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   );
 
   const displayedBlockProducedHistory = !isLoading ? (
-    <BlockProducedHistorySection blocks={blockData} />
+    <BlockProducedHistorySection
+      previousFunction={clickBlockPrevious}
+      nextFunction={clickBlockPrevious}
+      blocks={blockDataRef.current.blocks}
+      totalBlocks={blockDataRef.current.blockCount}
+    />
   ) : (
     // ToDo: (20231213 - Julian) Add loading animation
     <h1>Loading..</h1>

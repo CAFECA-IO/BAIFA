@@ -1,6 +1,8 @@
+import {AddressType} from './address_info';
+
 export interface IInteractionItem {
   id: string;
-  type: 'address' | 'contract';
+  type: AddressType.ADDRESS | AddressType.CONTRACT;
   chainId: string;
   createdTimestamp: number;
   transactionCount: number;

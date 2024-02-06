@@ -4,7 +4,7 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
 import {ITransaction} from '../../../../../interfaces/transaction';
 import {IRedFlagDetail} from '../../../../../interfaces/red_flag';
-import {IAddressInfo} from '../../../../../interfaces/address_info';
+import {AddressType, IAddressInfo} from '../../../../../interfaces/address_info';
 
 type ResponseData = IRedFlagDetail | string;
 
@@ -92,13 +92,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const from = [
       {
         address: transaction.from_address as unknown as string,
-        type: 'address' as IAddressInfo['type'],
+        type: AddressType.ADDRESS as IAddressInfo['type'],
       },
     ];
     const to = [
       {
         address: transaction.to_address as unknown as string,
-        type: 'address' as IAddressInfo['type'],
+        type: AddressType.ADDRESS as IAddressInfo['type'],
       },
     ];
 

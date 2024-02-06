@@ -1,14 +1,15 @@
 /*eslint-disable no-console */
 
-// 011 - GET /app/chains/:chain_id/addresses/:address_id
+// 023 - GET /app/chains/:chain_id/addresses/:address_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
-import {AddressType} from '../../../../../../../../interfaces/address_info';
-import {IAddressBrief} from '../../../../../../../../interfaces/address';
+import {AddressType, IAddressInfo} from '../../../../../../../../interfaces/address_info';
+import {IAddressRelatedTransaction} from '../../../../../../../../interfaces/address';
+import {ITransaction} from '../../../../../../../../interfaces/transaction';
 import {isAddress} from 'web3-validator';
 
-type ResponseData = IAddressBrief | undefined;
+type ResponseData = IAddressRelatedTransaction | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -20,18 +21,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   try {
-    const addressData = await prisma.addresses.findUnique({
-      where: {address: address_id},
-      select: {
-        id: true,
-        chain_id: true,
-        created_timestamp: true,
-        address: true,
-        score: true,
-        latest_active_time: true,
-      },
-    });
-
     const transactionData = await prisma.transactions.findMany({
       where: {related_addresses: {hasSome: [address_id]}},
       select: {
@@ -46,34 +35,60 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    const flaggingRecords = await prisma.red_flags.findMany({
-      where: {related_addresses: {hasSome: [address_id]}},
-      select: {id: true, red_flag_type: true},
+    const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
+      // Info: (20240130 - Julian) from address 轉換
+      const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
+      const from: IAddressInfo[] = fromAddresses
+        // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+        .filter(address => address !== 'null')
+        .map(address => {
+          return {
+            type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+            address: address,
+          };
+        });
+
+      // Info: (20240130 - Julian) to address 轉換
+      const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
+      const to: IAddressInfo[] = toAddresses
+        // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+        .filter(address => address !== 'null')
+        .map(address => {
+          return {
+            type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+            address: address,
+          };
+        });
+
+      return {
+        id: `${transaction.id}`,
+        chainId: `${transaction.chain_id}`,
+        createdTimestamp: transaction.created_timestamp ?? 0,
+        from: from,
+        to: to,
+        type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
+        status: 'PENDING', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 status 的轉換
+      };
     });
 
-    const relatedAddressRaw = transactionData.flatMap(transaction => {
-      return transaction.related_addresses.filter(
-        address => address !== address_id && address !== 'null'
-      );
-    });
+    // const relatedAddressesRaw = transactionData.flatMap(transaction => {
+    //   // Info: (20240131 - Julian) 過濾掉 null 和 address_id
+    //   return transaction.related_addresses.filter(
+    //     address => address !== address_id && address !== 'null'
+    //   );
+    // });
+    // // Info: (20240131 - Julian) 過濾重複的 address
+    // const relatedAddresses = Array.from(new Set(relatedAddressesRaw));
 
-    const relatedAddresses = Array.from(new Set(relatedAddressRaw));
-    // TODO: check the relatedAddress number vs the interaction address number on the page (20240206 - Shirley)
-
-    const responseData: ResponseData = addressData
+    const responseData: ResponseData = transactionData
       ? {
-          id: `${addressData.id}`,
-          type: AddressType.ADDRESS, // ToDo: (20240122 - Julian) 補上這個欄位
-          chainId: `${addressData.chain_id}`,
-          createdTimestamp: addressData.created_timestamp ?? 0,
-          address: `${addressData.address}`,
-          latestActiveTime: addressData.latest_active_time ?? 0,
-          score: addressData.score ?? 0,
-          flaggingCount: flaggingRecords.length,
-          riskLevel: 'LOW_RISK', // ToDo: (20240122 - Julian) 補上這個欄位
-          interactedAddressCount: relatedAddresses.length,
-          interactedContactCount: 0,
-          publicTag: [], // ToDo: (20240122 - Julian) 補上這個欄位
+          id: `${address_id}`,
+          type: AddressType.ADDRESS,
+          address: `${address_id}`,
+          // chainId: `${}`, // ToDo: (20240122 - Julian) 需要參考 addresses Table 並補上 chain_id
+          // interactedAddressCount: relatedAddresses.length,
+          // interactedContactCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位
+          transactionHistoryData: transactionHistoryData,
         }
       : undefined;
 
@@ -81,7 +96,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   } catch (error) {
     // Info: (20240506 - Shirley) 如果有錯誤就回傳 500
     // eslint-disable-next-line no-console
-    console.error('Failed to fetch address details:', error);
+    console.error('Failed to fetch transaction details:', error);
     res.status(500).json(undefined);
   } finally {
     await prisma.$disconnect();
@@ -138,52 +153,52 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   //     })
   //   : [];
 
-  // // Info: (20240122 - Julian) ================== transactionHistoryData ==================
-  const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
-    // Info: (20240130 - Julian) from address 轉換
-    const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
-    const from: IAddressInfo[] = fromAddresses
-      // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
-      .filter(address => address !== 'null')
-      .map(address => {
-        return {
-          type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
-          address: address,
-        };
-      });
+  // // Info: (20240122 - Julian) ================== transactionHistoryData1 ==================
+  // const transactionHistoryData1: ITransaction[] = transactionData.map(transaction => {
+  //   // Info: (20240130 - Julian) from address 轉換
+  //   const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
+  //   const from: IAddressInfo[] = fromAddresses
+  //     // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+  //     .filter(address => address !== 'null')
+  //     .map(address => {
+  //       return {
+  //         type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+  //         address: address,
+  //       };
+  //     });
 
-    // Info: (20240130 - Julian) to address 轉換
-    const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
-    const to: IAddressInfo[] = toAddresses
-      // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
-      .filter(address => address !== 'null')
-      .map(address => {
-        return {
-          type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
-          address: address,
-        };
-      });
+  //   // Info: (20240130 - Julian) to address 轉換
+  //   const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
+  //   const to: IAddressInfo[] = toAddresses
+  //     // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+  //     .filter(address => address !== 'null')
+  //     .map(address => {
+  //       return {
+  //         type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+  //         address: address,
+  //       };
+  //     });
 
-    return {
-      id: `${transaction.id}`,
-      chainId: `${transaction.chain_id}`,
-      createdTimestamp: transaction.created_timestamp ?? 0,
-      from: from,
-      to: to,
-      type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
-      status: 'PENDING', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 status 的轉換
-    };
-  });
+  //   return {
+  //     id: `${transaction.id}`,
+  //     chainId: `${transaction.chain_id}`,
+  //     createdTimestamp: transaction.created_timestamp ?? 0,
+  //     from: from,
+  //     to: to,
+  //     type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
+  //     status: 'PENDING', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 status 的轉換
+  //   };
+  // });
 
   // // Info: (20240122 - Julian) 透過 transactions Table 的 related_addresses 欄位找出所有相關的 address
-  const relatedAddressesRaw = transactionData.flatMap(transaction => {
-    // Info: (20240131 - Julian) 過濾掉 null 和 address_id
-    return transaction.related_addresses.filter(
-      address => address !== address_id && address !== 'null'
-    );
-  });
-  // Info: (20240131 - Julian) 過濾重複的 address
-  const relatedAddresses = Array.from(new Set(relatedAddressesRaw));
+  // const relatedAddressesRaw = transactionData.flatMap(transaction => {
+  //   // Info: (20240131 - Julian) 過濾掉 null 和 address_id
+  //   return transaction.related_addresses.filter(
+  //     address => address !== address_id && address !== 'null'
+  //   );
+  // });
+  // // Info: (20240131 - Julian) 過濾重複的 address
+  // const relatedAddresses = Array.from(new Set(relatedAddressesRaw));
 
   // // Info: (20240122 - Julian) ================== blockProducedData ==================
   // const blockData = address_id
@@ -256,7 +271,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // const result: ResponseData = addressData
   //   ? {
   //       id: `${addressData.id}`,
-  //       type: AddressType.ADDRESS,
+  //       type: 'address',
   //       address: `${addressData.address}`,
   //       chainId: `${addressData.chain_id}`,
   //       createdTimestamp: addressData.created_timestamp ?? 0,
@@ -265,8 +280,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   //       interactedContactCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位
   //       score: addressData.score ?? 0,
   //       reviewData: reviewData,
-  //       transactionHistoryData: transactionHistoryData,
-  //       transactionCount: transactionHistoryData.length,
+  //       transactionHistoryData1: transactionHistoryData1,
+  //       transactionCount: transactionHistoryData1.length,
   //       blockProducedData: blockProducedData,
   //       flaggingCount: flaggingRecords.length,
   //       riskLevel: 'LOW_RISK', // ToDo: (20240122 - Julian) 補上這個欄位
