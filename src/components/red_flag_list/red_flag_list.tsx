@@ -32,44 +32,48 @@ const RedFlagList = ({redFlagData}: IRedFlagListProps) => {
     Math.ceil(redFlagData.length / ITEM_PER_PAGE)
   );
 
+  // Info: (20231109 - Julian) Pagination Variables
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
+  // Info: (20231109 - Julian) Display Red Flag List Items based on Pagination
   const displayRedFlagList = filteredRedFlagList
-    // Info: (20231109 - Julian) pagination
     .slice(startIdx, endIdx)
     .map((redFlagData, index) => <RedFlagItem key={index} redFlagData={redFlagData} />);
 
   useEffect(() => {
     const searchResult = redFlagData
       // Info: (20231109 - Julian) filter by search term
-      .filter((redFlagData: IRedFlag) => {
+      .filter((redFlagDatElement: IRedFlag) => {
         const searchTerm = searchRef.current.toLowerCase();
-        const type = redFlagData.redFlagType.toLowerCase();
-        const id = redFlagData.id.toLowerCase();
+        const type = redFlagDatElement.redFlagType.toLowerCase();
+        const id = redFlagDatElement.id.toLowerCase();
 
         return searchTerm !== '' ? type.includes(searchTerm) || id.includes(searchTerm) : true;
       })
+
       // Info: (20231109 - Julian) filter by date range
-      // .filter((redFlagData: IRedFlag) => {
-      //   const createdTimestamp = redFlagData.createdTimestamp;
-      //   const start = period.startTimeStamp;
-      //   const end = period.endTimeStamp;
-      //   // Info: (20231109 - Julian) if start and end are 0, it means that there is no period filter
-      //   const isCreatedTimestampInRange =
-      //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-      //   return isCreatedTimestampInRange;
-      // })
-      // Info: (20231109 - Julian) filter by type
       .filter((redFlagData: IRedFlag) => {
-        const type = redFlagData.redFlagType.toLowerCase();
+        const createdTimestamp = redFlagData.createdTimestamp;
+        const start = period.startTimeStamp;
+        const end = period.endTimeStamp;
+        // Info: (20231109 - Julian) if start and end are 0, it means that there is no period filter
+        const isCreatedTimestampInRange =
+          start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+
+        return isCreatedTimestampInRange;
+      })
+
+      // Info: (20231109 - Julian) filter by type
+      .filter((redFlagDatElement: IRedFlag) => {
+        const type = redFlagDatElement.redFlagType.toLowerCase();
         return filteredType !== typeOptions[0] ? filteredType.toLowerCase().includes(type) : true;
       })
       // Info: (20231109 - Julian) sort by Newest or Oldest
       .sort((a: IRedFlag, b: IRedFlag) => {
         return sorting === sortOldAndNewOptions[0]
-          ? a.createdTimestamp - b.createdTimestamp
-          : b.createdTimestamp - a.createdTimestamp;
+          ? b.createdTimestamp - a.createdTimestamp
+          : a.createdTimestamp - b.createdTimestamp;
       });
 
     setFilteredRedFlagList(searchResult);

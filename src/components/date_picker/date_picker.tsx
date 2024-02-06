@@ -30,7 +30,7 @@ interface IDatePickerProps {
   isLinearBg?: boolean;
 }
 
-/* Info:(20230530 - Julian) Safari 只接受 YYYY/MM/DD 格式的日期 */
+// Info:(20230530 - Julian) Safari 只接受 YYYY/MM/DD 格式的日期
 const PopulateDates = ({
   daysInMonth,
   selectedYear,
@@ -139,6 +139,9 @@ const PopulateDates = ({
   );
 };
 
+const SECONDS_IN_A_DAY = 86400 - 1;
+const MILLISECONDS_IN_A_SECOND = 1000;
+
 const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
@@ -147,33 +150,30 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
   const today = new Date();
   const maxDate = today;
 
-  const [dateOne, setDateOne] = useState<Date | null>(new Date(period.startTimeStamp * 1000));
-  const [dateTwo, setDateTwo] = useState<Date | null>(new Date(period.endTimeStamp * 1000));
+  const [dateOne, setDateOne] = useState<Date | null>(
+    new Date(period.startTimeStamp * MILLISECONDS_IN_A_SECOND)
+  );
+  const [dateTwo, setDateTwo] = useState<Date | null>(
+    new Date(period.endTimeStamp * MILLISECONDS_IN_A_SECOND)
+  );
 
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // 0 (January) to 11 (December).
   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
 
   useEffect(() => {
     // Info: (20230831 - Julian) 如果已取得兩個日期，則將日期區間傳回父層
-    if (dateOne && dateTwo) {
-      if (dateOne.getTime() !== dateTwo.getTime()) {
-        setFilteredPeriod({
-          startTimeStamp: dateOne.getTime() / 1000,
-          endTimeStamp: dateTwo.getTime() / 1000,
-        });
-      } else {
-        // Info: (20230901 - Julian) 如果兩個日期相同，則將日期區間設為當天 00:00:00 ~ 23:59:59
-        setFilteredPeriod({
-          startTimeStamp: dateOne.getTime() / 1000,
-          endTimeStamp: dateTwo.getTime() / 1000 + 86399,
-        });
-      }
-    } else {
+    // Info: (20230901 - Julian) 如果兩個日期相同，則將日期區間設為當天 00:00:00 ~ 23:59:59
+    const dateOneStamp = dateOne ? dateOne.getTime() / MILLISECONDS_IN_A_SECOND : 0;
+    const dateTwoStamp = dateTwo ? dateTwo.getTime() / MILLISECONDS_IN_A_SECOND : 0;
+
+    if (dateOneStamp && dateTwoStamp) {
+      const isSameDate = dateOneStamp === dateTwoStamp;
       setFilteredPeriod({
-        startTimeStamp: 0,
-        endTimeStamp: 0,
+        startTimeStamp: dateOneStamp,
+        endTimeStamp: isSameDate ? dateTwoStamp + SECONDS_IN_A_DAY : dateTwoStamp,
       });
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateOne, dateTwo]);
 
@@ -231,20 +231,20 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
 
   const selectDateOne = useCallback((el: Dates | null) => {
     if (!el) return setDateOne(null);
-    let newDate = new Date(el.time);
-    newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth() + 1}/${newDate.getDate()}`);
+    const newDate = new Date(el.time);
+    newDate.setHours(0, 0, 0, 0); // Info: (20240205 - Liz) 設定時間為當天的開始（00:00:00）
     setDateOne(newDate);
   }, []);
 
   const selectDateTwo = useCallback((el: Dates | null) => {
     if (!el) return setDateTwo(null);
-    let newDate = new Date(el.time);
-    newDate = new Date(`${newDate.getFullYear()}/${newDate.getMonth() + 1}/${newDate.getDate()}`);
+    const newDate = new Date(el.time);
+    newDate.setHours(23, 59, 59, 999); // Info: (20240205 - Liz) 設定時間為當天的最後一秒（23:59:59.999）
     setDateTwo(newDate);
   }, []);
 
   // Info: (20230830 - Julian) 選單開關
-  const openCalendeHandler = () => setComponentVisible(!componentVisible);
+  const openCalenderHandler = () => setComponentVisible(!componentVisible);
   // Info: (20230830 - Julian) 選擇今天
   const todayClickHandler = () => {
     const dateOfToday = new Date(
@@ -263,9 +263,9 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
   const displayPeriod =
     dateOne && dateTwo
       ? dateOne.getTime() !== 0 && dateTwo.getTime() !== 0
-        ? `${timestampToString(dateOne.getTime() / 1000).date} ${t('DATE_PICKER.TO')} ${
-            timestampToString(dateTwo.getTime() / 1000).date
-          }`
+        ? `${timestampToString(dateOne.getTime() / MILLISECONDS_IN_A_SECOND).date} ${t(
+            'DATE_PICKER.TO'
+          )} ${timestampToString(dateTwo.getTime() / MILLISECONDS_IN_A_SECOND).date}`
         : t('DATE_PICKER.SELECT_PERIOD')
       : t('DATE_PICKER.SELECT_PERIOD');
 
@@ -277,7 +277,7 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
       {/* Info: (20230830 - Julian) Select Period button */}
 
       <div
-        onClick={openCalendeHandler}
+        onClick={openCalenderHandler}
         className={`flex w-full items-center space-x-3 rounded p-4 font-inter ${
           isLinearBg ? 'bg-purpleLinear' : 'bg-darkPurple'
         } text-hoverWhite hover:cursor-pointer lg:w-250px`}
