@@ -44,7 +44,6 @@ const TransactionTab = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    getTransactionData();
 
     // Info: (20240206 - Julian) 如果拿到資料，就將 isLoading 設為 false
     if (transactionData.length > 0) {
@@ -53,7 +52,7 @@ const TransactionTab = () => {
       setIsLoading(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId]);
+  }, [chainId, transactionData]);
 
   useEffect(() => {
     setActivePage(1);

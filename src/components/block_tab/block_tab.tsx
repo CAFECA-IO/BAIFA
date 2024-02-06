@@ -45,7 +45,6 @@ const BlockTab = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    getBlockData();
 
     // Info: (20240206 - Julian) 如果拿到資料，就將 isLoading 設為 false
     if (blockData.length > 0) {
@@ -54,7 +53,7 @@ const BlockTab = () => {
       setIsLoading(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId]);
+  }, [chainId, blockData]);
 
   useEffect(() => {
     setActivePage(1);
