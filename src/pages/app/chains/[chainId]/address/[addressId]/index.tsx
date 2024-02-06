@@ -26,7 +26,7 @@ import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {DEFAULT_TRUNCATE_LENGTH, sortOldAndNewOptions} from '../../../../../../constants/config';
 import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/common';
-import {ITransaction} from '../../../../../../interfaces/transaction';
+import {IDisplayTransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
 
 interface IAddressDetailDetailPageProps {
@@ -45,7 +45,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [addressData, setAddressData] = useState<IAddressDetail>({} as IAddressDetail);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+  const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
   const [blockData, setBlockData] = useState<IProductionBlock[]>([]);
 
   const {transactionHistoryData, blockProducedData, publicTag, score, reviewData} = addressData;
