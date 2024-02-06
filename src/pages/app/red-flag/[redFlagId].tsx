@@ -38,10 +38,11 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const router = useRouter();
   const backClickHandler = () => router.back();
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [redFlagData, setRedFlagData] = useState<IRedFlagDetail>({} as IRedFlagDetail);
   // Info: (20240102 - Julian) Transaction history
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [dataNotFound, setDataNotFound] = useState<boolean>(false);
 
   useEffect(() => {
     // Info: (今天 - Liz) Initialize app context
@@ -53,7 +54,12 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
       try {
         const data = await getRedFlagDetail(redFlagId);
         setRedFlagData(data);
-      } catch (error) {
+
+        // Info: (20240206 - Liz) Check if data is empty
+        if (Object.keys(data).length === 0) {
+          setDataNotFound(true);
+        }
+      } catch (error: unknown) {
         // ToDo:(20231228 - Julian) Error handling
         // console.log('getRedFlagDetail error', error);
       }
@@ -97,7 +103,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   );
 
   // ToDo: (20240201 - Liz) Add error handling for data not found
-  if (!redFlagData.id) return <h1>Data not found</h1>;
+  if (dataNotFound) return <h1>Data not found</h1>;
 
   return (
     <>
