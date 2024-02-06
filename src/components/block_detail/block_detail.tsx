@@ -7,7 +7,7 @@ import {timestampToString, getTimeString, truncateText, getChainIcon} from '../.
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IBlockDetail} from '../../interfaces/block';
-import {BFAURL, getDynamicUrl} from '../../constants/url';
+import {getDynamicUrl} from '../../constants/url';
 import {StabilityLevel} from '../../constants/stability_level';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
@@ -32,7 +32,6 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   const [sinceTime, setSinceTime] = useState(0);
 
   let timer: NodeJS.Timeout;
-
   useEffect(() => {
     // Info: (20230912 - Julian) 算出 createdTimestamp 距離現在過了多少時間
     const now = Math.ceil(Date.now() / 1000);
