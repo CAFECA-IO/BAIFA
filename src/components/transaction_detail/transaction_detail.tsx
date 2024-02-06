@@ -7,6 +7,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {ITransactionDetail} from '../../interfaces/transaction';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
+import {TransactionStatus, DefaultTransactionStatus} from '../../constants/transaction_status';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface ITransactionDetailProps {
@@ -53,8 +54,10 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
       })
     : [];
 
-  const toList = to
-    ? to.map((data, index) => {
+  const toList =
+    // Info: (20240205 - Julian) 如果 to 不為 null 且長度不是 0，則印出 to 的內容；否則顯示 NONE
+    !!to && to.length !== 0 ? (
+      to.map((data, index) => {
         const toLink =
           data.type === 'address'
             ? getDynamicUrl(chainId, `${data.address}`).ADDRESS
@@ -72,38 +75,19 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
           </Link>
         );
       })
-    : [];
-
-  const displayStatus =
-    status === 'PROCESSING' ? (
-      <div className="flex items-center text-hoverWhite">
-        <Image
-          src="/animations/trade_processing.gif"
-          alt="processing_icon"
-          width={20}
-          height={20}
-        />
-        <p className="ml-2 text-sm text-hoverWhite lg:text-base">
-          {t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING')}
-        </p>
-      </div>
-    ) : status === 'SUCCESS' ? (
-      <div className="flex items-center text-lightGreen">
-        <Image src="/icons/success_icon.svg" alt="success_icon" width={20} height={20} />
-        <p className="ml-2 text-sm text-lightGreen lg:text-base">
-          {t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS')}
-        </p>
-      </div>
     ) : (
-      <div className="flex items-center text-lightRed">
-        <Image src="/icons/failed_icon.svg" alt="failed_icon" width={20} height={20} />
-        <p className="ml-2 text-sm text-lightRed lg:text-base">
-          {t('CHAIN_DETAIL_PAGE.STATUS_FAILED')}
-        </p>
-      </div>
+      <p>{t('COMMON.NONE')}</p>
     );
 
-  // ToDo: (20230911 - Julian) flagging
+  // Info: (20240205 - Julian) 根據 status 取得對應的圖示、文字內容和顏色；沒有 status 對應的內容時就使用預設值
+  const statusContent = TransactionStatus[status] ?? DefaultTransactionStatus;
+  const displayStatus = (
+    <div className="flex items-center">
+      <Image src={statusContent.icon} alt={`${statusContent.text}_icon`} width={20} height={20} />
+      <p className={`ml-2 text-sm lg:text-base ${statusContent.color}`}>{t(statusContent.text)}</p>
+    </div>
+  );
+
   const displayFlagging =
     // Info: (20240111 - Julian) If flaggingRecords is not null and length is not 0, then display flaggingRecords
     !!flaggingRecords && flaggingRecords.length !== 0 ? (
