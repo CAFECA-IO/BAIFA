@@ -2,7 +2,9 @@ import {
   MAX_64_BIT_INTEGER_PARAMETER,
   MIN_64_BIT_INTEGER_PARAMETER,
   MONTH_LIST,
+  THRESHOLD_FOR_BLOCK_STABILITY,
 } from '../constants/config';
+import {StabilityLevel} from '../constants/stability_level';
 
 export const timestampToString = (timestamp: number) => {
   if (timestamp === 0)
@@ -206,3 +208,19 @@ export function isValid64BitInteger(input: string | number | bigint) {
 
   return num >= MIN_64BIT_INT && num <= MAX_64BIT_INT;
 }
+
+// Info: 藉由 targetBlockId 跟 latestBlockId 計算區塊的穩定度，越新的 block ，穩定性越低 (20240201 - Shirley)
+export const calculateBlockStability = (targetBlockId: number, latestBlockId: number) => {
+  let stability = StabilityLevel.LOW;
+  if (isNaN(+targetBlockId) || isNaN(+latestBlockId)) return stability;
+
+  if (THRESHOLD_FOR_BLOCK_STABILITY.HIGH < Math.abs(latestBlockId - targetBlockId)) {
+    stability = StabilityLevel.HIGH;
+  } else if (THRESHOLD_FOR_BLOCK_STABILITY.MEDIUM < Math.abs(latestBlockId - targetBlockId)) {
+    stability = StabilityLevel.MEDIUM;
+  } else if (Math.abs(latestBlockId - latestBlockId) < THRESHOLD_FOR_BLOCK_STABILITY.MEDIUM) {
+    stability = StabilityLevel.LOW;
+  }
+
+  return stability;
+};
