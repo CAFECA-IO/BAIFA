@@ -127,7 +127,12 @@
     "EXTRA_DATA": "Extra Data",
     "CONTENT": "Content",
     "MINER_REWARD": "Miner & Reward",
-    "SIZE": "Size"
+    "SIZE": "Size",
+    "STABILITY_TOOLTIP": "",
+    "CONTENT_TOOLTIP": "The transaction record on the block includes details such as the sender, recipient, amount, and timestamp of the transaction.",
+    "MINER_REWARD_TOOLTIP": "",
+    "EXTRA_DATA_TOOLTIP": "The arbitrary content stored in the block by the block producer.",
+    "SIZE_TOOLTIP": "The actual size of a block is determined by the block's gas limit."
   },
   "TRANSACTION_DETAIL_PAGE": {
     "MAIN_TITLE": "Transaction",

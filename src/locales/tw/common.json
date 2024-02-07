@@ -127,7 +127,12 @@
     "EXTRA_DATA": "額外資料",
     "CONTENT": "內容",
     "MINER_REWARD": "礦工 & 報酬",
-    "SIZE": "區塊大小"
+    "SIZE": "區塊大小",
+    "STABILITY_TOOLTIP": "",
+    "CONTENT_TOOLTIP": "區塊上的交易記錄，包括交易的發送者、接收者、金額和時間。",
+    "MINER_REWARD_TOOLTIP": "",
+    "EXTRA_DATA_TOOLTIP": "由區塊生產者儲存在區塊中的任意內容。",
+    "SIZE_TOOLTIP": "區塊的實際大小是由區塊的燃料限制所決定。"
   },
   "TRANSACTION_DETAIL_PAGE": {
     "MAIN_TITLE": "交易",

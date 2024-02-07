@@ -182,9 +182,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('BLOCK_DETAIL_PAGE.STABILITY')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('BLOCK_DETAIL_PAGE.STABILITY_TOOLTIP')}</Tooltip>
         </div>
         {displayStability}
       </div>
@@ -199,9 +197,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('BLOCK_DETAIL_PAGE.CONTENT')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('BLOCK_DETAIL_PAGE.CONTENT_TOOLTIP')}</Tooltip>
         </div>
         {displayContent}
       </div>
@@ -209,9 +205,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('BLOCK_DETAIL_PAGE.MINER_REWARD')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('BLOCK_DETAIL_PAGE.MINER_REWARD_TOOLTIP')}</Tooltip>
         </div>
         {displayMinerAndReward}
       </div>
@@ -219,9 +213,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('BLOCK_DETAIL_PAGE.EXTRA_DATA')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('BLOCK_DETAIL_PAGE.EXTRA_DATA_TOOLTIP')}</Tooltip>
         </div>
         <div className="flex items-center">{displayExtraData}</div>
       </div>
@@ -229,9 +221,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('BLOCK_DETAIL_PAGE.SIZE')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('BLOCK_DETAIL_PAGE.SIZE_TOOLTIP')}</Tooltip>
         </div>
         {displaySize}
       </div>
