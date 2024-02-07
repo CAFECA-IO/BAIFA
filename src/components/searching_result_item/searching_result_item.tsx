@@ -16,7 +16,7 @@ import {IContract} from '../../interfaces/contract';
 import {IEvidence} from '../../interfaces/evidence';
 import {ITransactionDetail} from '../../interfaces/transaction';
 import {IRedFlagDetail} from '../../interfaces/red_flag';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface ISearchingResultItemProps {
   searchResult: ISearchResult;
@@ -213,7 +213,13 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
   const displayedId = (
     <div className="flex flex-wrap items-center space-x-2 text-xl font-semibold">
       <div className="flex items-center space-x-4">
-        <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
+        <Image
+          src={chainIcon.src}
+          alt={chainIcon.alt}
+          width={30}
+          height={30}
+          onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+        />
         <h2>{t(`SEARCHING_RESULT_PAGE.ITEM_TITLE_${type}`)}</h2>
       </div>
       <h2 title={data.id} className="text-primaryBlue">

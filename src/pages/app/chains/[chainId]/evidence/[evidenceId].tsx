@@ -20,6 +20,7 @@ import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
 import {IEvidenceDetail} from '../../../../../interfaces/evidence';
 import {IDisplayTransaction} from '../../../../../interfaces/transaction';
+import {DEFAULT_CHAIN_ICON} from '../../../../../constants/config';
 
 interface IEvidenceDetailDetailPageProps {
   evidenceId: string;
@@ -111,7 +112,13 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailDetailPageProps) => {
               </button>
               {/* Info: (20231107 -Julian) Evidence Title */}
               <div className="flex flex-1 items-center justify-center space-x-2">
-                <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+                <Image
+                  src={chainIcon.src}
+                  alt={chainIcon.alt}
+                  width={40}
+                  height={40}
+                  onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+                />
                 <h1 title={evidenceId} className="text-2xl font-bold lg:text-32px">
                   {t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')}
                   <span className="ml-2 text-primaryBlue"> {truncateText(evidenceId, 10)}</span>

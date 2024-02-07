@@ -19,7 +19,11 @@ import Pagination from '../../../../../../components/pagination/pagination';
 import SearchBar from '../../../../../../components/search_bar/search_bar';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import TransactionList from '../../../../../../components/transaction_list/transaction_list';
-import {default30DayPeriod, sortOldAndNewOptions} from '../../../../../../constants/config';
+import {
+  DEFAULT_CHAIN_ICON,
+  default30DayPeriod,
+  sortOldAndNewOptions,
+} from '../../../../../../constants/config';
 
 interface ITransitionsInBlockPageProps {
   chainId: string;
@@ -158,7 +162,13 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
                 </h1>
                 {/* Info: (20231211 -Julian) Sub Title */}
                 <div className="flex items-center space-x-2">
-                  <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
+                  <Image
+                    src={chainIcon.src}
+                    alt={chainIcon.alt}
+                    width={30}
+                    height={30}
+                    onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+                  />
                   <h2 className="text-xl">
                     {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} {blockId}
                   </h2>

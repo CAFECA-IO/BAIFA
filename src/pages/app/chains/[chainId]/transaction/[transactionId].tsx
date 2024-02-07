@@ -18,6 +18,7 @@ import {BFAURL} from '../../../../../constants/url';
 import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
 import {getChainIcon} from '../../../../../lib/common';
+import {DEFAULT_CHAIN_ICON} from '../../../../../constants/config';
 
 interface ITransactionDetailPageProps {
   transactionId: string;
@@ -90,7 +91,13 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
       </button>
       {/* Info: (20230912 -Julian) Transaction Title */}
       <div className="flex flex-1 items-center justify-center space-x-2">
-        <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+        <Image
+          src={chainIcon.src}
+          alt={chainIcon.alt}
+          width={40}
+          height={40}
+          onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+        />
         <h1 className="text-2xl font-bold lg:text-32px">
           {t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')}
           <span className="ml-2 text-primaryBlue"> {transactionId}</span>

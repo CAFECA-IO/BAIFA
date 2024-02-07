@@ -5,7 +5,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IInteractionItem} from '../../interfaces/interaction_item';
 import {getChainIcon, truncateText} from '../../lib/common';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IInteractionItemProps {
   orignalAddressId: string;
@@ -23,7 +23,15 @@ const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemPro
   const transactionQuery = `?addressId=${orignalAddressId}&addressId=${id}`;
   const transactionLink = `${transactionUrl}${transactionQuery}`;
 
-  const displayIcon = <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />;
+  const displayIcon = (
+    <Image
+      src={chainIcon.src}
+      alt={chainIcon.alt}
+      width={30}
+      height={30}
+      onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+    />
+  );
 
   const displayPublicTag = publicTag ? (
     <div className="whitespace-nowrap rounded border-violet bg-violet px-4 py-2 text-sm lg:text-base">
