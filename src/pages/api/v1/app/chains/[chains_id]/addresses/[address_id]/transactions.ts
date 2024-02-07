@@ -1,5 +1,3 @@
-/*eslint-disable no-console */
-
 // 023 - GET /app/chains/:chain_id/addresses/:address_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
@@ -8,6 +6,7 @@ import {AddressType, IAddressInfo} from '../../../../../../../../interfaces/addr
 import {IAddressRelatedTransaction} from '../../../../../../../../interfaces/address';
 import {ITransaction} from '../../../../../../../../interfaces/transaction';
 import {isAddress} from 'web3-validator';
+import {FAILED_TRANSACTION_STATUS_CODE} from '../../../../../../../../constants/config';
 
 type ResponseData = IAddressRelatedTransaction | undefined;
 
@@ -15,6 +14,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const prisma = getPrismaInstance();
   // Info: (20240122 - Julian) 解構 URL 參數，同時進行類型轉換
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
+  const chain_id = typeof req.query.chain_id === 'string' ? req.query.chain_id : undefined;
+  const order = (req.query.order as string)?.toLowerCase() === 'desc' ? 'desc' : 'asc';
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
+  const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
+  const start_date =
+    typeof req.query.start_date === 'string' ? parseInt(req.query.start_date, 10) : undefined;
+  const end_date =
+    typeof req.query.end_date === 'string' ? parseInt(req.query.end_date, 10) : undefined;
 
   if (!address_id || !isAddress(address_id)) {
     return res.status(400).json(undefined);
@@ -23,6 +30,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     const transactionData = await prisma.transactions.findMany({
       where: {related_addresses: {hasSome: [address_id]}},
+      orderBy: {
+        created_timestamp: order,
+      },
       select: {
         id: true,
         chain_id: true,
@@ -32,6 +42,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         status: true,
         created_timestamp: true,
         related_addresses: true,
+      },
+    });
+
+    const transactionCodes = await prisma.codes.findMany({
+      where: {
+        table_name: 'transactions',
+      },
+      select: {
+        table_column: true,
+        value: true,
+        meaning: true,
       },
     });
 
@@ -60,6 +81,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           };
         });
 
+      const state =
+        transactionCodes
+          // Info: (20240207 - Shirley) 先過濾出 status
+          .filter(code => code.table_column === 'status')
+          // Info: (20240207 - Shirley) 再找出對應的 meaning；由於 status 是數字，所以要先轉換成數字再比對
+          .find(code => code.value === parseInt(transaction?.status ?? ''))?.meaning ?? '';
+
       return {
         id: `${transaction.id}`,
         chainId: `${transaction.chain_id}`,
@@ -67,10 +95,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         from: from,
         to: to,
         type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
-        status: 'PENDING', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 status 的轉換
+        status: state,
       };
     });
 
+    /* TODO: dev (20240207 - Shirley)
     // const relatedAddressesRaw = transactionData.flatMap(transaction => {
     //   // Info: (20240131 - Julian) 過濾掉 null 和 address_id
     //   return transaction.related_addresses.filter(
@@ -79,15 +108,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // });
     // // Info: (20240131 - Julian) 過濾重複的 address
     // const relatedAddresses = Array.from(new Set(relatedAddressesRaw));
+    */
 
     const responseData: ResponseData = transactionData
       ? {
           id: `${address_id}`,
           type: AddressType.ADDRESS,
           address: `${address_id}`,
-          // chainId: `${}`, // ToDo: (20240122 - Julian) 需要參考 addresses Table 並補上 chain_id
-          // interactedAddressCount: relatedAddresses.length,
-          // interactedContactCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位
           transactionHistoryData: transactionHistoryData,
         }
       : undefined;
@@ -101,195 +128,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   } finally {
     await prisma.$disconnect();
   }
-
-  /* TODO: optmizational trial (20240205 - Shirley)
-  // // Info: (20240122 - Julian) -------------- 透過 addresses Table 找出 address_id 的資料 --------------
-  // const addressData = await prisma.addresses.findUnique({
-  //   where: {
-  //     address: address_id,
-  //   },
-  //   select: {
-  //     id: true,
-  //     chain_id: true,
-  //     created_timestamp: true,
-  //     address: true,
-  //     score: true,
-  //     latest_active_time: true,
-  //   },
-  // });
-
-  // const chainData = await prisma.chains.findUnique({
-  //   where: {
-  //     id: addressData?.chain_id ?? undefined,
-  //   },
-  //   select: {
-  //     symbol: true,
-  //     decimals: true,
-  //   },
-  // });
-
-  // const unit = chainData?.symbol ? chainData.symbol : '';
-  // const decimals = chainData?.decimals ? chainData.decimals : 0;
-
-  // // Info: (20240122 - Julian) -------------- 在 transactions Table 找出所有與 address_id 相關的交易 --------------
-  // // SELECT * FROM transactions WHERE related_addresses LIKE '%address_id%'
-  // const transactionData = address_id
-  //   ? await prisma.transactions.findMany({
-  //       where: {
-  //         related_addresses: {
-  //           hasSome: [address_id],
-  //         },
-  //       },
-  //       select: {
-  //         id: true,
-  //         chain_id: true,
-  //         from_address: true,
-  //         to_address: true,
-  //         type: true,
-  //         status: true,
-  //         created_timestamp: true,
-  //         related_addresses: true,
-  //       },
-  //     })
-  //   : [];
-
-  // // Info: (20240122 - Julian) ================== transactionHistoryData1 ==================
-  // const transactionHistoryData1: ITransaction[] = transactionData.map(transaction => {
-  //   // Info: (20240130 - Julian) from address 轉換
-  //   const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
-  //   const from: IAddressInfo[] = fromAddresses
-  //     // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
-  //     .filter(address => address !== 'null')
-  //     .map(address => {
-  //       return {
-  //         type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
-  //         address: address,
-  //       };
-  //     });
-
-  //   // Info: (20240130 - Julian) to address 轉換
-  //   const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
-  //   const to: IAddressInfo[] = toAddresses
-  //     // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
-  //     .filter(address => address !== 'null')
-  //     .map(address => {
-  //       return {
-  //         type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
-  //         address: address,
-  //       };
-  //     });
-
-  //   return {
-  //     id: `${transaction.id}`,
-  //     chainId: `${transaction.chain_id}`,
-  //     createdTimestamp: transaction.created_timestamp ?? 0,
-  //     from: from,
-  //     to: to,
-  //     type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
-  //     status: 'PENDING', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 status 的轉換
-  //   };
-  // });
-
-  // // Info: (20240122 - Julian) 透過 transactions Table 的 related_addresses 欄位找出所有相關的 address
-  // const relatedAddressesRaw = transactionData.flatMap(transaction => {
-  //   // Info: (20240131 - Julian) 過濾掉 null 和 address_id
-  //   return transaction.related_addresses.filter(
-  //     address => address !== address_id && address !== 'null'
-  //   );
-  // });
-  // // Info: (20240131 - Julian) 過濾重複的 address
-  // const relatedAddresses = Array.from(new Set(relatedAddressesRaw));
-
-  // // Info: (20240122 - Julian) ================== blockProducedData ==================
-  // const blockData = address_id
-  //   ? await prisma.blocks.findMany({
-  //       where: {
-  //         miner: address_id,
-  //       },
-  //       select: {
-  //         id: true,
-  //         chain_id: true,
-  //         created_timestamp: true,
-  //         reward: true,
-  //       },
-  //     })
-  //   : [];
-
-  // const blockProducedData: IProductionBlock[] = blockData.map(block => {
-  //   // Info: (20240130 - Julian) reward 轉換
-  //   const rewardRaw = block.reward ? parseInt(block.reward) : 0;
-  //   const reward = rewardRaw / Math.pow(10, decimals);
-
-  //   return {
-  //     id: `${block.id}`,
-  //     chainId: `${block.chain_id}`,
-  //     createdTimestamp: block.created_timestamp ?? 0,
-  //     stability: 'MEDIUM', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 stability 的轉換
-  //     reward: reward,
-  //     unit: unit,
-  //   };
-  // });
-
-  // // Info: (20240130 - Julian) ================== reviewData ==================
-  // const reviewDataRaw = await prisma.review_datas.findMany({
-  //   where: {
-  //     target: address_id,
-  //   },
-  //   select: {
-  //     id: true,
-  //     created_timestamp: true,
-  //     author_address: true,
-  //     content: true,
-  //     stars: true,
-  //   },
-  // });
-  // const reviewData: IReviewDetail[] = reviewDataRaw.map(review => {
-  //   return {
-  //     id: `${review.id}`,
-  //     transactionId: `${review.id}`,
-  //     chainId: `${review.id}`,
-  //     createdTimestamp: review.created_timestamp ?? 0,
-  //     authorAddressId: `${review.author_address}`,
-  //     content: `${review.content}`,
-  //     stars: review.stars ?? 0,
-  //   };
-  // });
-
-  // // Info: (20240130 - Julian) ================== flaggingCount ==================
-  // const flaggingRecords = await prisma.red_flags.findMany({
-  //   where: {
-  //     related_addresses: {
-  //       hasSome: [`${address_id}`],
-  //     },
-  //   },
-  //   select: {
-  //     id: true,
-  //     red_flag_type: true,
-  //   },
-  // });
-
-  // const result: ResponseData = addressData
-  //   ? {
-  //       id: `${addressData.id}`,
-  //       type: 'address',
-  //       address: `${addressData.address}`,
-  //       chainId: `${addressData.chain_id}`,
-  //       createdTimestamp: addressData.created_timestamp ?? 0,
-  //       latestActiveTime: addressData.latest_active_time ?? 0,
-  //       interactedAddressCount: relatedAddresses.length,
-  //       interactedContactCount: 0, // ToDo: (20240122 - Julian) 補上這個欄位
-  //       score: addressData.score ?? 0,
-  //       reviewData: reviewData,
-  //       transactionHistoryData1: transactionHistoryData1,
-  //       transactionCount: transactionHistoryData1.length,
-  //       blockProducedData: blockProducedData,
-  //       flaggingCount: flaggingRecords.length,
-  //       riskLevel: 'LOW_RISK', // ToDo: (20240122 - Julian) 補上這個欄位
-  //       publicTag: [], // ToDo: (20240122 - Julian) 補上這個欄位
-  //     }
-  //   : undefined;
-
-  // prisma.$connect();
-  // res.status(200).json(result);
-  */
 }

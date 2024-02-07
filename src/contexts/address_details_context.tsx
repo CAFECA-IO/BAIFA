@@ -3,11 +3,7 @@ import {ITransaction} from '../interfaces/transaction';
 import {IProducedBlock} from '../interfaces/block';
 import useStateRef from 'react-usestateref';
 import {MarketContext} from './market_context';
-import {
-  IAddressProducedBlocksQuery,
-  IPaginationOptions,
-  SortingType,
-} from '../constants/api_request';
+import {IAddressHistoryQuery, IPaginationOptions, SortingType} from '../constants/api_request';
 import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../constants/config';
 import {useRouter} from 'next/router';
 import {convertMillisecondsToSeconds} from '../lib/common';
@@ -16,46 +12,64 @@ export interface IAddressDetailsProvider {
   children: React.ReactNode;
 }
 
+export interface IAddressDetailsContext {
+  transactions: ITransaction[];
+  producedBlocks: IProducedBlock;
+  clickBlockPagination: (
+    options: IAddressHistoryQuery,
+    chainId?: string,
+    addressId?: string
+  ) => Promise<void>;
+  init: (chainId: string, addressId: string, options?: IAddressHistoryQuery) => Promise<void>;
+  blocksLoading: boolean;
+  clickBlockSortingMenu: (order: SortingType) => Promise<void>;
+  blocksOrder: SortingType;
+  blocksPage: number;
+  blocksOffset: number;
+  blocksStart: number;
+  blocksEnd: number;
+  clickBlockDatePicker: (start: number, end: number) => Promise<void>;
+  transactionsLoading: boolean;
+  transactionsOrder: SortingType;
+  transactionsPage: number;
+  transactionsOffset: number;
+  transactionsStart: number;
+  transactionsEnd: number;
+  clickTransactionPagination: (
+    options: IPaginationOptions,
+    chainId?: string,
+    addressId?: string
+  ) => Promise<void>;
+  clickTransactionSortingMenu: (order: SortingType) => Promise<void>;
+  clickTransactionDatePicker: (start: number, end: number) => Promise<void>;
+}
+
 export const AddressDetailsContext = createContext<IAddressDetailsContext>({
   transactions: [],
   producedBlocks: {
     blockData: [],
     blockCount: 0,
   },
-  clickBlockPagination: async () => {},
-  init: async () => {},
+  init: () => Promise.resolve(),
+  clickBlockPagination: () => Promise.resolve(),
   blocksLoading: false,
-  clickSortingMenu: async () => {},
+  clickBlockSortingMenu: () => Promise.resolve(),
   blocksOrder: SortingType.DESC,
   blocksPage: DEFAULT_PAGE,
   blocksOffset: ITEM_PER_PAGE,
   blocksStart: 0,
   blocksEnd: Date.now(),
-  clickDatePicker: async () => {},
+  clickBlockDatePicker: () => Promise.resolve(),
+  transactionsLoading: false,
+  transactionsOrder: SortingType.DESC,
+  transactionsPage: DEFAULT_PAGE,
+  transactionsOffset: ITEM_PER_PAGE,
+  transactionsStart: 0,
+  transactionsEnd: Date.now(),
+  clickTransactionPagination: () => Promise.resolve(),
+  clickTransactionSortingMenu: () => Promise.resolve(),
+  clickTransactionDatePicker: () => Promise.resolve(),
 });
-
-export interface IAddressDetailsContext {
-  transactions: ITransaction[];
-  producedBlocks: IProducedBlock;
-  clickBlockPagination: (
-    options: IAddressProducedBlocksQuery,
-    chainId?: string,
-    addressId?: string
-  ) => Promise<void>;
-  init: (
-    chainId: string,
-    addressId: string,
-    options?: IAddressProducedBlocksQuery
-  ) => Promise<void>;
-  blocksLoading: boolean;
-  clickSortingMenu: (order: SortingType) => Promise<void>;
-  blocksOrder: SortingType;
-  blocksPage: number;
-  blocksOffset: number;
-  blocksStart: number;
-  blocksEnd: number;
-  clickDatePicker: (start: number, end: number) => Promise<void>;
-}
 
 // Create the context provider component
 export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
@@ -73,10 +87,79 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   const [blocksStart, setBlocksStart, blocksStartRef] = useStateRef(0);
   const [blocksEnd, setBlocksEnd, blocksEndRef] = useStateRef(Date.now());
 
+  const [transactionsLoading, setTransactionsLoading, transactionsLoadingRef] = useStateRef(false);
+  const [transactionsOrder, setTransactionsOrder, transactionsOrderRef] = useStateRef<SortingType>(
+    SortingType.DESC
+  );
+  const [transactionsPage, setTransactionsPage, transactionsPageRef] = useStateRef(DEFAULT_PAGE);
+  const [transactionsOffset, setTransactionsOffset, transactionsOffsetRef] =
+    useStateRef(ITEM_PER_PAGE);
+  const [transactionsStart, setTransactionsStart, transactionsStartRef] = useStateRef(0);
+  const [transactionsEnd, setTransactionsEnd, transactionsEndRef] = useStateRef(Date.now());
+
   const router = useRouter();
   const {query} = router;
 
-  const clickDatePicker = async (start: number, end: number) => {
+  const clickTransactionPagination = async (
+    options: IPaginationOptions,
+    chainId?: string,
+    addressId?: string
+  ) => {
+    setTransactionsLoading(true);
+    setTransactionsPage(options.page);
+    setTransactionsOffset(options.offset);
+
+    const {page, offset, order} = options;
+    const chainIdForTransaction = chainId || (query.chainId?.toString() ?? '');
+    const addressIdForTransaction = addressId || (query.addressId?.toString() ?? '');
+
+    const transactionData = await marketCtx.getAddressRelatedTransactions(
+      chainIdForTransaction,
+      addressIdForTransaction,
+      options
+    );
+    setTransactions(prev => {
+      return [...transactionsRef.current, ...transactionData];
+    });
+    setTransactionsLoading(false);
+  };
+
+  const clickTransactionSortingMenu = async (order: SortingType) => {
+    setTransactionsOrder(order);
+    setTransactionsLoading(true);
+    const transactionData = await marketCtx.getAddressRelatedTransactions(
+      query.chainId?.toString() ?? '',
+      query.addressId?.toString() ?? '',
+      {
+        page: transactionsPageRef.current,
+        offset: transactionsOffsetRef.current,
+        order: order,
+      }
+    );
+    setTransactions(transactionData);
+    setTransactionsLoading(false);
+  };
+
+  const clickTransactionDatePicker = async (start: number, end: number) => {
+    const startSeconds = convertMillisecondsToSeconds(start);
+    const endSeconds = convertMillisecondsToSeconds(end);
+    setTransactionsLoading(true);
+    const transactionData = await marketCtx.getAddressRelatedTransactions(
+      query.chainId?.toString() ?? '',
+      query.addressId?.toString() ?? '',
+      {
+        page: transactionsPageRef.current,
+        offset: transactionsOffsetRef.current,
+        order: transactionsOrderRef.current,
+        start_date: startSeconds,
+        end_date: endSeconds,
+      }
+    );
+    setTransactions(transactionData);
+    setTransactionsLoading(false);
+  };
+
+  const clickBlockDatePicker = async (start: number, end: number) => {
     const startSeconds = convertMillisecondsToSeconds(start);
     const endSeconds = convertMillisecondsToSeconds(end);
     setBlocksLoading(true);
@@ -87,18 +170,19 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
         page: blocksPageRef.current,
         offset: blocksOffsetRef.current,
         order: blocksOrderRef.current,
-        begin: startSeconds,
-        end: endSeconds,
+        start_date: startSeconds,
+        end_date: endSeconds,
       }
     );
 
-    console.log('startSeconds', startSeconds, 'endSeconds', endSeconds, 'blockData', blockData);
+    // TODO: develop the logic to get the data (20240207 - Shirley)
+    // console.log('startSeconds', startSeconds, 'endSeconds', endSeconds, 'blockData', blockData);
     setProducedBlocks(blockData);
     setBlocksLoading(false);
   };
 
   const clickBlockPagination = async (
-    options: IAddressProducedBlocksQuery,
+    options: IAddressHistoryQuery,
     chainId?: string,
     addressId?: string
   ) => {
@@ -121,7 +205,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     setBlocksLoading(false);
   };
 
-  const clickSortingMenu = async (order: SortingType) => {
+  const clickBlockSortingMenu = async (order: SortingType) => {
     setBlocksOrder(order);
     setBlocksLoading(true);
     const blockData = await marketCtx.getAddressProducedBlocks(
@@ -133,16 +217,14 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
         order: order,
       }
     );
-    console.log('order in clickSortingMenu in context', order);
     setProducedBlocks(blockData);
     setBlocksLoading(false);
   };
 
-  const init = async (
-    chainId: string,
-    addressId: string,
-    options?: IAddressProducedBlocksQuery
-  ) => {
+  const init = async (chainId: string, addressId: string, options?: IAddressHistoryQuery) => {
+    setBlocksLoading(true);
+    setTransactionsLoading(true);
+    // Info: Init blocks (20240207 - Shirley)
     const blockData = await marketCtx.getAddressProducedBlocks(
       chainId,
       addressId,
@@ -150,27 +232,37 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
         page: DEFAULT_PAGE,
         offset: ITEM_PER_PAGE,
         order: SortingType.DESC,
+        // TODO: input query functionality (20240207 - Shirley)
         // query: {
         //   block_id: 373842,
         // },
-
-        begin: 0,
-        end: Date.now(),
+        // start_date: 0,
+        // end_date: Date.now(),
       }
     );
 
     setProducedBlocks(blockData);
 
-    // const transactionsData = await marketCtx.getAddressTransactions(
-    //   '8017',
-    //   '0x048adee1b0e93b30f9f7b71f18b963ca9ba5de3b',
-    //   {
-    //     page: 1,
-    //     offset: 20,
-    //     order: 'desc',
-    //   }
-    // );
-    // setTransactions(transactionsData);
+    // Info: Init transactions (20240207 - Shirley)
+    const transactionData = await marketCtx.getAddressRelatedTransactions(
+      chainId,
+      addressId,
+      options || {
+        page: DEFAULT_PAGE,
+        offset: ITEM_PER_PAGE,
+        order: SortingType.DESC,
+        // TODO: input query functionality (20240207 - Shirley)
+        // query: {
+        //   block_id: 373842,
+        // },
+        // start_date: 0,
+        // end_date: Date.now(),
+      }
+    );
+
+    setTransactions(transactionData);
+    setBlocksLoading(false);
+    setTransactionsLoading(false);
   };
 
   useEffect(() => {
@@ -192,8 +284,19 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     blocksEnd: blocksEndRef.current,
 
     clickBlockPagination,
-    clickSortingMenu,
-    clickDatePicker,
+    clickBlockSortingMenu,
+    clickBlockDatePicker,
+
+    transactionsLoading: transactionsLoadingRef.current,
+    transactionsOrder: transactionsOrderRef.current,
+    transactionsPage: transactionsPageRef.current,
+    transactionsOffset: transactionsOffsetRef.current,
+    transactionsStart: transactionsStartRef.current,
+    transactionsEnd: transactionsEndRef.current,
+
+    clickTransactionPagination,
+    clickTransactionSortingMenu,
+    clickTransactionDatePicker,
   };
 
   return (

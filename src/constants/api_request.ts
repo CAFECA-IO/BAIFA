@@ -21,12 +21,12 @@ export interface IPaginationOptions {
   offset: number;
 }
 
-export interface IAddressProducedBlocksQuery extends IPaginationOptions {
+export interface IAddressHistoryQuery extends IPaginationOptions {
   query?: {
     block_id: number;
   };
-  begin?: number;
-  end?: number;
+  start_date?: number;
+  end_date?: number;
 }
 
 export interface IAPINameConstant {

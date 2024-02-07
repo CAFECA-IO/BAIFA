@@ -1,10 +1,6 @@
 import {Dispatch, SetStateAction, useState, useEffect} from 'react';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
-import {
-  IAddressProducedBlocksQuery,
-  IPaginationOptions,
-  SortingType,
-} from '../../constants/api_request';
+import {IAddressHistoryQuery, IPaginationOptions, SortingType} from '../../constants/api_request';
 import {ITEM_PER_PAGE} from '../../constants/config';
 import useStateRef from 'react-usestateref';
 
@@ -43,6 +39,7 @@ const Pagination = ({
   const previousHandler = async () => {
     const present = activePage - 1;
     getActivePage && getActivePage(present);
+    setTargetPage(present);
     setActivePage(present);
     // Info: (20240115 - Julian) change url query
     if (url) {
@@ -63,6 +60,7 @@ const Pagination = ({
   const nextHandler = async () => {
     const present = activePage + 1;
     getActivePage && getActivePage(present);
+    setTargetPage(present);
     setActivePage(present);
     // Info: (20240115 - Julian) change url query
     if (url) {
@@ -138,6 +136,7 @@ const Pagination = ({
       className="flex h-48px w-48px items-center justify-center rounded border border-hoverWhite bg-darkPurple p-3 text-center text-sm text-hoverWhite disabled:border-gray-500"
       onChange={pageChangeHandler}
       onKeyDown={handleKeyDown}
+      value={targetPageRef.current}
       min={1}
       max={totalPages}
     />

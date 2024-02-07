@@ -1,5 +1,3 @@
-/*eslint-disable no-console */
-
 import {AddressType} from './address_info';
 import {IProducedBlock, IProductionBlock} from './block';
 import {ICommonData} from './common_data';
@@ -29,9 +27,6 @@ export interface IAddressRelatedTransaction {
   id: string;
   type: AddressType.ADDRESS | AddressType.CONTRACT;
   address: string;
-  // chainId: string;
-  // interactedAddressCount: number;
-  // interactedContactCount: number;
   transactionHistoryData: ITransaction[];
 }
 
@@ -40,23 +35,7 @@ export interface IAddressProducedBlock extends IProducedBlock {
   type: AddressType.ADDRESS | AddressType.CONTRACT;
   address: string;
   chainId: string;
-  //   blockProducedData: IProductionBlock[];
-  //   blockCount: number;
 }
-
-// export interface IAddressDetail extends IInteractionItem, IAddress {
-//   latestActiveTime: number;
-//   //relatedAddresses: {id: string; chainId: string}[]; // ToDo: (20240201 - Julian) 可能移除
-//   interactedAddressCount: number;
-//   interactedContactCount: number;
-//   balance?: number;
-//   totalSent?: number;
-//   totalReceived?: number;
-//   blockProducedData: IProductionBlock[];
-//   transactionHistoryData: ITransaction[];
-//   score: number;
-//   reviewData: IReviewDetail[];
-// }
 
 export interface IAddressDetail
   extends IAddressBrief,
@@ -110,9 +89,6 @@ export const dummyAddressRelatedTransaction: IAddressRelatedTransaction = {
   id: '1',
   type: AddressType.ADDRESS,
   address: '0x',
-  // chainId: '1',
-  // interactedAddressCount: 0,
-  // interactedContactCount: 0,
   transactionHistoryData: [],
 };
 

@@ -1,5 +1,3 @@
-/*eslint-disable no-console */
-
 import Image from 'next/image';
 import Link from 'next/link';
 import {useState, useEffect, useContext} from 'react';
@@ -67,6 +65,7 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [period, setPeriod] = useState(default30DayPeriod);
 
+  /* Deprecated: (20240220 - Shirley) 
   // const endIdx = activePage * ITEM_PER_PAGE;
   // const startIdx = endIdx - ITEM_PER_PAGE;
 
@@ -74,9 +73,11 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
   //   console.log('getActivePage', page);
   //   setActivePage(page);
   // };
+  */
 
   useEffect(() => {
     const searchResult = [...addressDetailsCtx.producedBlocks.blockData]; // Info: (20231103 - Julian) filter by search term
+    /* TODO: (20240207 - Shirley) filter by search term
     // .filter((block: IProductionBlock) => {
     //   const searchTerm = searchRef.current.toLowerCase();
     //   const stability = block.stability.toLowerCase();
@@ -102,11 +103,14 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
     //     : // Info: (20231101 - Julian) Oldest
     //       a.createdTimestamp - b.createdTimestamp;
     // });
-    setFilteredBlocks(prev => searchResult);
-    setTotalPages(Math.floor(addressDetailsCtx.producedBlocks.blockCount / ITEM_PER_PAGE));
+    
     // setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
     // setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    */
+    setFilteredBlocks(prev => searchResult);
+    setTotalPages(Math.floor(addressDetailsCtx.producedBlocks.blockCount / ITEM_PER_PAGE));
   }, [addressDetailsCtx.producedBlocks, search, sorting, period]);
 
   // Info: (20240103 - Julian) The count of blocks
@@ -169,17 +173,11 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
   };
 
   const blockSortingHandler = async ({order}: {order: SortingType}) => {
-    console.log('blockSortingHandler in block_produced_section', order);
-    const sortingString = convertSortingTypeToString(order);
-
-    // setSorting(sortingString);
-    addressDetailsCtx.clickSortingMenu(order);
+    addressDetailsCtx.clickBlockSortingMenu(order);
   };
 
   const blockDateFilterHandler = async (start: number, end: number) => {
-    console.log('blockDateFilterHandler in block_produced_section', start, end);
-    addressDetailsCtx.clickDatePicker(start, end);
-    // setPeriod({startTimeStamp: start, endTimeStamp: end});
+    addressDetailsCtx.clickBlockDatePicker(start, end);
   };
 
   return (

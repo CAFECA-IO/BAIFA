@@ -1,5 +1,3 @@
-/*eslint-disable no-console */
-
 // 023 - GET /app/chains/:chain_id/addresses/:address_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
@@ -25,26 +23,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const order = (req.query.order as string)?.toLowerCase() === 'desc' ? 'desc' : 'asc';
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
   const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
-  const begin = typeof req.query.begin === 'string' ? parseInt(req.query.begin, 10) : undefined;
-  const end = typeof req.query.end === 'string' ? parseInt(req.query.end, 10) : undefined;
+  const start_date =
+    typeof req.query.start_date === 'string' ? parseInt(req.query.start_date, 10) : undefined;
+  const end_date =
+    typeof req.query.end_date === 'string' ? parseInt(req.query.end_date, 10) : undefined;
   // const block_id = typeof req.query.query === 'string' ? parseInt(req.query.block_id, 10) : 0;
 
-  console.log('all query in produced_block:', req.query);
-
-  if (!address_id || !chain_id) {
+  if (!address_id || !chain_id || !isAddress(address_id)) {
     return res.status(400).json(undefined);
   }
 
   let queryObject;
   try {
     queryObject = req.query.query ? JSON.parse(req.query.query as string) : undefined;
-    console.log('queryObject in produced_block:', queryObject);
+    // console.log('queryObject in produced_block:', queryObject);
   } catch (error) {
-    console.error('Parsing query parameter failed:', error);
+    // console.error('Parsing query parameter failed:', error);
     return res.status(400).json(undefined);
   }
 
   try {
+    /* TODO: input query (20240207 - Shirley)
     // const latestBlock = await prisma.blocks.findFirst({
     //   orderBy: {
     //     created_timestamp: 'desc',
@@ -70,6 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // const maxPrefixLength = latestBlock ? latestBlock.id.toString().length : 4; // 假設 id 最大為四位數
     // const startId = parseInt(prefix + '0'.repeat(minPrefixLength - prefix.length), 10); // 計算起始 id
     // const endId = parseInt(prefix + '9'.repeat(maxPrefixLength - prefix.length), 10); // 計算結束 id
+    */
 
     const chainData = await prisma.chains.findUnique({
       where: {
@@ -128,8 +128,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    console.log('blockData in produced_blocks.ts:', blockData);
-
     const unit = chainData?.symbol ?? '';
     const decimals = chainData?.decimals ?? 0;
 
@@ -141,7 +139,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         id: `${block.id}`,
         chainId: `${block.chain_id}`,
         createdTimestamp: block.created_timestamp ?? 0,
-        stability: 'MEDIUM', // Placeholder for actual stability logic
+        stability: 'MEDIUM', // TODO: block stability (20240207 - Shirley)
         reward: reward,
         unit: unit,
       };
@@ -158,6 +156,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     res.status(200).json(responseData);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Failed to fetch block details:', error);
     res.status(500).json(undefined);
   } finally {

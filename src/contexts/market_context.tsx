@@ -1,8 +1,7 @@
-/*eslint-disable no-console */
 import React, {createContext, useCallback, useState} from 'react';
 import {
   APIURL,
-  IAddressProducedBlocksQuery,
+  IAddressHistoryQuery,
   IPaginationOptions,
   SortingType,
 } from '../constants/api_request';
@@ -58,12 +57,12 @@ export interface IMarketContext {
   getAddressRelatedTransactions: (
     chainId: string,
     addressId: string,
-    options?: IPaginationOptions
+    options?: IAddressHistoryQuery
   ) => Promise<ITransaction[]>;
   getAddressProducedBlocks: (
     chainId: string,
     addressId: string,
-    options?: IAddressProducedBlocksQuery
+    options?: IAddressHistoryQuery
   ) => Promise<IProducedBlock>;
   getReviews: (chainId: string, addressId: string) => Promise<IReviews>;
   getRedFlagsFromAddress: (chainId: string, addressId: string) => Promise<IRedFlag[]>;
@@ -81,7 +80,40 @@ export interface IMarketContext {
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
 }
-
+/*
+  transactions: [],
+  producedBlocks: {
+    blockData: [],
+    blockCount: 0,
+  },
+  clickBlockPagination: async (
+    options: IPaginationOptions,
+    chainId?: string,
+    addressId?: string
+  ) => {},
+  init: async () => {},
+  blocksLoading: false,
+  clickBlockSortingMenu: async (order: SortingType) => {},
+  blocksOrder: SortingType.DESC,
+  blocksPage: DEFAULT_PAGE,
+  blocksOffset: ITEM_PER_PAGE,
+  blocksStart: 0,
+  blocksEnd: Date.now(),
+  clickBlockDatePicker: async (start: number, end: number) => {},
+  transactionsLoading: false,
+  transactionsOrder: SortingType.DESC,
+  transactionsPage: DEFAULT_PAGE,
+  transactionsOffset: ITEM_PER_PAGE,
+  transactionsStart: 0,
+  transactionsEnd: Date.now(),
+  clickTransactionPagination: async (
+    options: IPaginationOptions,
+    chainId?: string,
+    addressId?: string
+  ) => {},
+  clickTransactionSortingMenu: async (order: SortingType) => {},
+  clickTransactionDatePicker: async (start: number, end: number) => {},
+*/
 export const MarketContext = createContext<IMarketContext>({
   init: () => Promise.resolve(),
   promotionData: defaultPromotion,
@@ -341,7 +373,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, []);
 
   const getAddressRelatedTransactions = useCallback(
-    async (chainId: string, addressId: string, options?: IPaginationOptions) => {
+    async (chainId: string, addressId: string, options?: IAddressHistoryQuery) => {
       let data: ITransaction[] = [];
       try {
         // Build the query string from the options object
@@ -353,6 +385,11 @@ export const MarketProvider = ({children}: IMarketProvider) => {
         }
         if (options?.page !== undefined) queryParams.set('page', options.page.toString());
         if (options?.offset !== undefined) queryParams.set('offset', options.offset.toString());
+        if (options?.start_date !== undefined)
+          queryParams.set('start', options.start_date.toString());
+        if (options?.end_date !== undefined) queryParams.set('end', options.end_date.toString());
+        if (options?.query) queryParams.set('query', JSON.stringify(options.query));
+
         const apiUrl = `${
           APIURL.CHAINS
         }/${chainId}/addresses/${addressId}/transactions?${queryParams.toString()}`;
@@ -363,7 +400,6 @@ export const MarketProvider = ({children}: IMarketProvider) => {
         const result = (await response.json()) as IAddressRelatedTransaction;
         data = result.transactionHistoryData;
 
-        console.log('apiUrl', apiUrl);
       } catch (error) {
         //console.log('getAddressRelatedTransactions error', error);
       }
@@ -375,7 +411,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const getAddressProducedBlocks = async (
     chainId: string,
     addressId: string,
-    options?: IAddressProducedBlocksQuery
+    options?: IAddressHistoryQuery
   ) => {
     let data: IProducedBlock = {blockData: [], blockCount: 0};
     try {
@@ -388,8 +424,9 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       }
       if (options?.page !== undefined) queryParams.set('page', options.page.toString());
       if (options?.offset !== undefined) queryParams.set('offset', options.offset.toString());
-      if (options?.begin !== undefined) queryParams.set('start', options.begin.toString());
-      if (options?.end !== undefined) queryParams.set('end', options.end.toString());
+      if (options?.start_date !== undefined)
+        queryParams.set('start', options.start_date.toString());
+      if (options?.end_date !== undefined) queryParams.set('end', options.end_date.toString());
       if (options?.query) queryParams.set('query', JSON.stringify(options.query));
       const apiUrl = `${
         APIURL.CHAINS

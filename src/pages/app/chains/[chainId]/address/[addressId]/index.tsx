@@ -1,4 +1,3 @@
-/*eslint-disable no-console */
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -87,7 +86,6 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     }
 
     const init = async (chainId: string, addressId: string) => {
-      console.log('page call ctx init');
       await detailedAddressCtx.init(chainId, addressId);
     };
 
@@ -109,53 +107,16 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       }
     };
 
-    // const getBlockProducedData = async (chainId: string, addressId: string) => {
-    //   try {
-    //     console.log('getBlockProducedData in DetailedPage', chainId, addressId);
-    //     const data = await getAddressProducedBlocks(chainId, addressId, {
-    //       order: SortingType.DESC,
-    //       page: 1,
-    //       offset: ITEM_PER_PAGE,
-    //     });
-    //     setBlockData({blocks: data.blockData, blockCount: data.blockCount});
-    //   } catch (error) {
-    //     //console.log('getBlockProducedData error', error);
-    //   }
-    // };
     init(chainId, addressId);
     getAddressBriefData(chainId, addressId);
     getTransactionHistoryData(chainId, addressId);
-    // getBlockProducedData(chainId, addressId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const clickBlockPrevious = async (
-  //   chainId: string,
-  //   addressId: string,
-  //   order: SortingType,
-  //   page: number,
-  //   offset: number
-  // ) => {
-  //   try {
-  //     const data = await getAddressProducedBlocks(chainId, addressId, {
-  //       order,
-  //       page,
-  //       offset,
-  //     });
-
-  //     console.log('clickBlockPrevious data', data);
-  //     setBlockData(prevState => ({blocks: data.blockData, blockCount: data.blockCount}));
-  //     console.log('blockDataRef.current.blocks', blockDataRef.current.blocks);
-  //   } catch (error) {
-  //     //console.log('clickBlockPrevious error', error);
-  //   }
-  // };
-
-  // const timerRef = useRef<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
+    // TODO: validate BTC address (20240207 - Shirley)
     // eslint-disable-next-line no-console
-    console.log('addressId is valid', isAddress(addressId), addressId);
+    // console.log('addressId is valid', isAddress(addressId), addressId);
 
     if (addressBriefData) {
       setAddressBriefData(addressBriefData);
@@ -173,11 +134,6 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       setBlockData(blockProducedData);
     }
   }, [blockProducedData]);
-
-  // ToDo: (20240129 - Julian) 如果拿到的資料是空的，就顯示 Data not found
-  // if (!addressData.address) {
-  //   return <h1>Data not found</h1>;
-  // }
 
   const backClickHandler = () => router.back();
 
@@ -239,7 +195,10 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   );
 
   const displayedTransactionHistory = !isLoading ? (
-    <TransactionHistorySection transactions={transactionData} />
+    <TransactionHistorySection
+      transactions={transactionData}
+      loading={detailedAddressCtx.transactionsLoading}
+    />
   ) : (
     // ToDo: (20231213 - Julian) Add loading animation
     <h1>Loading..</h1>

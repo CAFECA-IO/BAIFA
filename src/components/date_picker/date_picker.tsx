@@ -280,11 +280,11 @@ const DatePicker = ({
   // Info: (20230830 - Julian) 顯示月份和年份
   const displayMonthAndYear = `${t(MONTH_LIST[selectedMonth - 1])} ${selectedYear}`;
 
-  useEffect(() => {
-    if (!datePickerHandler) return;
-    datePickerHandler && datePickerHandler(dateOne?.getTime() ?? 0, dateTwo?.getTime() ?? 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [componentVisible]);
+  // useEffect(() => {
+  //   if (!datePickerHandler) return;
+  //   datePickerHandler && datePickerHandler(dateOne?.getTime() ?? 0, dateTwo?.getTime() ?? 0);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [componentVisible]);
 
   return (
     <div className="relative flex w-full flex-col items-center lg:w-auto">
