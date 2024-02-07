@@ -80,40 +80,7 @@ export interface IMarketContext {
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
 }
-/*
-  transactions: [],
-  producedBlocks: {
-    blockData: [],
-    blockCount: 0,
-  },
-  clickBlockPagination: async (
-    options: IPaginationOptions,
-    chainId?: string,
-    addressId?: string
-  ) => {},
-  init: async () => {},
-  blocksLoading: false,
-  clickBlockSortingMenu: async (order: SortingType) => {},
-  blocksOrder: SortingType.DESC,
-  blocksPage: DEFAULT_PAGE,
-  blocksOffset: ITEM_PER_PAGE,
-  blocksStart: 0,
-  blocksEnd: Date.now(),
-  clickBlockDatePicker: async (start: number, end: number) => {},
-  transactionsLoading: false,
-  transactionsOrder: SortingType.DESC,
-  transactionsPage: DEFAULT_PAGE,
-  transactionsOffset: ITEM_PER_PAGE,
-  transactionsStart: 0,
-  transactionsEnd: Date.now(),
-  clickTransactionPagination: async (
-    options: IPaginationOptions,
-    chainId?: string,
-    addressId?: string
-  ) => {},
-  clickTransactionSortingMenu: async (order: SortingType) => {},
-  clickTransactionDatePicker: async (start: number, end: number) => {},
-*/
+
 export const MarketContext = createContext<IMarketContext>({
   init: () => Promise.resolve(),
   promotionData: defaultPromotion,
@@ -399,7 +366,6 @@ export const MarketProvider = ({children}: IMarketProvider) => {
         });
         const result = (await response.json()) as IAddressRelatedTransaction;
         data = result.transactionHistoryData;
-
       } catch (error) {
         //console.log('getAddressRelatedTransactions error', error);
       }
