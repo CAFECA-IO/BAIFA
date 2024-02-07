@@ -128,9 +128,10 @@
     "CONTENT": "內容",
     "MINER_REWARD": "礦工 & 報酬",
     "SIZE": "區塊大小",
-    "STABILITY_TOOLTIP": "",
+    "STABILITY_TOOLTIP": "區塊資料的信賴等級",
+    "TIME_TOOLTIP": "區塊生成的日期與時間。",
     "CONTENT_TOOLTIP": "區塊上的交易記錄，包括交易的發送者、接收者、金額和時間。",
-    "MINER_REWARD_TOOLTIP": "",
+    "MINER_REWARD_TOOLTIP": "挖掘此區塊的礦工地址，以及他們獲得的區塊獎勵",
     "EXTRA_DATA_TOOLTIP": "由區塊生產者儲存在區塊中的任意內容。",
     "SIZE_TOOLTIP": "區塊的實際大小是由區塊的燃料限制所決定。"
   },
@@ -145,7 +146,17 @@
     "CONTENT": "內容",
     "VALUE": "金額",
     "FEE": "手續費",
-    "FLAGGING": "警示記錄"
+    "FLAGGING": "警示記錄",
+    "HASH_TOOLTIP": "交易的唯一識別碼。",
+    "STATUS_TOOLTIP": "交易的狀態，包括成功、失敗、處理中。",
+    "BLOCK_TOOLTIP": "交易所屬的區塊。",
+    "TIME_TOOLTIP": "交易完成的日期與時間。",
+    "FROM_TOOLTIP": "交易的發送者。",
+    "TO_TOOLTIP": "交易的接收者，有可能是合約地址。",
+    "CONTENT_TOOLTIP": "交易的詳細內容，包括證據等相關資訊。",
+    "VALUE_TOOLTIP": "表示交易中涉及的價值量，通常用來表示加密貨幣或其他資產的數量或價值。",
+    "FEE_TOOLTIP": "支付給處理交易的礦工之費用。",
+    "FLAGGING_TOOLTIP": "標記可疑或有警示記錄的交易。"
   },
   "TRANSACTION_LIST_PAGE": {
     "HEAD_TITLE_BLOCK": "交易列表之區塊",

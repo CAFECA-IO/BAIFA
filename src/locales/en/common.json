@@ -128,9 +128,10 @@
     "CONTENT": "Content",
     "MINER_REWARD": "Miner & Reward",
     "SIZE": "Size",
-    "STABILITY_TOOLTIP": "",
-    "CONTENT_TOOLTIP": "The transaction record on the block includes details such as the sender, recipient, amount, and timestamp of the transaction.",
-    "MINER_REWARD_TOOLTIP": "",
+    "STABILITY_TOOLTIP": "The trust level of the block data.",
+    "TIME_TOOLTIP": "The date and time the block was produced.",
+    "CONTENT_TOOLTIP": "The transaction records on the block, including the sender, receiver, amount, and time of the transaction.",
+    "MINER_REWARD_TOOLTIP": "The miner address who mined this block and the reward they received.",
     "EXTRA_DATA_TOOLTIP": "The arbitrary content stored in the block by the block producer.",
     "SIZE_TOOLTIP": "The actual size of a block is determined by the block's gas limit."
   },
@@ -145,7 +146,17 @@
     "CONTENT": "Content",
     "VALUE": "Value",
     "FEE": "Transaction Fee",
-    "FLAGGING": "Flagging"
+    "FLAGGING": "Flagging",
+    "HASH_TOOLTIP": "The unique identifier of the transaction.",
+    "STATUS_TOOLTIP": "The status of the transaction, including whether it is successful, pending, or failed.",
+    "BLOCK_TOOLTIP": "The block in which the transaction is included.",
+    "TIME_TOOLTIP": "The date and time the transaction was completed.",
+    "FROM_TOOLTIP": "The sender of the transaction.",
+    "TO_TOOLTIP": "The receiver of the transaction, which may be a contract address.",
+    "CONTENT_TOOLTIP": "The detailed content of the transaction, including evidence and other relevant information.",
+    "VALUE_TOOLTIP": "The amount of value involved in the transaction, usually representing the quantity or value of a cryptocurrency or other asset.",
+    "FEE_TOOLTIP": "The fee paid to the miner for processing the transaction.",
+    "FLAGGING_TOOLTIP": "Mark transactions with suspicious or flagging records."
   },
   "TRANSACTION_LIST_PAGE": {
     "HEAD_TITLE_BLOCK": "Transaction List of Block",

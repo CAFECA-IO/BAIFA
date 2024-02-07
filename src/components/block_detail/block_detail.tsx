@@ -188,9 +188,10 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       </div>
       {/* Info: (20230912 - Julian) Created Time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          {t('BLOCK_DETAIL_PAGE.TIME')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('BLOCK_DETAIL_PAGE.TIME')}</p>
+          <Tooltip>{t('BLOCK_DETAIL_PAGE.TIME_TOOLTIP')}</Tooltip>
+        </div>
         {displayTime}
       </div>
       {/* Info: (20230912 - Julian) Content */}
