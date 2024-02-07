@@ -1,6 +1,6 @@
 import {IRiskLevel} from '../constants/risk_level';
 import {IRedFlag} from './red_flag';
-import {ITransaction} from './transaction';
+import {IDisplayTransaction} from './transaction';
 
 export interface IHolder {
   addressId: string;
@@ -26,5 +26,5 @@ export interface ICurrencyDetail extends ICurrency {
   totalTransfers: number;
   flagging: IRedFlag[];
   flaggingCount: number;
-  transactionHistoryData: ITransaction[];
+  transactionHistoryData: IDisplayTransaction[];
 }

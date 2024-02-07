@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, useEffect, useContext, useRef} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {useRouter} from 'next/router';
@@ -52,22 +52,13 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blockId, chainId]);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
     if (blockData) {
-      setBlockData(blockData);
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
     }
-    timerRef.current = setTimeout(() => setIsLoading(false), 500);
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
   }, [blockData]);
-
-  // Info: (20240130 - Julian) 如果回傳資料為空，顯示 Data not found
-  if (!blockData.id) return <h1>Data not found</h1>;
 
   const {previousBlockId, nextBlockId} = blockData;
 
@@ -87,11 +78,19 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
 
   const chainIcon = getChainIcon(chainId);
 
-  const displayBlockDetail = !isLoading ? (
-    <BlockDetail blockData={blockData} />
+  const displayTitle = isLoading ? (
+    <div className="flex flex-1 items-center justify-center space-x-2">
+      <div className="h-40px w-40px animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
+      <div className="h-40px w-240px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    </div>
   ) : (
-    // ToDo: (20231213 - Julian) Add loading animation
-    <h1>Loading...</h1>
+    <div className="flex flex-1 items-center justify-center space-x-2">
+      <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+      <h1 className="text-2xl font-bold lg:text-32px">
+        {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')}
+        <span className="ml-2 text-primaryBlue"> {blockId}</span>
+      </h1>
+    </div>
   );
 
   return (
@@ -112,13 +111,7 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
                 <BsArrowLeftShort className="text-48px" />
               </button>
               {/* Info: (20230912 -Julian) Block Title */}
-              <div className="flex flex-1 items-center justify-center space-x-2">
-                <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
-                <h1 className="text-2xl font-bold lg:text-32px">
-                  {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')}
-                  <span className="ml-2 text-primaryBlue"> {blockId}</span>
-                </h1>
-              </div>
+              {displayTitle}
             </div>
 
             {/* Info: (20231017 - Julian) Next & Previous Button */}
@@ -134,7 +127,9 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
             </div>
 
             {/* Info: (20230912 - Julian) Block Detail */}
-            <div className="my-10 w-full">{displayBlockDetail}</div>
+            <div className="my-10 w-full">
+              <BlockDetail blockData={blockData} />
+            </div>
 
             {/* Info: (20231017 - Julian) Back Button */}
             <div className="mt-10">

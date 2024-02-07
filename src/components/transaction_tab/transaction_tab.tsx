@@ -25,6 +25,7 @@ const TransactionTab = () => {
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
   const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Info: (20240119 - Julian) 設定 API 查詢參數
   const dateQuery =
@@ -40,6 +41,18 @@ const TransactionTab = () => {
     const data = await getTransactions(chainId, apiQueryStr);
     setTransactionData(data);
   };
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    // Info: (20240206 - Julian) 如果拿到資料，就將 isLoading 設為 false
+    if (transactionData.length > 0) {
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId, transactionData]);
 
   useEffect(() => {
     setActivePage(1);
@@ -78,6 +91,26 @@ const TransactionTab = () => {
     setFilteredTransactions(searchResult);
   }, [transactionData, search, sorting]);
 
+  const displayTransactionList = isLoading ? (
+    // Info: (20240206 - Julian) Loading animation
+    <div className="flex w-full flex-col gap-2 py-10">
+      {Array.from({length: 3}).map((_, index) => (
+        <div key={index} className="flex w-full items-center gap-5">
+          <div className="h-60px w-60px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div className="flex-1">
+            <div className="h-40px w-300px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          </div>
+          <div className="h-30px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div className="flex w-full flex-col items-center">
+      <TransactionList transactions={filteredTransactions} />
+      <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
+    </div>
+  );
+
   return (
     <div className="flex w-full flex-col items-center font-inter">
       {/* Info: (20231101 - Julian) Search Filter */}
@@ -109,10 +142,7 @@ const TransactionTab = () => {
         </div>
       </div>
       {/* Info: (20230907 - Julian) Transaction List */}
-      <div className="flex w-full flex-col items-center">
-        <TransactionList transactions={filteredTransactions} />
-        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
-      </div>
+      {displayTransactionList}
     </div>
   );
 };

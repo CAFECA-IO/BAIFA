@@ -56,6 +56,8 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
     .map((holder, index) => {
       const holdingPercentage = roundToDecimal(holder.holdingPercentage, 2);
       const addressLink = getDynamicUrl(currencyId, holder.addressId).ADDRESS;
+      // Info: (20240206 - Julian) 最多顯示 100% 的持有比例
+      const holdingBarWidth = holder.holdingBarWidth > 100 ? 100 : holder.holdingBarWidth;
 
       const displayedPublicTag = holder.publicTag ? (
         <BoltButton className="px-3 py-2 text-sm" style="solid" color="purple">
@@ -110,7 +112,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
               {/* Info: (20231102 - Julian) Holding Amount Bar */}
               <span
                 className="absolute right-0 top-0 h-20px bg-lightBlue opacity-50"
-                style={{width: `${holder.holdingBarWidth}%`}}
+                style={{width: `${holdingBarWidth}%`}}
               ></span>
             </div>
           </div>

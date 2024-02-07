@@ -41,15 +41,15 @@ const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps
           : true;
       })
       // Info: (20231103 - Julian) filter by date range
-      // .filter((block: IBlock) => {
-      //   const createdTimestamp = block.createdTimestamp;
-      //   const start = period.startTimeStamp;
-      //   const end = period.endTimeStamp;
-      //   // Info: (20231103 - Julian) if start and end are 0, it means that there is no period filter
-      //   const isCreatedTimestampInRange =
-      //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-      //   return isCreatedTimestampInRange;
-      // })
+      .filter((block: IProductionBlock) => {
+        const createdTimestamp = block.createdTimestamp;
+        const start = period.startTimeStamp;
+        const end = period.endTimeStamp;
+        // Info: (20231103 - Julian) if start and end are 0, it means that there is no period filter
+        const isCreatedTimestampInRange =
+          start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+        return isCreatedTimestampInRange;
+      })
       .sort((a: IProductionBlock, b: IProductionBlock) => {
         return sorting === sortOldAndNewOptions[0]
           ? // Info: (20231101 - Julian) Newest

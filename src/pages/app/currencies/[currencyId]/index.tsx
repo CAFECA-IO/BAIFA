@@ -17,6 +17,7 @@ import {useTranslation} from 'next-i18next';
 import {AppContext} from '../../../../contexts/app_context';
 import {MarketContext} from '../../../../contexts/market_context';
 import {getCurrencyIcon} from '../../../../lib/common';
+import {DEFAULT_CURRENCY_ICON} from '../../../../constants/config';
 
 interface ICurrencyDetailPageProps {
   currencyId: string;
@@ -73,7 +74,13 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
       </button>
       {/* Info: (20231018 -Julian) Block Title */}
       <div className="flex flex-1 items-center justify-center space-x-2">
-        <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+        <Image
+          src={chainIcon.src}
+          alt={chainIcon.alt}
+          width={40}
+          height={40} // Info: (20240206 - Julian) If the image fails to load, use the default currency icon
+          onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
+        />
         <h1 className="text-2xl font-bold lg:text-32px">
           <span className="ml-2"> {currencyName}</span>
         </h1>

@@ -14,11 +14,16 @@ import {IChainDetail} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
-import {chainList} from '../../../../constants/config';
+import {DEFAULT_CHAIN_ICON, chainList} from '../../../../constants/config';
 import {getChainIcon} from '../../../../lib/common';
 
 export interface IChainDetailPageProps {
   chainId: string;
+}
+
+enum ChainDetailTab {
+  BLOCKS = 'blocks',
+  TRANSACTIONS = 'transactions',
 }
 
 const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
@@ -26,8 +31,9 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const appCtx = useContext(AppContext);
   const {getChainDetail} = useContext(MarketContext);
 
-  const [activeTab, setActiveTab] = useState<'blocks' | 'transactions'>('blocks');
+  const [activeTab, setActiveTab] = useState<ChainDetailTab>(ChainDetailTab.BLOCKS);
   const [chainData, setChainData] = useState<IChainDetail>({} as IChainDetail);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -47,11 +53,16 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!chainData.chainId) return <h1>Data not found</h1>;
+  useEffect(() => {
+    if (chainData.chainId) {
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+    }
+  }, [chainData]);
 
   const {chainId: chainIdFromData, chainName} = chainData;
-  const headTitle = `${chainName} - BAIFA`;
-
+  const headTitle = isLoading ? 'Loading...' : `${chainName} - BAIFA`;
   const chainIcon = getChainIcon(chainIdFromData);
 
   const crumbs = [
@@ -69,7 +80,13 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     },
   ];
 
-  const displayedTitle = (
+  const displayedTitle = isLoading ? (
+    // Info: (20240206 - Julian) Loading animation
+    <div className="flex items-center justify-center space-x-4 p-5">
+      <div className="h-30px w-30px animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 lg:h-60px lg:w-60px"></div>
+      <div className="h-30px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700 lg:h-60px lg:w-250px"></div>
+    </div>
+  ) : (
     <div className="flex items-center justify-center space-x-4 py-5 text-2xl font-bold lg:text-48px">
       <Image
         className="block lg:hidden"
@@ -77,6 +94,8 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
         alt={chainIcon.alt}
         width={30}
         height={30}
+        // Info: (20230206 - Julian) If the image fails to load, it will display the default icon.
+        onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
       />
       <Image
         className="hidden lg:block"
@@ -84,6 +103,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
         alt={chainIcon.alt}
         width={60}
         height={60}
+        onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
       />
       <h1>{chainName}</h1>
     </div>
@@ -92,30 +112,32 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const blocksButton = (
     <div
       className={`flex items-center border-b-2 px-3 py-2 text-base ${
-        activeTab === 'blocks'
+        activeTab === ChainDetailTab.BLOCKS
           ? 'border-lightBlue text-primaryBlue'
           : 'border-darkPurple4 text-hoverWhite'
       } transition-all duration-300 ease-in-out`}
     >
-      <button onClick={() => setActiveTab('blocks')}>{t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')}</button>
+      <button onClick={() => setActiveTab(ChainDetailTab.BLOCKS)}>
+        {t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')}
+      </button>
     </div>
   );
 
   const transactionsButton = (
     <div
       className={`flex items-center border-b-2 px-3 py-2 text-base ${
-        activeTab === 'transactions'
+        activeTab === ChainDetailTab.TRANSACTIONS
           ? 'border-lightBlue text-primaryBlue'
           : 'border-darkPurple4 text-hoverWhite'
       } transition-all duration-300 ease-in-out`}
     >
-      <button onClick={() => setActiveTab('transactions')}>
+      <button onClick={() => setActiveTab(ChainDetailTab.TRANSACTIONS)}>
         {t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')}
       </button>
     </div>
   );
 
-  const tabContent = activeTab === 'blocks' ? <BlockTab /> : <TransactionTab />;
+  const tabContent = activeTab === ChainDetailTab.BLOCKS ? <BlockTab /> : <TransactionTab />;
 
   return (
     <>
