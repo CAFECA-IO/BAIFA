@@ -23,7 +23,10 @@ const SortingMenu = ({sortingOptions, sorting, setSorting, bgColor}: ISearchFilt
     setComponentVisible: setSortingVisible,
   } = useOuterClick<HTMLDivElement>(false);
 
-  const displayedOptions = sortingOptions.map((option, index) => {
+  // Info: (20240207 - Liz) Remove duplicate options
+  const uniqueOptions = Array.from(new Set(sortingOptions));
+
+  const displayedOptions = uniqueOptions.map((option, index) => {
     const clickHandler = () => {
       setSorting(option);
       setSortingVisible(false);
@@ -68,7 +71,7 @@ const SortingMenu = ({sortingOptions, sorting, setSorting, bgColor}: ISearchFilt
         } rounded bg-darkPurple2 text-left text-hoverWhite shadow-xl transition-all duration-300 ease-in-out`}
       >
         {/* Info: (20231101 - Julian) Sorting Options */}
-        <ul className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden">
+        <ul className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden whitespace-nowrap">
           {displayedOptions}
         </ul>
       </div>

@@ -172,6 +172,11 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
         startTimeStamp: dateOneStamp,
         endTimeStamp: isSameDate ? dateTwoStamp + SECONDS_IN_A_DAY : dateTwoStamp,
       });
+    } else {
+      setFilteredPeriod({
+        startTimeStamp: 0,
+        endTimeStamp: 0,
+      });
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
