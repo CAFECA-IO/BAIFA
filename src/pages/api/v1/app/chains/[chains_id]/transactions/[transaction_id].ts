@@ -3,7 +3,7 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
 import {ITransactionDetail} from '../../../../../../../interfaces/transaction';
-import {IAddressInfo} from '../../../../../../../interfaces/address_info';
+import {AddressType, IAddressInfo} from '../../../../../../../interfaces/address_info';
 
 type ResponseData = ITransactionDetail | undefined;
 
@@ -109,7 +109,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const fromAddresses = fromAddressesRaw.filter(address => address !== 'null');
   // Info: (20240206 - Julian) 掃描 fromAddresses，如果 `addresses` table 有對應的 address 資料，就輸出 'address'，否則輸出 'contract'
   const fromType = fromAddresses.map(address => {
-    return allAddressArray.includes(address) ? 'address' : 'contract';
+    return allAddressArray.includes(address) ? AddressType.ADDRESS : AddressType.CONTRACT;
   });
   const from: IAddressInfo[] = fromAddresses.map((address, index) => {
     return {
@@ -124,7 +124,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const toAddresses = toAddressesRaw.filter(address => address !== 'null');
   // Info: (20240206 - Julian) 掃描 toAddresses，如果 `addresses` table 有對應的 address 資料，就輸出 'address'，否則輸出 'contract'
   const toType = toAddresses.map(address => {
-    return allAddressArray.includes(address) ? 'address' : 'contract';
+    return allAddressArray.includes(address) ? AddressType.ADDRESS : AddressType.CONTRACT;
   });
   const to: IAddressInfo[] = toAddresses.map((address, index) => {
     return {

@@ -15,6 +15,11 @@ export interface ITransaction extends IDisplayTransaction {
   to: IAddressInfo[];
 }
 
+export interface ITransactionData {
+  transactions: ITransaction[];
+  transactionCount: number;
+}
+
 export interface ITransactionDetail extends ITransaction {
   hash: string;
   blockId: string;

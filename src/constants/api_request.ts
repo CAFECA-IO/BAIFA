@@ -11,6 +11,24 @@ export type IAPIName =
   | 'SEARCH_RESULT'
   | 'CHAINS';
 
+export enum SortingType {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+export interface IPaginationOptions {
+  order: SortingType.ASC | SortingType.DESC;
+  page: number;
+  offset: number;
+}
+
+export interface IAddressHistoryQuery extends IPaginationOptions {
+  query?: {
+    block_id: number;
+  };
+  start_date?: number;
+  end_date?: number;
+}
+
 export interface IAPINameConstant {
   BALANCE_SHEET: IAPIName;
   COMPREHENSIVE_INCOME_STATEMENTS: IAPIName;

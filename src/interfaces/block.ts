@@ -10,6 +10,11 @@ export interface IProductionBlock extends IBlock {
   unit: string;
 }
 
+export interface IProducedBlock {
+  blockData: IProductionBlock[];
+  blockCount: number;
+}
+
 export interface IBlockDetail extends IBlock {
   extraData: string; // ToDo: (20240205 - Julian) 可能為 Hexs
   transactionCount: number;

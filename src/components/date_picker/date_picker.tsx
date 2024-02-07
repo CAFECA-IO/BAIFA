@@ -28,6 +28,8 @@ interface IDatePickerProps {
   period: IDatePeriod;
   setFilteredPeriod: Dispatch<SetStateAction<IDatePeriod>>;
   isLinearBg?: boolean;
+  loading?: boolean;
+  datePickerHandler?: (start: number, end: number) => Promise<void>;
 }
 
 // Info:(20230530 - Julian) Safari 只接受 YYYY/MM/DD 格式的日期
@@ -142,7 +144,13 @@ const PopulateDates = ({
 const SECONDS_IN_A_DAY = 86400 - 1;
 const MILLISECONDS_IN_A_SECOND = 1000;
 
-const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) => {
+const DatePicker = ({
+  period,
+  setFilteredPeriod,
+  isLinearBg,
+  loading,
+  datePickerHandler,
+}: IDatePickerProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const {targetRef, componentVisible, setComponentVisible} = useOuterClick<HTMLDivElement>(false);
@@ -277,6 +285,12 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
   // Info: (20230830 - Julian) 顯示月份和年份
   const displayMonthAndYear = `${t(MONTH_LIST[selectedMonth - 1])} ${selectedYear}`;
 
+  // useEffect(() => {
+  //   if (!datePickerHandler) return;
+  //   datePickerHandler && datePickerHandler(dateOne?.getTime() ?? 0, dateTwo?.getTime() ?? 0);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [componentVisible]);
+
   return (
     <div className="relative flex w-full flex-col items-center lg:w-auto">
       {/* Info: (20230830 - Julian) Select Period button */}
@@ -295,7 +309,7 @@ const DatePicker = ({period, setFilteredPeriod, isLinearBg}: IDatePickerProps) =
       <div
         ref={targetRef}
         className={`absolute top-16 z-20 grid w-250px items-center space-y-4 rounded ${
-          componentVisible
+          componentVisible && !loading
             ? 'visible translate-y-0 grid-rows-1 opacity-100'
             : 'invisible -translate-y-10 grid-rows-0 opacity-0'
         } bg-purpleLinear p-5 shadow-xl transition-all duration-500 ease-in-out`}

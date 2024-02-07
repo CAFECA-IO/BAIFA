@@ -4,7 +4,7 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
 import {ICurrencyDetail, IHolder} from '../../../../../../interfaces/currency';
 import {IRedFlag} from '../../../../../../interfaces/red_flag';
-import {IAddressInfo} from '../../../../../../interfaces/address_info';
+import {AddressType, IAddressInfo} from '../../../../../../interfaces/address_info';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 
 type ResponseData = ICurrencyDetail | undefined;
@@ -133,7 +133,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       .filter(address => address !== 'null')
       .map(address => {
         return {
-          type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+          type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
           address: address,
         };
       });
@@ -145,7 +145,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       .filter(address => address !== 'null')
       .map(address => {
         return {
-          type: 'address', // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+          type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
           address: address,
         };
       });

@@ -2,7 +2,10 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
-import {ITEM_PER_PAGE} from '../../../../../../../../constants/config';
+import {
+  ITEM_PER_PAGE,
+  FAILED_TRANSACTION_STATUS_CODE,
+} from '../../../../../../../../constants/config';
 import {IDisplayTransaction} from '../../../../../../../../interfaces/transaction';
 
 type ResponseData = IDisplayTransaction[];
