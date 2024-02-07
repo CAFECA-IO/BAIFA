@@ -37,6 +37,7 @@ const SortingMenu = ({
     setComponentVisible: setSortingVisible,
   } = useOuterClick<HTMLDivElement>(false);
 
+  /* Deprecated: (20240220 - Shirley) to fix the issue of disabling sorting options and `Warning: Each child in a list should have a unique "key" prop.` React error
   const optionsUI = sortingOptions.map((option, index) => {
     const clickHandler = async () => {
       console.log('option in displayedOptions', option);
@@ -54,13 +55,39 @@ const SortingMenu = ({
             onClick={clickHandler}
             className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
           >
-            {/* Info: (20240124 - Julian) 將選項字數限制在 10 個字 */}
             {truncateText(t(option), DEFAULT_TRUNCATE_LENGTH)}
           </li>{' '}
         </ul>
       </>
     );
   });
+  */
+
+  const optionsUI = (
+    <ul className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden">
+      {sortingOptions.map(option => {
+        const clickHandler = async () => {
+          setSorting(option);
+          setSortingVisible(false);
+
+          if (sortingHandler) {
+            await sortingHandler({order: convertStringToSortingType(option)});
+          }
+        };
+        return (
+          <li
+            key={option} // This ensures each child in the list has a unique "key" prop.
+            onClick={clickHandler}
+            className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
+          >
+            {/* Info: (20240124 - Julian) 將選項字數限制在 10 個字 */}
+
+            {truncateText(t(option), DEFAULT_TRUNCATE_LENGTH)}
+          </li>
+        );
+      })}
+    </ul>
+  );
 
   const displayedOptions = <> {!loading ? optionsUI : null}</>;
 
