@@ -74,7 +74,6 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Question: (20240202 - Liz) Why do we need to set redFlagData again?
   useEffect(() => {
     if (redFlagData) {
       setRedFlagData(redFlagData);
