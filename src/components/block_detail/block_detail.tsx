@@ -9,7 +9,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {IBlockDetail} from '../../interfaces/block';
 import {getDynamicUrl} from '../../constants/url';
 import {StabilityLevel} from '../../constants/stability_level';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IBlockDetailProps {
   blockData: IBlockDetail;
@@ -139,7 +139,13 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
         <p>+</p>
         {/* Info: (20230912 - Julian) Reward */}
         <div className="flex items-center space-x-2">
-          <Image src={chainIcon.src} alt={chainIcon.alt} width={24} height={24} />
+          <Image
+            src={chainIcon.src}
+            alt={chainIcon.alt}
+            width={24}
+            height={24}
+            onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+          />
           <p>
             {reward}
             <span> {unit}</span>

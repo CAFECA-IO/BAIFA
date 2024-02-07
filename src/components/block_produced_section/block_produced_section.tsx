@@ -6,7 +6,12 @@ import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
+import {
+  DEFAULT_CHAIN_ICON,
+  ITEM_PER_PAGE,
+  default30DayPeriod,
+  sortOldAndNewOptions,
+} from '../../constants/config';
 import {getChainIcon, roundToDecimal, timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
@@ -98,7 +103,13 @@ const BlockProducedHistorySection = ({blocks}: IBlockProducedHistorySectionProps
               </Link>
               {/* Info: (20231103 - Julian) Mine */}
               <div className="flex items-center space-x-2">
-                <Image src={chainIcon.src} width={24} height={24} alt={chainIcon.alt} />
+                <Image
+                  src={chainIcon.src}
+                  width={24}
+                  height={24}
+                  alt={chainIcon.alt}
+                  onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+                />
                 <p className="text-sm">
                   +{roundToDecimal(reward, 2)}
                   {unit}

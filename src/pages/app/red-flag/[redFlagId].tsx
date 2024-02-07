@@ -19,6 +19,7 @@ import {getChainIcon} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
 import {ITransaction} from '../../../interfaces/transaction';
+import {DEFAULT_CHAIN_ICON} from '../../../constants/config';
 
 /* Info: (20240201 - Liz) Red Flag Detail Page workflow
 - step 1: Loading
@@ -118,7 +119,13 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
               </button>
               {/* Info: (20231110 -Julian) Red Flag Address Title */}
               <div className="flex flex-1 flex-col items-center justify-center gap-4 text-2xl font-bold lg:flex-row lg:text-32px">
-                <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+                <Image
+                  src={chainIcon.src}
+                  alt={chainIcon.alt}
+                  width={40}
+                  height={40}
+                  onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+                />
                 <h1>
                   {t('RED_FLAG_ADDRESS_PAGE.RED_FLAG')}
                   <span className="text-primaryBlue"> {id}</span>

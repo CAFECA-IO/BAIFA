@@ -5,6 +5,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
 import {getChainIcon, timestampToString} from '../../lib/common';
 import {IRedFlag} from '../../interfaces/red_flag';
+import {DEFAULT_CHAIN_ICON} from '../../constants/config';
 
 interface IRedFlagItemProps {
   redFlagData: IRedFlag;
@@ -36,7 +37,13 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
           href={`${BFAURL.RED_FLAG}/${id}`}
           className="flex flex-1 items-center space-x-2 text-sm font-bold lg:text-xl"
         >
-          <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
+          <Image
+            src={chainIcon.src}
+            alt={chainIcon.alt}
+            width={30}
+            height={30}
+            onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+          />
           <h2>
             {t('COMMON.RED_FLAG_ITEM_TITLE')}
             <span className="text-primaryBlue"> {id}</span>
