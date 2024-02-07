@@ -36,18 +36,10 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
       })
     : [];
 
-  // Deprecated: (今天 - Liz)
-  // eslint-disable-next-line no-console
-  console.log('createdTimestamp: ', createdTimestamp);
-
   const {date, time} = createdTimestamp
     ? timestampToString(createdTimestamp)
     : {date: null, time: null};
   const createdTime = createdTimestamp ? `${date} ${time}` : null;
-
-  // Deprecated: (今天 - Liz)
-  // eslint-disable-next-line no-console
-  console.log('createdTime: ', createdTime);
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
