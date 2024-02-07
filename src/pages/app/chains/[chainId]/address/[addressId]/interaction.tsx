@@ -18,6 +18,7 @@ import {getChainIcon, truncateText} from '../../../../../../lib/common';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {IInteractionItem} from '../../../../../../interfaces/interaction_item';
 import {
+  DEFAULT_CHAIN_ICON,
   DEFAULT_TRUNCATE_LENGTH,
   ITEM_PER_PAGE,
   default30DayPeriod,
@@ -186,7 +187,13 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
           {t('INTERACTION_LIST_PAGE.MAIN_TITLE')}
         </h1>
         <div className="flex items-center space-x-2">
-          <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
+          <Image
+            src={chainIcon.src}
+            alt={chainIcon.alt}
+            width={30}
+            height={30}
+            onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+          />
           <p className="text-xl" title={addressId}>
             {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
           </p>

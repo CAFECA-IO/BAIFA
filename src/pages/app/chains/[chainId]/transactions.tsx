@@ -19,7 +19,11 @@ import SearchBar from '../../../../components/search_bar/search_bar';
 import DatePicker from '../../../../components/date_picker/date_picker';
 import SortingMenu from '../../../../components/sorting_menu/sorting_menu';
 import Pagination from '../../../../components/pagination/pagination';
-import {default30DayPeriod, sortOldAndNewOptions} from '../../../../constants/config';
+import {
+  DEFAULT_CHAIN_ICON,
+  default30DayPeriod,
+  sortOldAndNewOptions,
+} from '../../../../constants/config';
 
 interface ITransactionsPageProps {
   chainId: string;
@@ -129,14 +133,26 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   const subTitle = isAddressIds ? (
     <div className="flex items-center space-x-4">
       <div className="flex items-center space-x-2">
-        <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
+        <Image
+          src={chainIcon.src}
+          alt={chainIcon.alt}
+          width={30}
+          height={30}
+          onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+        />
         <h2 className="text-xl">
           {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {addressId[0]}
         </h2>
       </div>
       <Image src="/icons/switch.svg" alt="" width={24} height={24} />
       <div className="flex items-center space-x-2">
-        <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
+        <Image
+          src={chainIcon.src}
+          alt={chainIcon.alt}
+          width={30}
+          height={30}
+          onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+        />
         <h2 className="text-xl">
           {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {addressId[1]}
         </h2>

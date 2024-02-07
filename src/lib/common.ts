@@ -1,11 +1,15 @@
 import {IPaginationOptions, SortingType} from '../constants/api_request';
 import {
+  DEFAULT_CHAIN_ICON,
+  DEFAULT_CURRENCY_ICON,
   MAX_64_BIT_INTEGER_PARAMETER,
   MILLISECONDS_IN_A_SECOND,
   MIN_64_BIT_INTEGER_PARAMETER,
   MONTH_LIST,
   sortOldAndNewOptions,
+  THRESHOLD_FOR_BLOCK_STABILITY,
 } from '../constants/config';
+import {StabilityLevel} from '../constants/stability_level';
 
 export const timestampToString = (timestamp: number) => {
   if (timestamp === 0)
@@ -150,7 +154,9 @@ export const roundToDecimal = (x: number, decimal: number) => {
 };
 
 export const getChainIcon = (chainId: string) => {
-  if (!chainId) return {src: '/chains/default_chain.svg', alt: 'chain_icon'};
+  // Info: (20240206 - Julian) 如果沒有 chainId，就顯示 default_chain.svg
+  if (!chainId) return {src: DEFAULT_CHAIN_ICON, alt: 'chain_icon'};
+
   return {
     src: `/chains/${chainId}.svg`,
     alt: `chain_icon`,
@@ -158,7 +164,8 @@ export const getChainIcon = (chainId: string) => {
 };
 
 export const getCurrencyIcon = (currencyId: string) => {
-  if (!currencyId) return {src: '/currencies/default_currency.svg', alt: 'currency_icon'};
+  // Info: (20240206 - Julian) 如果沒有 currencyId，就顯示 default_currency.svg
+  if (!currencyId) return {src: DEFAULT_CURRENCY_ICON, alt: 'currency_icon'};
   return {
     src: `/currencies/${currencyId}.svg`,
     alt: `currency_icon`,
@@ -209,6 +216,22 @@ export function isValid64BitInteger(input: string | number | bigint) {
 
   return num >= MIN_64BIT_INT && num <= MAX_64BIT_INT;
 }
+
+// Info: 藉由 targetBlockId 跟 latestBlockId 計算區塊的穩定度，越新的 block ，穩定性越低 (20240201 - Shirley)
+export const calculateBlockStability = (targetBlockId: number, latestBlockId: number) => {
+  let stability = StabilityLevel.LOW;
+  if (isNaN(+targetBlockId) || isNaN(+latestBlockId)) return stability;
+
+  if (THRESHOLD_FOR_BLOCK_STABILITY.HIGH < Math.abs(latestBlockId - targetBlockId)) {
+    stability = StabilityLevel.HIGH;
+  } else if (THRESHOLD_FOR_BLOCK_STABILITY.MEDIUM < Math.abs(latestBlockId - targetBlockId)) {
+    stability = StabilityLevel.MEDIUM;
+  } else if (Math.abs(latestBlockId - latestBlockId) < THRESHOLD_FOR_BLOCK_STABILITY.MEDIUM) {
+    stability = StabilityLevel.LOW;
+  }
+
+  return stability;
+};
 
 export function convertStringToSortingType(sorting: string): IPaginationOptions['order'] {
   let order: IPaginationOptions['order'] = SortingType.DESC;

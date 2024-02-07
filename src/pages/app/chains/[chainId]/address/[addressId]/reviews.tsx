@@ -15,7 +15,7 @@ import {TranslateFunction} from '../../../../../../interfaces/locale';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../../../../../constants/config';
+import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../../../../../constants/config';
 
 interface IReviewDetailsPageProps {
   addressId: string;
@@ -93,7 +93,13 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
               <div className="flex flex-1 flex-col items-center justify-center space-y-6">
                 <h1 className="text-2xl font-bold lg:text-48px">{t('REVIEWS_PAGE.TITLE')}</h1>
                 <div className="flex items-center space-x-2">
-                  <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
+                  <Image
+                    src={chainIcon.src}
+                    alt={chainIcon.alt}
+                    width={30}
+                    height={30}
+                    onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+                  />
                   <p className="text-xl" title={addressId}>
                     {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}{' '}
                     {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}

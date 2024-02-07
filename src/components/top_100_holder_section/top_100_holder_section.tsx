@@ -6,7 +6,11 @@ import SearchBar from '../search_bar/search_bar';
 import BoltButton from '../bolt_button/bolt_button';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {DEFAULT_TRUNCATE_LENGTH, ITEM_PER_PAGE} from '../../constants/config';
+import {
+  DEFAULT_CURRENCY_ICON,
+  DEFAULT_TRUNCATE_LENGTH,
+  ITEM_PER_PAGE,
+} from '../../constants/config';
 import {getCurrencyIcon, roundToDecimal, truncateText, withCommas} from '../../lib/common';
 import {ICurrencyDetail, IHolder} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
@@ -56,6 +60,8 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
     .map((holder, index) => {
       const holdingPercentage = roundToDecimal(holder.holdingPercentage, 2);
       const addressLink = getDynamicUrl(currencyId, holder.addressId).ADDRESS;
+      // Info: (20240206 - Julian) 最多顯示 100% 的持有比例
+      const holdingBarWidth = holder.holdingBarWidth > 100 ? 100 : holder.holdingBarWidth;
 
       const displayedPublicTag = holder.publicTag ? (
         <BoltButton className="px-3 py-2 text-sm" style="solid" color="purple">
@@ -75,7 +81,13 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
           <Link href={addressLink} className="hidden flex-1 items-center space-x-4 lg:flex">
             {displayedPublicTag}
             <div className="flex items-center space-x-2 text-xl">
-              <Image src={chainIcon.src} alt={chainIcon.alt} width={30} height={30} />
+              <Image
+                src={chainIcon.src}
+                alt={chainIcon.alt}
+                width={30}
+                height={30}
+                onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
+              />
               <p title={holder.addressId}>
                 {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
                 <span className="ml-2 font-semibold text-primaryBlue">
@@ -90,7 +102,13 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
               {/* Info: (20231102 - Julian) Address ID (Mobile) */}
               <Link href={addressLink} className="flex space-x-4 lg:hidden">
                 <div className="flex items-center space-x-2 text-sm">
-                  <Image src={chainIcon.src} alt={chainIcon.alt} width={20} height={20} />
+                  <Image
+                    src={chainIcon.src}
+                    alt={chainIcon.alt}
+                    width={20}
+                    height={20}
+                    onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
+                  />
                   <p>
                     {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
                     <span className="ml-2 font-semibold text-primaryBlue">
@@ -110,7 +128,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
               {/* Info: (20231102 - Julian) Holding Amount Bar */}
               <span
                 className="absolute right-0 top-0 h-20px bg-lightBlue opacity-50"
-                style={{width: `${holder.holdingBarWidth}%`}}
+                style={{width: `${holdingBarWidth}%`}}
               ></span>
             </div>
           </div>

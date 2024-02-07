@@ -6,7 +6,12 @@ import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
+import {
+  DEFAULT_CHAIN_ICON,
+  ITEM_PER_PAGE,
+  default30DayPeriod,
+  sortOldAndNewOptions,
+} from '../../constants/config';
 import {
   convertSortingTypeToString,
   getChainIcon,
@@ -87,15 +92,15 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
     //     : true;
     // })
     // // Info: (20231103 - Julian) filter by date range
-    // // .filter((block: IBlock) => {
-    // //   const createdTimestamp = block.createdTimestamp;
-    // //   const start = period.startTimeStamp;
-    // //   const end = period.endTimeStamp;
-    // //   // Info: (20231103 - Julian) if start and end are 0, it means that there is no period filter
-    // //   const isCreatedTimestampInRange =
-    // //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-    // //   return isCreatedTimestampInRange;
-    // // })
+    // .filter((block: IProductionBlock) => {
+    //   const createdTimestamp = block.createdTimestamp;
+    //   const start = period.startTimeStamp;
+    //   const end = period.endTimeStamp;
+    //   // Info: (20231103 - Julian) if start and end are 0, it means that there is no period filter
+    //   const isCreatedTimestampInRange =
+    //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
+    //   return isCreatedTimestampInRange;
+    // })
     // .sort((a: IProductionBlock, b: IProductionBlock) => {
     //   return sorting === sortOldAndNewOptions[0]
     //     ? // Info: (20231101 - Julian) Newest
@@ -150,7 +155,13 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
                 </Link>
                 {/* Info: (20231103 - Julian) Mine */}
                 <div className="flex items-center space-x-2">
-                  <Image src={chainIcon.src} width={24} height={24} alt={chainIcon.alt} />
+                  <Image
+                    src={chainIcon.src}
+                    width={24}
+                    height={24}
+                    alt={chainIcon.alt}
+                    onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+                  />
                   <p className="text-sm">
                     +{roundToDecimal(reward, 2)}
                     {unit}

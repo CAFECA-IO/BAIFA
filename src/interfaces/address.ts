@@ -3,7 +3,7 @@ import {IProducedBlock, IProductionBlock} from './block';
 import {ICommonData} from './common_data';
 import {IInteractionItem} from './interaction_item';
 import {IReviewDetail} from './review';
-import {ITransaction} from './transaction';
+import {IDisplayTransaction, ITransaction} from './transaction';
 
 export interface IAddress extends ICommonData {
   address: string;

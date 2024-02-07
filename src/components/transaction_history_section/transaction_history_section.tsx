@@ -186,8 +186,8 @@ const TransactionHistorySection = ({transactions, loading}: ITransactionHistoryS
       </h2>
       <div className="flex w-full flex-col rounded-lg bg-darkPurple px-6 py-4 drop-shadow-xl lg:h-1050px">
         {/* Info: (20231113 - Julian) Search Filter */}
-        <div className="flex w-full flex-col items-end space-y-4">
-          <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+        <div className="flex w-full flex-col items-end gap-4">
+          <div className="flex w-full flex-col items-start justify-between xl:flex-row">
             {/* Info: (20231101 - Julian) Address Menu */}
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} :</p>

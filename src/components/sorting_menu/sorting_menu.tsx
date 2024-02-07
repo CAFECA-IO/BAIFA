@@ -37,8 +37,12 @@ const SortingMenu = ({
     setComponentVisible: setSortingVisible,
   } = useOuterClick<HTMLDivElement>(false);
 
+  const uniqueOptions = Array.from(new Set(sortingOptions));
+
   /* Deprecated: (20240220 - Shirley) to fix the issue of disabling sorting options and `Warning: Each child in a list should have a unique "key" prop.` React error
-  const optionsUI = sortingOptions.map((option, index) => {
+  // Info: (20240207 - Liz) Remove duplicate options
+
+  const optionsUI = uniqueOptions.map((option, index) => {
     const clickHandler = async () => {
       console.log('option in displayedOptions', option);
       setSorting(option);
@@ -65,7 +69,7 @@ const SortingMenu = ({
 
   const optionsUI = (
     <ul className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden">
-      {sortingOptions.map(option => {
+      {uniqueOptions.map(option => {
         const clickHandler = async () => {
           setSorting(option);
           setSortingVisible(false);

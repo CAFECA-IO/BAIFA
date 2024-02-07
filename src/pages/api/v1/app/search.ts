@@ -3,7 +3,8 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
 import {THRESHOLD_FOR_BLOCK_STABILITY} from '../../../../constants/config';
-import {isValid64BitInteger} from '../../../../lib/common';
+import {calculateBlockStability, isValid64BitInteger} from '../../../../lib/common';
+import {IStabilityLevel, StabilityLevel} from '../../../../constants/stability_level';
 
 // Info: Base type for common fields (20240131 - Shirley)
 interface BaseResponseData {
@@ -36,7 +37,7 @@ enum RISK_LEVEL {
 
 // Info: Extending BaseResponseData for specific types (20240131 - Shirley)
 interface ResponseDataBlock extends BaseResponseData {
-  stability: STABILITY;
+  stability: IStabilityLevel;
 }
 
 interface ResponseDataAddress extends BaseResponseData {
@@ -114,7 +115,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   const result: ResponseDataItem[] = [];
-  let stability = STABILITY.LOW;
+  let stability = StabilityLevel.LOW;
 
   try {
     // Info: calculate the stability for the targeted block (20240201 - Shirley)
@@ -161,13 +162,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     blocks.forEach(item => {
       if (latestBlock && latestBlock.number && item.number) {
-        if (THRESHOLD_FOR_BLOCK_STABILITY.HIGH < latestBlock.number - item.number) {
-          stability = STABILITY.HIGH;
-        } else if (THRESHOLD_FOR_BLOCK_STABILITY.MEDIUM < latestBlock.number - item.number) {
-          stability = STABILITY.MEDIUM;
-        } else if (latestBlock.number - item.number < THRESHOLD_FOR_BLOCK_STABILITY.MEDIUM) {
-          stability = STABILITY.LOW;
-        }
+        stability = calculateBlockStability(item.number, latestBlock.number);
       }
 
       result.push({

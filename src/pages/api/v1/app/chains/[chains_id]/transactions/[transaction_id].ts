@@ -93,30 +93,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const value = parseInt(`${transactionData?.value ?? 0}`);
 
-  // Info: (20240130 - Julian) from / to address 轉換
-  const fromAddresses = transactionData?.from_address
+  // Info: (20240130 - Julian) 撈出所有 address
+  const allAddress = await prisma.addresses.findMany({
+    select: {
+      address: true,
+    },
+  });
+  const allAddressArray = allAddress.map(address => address.address);
+
+  // Info: (20240130 - Julian) from address 轉換
+  const fromAddressesRaw = transactionData?.from_address
     ? transactionData?.from_address.split(',')
     : [];
-  const from: IAddressInfo[] = fromAddresses
-    // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
-    .filter(address => address !== 'null')
-    .map(address => {
-      return {
-        type: AddressType.CONTRACT, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
-        address: address,
-      };
-    });
+  // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+  const fromAddresses = fromAddressesRaw.filter(address => address !== 'null');
+  // Info: (20240206 - Julian) 掃描 fromAddresses，如果 `addresses` table 有對應的 address 資料，就輸出 'address'，否則輸出 'contract'
+  const fromType = fromAddresses.map(address => {
+    return allAddressArray.includes(address) ? AddressType.ADDRESS : AddressType.CONTRACT;
+  });
+  const from: IAddressInfo[] = fromAddresses.map((address, index) => {
+    return {
+      type: fromType[index], // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+      address: address,
+    };
+  });
 
-  const toAddresses = transactionData?.to_address ? transactionData?.to_address.split(',') : [];
-  const to: IAddressInfo[] = toAddresses
-    // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
-    .filter(address => address !== 'null')
-    .map(address => {
-      return {
-        type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
-        address: address,
-      };
-    });
+  // Info: (20240130 - Julian) to address 轉換
+  const toAddressesRaw = transactionData?.to_address ? transactionData?.to_address.split(',') : [];
+  // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+  const toAddresses = toAddressesRaw.filter(address => address !== 'null');
+  // Info: (20240206 - Julian) 掃描 toAddresses，如果 `addresses` table 有對應的 address 資料，就輸出 'address'，否則輸出 'contract'
+  const toType = toAddresses.map(address => {
+    return allAddressArray.includes(address) ? AddressType.ADDRESS : AddressType.CONTRACT;
+  });
+  const to: IAddressInfo[] = toAddresses.map((address, index) => {
+    return {
+      type: toType[index], // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+      address: address,
+    };
+  });
 
   // Info: (20240130 - Julian) 警示紀錄
   const flaggings = await prisma.red_flags.findMany({

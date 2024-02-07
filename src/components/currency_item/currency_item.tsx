@@ -5,6 +5,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {RiskLevel} from '../../constants/risk_level';
 import {BFAURL} from '../../constants/url';
+import {DEFAULT_CURRENCY_ICON} from '../../constants/config';
 
 interface ICurrencyItemProps {
   currencyId: string;
@@ -39,7 +40,14 @@ const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItem
         href={`${BFAURL.CURRENCIES}/${currencyId}`}
         className="flex flex-1 items-center space-x-2"
       >
-        <Image src={chainIcon.src} width={30} height={30} alt={chainIcon.alt} />
+        <Image
+          src={chainIcon.src}
+          width={30}
+          height={30}
+          alt={chainIcon.alt}
+          // Info: (20240206 - Julian) If the image fails to load, use the default currency icon
+          onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
+        />
         <p className="text-sm font-semibold lg:text-xl">{currencyName}</p>
       </Link>
       {/* Info: (20230907 - Julian) Risk */}

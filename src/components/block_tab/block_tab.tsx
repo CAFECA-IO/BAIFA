@@ -26,6 +26,7 @@ const BlockTab = () => {
   const [search, setSearch, searchRef] = useStateRef('');
   const [period, setPeriod] = useState(default30DayPeriod);
   const [blockData, setBlockData] = useState<IBlock[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Info: (20240119 - Julian) 設定 API 查詢參數
   const dateQuery =
@@ -43,9 +44,16 @@ const BlockTab = () => {
   };
 
   useEffect(() => {
-    if (blockData.length === 0) getBlockData();
+    setIsLoading(true);
+
+    // Info: (20240206 - Julian) 如果拿到資料，就將 isLoading 設為 false
+    if (blockData.length > 0) {
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [chainId, blockData]);
 
   useEffect(() => {
     setActivePage(1);
@@ -84,6 +92,26 @@ const BlockTab = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blockData, search, sorting]);
 
+  const displayBlockList = isLoading ? (
+    // Info: (20240206 - Julian) Loading animation
+    <div className="flex w-full flex-col gap-2 py-10">
+      {Array.from({length: 3}).map((_, index) => (
+        <div key={index} className="flex w-full items-center gap-5">
+          <div className="h-60px w-60px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div className="flex-1">
+            <div className="h-40px w-300px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          </div>
+          <div className="h-30px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div className="flex w-full flex-col items-center">
+      <BlockList blockData={filteredBlockData} />
+      <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
+    </div>
+  );
+
   return (
     <div className="flex w-full flex-col items-center font-inter">
       {/* Info: (20231101 - Julian) Search Filter */}
@@ -114,10 +142,7 @@ const BlockTab = () => {
         </div>
       </div>
       {/* Info: (20230904 - Julian) Block List */}
-      <div className="flex w-full flex-col items-center">
-        <BlockList blockData={filteredBlockData} />
-        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
-      </div>
+      {displayBlockList}
     </div>
   );
 };

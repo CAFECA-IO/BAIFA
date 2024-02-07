@@ -32,6 +32,47 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
 
   const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
 
+  const displayHash = hash ? <p className="break-all">{hash}</p> : <p>{t('COMMON.NONE')}</p>;
+
+  // Info: (20240205 - Julian) 根據 status 取得對應的圖示、文字內容和顏色；沒有 status 對應的內容時就使用預設值
+  const statusContent = TransactionStatus[status] ?? DefaultTransactionStatus;
+  const displayStatus = status ? (
+    <div className="flex items-center">
+      <Image src={statusContent.icon} alt={`${statusContent.text}_icon`} width={20} height={20} />
+      <p className={`ml-2 text-sm lg:text-base ${statusContent.color}`}>{t(statusContent.text)}</p>
+    </div>
+  ) : (
+    // Info: (20240206 - Julian) Loading Animation
+    <div className="flex items-center space-x-1">
+      <div className="h-20px w-20px animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
+      <div className="h-20px w-70px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    </div>
+  );
+
+  const displayBlock = blockId ? (
+    <Link href={blockLink}>
+      <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
+        {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} {blockId}
+      </BoltButton>
+    </Link>
+  ) : (
+    // Info: (20240206 - Julian) Loading Animation
+    <div className="h-20px w-130px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+  );
+
+  const displayTime = createdTimestamp ? (
+    <div className="flex flex-wrap items-center space-x-2">
+      <p>{timestampToString(createdTimestamp).date}</p>
+      <p>{timestampToString(createdTimestamp).time}</p>
+    </div>
+  ) : (
+    // Info: (20240206 - Julian) Loading Animation
+    <div className="flex items-center space-x-3">
+      <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+      <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    </div>
+  );
+
   // Info: (20231215 - Julian) Print all from/to address
   const fromList = from
     ? from.map((data, index) => {
@@ -79,13 +120,23 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
       <p>{t('COMMON.NONE')}</p>
     );
 
-  // Info: (20240205 - Julian) 根據 status 取得對應的圖示、文字內容和顏色；沒有 status 對應的內容時就使用預設值
-  const statusContent = TransactionStatus[status] ?? DefaultTransactionStatus;
-  const displayStatus = (
-    <div className="flex items-center">
-      <Image src={statusContent.icon} alt={`${statusContent.text}_icon`} width={20} height={20} />
-      <p className={`ml-2 text-sm lg:text-base ${statusContent.color}`}>{t(statusContent.text)}</p>
-    </div>
+  const displayEvidence = evidenceId ? (
+    <Link title={evidenceId} href={getDynamicUrl(`${chainId}`, `${evidenceId}`).EVIDENCE}>
+      <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
+        {t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} {truncateText(evidenceId, 10)}
+      </BoltButton>
+    </Link>
+  ) : (
+    <p>{t('COMMON.NONE')}</p>
+  );
+
+  const displayFee = fee ? (
+    <p>
+      {fee} {unit}
+    </p>
+  ) : (
+    // Info: (20240206 - Julian) Loading Animation
+    <div className="h-20px w-130px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
   );
 
   const displayFlagging =
@@ -105,79 +156,61 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
       <p>{t('COMMON.NONE')}</p>
     );
 
-  const displayTime = (
-    <div className="flex flex-wrap items-center space-x-2">
-      <p>{timestampToString(createdTimestamp).date}</p>
-      <p>{timestampToString(createdTimestamp).time}</p>
-    </div>
-  );
-
-  const displayEvidence = evidenceId ? (
-    <Link title={evidenceId} href={getDynamicUrl(`${chainId}`, `${evidenceId}`).EVIDENCE}>
-      <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-        {t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} {truncateText(evidenceId, 10)}
-      </BoltButton>
-    </Link>
-  ) : (
-    <p>{t('COMMON.NONE')}</p>
-  );
-
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
       {/* Info: (20230911 - Julian) Hash */}
       <div className="flex flex-col space-y-2 px-3 py-4 text-sm lg:flex-row lg:items-center lg:space-y-0 lg:text-base">
-        <p className="font-bold text-lilac lg:w-200px">{t('TRANSACTION_DETAIL_PAGE.HASH')}</p>
-        <p className="break-all">{hash}</p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('TRANSACTION_DETAIL_PAGE.HASH')}</p>
+          <Tooltip>{t('TRANSACTION_DETAIL_PAGE.HASH_TOOLTIP')}</Tooltip>
+        </div>
+        {displayHash}
       </div>
       {/* Info: (20230911 - Julian) Status */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('TRANSACTION_DETAIL_PAGE.STATUS')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('TRANSACTION_DETAIL_PAGE.STATUS_TOOLTIP')}</Tooltip>
         </div>
         {displayStatus}
       </div>
       {/* Info: (20230911 - Julian) Block */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          {t('TRANSACTION_DETAIL_PAGE.BLOCK')}
-        </p>
-        <Link href={blockLink}>
-          <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
-            {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} {blockId}
-          </BoltButton>
-        </Link>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('TRANSACTION_DETAIL_PAGE.BLOCK')}</p>
+          <Tooltip>{t('TRANSACTION_DETAIL_PAGE.BLOCK_TOOLTIP')}</Tooltip>
+        </div>
+        {displayBlock}
       </div>
       {/* Info: (20230911 - Julian) Time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          {t('TRANSACTION_DETAIL_PAGE.TIME')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('TRANSACTION_DETAIL_PAGE.TIME')}</p>
+          <Tooltip>{t('TRANSACTION_DETAIL_PAGE.TIME_TOOLTIP')}</Tooltip>
+        </div>
         {displayTime}
       </div>
       {/* Info: (20230911 - Julian) From */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          {t('TRANSACTION_DETAIL_PAGE.FROM')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('TRANSACTION_DETAIL_PAGE.FROM')}</p>
+          <Tooltip>{t('TRANSACTION_DETAIL_PAGE.FROM_TOOLTIP')}</Tooltip>
+        </div>
         <div className="flex flex-wrap items-center space-x-2">{fromList}</div>
       </div>
       {/* Info: (20230911 - Julian) To */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          {t('TRANSACTION_DETAIL_PAGE.TO')}
-        </p>
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('TRANSACTION_DETAIL_PAGE.TO')}</p>
+          <Tooltip>{t('TRANSACTION_DETAIL_PAGE.TO_TOOLTIP')}</Tooltip>
+        </div>
         <div className="flex flex-wrap items-center space-x-2">{toList}</div>
       </div>
       {/* Info: (20230911 - Julian) Content */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('TRANSACTION_DETAIL_PAGE.CONTENT')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('TRANSACTION_DETAIL_PAGE.CONTENT_TOOLTIP')}</Tooltip>
         </div>
         {displayEvidence}
       </div>
@@ -185,9 +218,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('TRANSACTION_DETAIL_PAGE.VALUE')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('TRANSACTION_DETAIL_PAGE.VALUE_TOOLTIP')}</Tooltip>
         </div>
         {/* ToDo: (20230911 - Julian) log in button */}
         <Link href={BFAURL.COMING_SOON}>
@@ -198,21 +229,15 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('TRANSACTION_DETAIL_PAGE.FEE')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('TRANSACTION_DETAIL_PAGE.FEE_TOOLTIP')}</Tooltip>
         </div>
-        <p>
-          {fee} {unit}
-        </p>
+        {displayFee}
       </div>
       {/* Info: (20230911 - Julian) Flagging */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('TRANSACTION_DETAIL_PAGE.FLAGGING')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('TRANSACTION_DETAIL_PAGE.FLAGGING_TOOLTIP')}</Tooltip>
         </div>
         {displayFlagging}
       </div>
