@@ -13,6 +13,7 @@ import {
 import {ITransaction} from '../../../../../../../../interfaces/transaction';
 import {isAddress} from 'web3-validator';
 import {IProductionBlock} from '../../../../../../../../interfaces/block';
+import {isValid64BitInteger} from '../../../../../../../../lib/common';
 
 type ResponseData = IAddressProducedBlock | undefined;
 
@@ -24,14 +25,52 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const order = (req.query.order as string)?.toLowerCase() === 'desc' ? 'desc' : 'asc';
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
   const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
+  const begin = typeof req.query.begin === 'string' ? parseInt(req.query.begin, 10) : undefined;
+  const end = typeof req.query.end === 'string' ? parseInt(req.query.end, 10) : undefined;
+  // const block_id = typeof req.query.query === 'string' ? parseInt(req.query.block_id, 10) : 0;
 
-  console.log('all query in produced_block:', order, page, offset, chain_id, address_id);
+  console.log('all query in produced_block:', req.query);
 
   if (!address_id || !chain_id) {
     return res.status(400).json(undefined);
   }
 
+  let queryObject;
   try {
+    queryObject = req.query.query ? JSON.parse(req.query.query as string) : undefined;
+    console.log('queryObject in produced_block:', queryObject);
+  } catch (error) {
+    console.error('Parsing query parameter failed:', error);
+    return res.status(400).json(undefined);
+  }
+
+  try {
+    // const latestBlock = await prisma.blocks.findFirst({
+    //   orderBy: {
+    //     created_timestamp: 'desc',
+    //   },
+    //   select: {
+    //     id: true,
+    //     chain_id: true,
+    //     created_timestamp: true,
+    //     hash: true,
+    //     number: true,
+    //   },
+    // });
+
+    // const prefix =
+    //   queryObject?.block_id && isValid64BitInteger(queryObject.block_id)
+    //     ? queryObject.block_id
+    //     : undefined;
+
+    // console.log('block_id in produced_block:', prefix);
+
+    // 根據前綴計算可能的 id 範圍
+    // const minPrefixLength = prefix.length + 1; // 最小長度，加一是因為至少還有一位數
+    // const maxPrefixLength = latestBlock ? latestBlock.id.toString().length : 4; // 假設 id 最大為四位數
+    // const startId = parseInt(prefix + '0'.repeat(minPrefixLength - prefix.length), 10); // 計算起始 id
+    // const endId = parseInt(prefix + '9'.repeat(maxPrefixLength - prefix.length), 10); // 計算結束 id
+
     const chainData = await prisma.chains.findUnique({
       where: {
         id: chain_id,
@@ -43,18 +82,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const skip = page * offset;
+
     const totalCount = await prisma.blocks.count({
       where: {
         miner: address_id,
-        chain_id: chain_id, // Ensure blocks are filtered by the provided chain ID as well
+        chain_id: chain_id,
       },
     });
 
     const blockData = await prisma.blocks.findMany({
       where: {
         miner: address_id,
-        chain_id: chain_id, // Ensure blocks are filtered by the provided chain ID as well
+        chain_id: chain_id,
+        // created_timestamp: {
+        //   gte: begin,
+        //   lte: end,
+        // },
+        // id:
+        //   queryObject?.block_id && isValid64BitInteger(queryObject.block_id)
+        //     ? +queryObject.block_id
+        //     : undefined,
       },
+      // where: {
+      //   AND: [
+      //     {miner: address_id},
+      //     {chain_id: chain_id},
+      //     // {
+      //       // id:
+      //       //   queryObject?.block_id && isValid64BitInteger(queryObject.block_id)
+      //       //     ? +queryObject.block_id
+      //       //     : undefined,
+      //     // },
+      //   ],
+      // },
       orderBy: {
         created_timestamp: order,
       },
@@ -92,7 +152,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       type: AddressType.ADDRESS,
       address: address_id,
       chainId: `${chain_id}`,
-      blockProducedData: blockProducedData,
+      blockData: blockProducedData,
       blockCount: totalCount,
     };
 

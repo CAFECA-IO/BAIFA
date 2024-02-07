@@ -21,6 +21,14 @@ export interface IPaginationOptions {
   offset: number;
 }
 
+export interface IAddressProducedBlocksQuery extends IPaginationOptions {
+  query?: {
+    block_id: number;
+  };
+  begin?: number;
+  end?: number;
+}
+
 export interface IAPINameConstant {
   BALANCE_SHEET: IAPIName;
   COMPREHENSIVE_INCOME_STATEMENTS: IAPIName;

@@ -1,11 +1,16 @@
 /*eslint-disable no-console */
 import React, {createContext, useCallback, useState} from 'react';
-import {APIURL, IPaginationOptions, SortingType} from '../constants/api_request';
+import {
+  APIURL,
+  IAddressProducedBlocksQuery,
+  IPaginationOptions,
+  SortingType,
+} from '../constants/api_request';
 import {IDisplayChain, IChainDetail} from '../interfaces/chain';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
-import {IBlock, IBlockDetail, IProductionBlock} from '../interfaces/block';
+import {IBlock, IBlockDetail, IProducedBlock, IProductionBlock} from '../interfaces/block';
 import {ITransaction, ITransactionDetail} from '../interfaces/transaction';
 import {
   IAddressBrief,
@@ -58,8 +63,8 @@ export interface IMarketContext {
   getAddressProducedBlocks: (
     chainId: string,
     addressId: string,
-    options?: IPaginationOptions
-  ) => Promise<{blocks: IProductionBlock[]; blockCount: number}>;
+    options?: IAddressProducedBlocksQuery
+  ) => Promise<IProducedBlock>;
   getReviews: (chainId: string, addressId: string) => Promise<IReviews>;
   getRedFlagsFromAddress: (chainId: string, addressId: string) => Promise<IRedFlag[]>;
   getInteractions: (
@@ -94,7 +99,7 @@ export const MarketContext = createContext<IMarketContext>({
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressBrief: () => Promise.resolve({} as IAddressBrief),
   getAddressRelatedTransactions: () => Promise.resolve([] as ITransaction[]),
-  getAddressProducedBlocks: () => Promise.resolve({blocks: [], blockCount: 0}),
+  getAddressProducedBlocks: () => Promise.resolve({} as IProducedBlock),
   getReviews: () => Promise.resolve({} as IReviews),
   getRedFlagsFromAddress: () => Promise.resolve([] as IRedFlag[]),
   getInteractions: () => Promise.resolve([] as IInteractionItem[]),
@@ -367,36 +372,39 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     []
   );
 
-  const getAddressProducedBlocks = useCallback(
-    async (chainId: string, addressId: string, options?: IPaginationOptions) => {
-      let data: {blocks: IProductionBlock[]; blockCount: number} = {blocks: [], blockCount: 0};
-      console.log('getAddressProducedBlocks in context', chainId, addressId, options);
-      try {
-        // Build the query string from the options object
-        const queryParams = new URLSearchParams();
-        if (options?.order) {
-          queryParams.set('order', options.order);
-        } else {
-          queryParams.set('order', SortingType.DESC);
-        }
-        if (options?.page !== undefined) queryParams.set('page', options.page.toString());
-        if (options?.offset !== undefined) queryParams.set('offset', options.offset.toString());
-        const apiUrl = `${
-          APIURL.CHAINS
-        }/${chainId}/addresses/${addressId}/produced_blocks?${queryParams.toString()}`;
-
-        const response = await fetch(apiUrl, {
-          method: 'GET',
-        });
-        const result = (await response.json()) as IAddressProducedBlock;
-        data = {blocks: result.blockProducedData, blockCount: result.blockCount};
-      } catch (error) {
-        //console.log('getAddressProducedBlocks error', error);
+  const getAddressProducedBlocks = async (
+    chainId: string,
+    addressId: string,
+    options?: IAddressProducedBlocksQuery
+  ) => {
+    let data: IProducedBlock = {blockData: [], blockCount: 0};
+    try {
+      // Build the query string from the options object
+      const queryParams = new URLSearchParams();
+      if (options?.order) {
+        queryParams.set('order', options.order);
+      } else {
+        queryParams.set('order', SortingType.DESC);
       }
-      return data;
-    },
-    []
-  );
+      if (options?.page !== undefined) queryParams.set('page', options.page.toString());
+      if (options?.offset !== undefined) queryParams.set('offset', options.offset.toString());
+      if (options?.begin !== undefined) queryParams.set('start', options.begin.toString());
+      if (options?.end !== undefined) queryParams.set('end', options.end.toString());
+      if (options?.query) queryParams.set('query', JSON.stringify(options.query));
+      const apiUrl = `${
+        APIURL.CHAINS
+      }/${chainId}/addresses/${addressId}/produced_blocks?${queryParams.toString()}`;
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+      });
+      const result = (await response.json()) as IAddressProducedBlock;
+      data = {blockData: result.blockData, blockCount: result.blockCount};
+    } catch (error) {
+      //console.log('getAddressProducedBlocks error', error);
+    }
+    return data;
+  };
 
   const getReviews = useCallback(async (chainId: string, addressId: string) => {
     let data: IReviews = {} as IReviews;

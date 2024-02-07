@@ -37,6 +37,10 @@ import {APIURL, SortingType} from '../../../../../../constants/api_request';
 import {isAddress} from 'web3-validator';
 import {IReviewDetail, IReviews} from '../../../../../../interfaces/review';
 import useStateRef from 'react-usestateref';
+import {
+  AddressDetailsContext,
+  AddressDetailsProvider,
+} from '../../../../../../contexts/address_details_context';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;
@@ -44,12 +48,12 @@ interface IAddressDetailDetailPageProps {
 }
 
 const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) => {
-  console.log('addressId, chainId in addressDetailPage', addressId, chainId);
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
   const {getAddressBrief, getAddressRelatedTransactions, getAddressProducedBlocks} =
     useContext(MarketContext);
+  const detailedAddressCtx = useContext(AddressDetailsContext);
 
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
 
@@ -82,6 +86,11 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       appCtx.init();
     }
 
+    const init = async (chainId: string, addressId: string) => {
+      console.log('page call ctx init');
+      await detailedAddressCtx.init(chainId, addressId);
+    };
+
     const getAddressBriefData = async (chainId: string, addressId: string) => {
       try {
         const data = await getAddressBrief(chainId, addressId);
@@ -100,47 +109,47 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       }
     };
 
-    const getBlockProducedData = async (chainId: string, addressId: string) => {
-      try {
-        console.log('getBlockProducedData in DetailedPage', chainId, addressId);
-        const data = await getAddressProducedBlocks(chainId, addressId, {
-          order: SortingType.DESC,
-          page: 1,
-          offset: ITEM_PER_PAGE,
-        });
-        setBlockData({blocks: data.blocks, blockCount: data.blockCount});
-      } catch (error) {
-        //console.log('getBlockProducedData error', error);
-      }
-    };
-
+    // const getBlockProducedData = async (chainId: string, addressId: string) => {
+    //   try {
+    //     console.log('getBlockProducedData in DetailedPage', chainId, addressId);
+    //     const data = await getAddressProducedBlocks(chainId, addressId, {
+    //       order: SortingType.DESC,
+    //       page: 1,
+    //       offset: ITEM_PER_PAGE,
+    //     });
+    //     setBlockData({blocks: data.blockData, blockCount: data.blockCount});
+    //   } catch (error) {
+    //     //console.log('getBlockProducedData error', error);
+    //   }
+    // };
+    init(chainId, addressId);
     getAddressBriefData(chainId, addressId);
     getTransactionHistoryData(chainId, addressId);
-    getBlockProducedData(chainId, addressId);
+    // getBlockProducedData(chainId, addressId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const clickBlockPrevious = async (
-    chainId: string,
-    addressId: string,
-    order: SortingType,
-    page: number,
-    offset: number
-  ) => {
-    try {
-      const data = await getAddressProducedBlocks(chainId, addressId, {
-        order,
-        page,
-        offset,
-      });
+  // const clickBlockPrevious = async (
+  //   chainId: string,
+  //   addressId: string,
+  //   order: SortingType,
+  //   page: number,
+  //   offset: number
+  // ) => {
+  //   try {
+  //     const data = await getAddressProducedBlocks(chainId, addressId, {
+  //       order,
+  //       page,
+  //       offset,
+  //     });
 
-      console.log('clickBlockPrevious data', data);
-      setBlockData(prevState => ({blocks: data.blocks, blockCount: data.blockCount}));
-      console.log('blockDataRef.current.blocks', blockDataRef.current.blocks);
-    } catch (error) {
-      //console.log('clickBlockPrevious error', error);
-    }
-  };
+  //     console.log('clickBlockPrevious data', data);
+  //     setBlockData(prevState => ({blocks: data.blockData, blockCount: data.blockCount}));
+  //     console.log('blockDataRef.current.blocks', blockDataRef.current.blocks);
+  //   } catch (error) {
+  //     //console.log('clickBlockPrevious error', error);
+  //   }
+  // };
 
   // const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -238,10 +247,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
   const displayedBlockProducedHistory = !isLoading ? (
     <BlockProducedHistorySection
-      previousFunction={clickBlockPrevious}
-      nextFunction={clickBlockPrevious}
-      blocks={blockDataRef.current.blocks}
-      totalBlocks={blockDataRef.current.blockCount}
+      blocks={detailedAddressCtx.producedBlocks.blockData}
+      totalBlocks={detailedAddressCtx.producedBlocks.blockCount}
     />
   ) : (
     // ToDo: (20231213 - Julian) Add loading animation
@@ -278,95 +285,97 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   );
 
   return (
-    <>
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-        <title>{headTitle}</title>
-      </Head>
+    <AddressDetailsProvider>
+      <>
+        <Head>
+          <link rel="icon" href="/favicon.ico" />
+          <title>{headTitle}</title>
+        </Head>
 
-      <NavBar />
-      <main>
-        <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
-          <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
-            {/* Info: (20231017 - Julian) Header */}
-            {displayedHeader}
-            <div className="my-4 flex w-full flex-col items-center space-y-10">
-              {/* Info: (20231018 - Julian) Public Tag */}
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center text-base font-bold text-lilac">
-                  {t('PUBLIC_TAG.TITLE')}&nbsp;
-                  <Tooltip>
-                    This is tooltip Sample Text. So if I type in more content, it would be like
-                    this.
-                  </Tooltip>
-                  &nbsp;:
+        <NavBar />
+        <main>
+          <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
+            <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
+              {/* Info: (20231017 - Julian) Header */}
+              {displayedHeader}
+              <div className="my-4 flex w-full flex-col items-center space-y-10">
+                {/* Info: (20231018 - Julian) Public Tag */}
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center text-base font-bold text-lilac">
+                    {t('PUBLIC_TAG.TITLE')}&nbsp;
+                    <Tooltip>
+                      This is tooltip Sample Text. So if I type in more content, it would be like
+                      this.
+                    </Tooltip>
+                    &nbsp;:
+                  </div>
+                  <div className="">{displayPublicTag}</div>
                 </div>
-                <div className="">{displayPublicTag}</div>
+                <div className="flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-6 lg:space-y-0">
+                  {/* Info: (20231018 - Julian) Tracing Tool Button */}
+                  <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
+                    <BoltButton
+                      className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+                      color="purple"
+                      style="solid"
+                    >
+                      <Image
+                        src="/icons/tracing.svg"
+                        alt=""
+                        width={24}
+                        height={24}
+                        className="invert group-hover:invert-0"
+                      />
+                      <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
+                    </BoltButton>
+                  </Link>
+                  {/* Info: (20231018 - Julian) Follow Button */}
+                  <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
+                    <BoltButton
+                      className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+                      color="purple"
+                      style="solid"
+                    >
+                      <AiOutlinePlus className="text-2xl" />
+                      <p>{t('COMMON.FOLLOW')}</p>
+                    </BoltButton>
+                  </Link>
+                </div>
               </div>
-              <div className="flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-6 lg:space-y-0">
-                {/* Info: (20231018 - Julian) Tracing Tool Button */}
-                <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
-                  <BoltButton
-                    className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
-                    color="purple"
-                    style="solid"
-                  >
-                    <Image
-                      src="/icons/tracing.svg"
-                      alt=""
-                      width={24}
-                      height={24}
-                      className="invert group-hover:invert-0"
-                    />
-                    <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
-                  </BoltButton>
-                </Link>
-                {/* Info: (20231018 - Julian) Follow Button */}
-                <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
-                  <BoltButton
-                    className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
-                    color="purple"
-                    style="solid"
-                  >
-                    <AiOutlinePlus className="text-2xl" />
-                    <p>{t('COMMON.FOLLOW')}</p>
-                  </BoltButton>
-                </Link>
+              {/* Info: (20231020 - Julian) Address Detail */}
+              <div className="my-10 w-full">{displayedAddressDetail}</div>
+              {/* Info: (20231020 - Julian) Private Note Section */}
+              <div className="w-full">
+                <PrivateNoteSection />
               </div>
-            </div>
-            {/* Info: (20231020 - Julian) Address Detail */}
-            <div className="my-10 w-full">{displayedAddressDetail}</div>
-            {/* Info: (20231020 - Julian) Private Note Section */}
-            <div className="w-full">
-              <PrivateNoteSection />
-            </div>
-            {/* Info: (20231020 - Julian) Review Section */}
-            <div className="mt-6 w-full">{displayedReviewSection}</div>
-            {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
-            <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
-              {displayedTransactionHistory}
-              {displayedBlockProducedHistory}
-            </div>
+              {/* Info: (20231020 - Julian) Review Section */}
+              <div className="mt-6 w-full">{displayedReviewSection}</div>
+              {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
+              <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
+                {displayedTransactionHistory}
+                {displayedBlockProducedHistory}
+              </div>
 
-            {/* Info: (20231006 - Julian) Back button */}
-            <div className="mt-10">
-              <BoltButton
-                onClick={backClickHandler}
-                className="px-12 py-4 font-bold"
-                color="blue"
-                style="hollow"
-              >
-                {t('COMMON.BACK')}
-              </BoltButton>
+              {/* Info: (20231006 - Julian) Back button */}
+              <div className="mt-10">
+                <BoltButton
+                  onClick={backClickHandler}
+                  className="px-12 py-4 font-bold"
+                  color="blue"
+                  style="hollow"
+                >
+                  {t('COMMON.BACK')}
+                </BoltButton>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
 
-      <div className="mt-12">
-        <Footer />
-      </div>
-    </>
+        <div className="mt-12">
+          <Footer />
+        </div>
+      </>
+    </AddressDetailsProvider>
   );
 };
 

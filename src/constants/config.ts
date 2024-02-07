@@ -43,6 +43,7 @@ export const default30DayPeriod = {
 };
 
 export const ITEM_PER_PAGE = 10;
+export const DEFAULT_PAGE = 1;
 
 export const copyright = 'BAIFA @ 2023. All rights reserved.';
 
@@ -210,3 +211,5 @@ export const THRESHOLD_FOR_BLOCK_STABILITY = {
 
 export const MAX_64_BIT_INTEGER_PARAMETER = '9223372036854775807';
 export const MIN_64_BIT_INTEGER_PARAMETER = '-9223372036854775808';
+
+export const MILLISECONDS_IN_A_SECOND = 1000;

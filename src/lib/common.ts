@@ -1,7 +1,10 @@
+import {IPaginationOptions, SortingType} from '../constants/api_request';
 import {
   MAX_64_BIT_INTEGER_PARAMETER,
+  MILLISECONDS_IN_A_SECOND,
   MIN_64_BIT_INTEGER_PARAMETER,
   MONTH_LIST,
+  sortOldAndNewOptions,
 } from '../constants/config';
 
 export const timestampToString = (timestamp: number) => {
@@ -205,4 +208,41 @@ export function isValid64BitInteger(input: string | number | bigint) {
   }
 
   return num >= MIN_64BIT_INT && num <= MAX_64BIT_INT;
+}
+
+export function convertStringToSortingType(sorting: string): IPaginationOptions['order'] {
+  let order: IPaginationOptions['order'] = SortingType.DESC;
+  switch (sorting) {
+    case sortOldAndNewOptions[0]:
+      order = SortingType.DESC;
+      break;
+    case sortOldAndNewOptions[1]:
+      order = SortingType.ASC;
+      break;
+    default:
+      order = SortingType.ASC;
+      break;
+  }
+
+  return order;
+}
+
+export function convertSortingTypeToString(sorting: IPaginationOptions['order']): string {
+  let order = sortOldAndNewOptions[0];
+  switch (sorting) {
+    case SortingType.DESC:
+      order = sortOldAndNewOptions[0];
+      break;
+    case SortingType.ASC:
+      order = sortOldAndNewOptions[1];
+    default:
+      order = sortOldAndNewOptions[0];
+      break;
+  }
+
+  return order;
+}
+
+export function convertMillisecondsToSeconds(milliseconds: number) {
+  return Math.floor(milliseconds / MILLISECONDS_IN_A_SECOND);
 }

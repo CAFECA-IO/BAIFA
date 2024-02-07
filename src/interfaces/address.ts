@@ -1,7 +1,7 @@
 /*eslint-disable no-console */
 
 import {AddressType} from './address_info';
-import {IProductionBlock} from './block';
+import {IProducedBlock, IProductionBlock} from './block';
 import {ICommonData} from './common_data';
 import {IInteractionItem} from './interaction_item';
 import {IReviewDetail} from './review';
@@ -35,13 +35,13 @@ export interface IAddressRelatedTransaction {
   transactionHistoryData: ITransaction[];
 }
 
-export interface IAddressProducedBlock {
+export interface IAddressProducedBlock extends IProducedBlock {
   id: string;
   type: AddressType.ADDRESS | AddressType.CONTRACT;
   address: string;
   chainId: string;
-  blockProducedData: IProductionBlock[];
-  blockCount: number;
+  //   blockProducedData: IProductionBlock[];
+  //   blockCount: number;
 }
 
 // export interface IAddressDetail extends IInteractionItem, IAddress {
@@ -99,7 +99,7 @@ export const dummyAddress: IAddressDetail = {
   reviewData: [],
   transactionHistoryData: [],
   transactionCount: 0,
-  blockProducedData: [],
+  blockData: [],
   flaggingCount: 0,
   riskLevel: 'LOW_RISK',
   publicTag: [],
@@ -121,6 +121,6 @@ export const dummyAddressProducedBlock: IAddressProducedBlock = {
   type: AddressType.ADDRESS,
   address: '0x',
   chainId: '1',
-  blockProducedData: [],
+  blockData: [],
   blockCount: 0,
 };

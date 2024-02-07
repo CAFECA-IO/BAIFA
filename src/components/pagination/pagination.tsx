@@ -1,27 +1,21 @@
 import {Dispatch, SetStateAction, useState, useEffect} from 'react';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
-import {SortingType} from '../../constants/api_request';
+import {
+  IAddressProducedBlocksQuery,
+  IPaginationOptions,
+  SortingType,
+} from '../../constants/api_request';
 import {ITEM_PER_PAGE} from '../../constants/config';
+import useStateRef from 'react-usestateref';
 
 interface IPagination {
   activePage: number;
   setActivePage: Dispatch<SetStateAction<number>>;
   totalPages: number;
   getActivePage?: (page: number) => void;
-  previousFunction?: (
-    chainId: string,
-    addressId: string,
-    order: SortingType,
-    page: number,
-    offset: number
-  ) => Promise<void>;
-  nextFunction?: (
-    chainId: string,
-    addressId: string,
-    order: SortingType,
-    page: number,
-    offset: number
-  ) => Promise<void>;
+  paginationClickHandler?: ({page, offset}: {page: number; offset: number}) => Promise<void>;
+  loading?: boolean;
+  pagePrefix?: string;
 }
 
 const Pagination = ({
@@ -29,11 +23,12 @@ const Pagination = ({
   setActivePage,
   getActivePage,
   totalPages,
-  previousFunction,
-  nextFunction,
+  paginationClickHandler,
+  loading,
+  pagePrefix,
 }: IPagination) => {
   const [url, setUrl] = useState<URL | null>(null);
-  const [targetPage, setTargetPage] = useState<number>(1);
+  const [targetPage, setTargetPage, targetPageRef] = useStateRef<number>(1);
 
   const buttonStyle =
     'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
@@ -46,35 +41,37 @@ const Pagination = ({
   }, []);
 
   const previousHandler = async () => {
-    setActivePage(activePage - 1);
+    const present = activePage - 1;
+    getActivePage && getActivePage(present);
+    setActivePage(present);
     // Info: (20240115 - Julian) change url query
     if (url) {
-      previousFunction &&
-        (await previousFunction(
-          '8017',
-          '0x048adee1b0e93b30f9f7b71f18b963ca9ba5de3b',
-          SortingType.DESC,
-          activePage - 1,
-          ITEM_PER_PAGE
-        ));
-      url.searchParams.set('page', `${activePage - 1}`);
+      paginationClickHandler &&
+        (await paginationClickHandler({
+          // order: SortingType.DESC,
+          page: present,
+          offset: ITEM_PER_PAGE,
+          // begin: url.searchParams.get('begin') || 0,
+          // end: url.searchParams.get('end') || 0,
+          // query: url.searchParams.get('query') || 0,
+        }));
+      url.searchParams.set(`${pagePrefix ? `${pagePrefix}_page` : `page`}`, `${present}`);
       window.history.replaceState({}, '', url.toString());
     }
   };
 
-  const nextHandler = () => {
-    setActivePage(activePage + 1);
+  const nextHandler = async () => {
+    const present = activePage + 1;
+    getActivePage && getActivePage(present);
+    setActivePage(present);
     // Info: (20240115 - Julian) change url query
     if (url) {
-      nextFunction &&
-        nextFunction(
-          '8017',
-          '0x048adee1b0e93b30f9f7b71f18b963ca9ba5de3b',
-          SortingType.DESC,
-          activePage + 1,
-          ITEM_PER_PAGE
-        );
-      url.searchParams.set('page', `${activePage + 1}`);
+      paginationClickHandler &&
+        (await paginationClickHandler({
+          page: present,
+          offset: ITEM_PER_PAGE,
+        }));
+      url.searchParams.set(`${pagePrefix ? `${pagePrefix}_page` : `page`}`, `${present}`);
       window.history.replaceState({}, '', url.toString());
     }
   };
@@ -95,10 +92,18 @@ const Pagination = ({
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      setActivePage(targetPage);
+      setActivePage(targetPageRef.current);
       // Info: (20240115 - Julian) change url query
       if (url) {
-        url.searchParams.set('page', `${targetPage}`);
+        paginationClickHandler &&
+          paginationClickHandler({
+            page: targetPageRef.current,
+            offset: ITEM_PER_PAGE,
+          });
+        url.searchParams.set(
+          `${pagePrefix ? `${pagePrefix}_page` : `page`}`,
+          `${targetPageRef.current}`
+        );
         window.history.replaceState({}, '', url.toString());
       }
     }
@@ -107,7 +112,7 @@ const Pagination = ({
   const previousBtn = (
     <button
       onClick={previousHandler}
-      disabled={activePage === 1 || totalPages === 0 ? true : false}
+      disabled={loading || activePage === 1 || totalPages === 0 ? true : false}
       className={buttonStyle}
     >
       <RiArrowLeftSLine className="text-2xl" />
@@ -117,7 +122,7 @@ const Pagination = ({
   const nextBtn = (
     <button
       onClick={nextHandler}
-      disabled={activePage === totalPages || totalPages === 0 ? true : false}
+      disabled={loading || activePage === totalPages || totalPages === 0 ? true : false}
       className={buttonStyle}
     >
       <RiArrowRightSLine className="text-2xl" />
@@ -126,10 +131,11 @@ const Pagination = ({
 
   const pageInput = (
     <input
+      disabled={loading}
       name="page"
       type="number"
       placeholder={`${activePage}`}
-      className="flex h-48px w-48px items-center justify-center rounded border border-hoverWhite bg-darkPurple p-3 text-center text-sm text-hoverWhite"
+      className="flex h-48px w-48px items-center justify-center rounded border border-hoverWhite bg-darkPurple p-3 text-center text-sm text-hoverWhite disabled:border-gray-500"
       onChange={pageChangeHandler}
       onKeyDown={handleKeyDown}
       min={1}
