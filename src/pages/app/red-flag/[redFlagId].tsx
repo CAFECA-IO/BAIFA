@@ -46,7 +46,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const [dataNotFound, setDataNotFound] = useState<boolean>(false);
 
   useEffect(() => {
-    // Info: (今天 - Liz) Initialize app context
+    // Info: (20240202 - Liz) Initialize app context
     if (!appCtx.isInit) {
       appCtx.init();
     }
