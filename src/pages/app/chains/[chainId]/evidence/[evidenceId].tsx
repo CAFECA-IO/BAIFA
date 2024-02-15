@@ -33,7 +33,6 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailDetailPageProps) => {
   const {getEvidenceDetail} = useContext(MarketContext);
 
   const headTitle = `${t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} ${evidenceId} - BAIFA`;
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [evidenceData, setEvidenceData] = useState<IEvidenceDetail>({} as IEvidenceDetail);
 
   const {transactionHistoryData, chainId} = evidenceData;
@@ -56,8 +55,6 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
     if (evidenceData) {
       setEvidenceData(evidenceData);
@@ -65,33 +62,12 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailDetailPageProps) => {
     if (transactionHistoryData) {
       setTransactionData(transactionHistoryData);
     }
-
-    timerRef.current = setTimeout(() => setIsLoading(false), 500);
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
   }, [evidenceData, transactionHistoryData]);
 
   const backClickHandler = () => router.back();
 
   // Info: (20240130 - Julian) 如果回傳資料為空，顯示 Data not found
-  if (!evidenceData.id) return <h1>Data not found</h1>;
-
-  const displayedEvidenceDetail = !isLoading ? (
-    <EvidenceDetail evidenceData={evidenceData} />
-  ) : (
-    // ToDo: (20231214 - Julian) Add loading animation
-    <h1>Loading...</h1>
-  );
-
-  const displayedTransactionHistory = !isLoading ? (
-    <TransactionHistorySection transactions={transactionData} />
-  ) : (
-    // ToDo: (20231214 - Julian) Add loading animation
-    <h1>Loading...</h1>
-  );
+  //if (!evidenceData.id) return <h1>Data not found</h1>;
 
   return (
     <>
@@ -147,7 +123,9 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailDetailPageProps) => {
             </div>
 
             {/* Info: (20231107 - Julian) Evidence Detail */}
-            <div className="w-full pt-10">{displayedEvidenceDetail}</div>
+            <div className="w-full pt-10">
+              <EvidenceDetail evidenceData={evidenceData} />
+            </div>
 
             {/* Info: (20231107 - Julian) Private Note Section */}
             <div className="w-full">
@@ -155,7 +133,9 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailDetailPageProps) => {
             </div>
 
             {/* Info: (20231107 - Julian) Transaction History Section */}
-            <div className="w-full">{displayedTransactionHistory}</div>
+            <div className="w-full">
+              <TransactionHistorySection transactions={transactionData} />
+            </div>
 
             {/* Info: (20231107 - Julian) Back Button */}
             <div className="">
