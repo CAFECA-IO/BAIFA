@@ -21,17 +21,24 @@ const BlackListPage = () => {
   const appCtx = useContext(AppContext);
   const {blacklist} = useContext(MarketContext);
 
+  // Deprecated: (今天 - Liz)
+  // eslint-disable-next-line no-console
+  console.log('app / blacklist', blacklist);
+
   useEffect(() => {
+    // Info: (20231113 - Julian) Initialize App Context
     if (!appCtx.isInit) {
       appCtx.init();
     }
+
+    // Deprecated: (今天 - Liz)
+    // eslint-disable-next-line no-console
+    console.log('useEffect / init / blacklist', blacklist);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Info: (20231113 - Julian) Flagging Options
-  const flaggingType = blacklist
-    .flatMap(address => address.flaggingRecords)
-    .map(flagging => flagging);
+  const flaggingType = blacklist.flatMap(address => address.flaggingRecords);
   const flaggingOptions = ['SORTING.ALL'];
   flaggingType.forEach(type => {
     if (!flaggingOptions.includes(type)) {
@@ -42,12 +49,17 @@ const BlackListPage = () => {
   // Info: (20231113 - Julian) Page State
   const [activePage, setActivePage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
   // Info: (20231113 - Julian) Filter State
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredFlagging, setFilteredFlagging] = useState<string>(flaggingOptions[0]);
+
   // Info: (20231113 - Julian) Blacklist State
   const [filteredBlacklist, setFilteredBlacklist] = useState<IBlackListDetail[]>(blacklist);
+  // Deprecated: (今天 - Liz)
+  // eslint-disable-next-line no-console
+  console.log('app / filteredBlacklist', filteredBlacklist);
 
   const headTitle = `${t('BLACKLIST_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
   const crumbs = [
@@ -62,12 +74,16 @@ const BlackListPage = () => {
   ];
 
   useEffect(() => {
+    // Deprecated: (今天 - Liz)
+    // eslint-disable-next-line no-console
+    console.log('useEffect / filter / blacklist', blacklist);
+
     const result = blacklist
       .filter(address => {
         // Info: (20231113 - Julian) filter by Search bar
         const searchTerm = searchRef.current.toLowerCase();
-        const id = address.id.toLowerCase();
-        return searchTerm !== '' ? id.includes(searchTerm) : true;
+        // const id = address.id.toLowerCase(); // Question: But id is number???
+        return searchTerm !== '' ? address.id.includes(searchTerm) : true;
       })
       .filter(address => {
         // Info: (20231113 - Julian) filter by Flagging Select Menu
@@ -89,8 +105,7 @@ const BlackListPage = () => {
     setFilteredBlacklist(result);
     setTotalPages(Math.ceil(result.length / 10));
     setActivePage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, filteredFlagging, sorting]);
+  }, [search, filteredFlagging, sorting, blacklist, searchRef]);
 
   const displayBlacklist = filteredBlacklist.slice(0, 10).map((address, index) => {
     return <BlacklistItem key={index} blacklistAddress={address} />;
@@ -155,7 +170,7 @@ const BlackListPage = () => {
                 </div>
               </div>
 
-              {/* Info: (20231113 - Julian) Blcak List */}
+              {/* Info: (20231113 - Julian) Black List */}
               <div className="mt-10 flex w-full flex-col items-center space-y-10">
                 <div className="flex w-full flex-col space-y-2 lg:space-y-0">
                   {displayBlacklist}

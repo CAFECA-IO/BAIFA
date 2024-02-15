@@ -118,6 +118,10 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
   const [blacklist, setBlacklist] = useState<IBlackListDetail[]>([]);
 
+  // Deprecated: (今天 - Liz)
+  // eslint-disable-next-line no-console
+  console.log('MarketProvider / blacklist:', blacklist);
+
   const getPromotion = useCallback(async () => {
     let data: IPromotion = defaultPromotion;
     try {
@@ -164,6 +168,10 @@ export const MarketProvider = ({children}: IMarketProvider) => {
         method: 'GET',
       });
       data = await response.json();
+
+      // Deprecated: (今天 - Liz)
+      // eslint-disable-next-line no-console
+      console.log('data:', data);
     } catch (error) {
       //console.log('getBlacklist error', error);
     }

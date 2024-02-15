@@ -19,6 +19,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
+  // Deprecated: (今天 - Liz)
+  // eslint-disable-next-line no-console
+  console.log('blacklistData: ', blacklistData);
+
   const result: ResponseData = blacklistData.map(item => {
     return {
       id: `${item.id}`,
@@ -27,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       latestActiveTime: item.created_timestamp ?? 0,
       createdTimestamp: item.created_timestamp ?? 0,
       flaggingRecords: [], // ToDo: (20240130 - Julian) 補上這個欄位
-      publicTag: [], // ToDo: (20240130 - Julian) 這邊要串 public tag 的資料
+      publicTag: item.public_tag ? [item.public_tag] : [], // ToDo: (20240130 - Julian) 這邊要串 public tag 的資料
     };
   });
 
