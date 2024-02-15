@@ -21,6 +21,7 @@ import SortingMenu from '../../../../components/sorting_menu/sorting_menu';
 import Pagination from '../../../../components/pagination/pagination';
 import {
   DEFAULT_CHAIN_ICON,
+  ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../../constants/config';
@@ -37,12 +38,15 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   const appCtx = useContext(AppContext);
   const {getInteractionTransaction} = useContext(MarketContext);
 
-  const totalPages = 100; // ToDo: (20240129 - Julian) 如何從 API 取得總頁數？
-  const [activePage, setActivePage] = useState(1);
-
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+
+  // Info: (20240215 - Julian) 計算總頁數
+  const [totalPages, setTotalPages] = useState<number>(
+    Math.ceil(transactionData.length / ITEM_PER_PAGE)
+  );
+  const [activePage, setActivePage] = useState(1);
 
   // Info: (20240119 - Julian) 設定 API 查詢參數
   const dateQuery =
@@ -61,6 +65,8 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
       const addressB = typeof addressId === 'object' ? `&addressId=${addressId[1]}` : undefined;
       const data = await getInteractionTransaction(chainId, addressA, addressB, apiQueryStr);
       setTransactionData(data);
+      // Info: (20240215 - Julian) 每次拿到新資料，就重新計算總頁數
+      setTotalPages(Math.ceil(data.length / ITEM_PER_PAGE));
     } catch (error) {
       //console.log('getInteractionTransaction error', error);
     }
