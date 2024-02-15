@@ -56,8 +56,6 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
     if (contractData) {
       setContractData(contractData);
