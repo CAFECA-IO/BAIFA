@@ -98,9 +98,9 @@ const TransactionTab = () => {
         <div key={index} className="flex w-full items-center gap-5">
           <div className="h-60px w-60px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
           <div className="flex-1">
-            <div className="h-40px w-300px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+            <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
           </div>
-          <div className="h-30px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
         </div>
       ))}
     </div>
