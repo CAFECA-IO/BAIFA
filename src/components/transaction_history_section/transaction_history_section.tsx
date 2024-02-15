@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, use} from 'react';
 import useStateRef from 'react-usestateref';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
@@ -15,9 +15,35 @@ import DatePicker from '../date_picker/date_picker';
 
 interface ITransactionHistorySectionProps {
   transactions: IDisplayTransaction[];
+  loading?: boolean;
 }
 
-const TransactionHistorySection = ({transactions}: ITransactionHistorySectionProps) => {
+const itemSkeleton = (
+  <div className="flex items-center justify-between">
+    <div>
+      <div className="mb-2.5 h-2.5 w-full rounded-full bg-gray-300 dark:bg-gray-600"></div>
+      <div className="h-2 w-32 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+    </div>
+    <div className="h-2.5 w-12 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+  </div>
+);
+
+const listSkeleton = (
+  <div
+    role="status"
+    className="w-full animate-pulse space-y-4 divide-y divide-gray-200 rounded border border-gray-200 p-4 shadow dark:divide-gray-700 dark:border-gray-700 md:p-6"
+  >
+    {/* Info: generate 10 skeletons (20240207 - Shirley) */}
+    {Array.from({length: 10}, (_, index) => (
+      <div key={index} className={`${index !== 0 ? `pt-4` : ``}`}>
+        {itemSkeleton}
+      </div>
+    ))}
+    <span className="sr-only">Loading...</span>
+  </div>
+);
+
+const TransactionHistorySection = ({transactions, loading}: ITransactionHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [activePage, setActivePage] = useState(1);
@@ -28,6 +54,8 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [period, setPeriod] = useState(default30DayPeriod);
+  const [transactionCount, setTransactionCount] = useState(0);
+  const [loadingState, setLoadingState] = useState(loading);
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
@@ -35,8 +63,14 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
   // Info: (20240103 - Julian) Update the address options when transactions are updated
   useEffect(() => {
     setFilteredTransactions(transactions);
+    setTransactionCount(transactions.length);
+    setTotalPages(Math.ceil(transactions.length / ITEM_PER_PAGE));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactions]);
+
+  useEffect(() => {
+    setLoadingState(loading);
+  }, [loading]);
 
   // Info: (20231113 - Julian) Filter by search term, to address, and sorting
   useEffect(() => {
@@ -75,7 +109,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
   }, [search, sorting, period]);
 
   // Info: (20240103 - Julian) The count of transaction history
-  const transactionCount = transactions ? transactions.length : 0;
+  // const transactionCount = transactions ? transactions.length : 0;
 
   // Info: (20231113 - Julian) Pagination
   const transactionList = filteredTransactions
@@ -142,6 +176,8 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
       })
     : [];
 
+  const displayedTransactionList = !loading ? transactionList : listSkeleton;
+
   return (
     <div className="flex w-full flex-col space-y-4">
       {/* Info: (20231113 - Julian) Title */}
@@ -175,7 +211,7 @@ const TransactionHistorySection = ({transactions}: ITransactionHistorySectionPro
           />
         </div>
         {/* Info: (20231113 - Julian) To Address List */}
-        <div className="my-10 flex w-full flex-1 flex-col">{transactionList}</div>
+        <div className="my-10 flex w-full flex-1 flex-col">{displayedTransactionList}</div>
         <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
       </div>
     </div>

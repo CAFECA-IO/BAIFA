@@ -103,8 +103,8 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   useEffect(() => {
     const result = searchResult
       .filter(searchResult => {
-        // Info: (20231115 - Julian) filter by Search bar
         return true;
+        // Info: (20231115 - Julian) filter by Search bar
         /* Deprecated: don't filter data out by string (20240201 - Shirley)
         // const searchTerm = searchTextRef.current.toLowerCase();
         // const id = searchResult.data.id.toLowerCase();

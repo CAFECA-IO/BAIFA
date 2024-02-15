@@ -17,6 +17,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {getDynamicUrl} from '../../../../../../constants/url';
 import {getChainIcon} from '../../../../../../lib/common';
+import {DEFAULT_CHAIN_ICON} from '../../../../../../constants/config';
 
 interface IBlockDetailPageProps {
   blockId: string;
@@ -85,7 +86,13 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
     </div>
   ) : (
     <div className="flex flex-1 items-center justify-center space-x-2">
-      <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+      <Image
+        src={chainIcon.src}
+        alt={chainIcon.alt}
+        width={40}
+        height={40}
+        onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+      />
       <h1 className="text-2xl font-bold lg:text-32px">
         {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')}
         <span className="ml-2 text-primaryBlue"> {blockId}</span>

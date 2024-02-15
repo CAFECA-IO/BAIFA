@@ -21,7 +21,7 @@ import Tooltip from '../../../../../components/tooltip/tooltip';
 import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
 import {IDisplayTransaction} from '../../../../../interfaces/transaction';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../../../../constants/config';
+import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../../../../constants/config';
 
 interface IContractDetailDetailPageProps {
   contractId: string;
@@ -130,6 +130,7 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
                     alt={getChainIcon(chainId).alt}
                     width={40}
                     height={40}
+                    onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
                   />
                   <h1 className="text-2xl font-bold lg:text-32px" title={contractId}>
                     {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')}

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
 import {useState, useContext, useEffect, useRef} from 'react';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
@@ -16,7 +16,7 @@ import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {IAddressDetail} from '../../../../../../interfaces/address';
+import {IAddressBrief, IAddressDetail} from '../../../../../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
 import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
@@ -24,10 +24,23 @@ import TransactionHistorySection from '../../../../../../components/transaction_
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
-import {DEFAULT_TRUNCATE_LENGTH, sortOldAndNewOptions} from '../../../../../../constants/config';
+import {
+  DEFAULT_CHAIN_ICON,
+  DEFAULT_TRUNCATE_LENGTH,
+  ITEM_PER_PAGE,
+  sortOldAndNewOptions,
+} from '../../../../../../constants/config';
 import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/common';
-import {IDisplayTransaction} from '../../../../../../interfaces/transaction';
+import {IDisplayTransaction, ITransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
+import {APIURL, SortingType} from '../../../../../../constants/api_request';
+import {isAddress} from 'web3-validator';
+import {IReviewDetail, IReviews} from '../../../../../../interfaces/review';
+import useStateRef from 'react-usestateref';
+import {
+  AddressDetailsContext,
+  AddressDetailsProvider,
+} from '../../../../../../contexts/address_details_context';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;
@@ -38,17 +51,33 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getAddressDetail} = useContext(MarketContext);
+  const {getAddressBrief, getAddressRelatedTransactions, getAddressProducedBlocks} =
+    useContext(MarketContext);
+  const detailedAddressCtx = useContext(AddressDetailsContext);
 
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [addressData, setAddressData] = useState<IAddressDetail>({} as IAddressDetail);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [addressBriefData, setAddressBriefData] = useState<IAddressBrief>({} as IAddressBrief);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
-  const [blockData, setBlockData] = useState<IProductionBlock[]>([]);
+  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+  const [blockData, setBlockData, blockDataRef] = useStateRef<{
+    blocks: IProductionBlock[];
+    blockCount: number;
+  }>(
+    {} as {
+      blocks: IProductionBlock[];
+      blockCount: number;
+    }
+  );
 
-  const {transactionHistoryData, blockProducedData, publicTag, score, reviewData} = addressData;
+  const {publicTag, score} = addressBriefData;
+
+  const reviewData: IReviewDetail[] = [];
+
+  const transactionHistoryData = transactionData;
+
+  const blockProducedData = blockData;
 
   const chainIcon = getChainIcon(chainId);
 
@@ -57,64 +86,75 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       appCtx.init();
     }
 
-    const getAddressData = async (chainId: string, blockId: string) => {
+    const init = async (chainId: string, addressId: string) => {
+      await detailedAddressCtx.init(chainId, addressId);
+    };
+
+    const getAddressBriefData = async (chainId: string, addressId: string) => {
       try {
-        const data = await getAddressDetail(chainId, blockId);
-        setAddressData(data);
+        const data = await getAddressBrief(chainId, addressId);
+        setAddressBriefData(data);
       } catch (error) {
         //console.log('getAddressData error', error);
       }
     };
 
-    getAddressData(chainId, addressId);
+    const getTransactionHistoryData = async (chainId: string, addressId: string) => {
+      try {
+        const data = await getAddressRelatedTransactions(chainId, addressId);
+        setTransactionData(data);
+      } catch (error) {
+        //console.log('getTransactionHistoryData error', error);
+      }
+    };
+
+    init(chainId, addressId);
+    getAddressBriefData(chainId, addressId);
+    getTransactionHistoryData(chainId, addressId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  useEffect(() => {
+    // TODO: validate BTC address (20240207 - Shirley)
+    // eslint-disable-next-line no-console
+    // console.log('addressId is valid', isAddress(addressId), addressId);
+
+    if (addressBriefData) {
+      setAddressBriefData(addressBriefData);
+    }
+  }, [addressBriefData]);
 
   useEffect(() => {
-    if (addressData) {
-      setAddressData(addressData);
-    }
     if (transactionHistoryData) {
       setTransactionData(transactionHistoryData);
     }
+  }, [transactionHistoryData]);
+
+  useEffect(() => {
     if (blockProducedData) {
       setBlockData(blockProducedData);
     }
-
-    timerRef.current = setTimeout(() => setIsLoading(false), 500);
-
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [addressData, blockProducedData, transactionHistoryData]);
-
-  // ToDo: (20240129 - Julian) 如果拿到的資料是空的，就顯示 Data not found
-  if (!addressData.address) {
-    return <h1>Data not found</h1>;
-  }
+  }, [blockProducedData]);
 
   const backClickHandler = () => router.back();
 
   const reviewLink = getDynamicUrl(chainId, addressId).REVIEWS;
-  const reviewList = reviewData ? (
-    reviewData
-      // Info: (20231214 - Julian) Sort reviews by createdTimestamp
-      .sort((a, b) => {
-        if (reviewSorting === sortOldAndNewOptions[0]) {
-          return b.createdTimestamp - a.createdTimestamp;
-        } else {
-          return a.createdTimestamp - b.createdTimestamp;
-        }
-      })
-      // Info: (20231214 - Julian) Print reviews
-      .map((review, index) => <ReviewItem key={index} review={review} />)
-  ) : (
-    <></>
-  );
+  const reviewList =
+    reviewData.length > 0 ? (
+      reviewData
+        // Info: (20231214 - Julian) Sort reviews by createdTimestamp
+        .sort((a, b) => {
+          if (reviewSorting === sortOldAndNewOptions[0]) {
+            return b.createdTimestamp - a.createdTimestamp;
+          } else {
+            return a.createdTimestamp - b.createdTimestamp;
+          }
+        })
+        // Info: (20231214 - Julian) Print reviews
+        .map((review, index) => <ReviewItem key={index} review={review} />)
+    ) : (
+      <></>
+    );
 
   const displayPublicTag = publicTag ? (
     publicTag.map((tag, index) => (
@@ -129,7 +169,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     <></>
   );
 
-  const displayedHeader = !isLoading ? (
+  const displayedHeader = (
     <div className="flex w-full items-center justify-start">
       {/* Info: (20230912 -Julian) Back Arrow Button */}
       <button onClick={backClickHandler} className="hidden lg:block">
@@ -137,7 +177,13 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       </button>
       {/* Info: (20230912 -Julian) Address Title */}
       <div className="flex flex-1 items-center justify-center space-x-2">
-        <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+        <Image
+          src={chainIcon.src}
+          alt={chainIcon.alt}
+          width={40}
+          height={40}
+          onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+        />
         <h1 className="text-2xl font-bold lg:text-32px">
           {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
           <span title={addressId} className="ml-2 text-primaryBlue">
@@ -146,26 +192,30 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
         </h1>
       </div>
     </div>
-  ) : (
-    <></>
   );
 
   const displayedAddressDetail = !isLoading ? (
-    <AddressDetail addressData={addressData} />
+    <AddressDetail addressData={addressBriefData} />
   ) : (
     // ToDo: (20231213 - Julian) Add loading animation
     <h1>Loading..</h1>
   );
 
   const displayedTransactionHistory = !isLoading ? (
-    <TransactionHistorySection transactions={transactionData} />
+    <TransactionHistorySection
+      transactions={transactionData}
+      loading={detailedAddressCtx.transactionsLoading}
+    />
   ) : (
     // ToDo: (20231213 - Julian) Add loading animation
     <h1>Loading..</h1>
   );
 
   const displayedBlockProducedHistory = !isLoading ? (
-    <BlockProducedHistorySection blocks={blockData} />
+    <BlockProducedHistorySection
+      blocks={detailedAddressCtx.producedBlocks.blockData}
+      totalBlocks={detailedAddressCtx.producedBlocks.blockCount}
+    />
   ) : (
     // ToDo: (20231213 - Julian) Add loading animation
     <h1>Loading..</h1>
@@ -201,95 +251,97 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   );
 
   return (
-    <>
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-        <title>{headTitle}</title>
-      </Head>
+    <AddressDetailsProvider>
+      <>
+        <Head>
+          <link rel="icon" href="/favicon.ico" />
+          <title>{headTitle}</title>
+        </Head>
 
-      <NavBar />
-      <main>
-        <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
-          <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
-            {/* Info: (20231017 - Julian) Header */}
-            {displayedHeader}
-            <div className="my-4 flex w-full flex-col items-center space-y-10">
-              {/* Info: (20231018 - Julian) Public Tag */}
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center text-base font-bold text-lilac">
-                  {t('PUBLIC_TAG.TITLE')}&nbsp;
-                  <Tooltip>
-                    This is tooltip Sample Text. So if I type in more content, it would be like
-                    this.
-                  </Tooltip>
-                  &nbsp;:
+        <NavBar />
+        <main>
+          <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
+            <div className="flex w-full flex-1 flex-col items-center px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
+              {/* Info: (20231017 - Julian) Header */}
+              {displayedHeader}
+              <div className="my-4 flex w-full flex-col items-center space-y-10">
+                {/* Info: (20231018 - Julian) Public Tag */}
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center text-base font-bold text-lilac">
+                    {t('PUBLIC_TAG.TITLE')}&nbsp;
+                    <Tooltip>
+                      This is tooltip Sample Text. So if I type in more content, it would be like
+                      this.
+                    </Tooltip>
+                    &nbsp;:
+                  </div>
+                  <div className="">{displayPublicTag}</div>
                 </div>
-                <div className="">{displayPublicTag}</div>
+                <div className="flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-6 lg:space-y-0">
+                  {/* Info: (20231018 - Julian) Tracing Tool Button */}
+                  <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
+                    <BoltButton
+                      className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+                      color="purple"
+                      style="solid"
+                    >
+                      <Image
+                        src="/icons/tracing.svg"
+                        alt=""
+                        width={24}
+                        height={24}
+                        className="invert group-hover:invert-0"
+                      />
+                      <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
+                    </BoltButton>
+                  </Link>
+                  {/* Info: (20231018 - Julian) Follow Button */}
+                  <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
+                    <BoltButton
+                      className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+                      color="purple"
+                      style="solid"
+                    >
+                      <AiOutlinePlus className="text-2xl" />
+                      <p>{t('COMMON.FOLLOW')}</p>
+                    </BoltButton>
+                  </Link>
+                </div>
               </div>
-              <div className="flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-6 lg:space-y-0">
-                {/* Info: (20231018 - Julian) Tracing Tool Button */}
-                <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
-                  <BoltButton
-                    className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
-                    color="purple"
-                    style="solid"
-                  >
-                    <Image
-                      src="/icons/tracing.svg"
-                      alt=""
-                      width={24}
-                      height={24}
-                      className="invert group-hover:invert-0"
-                    />
-                    <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
-                  </BoltButton>
-                </Link>
-                {/* Info: (20231018 - Julian) Follow Button */}
-                <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
-                  <BoltButton
-                    className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
-                    color="purple"
-                    style="solid"
-                  >
-                    <AiOutlinePlus className="text-2xl" />
-                    <p>{t('COMMON.FOLLOW')}</p>
-                  </BoltButton>
-                </Link>
+              {/* Info: (20231020 - Julian) Address Detail */}
+              <div className="my-10 w-full">{displayedAddressDetail}</div>
+              {/* Info: (20231020 - Julian) Private Note Section */}
+              <div className="w-full">
+                <PrivateNoteSection />
               </div>
-            </div>
-            {/* Info: (20231020 - Julian) Address Detail */}
-            <div className="my-10 w-full">{displayedAddressDetail}</div>
-            {/* Info: (20231020 - Julian) Private Note Section */}
-            <div className="w-full">
-              <PrivateNoteSection />
-            </div>
-            {/* Info: (20231020 - Julian) Review Section */}
-            <div className="mt-6 w-full">{displayedReviewSection}</div>
-            {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
-            <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
-              {displayedTransactionHistory}
-              {displayedBlockProducedHistory}
-            </div>
+              {/* Info: (20231020 - Julian) Review Section */}
+              <div className="mt-6 w-full">{displayedReviewSection}</div>
+              {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
+              <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
+                {displayedTransactionHistory}
+                {displayedBlockProducedHistory}
+              </div>
 
-            {/* Info: (20231006 - Julian) Back button */}
-            <div className="mt-10">
-              <BoltButton
-                onClick={backClickHandler}
-                className="px-12 py-4 font-bold"
-                color="blue"
-                style="hollow"
-              >
-                {t('COMMON.BACK')}
-              </BoltButton>
+              {/* Info: (20231006 - Julian) Back button */}
+              <div className="mt-10">
+                <BoltButton
+                  onClick={backClickHandler}
+                  className="px-12 py-4 font-bold"
+                  color="blue"
+                  style="hollow"
+                >
+                  {t('COMMON.BACK')}
+                </BoltButton>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
 
-      <div className="mt-12">
-        <Footer />
-      </div>
-    </>
+        <div className="mt-12">
+          <Footer />
+        </div>
+      </>
+    </AddressDetailsProvider>
   );
 };
 
@@ -315,7 +367,7 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
   const addressId = params.addressId;
   const chainId = params.chainId;
 
-  if (!addressId || !chainId) {
+  if (!addressId || !isAddress(addressId) || !chainId) {
     return {
       notFound: true,
     };

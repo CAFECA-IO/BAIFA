@@ -36,6 +36,11 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
       })
     : [];
 
+  const {date, time} = createdTimestamp
+    ? timestampToString(createdTimestamp)
+    : {date: null, time: null};
+  const createdTime = createdTimestamp ? `${date} ${time}` : null;
+
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
       {/* Info: (20231110 - Julian) Red Flag Type */}
@@ -60,11 +65,25 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <div className="flex items-center gap-2">
-          <p>{timestampToString(createdTimestamp).date}</p>
-          <p>{timestampToString(createdTimestamp).time}</p>
-        </div>
+
+        {/* Info: if the createdTimestamp is null, show the animation */}
+        {createdTimestamp ? (
+          <div className="flex items-center gap-2">
+            <p>{createdTime}</p>
+          </div>
+        ) : (
+          <div
+            role="status"
+            className="animate-pulse space-y-8 rtl:space-x-reverse md:flex md:items-center md:space-x-8 md:space-y-0"
+          >
+            <div className="w-full">
+              <div className="my-2 h-5 w-20 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+            </div>
+            <span className="sr-only">Loading...</span>
+          </div>
+        )}
       </div>
+
       {/* Info: (20231110 - Julian) Interacted with */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center text-sm font-bold text-lilac lg:min-w-200px lg:text-base">

@@ -1,4 +1,9 @@
+export enum AddressType {
+  ADDRESS = 'address',
+  CONTRACT = 'contract',
+}
+
 export type IAddressInfo = {
-  type: 'address' | 'contract';
+  type: AddressType.ADDRESS | AddressType.CONTRACT;
   address: string;
 };

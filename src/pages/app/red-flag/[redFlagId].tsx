@@ -19,6 +19,7 @@ import {getChainIcon} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
 import {ITransaction} from '../../../interfaces/transaction';
+import {DEFAULT_CHAIN_ICON} from '../../../constants/config';
 
 /* Info: (20240201 - Liz) Red Flag Detail Page workflow
 - step 1: Loading
@@ -38,10 +39,11 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const router = useRouter();
   const backClickHandler = () => router.back();
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [redFlagData, setRedFlagData] = useState<IRedFlagDetail>({} as IRedFlagDetail);
   // Info: (20240102 - Julian) Transaction history
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [dataNotFound, setDataNotFound] = useState<boolean>(false);
 
   useEffect(() => {
     // Info: (今天 - Liz) Initialize app context
@@ -53,7 +55,12 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
       try {
         const data = await getRedFlagDetail(redFlagId);
         setRedFlagData(data);
-      } catch (error) {
+
+        // Info: (20240206 - Liz) Check if data is empty
+        if (Object.keys(data).length === 0) {
+          setDataNotFound(true);
+        }
+      } catch (error: unknown) {
         // ToDo:(20231228 - Julian) Error handling
         // console.log('getRedFlagDetail error', error);
       }
@@ -68,7 +75,6 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Question: (20240202 - Liz) Why do we need to set redFlagData again?
   useEffect(() => {
     if (redFlagData) {
       setRedFlagData(redFlagData);
@@ -97,7 +103,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   );
 
   // ToDo: (20240201 - Liz) Add error handling for data not found
-  if (!redFlagData.id) return <h1>Data not found</h1>;
+  if (dataNotFound) return <h1>Data not found</h1>;
 
   return (
     <>
@@ -118,7 +124,13 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
               </button>
               {/* Info: (20231110 -Julian) Red Flag Address Title */}
               <div className="flex flex-1 flex-col items-center justify-center gap-4 text-2xl font-bold lg:flex-row lg:text-32px">
-                <Image src={chainIcon.src} alt={chainIcon.alt} width={40} height={40} />
+                <Image
+                  src={chainIcon.src}
+                  alt={chainIcon.alt}
+                  width={40}
+                  height={40}
+                  onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+                />
                 <h1>
                   {t('RED_FLAG_ADDRESS_PAGE.RED_FLAG')}
                   <span className="text-primaryBlue"> {id}</span>
