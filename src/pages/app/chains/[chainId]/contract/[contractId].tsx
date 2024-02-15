@@ -33,7 +33,6 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
   const appCtx = useContext(AppContext);
   const {getContractDetail} = useContext(MarketContext);
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [contractData, setContractData] = useState<IContractDetail>({} as IContractDetail);
 
   const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
@@ -66,17 +65,7 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
     if (transactionHistoryData) {
       setTransactionData(transactionHistoryData);
     }
-
-    timerRef.current = setTimeout(() => setIsLoading(false), 500);
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
   }, [contractData, transactionHistoryData]);
-
-  // Info: (20240130 - Julian) 如果沒拿到 contractData ，就顯示 Data not found
-  if (!contractData.id) return <h1>Data not found</h1>;
 
   const displayPublicTag = publicTag ? (
     publicTag.map((tag, index) => (
@@ -89,20 +78,6 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
     ))
   ) : (
     <></>
-  );
-
-  const displayedContractDetail = !isLoading ? (
-    <ContractDetail contractData={contractData} />
-  ) : (
-    // ToDo: (20231214 - Julian) Add loading animation
-    <h1>Loading...</h1>
-  );
-
-  const displayedTransactionHistory = !isLoading ? (
-    <TransactionHistorySection transactions={transactionData} />
-  ) : (
-    // ToDo: (20231214 - Julian) Add loading animation
-    <h1>Loading...</h1>
   );
 
   return (
@@ -175,7 +150,9 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
             </div>
 
             {/* Info: (20231106 - Julian) Contract Detail */}
-            <div className="my-10 w-full">{displayedContractDetail}</div>
+            <div className="my-10 w-full">
+              <ContractDetail contractData={contractData} />
+            </div>
 
             {/* Info: (20231106 - Julian) Private Note Section */}
             <div className="w-full">
@@ -183,7 +160,9 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
             </div>
 
             {/* Info: (20231103 - Julian) Transaction History */}
-            <div className="my-10 w-full">{displayedTransactionHistory}</div>
+            <div className="my-10 w-full">
+              <TransactionHistorySection transactions={transactionData} />
+            </div>
 
             {/* Info: (20231017 - Julian) Back Button */}
             <div className="mt-10">

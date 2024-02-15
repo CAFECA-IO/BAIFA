@@ -185,7 +185,11 @@
     "CONTRACT_ADDRESS": "合約地址",
     "CREATOR": "建立者",
     "CREATING_TIME": "建立時間",
-    "SOURCE_CODE": "原始碼"
+    "SOURCE_CODE": "合約原始碼",
+    "CONTRACT_ADDRESS_TOOLTIP": "合約的唯一識別碼。",
+    "CREATOR_TOOLTIP": "合約的建立者。",
+    "CREATING_TIME_TOOLTIP": "合約在區塊鏈上建立日期與時間。",
+    "SOURCE_CODE_TOOLTIP": "合約的原始碼內容，可供審核與分析。"
   },
   "EVIDENCE_DETAIL_PAGE": {
     "MAIN_TITLE": "證據",

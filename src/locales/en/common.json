@@ -185,7 +185,11 @@
     "CONTRACT_ADDRESS": "Contract Address",
     "CREATOR": "Creator",
     "CREATING_TIME": "Creating Time",
-    "SOURCE_CODE": "Source Code"
+    "SOURCE_CODE": "Source Code",
+    "CONTRACT_ADDRESS_TOOLTIP": "The unique identifier of the contract.",
+    "CREATOR_TOOLTIP": "The creator of the contract.",
+    "CREATING_TIME_TOOLTIP": "The date and time the contract was created on the blockchain.",
+    "SOURCE_CODE_TOOLTIP": "The source code of the contract, which can be audited and analyzed."
   },
   "EVIDENCE_DETAIL_PAGE": {
     "MAIN_TITLE": "Evidence",
