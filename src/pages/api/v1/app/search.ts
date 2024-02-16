@@ -326,7 +326,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
     });
 
-    // Find public tags with tag_type "9" matching search input
+    // Info: Find public tags with tag_type "9" matching search input (20240216 - Shirley)
     const blacklistedAddresses = await prisma.public_tags.findMany({
       where: {
         name: {
@@ -337,7 +337,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       select: {
         id: true,
         name: true,
-        target: true, // Assuming 'target' is the address or identifier blacklisted
+        target: true,
         target_type: true,
         created_timestamp: true,
       },
@@ -355,62 +355,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
       });
     });
-
-    // if (addresses.length > 0) {
-    //   for (const address of addresses) {
-    //     const blacklists = await prisma.black_lists.findMany({
-    //       where: {
-    //         address_id: address.id,
-    //       },
-    //       select: {
-    //         id: true,
-    //         chain_id: true,
-    //         created_timestamp: true,
-    //         address_id: true,
-    //         public_tag: true,
-    //       },
-    //     });
-
-    //     blacklists.forEach(item => {
-    //       result.push({
-    //         type: RESPONSE_DATA_TYPE.BLACKLIST,
-    //         data: {
-    //           id: `${item.id}`,
-    //           chainId: `${item.chain_id}`,
-    //           createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //           address: `${item.address_id}`,
-    //           publicTag: item.public_tag ? item.public_tag.split(',') : [], // TODO: 假設 public_tag 是以逗號分隔的字串，如果 schema 改成 string[] 要再改回來 (20240201 - Shirley)
-    //         },
-    //       });
-    //     });
-    //   }
-    // } else if (!searchInput.startsWith('0x') && isValid64BitInteger(searchInput)) {
-    //   const blacklists = await prisma.black_lists.findMany({
-    //     where: {
-    //       address_id: +searchInput,
-    //     },
-    //     select: {
-    //       id: true,
-    //       chain_id: true,
-    //       created_timestamp: true,
-    //       address_id: true,
-    //       public_tag: true,
-    //     },
-    //   });
-
-    //   blacklists.forEach(item => {
-    //     result.push({
-    //       type: RESPONSE_DATA_TYPE.BLACKLIST,
-    //       data: {
-    //         id: `${item.id}`,
-    //         chainId: `${item.chain_id}`,
-    //         createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //         address: `${item.address_id}`,
-    //         publicTag: item.public_tag ? item.public_tag.split(',') : [], // TODO: 假設 public_tag 是以逗號分隔的字串，如果 schema 改成 string[] 要再改回來 (20240201 - Shirley)
-    //       },
-    //     });
-    //   });
-    // }
 
     res.status(200).json(result);
   } catch (error) {
