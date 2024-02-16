@@ -72,6 +72,11 @@ export interface IMarketContext {
     type: string
   ) => Promise<IInteractionItem[]>;
   getContractDetail: (chainId: string, contractId: string) => Promise<IContractDetail>;
+  getContractTransactions: (
+    chainId: string,
+    contractId: string,
+    queryStr?: string
+  ) => Promise<ITransaction[]>;
   getEvidenceDetail: (chainId: string, evidenceId: string) => Promise<IEvidenceDetail>;
   getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetail>;
   getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlag[]>;
@@ -103,6 +108,7 @@ export const MarketContext = createContext<IMarketContext>({
   getRedFlagsFromAddress: () => Promise.resolve([] as IRedFlag[]),
   getInteractions: () => Promise.resolve([] as IInteractionItem[]),
   getContractDetail: () => Promise.resolve({} as IContractDetail),
+  getContractTransactions: () => Promise.resolve([] as ITransaction[]),
   getEvidenceDetail: () => Promise.resolve({} as IEvidenceDetail),
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetail),
   getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlag[]),
@@ -464,6 +470,25 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getContractTransactions = useCallback(
+    async (chainId: string, contractId: string, queryStr?: string) => {
+      let data: ITransaction[] = [];
+      try {
+        const response = await fetch(
+          `${APIURL.CHAINS}/${chainId}/contracts/${contractId}/transactions?${queryStr}`,
+          {
+            method: 'GET',
+          }
+        );
+        data = await response.json();
+      } catch (error) {
+        //console.log('getContractTransactions error', error);
+      }
+      return data;
+    },
+    []
+  );
+
   const getEvidenceDetail = useCallback(async (chainId: string, evidenceId: string) => {
     let data: IEvidenceDetail = {} as IEvidenceDetail;
     try {
@@ -551,6 +576,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getRedFlagsFromAddress,
     getInteractions,
     getContractDetail,
+    getContractTransactions,
     getEvidenceDetail,
     getCurrencyDetail,
     getRedFlagsFromCurrency,
