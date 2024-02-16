@@ -51,9 +51,9 @@ const ContractDetail = ({contractData}: IContractDetailDetailProps) => {
   );
 
   const displaySourceCode = sourceCode ? (
-    <pre className="max-h-200px flex-1 overflow-scroll bg-darkPurple3 p-4 text-sm">
-      <code>{sourceCode}</code>
-    </pre>
+    <div className="max-h-200px flex-1 overflow-scroll break-all bg-darkPurple3 p-4 text-sm">
+      {sourceCode}
+    </div>
   ) : (
     // Info: (20240215 - Julian) Loading Animation
     <div className="h-50px w-200px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>

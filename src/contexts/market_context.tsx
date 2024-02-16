@@ -474,12 +474,16 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     async (chainId: string, contractId: string, queryStr?: string) => {
       let data: ITransaction[] = [];
       try {
-        const response = await fetch(
-          `${APIURL.CHAINS}/${chainId}/contracts/${contractId}/transactions?${queryStr}`,
-          {
-            method: 'GET',
-          }
-        );
+        const response = queryStr
+          ? await fetch(
+              `${APIURL.CHAINS}/${chainId}/contracts/${contractId}/transactions?${queryStr}`,
+              {
+                method: 'GET',
+              }
+            )
+          : await fetch(`${APIURL.CHAINS}/${chainId}/contracts/${contractId}/transactions`, {
+              method: 'GET',
+            });
         data = await response.json();
       } catch (error) {
         //console.log('getContractTransactions error', error);
