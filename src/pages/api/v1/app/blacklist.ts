@@ -9,22 +9,22 @@ type ResponseData = IBlackList[] | string;
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
 
-  // Info: (今天 - Liz) 從 public_tags table 中取得 tag_type = 9 (黑名單標籤) 的資料
+  // Info: (20240216 - Liz) 從 public_tags table 中取得 tag_type = 9 (黑名單標籤) 的資料
   const blacklist = await prisma.public_tags.findMany({
     where: {
-      tag_type: '9', // Info: (今天 - Liz) 9:黑名單標籤
+      tag_type: '9', // Info: (20240216 - Liz) 9:黑名單標籤
     },
     select: {
       id: true,
-      name: true, // Info: (今天 - Liz) 標籤名稱
-      target: true, // Info: (今天 - Liz) 是個地址
-      target_type: true, // Info: (今天 - Liz)  0:contract / 1:address
+      name: true, // Info: (20240216 - Liz) 標籤名稱
+      target: true, // Info: (20240216 - Liz) 是個地址
+      target_type: true, // Info: (20240216 - Liz)  0:contract / 1:address
       tag_type: true,
-      created_timestamp: true, // Info: (今天 - Liz) 標籤建立時間
+      created_timestamp: true, // Info: (20240216 - Liz) 標籤建立時間
     },
   });
 
-  // Info: (今天 - Liz) 若查無黑名單資料，回傳 404
+  // Info: (20240216 - Liz) 若查無黑名單資料，回傳 404
   if (blacklist === null) {
     res.status(404).send('404 - redFlagData Not Found');
     return;
@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // 從blacklistData中提取target值
   const targetValues = blacklist.map(item => item.target);
 
-  // Info: (今天 - Liz) 從 addresses table 中取得黑名單地址的 chain_id
+  // Info: (20240216 - Liz) 從 addresses table 中取得黑名單地址的 chain_id
   const addressesData = await prisma.addresses.findMany({
     where: {
       address: {
@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // Info: (今天 - Liz) 將取得的資料轉換成 API 要的格式
+  // Info: (20240216 - Liz) 將取得的資料轉換成 API 要的格式
   const blacklistData = blacklist.map(item => {
     const chainId =
       addressesData
