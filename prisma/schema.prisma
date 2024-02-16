@@ -148,7 +148,7 @@ model transactions {
   related_addresses   String[]
   chains              chains? @relation(fields: [chain_id], references: [id])
   blocks              blocks? @relation(fields: [block_hash], references: [hash])
-  review_datas        review_datas[]
+  review_datas        review_datas[]       
 }
 
 model review_datas {
@@ -200,9 +200,9 @@ model token_balances {
   address             String?
   value               String?
   chain_id            Int?
-  currency_id         String?
+  currency_id         String? 
   chains              chains? @relation(fields: [chain_id], references: [id])
-  currencies          currencies? @relation(fields: [currency_id], references: [id])
+  currencies          currencies? @relation(fields: [currency_id], references: [id])  
   @@unique([address, currency_id], name: "address_currency_id")
 }
 
@@ -234,7 +234,7 @@ model currencies {
   token_transfers     token_transfers[]
   red_flags           red_flags[]
   token_balances      token_balances[]
-  chains              chains? @relation(fields: [chain_id], references: [id])
+  chains              chains? @relation(fields: [chain_id], references: [id])           
 }
 
 model addresses {
@@ -264,9 +264,10 @@ model codes {
   value               Int?
   meaning             String?
 }
+
 model balance_versions {
   id                  Int      @id @default(autoincrement())
-  chain_id            Int?
+  chain_id            Int? 
   address             String?
   currency            String?
   modify              String?

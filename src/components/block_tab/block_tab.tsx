@@ -8,7 +8,7 @@ import {IBlock} from '../../interfaces/block';
 import DatePicker from '../date_picker/date_picker';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
-import {sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
+import {sortOldAndNewOptions, default30DayPeriod, ITEM_PER_PAGE} from '../../constants/config';
 import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
 
@@ -20,13 +20,14 @@ const BlockTab = () => {
   const router = useRouter();
   const chainId = router.query.chainId as string;
 
-  const totalPages = 100; // ToDo: (20240119 - Julian) 如何從 API 取得總頁數？
-  const [activePage, setActivePage] = useState(1);
-
   const [search, setSearch, searchRef] = useStateRef('');
   const [period, setPeriod] = useState(default30DayPeriod);
   const [blockData, setBlockData] = useState<IBlock[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Info: (20240215 - Julian) 計算總頁數
+  const [totalPages, setTotalPages] = useState<number>(Math.ceil(blockData.length / ITEM_PER_PAGE));
+  const [activePage, setActivePage] = useState(1);
 
   // Info: (20240119 - Julian) 設定 API 查詢參數
   const dateQuery =
@@ -41,6 +42,8 @@ const BlockTab = () => {
   const getBlockData = async () => {
     const data = await getBlocks(chainId, apiQueryStr);
     setBlockData(data);
+    // Info: (20240215 - Julian) 每次拿到新資料，就重新計算總頁數
+    setTotalPages(Math.ceil(data.length / ITEM_PER_PAGE));
   };
 
   useEffect(() => {
@@ -99,9 +102,9 @@ const BlockTab = () => {
         <div key={index} className="flex w-full items-center gap-5">
           <div className="h-60px w-60px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
           <div className="flex-1">
-            <div className="h-40px w-300px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+            <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
           </div>
-          <div className="h-30px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
         </div>
       ))}
     </div>

@@ -29,6 +29,16 @@ export interface IAddressHistoryQuery extends IPaginationOptions {
   end_date?: number;
 }
 
+export interface IAddressTransactionQuery extends IPaginationOptions {
+  query?: {
+    from_address: string;
+    to_address: string;
+    block_id: number;
+  };
+  start_date?: number;
+  end_date?: number;
+}
+
 export interface IAPINameConstant {
   BALANCE_SHEET: IAPIName;
   COMPREHENSIVE_INCOME_STATEMENTS: IAPIName;

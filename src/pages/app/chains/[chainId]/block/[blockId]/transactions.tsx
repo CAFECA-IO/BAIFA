@@ -21,6 +21,7 @@ import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu'
 import TransactionList from '../../../../../../components/transaction_list/transaction_list';
 import {
   DEFAULT_CHAIN_ICON,
+  ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
@@ -36,12 +37,15 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   const {getTransactionList} = useContext(MarketContext);
   const router = useRouter();
 
-  const totalPages = 100; // ToDo: (20240119 - Julian) 如何從 API 取得總頁數？
-  const [activePage, setActivePage] = useState(1);
-
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
   const [transactionData, setTransitionData] = useState<IDisplayTransaction[]>([]);
+
+  // Info: (20240215 - Julian) 計算總頁數
+  const [totalPages, setTotalPages] = useState<number>(
+    Math.ceil(transactionData.length / ITEM_PER_PAGE)
+  );
+  const [activePage, setActivePage] = useState(1);
 
   const headTitle = `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_BLOCK')} ${blockId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
@@ -55,10 +59,13 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   const apiQueryStr = `${pageQuery}${dateQuery}`;
 
   const backClickHandler = () => router.back();
+
   const getTransactionData = async () => {
     try {
       const data = await getTransactionList(chainId, blockId, apiQueryStr);
       setTransitionData(data);
+      // Info: (20240215 - Julian) 每次取得資料後，重新計算總頁數
+      setTotalPages(Math.ceil(data.length / ITEM_PER_PAGE));
     } catch (error) {
       //console.log('getTransactionList error', error);
     }

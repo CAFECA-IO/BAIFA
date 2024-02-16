@@ -23,9 +23,9 @@ const Tooltip = ({children}: ITooltipProps) => {
 
       <div
         role="tooltip"
-        className={`absolute bottom-8 left-0 z-20 w-225px rounded bg-darkPurple2 ${
+        className={`max-w-225px absolute bottom-8 left-0 z-20 w-max rounded bg-darkPurple2  ${
           showTooltip ? 'visible opacity-100' : 'invisible opacity-0'
-        } px-3 py-2 shadow-lg shadow-black/80 transition duration-150 ease-in-out`}
+        } inline-block px-3 py-2 shadow-lg shadow-black/80 transition duration-150 ease-in-out`}
       >
         {children}
       </div>

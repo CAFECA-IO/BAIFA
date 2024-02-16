@@ -172,7 +172,6 @@ module.exports = {
         '190px': '190px',
         '200px': '200px',
         '220px': '220px',
-        '225px': '225px',
         '240px': '240px',
         '250px': '250px',
         '254px': '254px',
@@ -342,6 +341,7 @@ module.exports = {
       maxWidth: {
         '80px': '80px',
         '140px': '140px',
+        '225px': '225px',
         '250px': '250px',
         '550px': '550px',
       },

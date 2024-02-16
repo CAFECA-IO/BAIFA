@@ -28,11 +28,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   try {
+    const skip = page > 0 ? (page - 1) * offset : 0;
+    const totalCount = await prisma.transactions.count({
+      where: {
+        related_addresses: {hasSome: [address_id]},
+        created_timestamp: {
+          gte: start_date,
+          lte: end_date,
+        },
+      },
+    });
+
     const transactionData = await prisma.transactions.findMany({
       where: {related_addresses: {hasSome: [address_id]}},
       orderBy: {
         created_timestamp: order,
       },
+      take: offset,
+      skip: skip,
       select: {
         id: true,
         chain_id: true,
@@ -94,10 +107,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         createdTimestamp: transaction.created_timestamp ?? 0,
         from: from,
         to: to,
-        type: 'Crypto Currency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
+        type: 'Cryptocurrency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
         status: state,
       };
     });
+
+    const totalPage = Math.ceil(totalCount / offset);
 
     /* TODO: dev (20240207 - Shirley)
     // const relatedAddressesRaw = transactionData.flatMap(transaction => {
@@ -115,7 +130,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           id: `${address_id}`,
           type: AddressType.ADDRESS,
           address: `${address_id}`,
-          transactionHistoryData: transactionHistoryData,
+          transactions: transactionHistoryData,
+          transactionCount: totalCount,
+          totalPage: totalPage,
         }
       : undefined;
 

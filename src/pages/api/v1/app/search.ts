@@ -326,61 +326,70 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
     });
 
-    if (addresses.length > 0) {
-      for (const address of addresses) {
-        const blacklists = await prisma.black_lists.findMany({
-          where: {
-            address_id: address.id,
-          },
-          select: {
-            id: true,
-            chain_id: true,
-            created_timestamp: true,
-            address_id: true,
-            public_tag: true,
-          },
-        });
-
-        blacklists.forEach(item => {
-          result.push({
-            type: RESPONSE_DATA_TYPE.BLACKLIST,
-            data: {
-              id: `${item.id}`,
-              chainId: `${item.chain_id}`,
-              createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-              address: `${item.address_id}`,
-              publicTag: item.public_tag ? item.public_tag.split(',') : [], // TODO: 假設 public_tag 是以逗號分隔的字串，如果 schema 改成 string[] 要再改回來 (20240201 - Shirley)
-            },
-          });
-        });
-      }
-    } else if (!searchInput.startsWith('0x') && isValid64BitInteger(searchInput)) {
-      const blacklists = await prisma.black_lists.findMany({
-        where: {
-          address_id: +searchInput,
+    // Info: Find public tags with tag_type "9" matching search input (20240216 - Shirley)
+    const blacklistedAddresses = await prisma.public_tags.findMany({
+      where: {
+        name: {
+          contains: searchInput,
         },
-        select: {
-          id: true,
-          chain_id: true,
-          created_timestamp: true,
-          address_id: true,
-          public_tag: true,
+        tag_type: '9',
+      },
+      select: {
+        id: true,
+        name: true,
+        target: true,
+        target_type: true,
+        created_timestamp: true,
+      },
+    });
+
+    const contractTargets = blacklistedAddresses
+      .filter(tag => tag.target_type === '0')
+      .map(tag => tag.target as string);
+    const addressTargets = blacklistedAddresses
+      .filter(tag => tag.target_type === '1')
+      .map(tag => tag.target as string);
+
+    const contractsChainIds = await prisma.contracts.findMany({
+      where: {
+        contract_address: {in: contractTargets},
+      },
+      select: {
+        contract_address: true,
+        chain_id: true,
+      },
+    });
+
+    const addressesChainIds = await prisma.addresses.findMany({
+      where: {
+        address: {in: addressTargets},
+      },
+      select: {
+        address: true,
+        chain_id: true,
+      },
+    });
+
+    const chainIdMap = new Map();
+
+    contractsChainIds.forEach(contract =>
+      chainIdMap.set(contract.contract_address, contract.chain_id)
+    );
+    addressesChainIds.forEach(address => chainIdMap.set(address.address, address.chain_id));
+
+    blacklistedAddresses.forEach(item => {
+      const chainId = chainIdMap.get(item.target) ?? '';
+      result.push({
+        type: RESPONSE_DATA_TYPE.BLACKLIST,
+        data: {
+          id: `${item?.id}`,
+          chainId: `${chainId}`,
+          createdTimestamp: item?.created_timestamp ? item?.created_timestamp : 0,
+          address: `${item.target}`,
+          publicTag: [`${item.target_type}`],
         },
       });
-
-      blacklists.forEach(item => {
-        result.push({
-          type: RESPONSE_DATA_TYPE.BLACKLIST,
-          data: {
-            id: `${item.id}`,
-            chainId: `${item.chain_id}`,
-            createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-            address: `${item.address_id}`,
-            publicTag: item.public_tag ? item.public_tag.split(',') : [], // TODO: 假設 public_tag 是以逗號分隔的字串，如果 schema 改成 string[] 要再改回來 (20240201 - Shirley)
-          },
-        });
-      });
-    }
+    });
 
     res.status(200).json(result);
   } catch (error) {

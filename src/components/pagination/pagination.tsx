@@ -24,88 +24,148 @@ const Pagination = ({
   pagePrefix,
 }: IPagination) => {
   const [url, setUrl] = useState<URL | null>(null);
-  const [targetPage, setTargetPage, targetPageRef] = useStateRef<number>(1);
+  const [targetPage, setTargetPage, targetPageRef] = useStateRef<number>(activePage);
 
   const buttonStyle =
     'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const currentUrl = new URL(window.location.href);
-      setUrl(currentUrl);
-    }
-  }, []);
+    const handleUrlChange = () => {
+      const url = new URL(window.location.href);
+      const pageParam = url.searchParams.get(pagePrefix ? `${pagePrefix}_page` : 'page');
+      const page = pageParam ? parseInt(pageParam, 10) : 1;
+      if (!isNaN(page) && page !== activePage) {
+        setActivePage(page);
+      }
+    };
 
-  const previousHandler = async () => {
-    const present = activePage - 1;
-    getActivePage && getActivePage(present);
-    setTargetPage(present);
-    setActivePage(present);
-    // Info: (20240115 - Julian) change url query
-    if (url) {
-      paginationClickHandler &&
-        (await paginationClickHandler({
-          // order: SortingType.DESC,
-          page: present,
-          offset: ITEM_PER_PAGE,
-          // begin: url.searchParams.get('begin') || 0,
-          // end: url.searchParams.get('end') || 0,
-          // query: url.searchParams.get('query') || 0,
-        }));
-      url.searchParams.set(`${pagePrefix ? `${pagePrefix}_page` : `page`}`, `${present}`);
-      window.history.replaceState({}, '', url.toString());
+    window.addEventListener('popstate', handleUrlChange);
+    return () => window.removeEventListener('popstate', handleUrlChange);
+  }, [activePage, setActivePage, pagePrefix]);
+
+  useEffect(() => {
+    setTargetPage(activePage);
+  }, [activePage, setTargetPage]);
+
+  const updateUrl = (newPage: number) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set(`${pagePrefix ? `${pagePrefix}_page` : 'page'}`, `${newPage}`);
+    window.history.pushState({}, '', url.toString());
+  };
+
+  const changePage = async (newPage: number) => {
+    setActivePage(newPage);
+    getActivePage && getActivePage(newPage);
+    if (paginationClickHandler) {
+      await paginationClickHandler({page: newPage, offset: ITEM_PER_PAGE});
+    }
+    updateUrl(newPage);
+  };
+
+  const previousHandler = () => {
+    if (activePage > 1) {
+      changePage(activePage - 1);
     }
   };
 
-  const nextHandler = async () => {
-    const present = activePage + 1;
-    getActivePage && getActivePage(present);
-    setTargetPage(present);
-    setActivePage(present);
-    // Info: (20240115 - Julian) change url query
-    if (url) {
-      paginationClickHandler &&
-        (await paginationClickHandler({
-          page: present,
-          offset: ITEM_PER_PAGE,
-        }));
-      url.searchParams.set(`${pagePrefix ? `${pagePrefix}_page` : `page`}`, `${present}`);
-      window.history.replaceState({}, '', url.toString());
+  const nextHandler = () => {
+    if (activePage < totalPages) {
+      changePage(activePage + 1);
     }
   };
 
-  // Info: (20230907 - Julian) 將在 input 輸入的數字放入 targetPage
   const pageChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = +event.target.value;
-    if (value > totalPages) {
-      setTargetPage(totalPages);
-    } else if (value < 1) {
-      setTargetPage(1);
-    } else {
+    const value = Math.min(Math.max(1, parseInt(event.target.value, 10)), totalPages);
+    if (!isNaN(value)) {
       setTargetPage(value);
     }
   };
 
-  // Info: (20230907 - Julian) 按下 Enter 後，將 targetPage 設定給 activePage
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      setActivePage(targetPageRef.current);
-      // Info: (20240115 - Julian) change url query
-      if (url) {
-        paginationClickHandler &&
-          paginationClickHandler({
-            page: targetPageRef.current,
-            offset: ITEM_PER_PAGE,
-          });
-        url.searchParams.set(
-          `${pagePrefix ? `${pagePrefix}_page` : `page`}`,
-          `${targetPageRef.current}`
-        );
-        window.history.replaceState({}, '', url.toString());
-      }
+    if (event.key === 'Enter' && targetPageRef.current !== activePage) {
+      changePage(targetPageRef.current);
     }
   };
+
+  /* Deprecated: (20240223 - Shirley)
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const currentUrl = new URL(window.location.href);
+  //     setUrl(currentUrl);
+  //   }
+  // }, []);
+
+  // const previousHandler = async () => {
+  //   const present = activePage - 1;
+  //   getActivePage && getActivePage(present);
+  //   setTargetPage(present);
+  //   setActivePage(present);
+  //   // Info: (20240115 - Julian) change url query
+  //   if (url) {
+  //     paginationClickHandler &&
+  //       (await paginationClickHandler({
+  //         // order: SortingType.DESC,
+  //         page: present,
+  //         offset: ITEM_PER_PAGE,
+  //         // begin: url.searchParams.get('begin') || 0,
+  //         // end: url.searchParams.get('end') || 0,
+  //         // query: url.searchParams.get('query') || 0,
+  //       }));
+  //     url.searchParams.set(`${pagePrefix ? `${pagePrefix}_page` : `page`}`, `${present}`);
+  //     window.history.replaceState({}, '', url.toString());
+  //   }
+  // };
+
+  // const nextHandler = async () => {
+  //   const present = activePage + 1;
+  //   getActivePage && getActivePage(present);
+  //   setTargetPage(present);
+  //   setActivePage(present);
+  //   // Info: (20240115 - Julian) change url query
+  //   if (url) {
+  //     paginationClickHandler &&
+  //       (await paginationClickHandler({
+  //         page: present,
+  //         offset: ITEM_PER_PAGE,
+  //       }));
+  //     url.searchParams.set(`${pagePrefix ? `${pagePrefix}_page` : `page`}`, `${present}`);
+  //     window.history.replaceState({}, '', url.toString());
+  //   }
+  // };
+
+  // // Info: (20230907 - Julian) 將在 input 輸入的數字放入 targetPage
+  // const pageChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = +event.target.value;
+  //   if (value > totalPages) {
+  //     setTargetPage(totalPages);
+  //   } else if (value < 1) {
+  //     setTargetPage(1);
+  //   } else {
+  //     setTargetPage(value);
+  //   }
+  // };
+
+  // // Info: (20230907 - Julian) 按下 Enter 後，將 targetPage 設定給 activePage
+  // const handleKeyDown = (event: React.KeyboardEvent) => {
+  //   if (event.key === 'Enter') {
+  //     event.preventDefault();
+  //     setActivePage(targetPageRef.current);
+  //     // Info: (20240115 - Julian) change url query
+  //     if (url) {
+  //       paginationClickHandler &&
+  //         paginationClickHandler({
+  //           page: targetPageRef.current,
+  //           offset: ITEM_PER_PAGE,
+  //         });
+  //       url.searchParams.set(
+  //         `${pagePrefix ? `${pagePrefix}_page` : `page`}`,
+  //         `${targetPageRef.current}`
+  //       );
+  //       window.history.replaceState({}, '', url.toString());
+  //     }
+  //   }
+  // };
+  */
 
   const previousBtn = (
     <button

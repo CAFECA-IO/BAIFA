@@ -10,7 +10,7 @@ import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
 import {IBlock, IBlockDetail, IProducedBlock, IProductionBlock} from '../interfaces/block';
-import {ITransaction, ITransactionDetail} from '../interfaces/transaction';
+import {ITransaction, ITransactionData, ITransactionDetail} from '../interfaces/transaction';
 import {
   IAddressBrief,
   IAddressDetail,
@@ -58,7 +58,7 @@ export interface IMarketContext {
     chainId: string,
     addressId: string,
     options?: IAddressHistoryQuery
-  ) => Promise<ITransaction[]>;
+  ) => Promise<ITransactionData>;
   getAddressProducedBlocks: (
     chainId: string,
     addressId: string,
@@ -97,7 +97,7 @@ export const MarketContext = createContext<IMarketContext>({
   getTransactionList: () => Promise.resolve({} as ITransaction[]),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressBrief: () => Promise.resolve({} as IAddressBrief),
-  getAddressRelatedTransactions: () => Promise.resolve([] as ITransaction[]),
+  getAddressRelatedTransactions: () => Promise.resolve({} as ITransactionData),
   getAddressProducedBlocks: () => Promise.resolve({} as IProducedBlock),
   getReviews: () => Promise.resolve({} as IReviews),
   getRedFlagsFromAddress: () => Promise.resolve([] as IRedFlag[]),
@@ -341,7 +341,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
 
   const getAddressRelatedTransactions = useCallback(
     async (chainId: string, addressId: string, options?: IAddressHistoryQuery) => {
-      let data: ITransaction[] = [];
+      let data: ITransactionData = {transactions: [], transactionCount: 0, totalPage: 0};
       try {
         // Build the query string from the options object
         const queryParams = new URLSearchParams();
@@ -365,7 +365,11 @@ export const MarketProvider = ({children}: IMarketProvider) => {
           method: 'GET',
         });
         const result = (await response.json()) as IAddressRelatedTransaction;
-        data = result.transactionHistoryData;
+        data = {
+          transactions: result.transactions,
+          transactionCount: result.transactionCount,
+          totalPage: result.totalPage,
+        };
       } catch (error) {
         //console.log('getAddressRelatedTransactions error', error);
       }
@@ -379,7 +383,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     addressId: string,
     options?: IAddressHistoryQuery
   ) => {
-    let data: IProducedBlock = {blockData: [], blockCount: 0};
+    let data: IProducedBlock = {blockData: [], blockCount: 0, totalPage: 0};
     try {
       // Build the query string from the options object
       const queryParams = new URLSearchParams();
@@ -402,7 +406,11 @@ export const MarketProvider = ({children}: IMarketProvider) => {
         method: 'GET',
       });
       const result = (await response.json()) as IAddressProducedBlock;
-      data = {blockData: result.blockData, blockCount: result.blockCount};
+      data = {
+        blockData: result.blockData,
+        blockCount: result.blockCount,
+        totalPage: result.totalPage,
+      };
     } catch (error) {
       //console.log('getAddressProducedBlocks error', error);
     }

@@ -20,7 +20,9 @@ import {IAddressBrief, IAddressDetail} from '../../../../../../interfaces/addres
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
 import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
-import TransactionHistorySection from '../../../../../../components/transaction_history_section/transaction_history_section';
+import TransactionHistorySection, {
+  TransactionDataType,
+} from '../../../../../../components/transaction_history_section/transaction_history_section';
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
@@ -53,7 +55,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const appCtx = useContext(AppContext);
   const {getAddressBrief, getAddressRelatedTransactions, getAddressProducedBlocks} =
     useContext(MarketContext);
-  const detailedAddressCtx = useContext(AddressDetailsContext);
+  const addressDetailsCtx = useContext(AddressDetailsContext);
 
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
 
@@ -87,7 +89,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     }
 
     const init = async (chainId: string, addressId: string) => {
-      await detailedAddressCtx.init(chainId, addressId);
+      await addressDetailsCtx.init(chainId, addressId);
     };
 
     const getAddressBriefData = async (chainId: string, addressId: string) => {
@@ -99,18 +101,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       }
     };
 
-    const getTransactionHistoryData = async (chainId: string, addressId: string) => {
-      try {
-        const data = await getAddressRelatedTransactions(chainId, addressId);
-        setTransactionData(data);
-      } catch (error) {
-        //console.log('getTransactionHistoryData error', error);
-      }
-    };
-
     init(chainId, addressId);
     getAddressBriefData(chainId, addressId);
-    getTransactionHistoryData(chainId, addressId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -204,7 +196,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const displayedTransactionHistory = !isLoading ? (
     <TransactionHistorySection
       transactions={transactionData}
-      loading={detailedAddressCtx.transactionsLoading}
+      dataType={TransactionDataType.ADDRESS_DETAILS}
     />
   ) : (
     // ToDo: (20231213 - Julian) Add loading animation
@@ -213,8 +205,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
   const displayedBlockProducedHistory = !isLoading ? (
     <BlockProducedHistorySection
-      blocks={detailedAddressCtx.producedBlocks.blockData}
-      totalBlocks={detailedAddressCtx.producedBlocks.blockCount}
+      blocks={addressDetailsCtx.producedBlocks.blockData}
+      totalBlocks={addressDetailsCtx.producedBlocks.blockCount}
     />
   ) : (
     // ToDo: (20231213 - Julian) Add loading animation

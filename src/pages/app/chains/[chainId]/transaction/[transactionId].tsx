@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import {useContext, useEffect, useRef, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
@@ -33,7 +33,6 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
 
   const headTitle = `${t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')} ${transactionId} - BAIFA`;
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [transactionData, setTransactionData] = useState<ITransactionDetail>(
     {} as ITransactionDetail
   );
@@ -58,24 +57,13 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
     if (transactionData) {
       setTransactionData(transactionData);
     }
-    timerRef.current = setTimeout(() => setIsLoading(false), 500);
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
   }, [transactionData]);
 
   const backClickHandler = () => router.back();
-
-  // Info: (20240130 - Julian) 如果拿不到 transactionData，就顯示 Data not found
-  if (!transactionData.id) return <h1>Data not found</h1>;
 
   // Info: (20231017 - Julian) 有 flagging 的話，就顯示 Add in Tracing Tool 按鈕
   const isAddInTracingTool =
@@ -83,7 +71,7 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
       ? 'block'
       : 'hidden';
 
-  const displayedHeader = !isLoading ? (
+  const displayedHeader = (
     <div className="relative flex w-full flex-col items-center justify-start lg:flex-row">
       {/* Info: (20230912 -Julian) Back Arrow Button */}
       <button onClick={backClickHandler} className="hidden lg:block">
@@ -124,16 +112,6 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
         </Link>
       </div>
     </div>
-  ) : (
-    // ToDo: (20231213 - Julian) Loading Animation
-    <></>
-  );
-
-  const displayedTransactionDetail = !isLoading ? (
-    <TransactionDetail transactionData={transactionData} />
-  ) : (
-    // ToDo: (20231213 - Julian) Loading Animation
-    <h1>Loading...</h1>
   );
 
   return (
@@ -151,7 +129,9 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
             {displayedHeader}
 
             {/* Info: (20230907 - Julian) Transaction Detail */}
-            <div className="my-10 w-full">{displayedTransactionDetail}</div>
+            <div className="my-10 w-full">
+              <TransactionDetail transactionData={transactionData} />
+            </div>
 
             <div className="w-full">
               <PrivateNoteSection />

@@ -1,5 +1,5 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
-import {ITransaction} from '../interfaces/transaction';
+import React, {createContext, useContext, useEffect} from 'react';
+import {ITransactionData} from '../interfaces/transaction';
 import {IProducedBlock} from '../interfaces/block';
 import useStateRef from 'react-usestateref';
 import {MarketContext} from './market_context';
@@ -13,7 +13,7 @@ export interface IAddressDetailsProvider {
 }
 
 export interface IAddressDetailsContext {
-  transactions: ITransaction[];
+  transactions: ITransactionData;
   producedBlocks: IProducedBlock;
   clickBlockPagination: (
     options: IAddressHistoryQuery,
@@ -45,10 +45,11 @@ export interface IAddressDetailsContext {
 }
 
 export const AddressDetailsContext = createContext<IAddressDetailsContext>({
-  transactions: [],
+  transactions: {transactions: [], transactionCount: 0, totalPage: 0},
   producedBlocks: {
     blockData: [],
     blockCount: 0,
+    totalPage: 0,
   },
   init: () => Promise.resolve(),
   clickBlockPagination: () => Promise.resolve(),
@@ -71,30 +72,61 @@ export const AddressDetailsContext = createContext<IAddressDetailsContext>({
   clickTransactionDatePicker: () => Promise.resolve(),
 });
 
-// Create the context provider component
 export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   const marketCtx = useContext(MarketContext);
-  const [transactions, setTransactions, transactionsRef] = useStateRef<ITransaction[]>([]);
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [transactions, setTransactions, transactionsRef] = useStateRef<ITransactionData>({
+    transactions: [],
+    transactionCount: 0,
+    totalPage: 0,
+  });
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [producedBlocks, setProducedBlocks, producedBlocksRef] = useStateRef<IProducedBlock>({
     blockData: [],
     blockCount: 0,
+    totalPage: 0,
   });
-
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [blocksLoading, setBlocksLoading, blocksLoadingRef] = useStateRef(false);
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [blocksOrder, setBlocksOrder, blocksOrderRef] = useStateRef<SortingType>(SortingType.DESC);
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [blocksPage, setBlocksPage, blocksPageRef] = useStateRef(DEFAULT_PAGE);
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [blocksOffset, setBlocksOffset, blocksOffsetRef] = useStateRef(ITEM_PER_PAGE);
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [blocksStart, setBlocksStart, blocksStartRef] = useStateRef(0);
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [blocksEnd, setBlocksEnd, blocksEndRef] = useStateRef(Date.now());
 
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionsLoading, setTransactionsLoading, transactionsLoadingRef] = useStateRef(false);
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionsOrder, setTransactionsOrder, transactionsOrderRef] = useStateRef<SortingType>(
     SortingType.DESC
   );
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionsPage, setTransactionsPage, transactionsPageRef] = useStateRef(DEFAULT_PAGE);
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionsOffset, setTransactionsOffset, transactionsOffsetRef] =
     useStateRef(ITEM_PER_PAGE);
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionsStart, setTransactionsStart, transactionsStartRef] = useStateRef(0);
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionsEnd, setTransactionsEnd, transactionsEndRef] = useStateRef(Date.now());
 
   const router = useRouter();
@@ -119,7 +151,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
       options
     );
     setTransactions(prev => {
-      return [...transactionsRef.current, ...transactionData];
+      return {...transactionsRef.current, ...transactionData};
     });
     setTransactionsLoading(false);
   };
@@ -176,7 +208,6 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     );
 
     // TODO: develop the logic to get the data (20240207 - Shirley)
-    // console.log('startSeconds', startSeconds, 'endSeconds', endSeconds, 'blockData', blockData);
     setProducedBlocks(blockData);
     setBlocksLoading(false);
   };
@@ -259,10 +290,11 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
         // end_date: Date.now(),
       }
     );
-
     setTransactions(transactionData);
     setBlocksLoading(false);
     setTransactionsLoading(false);
+
+    return await Promise.resolve();
   };
 
   useEffect(() => {

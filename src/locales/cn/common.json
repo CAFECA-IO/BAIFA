@@ -127,7 +127,13 @@
     "EXTRA_DATA": "额外资料",
     "CONTENT": "内容",
     "MINER_REWARD": "矿工 & 报酬",
-    "SIZE": "区块大小"
+    "SIZE": "区块大小",
+    "STABILITY_TOOLTIP": "区块资料的信赖等级",
+    "TIME_TOOLTIP": "区块生成的日期与时间。",
+    "CONTENT_TOOLTIP": "区块上的交易记录，包括交易的发送者、接收者、金额和时间。",
+    "MINER_REWARD_TOOLTIP": "挖掘此区块的矿工地址，以及他们获得的区块奖励",
+    "EXTRA_DATA_TOOLTIP": "由区块生产者储存在区块中的任意内容。",
+    "SIZE_TOOLTIP": "区块的实际大小是由区块的燃料限制所决定。"
   },
   "TRANSACTION_DETAIL_PAGE": {
     "MAIN_TITLE": "交易",
@@ -140,7 +146,17 @@
     "CONTENT": "内容",
     "VALUE": "金额",
     "FEE": "手续费",
-    "FLAGGING": "警示记录"
+    "FLAGGING": "警示记录",
+    "HASH_TOOLTIP": "交易的唯一识别码。",
+    "STATUS_TOOLTIP": "交易的状态，包括成功、失败、处理中。",
+    "BLOCK_TOOLTIP": "交易所属的区块。",
+    "TIME_TOOLTIP": "交易完成的日期与时间。",
+    "FROM_TOOLTIP": "交易的发送者。",
+    "TO_TOOLTIP": "交易的接收者，有可能是合约地址。",
+    "CONTENT_TOOLTIP": "交易的详细内容，包括证据等相关资讯。",
+    "VALUE_TOOLTIP": "表示交易中涉及的价值量，通常用来表示加密货币或其他资产的数量或价值。",
+    "FEE_TOOLTIP": "支付给处理交易的矿工之费用。",
+    "FLAGGING_TOOLTIP": "标记可疑或有警示记录的交易。"
   },
   "TRANSACTION_LIST_PAGE": {
     "HEAD_TITLE_BLOCK": "交易列表之区块",
@@ -169,7 +185,11 @@
     "CONTRACT_ADDRESS": "合约地址",
     "CREATOR": "建立者",
     "CREATING_TIME": "建立时间",
-    "SOURCE_CODE": "原始码"
+    "SOURCE_CODE": "合约原始码",
+    "CONTRACT_ADDRESS_TOOLTIP": "合约的唯一识别码。",
+    "CREATOR_TOOLTIP": "合约的建立者。",
+    "CREATING_TIME_TOOLTIP": "合约在区块链上建立日期与时间。",
+    "SOURCE_CODE_TOOLTIP": "合约的原始码内容，可供审核与分析。"
   },
   "EVIDENCE_DETAIL_PAGE": {
     "MAIN_TITLE": "证据",
@@ -179,8 +199,13 @@
     "CREATING_TIME": "建立时间",
     "CONTENT": "内容",
     "STATE_PUBLIC": "公开",
-    "STATE_PRIVATE": "私人",
-    "DOWNLOAD_EVIDENCE_BUTTON": "下载证据"
+    "STATE_PRIVATE": "非公开",
+    "DOWNLOAD_EVIDENCE_BUTTON": "下载证据",
+    "EVIDENCE_ADDRESS_TOOLTIP": "证据的唯一识别码。",
+    "STATE_TOOLTIP": "证据为公开或非公开状态。",
+    "CREATOR_TOOLTIP": "证据的建立者。",
+    "CREATING_TIME_TOOLTIP": "证据在区块链上建立日期与时间。",
+    "CONTENT_TOOLTIP": "证据的详细内容，只有拥有存取权限的帐号才能查看。"
   },
   "INTERACTION_LIST_PAGE": {
     "MAIN_TITLE_HIGHLIGHT": "互动",
