@@ -70,16 +70,6 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [period, setPeriod] = useState(default30DayPeriod);
 
-  /* Deprecated: (20240220 - Shirley) 
-  // const endIdx = activePage * ITEM_PER_PAGE;
-  // const startIdx = endIdx - ITEM_PER_PAGE;
-
-  // const getActivePage = (page: number) => {
-  //   console.log('getActivePage', page);
-  //   setActivePage(page);
-  // };
-  */
-
   useEffect(() => {
     const searchResult = [...addressDetailsCtx.producedBlocks.blockData]; // Info: (20231103 - Julian) filter by search term
     /* TODO: (20240207 - Shirley) filter by search term
@@ -115,7 +105,8 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
 
     */
     setFilteredBlocks(prev => searchResult);
-    setTotalPages(Math.floor(addressDetailsCtx.producedBlocks.blockCount / ITEM_PER_PAGE));
+    setTotalPages(addressDetailsCtx.producedBlocks.totalPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressDetailsCtx.producedBlocks, search, sorting, period]);
 
   // Info: (20240103 - Julian) The count of blocks
@@ -176,7 +167,7 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
   const displayedBlocks = <>{addressDetailsCtx.blocksLoading ? blockListSkeleton : blockList}</>;
 
   const blockPaginationHandler = async ({page, offset}: {page: number; offset: number}) => {
-    addressDetailsCtx.clickBlockPagination({
+    await addressDetailsCtx.clickBlockPagination({
       page,
       offset: offset,
       order: addressDetailsCtx.blocksOrder,
@@ -236,8 +227,7 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
         <Pagination
           paginationClickHandler={blockPaginationHandler}
           loading={addressDetailsCtx.blocksLoading}
-          pagePrefix={`block_produced`}
-          // getActivePage={getActivePage}
+          pagePrefix={`blocks`}
           activePage={activePage}
           setActivePage={setActivePage}
           totalPages={totalPages}

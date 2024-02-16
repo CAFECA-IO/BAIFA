@@ -3,7 +3,7 @@ import {IProducedBlock, IProductionBlock} from './block';
 import {ICommonData} from './common_data';
 import {IInteractionItem} from './interaction_item';
 import {IReviewDetail} from './review';
-import {IDisplayTransaction, ITransaction} from './transaction';
+import {IDisplayTransaction, ITransaction, ITransactionData} from './transaction';
 
 export interface IAddress extends ICommonData {
   address: string;
@@ -23,11 +23,10 @@ export interface IAddressBrief extends IAddress {
   totalReceived?: number;
 }
 
-export interface IAddressRelatedTransaction {
+export interface IAddressRelatedTransaction extends ITransactionData {
   id: string;
   type: AddressType.ADDRESS | AddressType.CONTRACT;
   address: string;
-  transactionHistoryData: ITransaction[];
 }
 
 export interface IAddressProducedBlock extends IProducedBlock {
@@ -76,20 +75,23 @@ export const dummyAddress: IAddressDetail = {
   interactedContactCount: 0,
   score: 0,
   reviewData: [],
-  transactionHistoryData: [],
+  transactions: [],
   transactionCount: 0,
   blockData: [],
   flaggingCount: 0,
   riskLevel: 'LOW_RISK',
   publicTag: [],
   blockCount: 0,
+  totalPage: 0,
 };
 
 export const dummyAddressRelatedTransaction: IAddressRelatedTransaction = {
   id: '1',
   type: AddressType.ADDRESS,
   address: '0x',
-  transactionHistoryData: [],
+  transactions: [],
+  transactionCount: 0,
+  totalPage: 0,
 };
 
 export const dummyAddressProducedBlock: IAddressProducedBlock = {
@@ -99,4 +101,5 @@ export const dummyAddressProducedBlock: IAddressProducedBlock = {
   chainId: '1',
   blockData: [],
   blockCount: 0,
+  totalPage: 0,
 };

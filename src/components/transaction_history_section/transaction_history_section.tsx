@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect, use} from 'react';
+import {useState, useEffect, use, useContext} from 'react';
 import useStateRef from 'react-usestateref';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
@@ -10,11 +10,23 @@ import {ITEM_PER_PAGE, sortOldAndNewOptions, default30DayPeriod} from '../../con
 import {timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
-import {IDisplayTransaction} from '../../interfaces/transaction';
+import {IDisplayTransaction, ITransactionData} from '../../interfaces/transaction';
 import DatePicker from '../date_picker/date_picker';
+import {AddressDetailsContext} from '../../contexts/address_details_context';
+import {
+  IAddressTransactionQuery,
+  IPaginationOptions,
+  SortingType,
+} from '../../constants/api_request';
+
+export enum TransactionDataType {
+  ADDRESS_DETAILS = 'ADDRESS_DETAILS',
+}
 
 interface ITransactionHistorySectionProps {
   transactions: IDisplayTransaction[];
+  // transactionData?: ITransactionData;
+  dataType?: TransactionDataType;
   loading?: boolean;
 }
 
@@ -43,38 +55,62 @@ const listSkeleton = (
   </div>
 );
 
-const TransactionHistorySection = ({transactions, loading}: ITransactionHistorySectionProps) => {
+const TransactionHistorySection = ({
+  transactions,
+  // transactionData,
+  dataType,
+  loading,
+}: ITransactionHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const addressDetailsCtx = useContext(AddressDetailsContext);
+  const defaultPages =
+    dataType === TransactionDataType.ADDRESS_DETAILS
+      ? addressDetailsCtx.transactions.totalPage
+      : Math.ceil(1 / ITEM_PER_PAGE);
 
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(1 / ITEM_PER_PAGE));
-
-  const [filteredTransactions, setFilteredTransactions] =
-    useState<IDisplayTransaction[]>(transactions);
+  const [totalPages, setTotalPages] = useState(defaultPages);
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [period, setPeriod] = useState(default30DayPeriod);
   const [transactionCount, setTransactionCount] = useState(0);
-  const [loadingState, setLoadingState] = useState(loading);
+
+  const transactionData =
+    dataType === TransactionDataType.ADDRESS_DETAILS ? addressDetailsCtx.transactions : null;
+
+  const [filteredTransactions, setFilteredTransactions] = useState<IDisplayTransaction[]>(
+    transactionData?.transactions ?? transactions
+  );
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
   // Info: (20240103 - Julian) Update the address options when transactions are updated
   useEffect(() => {
-    setFilteredTransactions(transactions);
-    setTransactionCount(transactions.length);
-    setTotalPages(Math.ceil(transactions.length / ITEM_PER_PAGE));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transactions]);
+    const transaction = transactionData?.transactions
+      ? transactionData?.transactions
+      : transactions;
 
-  useEffect(() => {
-    setLoadingState(loading);
-  }, [loading]);
+    const count =
+      dataType === TransactionDataType.ADDRESS_DETAILS
+        ? addressDetailsCtx.transactions.transactionCount
+        : transactions.length;
+
+    const pages =
+      dataType === TransactionDataType.ADDRESS_DETAILS
+        ? addressDetailsCtx.transactions.totalPage
+        : count / ITEM_PER_PAGE;
+
+    setFilteredTransactions(transaction);
+    setTransactionCount(count);
+    setTotalPages(pages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactionData, transactions]);
 
   // Info: (20231113 - Julian) Filter by search term, to address, and sorting
   useEffect(() => {
-    const searchResult = transactions // Info: (20231113 - Julian) filter by search term
+    const searchResult = (transactionData?.transactions ?? transactions)
+      // Info: (20231113 - Julian) filter by search term
       .filter((transaction: IDisplayTransaction) => {
         const searchTerm = searchRef.current.toLowerCase();
         const transactionId = transaction.id.toString().toLowerCase();
@@ -102,81 +138,186 @@ const TransactionHistorySection = ({transactions, loading}: ITransactionHistoryS
             a.createdTimestamp - b.createdTimestamp;
       });
 
+    const pages =
+      dataType === TransactionDataType.ADDRESS_DETAILS
+        ? addressDetailsCtx.transactions.totalPage
+        : Math.ceil(searchResult.length / ITEM_PER_PAGE);
+
     setFilteredTransactions(searchResult);
-    setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
-    setActivePage(1);
+    setTotalPages(pages);
+    // setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, sorting, period]);
 
   // Info: (20240103 - Julian) The count of transaction history
-  // const transactionCount = transactions ? transactions.length : 0;
+  // const transactionCount =
+  //   dataType === TransactionDataType.ADDRESS_DETAILS
+  //     ? addressDetailsCtx.transactions.transactionCount
+  //     : transactions.length;
 
   // Info: (20231113 - Julian) Pagination
   const transactionList = filteredTransactions
-    ? filteredTransactions.slice(startIdx, endIdx).map((transaction, index) => {
-        const {id, chainId, createdTimestamp, status} = transaction;
-        const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
+    ? TransactionDataType.ADDRESS_DETAILS
+      ? filteredTransactions.map((transaction, index) => {
+          const {id, chainId, createdTimestamp, status} = transaction;
+          const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
 
-        const createdStr = timestampToString(createdTimestamp);
-        // Info: (20231113 - Julian) If month is longer than 3 letters, slice it and add a dot
-        const monthStr =
-          t(createdStr.month).length > 3
-            ? `${t(createdStr.month).slice(0, 3)}.`
-            : t(createdStr.month);
+          const createdStr = timestampToString(createdTimestamp);
+          // Info: (20231113 - Julian) If month is longer than 3 letters, slice it and add a dot
+          const monthStr =
+            t(createdStr.month).length > 3
+              ? `${t(createdStr.month).slice(0, 3)}.`
+              : t(createdStr.month);
 
-        const statusStyle =
-          status === 'Pending'
-            ? {
-                str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
-                icon: '/animations/trade_processing.gif',
-                style: 'text-hoverWhite',
-              }
-            : status === 'Success'
-            ? {
-                str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
-                icon: '/icons/success_icon.svg',
-                style: 'text-lightGreen',
-              }
-            : {
-                str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
-                icon: '/icons/failed_icon.svg',
-                style: 'text-lightRed',
-              };
+          const statusStyle =
+            status === 'Pending'
+              ? {
+                  str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
+                  icon: '/animations/trade_processing.gif',
+                  style: 'text-hoverWhite',
+                }
+              : status === 'Success'
+              ? {
+                  str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
+                  icon: '/icons/success_icon.svg',
+                  style: 'text-lightGreen',
+                }
+              : {
+                  str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
+                  icon: '/icons/failed_icon.svg',
+                  style: 'text-lightRed',
+                };
 
-        return (
-          // Info: (20231113 - Julian) Transaction History Item
-          <div key={index} className="flex h-60px w-full items-center">
-            {/* Info: (20231113 - Julian) Create Time square */}
-            <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-purpleLinear">
-              <p className="text-xl">{createdStr.day}</p>
-              <p className="text-xs">{monthStr}</p>
-              <p className="text-xs text-lilac">{createdStr.time}</p>
-            </div>
-            <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
-              {/* Info: (20231113 - Julian) Transaction ID & Type */}
-              <Link href={transactionLink} className="inline-flex flex-1 items-baseline space-x-2">
-                <h2 className="text-sm lg:text-xl">
-                  {t('COMMON.TRANSACTION_HISTORY_TRANSACTION_ID')}
-                  <span className="text-primaryBlue"> {transaction.id}</span>
-                </h2>
-              </Link>
-              {/* Info: (20231113 - Julian) Status */}
-              <div className="flex items-center space-x-2 px-2">
-                <Image
-                  src={statusStyle.icon}
-                  width={16}
-                  height={16}
-                  alt={`${statusStyle.str}_icon`}
-                />
-                <p className={`hidden text-sm lg:block ${statusStyle.style}`}>{statusStyle.str}</p>
+          return (
+            // Info: (20231113 - Julian) Transaction History Item
+            <div key={index} className="flex h-60px w-full items-center">
+              {/* Info: (20231113 - Julian) Create Time square */}
+              <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-purpleLinear">
+                <p className="text-xl">{createdStr.day}</p>
+                <p className="text-xs">{monthStr}</p>
+                <p className="text-xs text-lilac">{createdStr.time}</p>
+              </div>
+              <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
+                {/* Info: (20231113 - Julian) Transaction ID & Type */}
+                <Link
+                  href={transactionLink}
+                  className="inline-flex flex-1 items-baseline space-x-2"
+                >
+                  <h2 className="text-sm lg:text-xl">
+                    {t('COMMON.TRANSACTION_HISTORY_TRANSACTION_ID')}
+                    <span className="text-primaryBlue"> {transaction.id}</span>
+                  </h2>
+                </Link>
+                {/* Info: (20231113 - Julian) Status */}
+                <div className="flex items-center space-x-2 px-2">
+                  <Image
+                    src={statusStyle.icon}
+                    width={16}
+                    height={16}
+                    alt={`${statusStyle.str}_icon`}
+                  />
+                  <p className={`hidden text-sm lg:block ${statusStyle.style}`}>
+                    {statusStyle.str}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })
+          );
+        })
+      : filteredTransactions.slice(startIdx, endIdx).map((transaction, index) => {
+          const {id, chainId, createdTimestamp, status} = transaction;
+          const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
+
+          const createdStr = timestampToString(createdTimestamp);
+          // Info: (20231113 - Julian) If month is longer than 3 letters, slice it and add a dot
+          const monthStr =
+            t(createdStr.month).length > 3
+              ? `${t(createdStr.month).slice(0, 3)}.`
+              : t(createdStr.month);
+
+          const statusStyle =
+            status === 'Pending'
+              ? {
+                  str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
+                  icon: '/animations/trade_processing.gif',
+                  style: 'text-hoverWhite',
+                }
+              : status === 'Success'
+              ? {
+                  str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
+                  icon: '/icons/success_icon.svg',
+                  style: 'text-lightGreen',
+                }
+              : {
+                  str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
+                  icon: '/icons/failed_icon.svg',
+                  style: 'text-lightRed',
+                };
+
+          return (
+            // Info: (20231113 - Julian) Transaction History Item
+            <div key={index} className="flex h-60px w-full items-center">
+              {/* Info: (20231113 - Julian) Create Time square */}
+              <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-purpleLinear">
+                <p className="text-xl">{createdStr.day}</p>
+                <p className="text-xs">{monthStr}</p>
+                <p className="text-xs text-lilac">{createdStr.time}</p>
+              </div>
+              <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
+                {/* Info: (20231113 - Julian) Transaction ID & Type */}
+                <Link
+                  href={transactionLink}
+                  className="inline-flex flex-1 items-baseline space-x-2"
+                >
+                  <h2 className="text-sm lg:text-xl">
+                    {t('COMMON.TRANSACTION_HISTORY_TRANSACTION_ID')}
+                    <span className="text-primaryBlue"> {transaction.id}</span>
+                  </h2>
+                </Link>
+                {/* Info: (20231113 - Julian) Status */}
+                <div className="flex items-center space-x-2 px-2">
+                  <Image
+                    src={statusStyle.icon}
+                    width={16}
+                    height={16}
+                    alt={`${statusStyle.str}_icon`}
+                  />
+                  <p className={`hidden text-sm lg:block ${statusStyle.style}`}>
+                    {statusStyle.str}
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })
     : [];
 
-  const displayedTransactionList = !loading ? transactionList : listSkeleton;
+  const displayedTransactionList =
+    dataType === TransactionDataType.ADDRESS_DETAILS
+      ? !addressDetailsCtx.transactionsLoading
+        ? transactionList
+        : listSkeleton
+      : transactionList;
+
+  const paginationClickHandler = async ({page, offset}: {page: number; offset: number}) => {
+    if (dataType === TransactionDataType.ADDRESS_DETAILS) {
+      await addressDetailsCtx.clickTransactionPagination({
+        page,
+        offset,
+        order: addressDetailsCtx.transactionsOrder,
+      });
+    }
+    // Info: (20240216 - Shirley) default case
+    return Promise.resolve();
+  };
+
+  const sortingClickHandler = async ({order}: {order: SortingType}) => {
+    if (dataType === TransactionDataType.ADDRESS_DETAILS) {
+      await addressDetailsCtx.clickTransactionSortingMenu(order);
+    }
+    // Info: (20240216 - Shirley) default case
+    return Promise.resolve();
+  };
 
   return (
     <div className="flex w-full flex-col space-y-4">
@@ -201,6 +342,7 @@ const TransactionHistorySection = ({transactions, loading}: ITransactionHistoryS
                 sorting={sorting}
                 setSorting={setSorting}
                 bgColor="bg-purpleLinear"
+                sortingHandler={sortingClickHandler}
               />
             </div>
           </div>
@@ -212,7 +354,14 @@ const TransactionHistorySection = ({transactions, loading}: ITransactionHistoryS
         </div>
         {/* Info: (20231113 - Julian) To Address List */}
         <div className="my-10 flex w-full flex-1 flex-col">{displayedTransactionList}</div>
-        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
+        <Pagination
+          paginationClickHandler={paginationClickHandler}
+          loading={addressDetailsCtx.transactionsLoading}
+          pagePrefix={`transaction`}
+          activePage={activePage}
+          setActivePage={setActivePage}
+          totalPages={totalPages}
+        />
       </div>
     </div>
   );

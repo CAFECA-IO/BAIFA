@@ -3,7 +3,6 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
 import {IEvidenceDetail} from '../../../../../../../interfaces/evidence';
-import {FAILED_TRANSACTION_STATUS_CODE} from '../../../../../../../constants/config';
 
 type ResponseData = IEvidenceDetail | undefined;
 
