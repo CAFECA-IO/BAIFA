@@ -7,11 +7,15 @@ import {IDisplayTransaction} from '../../interfaces/transaction';
 import SearchBar from '../search_bar/search_bar';
 import DatePicker from '../date_picker/date_picker';
 import SortingMenu from '../sorting_menu/sorting_menu';
-import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
+import {default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
 import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
 
-const TransactionTab = () => {
+interface ITransactionTabProps {
+  totalPages: number;
+}
+
+const TransactionTab = ({totalPages}: ITransactionTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const {getTransactions} = useContext(MarketContext);
@@ -23,11 +27,6 @@ const TransactionTab = () => {
   const [search, setSearch] = useState('');
   const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Info: (20240215 - Julian) 計算總頁數
-  const [totalPages, setTotalPages] = useState<number>(
-    Math.ceil(transactionData.length / ITEM_PER_PAGE)
-  );
   const [activePage, setActivePage] = useState(1);
 
   // Info: (20240119 - Julian) 設定 API 查詢參數
@@ -43,8 +42,6 @@ const TransactionTab = () => {
   const getTransactionData = async () => {
     const data = await getTransactions(chainId, apiQueryStr);
     setTransactionData(data);
-    // Info: (20240215 - Julian) 每次拿到新資料，就重新計算總頁數
-    setTotalPages(Math.ceil(data.length / ITEM_PER_PAGE));
   };
 
   useEffect(() => {

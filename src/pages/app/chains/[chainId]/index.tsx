@@ -14,7 +14,7 @@ import {IChainDetail} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
-import {DEFAULT_CHAIN_ICON, chainList} from '../../../../constants/config';
+import {DEFAULT_CHAIN_ICON, ITEM_PER_PAGE, chainList} from '../../../../constants/config';
 import {getChainIcon} from '../../../../lib/common';
 
 export interface IChainDetailPageProps {
@@ -34,6 +34,9 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const [activeTab, setActiveTab] = useState<ChainDetailTab>(ChainDetailTab.BLOCKS);
   const [chainData, setChainData] = useState<IChainDetail>({} as IChainDetail);
   const [isLoading, setIsLoading] = useState(true);
+  // Info: (20240217 - Julian) blockList 和 transactionList 的總頁數
+  const [blockTotalPages, setBlockTotalPages] = useState<number>(0);
+  const [transactionTotalPages, setTransactionTotalPages] = useState<number>(0);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -56,12 +59,19 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   useEffect(() => {
     if (chainData.chainId) {
       setIsLoading(false);
+
+      // Info: (20240217 - Julian) 計算 blockList 和 transactionList 的總頁數
+      const blockPage = Math.ceil(chainData.blocks / ITEM_PER_PAGE);
+      setBlockTotalPages(blockPage);
+
+      const transactionPage = Math.ceil(chainData.transactions / ITEM_PER_PAGE);
+      setTransactionTotalPages(transactionPage);
     } else {
       setIsLoading(true);
     }
   }, [chainData]);
 
-  const {chainId: chainIdFromData, chainName} = chainData;
+  const {chainId: chainIdFromData, chainName, blocks, transactions} = chainData;
   const headTitle = isLoading ? 'Loading...' : `${chainName} - BAIFA`;
   const chainIcon = getChainIcon(chainIdFromData);
 
@@ -137,7 +147,12 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     </div>
   );
 
-  const tabContent = activeTab === ChainDetailTab.BLOCKS ? <BlockTab /> : <TransactionTab />;
+  const tabContent =
+    activeTab === ChainDetailTab.BLOCKS ? (
+      <BlockTab totalPages={blockTotalPages} />
+    ) : (
+      <TransactionTab totalPages={transactionTotalPages} />
+    );
 
   return (
     <>

@@ -5,7 +5,7 @@ import {
   IPaginationOptions,
   SortingType,
 } from '../constants/api_request';
-import {IDisplayChain, IChainDetail} from '../interfaces/chain';
+import {IChainDetail} from '../interfaces/chain';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
@@ -32,7 +32,7 @@ export interface IMarketProvider {
 export interface IMarketContext {
   init: () => Promise<void>;
   promotionData: IPromotion;
-  chainList: IDisplayChain[];
+  chainList: IChainDetail[];
   currencyList: ICurrency[];
   blacklist: IBlackListDetail[];
 
@@ -114,7 +114,7 @@ export const MarketContext = createContext<IMarketContext>({
 
 export const MarketProvider = ({children}: IMarketProvider) => {
   const [promotion, setPromotion] = useState<IPromotion>(defaultPromotion);
-  const [chainList, setChainList] = useState<IDisplayChain[]>([]);
+  const [chainList, setChainList] = useState<IChainDetail[]>([]);
   const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
   const [blacklist, setBlacklist] = useState<IBlackListDetail[]>([]);
 
@@ -132,7 +132,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, [setPromotion]);
 
   const getChains = useCallback(async () => {
-    let data: IDisplayChain[] = [];
+    let data: IChainDetail[] = [];
     try {
       const response = await fetch(`${APIURL.CHAINS}`, {
         method: 'GET',

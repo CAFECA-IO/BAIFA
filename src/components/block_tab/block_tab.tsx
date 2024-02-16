@@ -8,11 +8,15 @@ import {IBlock} from '../../interfaces/block';
 import DatePicker from '../date_picker/date_picker';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
-import {sortOldAndNewOptions, default30DayPeriod, ITEM_PER_PAGE} from '../../constants/config';
+import {sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
 import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
 
-const BlockTab = () => {
+interface IBlockTabProps {
+  totalPages: number;
+}
+
+const BlockTab = ({totalPages}: IBlockTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {getBlocks} = useContext(MarketContext);
 
@@ -24,9 +28,6 @@ const BlockTab = () => {
   const [period, setPeriod] = useState(default30DayPeriod);
   const [blockData, setBlockData] = useState<IBlock[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Info: (20240215 - Julian) 計算總頁數
-  const [totalPages, setTotalPages] = useState<number>(Math.ceil(blockData.length / ITEM_PER_PAGE));
   const [activePage, setActivePage] = useState(1);
 
   // Info: (20240119 - Julian) 設定 API 查詢參數
@@ -42,8 +43,6 @@ const BlockTab = () => {
   const getBlockData = async () => {
     const data = await getBlocks(chainId, apiQueryStr);
     setBlockData(data);
-    // Info: (20240215 - Julian) 每次拿到新資料，就重新計算總頁數
-    setTotalPages(Math.ceil(data.length / ITEM_PER_PAGE));
   };
 
   useEffect(() => {
