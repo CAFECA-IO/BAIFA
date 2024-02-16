@@ -119,7 +119,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         created_timestamp: order,
       },
       take: offset,
-      skip: skip,
+      skip: page > 1 ? skip : 0,
       select: {
         id: true,
         chain_id: true,

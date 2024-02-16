@@ -61,7 +61,7 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
 
   const [activePage, setActivePage, activePageRef] = useStateRef(1);
   const [totalPages, setTotalPages] = useState(
-    Math.floor(addressDetailsCtx.producedBlocks.blockCount / ITEM_PER_PAGE)
+    Math.ceil(addressDetailsCtx.producedBlocks.blockCount / ITEM_PER_PAGE)
   );
   const [filteredBlocks, setFilteredBlocks, filteredBlocksRef] = useStateRef<IProductionBlock[]>(
     addressDetailsCtx.producedBlocks.blockData
