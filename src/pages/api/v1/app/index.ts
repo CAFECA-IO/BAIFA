@@ -8,17 +8,27 @@ type ResponseData = IPromotion;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
-  // Info: (20240119 - Julian) 計算這三個 Table 的資料筆數
-  const chainsLength = await prisma.chains.count();
-  const currenciesLength = await prisma.currencies.count();
-  const blackListLength = await prisma.black_lists.count();
+  try {
+    // Info: (20240119 - Julian) 計算這三個 Table 的資料筆數
+    const chainsLength = await prisma.chains.count();
+    const currenciesLength = await prisma.currencies.count();
+    // Info: (20240216 - Shirley) Count public tags where tag_type equals "9" as blacklist
+    const blackListLength = await prisma.public_tags.count({
+      where: {
+        tag_type: '9',
+      },
+    });
+    const result: ResponseData = {
+      chains: chainsLength,
+      cryptoCurrencies: currenciesLength,
+      blackList: blackListLength,
+    };
 
-  const result: ResponseData = {
-    chains: chainsLength,
-    cryptoCurrencies: currenciesLength,
-    blackList: blackListLength,
-  };
-
-  prisma.$connect();
-  res.status(200).json(result);
+    res.status(200).json(result);
+  } catch (error) {
+    // Info: (20240216 - Shirley) Request error
+    // eslint-disable-next-line no-console
+    console.error('app request', error);
+    res.status(500).json({} as ResponseData);
+  }
 }
