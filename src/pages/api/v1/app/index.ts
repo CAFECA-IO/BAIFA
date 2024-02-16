@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240119 - Julian) 計算這三個 Table 的資料筆數
     const chainsLength = await prisma.chains.count();
     const currenciesLength = await prisma.currencies.count();
-    // Updated: (20240216) Count public tags where tag_type equals "9" as blacklist
+    // Info: (20240216 - Shirley) Count public tags where tag_type equals "9" as blacklist
     const blackListLength = await prisma.public_tags.count({
       where: {
         tag_type: '9',
