@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const prisma = getPrismaInstance();
 
   try {
-    const blacklistData = await prisma.public_tags.findMany({
+    const publicTags = await prisma.public_tags.findMany({
       where: {
         tag_type: '9',
       },
@@ -22,15 +22,52 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    const result: ResponseData = blacklistData.map(item => ({
-      id: `${item.id}`,
-      chainId: '',
-      address: `${item.target}`,
-      latestActiveTime: item.created_timestamp ?? 0,
-      createdTimestamp: item.created_timestamp ?? 0,
-      flaggingRecords: [], // ToDo: (20240130 - Julian) 補上這個欄位
-      publicTag: ['9'], // ToDo: (20240130 - Julian) 這邊要串 public tag 的資料
-    }));
+    const contractTargets = publicTags
+      .filter(tag => tag.target_type === '0')
+      .map(tag => tag.target as string);
+    const addressTargets = publicTags
+      .filter(tag => tag.target_type === '1')
+      .map(tag => tag.target as string);
+
+    const contractsChainIds = await prisma.contracts.findMany({
+      where: {
+        contract_address: {in: contractTargets},
+      },
+      select: {
+        contract_address: true,
+        chain_id: true,
+      },
+    });
+
+    const addressesChainIds = await prisma.addresses.findMany({
+      where: {
+        address: {in: addressTargets},
+      },
+      select: {
+        address: true,
+        chain_id: true,
+      },
+    });
+
+    const chainIdMap = new Map();
+
+    contractsChainIds.forEach(contract =>
+      chainIdMap.set(contract.contract_address, contract.chain_id)
+    );
+    addressesChainIds.forEach(address => chainIdMap.set(address.address, address.chain_id));
+
+    const result = publicTags.map(tag => {
+      const chainId = chainIdMap.get(tag.target) ?? '';
+      return {
+        id: `${tag.id}`,
+        chainId: `${chainId}`,
+        address: `${tag.target}`,
+        latestActiveTime: tag.created_timestamp ?? 0,
+        createdTimestamp: tag.created_timestamp ?? 0,
+        flaggingRecords: [], // ToDo: (20240130 - Julian) 補上這個欄位
+        publicTag: [], // ToDo: (20240130 - Julian) 這邊要串 public tag 的資料
+      };
+    });
 
     res.status(200).json(result);
   } catch (error) {
