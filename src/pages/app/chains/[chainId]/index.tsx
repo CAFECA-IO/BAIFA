@@ -14,7 +14,7 @@ import {IChain} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
-import {DEFAULT_CHAIN_ICON, ITEM_PER_PAGE, chainList} from '../../../../constants/config';
+import {DEFAULT_CHAIN_ICON, chainList} from '../../../../constants/config';
 import {getChainIcon} from '../../../../lib/common';
 
 export interface IChainDetailPageProps {

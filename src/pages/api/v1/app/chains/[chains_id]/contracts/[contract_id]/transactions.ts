@@ -106,7 +106,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
     const to: IAddressInfo[] = fromAddresses.map((address, index) => {
       return {
-        type: fromType[index],
+        type: toType[index],
         address: address,
       };
     });
