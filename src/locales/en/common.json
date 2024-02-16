@@ -185,7 +185,11 @@
     "CONTRACT_ADDRESS": "Contract Address",
     "CREATOR": "Creator",
     "CREATING_TIME": "Creating Time",
-    "SOURCE_CODE": "Source Code"
+    "SOURCE_CODE": "Source Code",
+    "CONTRACT_ADDRESS_TOOLTIP": "The unique identifier of the contract.",
+    "CREATOR_TOOLTIP": "The creator of the contract.",
+    "CREATING_TIME_TOOLTIP": "The date and time the contract was created on the blockchain.",
+    "SOURCE_CODE_TOOLTIP": "The source code of the contract, which can be audited and analyzed."
   },
   "EVIDENCE_DETAIL_PAGE": {
     "MAIN_TITLE": "Evidence",
@@ -196,7 +200,12 @@
     "CONTENT": "Content",
     "STATE_PUBLIC": "Public",
     "STATE_PRIVATE": "Private",
-    "DOWNLOAD_EVIDENCE_BUTTON": "Download Evidence"
+    "DOWNLOAD_EVIDENCE_BUTTON": "Download Evidence",
+    "EVIDENCE_ADDRESS_TOOLTIP": "The unique identifier of the evidence.",
+    "STATE_TOOLTIP": "The state of the evidence, including whether it is public or private.",
+    "CREATOR_TOOLTIP": "The creator of the evidence.",
+    "CREATING_TIME_TOOLTIP": "The date and time the evidence was created on the blockchain.",
+    "CONTENT_TOOLTIP": "The detailed content of the evidence, which can only be viewed by accounts with access rights."
   },
   "INTERACTION_LIST_PAGE": {
     "MAIN_TITLE_HIGHLIGHT": "Interaction ",

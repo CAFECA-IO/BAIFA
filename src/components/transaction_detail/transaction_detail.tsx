@@ -74,8 +74,9 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
   );
 
   // Info: (20231215 - Julian) Print all from/to address
-  const fromList = from
-    ? from.map((data, index) => {
+  const fromList = // Info: (20240205 - Julian) 如果 from 不為 null 且長度不是 0，則印出 from 的內容；否則顯示 NONE
+    !!from && from.length !== 0 ? (
+      from.map((data, index) => {
         const fromLink =
           data.type === 'address'
             ? getDynamicUrl(chainId, `${data.address}`).ADDRESS
@@ -93,7 +94,9 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
           </Link>
         );
       })
-    : [];
+    ) : (
+      <p>{t('COMMON.NONE')}</p>
+    );
 
   const toList =
     // Info: (20240205 - Julian) 如果 to 不為 null 且長度不是 0，則印出 to 的內容；否則顯示 NONE

@@ -185,7 +185,11 @@
     "CONTRACT_ADDRESS": "合約地址",
     "CREATOR": "建立者",
     "CREATING_TIME": "建立時間",
-    "SOURCE_CODE": "原始碼"
+    "SOURCE_CODE": "合約原始碼",
+    "CONTRACT_ADDRESS_TOOLTIP": "合約的唯一識別碼。",
+    "CREATOR_TOOLTIP": "合約的建立者。",
+    "CREATING_TIME_TOOLTIP": "合約在區塊鏈上建立日期與時間。",
+    "SOURCE_CODE_TOOLTIP": "合約的原始碼內容，可供審核與分析。"
   },
   "EVIDENCE_DETAIL_PAGE": {
     "MAIN_TITLE": "證據",
@@ -195,8 +199,13 @@
     "CREATING_TIME": "建立時間",
     "CONTENT": "內容",
     "STATE_PUBLIC": "公開",
-    "STATE_PRIVATE": "私人",
-    "DOWNLOAD_EVIDENCE_BUTTON": "下載證據"
+    "STATE_PRIVATE": "非公開",
+    "DOWNLOAD_EVIDENCE_BUTTON": "下載證據",
+    "EVIDENCE_ADDRESS_TOOLTIP": "證據的唯一識別碼。",
+    "STATE_TOOLTIP": "證據為公開或非公開狀態。",
+    "CREATOR_TOOLTIP": "證據的建立者。",
+    "CREATING_TIME_TOOLTIP": "證據在區塊鏈上建立日期與時間。",
+    "CONTENT_TOOLTIP": "證據的詳細內容，只有擁有存取權限的帳號才能查看。"
   },
   "INTERACTION_LIST_PAGE": {
     "MAIN_TITLE_HIGHLIGHT": "互動",

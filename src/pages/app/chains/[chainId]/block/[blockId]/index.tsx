@@ -32,7 +32,6 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
 
   const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [blockData, setBlockData] = useState<IBlockDetail>({} as IBlockDetail);
 
   useEffect(() => {
@@ -54,11 +53,7 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
   }, [blockId, chainId]);
 
   useEffect(() => {
-    if (blockData) {
-      setIsLoading(false);
-    } else {
-      setIsLoading(true);
-    }
+    if (blockData) setBlockData(blockData);
   }, [blockData]);
 
   const {previousBlockId, nextBlockId} = blockData;
@@ -79,12 +74,7 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
 
   const chainIcon = getChainIcon(chainId);
 
-  const displayTitle = isLoading ? (
-    <div className="flex flex-1 items-center justify-center space-x-2">
-      <div className="h-40px w-40px animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-      <div className="h-40px w-240px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-    </div>
-  ) : (
+  const displayTitle = (
     <div className="flex flex-1 items-center justify-center space-x-2">
       <Image
         src={chainIcon.src}
