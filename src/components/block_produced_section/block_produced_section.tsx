@@ -100,6 +100,7 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
     // });
     
     // setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
+    // TODO: 在 input 作為 API query 時可能會用到 (20240216 - Shirley) 
     // setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
 

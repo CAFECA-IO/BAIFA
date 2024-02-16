@@ -10,14 +10,10 @@ import {ITEM_PER_PAGE, sortOldAndNewOptions, default30DayPeriod} from '../../con
 import {timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
-import {IDisplayTransaction, ITransactionData} from '../../interfaces/transaction';
+import {IDisplayTransaction} from '../../interfaces/transaction';
 import DatePicker from '../date_picker/date_picker';
 import {AddressDetailsContext} from '../../contexts/address_details_context';
-import {
-  IAddressTransactionQuery,
-  IPaginationOptions,
-  SortingType,
-} from '../../constants/api_request';
+import {SortingType} from '../../constants/api_request';
 
 export enum TransactionDataType {
   ADDRESS_DETAILS = 'ADDRESS_DETAILS',
@@ -25,9 +21,7 @@ export enum TransactionDataType {
 
 interface ITransactionHistorySectionProps {
   transactions: IDisplayTransaction[];
-  // transactionData?: ITransactionData;
   dataType?: TransactionDataType;
-  loading?: boolean;
 }
 
 const itemSkeleton = (
@@ -55,12 +49,7 @@ const listSkeleton = (
   </div>
 );
 
-const TransactionHistorySection = ({
-  transactions,
-  // transactionData,
-  dataType,
-  loading,
-}: ITransactionHistorySectionProps) => {
+const TransactionHistorySection = ({transactions, dataType}: ITransactionHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const addressDetailsCtx = useContext(AddressDetailsContext);
   const defaultPages =
@@ -145,6 +134,7 @@ const TransactionHistorySection = ({
 
     setFilteredTransactions(searchResult);
     setTotalPages(pages);
+    // TODO: 在 input 作為 API query 時可能會用到 (20240216 - Shirley)
     // setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, sorting, period]);
