@@ -19,7 +19,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       name: true, // Info: (20240216 - Liz) 標籤名稱
       target: true, // Info: (20240216 - Liz) 是個地址
       target_type: true, // Info: (20240216 - Liz)  0:contract / 1:address
-      tag_type: true,
       created_timestamp: true, // Info: (20240216 - Liz) 標籤建立時間
     },
   });
@@ -64,7 +63,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       createdTimestamp: item.created_timestamp ?? 0,
       address: item.target ?? '',
       tagName: item.name ?? '',
-      tagType: item.tag_type ?? '',
       targetType: item.target_type ?? '',
       latestActiveTime,
     };
