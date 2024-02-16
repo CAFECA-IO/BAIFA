@@ -8,29 +8,35 @@ type ResponseData = IBlackList[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
-  // Info: (20240201 - Julian) 從 DB 撈出所有 black_lists 的資料
-  const blacklistData = await prisma.black_lists.findMany({
-    select: {
-      id: true,
-      chain_id: true,
-      address_id: true,
-      created_timestamp: true,
-      public_tag: true,
-    },
-  });
 
-  const result: ResponseData = blacklistData.map(item => {
-    return {
+  try {
+    const blacklistData = await prisma.public_tags.findMany({
+      where: {
+        tag_type: '9',
+      },
+      select: {
+        id: true,
+        target: true,
+        target_type: true,
+        created_timestamp: true,
+      },
+    });
+
+    const result: ResponseData = blacklistData.map(item => ({
       id: `${item.id}`,
-      chainId: `${item.chain_id}`,
-      address: `${item.address_id}`,
+      chainId: '',
+      address: `${item.target}`,
       latestActiveTime: item.created_timestamp ?? 0,
       createdTimestamp: item.created_timestamp ?? 0,
       flaggingRecords: [], // ToDo: (20240130 - Julian) 補上這個欄位
-      publicTag: [], // ToDo: (20240130 - Julian) 這邊要串 public tag 的資料
-    };
-  });
+      publicTag: ['9'], // ToDo: (20240130 - Julian) 這邊要串 public tag 的資料
+    }));
 
-  prisma.$connect();
-  res.status(200).json(result);
+    res.status(200).json(result);
+  } catch (error) {
+    // Info: (20240216 - Shirley) Request error
+    // eslint-disable-next-line no-console
+    console.error('Error fetching blacklist data:', error);
+    res.status(500).json([]);
+  }
 }
