@@ -343,12 +343,47 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
+    const contractTargets = blacklistedAddresses
+      .filter(tag => tag.target_type === '0')
+      .map(tag => tag.target as string);
+    const addressTargets = blacklistedAddresses
+      .filter(tag => tag.target_type === '1')
+      .map(tag => tag.target as string);
+
+    const contractsChainIds = await prisma.contracts.findMany({
+      where: {
+        contract_address: {in: contractTargets},
+      },
+      select: {
+        contract_address: true,
+        chain_id: true,
+      },
+    });
+
+    const addressesChainIds = await prisma.addresses.findMany({
+      where: {
+        address: {in: addressTargets},
+      },
+      select: {
+        address: true,
+        chain_id: true,
+      },
+    });
+
+    const chainIdMap = new Map();
+
+    contractsChainIds.forEach(contract =>
+      chainIdMap.set(contract.contract_address, contract.chain_id)
+    );
+    addressesChainIds.forEach(address => chainIdMap.set(address.address, address.chain_id));
+
     blacklistedAddresses.forEach(item => {
+      const chainId = chainIdMap.get(item.target) ?? '';
       result.push({
         type: RESPONSE_DATA_TYPE.BLACKLIST,
         data: {
           id: `${item?.id}`,
-          chainId: '',
+          chainId: `${chainId}`,
           createdTimestamp: item?.created_timestamp ? item?.created_timestamp : 0,
           address: `${item.target}`,
           publicTag: [`${item.target_type}`],
