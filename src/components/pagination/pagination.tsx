@@ -87,6 +87,7 @@ const Pagination = ({
     }
   };
 
+  /* Deprecated: (20240223 - Shirley)
   // useEffect(() => {
   //   if (typeof window !== 'undefined') {
   //     const currentUrl = new URL(window.location.href);
@@ -164,6 +165,7 @@ const Pagination = ({
   //     }
   //   }
   // };
+  */
 
   const previousBtn = (
     <button
