@@ -2,9 +2,9 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
-import {IChainDetail} from '../../../../../../interfaces/chain';
+import {IChain} from '../../../../../../interfaces/chain';
 
-type ResponseData = IChainDetail | undefined;
+type ResponseData = IChain | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -23,26 +23,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // Info: (20240216 - Julian) 計算 blocks 和 transactions 的總數
-  const blocks = await prisma.blocks.count({
-    where: {
-      chain_id: chains_id,
-    },
-  });
-
-  const transactions = await prisma.transactions.count({
-    where: {
-      chain_id: chains_id,
-    },
-  });
-
   // Info: (20240118 - Julian) 轉換成 API 要的格式
   const result: ResponseData = chainData
     ? {
         chainId: `${chainData.id}`,
         chainName: `${chainData.chain_name}`,
-        blocks: blocks,
-        transactions: transactions,
       }
     : // Info: (20240118 - Julian) 如果沒有找到資料，回傳 undefined
       undefined;

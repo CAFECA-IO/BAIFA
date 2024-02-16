@@ -105,13 +105,15 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
                     height={40}
                     onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
                   />
-                  <h1 className="text-2xl font-bold lg:text-32px" title={contractId}>
-                    {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')}
-                    <span className="ml-2 text-primaryBlue">
-                      {' '}
+                  <div
+                    className="text-2xl font-bold lg:inline-flex lg:text-32px"
+                    title={contractId}
+                  >
+                    <span>{t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')}</span>
+                    <h1 className="text-primaryBlue lg:ml-2">
                       {truncateText(contractId, DEFAULT_TRUNCATE_LENGTH)}
-                    </span>
-                  </h1>
+                    </h1>
+                  </div>
                 </div>
                 {/* Info: (20231109 - Julian) Public Tag */}
                 <div className="flex items-center space-x-4">
