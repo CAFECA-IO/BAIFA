@@ -4,22 +4,22 @@ import {useState, useEffect, useRef} from 'react';
 import BoltButton from '../../components/bolt_button/bolt_button';
 import {getChainIcon, getTimeString, truncateText} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
-import {IBlackListDetail} from '../../interfaces/blacklist';
+import {IBlackList} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IBlackListItemProps {
-  blacklistAddress: IBlackListDetail;
+  blacklistAddress: IBlackList;
 }
 
 const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {id, chainId, latestActiveTime, publicTag} = blacklistAddress;
+  const {address, chainId, latestActiveTime, tagName} = blacklistAddress;
 
   const [sinceTime, setSinceTime] = useState(0);
 
-  const addressLink = getDynamicUrl(chainId, id).ADDRESS;
+  const addressLink = getDynamicUrl(chainId, address).ADDRESS;
   const chainIcon = getChainIcon(chainId);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -39,12 +39,16 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
     };
   }, [latestActiveTime, sinceTime]);
 
+  // const displayAddressLength = true ? 100 : DEFAULT_TRUNCATE_LENGTH;
+  // Todo: (20240216 - Liz) 要隨著寬度改變，標題 Address 顯示完整地址
+
   return (
     <div className="flex flex-col items-start border-b border-darkPurple4 px-4 py-2 lg:h-60px lg:flex-row lg:items-center">
-      {/* Info: (20231113 - Julian) Address ID */}
+      {/* Info: (20231113 - Julian) Address */}
       <Link href={addressLink} className="flex flex-1 items-center space-x-4">
         <BoltButton className="px-3 py-2 text-sm" style="solid" color="purple">
-          {t(publicTag[0])}
+          {t(tagName)}
+          {/* Todo: (20240216 - Liz) tagName尚未有內容，等之後有再調整多語言 */}
         </BoltButton>
         <div className="flex items-center space-x-2 text-sm lg:text-xl">
           <Image
@@ -54,11 +58,11 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
             height={30}
             onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
           />
-          <p title={id}>
+          <p title={address}>
             {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
             <span className="ml-2 font-semibold text-primaryBlue">
               {' '}
-              {truncateText(id, DEFAULT_TRUNCATE_LENGTH)}
+              {truncateText(address, DEFAULT_TRUNCATE_LENGTH)}
             </span>
           </p>
         </div>

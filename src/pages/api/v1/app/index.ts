@@ -11,7 +11,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240119 - Julian) 計算這三個 Table 的資料筆數
   const chainsLength = await prisma.chains.count();
   const currenciesLength = await prisma.currencies.count();
-  const blackListLength = await prisma.black_lists.count();
+  const blacklistData = await prisma.public_tags.findMany({
+    where: {
+      tag_type: '9',
+    },
+  });
+  const blackListLength = blacklistData.length;
 
   const result: ResponseData = {
     chains: chainsLength,

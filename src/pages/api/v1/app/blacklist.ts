@@ -4,36 +4,73 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
 import {IBlackList} from '../../../../interfaces/blacklist';
 
-type ResponseData = IBlackList[];
+type ResponseData = IBlackList[] | string;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
-  // Info: (20240201 - Julian) 從 DB 撈出所有 black_lists 的資料
-  const blacklistData = await prisma.black_lists.findMany({
+
+  // Info: (今天 - Liz) 從 public_tags table 中取得 tag_type = 9 (黑名單標籤) 的資料
+  const blacklist = await prisma.public_tags.findMany({
+    where: {
+      tag_type: '9', // Info: (今天 - Liz) 9:黑名單標籤
+    },
     select: {
       id: true,
-      chain_id: true,
-      address_id: true,
-      created_timestamp: true,
-      public_tag: true,
+      name: true, // Info: (今天 - Liz) 標籤名稱
+      target: true, // Info: (今天 - Liz) 是個地址
+      target_type: true, // Info: (今天 - Liz)  0:contract / 1:address
+      tag_type: true,
+      created_timestamp: true, // Info: (今天 - Liz) 標籤建立時間
     },
   });
 
-  // Deprecated: (今天 - Liz)
-  // eslint-disable-next-line no-console
-  console.log('blacklistData: ', blacklistData);
+  // Info: (今天 - Liz) 若查無黑名單資料，回傳 404
+  if (blacklist === null) {
+    res.status(404).send('404 - redFlagData Not Found');
+    return;
+  }
 
-  const result: ResponseData = blacklistData.map(item => {
+  // 從blacklistData中提取target值
+  const targetValues = blacklist.map(item => item.target);
+
+  // Info: (今天 - Liz) 從 addresses table 中取得黑名單地址的 chain_id
+  const addressesData = await prisma.addresses.findMany({
+    where: {
+      address: {
+        in: targetValues.filter(value => value !== null) as string[],
+      },
+    },
+    select: {
+      address: true,
+      chain_id: true,
+      latest_active_time: true,
+    },
+  });
+
+  // Info: (今天 - Liz) 將取得的資料轉換成 API 要的格式
+  const blacklistData = blacklist.map(item => {
+    const chainId =
+      addressesData
+        .find(addressData => addressData.address === item.target)
+        ?.chain_id?.toString() || '';
+
+    const latestActiveTime =
+      addressesData.find(addressData => addressData.address === item.target)?.latest_active_time ??
+      0;
+
     return {
       id: `${item.id}`,
-      chainId: `${item.chain_id}`,
-      address: `${item.address_id}`,
-      latestActiveTime: item.created_timestamp ?? 0,
+      chainId,
       createdTimestamp: item.created_timestamp ?? 0,
-      flaggingRecords: [], // ToDo: (20240130 - Julian) 補上這個欄位
-      publicTag: item.public_tag ? [item.public_tag] : [], // ToDo: (20240130 - Julian) 這邊要串 public tag 的資料
+      address: item.target ?? '',
+      tagName: item.name ?? '',
+      tagType: item.tag_type ?? '',
+      targetType: item.target_type ?? '',
+      latestActiveTime,
     };
   });
+
+  const result: ResponseData = blacklistData;
 
   prisma.$connect();
   res.status(200).json(result);
