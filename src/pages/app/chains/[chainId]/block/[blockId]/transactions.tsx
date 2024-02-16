@@ -34,7 +34,7 @@ interface ITransitionsInBlockPageProps {
 const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
-  const {getTransactionList} = useContext(MarketContext);
+  const {getTransactionListOfBlock} = useContext(MarketContext);
   const router = useRouter();
 
   const [period, setPeriod] = useState(default30DayPeriod);
@@ -62,12 +62,12 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
 
   const getTransactionData = async () => {
     try {
-      const data = await getTransactionList(chainId, blockId, apiQueryStr);
+      const data = await getTransactionListOfBlock(chainId, blockId, apiQueryStr);
       setTransitionData(data);
       // Info: (20240215 - Julian) 每次取得資料後，重新計算總頁數
       setTotalPages(Math.ceil(data.length / ITEM_PER_PAGE));
     } catch (error) {
-      //console.log('getTransactionList error', error);
+      //console.log('getTransactionListOfBlock error', error);
     }
   };
 

@@ -10,7 +10,7 @@ import Breadcrumb from '../../../../components/breadcrumb/breadcrumb';
 import BlockTab from '../../../../components/block_tab/block_tab';
 import TransactionTab from '../../../../components/transaction_tab/transaction_tab';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {IChainDetail} from '../../../../interfaces/chain';
+import {IChain} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
@@ -32,11 +32,8 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const {getChainDetail} = useContext(MarketContext);
 
   const [activeTab, setActiveTab] = useState<ChainDetailTab>(ChainDetailTab.BLOCKS);
-  const [chainData, setChainData] = useState<IChainDetail>({} as IChainDetail);
+  const [chainData, setChainData] = useState<IChain>({} as IChain);
   const [isLoading, setIsLoading] = useState(true);
-  // Info: (20240217 - Julian) blockList 和 transactionList 的總頁數
-  const [blockTotalPages, setBlockTotalPages] = useState<number>(0);
-  const [transactionTotalPages, setTransactionTotalPages] = useState<number>(0);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -59,19 +56,12 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   useEffect(() => {
     if (chainData.chainId) {
       setIsLoading(false);
-
-      // Info: (20240217 - Julian) 計算 blockList 和 transactionList 的總頁數
-      const blockPage = Math.ceil(chainData.blocks / ITEM_PER_PAGE);
-      setBlockTotalPages(blockPage);
-
-      const transactionPage = Math.ceil(chainData.transactions / ITEM_PER_PAGE);
-      setTransactionTotalPages(transactionPage);
     } else {
       setIsLoading(true);
     }
   }, [chainData]);
 
-  const {chainId: chainIdFromData, chainName, blocks, transactions} = chainData;
+  const {chainId: chainIdFromData, chainName} = chainData;
   const headTitle = isLoading ? 'Loading...' : `${chainName} - BAIFA`;
   const chainIcon = getChainIcon(chainIdFromData);
 
@@ -147,12 +137,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     </div>
   );
 
-  const tabContent =
-    activeTab === ChainDetailTab.BLOCKS ? (
-      <BlockTab totalPages={blockTotalPages} />
-    ) : (
-      <TransactionTab totalPages={transactionTotalPages} />
-    );
+  const tabContent = activeTab === ChainDetailTab.BLOCKS ? <BlockTab /> : <TransactionTab />;
 
   return (
     <>

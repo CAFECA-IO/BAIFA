@@ -56,7 +56,7 @@ const ContractDetail = ({contractData}: IContractDetailDetailProps) => {
     </pre>
   ) : (
     // Info: (20240215 - Julian) Loading Animation
-    <div className="h-20px w-200px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    <div className="h-50px w-200px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
   );
 
   return (

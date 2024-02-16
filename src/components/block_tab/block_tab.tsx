@@ -45,7 +45,7 @@ const BlockTab = () => {
     setIsLoading(true);
 
     // Info: (20240206 - Julian) 如果拿到資料，就將 isLoading 設為 false
-    if (blockList && blockList?.blocks.length > 0) {
+    if (blockList?.blocks && blockList?.blocks.length > 0) {
       setIsLoading(false);
     } else {
       setIsLoading(true);

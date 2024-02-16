@@ -10,7 +10,7 @@ import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
 import {IBlockDetail, IProducedBlock, IProductionBlock, IBlockList} from '../interfaces/block';
-import {ITransaction, ITransactionDetail} from '../interfaces/transaction';
+import {ITransaction, ITransactionDetail, ITransactionList} from '../interfaces/transaction';
 import {
   IAddressBrief,
   IAddressDetail,
@@ -46,8 +46,8 @@ export interface IMarketContext {
     addressB: string | undefined,
     queryStr?: string
   ) => Promise<ITransaction[]>;
-  getTransactions: (chainId: string, queryStr?: string) => Promise<ITransaction[]>;
-  getTransactionList: (
+  getTransactionList: (chainId: string, queryStr?: string) => Promise<ITransactionList>;
+  getTransactionListOfBlock: (
     chainId: string,
     blockId: string,
     queryStr?: string
@@ -93,8 +93,8 @@ export const MarketContext = createContext<IMarketContext>({
   getBlockList: () => Promise.resolve({} as IBlockList),
   getBlockDetail: () => Promise.resolve({} as IBlockDetail),
   getInteractionTransaction: () => Promise.resolve([] as ITransaction[]),
-  getTransactions: () => Promise.resolve([] as ITransaction[]),
-  getTransactionList: () => Promise.resolve({} as ITransaction[]),
+  getTransactionList: () => Promise.resolve({} as ITransactionList),
+  getTransactionListOfBlock: () => Promise.resolve({} as ITransaction[]),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressBrief: () => Promise.resolve({} as IAddressBrief),
   getAddressRelatedTransactions: () => Promise.resolve([] as ITransaction[]),
@@ -277,8 +277,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     []
   );
 
-  const getTransactions = useCallback(async (chainId: string, queryStr?: string) => {
-    let data: ITransaction[] = [];
+  const getTransactionList = useCallback(async (chainId: string, queryStr?: string) => {
+    let data: ITransactionList = {} as ITransactionList;
     try {
       const response = queryStr
         ? await fetch(`${APIURL.CHAINS}/${chainId}/transactions?${queryStr}`, {
@@ -289,12 +289,12 @@ export const MarketProvider = ({children}: IMarketProvider) => {
           });
       data = await response.json();
     } catch (error) {
-      //console.log('getTransactions error', error);
+      //console.log('getTransactionList error', error);
     }
     return data;
   }, []);
 
-  const getTransactionList = useCallback(
+  const getTransactionListOfBlock = useCallback(
     async (chainId: string, blockId: string, queryStr?: string) => {
       let data: ITransaction[] = [];
       try {
@@ -306,7 +306,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
         );
         data = await response.json();
       } catch (error) {
-        //console.log('getTransactionList error', error);
+        //console.log('getTransactionListOfBlock error', error);
       }
       return data;
     },
@@ -321,7 +321,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getTransactionList error', error);
+      //console.log('getTransactionDetail error', error);
     }
     return data;
   }, []);
@@ -541,8 +541,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getBlockList,
     getBlockDetail,
     getInteractionTransaction,
-    getTransactions,
     getTransactionList,
+    getTransactionListOfBlock,
     getTransactionDetail,
     getAddressBrief,
     getAddressRelatedTransactions,
