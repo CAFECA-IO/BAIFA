@@ -10,6 +10,7 @@ import SortingMenu from '../sorting_menu/sorting_menu';
 import {default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
 import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
+import Skeleton from '../skeleton/skeleton';
 
 const TransactionTab = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -93,14 +94,14 @@ const TransactionTab = () => {
 
   const displayTransactionList = isLoading ? (
     // Info: (20240206 - Julian) Loading animation
-    <div className="flex w-full flex-col gap-2 py-10">
+    <div className="flex w-full flex-col py-10 divide-y divide-darkPurple4">
       {Array.from({length: 3}).map((_, index) => (
-        <div key={index} className="flex w-full items-center gap-5">
-          <div className="h-60px w-60px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+        <div key={index} className="flex w-full items-center gap-5 py-2">
+          <Skeleton width={60} height={60} />
           <div className="flex-1">
-            <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+            <Skeleton width={100} height={20} />
           </div>
-          <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          <Skeleton width={100} height={20} />
         </div>
       ))}
     </div>

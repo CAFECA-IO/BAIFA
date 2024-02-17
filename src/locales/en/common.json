@@ -353,7 +353,8 @@
     "BLOCK_PRODUCED_HISTORY_TITLE": "Block Produced History",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "Search in Block Produced History",
     "RED_FLAG_ITEM_TITLE": "Red Flag",
-    "NO_DATA": "No Data is found :("
+    "NO_DATA_FOUND": "No Data is found :(",
+    "NO_DATA": "No Data"
   },
   "PUBLIC_TAG": {
     "TITLE": "Public tag",

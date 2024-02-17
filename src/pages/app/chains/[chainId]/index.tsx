@@ -16,6 +16,7 @@ import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
 import {DEFAULT_CHAIN_ICON, chainList} from '../../../../constants/config';
 import {getChainIcon} from '../../../../lib/common';
+import Skeleton from '../../../../components/skeleton/skeleton';
 
 export interface IChainDetailPageProps {
   chainId: string;
@@ -82,10 +83,16 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
 
   const displayedTitle = isLoading ? (
     // Info: (20240206 - Julian) Loading animation
-    <div className="flex items-center justify-center space-x-4 p-5">
-      <div className="h-30px w-30px animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 lg:h-60px lg:w-60px"></div>
-      <div className="h-30px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700 lg:h-60px lg:w-250px"></div>
-    </div>
+    <>
+      <div className="lg:flex hidden items-center justify-center space-x-4 p-5">
+        <Skeleton width={60} height={60} rounded />
+        <Skeleton width={250} height={60} />
+      </div>
+      <div className="flex lg:hidden items-center justify-center space-x-4 p-5">
+        <Skeleton width={30} height={30} rounded />
+        <Skeleton width={100} height={30} />
+      </div>
+    </>
   ) : (
     <div className="flex items-center justify-center space-x-4 py-5 text-2xl font-bold lg:text-48px">
       <Image

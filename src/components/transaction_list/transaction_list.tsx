@@ -1,16 +1,23 @@
 import TransactionItem from '../transaction_item/transaction_item';
 import {IDisplayTransaction} from '../../interfaces/transaction';
+import {useTranslation} from 'next-i18next';
+import {TranslateFunction} from '../../interfaces/locale';
 
 export interface ITransactionListProps {
   transactions: IDisplayTransaction[];
 }
 
-// Info: (20240119 - Julian) 考慮是否廢棄這個 component
-
 const TransactionList = ({transactions}: ITransactionListProps) => {
-  const transactionList = transactions.map((transaction, index) => (
-    <TransactionItem key={index} transaction={transaction} />
-  ));
+  const {t}: {t: TranslateFunction} = useTranslation('common');
+
+  const transactionList =
+    transactions.length > 0 ? (
+      transactions.map((transaction, index) => (
+        <TransactionItem key={index} transaction={transaction} />
+      ))
+    ) : (
+      <h2>{t('COMMON.NO_DATA')}</h2>
+    );
 
   return (
     <div className="flex min-h-320px w-full flex-col items-center py-10">{transactionList}</div>
