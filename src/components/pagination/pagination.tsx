@@ -36,7 +36,8 @@ const Pagination = ({
     if (query && queryPage) {
       if (!isNaN(parseInt(queryPage as string, 10))) {
         const page = parseInt(query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`] as string, 10);
-        changePage(page);
+        const abs = Math.abs(page);
+        changePage(abs);
       } else {
         const page = 1;
         changePage(page);
