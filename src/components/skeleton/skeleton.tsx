@@ -5,8 +5,8 @@ interface ISkeletonProps {
 }
 
 const Skeleton = ({width, height, rounded}: ISkeletonProps) => {
-  const skeletonWidth = `w-${width}px`;
-  const skeletonHeight = `h-${height}px`;
+  const skeletonWidth = `w-${width.toString()}px`;
+  const skeletonHeight = `h-${height.toString()}px`;
   const skeletonRounded = rounded ? 'rounded-full' : 'rounded';
 
   return (
