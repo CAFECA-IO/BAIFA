@@ -183,6 +183,13 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
     addressDetailsCtx.clickBlockDatePicker(start, end);
   };
 
+  // useEffect(() => {
+  //   // addressDetailsCtx.blocksLoading
+  //   console.log('activePageRef.current in blockProducedSection', activePageRef.current);
+  //   blockPaginationHandler({page: activePageRef.current, offset: ITEM_PER_PAGE});
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [activePageRef.current]);
+
   return (
     <div className="flex w-full flex-col space-y-4">
       {/* Info: (20231103 - Julian) Title */}

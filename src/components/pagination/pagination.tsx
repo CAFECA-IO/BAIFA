@@ -3,6 +3,7 @@ import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
 import {IAddressHistoryQuery, IPaginationOptions, SortingType} from '../../constants/api_request';
 import {ITEM_PER_PAGE} from '../../constants/config';
 import useStateRef from 'react-usestateref';
+import {useRouter} from 'next/router';
 
 interface IPagination {
   activePage: number;
@@ -28,6 +29,25 @@ const Pagination = ({
 
   const buttonStyle =
     'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
+  const router = useRouter();
+  const {query} = router;
+
+  useEffect(() => {
+    const queryPage = query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`];
+    if (query && queryPage && !isNaN(parseInt(queryPage as string, 10))) {
+      const page = parseInt(query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`] as string, 10);
+      setActivePage(page);
+      paginationClickHandler && paginationClickHandler({page: page, offset: ITEM_PER_PAGE});
+    }
+
+    // eslint-disable-next-line no-console
+    console.log(
+      'query in useEffect',
+      query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`],
+      parseInt(query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`] as string, 10)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
 
   useEffect(() => {
     const handleUrlChange = () => {

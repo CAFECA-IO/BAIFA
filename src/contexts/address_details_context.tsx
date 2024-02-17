@@ -106,7 +106,6 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   // Info: for the use of useStateRef (20240216 - Shirley)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [blocksEnd, setBlocksEnd, blocksEndRef] = useStateRef(Date.now());
-
   // Info: for the use of useStateRef (20240216 - Shirley)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionsLoading, setTransactionsLoading, transactionsLoadingRef] = useStateRef(false);
@@ -253,46 +252,45 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   };
 
   const init = async (chainId: string, addressId: string, options?: IAddressHistoryQuery) => {
-    setBlocksLoading(true);
+    // setBlocksLoading(true);
     setTransactionsLoading(true);
     // Info: Init blocks (20240207 - Shirley)
-    const blockData = await marketCtx.getAddressProducedBlocks(
-      chainId,
-      addressId,
-      options || {
-        page: DEFAULT_PAGE,
-        offset: ITEM_PER_PAGE,
-        order: SortingType.DESC,
-        // TODO: input query functionality (20240207 - Shirley)
-        // query: {
-        //   block_id: 373842,
-        // },
-        // start_date: 0,
-        // end_date: Date.now(),
-      }
-    );
-
-    setProducedBlocks(blockData);
+    // const blockData = await marketCtx.getAddressProducedBlocks(
+    //   chainId,
+    //   addressId,
+    //   options || {
+    //     page: DEFAULT_PAGE,
+    //     offset: ITEM_PER_PAGE,
+    //     order: SortingType.DESC,
+    //     // TODO: input query functionality (20240207 - Shirley)
+    //     // query: {
+    //     //   block_id: 373842,
+    //     // },
+    //     // start_date: 0,
+    //     // end_date: Date.now(),
+    //   }
+    // );
+    // setProducedBlocks(blockData);
 
     // Info: Init transactions (20240207 - Shirley)
-    const transactionData = await marketCtx.getAddressRelatedTransactions(
-      chainId,
-      addressId,
-      options || {
-        page: DEFAULT_PAGE,
-        offset: ITEM_PER_PAGE,
-        order: SortingType.DESC,
-        // TODO: input query functionality (20240207 - Shirley)
-        // query: {
-        //   block_id: 373842,
-        // },
-        // start_date: 0,
-        // end_date: Date.now(),
-      }
-    );
-    setTransactions(transactionData);
-    setBlocksLoading(false);
-    setTransactionsLoading(false);
+    // const transactionData = await marketCtx.getAddressRelatedTransactions(
+    //   chainId,
+    //   addressId,
+    //   options || {
+    //     page: DEFAULT_PAGE,
+    //     offset: ITEM_PER_PAGE,
+    //     order: SortingType.DESC,
+    //     // TODO: input query functionality (20240207 - Shirley)
+    //     // query: {
+    //     //   block_id: 373842,
+    //     // },
+    //     // start_date: 0,
+    //     // end_date: Date.now(),
+    //   }
+    // );
+    // setTransactions(transactionData);
+    // setBlocksLoading(false);
+    // setTransactionsLoading(false);
 
     return await Promise.resolve();
   };
