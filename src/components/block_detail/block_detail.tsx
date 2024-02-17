@@ -107,8 +107,8 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-1">
-      <Skeleton height={23} width={23} rounded />
-      <Skeleton height={23} width={100} />
+      <Skeleton height={24} width={24} rounded />
+      <Skeleton height={24} width={100} />
     </div>
   );
 
@@ -123,8 +123,8 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-3">
-      <Skeleton height={23} width={100} />
-      <Skeleton height={23} width={100} />
+      <Skeleton height={24} width={100} />
+      <Skeleton height={24} width={100} />
     </div>
   );
 
@@ -138,7 +138,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     ) : null
   ) : (
     // Info: (20240206 - Julian) Loading Animation
-    <Skeleton height={23} width={150} />
+    <Skeleton height={24} width={150} />
   );
 
   const displayMinerAndReward = isShow ? (
@@ -168,8 +168,8 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-3">
-      <Skeleton height={23} width={100} />
-      <Skeleton height={23} width={70} />
+      <Skeleton height={24} width={100} />
+      <Skeleton height={24} width={70} />
     </div>
   );
 
@@ -179,7 +179,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     // Info: (20231213 - Julian) If there is no management team
     <p>{t('COMMON.NONE')}</p>
   );
-  const displayExtraData = isShow ? extraDataText : <Skeleton height={23} width={100} />;
+  const displayExtraData = isShow ? extraDataText : <Skeleton height={24} width={100} />;
 
   const displaySize = isShow ? (
     <p>
@@ -187,7 +187,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       <span> bytes</span>
     </p>
   ) : (
-    <Skeleton height={23} width={100} />
+    <Skeleton height={24} width={100} />
   );
 
   return (
