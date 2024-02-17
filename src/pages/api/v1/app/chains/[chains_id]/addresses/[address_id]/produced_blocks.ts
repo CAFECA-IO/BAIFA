@@ -78,66 +78,89 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const skip = page > 0 ? (page - 1) * offset : 0;
 
-    const totalCount = await prisma.blocks.count({
+    // const totalCount = await prisma.blocks.count({
+    //   where: {
+    //     miner: address_id,
+    //     chain_id: chain_id,
+    //   },
+    // });
+
+    const totalCount = await prisma.block_raw.count({
       where: {
         miner: address_id,
-        chain_id: chain_id,
       },
     });
 
-    const blockData = await prisma.blocks.findMany({
+    const blockData = await prisma.block_raw.findMany({
       where: {
         miner: address_id,
-        chain_id: chain_id,
-        /* TODO: time range and string query (20240216 - Shirley)
-        // created_timestamp: {
-        //   gte: begin,
-        //   lte: end,
-        // },
-        // id:
-        //   queryObject?.block_id && isValid64BitInteger(queryObject.block_id)
-        //     ? +queryObject.block_id
-        //     : undefined,
-        */
       },
-      /* TODO: time range and string query (20240216 - Shirley)
-      // where: {
-      //   AND: [
-      //     {miner: address_id},
-      //     {chain_id: chain_id},
-      //     // {
-      //       // id:
-      //       //   queryObject?.block_id && isValid64BitInteger(queryObject.block_id)
-      //       //     ? +queryObject.block_id
-      //       //     : undefined,
-      //     // },
-      //   ],
-      // },
-      */
       orderBy: {
-        created_timestamp: order,
+        id: order,
       },
       take: offset,
       skip: skip,
       select: {
         id: true,
-        chain_id: true,
-        created_timestamp: true,
-        reward: true,
       },
     });
+
+    // const blockData = await prisma.blocks.findMany({
+    //   where: {
+    //     miner: address_id,
+    //     chain_id: chain_id,
+    //     /* TODO: time range and string query (20240216 - Shirley)
+    //     // created_timestamp: {
+    //     //   gte: begin,
+    //     //   lte: end,
+    //     // },
+    //     // id:
+    //     //   queryObject?.block_id && isValid64BitInteger(queryObject.block_id)
+    //     //     ? +queryObject.block_id
+    //     //     : undefined,
+    //     */
+    //   },
+    //   /* TODO: time range and string query (20240216 - Shirley)
+    //   // where: {
+    //   //   AND: [
+    //   //     {miner: address_id},
+    //   //     {chain_id: chain_id},
+    //   //     // {
+    //   //       // id:
+    //   //       //   queryObject?.block_id && isValid64BitInteger(queryObject.block_id)
+    //   //       //     ? +queryObject.block_id
+    //   //       //     : undefined,
+    //   //     // },
+    //   //   ],
+    //   // },
+    //   */
+    //   orderBy: {
+    //     created_timestamp: order,
+    //   },
+    //   take: offset,
+    //   skip: skip,
+    //   select: {
+    //     id: true,
+    //     chain_id: true,
+    //     created_timestamp: true,
+    //     reward: true,
+    //   },
+    // });
 
     const unit = chainData?.symbol ?? '';
     const decimals = chainData?.decimals ?? 0;
 
     const blockProducedData: IProductionBlock[] = blockData.map(block => {
-      const rewardRaw = block.reward ? parseInt(block.reward) : 0;
+      const rewardRaw = 0;
+      // const rewardRaw = block.reward ? parseInt(block.reward) : 0;
       const reward = rewardRaw / Math.pow(10, decimals);
 
       return {
         id: `${block.id}`,
-        chainId: `${block.chain_id}`,
-        createdTimestamp: block.created_timestamp ?? 0,
+        chainId: `8017`,
+        // chainId: `${block.chain_id}`,
+        createdTimestamp: Date.now() / 1000,
+        // createdTimestamp: block.created_timestamp ?? 0,
         stability: 'MEDIUM', // TODO: block stability (20240207 - Shirley)
         reward: reward,
         unit: unit,

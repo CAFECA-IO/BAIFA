@@ -272,6 +272,8 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     // );
     // setProducedBlocks(blockData);
 
+    clickBlockSortingMenu(SortingType.DESC);
+
     // Info: Init transactions (20240207 - Shirley)
     // const transactionData = await marketCtx.getAddressRelatedTransactions(
     //   chainId,
@@ -289,8 +291,8 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     //   }
     // );
     // setTransactions(transactionData);
-    // setBlocksLoading(false);
-    // setTransactionsLoading(false);
+    setBlocksLoading(false);
+    setTransactionsLoading(false);
 
     return await Promise.resolve();
   };

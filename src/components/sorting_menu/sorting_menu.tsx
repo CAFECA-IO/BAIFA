@@ -1,15 +1,11 @@
-import {Dispatch, SetStateAction} from 'react';
+import {Dispatch, SetStateAction, useEffect} from 'react';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import {FaChevronDown} from 'react-icons/fa';
-import {
-  convertSortingTypeToString,
-  convertStringToSortingType,
-  truncateText,
-} from '../../lib/common';
-import {DEFAULT_TRUNCATE_LENGTH, sortOldAndNewOptions} from '../../constants/config';
-import {IPaginationOptions, SortingType} from '../../constants/api_request';
+import {convertStringToSortingType, truncateText} from '../../lib/common';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {SortingType} from '../../constants/api_request';
+import {useRouter} from 'next/router';
 
 interface ISearchFilter {
   sortingOptions: string[];
@@ -18,6 +14,7 @@ interface ISearchFilter {
   bgColor: string;
   sortingHandler?: ({order}: {order: SortingType}) => Promise<void>;
   loading?: boolean;
+  sortPrefix?: string;
 }
 
 const SortingMenu = ({
@@ -27,73 +24,75 @@ const SortingMenu = ({
   bgColor,
   sortingHandler,
   loading,
+  sortPrefix = '',
 }: ISearchFilter) => {
-  const {t}: {t: TranslateFunction} = useTranslation('common');
+  const {t} = useTranslation('common');
+  const router = useRouter();
 
-  // Info: (20231101 - Julian) close sorting menu when click outer
   const {
     targetRef: sortingRef,
     componentVisible: sortingVisible,
     setComponentVisible: setSortingVisible,
   } = useOuterClick<HTMLDivElement>(false);
 
-  const uniqueOptions = Array.from(new Set(sortingOptions));
+  useEffect(() => {
+    const sortingQueryParam = router.query[`${sortPrefix}_sorting`];
+    if (
+      sortingQueryParam &&
+      sortingOptions.includes(sortingQueryParam as string) &&
+      sorting !== sortingQueryParam
+    ) {
+      setSorting(sortingQueryParam as string);
+      sortingHandler &&
+        sortingHandler({order: convertStringToSortingType(sortingQueryParam as string)});
+    }
+  }, [router.query, sortingOptions, setSorting, sortingHandler, sortPrefix, sorting]);
 
-  /* Deprecated: (20240220 - Shirley) to fix the issue of disabling sorting options and `Warning: Each child in a list should have a unique "key" prop.` React error
-  // Info: (20240207 - Liz) Remove duplicate options
+  // useEffect(() => {
+  //   // Ensure router.query exists and is accessible before attempting to use it
+  //   if (router && router.query) {
+  //     const sortingQueryParam = router.query[`${sortPrefix}_sorting`];
+  //     if (
+  //       sortingQueryParam &&
+  //       sortingOptions.includes(sortingQueryParam as string) &&
+  //       sorting !== sortingQueryParam
+  //     ) {
+  //       setSorting(sortingQueryParam as string);
+  //       sortingHandler &&
+  //         sortingHandler({order: convertStringToSortingType(sortingQueryParam as string)});
+  //     }
+  //   }
+  // }, [router.query, sortingOptions, setSorting, sortingHandler, sortPrefix, sorting]);
 
-  const optionsUI = uniqueOptions.map((option, index) => {
-    const clickHandler = async () => {
-      console.log('option in displayedOptions', option);
+  const handleSortingChange = async (option: string) => {
+    if (option !== sorting) {
+      // Only proceed if the option is different from the current sorting
       setSorting(option);
       setSortingVisible(false);
-
-      sortingHandler && (await sortingHandler({order: convertStringToSortingType(option)}));
-    };
-    return (
-      <>
-        {' '}
-        <ul className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden">
-          <li
-            key={option}
-            onClick={clickHandler}
-            className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
-          >
-            {truncateText(t(option), DEFAULT_TRUNCATE_LENGTH)}
-          </li>{' '}
-        </ul>
-      </>
-    );
-  });
-  */
+      if (sortingHandler) {
+        await sortingHandler({order: convertStringToSortingType(option)});
+      }
+      // Update the URL with the new sorting option using the optional prefix
+      const newQuery = {...router.query, [`${sortPrefix}_sorting`]: option};
+      router.push({pathname: router.pathname, query: newQuery}, undefined, {shallow: true});
+    }
+  };
 
   const optionsUI = (
     <ul className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden">
-      {uniqueOptions.map(option => {
-        const clickHandler = async () => {
-          setSorting(option);
-          setSortingVisible(false);
-
-          if (sortingHandler) {
-            await sortingHandler({order: convertStringToSortingType(option)});
-          }
-        };
-        return (
-          <li
-            key={option} // This ensures each child in the list has a unique "key" prop.
-            onClick={clickHandler}
-            className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
-          >
-            {/* Info: (20240124 - Julian) 將選項字數限制在 10 個字 */}
-
-            {truncateText(t(option), DEFAULT_TRUNCATE_LENGTH)}
-          </li>
-        );
-      })}
+      {sortingOptions.map(option => (
+        <li
+          key={option}
+          onClick={() => handleSortingChange(option)}
+          className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
+        >
+          {truncateText(t(option), DEFAULT_TRUNCATE_LENGTH)}
+        </li>
+      ))}
     </ul>
   );
 
-  const displayedOptions = <> {!loading ? optionsUI : null}</>;
+  const displayedOptions = <> {!loading ? optionsUI : null} </>;
 
   const menuOpenHandler = () => setSortingVisible(!sortingVisible);
 
@@ -101,11 +100,8 @@ const SortingMenu = ({
     <button
       disabled={loading}
       onClick={menuOpenHandler}
-      className={`relative flex w-full items-center space-x-4 rounded text-sm ${
-        bgColor //? 'bg-purpleLinear' : 'bg-darkPurple'
-      } p-4 text-hoverWhite lg:w-160px`}
+      className={`relative flex w-full items-center space-x-4 rounded text-sm ${bgColor} p-4 text-hoverWhite lg:w-160px`}
     >
-      {/* Info: (20231101 - Julian) Sorting Button */}
       <p
         className={`flex-1 text-left lg:w-100px ${
           sortingVisible ? 'opacity-0' : 'opacity-100'
@@ -114,7 +110,6 @@ const SortingMenu = ({
         {truncateText(t(sorting), DEFAULT_TRUNCATE_LENGTH)}
       </p>
       <FaChevronDown />
-
       <div
         ref={sortingRef}
         className={`absolute -top-6 right-0 z-10 grid max-h-320px w-full items-center lg:w-160px ${
@@ -123,7 +118,6 @@ const SortingMenu = ({
             : 'invisible translate-y-12 grid-rows-0 opacity-0'
         } rounded bg-darkPurple2 text-left text-hoverWhite shadow-xl transition-all duration-300 ease-in-out`}
       >
-        {/* Info: (20231101 - Julian) Sorting Options */}
         {displayedOptions}
       </div>
     </button>

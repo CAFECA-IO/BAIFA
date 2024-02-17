@@ -309,6 +309,9 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
     return Promise.resolve();
   };
 
+  // eslint-disable-next-line no-console
+  console.log('addressDetailsCtx.transactionsLoading:', addressDetailsCtx.transactionsLoading);
+
   return (
     <div className="flex w-full flex-col space-y-4">
       {/* Info: (20231113 - Julian) Title */}
@@ -333,6 +336,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
                 setSorting={setSorting}
                 bgColor="bg-purpleLinear"
                 sortingHandler={sortingClickHandler}
+                sortPrefix={`transaction`}
               />
             </div>
           </div>

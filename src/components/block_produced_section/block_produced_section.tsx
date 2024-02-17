@@ -221,6 +221,7 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
                 sortingHandler={blockSortingHandler}
                 sortingOptions={sortOldAndNewOptions}
                 loading={addressDetailsCtx.blocksLoading}
+                sortPrefix={`blocks`}
               />
             </div>
           </div>
@@ -233,12 +234,12 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
         {/* Info: (20231103 - Julian) Address List */}
         <div className="my-10 flex w-full flex-1 flex-col">{displayedBlocks}</div>
         <Pagination
-          paginationClickHandler={blockPaginationHandler}
-          loading={addressDetailsCtx.blocksLoading}
-          pagePrefix={`blocks`}
           activePage={activePage}
           setActivePage={setActivePage}
           totalPages={totalPages}
+          paginationClickHandler={blockPaginationHandler}
+          loading={addressDetailsCtx.blocksLoading}
+          pagePrefix={`blocks`}
         />
       </div>
     </div>

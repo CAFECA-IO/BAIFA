@@ -39,7 +39,7 @@ const Pagination = ({
         const abs = Math.abs(page);
         changePage(abs);
       } else {
-        const page = 1;
+        const page = DEFAULT_PAGE;
         changePage(page);
       }
     }
