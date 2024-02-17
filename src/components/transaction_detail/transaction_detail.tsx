@@ -9,6 +9,7 @@ import {ITransactionDetail} from '../../interfaces/transaction';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {TransactionStatus, DefaultTransactionStatus} from '../../constants/transaction_status';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import Skeleton from '../skeleton/skeleton';
 
 interface ITransactionDetailProps {
   transactionData: ITransactionDetail;
@@ -26,13 +27,19 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     to,
     evidenceId,
     fee,
+    value,
     flaggingRecords,
     unit,
   } = transactionData;
 
   const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
 
-  const displayHash = hash ? <p className="break-all">{hash}</p> : <p>{t('COMMON.NONE')}</p>;
+  const displayHash = hash ? (
+    <p className="break-all">{hash}</p>
+  ) : (
+    // Info: (20240206 - Julian) Loading Animation
+    <Skeleton width={200} height={23} />
+  );
 
   // Info: (20240205 - Julian) 根據 status 取得對應的圖示、文字內容和顏色；沒有 status 對應的內容時就使用預設值
   const statusContent = TransactionStatus[status] ?? DefaultTransactionStatus;
@@ -44,8 +51,8 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-1">
-      <div className="h-20px w-20px animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-      <div className="h-20px w-70px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+      <Skeleton width={23} height={23} rounded />
+      <Skeleton width={100} height={23} />
     </div>
   );
 
@@ -57,7 +64,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     </Link>
   ) : (
     // Info: (20240206 - Julian) Loading Animation
-    <div className="h-20px w-130px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    <Skeleton width={100} height={23} />
   );
 
   const displayTime = createdTimestamp ? (
@@ -68,8 +75,8 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-3">
-      <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-      <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+      <Skeleton width={100} height={23} />
+      <Skeleton width={100} height={23} />
     </div>
   );
 
@@ -139,7 +146,16 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     </p>
   ) : (
     // Info: (20240206 - Julian) Loading Animation
-    <div className="h-20px w-130px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    <Skeleton width={100} height={23} />
+  );
+
+  const displayValue = value ? (
+    <Link href={BFAURL.COMING_SOON}>
+      <p className="text-primaryBlue underline underline-offset-2">{t('COMMON.LOG_IN_ONLY')}</p>
+    </Link>
+  ) : (
+    // Info: (20240206 - Julian) Loading Animation
+    <Skeleton width={100} height={23} />
   );
 
   const displayFlagging =
@@ -224,9 +240,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
           <Tooltip>{t('TRANSACTION_DETAIL_PAGE.VALUE_TOOLTIP')}</Tooltip>
         </div>
         {/* ToDo: (20230911 - Julian) log in button */}
-        <Link href={BFAURL.COMING_SOON}>
-          <p className="text-primaryBlue underline underline-offset-2">{t('COMMON.LOG_IN_ONLY')}</p>
-        </Link>
+        {displayValue}
       </div>
       {/* Info: (20230911 - Julian) Fee */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

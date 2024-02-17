@@ -10,6 +10,7 @@ import {IBlockDetail} from '../../interfaces/block';
 import {getDynamicUrl} from '../../constants/url';
 import {StabilityLevel} from '../../constants/stability_level';
 import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import Skeleton from '../skeleton/skeleton';
 
 interface IBlockDetailProps {
   blockData: IBlockDetail;
@@ -94,8 +95,8 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-1">
-      <div className="h-20px w-20px animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-      <div className="h-20px w-70px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+      <Skeleton width={23} height={23} rounded />
+      <Skeleton width={100} height={23} />
     </div>
   );
 
@@ -110,8 +111,8 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-3">
-      <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-      <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+      <Skeleton width={100} height={23} />
+      <Skeleton width={100} height={23} />
     </div>
   );
 
@@ -124,7 +125,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       </Link>
     ) : (
       // Info: (20240206 - Julian) Loading Animation
-      <div className="h-20px w-130px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+      <Skeleton width={150} height={23} />
     );
 
   const displayMinerAndReward =
@@ -155,8 +156,8 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     ) : (
       // Info: (20240206 - Julian) Loading Animation
       <div className="flex items-center space-x-3">
-        <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-        <div className="h-20px w-70px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+        <Skeleton width={100} height={23} />
+        <Skeleton width={70} height={23} />
       </div>
     );
 
@@ -173,7 +174,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       <span> bytes</span>
     </p>
   ) : (
-    <div className="h-20px w-50px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    <Skeleton width={100} height={23} />
   );
 
   return (

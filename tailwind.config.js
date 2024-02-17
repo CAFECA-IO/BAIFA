@@ -38,6 +38,11 @@ module.exports = {
         purpleLinear2:
           'linear-gradient(315deg, rgba(104, 87, 215, 0.30) 0%, rgba(104, 87, 215, 0.10) 100%);',
 
+        skeleton:
+          'linear-gradient(0deg, rgba(123, 104, 238, 0.10) 0%, rgba(123, 104, 238, 0.10) 100%), linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.08) 100%)',
+        skeletonCube:
+          'linear-gradient(270deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 48%, rgba(255, 255, 255, 0) 100%)',
+
         pipe: 'url("/elements/pipe.svg")',
         neon: 'url("/animations/neon.svg")',
         101: 'url("/elements/101.png")',
@@ -390,6 +395,7 @@ module.exports = {
         wobble: 'wobble 1s infinite',
         jello: 'jello 2s infinite',
         openMenu: 'open-menu 0.5s ease-in-out forwards',
+        loading: 'loading 1.5s infinite',
       },
       // actual animation
       keyframes: theme => ({
@@ -563,6 +569,10 @@ module.exports = {
         },
         openMenu: {
           '0%, 20%': {transform: 'rotate(-3deg)'},
+        },
+        loading: {
+          '0%': {transform: 'translateX(-80%)'},
+          '100%': {transform: 'translateX(120%)'},
         },
       }),
     },

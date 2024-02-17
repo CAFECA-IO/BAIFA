@@ -60,13 +60,13 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Info: (20240217 - Julian) 如果沒有 1 秒內沒有資料，就顯示 No Data
+  // Info: (20240217 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (!transactionData.blockId) {
+      if (!transactionData.chainId) {
         setIsNoData(true);
       }
-    }, 1000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, [transactionData]);

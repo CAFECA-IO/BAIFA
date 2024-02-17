@@ -18,6 +18,7 @@ import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {getDynamicUrl} from '../../../../../../constants/url';
 import {getChainIcon} from '../../../../../../lib/common';
 import {DEFAULT_CHAIN_ICON} from '../../../../../../constants/config';
+import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 
 interface IBlockDetailPageProps {
   blockId: string;
@@ -32,6 +33,7 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
 
   const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
 
+  const [isNoData, setIsNoData] = useState(false);
   const [blockData, setBlockData] = useState<IBlockDetail>({} as IBlockDetail);
 
   useEffect(() => {
@@ -52,8 +54,15 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blockId, chainId]);
 
+  // Info: (20240217 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data
   useEffect(() => {
-    if (blockData) setBlockData(blockData);
+    const timer = setTimeout(() => {
+      if (!blockData.chainId) {
+        setIsNoData(true);
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
   }, [blockData]);
 
   const {previousBlockId, nextBlockId} = blockData;
@@ -90,6 +99,8 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
     </div>
   );
 
+  const isBlockData = isNoData ? <DataNotFound /> : <BlockDetail blockData={blockData} />;
+
   return (
     <>
       <Head>
@@ -124,9 +135,7 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
             </div>
 
             {/* Info: (20230912 - Julian) Block Detail */}
-            <div className="my-10 w-full">
-              <BlockDetail blockData={blockData} />
-            </div>
+            <div className="my-10 w-full">{isBlockData}</div>
 
             {/* Info: (20231017 - Julian) Back Button */}
             <div className="mt-10">
