@@ -1,7 +1,6 @@
 import {Dispatch, SetStateAction, useState, useEffect} from 'react';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
-import {IAddressHistoryQuery, IPaginationOptions, SortingType} from '../../constants/api_request';
-import {ITEM_PER_PAGE} from '../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../constants/config';
 import useStateRef from 'react-usestateref';
 import {useRouter} from 'next/router';
 
@@ -34,18 +33,15 @@ const Pagination = ({
 
   useEffect(() => {
     const queryPage = query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`];
-    if (query && queryPage && !isNaN(parseInt(queryPage as string, 10))) {
-      const page = parseInt(query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`] as string, 10);
-      setActivePage(page);
-      paginationClickHandler && paginationClickHandler({page: page, offset: ITEM_PER_PAGE});
+    if (query && queryPage) {
+      if (!isNaN(parseInt(queryPage as string, 10))) {
+        const page = parseInt(query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`] as string, 10);
+        changePage(page);
+      } else {
+        const page = 1;
+        changePage(page);
+      }
     }
-
-    // eslint-disable-next-line no-console
-    console.log(
-      'query in useEffect',
-      query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`],
-      parseInt(query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`] as string, 10)
-    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
@@ -80,18 +76,31 @@ const Pagination = ({
       await paginationClickHandler({page: newPage, offset: ITEM_PER_PAGE});
     }
     updateUrl(newPage);
+    setTargetPage(newPage);
   };
 
   const previousHandler = () => {
-    if (activePage > 1) {
-      changePage(activePage - 1);
+    let newPage = DEFAULT_PAGE;
+    if (activePage > totalPages) {
+      newPage = totalPages;
+    } else if (activePage > 1) {
+      newPage = activePage - 1;
+    } else {
+      newPage = DEFAULT_PAGE;
     }
+    changePage(newPage);
   };
 
   const nextHandler = () => {
-    if (activePage < totalPages) {
-      changePage(activePage + 1);
+    let newPage = totalPages;
+    if (activePage < 1) {
+      newPage = DEFAULT_PAGE;
+    } else if (activePage < totalPages) {
+      newPage = activePage + 1;
+    } else {
+      newPage = totalPages;
     }
+    changePage(newPage);
   };
 
   const pageChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -200,7 +209,11 @@ const Pagination = ({
   const nextBtn = (
     <button
       onClick={nextHandler}
-      disabled={loading || activePage === totalPages || totalPages === 0 ? true : false}
+      disabled={
+        loading || activePage === totalPages || activePage > totalPages || totalPages === 0
+          ? true
+          : false
+      }
       className={buttonStyle}
     >
       <RiArrowRightSLine className="text-2xl" />

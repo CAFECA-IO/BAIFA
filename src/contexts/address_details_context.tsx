@@ -253,7 +253,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
 
   const init = async (chainId: string, addressId: string, options?: IAddressHistoryQuery) => {
     // setBlocksLoading(true);
-    setTransactionsLoading(true);
+    // setTransactionsLoading(true);
     // Info: Init blocks (20240207 - Shirley)
     // const blockData = await marketCtx.getAddressProducedBlocks(
     //   chainId,
