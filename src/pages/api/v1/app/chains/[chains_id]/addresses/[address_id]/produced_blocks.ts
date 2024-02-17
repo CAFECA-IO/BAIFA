@@ -2,16 +2,10 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
-import {AddressType, IAddressInfo} from '../../../../../../../../interfaces/address_info';
-import {
-  IAddressProducedBlock,
-  IAddressRelatedTransaction,
-  dummyAddressProducedBlock,
-} from '../../../../../../../../interfaces/address';
-import {ITransaction} from '../../../../../../../../interfaces/transaction';
+import {AddressType} from '../../../../../../../../interfaces/address_info';
+import {IAddressProducedBlock} from '../../../../../../../../interfaces/address';
 import {isAddress} from 'web3-validator';
 import {IProductionBlock} from '../../../../../../../../interfaces/block';
-import {isValid64BitInteger} from '../../../../../../../../lib/common';
 
 type ResponseData = IAddressProducedBlock | undefined;
 
@@ -36,6 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   let queryObject;
   try {
     queryObject = req.query.query ? JSON.parse(req.query.query as string) : undefined;
+    // TODO: dev (20240216 - Shirley)
     // console.log('queryObject in produced_block:', queryObject);
   } catch (error) {
     // console.error('Parsing query parameter failed:', error);
@@ -81,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    const skip = page * offset;
+    const skip = page > 0 ? (page - 1) * offset : 0;
 
     const totalCount = await prisma.blocks.count({
       where: {
@@ -94,6 +89,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       where: {
         miner: address_id,
         chain_id: chain_id,
+        /* TODO: time range and string query (20240216 - Shirley)
         // created_timestamp: {
         //   gte: begin,
         //   lte: end,
@@ -102,7 +98,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         //   queryObject?.block_id && isValid64BitInteger(queryObject.block_id)
         //     ? +queryObject.block_id
         //     : undefined,
+        */
       },
+      /* TODO: time range and string query (20240216 - Shirley)
       // where: {
       //   AND: [
       //     {miner: address_id},
@@ -115,6 +113,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       //     // },
       //   ],
       // },
+      */
       orderBy: {
         created_timestamp: order,
       },
@@ -145,6 +144,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       };
     });
 
+    const totalPage = Math.ceil(totalCount / offset);
+
     const responseData: ResponseData = {
       id: address_id,
       type: AddressType.ADDRESS,
@@ -152,6 +153,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       chainId: `${chain_id}`,
       blockData: blockProducedData,
       blockCount: totalCount,
+      totalPage: totalPage,
     };
 
     res.status(200).json(responseData);

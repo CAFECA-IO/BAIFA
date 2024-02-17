@@ -13,6 +13,7 @@ export interface IProductionBlock extends IBlock {
 export interface IProducedBlock {
   blockData: IProductionBlock[];
   blockCount: number;
+  totalPage: number;
 }
 
 export interface IBlockDetail extends IBlock {
