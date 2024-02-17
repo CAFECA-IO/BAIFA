@@ -42,14 +42,19 @@ const TransactionTab = () => {
   };
 
   useEffect(() => {
+    // Info: (20240217 - Julian) Loading animation
     setIsLoading(true);
 
-    // Info: (20240206 - Julian) 如果拿到資料，就將 isLoading 設為 false
-    if (transactionData?.transactions && transactionData?.transactions.length > 0) {
+    // Info: (20240217 - Julian) 如果拿到資料，就將 isLoading 設為 false
+    if (transactionData?.transactions && transactionData.transactions.length > 0) {
       setIsLoading(false);
-    } else {
-      setIsLoading(true);
     }
+
+    // Info: (20240217 - Julian) 如果 3 秒後還沒拿到資料，也將 isLoading 設為 false
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, transactionData]);
 

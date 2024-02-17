@@ -1,12 +1,12 @@
 interface ISkeletonProps {
-  width?: number;
-  height?: number;
+  width: number;
+  height: number;
   rounded?: boolean;
 }
 
 const Skeleton = ({width, height, rounded}: ISkeletonProps) => {
-  const skeletonWidth = `w-${width}px` ?? 'w-130px';
-  const skeletonHeight = `h-${height}px` ?? 'h-23px';
+  const skeletonWidth = `w-${width}px`;
+  const skeletonHeight = `h-${height}px`;
   const skeletonRounded = rounded ? 'rounded-full' : 'rounded';
 
   return (
