@@ -352,7 +352,8 @@
     "TRANSACTION_HISTORY_TRANSACTION_ID": "Transaction",
     "BLOCK_PRODUCED_HISTORY_TITLE": "Block Produced History",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "Search in Block Produced History",
-    "RED_FLAG_ITEM_TITLE": "Red Flag"
+    "RED_FLAG_ITEM_TITLE": "Red Flag",
+    "NO_DATA": "No Data is found :("
   },
   "PUBLIC_TAG": {
     "TITLE": "Public tag",

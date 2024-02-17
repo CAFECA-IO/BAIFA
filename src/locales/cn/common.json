@@ -352,7 +352,8 @@
     "TRANSACTION_HISTORY_TRANSACTION_ID": "交易",
     "BLOCK_PRODUCED_HISTORY_TITLE": "区块生成历史记录",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在区块生成记录中搜寻",
-    "RED_FLAG_ITEM_TITLE": "警示记录"
+    "RED_FLAG_ITEM_TITLE": "警示记录",
+    "NO_DATA": "找不到资料 :("
   },
   "PUBLIC_TAG": {
     "TITLE": "公开标签",
