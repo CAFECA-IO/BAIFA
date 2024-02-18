@@ -352,7 +352,9 @@
     "TRANSACTION_HISTORY_TRANSACTION_ID": "交易",
     "BLOCK_PRODUCED_HISTORY_TITLE": "區塊生成歷史記錄",
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在區塊生成記錄中搜尋",
-    "RED_FLAG_ITEM_TITLE": "警示記錄"
+    "RED_FLAG_ITEM_TITLE": "警示記錄",
+    "NO_DATA_FOUND": "找不到資料 :(",
+    "NO_DATA": "無資料"
   },
   "PUBLIC_TAG": {
     "TITLE": "公開標籤",

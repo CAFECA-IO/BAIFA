@@ -19,6 +19,7 @@ import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
 import {getChainIcon} from '../../../../../lib/common';
 import {DEFAULT_CHAIN_ICON} from '../../../../../constants/config';
+import DataNotFound from '../../../../../components/data_not_found/data_not_found';
 
 interface ITransactionDetailPageProps {
   transactionId: string;
@@ -33,11 +34,13 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
 
   const headTitle = `${t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')} ${transactionId} - BAIFA`;
 
+  const [isNoData, setIsNoData] = useState(false);
   const [transactionData, setTransactionData] = useState<ITransactionDetail>(
     {} as ITransactionDetail
   );
 
   const chainIcon = getChainIcon(chainId);
+  const backClickHandler = () => router.back();
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -57,13 +60,16 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Info: (20240217 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data
   useEffect(() => {
-    if (transactionData) {
-      setTransactionData(transactionData);
-    }
-  }, [transactionData]);
+    const timer = setTimeout(() => {
+      if (!transactionData.chainId) {
+        setIsNoData(true);
+      }
+    }, 3000);
 
-  const backClickHandler = () => router.back();
+    return () => clearTimeout(timer);
+  }, [transactionData]);
 
   // Info: (20231017 - Julian) 有 flagging 的話，就顯示 Add in Tracing Tool 按鈕
   const isAddInTracingTool =
@@ -114,6 +120,13 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
     </div>
   );
 
+  // Info: (20240217 - Julian) 如果沒有資料，就顯示 DataNotFound
+  const isTransactionData = isNoData ? (
+    <DataNotFound />
+  ) : (
+    <TransactionDetail transactionData={transactionData} />
+  );
+
   return (
     <>
       <Head>
@@ -129,9 +142,7 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
             {displayedHeader}
 
             {/* Info: (20230907 - Julian) Transaction Detail */}
-            <div className="my-10 w-full">
-              <TransactionDetail transactionData={transactionData} />
-            </div>
+            <div className="my-10 w-full">{isTransactionData}</div>
 
             <div className="w-full">
               <PrivateNoteSection />

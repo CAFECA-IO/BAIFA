@@ -10,6 +10,7 @@ import {IBlockDetail} from '../../interfaces/block';
 import {getDynamicUrl} from '../../constants/url';
 import {StabilityLevel} from '../../constants/stability_level';
 import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import Skeleton from '../skeleton/skeleton';
 
 interface IBlockDetailProps {
   blockData: IBlockDetail;
@@ -31,6 +32,18 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   } = blockData;
 
   const [sinceTime, setSinceTime] = useState(0);
+  const [isShow, setIsShow] = useState(false);
+
+  useEffect(() => {
+    // Info: (20240217 - Julian) 如果沒有拿到資料就持續 Loading
+    if (!blockId) return;
+    // Info: (20240217 - Julian) 1 秒後顯示資料
+    const timer = setTimeout(() => {
+      setIsShow(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [blockData]);
 
   let timer: NodeJS.Timeout;
   useEffect(() => {
@@ -89,17 +102,17 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       </div>
     );
 
-  const displayStability = stability ? (
+  const displayStability = isShow ? (
     stabilityLayout
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-1">
-      <div className="h-20px w-20px animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-      <div className="h-20px w-70px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+      <Skeleton height={24} width={24} rounded />
+      <Skeleton height={24} width={100} />
     </div>
   );
 
-  const displayTime = createdTimestamp ? (
+  const displayTime = isShow ? (
     <div className="flex flex-wrap items-center">
       <p className="mr-2">{timestampToString(createdTimestamp).date}</p>
       <p className="mr-2">{timestampToString(createdTimestamp).time}</p>
@@ -110,70 +123,71 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-3">
-      <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-      <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+      <Skeleton height={24} width={100} />
+      <Skeleton height={24} width={100} />
     </div>
   );
 
-  const displayContent =
+  const displayContent = isShow ? (
     typeof transactionCount === 'number' ? (
       <Link href={transactionsLink}>
         <BoltButton className="px-3 py-1" color="blue" style="solid">
           {transactionCount} {t('COMMON.TRANSACTIONS')}
         </BoltButton>
       </Link>
-    ) : (
-      // Info: (20240206 - Julian) Loading Animation
-      <div className="h-20px w-130px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-    );
+    ) : null
+  ) : (
+    // Info: (20240206 - Julian) Loading Animation
+    <Skeleton height={24} width={150} />
+  );
 
-  const displayMinerAndReward =
-    miner && reward ? (
-      <div className="flex flex-wrap items-center gap-3">
-        {/* Info: (20230912 - Julian) Miner */}
-        <Link href={minerLink} title={miner}>
-          <BoltButton className="px-3 py-1" color="blue" style="solid">
-            {truncateText(miner, DEFAULT_TRUNCATE_LENGTH)}
-          </BoltButton>
-        </Link>
-        <p>+</p>
-        {/* Info: (20230912 - Julian) Reward */}
-        <div className="flex items-center space-x-2">
-          <Image
-            src={chainIcon.src}
-            alt={chainIcon.alt}
-            width={24}
-            height={24}
-            onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
-          />
-          <p>
-            {reward}
-            <span> {unit}</span>
-          </p>
-        </div>
+  const displayMinerAndReward = isShow ? (
+    <div className="flex flex-wrap items-center gap-3">
+      {/* Info: (20230912 - Julian) Miner */}
+      <Link href={minerLink} title={miner}>
+        <BoltButton className="px-3 py-1" color="blue" style="solid">
+          {truncateText(miner, DEFAULT_TRUNCATE_LENGTH)}
+        </BoltButton>
+      </Link>
+      <p>+</p>
+      {/* Info: (20230912 - Julian) Reward */}
+      <div className="flex items-center space-x-2">
+        <Image
+          src={chainIcon.src}
+          alt={chainIcon.alt}
+          width={24}
+          height={24}
+          onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+        />
+        <p>
+          {reward}
+          <span> {unit}</span>
+        </p>
       </div>
-    ) : (
-      // Info: (20240206 - Julian) Loading Animation
-      <div className="flex items-center space-x-3">
-        <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-        <div className="h-20px w-70px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-      </div>
-    );
+    </div>
+  ) : (
+    // Info: (20240206 - Julian) Loading Animation
+    <div className="flex items-center space-x-3">
+      <Skeleton height={24} width={100} />
+      <Skeleton height={24} width={70} />
+    </div>
+  );
 
-  const displayExtraData = extraData ? (
+  const extraDataText = extraData ? (
     <p>{extraData}</p>
   ) : (
     // Info: (20231213 - Julian) If there is no management team
     <p>{t('COMMON.NONE')}</p>
   );
+  const displayExtraData = isShow ? extraDataText : <Skeleton height={24} width={100} />;
 
-  const displaySize = size ? (
+  const displaySize = isShow ? (
     <p>
       {size}
       <span> bytes</span>
     </p>
   ) : (
-    <div className="h-20px w-50px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    <Skeleton height={24} width={100} />
   );
 
   return (
