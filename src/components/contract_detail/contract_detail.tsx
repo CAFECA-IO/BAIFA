@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IContractDetail} from '../../interfaces/contract';
+import {IContractBrief} from '../../interfaces/contract';
 import Tooltip from '../tooltip/tooltip';
 import BoltButton from '../bolt_button/bolt_button';
 import {getDynamicUrl} from '../../constants/url';
@@ -9,7 +9,7 @@ import {timestampToString, truncateText} from '../../lib/common';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface IContractDetailDetailProps {
-  contractData: IContractDetail;
+  contractData: IContractBrief;
 }
 
 const ContractDetail = ({contractData}: IContractDetailDetailProps) => {
@@ -51,12 +51,12 @@ const ContractDetail = ({contractData}: IContractDetailDetailProps) => {
   );
 
   const displaySourceCode = sourceCode ? (
-    <pre className="max-h-200px flex-1 overflow-scroll bg-darkPurple3 p-4 text-sm">
-      <code>{sourceCode}</code>
-    </pre>
+    <div className="max-h-200px flex-1 overflow-scroll break-all bg-darkPurple3 p-4 text-sm">
+      {sourceCode}
+    </div>
   ) : (
     // Info: (20240215 - Julian) Loading Animation
-    <div className="h-20px w-200px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    <div className="h-50px w-200px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
   );
 
   return (

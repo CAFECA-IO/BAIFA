@@ -26,3 +26,8 @@ export interface IBlockDetail extends IBlock {
   previousBlockId?: string;
   nextBlockId?: string;
 }
+
+export interface IBlockList {
+  blocks: IBlock[];
+  totalPages: number;
+}

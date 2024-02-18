@@ -33,3 +33,8 @@ export interface ITransactionDetail extends ITransaction {
   }[];
   unit: string;
 }
+
+export interface ITransactionList {
+  transactions: IDisplayTransaction[];
+  totalPages: number;
+}

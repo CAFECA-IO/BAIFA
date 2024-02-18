@@ -11,3 +11,11 @@ export interface IContractDetail extends IInteractionItem, IContract {
   creatorAddressId: string;
   sourceCode: string;
 }
+
+export interface IContractBrief extends ICommonData {
+  contractAddress: string;
+  type: string;
+  creatorAddressId: string;
+  sourceCode: string;
+  publicTag: string[];
+}

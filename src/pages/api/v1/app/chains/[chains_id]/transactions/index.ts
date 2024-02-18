@@ -3,9 +3,9 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
 import {ITEM_PER_PAGE} from '../../../../../../../constants/config';
-import {IDisplayTransaction} from '../../../../../../../interfaces/transaction';
+import {IDisplayTransaction, ITransactionList} from '../../../../../../../interfaces/transaction';
 
-type ResponseData = IDisplayTransaction[];
+type ResponseData = ITransactionList;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -44,15 +44,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   if (!addressId) {
     // Info: (20240117 - Julian) ========= Transactions of a chain =========
-    const transactionsOfChain = await prisma.transactions.findMany({
-      where: {
-        chain_id: chain_id,
-        // Info: (20240119 - Julian) 日期區間
-        created_timestamp: {
-          gte: start_date,
-          lte: end_date,
-        },
+
+    // Info: (20240216 - Julian) 查詢條件
+    const where = {
+      chain_id: chain_id,
+      // Info: (20240119 - Julian) 日期區間
+      created_timestamp: {
+        gte: start_date,
+        lte: end_date,
       },
+    };
+    // Info: (20240216 - Julian) 拿出 transactions 筆數
+    const countOfChain = await prisma.transactions.count({where});
+    // Info: (20240216 - Julian) 拿出 transactions 資料
+    const transactionListOfChain = await prisma.transactions.findMany({
+      where,
       select: {
         id: true,
         chain_id: true,
@@ -69,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       take: take,
     });
 
-    const resultOfChain: ResponseData = transactionsOfChain.map(transaction => {
+    const transactionsOfChain: IDisplayTransaction[] = transactionListOfChain.map(transaction => {
       // Info: (20240205 - Julian) 找出對應的 type 和 status
       const status =
         statusList.find(code => code.value === parseInt(transaction.status ?? ''))?.meaning ?? '';
@@ -84,24 +90,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         status: status,
       };
     });
+
+    // Info: (20240216 - Julian) 計算 totalPages
+    const totalPagesOfChain = Math.ceil(countOfChain / ITEM_PER_PAGE);
+
+    // Info: (20240216 - Julian) 組合回傳資料
+    const resultOfChain: ITransactionList = {
+      transactions: transactionsOfChain,
+      totalPages: totalPagesOfChain,
+    };
 
     prisma.$connect();
     res.status(200).json(resultOfChain);
   } else {
     // Info: (20240117 - Julian) ========= Transaction History bewteen two addresses =========
-    const transactionsBetweenAddresses = await prisma.transactions.findMany({
-      where: {
-        chain_id: chain_id,
-        OR: [
-          // Info: (20240118 - Julian) 選出 from_address 或 to_address 有包含 addressId 的交易
-          {from_address: {equals: addressId[0] || addressId[1]}},
-          {to_address: {equals: addressId[0] || addressId[1]}},
-        ],
-        created_timestamp: {
-          gte: start_date,
-          lte: end_date,
-        },
+
+    // Info: (20240119 - Julian) 查詢條件
+    const where = {
+      chain_id: chain_id,
+      OR: [
+        // Info: (20240118 - Julian) 選出 from_address 或 to_address 有包含 addressId 的交易
+        {from_address: {equals: addressId[0] || addressId[1]}},
+        {to_address: {equals: addressId[0] || addressId[1]}},
+      ],
+      created_timestamp: {
+        gte: start_date,
+        lte: end_date,
       },
+    };
+    // Info: (20240216 - Julian) 拿出 transactions 筆數
+    const countBetweenAddresses = await prisma.transactions.count({where});
+    // Info: (20240216 - Julian) 拿出 transactions 資料
+    const transactionListBetweenAddresses = await prisma.transactions.findMany({
+      where,
       select: {
         id: true,
         chain_id: true,
@@ -118,20 +139,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       take: take,
     });
 
-    const resultBetweenAddresses: ResponseData = transactionsBetweenAddresses.map(transaction => {
-      // Info: (20240205 - Julian) 找出對應的 type 和 status
-      const type =
-        typeList.find(code => code.value === parseInt(transaction.type ?? ''))?.meaning ?? '';
-      const status =
-        statusList.find(code => code.value === parseInt(transaction.status ?? ''))?.meaning ?? '';
-      return {
-        id: `${transaction.id}`,
-        chainId: `${transaction.chain_id}`,
-        createdTimestamp: transaction?.created_timestamp ?? 0,
-        type: type,
-        status: status,
-      };
-    });
+    const transactionsBetweenAddresses: IDisplayTransaction[] = transactionListBetweenAddresses.map(
+      transaction => {
+        // Info: (20240205 - Julian) 找出對應的 type 和 status
+        const type =
+          typeList.find(code => code.value === parseInt(transaction.type ?? ''))?.meaning ?? '';
+        const status =
+          statusList.find(code => code.value === parseInt(transaction.status ?? ''))?.meaning ?? '';
+        return {
+          id: `${transaction.id}`,
+          chainId: `${transaction.chain_id}`,
+          createdTimestamp: transaction?.created_timestamp ?? 0,
+          type: type,
+          status: status,
+        };
+      }
+    );
+
+    // Info: (20240216 - Julian) 計算 totalPages
+    const totalPagesBetweenAddresses = Math.ceil(countBetweenAddresses / ITEM_PER_PAGE);
+
+    // Info: (20240216 - Julian) 組合回傳資料
+    const resultBetweenAddresses: ITransactionList = {
+      transactions: transactionsBetweenAddresses,
+      totalPages: totalPagesBetweenAddresses,
+    };
 
     prisma.$connect();
     res.status(200).json(resultBetweenAddresses);

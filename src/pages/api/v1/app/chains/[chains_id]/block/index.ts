@@ -3,9 +3,9 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
 import {ITEM_PER_PAGE} from '../../../../../../../constants/config';
-import {IBlock} from '../../../../../../../interfaces/block';
+import {IBlock, IBlockList} from '../../../../../../../interfaces/block';
 
-type ResponseData = IBlock[];
+type ResponseData = IBlockList;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -22,15 +22,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // (20240119 - Julian) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // (20240119 - Julian) 取幾筆
 
-  const blocks = await prisma.blocks.findMany({
-    where: {
-      chain_id: chain_id,
-      // Info: (20240118 - Julian) 日期區間
-      created_timestamp: {
-        gte: start_date,
-        lte: end_date,
-      },
+  // Info: (20240216 - Julian) 查詢條件
+  const where = {
+    chain_id: chain_id,
+    // Info: (20240118 - Julian) 日期區間
+    created_timestamp: {
+      gte: start_date,
+      lte: end_date,
     },
+  };
+
+  // Info: (20240216 - Julian) 取得 blocks 筆數
+  const totalBlocks = await prisma.blocks.count({where});
+  // Info: (20240216 - Julian) 取得 blocks 資料
+  const blocks = await prisma.blocks.findMany({
+    where,
     select: {
       id: true,
       chain_id: true,
@@ -46,8 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     take: take,
   });
 
-  // Info: (20240118 - Julian) 轉換成 API 要的格式
-  const result: ResponseData = blocks.map(block => {
+  const blockList: IBlock[] = blocks.map(block => {
     return {
       id: `${block.number}`,
       chainId: `${block.chain_id}`,
@@ -56,6 +61,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       stability: 'HIGH',
     };
   });
+
+  const totalPages = Math.ceil(totalBlocks / ITEM_PER_PAGE);
+
+  // Info: (20240118 - Julian) 轉換成 API 要的格式
+  const result = {
+    blocks: blockList,
+    totalPages: totalPages,
+  };
 
   prisma.$connect();
   res.status(200).json(result);

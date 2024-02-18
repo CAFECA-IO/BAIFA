@@ -4,17 +4,17 @@ import useStateRef from 'react-usestateref';
 import BlockList from '../block_list/block_list';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IBlock} from '../../interfaces/block';
+import {IBlock, IBlockList} from '../../interfaces/block';
 import DatePicker from '../date_picker/date_picker';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
-import {sortOldAndNewOptions, default30DayPeriod, ITEM_PER_PAGE} from '../../constants/config';
+import {sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
 import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
 
 const BlockTab = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {getBlocks} = useContext(MarketContext);
+  const {getBlockList} = useContext(MarketContext);
 
   // Info: (20240119 - Julian) get chainId from URL
   const router = useRouter();
@@ -22,11 +22,8 @@ const BlockTab = () => {
 
   const [search, setSearch, searchRef] = useStateRef('');
   const [period, setPeriod] = useState(default30DayPeriod);
-  const [blockData, setBlockData] = useState<IBlock[]>([]);
+  const [blockList, setBlockList] = useState<IBlockList>();
   const [isLoading, setIsLoading] = useState(true);
-
-  // Info: (20240215 - Julian) 計算總頁數
-  const [totalPages, setTotalPages] = useState<number>(Math.ceil(blockData.length / ITEM_PER_PAGE));
   const [activePage, setActivePage] = useState(1);
 
   // Info: (20240119 - Julian) 設定 API 查詢參數
@@ -40,23 +37,21 @@ const BlockTab = () => {
 
   // Info: (20240119 - Julian) Call API to get block data
   const getBlockData = async () => {
-    const data = await getBlocks(chainId, apiQueryStr);
-    setBlockData(data);
-    // Info: (20240215 - Julian) 每次拿到新資料，就重新計算總頁數
-    setTotalPages(Math.ceil(data.length / ITEM_PER_PAGE));
+    const data = await getBlockList(chainId, apiQueryStr);
+    setBlockList(data);
   };
 
   useEffect(() => {
     setIsLoading(true);
 
     // Info: (20240206 - Julian) 如果拿到資料，就將 isLoading 設為 false
-    if (blockData.length > 0) {
+    if (blockList?.blocks && blockList?.blocks.length > 0) {
       setIsLoading(false);
     } else {
       setIsLoading(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, blockData]);
+  }, [chainId, blockList]);
 
   useEffect(() => {
     setActivePage(1);
@@ -69,12 +64,14 @@ const BlockTab = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePage]);
 
+  const {blocks, totalPages} = blockList ?? {blocks: [], totalPages: 0};
+
   // Info: (20240119 - Julian) 關鍵字搜尋 & 排序
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [filteredBlockData, setFilteredBlockData] = useState<IBlock[]>(blockData);
+  const [filteredBlockData, setFilteredBlockData] = useState<IBlock[]>(blocks);
 
   useEffect(() => {
-    const searchResult = blockData
+    const searchResult = blocks
       // Info: (20230905 - Julian) filter by search term
       .filter((block: IBlock) => {
         const searchTerm = searchRef.current.toLowerCase();
@@ -93,7 +90,7 @@ const BlockTab = () => {
       });
     setFilteredBlockData(searchResult);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blockData, search, sorting]);
+  }, [blockList, search, sorting]);
 
   const displayBlockList = isLoading ? (
     // Info: (20240206 - Julian) Loading animation

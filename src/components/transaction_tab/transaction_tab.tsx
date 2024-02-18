@@ -3,31 +3,26 @@ import {useRouter} from 'next/router';
 import TransactionList from '../transaction_list/transaction_list';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IDisplayTransaction} from '../../interfaces/transaction';
+import {IDisplayTransaction, ITransactionList} from '../../interfaces/transaction';
 import SearchBar from '../search_bar/search_bar';
 import DatePicker from '../date_picker/date_picker';
 import SortingMenu from '../sorting_menu/sorting_menu';
-import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
+import {default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
 import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
 
 const TransactionTab = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
-  const {getTransactions} = useContext(MarketContext);
+  const {getTransactionList} = useContext(MarketContext);
 
   // Info: (20240119 - Julian) get chainId from URL
   const chainId = router.query.chainId as string;
 
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
-  const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
+  const [transactionData, setTransactionData] = useState<ITransactionList>();
   const [isLoading, setIsLoading] = useState(true);
-
-  // Info: (20240215 - Julian) 計算總頁數
-  const [totalPages, setTotalPages] = useState<number>(
-    Math.ceil(transactionData.length / ITEM_PER_PAGE)
-  );
   const [activePage, setActivePage] = useState(1);
 
   // Info: (20240119 - Julian) 設定 API 查詢參數
@@ -41,17 +36,15 @@ const TransactionTab = () => {
 
   // Info: (20240119 - Julian) Call API to get block and transaction data
   const getTransactionData = async () => {
-    const data = await getTransactions(chainId, apiQueryStr);
+    const data = await getTransactionList(chainId, apiQueryStr);
     setTransactionData(data);
-    // Info: (20240215 - Julian) 每次拿到新資料，就重新計算總頁數
-    setTotalPages(Math.ceil(data.length / ITEM_PER_PAGE));
   };
 
   useEffect(() => {
     setIsLoading(true);
 
     // Info: (20240206 - Julian) 如果拿到資料，就將 isLoading 設為 false
-    if (transactionData.length > 0) {
+    if (transactionData?.transactions && transactionData?.transactions.length > 0) {
       setIsLoading(false);
     } else {
       setIsLoading(true);
@@ -70,12 +63,14 @@ const TransactionTab = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePage]);
 
+  const {transactions, totalPages} = transactionData || {transactions: [], totalPages: 0};
+
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredTransactions, setFilteredTransactions] =
-    useState<IDisplayTransaction[]>(transactionData);
+    useState<IDisplayTransaction[]>(transactions);
 
   useEffect(() => {
-    const searchResult = transactionData
+    const searchResult = transactions
       // Info: (20230905 - Julian) filter by search term
       // .filter((transaction: ITransaction) => {
       //   const searchTerm = searchRef.current.toLowerCase();

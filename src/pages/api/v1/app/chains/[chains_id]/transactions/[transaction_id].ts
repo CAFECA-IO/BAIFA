@@ -113,7 +113,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
   const from: IAddressInfo[] = fromAddresses.map((address, index) => {
     return {
-      type: fromType[index], // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+      type: fromType[index],
       address: address,
     };
   });
@@ -128,7 +128,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
   const to: IAddressInfo[] = toAddresses.map((address, index) => {
     return {
-      type: toType[index], // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+      type: toType[index],
       address: address,
     };
   });

@@ -10,7 +10,7 @@ import Breadcrumb from '../../../../components/breadcrumb/breadcrumb';
 import BlockTab from '../../../../components/block_tab/block_tab';
 import TransactionTab from '../../../../components/transaction_tab/transaction_tab';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {IChainDetail} from '../../../../interfaces/chain';
+import {IChain} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
@@ -32,7 +32,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const {getChainDetail} = useContext(MarketContext);
 
   const [activeTab, setActiveTab] = useState<ChainDetailTab>(ChainDetailTab.BLOCKS);
-  const [chainData, setChainData] = useState<IChainDetail>({} as IChainDetail);
+  const [chainData, setChainData] = useState<IChain>({} as IChain);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

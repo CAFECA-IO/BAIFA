@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
-import {useContext, useState, useEffect, useRef} from 'react';
+import {useContext, useState, useEffect} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
@@ -14,7 +14,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
-import {IContractDetail} from '../../../../../interfaces/contract';
+import {IContractBrief} from '../../../../../interfaces/contract';
 import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
 import TransactionHistorySection from '../../../../../components/transaction_history_section/transaction_history_section';
 import Tooltip from '../../../../../components/tooltip/tooltip';
@@ -31,14 +31,13 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getContractDetail} = useContext(MarketContext);
+  const {getContractDetail, getContractTransactions} = useContext(MarketContext);
 
-  const [contractData, setContractData] = useState<IContractDetail>({} as IContractDetail);
+  const [contractData, setContractData] = useState<IContractBrief>({} as IContractBrief);
+  const [transactionHistoryData, setTransactionHistoryData] = useState<IDisplayTransaction[]>([]);
 
   const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
-  const {transactionHistoryData, publicTag, chainId} = contractData;
-  // Info: (20240102 - Julian) Transaction history
-  const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
+  const {publicTag, chainId} = contractData;
 
   const backClickHandler = () => router.back();
 
@@ -52,7 +51,13 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
       setContractData(contractData);
     };
 
+    const getTransactionHistoryData = async (chainId: string, contractId: string) => {
+      const transactionHistoryData = await getContractTransactions(chainId, contractId);
+      setTransactionHistoryData(transactionHistoryData);
+    };
+
     getContractData(chainId, contractId);
+    getTransactionHistoryData(chainId, contractId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -61,7 +66,7 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
       setContractData(contractData);
     }
     if (transactionHistoryData) {
-      setTransactionData(transactionHistoryData);
+      setTransactionHistoryData(transactionHistoryData);
     }
   }, [contractData, transactionHistoryData]);
 
@@ -105,13 +110,15 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
                     height={40}
                     onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
                   />
-                  <h1 className="text-2xl font-bold lg:text-32px" title={contractId}>
-                    {t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')}
-                    <span className="ml-2 text-primaryBlue">
-                      {' '}
+                  <div
+                    className="text-2xl font-bold lg:inline-flex lg:text-32px"
+                    title={contractId}
+                  >
+                    <span>{t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')}</span>
+                    <h1 className="text-primaryBlue lg:ml-2">
                       {truncateText(contractId, DEFAULT_TRUNCATE_LENGTH)}
-                    </span>
-                  </h1>
+                    </h1>
+                  </div>
                 </div>
                 {/* Info: (20231109 - Julian) Public Tag */}
                 <div className="flex items-center space-x-4">
@@ -159,7 +166,7 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
 
             {/* Info: (20231103 - Julian) Transaction History */}
             <div className="my-10 w-full">
-              <TransactionHistorySection transactions={transactionData} />
+              <TransactionHistorySection transactions={transactionHistoryData} />
             </div>
 
             {/* Info: (20231017 - Julian) Back Button */}
