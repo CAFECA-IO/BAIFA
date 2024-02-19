@@ -9,3 +9,10 @@ export interface IEvidenceDetail extends IEvidence {
   creatorAddressId: string;
   transactionHistoryData: IDisplayTransaction[];
 }
+
+export interface IEvidenceBrief extends ICommonData {
+  evidenceAddress: string;
+  state: string;
+  creatorAddressId: string;
+  content: string;
+}

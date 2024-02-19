@@ -2,9 +2,7 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
-import {
-  ITEM_PER_PAGE,
-} from '../../../../../../../../constants/config';
+import {ITEM_PER_PAGE} from '../../../../../../../../constants/config';
 import {IDisplayTransaction} from '../../../../../../../../interfaces/transaction';
 
 type ResponseData = IDisplayTransaction[];
@@ -35,30 +33,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
 
   // Info: (20240119 - Julian) 再從 transactions 撈出位於 block_id 下的所有 transaction 的資料
-  const transactions = await prisma.transactions.findMany({
-    where: {
-      block_hash: blockHash?.hash,
-      // Info: (20240125 - Julian) 日期區間
-      created_timestamp: {
-        gte: start_date,
-        lte: end_date,
-      },
-    },
-    select: {
-      id: true,
-      chain_id: true,
-      created_timestamp: true,
-      type: true,
-      status: true,
-    },
-    // Info: (20240125 - Julian) 從新到舊排序
-    orderBy: {
-      created_timestamp: 'desc',
-    },
-    // Info: (20240125 - Julian) 分頁
-    skip: skip,
-    take: take,
-  });
+  // Info: (20240219 - Julian) 如果 blockHash 不存在，則回傳空陣列
+  const transactions = blockHash
+    ? await prisma.transactions.findMany({
+        where: {
+          block_hash: blockHash?.hash,
+          // Info: (20240125 - Julian) 日期區間
+          created_timestamp: {
+            gte: start_date,
+            lte: end_date,
+          },
+        },
+        select: {
+          id: true,
+          chain_id: true,
+          created_timestamp: true,
+          type: true,
+          status: true,
+        },
+        // Info: (20240125 - Julian) 從新到舊排序
+        orderBy: {
+          created_timestamp: 'desc',
+        },
+        // Info: (20240125 - Julian) 分頁
+        skip: skip,
+        take: take,
+      })
+    : [];
 
   // Info: (20240205 - Julian) 從 codes Table 撈出 type 和 status
   const codes = await prisma.codes.findMany({

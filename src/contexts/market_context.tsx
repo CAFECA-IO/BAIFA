@@ -32,8 +32,8 @@ import {
 import {IReviews} from '../interfaces/review';
 import {IRedFlag, IRedFlagDetail} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
-import {IContractDetail} from '../interfaces/contract';
-import {IEvidenceDetail} from '../interfaces/evidence';
+import {IContractBrief} from '../interfaces/contract';
+import {IEvidenceBrief} from '../interfaces/evidence';
 import {ICurrency, ICurrencyDetail} from '../interfaces/currency';
 import {IBlackList} from '../interfaces/blacklist';
 
@@ -47,6 +47,8 @@ export interface IMarketContext {
   chainList: IChainDetail[];
   currencyList: ICurrency[];
   blacklist: IBlackList[];
+
+  chainLoading: boolean;
 
   getChains: () => Promise<void>;
   getChainDetail: (chainId: string) => Promise<IChain>;
@@ -83,13 +85,18 @@ export interface IMarketContext {
     addressId: string,
     type: string
   ) => Promise<IInteractionItem[]>;
-  getContractDetail: (chainId: string, contractId: string) => Promise<IContractDetail>;
+  getContractDetail: (chainId: string, contractId: string) => Promise<IContractBrief>;
   getContractTransactions: (
     chainId: string,
     contractId: string,
     queryStr?: string
   ) => Promise<ITransaction[]>;
-  getEvidenceDetail: (chainId: string, evidenceId: string) => Promise<IEvidenceDetail>;
+  getEvidenceDetail: (chainId: string, evidenceId: string) => Promise<IEvidenceBrief>;
+  getEvidenceTransactions: (
+    chainId: string,
+    contractId: string,
+    queryStr?: string
+  ) => Promise<ITransaction[]>;
   getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetail>;
   getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlag[]>;
   getAllRedFlags: () => Promise<IRedFlag[]>;
@@ -105,6 +112,8 @@ export const MarketContext = createContext<IMarketContext>({
   currencyList: [],
   blacklist: [],
 
+  chainLoading: true,
+
   getChains: () => Promise.resolve(),
   getChainDetail: () => Promise.resolve({} as IChain),
   getBlockList: () => Promise.resolve({} as IBlockList),
@@ -119,9 +128,10 @@ export const MarketContext = createContext<IMarketContext>({
   getReviews: () => Promise.resolve({} as IReviews),
   getRedFlagsFromAddress: () => Promise.resolve([] as IRedFlag[]),
   getInteractions: () => Promise.resolve([] as IInteractionItem[]),
-  getContractDetail: () => Promise.resolve({} as IContractDetail),
+  getContractDetail: () => Promise.resolve({} as IContractBrief),
   getContractTransactions: () => Promise.resolve([] as ITransaction[]),
-  getEvidenceDetail: () => Promise.resolve({} as IEvidenceDetail),
+  getEvidenceDetail: () => Promise.resolve({} as IEvidenceBrief),
+  getEvidenceTransactions: () => Promise.resolve([] as ITransaction[]),
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetail),
   getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlag[]),
   getAllRedFlags: () => Promise.resolve([] as IRedFlag[]),
@@ -135,6 +145,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const [chainList, setChainList] = useState<IChainDetail[]>([]);
   const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
   const [blacklist, setBlacklist] = useState<IBlackList[]>([]);
+
+  const [chainLoading, setChainLoading] = useState<boolean>(true);
 
   const getPromotion = useCallback(async () => {
     let data: IPromotion = defaultPromotion;
@@ -151,11 +163,13 @@ export const MarketProvider = ({children}: IMarketProvider) => {
 
   const getChains = useCallback(async () => {
     let data: IChainDetail[] = [];
+    setChainLoading(true);
     try {
       const response = await fetch(`${APIURL.CHAINS}`, {
         method: 'GET',
       });
       data = await response.json();
+      setChainLoading(false);
     } catch (error) {
       //console.log('getChains error', error);
     }
@@ -478,7 +492,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, []);
 
   const getContractDetail = useCallback(async (chainId: string, contractId: string) => {
-    let data: IContractDetail = {} as IContractDetail;
+    let data: IContractBrief = {} as IContractBrief;
     try {
       const response = await fetch(`${APIURL.CHAINS}/${chainId}/contracts/${contractId}`, {
         method: 'GET',
@@ -514,7 +528,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   );
 
   const getEvidenceDetail = useCallback(async (chainId: string, evidenceId: string) => {
-    let data: IEvidenceDetail = {} as IEvidenceDetail;
+    let data: IEvidenceBrief = {} as IEvidenceBrief;
     try {
       const response = await fetch(`${APIURL.CHAINS}/${chainId}/evidence/${evidenceId}`, {
         method: 'GET',
@@ -525,6 +539,29 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     }
     return data;
   }, []);
+
+  const getEvidenceTransactions = useCallback(
+    async (chainId: string, evidenceId: string, queryStr?: string) => {
+      let data: ITransaction[] = [];
+      try {
+        const response = queryStr
+          ? await fetch(
+              `${APIURL.CHAINS}/${chainId}/evidence/${evidenceId}/transactions?${queryStr}`,
+              {
+                method: 'GET',
+              }
+            )
+          : await fetch(`${APIURL.CHAINS}/${chainId}/evidence/${evidenceId}/transactions`, {
+              method: 'GET',
+            });
+        data = await response.json();
+      } catch (error) {
+        //console.log('getContractTransactions error', error);
+      }
+      return data;
+    },
+    []
+  );
 
   const getCurrencyDetail = useCallback(async (currencyId: string) => {
     let data: ICurrencyDetail = {} as ICurrencyDetail;
@@ -585,6 +622,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     currencyList: currencyList,
     blacklist: blacklist,
 
+    chainLoading: chainLoading,
+
     getChains,
     getChainDetail,
     getBlockList,
@@ -602,6 +641,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getContractDetail,
     getContractTransactions,
     getEvidenceDetail,
+    getEvidenceTransactions,
     getCurrencyDetail,
     getRedFlagsFromCurrency,
     getAllRedFlags,

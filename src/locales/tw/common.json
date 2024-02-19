@@ -360,7 +360,8 @@
     "TITLE": "公開標籤",
     "UNKNOWN_USER": "未知用戶",
     "HACKER": "駭客",
-    "BINANCE_COLDWALLET": "幣安冷錢包"
+    "BINANCE_COLDWALLET": "幣安冷錢包",
+    "TOOLTIP_CONTENT": "公開標籤是由稗法社群提供的標籤，用於標記特定地址的風險等級。用戶登入後可自行新增私人標籤。"
   },
   "FOOTER": {
     "POWERED_BY": "技術支持 稗法",

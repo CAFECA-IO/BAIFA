@@ -25,6 +25,7 @@ import {
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
+import Skeleton from '../../../../../../components/skeleton/skeleton';
 
 interface ITransitionsInBlockPageProps {
   chainId: string;
@@ -40,6 +41,7 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
   const [transactionData, setTransitionData] = useState<IDisplayTransaction[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Info: (20240215 - Julian) 計算總頁數
   const [totalPages, setTotalPages] = useState<number>(
@@ -80,10 +82,27 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   }, []);
 
   useEffect(() => {
+    // Info: (20240219 - Julian) Loading animation
+    setIsLoading(true);
+
+    // Info: (20240219 - Julian) 如果拿到資料，就將 isLoading 設為 false
+    if (transactionData && transactionData.length > 0) {
+      setIsLoading(false);
+    }
+
+    // Info: (20240219 - Julian) 如果 3 秒後還沒拿到資料，也將 isLoading 設為 false
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactionData]);
+
+  useEffect(() => {
     setActivePage(1);
     getTransactionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, chainId]);
+  }, [period, blockId, chainId]);
 
   useEffect(() => {
     getTransactionData();
@@ -104,6 +123,26 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
     });
     setFilteredTransactions(searchResult);
   }, [transactionData, search, sorting]);
+
+  const displayTransactionList = isLoading ? (
+    // Info: (20240206 - Julian) Loading animation
+    <div className="flex w-full flex-col py-10 divide-y divide-darkPurple4">
+      {Array.from({length: 3}).map((_, index) => (
+        <div key={index} className="flex w-full items-center gap-5 py-2">
+          <Skeleton width={60} height={60} />
+          <div className="flex-1">
+            <Skeleton width={100} height={20} />
+          </div>
+          <Skeleton width={100} height={20} />
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div className="flex w-full flex-col items-center">
+      <TransactionList transactions={filteredTransactions} />
+      <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
+    </div>
+  );
 
   const displayedTransactions = (
     <div className="flex w-full flex-col items-center font-inter">
@@ -136,10 +175,7 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
         </div>
       </div>
       {/* Info: (20230907 - Julian) Transaction List */}
-      <div className="flex w-full flex-col items-center">
-        <TransactionList transactions={filteredTransactions} />
-        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
-      </div>
+      {displayTransactionList}
     </div>
   );
 

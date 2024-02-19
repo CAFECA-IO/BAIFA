@@ -18,28 +18,30 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
-import {IEvidenceDetail} from '../../../../../interfaces/evidence';
+import {IEvidenceBrief} from '../../../../../interfaces/evidence';
 import {IDisplayTransaction} from '../../../../../interfaces/transaction';
 import {DEFAULT_CHAIN_ICON} from '../../../../../constants/config';
+import DataNotFound from '../../../../../components/data_not_found/data_not_found';
 
 interface IEvidenceDetailDetailPageProps {
+  chainId: string;
   evidenceId: string;
 }
 
-const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailDetailPageProps) => {
+const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getEvidenceDetail} = useContext(MarketContext);
+  const {getEvidenceDetail, getEvidenceTransactions} = useContext(MarketContext);
+
+  const [evidenceData, setEvidenceData] = useState<IEvidenceBrief>({} as IEvidenceBrief);
+  const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
+  const [isNoData, setIsNoData] = useState(false);
 
   const headTitle = `${t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} ${evidenceId} - BAIFA`;
-  const [evidenceData, setEvidenceData] = useState<IEvidenceDetail>({} as IEvidenceDetail);
-
-  const {transactionHistoryData, chainId} = evidenceData;
-  // Info: (20240102 - Julian) Transaction history
-  const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
-
   const chainIcon = getChainIcon(chainId);
+
+  const backClickHandler = () => router.back();
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -51,23 +53,56 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailDetailPageProps) => {
       setEvidenceData(evidenceData);
     };
 
+    const getTransactionData = async (chainId: string, evidenceId: string) => {
+      const transactionHistoryData = await getEvidenceTransactions(chainId, evidenceId);
+      setTransactionData(transactionHistoryData);
+    };
+
     getEvidenceData(chainId, evidenceId);
+    getTransactionData(chainId, evidenceId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Info: (20240219 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data
   useEffect(() => {
-    if (evidenceData) {
-      setEvidenceData(evidenceData);
-    }
-    if (transactionHistoryData) {
-      setTransactionData(transactionHistoryData);
-    }
-  }, [evidenceData, transactionHistoryData]);
+    const timer = setTimeout(() => {
+      if (!evidenceData.chainId) {
+        setIsNoData(true);
+      }
+    }, 3000);
 
-  const backClickHandler = () => router.back();
+    return () => clearTimeout(timer);
+  }, [evidenceData]);
 
-  // Info: (20240130 - Julian) 如果回傳資料為空，顯示 Data not found
-  //if (!evidenceData.id) return <h1>Data not found</h1>;
+  const isDownloadButton = isNoData ? null : (
+    <Link href={BFAURL.COMING_SOON}>
+      <BoltButton
+        className="group flex items-center space-x-4 px-6 py-4"
+        color="purple"
+        style="solid"
+      >
+        <Image
+          src="/icons/download.svg"
+          alt=""
+          width={24}
+          height={24}
+          className="invert group-hover:invert-0"
+        />
+        <p>{t('EVIDENCE_DETAIL_PAGE.DOWNLOAD_EVIDENCE_BUTTON')}</p>
+      </BoltButton>
+    </Link>
+  );
+
+  const isEvidenceDetail = isNoData ? (
+    <DataNotFound />
+  ) : (
+    <EvidenceDetail evidenceData={evidenceData} />
+  );
+
+  const isPrivateNoteSection = isNoData ? null : <PrivateNoteSection />;
+  const isTransactionHistorySection = isNoData ? null : (
+    <TransactionHistorySection transactions={transactionData} />
+  );
 
   return (
     <>
@@ -102,40 +137,17 @@ const EvidenceDetailPage = ({evidenceId}: IEvidenceDetailDetailPageProps) => {
               </div>
 
               {/* Info: (20231107 - Julian) Download Evidence Button */}
-              <div className="relative right-0 mt-6 lg:mt-0 xl:absolute">
-                <Link href={BFAURL.COMING_SOON}>
-                  <BoltButton
-                    className="group flex items-center space-x-4 px-6 py-4"
-                    color="purple"
-                    style="solid"
-                  >
-                    <Image
-                      src="/icons/download.svg"
-                      alt=""
-                      width={24}
-                      height={24}
-                      className="invert group-hover:invert-0"
-                    />
-                    <p>{t('EVIDENCE_DETAIL_PAGE.DOWNLOAD_EVIDENCE_BUTTON')}</p>
-                  </BoltButton>
-                </Link>
-              </div>
+              <div className="relative right-0 mt-6 lg:mt-0 xl:absolute">{isDownloadButton}</div>
             </div>
 
             {/* Info: (20231107 - Julian) Evidence Detail */}
-            <div className="w-full pt-10">
-              <EvidenceDetail evidenceData={evidenceData} />
-            </div>
+            <div className="w-full pt-10">{isEvidenceDetail}</div>
 
             {/* Info: (20231107 - Julian) Private Note Section */}
-            <div className="w-full">
-              <PrivateNoteSection />
-            </div>
+            <div className="w-full">{isPrivateNoteSection}</div>
 
             {/* Info: (20231107 - Julian) Transaction History Section */}
-            <div className="w-full">
-              <TransactionHistorySection transactions={transactionData} />
-            </div>
+            <div className="w-full">{isTransactionHistorySection}</div>
 
             {/* Info: (20231107 - Julian) Back Button */}
             <div className="">
@@ -186,10 +198,11 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
+  const chainId = params.chainId;
   const evidenceId = params.evidenceId;
 
   return {
-    props: {evidenceId, ...(await serverSideTranslations(locale as string, ['common']))},
+    props: {evidenceId, chainId, ...(await serverSideTranslations(locale as string, ['common']))},
   };
 };
 

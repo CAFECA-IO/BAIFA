@@ -130,7 +130,18 @@ export const getTimeString = (timeSpan: number) => {
 export const withCommas = (x: number | string) => {
   // Info: (20231214 - Julian) 如果 x 為 NaN 或 undefined 或 null，顯示 '—'
   if (x === undefined || x === null || isNaN(Number(x))) return '—';
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // Info: (20240219 - Julian) 將整數和小數分開處理
+  const int = Math.floor(Number(x));
+  const dec = Number(x) - int;
+
+  // Info: (20240219 - Julian) 整數 -> 加上千分位逗點
+  const intStr = int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  // Info: (20240219 - Julian) 小數 -> 去掉小數點前面的 0
+  const decStr = dec.toString().replace(/^0+/, '');
+
+  // Info: (20240219 - Julian) 回傳組合後的字串
+  return intStr + decStr;
 };
 
 export const truncateText = (text: string | undefined, length: number) => {
