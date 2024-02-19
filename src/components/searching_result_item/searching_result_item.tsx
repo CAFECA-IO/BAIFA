@@ -26,7 +26,6 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {type, data} = searchResult;
 
-  const dynamicUrl = getDynamicUrl(data.chainId, data.id);
   const chainIcon = getChainIcon(data.chainId);
 
   // Info: (20231115 - Julian) 第一行要放的資料內容
@@ -87,9 +86,10 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
           );
 
         return {
+          ID: data.id,
           LINE_1: blockStability,
           LINE_2: displayedTime,
-          LINK: dynamicUrl.BLOCK,
+          LINK: getDynamicUrl(data.chainId, data.id).BLOCK,
         };
       // Info: (20231115 - Julian) ----------------- ADDRESS -----------------
       case SearchType.ADDRESS:
@@ -99,14 +99,14 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
           riskLevel === RiskLevel.HIGH_RISK
             ? '#FC8181'
             : riskLevel === RiskLevel.MEDIUM_RISK
-            ? '#FFA600'
-            : '#3DD08C';
+              ? '#FFA600'
+              : '#3DD08C';
         const riskText =
           riskLevel === RiskLevel.HIGH_RISK
             ? t('COMMON.RISK_HIGH')
             : riskLevel === RiskLevel.MEDIUM_RISK
-            ? t('COMMON.RISK_MEDIUM')
-            : t('COMMON.RISK_LOW');
+              ? t('COMMON.RISK_MEDIUM')
+              : t('COMMON.RISK_LOW');
 
         const addressFlagging = (
           <div className="flex items-center space-x-4">
@@ -132,33 +132,37 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         );
 
         return {
+          ID: address,
           LINE_1: <p className="break-all text-base">{address}</p>,
           LINE_2: addressFlagging,
-          LINK: dynamicUrl.ADDRESS,
+          LINK: getDynamicUrl(data.chainId, address).ADDRESS,
         };
       // Info: (20231115 - Julian) ----------------- CONTRACT -----------------
       case SearchType.CONTRACT:
         const {contractAddress} = data as IContract;
         return {
+          ID: contractAddress,
           LINE_1: <p className="break-all text-base">{contractAddress}</p>,
           LINE_2: displayedTime,
-          LINK: dynamicUrl.CONTRACT,
+          LINK: getDynamicUrl(data.chainId, contractAddress).CONTRACT,
         };
       // Info: (20231115 - Julian) ----------------- EVIDENCE -----------------
       case SearchType.EVIDENCE:
         const {evidenceAddress} = data as IEvidence;
         return {
+          ID: evidenceAddress,
           LINE_1: <p className="break-all text-base">{evidenceAddress}</p>,
           LINE_2: displayedTime,
-          LINK: dynamicUrl.EVIDENCE,
+          LINK: getDynamicUrl(data.chainId, evidenceAddress).EVIDENCE,
         };
       // Info: (20231115 - Julian) ----------------- TRANSACTION -----------------
       case SearchType.TRANSACTION:
         const {hash} = data as ITransactionDetail;
         return {
+          ID: hash,
           LINE_1: <p className="break-all text-base">{hash}</p>,
           LINE_2: displayedTime,
-          LINK: dynamicUrl.TRANSACTION,
+          LINK: getDynamicUrl(data.chainId, hash).TRANSACTION,
         };
       // Info: (20231115 - Julian) ----------------- RED FLAG -----------------
       case SearchType.RED_FLAG:
@@ -182,11 +186,12 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         ));
 
         return {
+          ID: data.id,
           LINE_1: displayedRedFlagType,
           LINE_2: (
             <div className="flex flex-wrap items-center gap-3">{displayedInteractedAddresses}</div>
           ),
-          LINK: dynamicUrl.RED_FLAG,
+          LINK: getDynamicUrl(data.chainId, data.id).RED_FLAG,
         };
       // Info: (20231115 - Julian) ----------------- BLACK LIST -----------------
       case SearchType.BLACKLIST:
@@ -197,12 +202,14 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
           </div>
         );
         return {
+          ID: blackListaddress,
           LINE_1: <p className="break-all text-base">{blackListaddress}</p>,
           LINE_2: displayedPublicTag,
-          LINK: dynamicUrl.ADDRESS,
+          LINK: getDynamicUrl(data.chainId, blackListaddress).ADDRESS,
         };
       default:
         return {
+          ID: '',
           LINE_1: <></>,
           LINE_2: <></>,
           LINK: '/',
@@ -210,7 +217,12 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
     }
   };
 
-  const displayedId = (
+  const displayedId = getContent().ID;
+  const displayedLine1 = getContent().LINE_1;
+  const displayedLine2 = getContent().LINE_2;
+  const link = getContent().LINK;
+
+  const displayedTitle = (
     <div className="flex flex-wrap items-center space-x-2 text-xl font-semibold">
       <div className="flex items-center space-x-4">
         <Image
@@ -222,8 +234,8 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         />
         <h2>{t(`SEARCHING_RESULT_PAGE.ITEM_TITLE_${type}`)}</h2>
       </div>
-      <h2 title={data.id} className="text-primaryBlue">
-        {truncateText(data.id, DEFAULT_TRUNCATE_LENGTH)}
+      <h2 title={displayedId} className="text-primaryBlue">
+        {truncateText(displayedId, DEFAULT_TRUNCATE_LENGTH)}
       </h2>
     </div>
   );
@@ -240,10 +252,6 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
     </div>
   );
 
-  const displayedLine1 = getContent().LINE_1;
-  const displayedLine2 = getContent().LINE_2;
-  const link = getContent().LINK;
-
   return (
     <div className="">
       <Link href={link}>
@@ -252,7 +260,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
           {/* Info: (20231115 - Julian) Title */}
           <div className="flex w-full items-center lg:w-4/5">
             {/* Info: (20231115 - Julian) ID */}
-            <div className="flex-1">{displayedId}</div>
+            <div className="flex-1">{displayedTitle}</div>
             {/* Info: (20231115 - Julian) SubTitle - For Desktop */}
             <div className="hidden lg:block">{displayedSubtitle}</div>
           </div>
