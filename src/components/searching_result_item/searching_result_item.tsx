@@ -202,10 +202,10 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
           </div>
         );
         return {
-          ID: blackListaddress,
-          LINE_1: <p className="break-all text-base">{blackListaddress}</p>,
+          ID: blacklistAddress,
+          LINE_1: <p className="break-all text-base">{blacklistAddress}</p>,
           LINE_2: displayedPublicTag,
-          LINK: getDynamicUrl(data.chainId, blackListaddress).ADDRESS,
+          LINK: getDynamicUrl(data.chainId, blacklistAddress).ADDRESS,
         };
       default:
         return {
