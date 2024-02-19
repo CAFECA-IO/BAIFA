@@ -63,7 +63,7 @@ const BlackListPage = () => {
       .filter(blacklistItem => {
         // Info: (20231113 - Julian) filter by Search bar
         const searchTerm = searchRef.current.toLowerCase();
-        return searchTerm !== '' ? blacklistItem.id.includes(searchTerm) : true;
+        return searchTerm !== '' ? blacklistItem.address.includes(searchTerm) : true;
       })
       .filter(blacklistItem => {
         // Info: (20231113 - Julian) filter by Tag Select Menu
