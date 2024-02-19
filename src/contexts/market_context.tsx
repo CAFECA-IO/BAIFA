@@ -2,6 +2,7 @@ import React, {createContext, useCallback, useState} from 'react';
 import {
   APIURL,
   IAddressHistoryQuery,
+  IAddressTransactionQuery,
   IPaginationOptions,
   SortingType,
 } from '../constants/api_request';
@@ -34,7 +35,7 @@ import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContractBrief} from '../interfaces/contract';
 import {IEvidenceBrief} from '../interfaces/evidence';
 import {ICurrency, ICurrencyDetail} from '../interfaces/currency';
-import {IBlackListDetail} from '../interfaces/blacklist';
+import {IBlackList} from '../interfaces/blacklist';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -45,7 +46,7 @@ export interface IMarketContext {
   promotionData: IPromotion;
   chainList: IChainDetail[];
   currencyList: ICurrency[];
-  blacklist: IBlackListDetail[];
+  blacklist: IBlackList[];
 
   chainLoading: boolean;
 
@@ -70,7 +71,7 @@ export interface IMarketContext {
   getAddressRelatedTransactions: (
     chainId: string,
     addressId: string,
-    options?: IAddressHistoryQuery
+    options?: IAddressTransactionQuery
   ) => Promise<ITransactionData>;
   getAddressProducedBlocks: (
     chainId: string,
@@ -143,7 +144,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const [promotion, setPromotion] = useState<IPromotion>(defaultPromotion);
   const [chainList, setChainList] = useState<IChainDetail[]>([]);
   const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
-  const [blacklist, setBlacklist] = useState<IBlackListDetail[]>([]);
+  const [blacklist, setBlacklist] = useState<IBlackList[]>([]);
 
   const [chainLoading, setChainLoading] = useState<boolean>(true);
 
@@ -189,7 +190,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, [setCurrencyList]);
 
   const getBlacklist = useCallback(async () => {
-    let data: IBlackListDetail[] = [];
+    let data: IBlackList[] = [];
     try {
       const response = await fetch(`${APIURL.BLACKLIST}`, {
         method: 'GET',
@@ -371,7 +372,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, []);
 
   const getAddressRelatedTransactions = useCallback(
-    async (chainId: string, addressId: string, options?: IAddressHistoryQuery) => {
+    async (chainId: string, addressId: string, options?: IAddressTransactionQuery) => {
       let data: ITransactionData = {transactions: [], transactionCount: 0, totalPage: 0};
       try {
         // Build the query string from the options object

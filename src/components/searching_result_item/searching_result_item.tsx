@@ -195,10 +195,10 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- BLACK LIST -----------------
       case SearchType.BLACKLIST:
-        const {address: blackListaddress, publicTag} = data as IBlackList;
+        const {address: blacklistAddress, tagName} = data as IBlackList;
         const displayedPublicTag = (
           <div className="whitespace-nowrap rounded-lg border-violet bg-violet px-3 py-2 text-sm text-hoverWhite">
-            {t(publicTag[0])}
+            {t(tagName)}
           </div>
         );
         return {
