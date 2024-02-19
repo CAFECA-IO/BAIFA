@@ -25,7 +25,6 @@ export interface IAddressDetailsContext {
     chainId?: string,
     addressId?: string
   ) => Promise<void>;
-  init: (chainId: string, addressId: string, options?: IAddressHistoryQuery) => Promise<void>;
   blocksLoading: boolean;
   clickBlockSortingMenu: (order: SortingType) => Promise<void>;
   blocksOrder: SortingType;
@@ -70,7 +69,6 @@ export const AddressDetailsContext = createContext<IAddressDetailsContext>({
     blockCount: 0,
     totalPage: 0,
   },
-  init: () => Promise.resolve(),
   clickBlockPagination: () => Promise.resolve(),
   blocksLoading: false,
   clickBlockSortingMenu: () => Promise.resolve(),
@@ -152,8 +150,11 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   // Info: for the use of useStateRef (20240216 - Shirley)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionsEnd, setTransactionsEnd, transactionsEndRef] = useStateRef(Date.now());
-  // const [query, setQuery] = useStateRef(useRouter().query);
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isBlockInit, setIsBlockInit, isBlockInitRef] = useStateRef(false);
+  // Info: for the use of useStateRef (20240216 - Shirley)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isTransactionInit, setIsTransactionInit, isTransactionInitRef] = useStateRef(false);
 
   const router = useRouter();
@@ -276,9 +277,6 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
       options
     );
 
-    // eslint-disable-next-line no-console
-    console.log('clickBlockPagination', options.page);
-
     setProducedBlocks(prev => {
       return {...producedBlocksRef.current, ...blockData};
     });
@@ -318,8 +316,6 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
         order: SortingType.DESC,
       }
     );
-    // eslint-disable-next-line no-console
-    console.log('blockData in blockInit', blockData);
     setProducedBlocks(blockData);
     setBlocksLoading(false);
 
@@ -343,70 +339,15 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
         order: SortingType.DESC,
       }
     );
-    // eslint-disable-next-line no-console
-    console.log('transactionData in transactionInit', transactionData);
     setTransactions(transactionData);
     setTransactionsLoading(false);
 
     setIsTransactionInit(true);
   };
 
-  const init = async (chainId: string, addressId: string, options?: IAddressHistoryQuery) => {
-    // setBlocksLoading(true);
-    // setTransactionsLoading(true);
-    // // Info: Init blocks (20240207 - Shirley)
-    // const blockData = await marketCtx.getAddressProducedBlocks(
-    //   chainId,
-    //   addressId,
-    //   options || {
-    //     page: DEFAULT_PAGE,
-    //     offset: ITEM_PER_PAGE,
-    //     order: SortingType.DESC,
-    //     // TODO: input query functionality (20240207 - Shirley)
-    //     // query: {
-    //     //   block_id: 373842,
-    //     // },
-    //     // start_date: 0,
-    //     // end_date: Date.now(),
-    //   }
-    // );
-    // setProducedBlocks(blockData);
-
-    // clickBlockSortingMenu(SortingType.DESC);
-
-    // Info: Init transactions (20240207 - Shirley)
-    // const transactionData = await marketCtx.getAddressRelatedTransactions(
-    //   chainId,
-    //   addressId,
-    //   options || {
-    //     page: DEFAULT_PAGE,
-    //     offset: ITEM_PER_PAGE,
-    //     order: SortingType.DESC,
-    //     // TODO: input query functionality (20240207 - Shirley)
-    //     // query: {
-    //     //   block_id: 373842,
-    //     // },
-    //     // start_date: 0,
-    //     // end_date: Date.now(),
-    //   }
-    // );
-    // setTransactions(transactionData);
-    setBlocksLoading(false);
-    setTransactionsLoading(false);
-
-    return await Promise.resolve();
-  };
-
-  // useEffect(() => {
-  //   if (query.chainId && query.addressId) {
-  //     init(query.chainId as string, query.addressId as string);
-  //   }
-  // }, [query.chainId, query.addressId]);
-
   const defaultValue = {
     transactions: transactionsRef.current,
     producedBlocks: producedBlocksRef.current,
-    init,
     transactionInit,
     blockInit,
 

@@ -85,26 +85,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    // const totalCount = await prisma.block_raw.count({
-    //   where: {
-    //     miner: address_id,
-    //   },
-    // });
-
-    // const blockData = await prisma.block_raw.findMany({
-    //   where: {
-    //     miner: address_id,
-    //   },
-    //   orderBy: {
-    //     id: order,
-    //   },
-    //   take: offset,
-    //   skip: skip,
-    //   select: {
-    //     id: true,
-    //   },
-    // });
-
     const blockData = await prisma.blocks.findMany({
       where: {
         miner: address_id,
@@ -151,15 +131,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const decimals = chainData?.decimals ?? 0;
 
     const blockProducedData: IProductionBlock[] = blockData.map(block => {
-      const rewardRaw = 0;
-      // const rewardRaw = block.reward ? parseInt(block.reward) : 0;
+      const rewardRaw = block.reward ? parseInt(block.reward) : 0;
       const reward = rewardRaw / Math.pow(10, decimals);
 
       return {
         id: `${block.id}`,
-        // chainId: `8017`,
         chainId: `${block.chain_id}`,
-        // createdTimestamp: Date.now() / 1000,
         createdTimestamp: block.created_timestamp ?? 0,
         stability: 'MEDIUM', // TODO: block stability (20240207 - Shirley)
         reward: reward,

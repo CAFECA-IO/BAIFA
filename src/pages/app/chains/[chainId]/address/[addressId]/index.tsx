@@ -16,7 +16,7 @@ import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {IAddressBrief, IAddressDetail} from '../../../../../../interfaces/address';
+import {IAddressBrief} from '../../../../../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
 import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
@@ -28,15 +28,14 @@ import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {
   DEFAULT_CHAIN_ICON,
-  DEFAULT_PAGE,
   DEFAULT_TRUNCATE_LENGTH,
   ITEM_PER_PAGE,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
 import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/common';
-import {IDisplayTransaction, ITransaction} from '../../../../../../interfaces/transaction';
+import {ITransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
-import {APIURL, SortingType} from '../../../../../../constants/api_request';
+import {SortingType} from '../../../../../../constants/api_request';
 import {isAddress} from 'web3-validator';
 import {IReviewDetail, IReviews} from '../../../../../../interfaces/review';
 import useStateRef from 'react-usestateref';
@@ -64,23 +63,10 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const [addressBriefData, setAddressBriefData] = useState<IAddressBrief>({} as IAddressBrief);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
-  const [blockData, setBlockData, blockDataRef] = useStateRef<{
-    blocks: IProductionBlock[];
-    blockCount: number;
-  }>(
-    {} as {
-      blocks: IProductionBlock[];
-      blockCount: number;
-    }
-  );
 
   const {publicTag, score} = addressBriefData;
 
   const reviewData: IReviewDetail[] = [];
-
-  const transactionHistoryData = transactionData;
-
-  const blockProducedData = blockData;
 
   const chainIcon = getChainIcon(chainId);
 
@@ -88,13 +74,6 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     if (!appCtx.isInit) {
       appCtx.init();
     }
-
-    // const init = async (chainId: string, addressId: string) => {
-    //   // if (route)
-    //   console.log('route', router);
-    //   await addressDetailsCtx.init(chainId, addressId);
-    // };
-
     const getAddressBriefData = async (chainId: string, addressId: string) => {
       try {
         const data = await getAddressBrief(chainId, addressId);
@@ -104,7 +83,6 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       }
     };
 
-    // init(chainId, addressId);
     getAddressBriefData(chainId, addressId);
 
     initData(
@@ -132,14 +110,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     blocks_page?: string,
     transaction_page?: string
   ) => {
-    // eslint-disable-next-line no-console
-    console.log('initData', chainId, addressId, blocks_page, transaction_page);
-
     const blockPage = !!blocks_page ? parseInt(blocks_page) : 1;
     const transactionPage = !!transaction_page ? parseInt(transaction_page) : 1;
-
-    // eslint-disable-next-line no-console
-    console.log('blockPage', blockPage, 'transactionPage', transactionPage);
 
     await addressDetailsCtx.blockInit(chainId, addressId, {
       page: blockPage,
@@ -160,19 +132,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       router.query.blocks_page as string,
       router.query.transaction_page as string
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, addressId, addressDetailsCtx]);
-
-  // useEffect(() => {
-  //   if (transactionHistoryData) {
-  //     setTransactionData(transactionHistoryData);
-  //   }
-  // }, [transactionHistoryData]);
-
-  // useEffect(() => {
-  //   if (blockProducedData) {
-  //     setBlockData(blockProducedData);
-  //   }
-  // }, [blockProducedData]);
 
   const backClickHandler = () => router.back();
 
@@ -384,7 +345,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 };
 
 export const getServerSideProps: GetServerSideProps = async ({query, locale}) => {
-  const {addressId = '', chainId = ''} = query; // Extracting addressId and chainId from query
+  const {addressId = '', chainId = ''} = query;
 
   // Info: Ensure addressId and chainId are strings for type safety (20240219 - Shirley)
   // TODO: check whether `addressId` and `chainId` is valid (20240219 - Shirley)
@@ -393,9 +354,6 @@ export const getServerSideProps: GetServerSideProps = async ({query, locale}) =>
       notFound: true,
     };
   }
-
-  // eslint-disable-next-line no-console
-  console.log('getServerSideProps in AddressDetailPage', addressId, chainId, query);
 
   return {
     props: {
