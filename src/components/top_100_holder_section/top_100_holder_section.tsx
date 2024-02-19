@@ -12,12 +12,12 @@ import {
   ITEM_PER_PAGE,
 } from '../../constants/config';
 import {getCurrencyIcon, roundToDecimal, truncateText, withCommas} from '../../lib/common';
-import {ICurrencyDetail, IHolder} from '../../interfaces/currency';
+import {ICurrencyDetailString, IHolder} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 
 interface ITop100HolderSectionProps {
-  currencyData: ICurrencyDetail;
+  currencyData: ICurrencyDetailString;
 }
 
 const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {

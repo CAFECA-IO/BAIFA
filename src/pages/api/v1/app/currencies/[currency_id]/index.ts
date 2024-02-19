@@ -2,12 +2,12 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
-import {ICurrencyDetail, IHolder} from '../../../../../../interfaces/currency';
+import {ICurrencyDetailString, IHolder} from '../../../../../../interfaces/currency';
 import {IRedFlag} from '../../../../../../interfaces/red_flag';
 import {AddressType, IAddressInfo} from '../../../../../../interfaces/address_info';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 
-type ResponseData = ICurrencyDetail | undefined;
+type ResponseData = ICurrencyDetailString | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
@@ -68,14 +68,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const volumeIn24hRaw = parseInt(`${currencyData?.volume_in_24h ?? 0}`);
   const volumeIn24h = volumeIn24hRaw / Math.pow(10, decimal);
 
-  // Info: (20240125 - Julian) currency 的總量
-  const totalAmountRaw = parseInt(`${currencyData?.total_amount ?? 0}`);
-  const totalAmount = totalAmountRaw / Math.pow(10, decimal);
+  // Info: (20240125 - Julian) currency 的總量 (total_amount 格式是小數點後有18位數的字串 & 小數點前每三位數一個逗號)
+  const totalAmountRaw = currencyData?.total_amount ?? '0';
+  // Info: (今天 - Liz) 取得切割點後第一個索引
+  const splitIndex = totalAmountRaw.length - 18;
+  // Info: (今天 - Liz) 切割字串
+  const firstPart = totalAmountRaw.substring(0, splitIndex);
+  const secondPart = totalAmountRaw.substring(splitIndex);
+
+  // Info: (今天 - Liz) firstPart 每三位數一個逗號
+  const firstPartWithComma = firstPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // Info: (今天 - Liz) 組合字串
+  const totalAmount = `${firstPartWithComma}.${secondPart}`;
+
+  // Deprecated: (今天 - Liz)
+  // eslint-disable-next-line no-console
+  console.log('totalAmountRaw', totalAmountRaw, 'totalAmount', totalAmount);
 
   const holders: IHolder[] = holderData.map(holder => {
     // Info: (20240130 - Julian) 計算持有比例
     const value = parseInt(`${holder.value ?? 0}`);
-    const holdingPercentage = value / totalAmount;
+    const holdingPercentage = value / parseInt(totalAmount);
     // Info: (20240202 - Julian) 計算持有比例的 bar 寬度，取到小數點後兩位
     const holdingBarWidth = Math.round((value / maxHoldingAmount) * 10000) / 100;
     // Info: (20240202 - Julian) holdingAmount = value/10^decimal

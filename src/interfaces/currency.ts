@@ -28,3 +28,17 @@ export interface ICurrencyDetail extends ICurrency {
   flaggingCount: number;
   transactionHistoryData: IDisplayTransaction[];
 }
+
+// Info: (今天 - Liz) 後端回傳的 totalAmount 是 string 故新增 ICurrencyDetailString
+export interface ICurrencyDetailString extends ICurrency {
+  price: number;
+  volumeIn24h: number;
+  unit: string;
+  totalAmount: string;
+  holderCount: number;
+  holders: IHolder[];
+  totalTransfers: number;
+  flagging: IRedFlag[];
+  flaggingCount: number;
+  transactionHistoryData: IDisplayTransaction[];
+}

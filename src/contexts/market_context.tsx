@@ -33,7 +33,7 @@ import {IRedFlag, IRedFlagDetail} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContractDetail} from '../interfaces/contract';
 import {IEvidenceDetail} from '../interfaces/evidence';
-import {ICurrency, ICurrencyDetail} from '../interfaces/currency';
+import {ICurrency, ICurrencyDetail, ICurrencyDetailString} from '../interfaces/currency';
 import {IBlackList} from '../interfaces/blacklist';
 
 export interface IMarketProvider {
@@ -89,7 +89,7 @@ export interface IMarketContext {
     queryStr?: string
   ) => Promise<ITransaction[]>;
   getEvidenceDetail: (chainId: string, evidenceId: string) => Promise<IEvidenceDetail>;
-  getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetail>;
+  getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetailString>;
   getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlag[]>;
   getAllRedFlags: () => Promise<IRedFlag[]>;
   getRedFlagDetail: (redFlagId: string) => Promise<IRedFlagDetail>;
@@ -121,7 +121,7 @@ export const MarketContext = createContext<IMarketContext>({
   getContractDetail: () => Promise.resolve({} as IContractDetail),
   getContractTransactions: () => Promise.resolve([] as ITransaction[]),
   getEvidenceDetail: () => Promise.resolve({} as IEvidenceDetail),
-  getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetail),
+  getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetailString),
   getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlag[]),
   getAllRedFlags: () => Promise.resolve([] as IRedFlag[]),
   getRedFlagDetail: () => Promise.resolve({} as IRedFlagDetail),
@@ -526,7 +526,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, []);
 
   const getCurrencyDetail = useCallback(async (currencyId: string) => {
-    let data: ICurrencyDetail = {} as ICurrencyDetail;
+    let data: ICurrencyDetailString = {} as ICurrencyDetailString;
     try {
       const response = await fetch(`${APIURL.CURRENCIES}/${currencyId}`, {
         method: 'GET',
