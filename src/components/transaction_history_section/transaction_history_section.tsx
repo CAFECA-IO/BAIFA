@@ -80,6 +80,12 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
       ? transactionData?.transactions
       : transactions;
 
+    const sortedTransaction = transaction.sort((a, b) => {
+      return sorting === sortOldAndNewOptions[0]
+        ? +b.id - +a.id // Info: (20240219 - Shirley) Newest
+        : +a.id - +b.id; // Info: (20240219 - Shirley) Oldest
+    });
+
     const count =
       dataType === TransactionDataType.ADDRESS_DETAILS
         ? addressDetailsCtx.transactions.transactionCount
@@ -90,7 +96,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
         ? addressDetailsCtx.transactions.totalPage
         : count / ITEM_PER_PAGE;
 
-    setFilteredTransactions(transaction);
+    setFilteredTransactions(sortedTransaction);
     setTransactionCount(count);
     setTotalPages(pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,9 +128,9 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
       .sort((a, b) => {
         return sorting === sortOldAndNewOptions[0]
           ? // Info: (20231113 - Julian) Newest
-            b.createdTimestamp - a.createdTimestamp
+            +b.id - +a.id
           : // Info: (20231113 - Julian) Oldest
-            a.createdTimestamp - b.createdTimestamp;
+            +a.id - +b.id;
       });
 
     const pages =
