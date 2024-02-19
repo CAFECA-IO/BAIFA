@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
-import {useContext, useState, useEffect} from 'react';
+import {useContext, useState, useEffect, use} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
@@ -22,6 +22,7 @@ import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
 import {IDisplayTransaction} from '../../../../../interfaces/transaction';
 import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../../../../constants/config';
+import DataNotFound from '../../../../../components/data_not_found/data_not_found';
 
 interface IContractDetailDetailPageProps {
   contractId: string;
@@ -35,6 +36,7 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
 
   const [contractData, setContractData] = useState<IContractBrief>({} as IContractBrief);
   const [transactionHistoryData, setTransactionHistoryData] = useState<IDisplayTransaction[]>([]);
+  const [isNoData, setIsNoData] = useState(false);
 
   const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
   const {publicTag, chainId} = contractData;
@@ -61,14 +63,16 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Info: (20240219 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data
   useEffect(() => {
-    if (contractData) {
-      setContractData(contractData);
-    }
-    if (transactionHistoryData) {
-      setTransactionHistoryData(transactionHistoryData);
-    }
-  }, [contractData, transactionHistoryData]);
+    const timer = setTimeout(() => {
+      if (!contractData.chainId) {
+        setIsNoData(true);
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [contractData]);
 
   const displayPublicTag = publicTag ? (
     publicTag.map((tag, index) => (
@@ -81,6 +85,37 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
     ))
   ) : (
     <></>
+  );
+
+  const isPlatformLink = isNoData ? null : (
+    <Link href={BFAURL.COMING_SOON}>
+      <BoltButton
+        className="group flex w-full items-center justify-center space-x-4 px-6 py-3"
+        color="purple"
+        style="solid"
+      >
+        <Image
+          src="/icons/link.svg"
+          alt=""
+          width={24}
+          height={24}
+          className="invert group-hover:invert-0"
+        />
+        <p>{t('CONTRACT_DETAIL_PAGE.PLATFORM')}</p>
+      </BoltButton>
+    </Link>
+  );
+
+  const isContractData = isNoData ? (
+    <DataNotFound />
+  ) : (
+    <ContractDetail contractData={contractData} />
+  );
+
+  const isPrivateNoteSection = isNoData ? null : <PrivateNoteSection />;
+
+  const isTransactionHistoryData = isNoData ? null : (
+    <TransactionHistorySection transactions={transactionHistoryData} />
   );
 
   return (
@@ -124,10 +159,7 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center text-base font-bold text-lilac">
                     {t('PUBLIC_TAG.TITLE')}&nbsp;
-                    <Tooltip>
-                      This is tooltip Sample Text. So if I type in more content, it would be like
-                      this.
-                    </Tooltip>
+                    <Tooltip>{t('PUBLIC_TAG.TOOLTIP_CONTENT')}</Tooltip>
                     &nbsp;:
                   </div>
                   <div className="">{displayPublicTag}</div>
@@ -135,39 +167,18 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
               </div>
               {/* Info: (20231107 - Julian) Platform Link Button */}
               <div className="right-0 mt-6 w-2/3 lg:absolute lg:mt-0 lg:w-fit">
-                <Link href={BFAURL.COMING_SOON}>
-                  <BoltButton
-                    className="group flex w-full items-center justify-center space-x-4 px-6 py-3"
-                    color="purple"
-                    style="solid"
-                  >
-                    <Image
-                      src="/icons/link.svg"
-                      alt=""
-                      width={24}
-                      height={24}
-                      className="invert group-hover:invert-0"
-                    />
-                    <p>{t('CONTRACT_DETAIL_PAGE.PLATFORM')}</p>
-                  </BoltButton>
-                </Link>
+                {isPlatformLink}
               </div>
             </div>
 
             {/* Info: (20231106 - Julian) Contract Detail */}
-            <div className="my-10 w-full">
-              <ContractDetail contractData={contractData} />
-            </div>
+            <div className="my-10 w-full">{isContractData}</div>
 
             {/* Info: (20231106 - Julian) Private Note Section */}
-            <div className="w-full">
-              <PrivateNoteSection />
-            </div>
+            <div className="w-full">{isPrivateNoteSection}</div>
 
             {/* Info: (20231103 - Julian) Transaction History */}
-            <div className="my-10 w-full">
-              <TransactionHistorySection transactions={transactionHistoryData} />
-            </div>
+            <div className="my-10 w-full">{isTransactionHistoryData}</div>
 
             {/* Info: (20231017 - Julian) Back Button */}
             <div className="mt-10">

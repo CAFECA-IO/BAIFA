@@ -1,3 +1,4 @@
+import {useState, useEffect} from 'react';
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -7,6 +8,7 @@ import BoltButton from '../bolt_button/bolt_button';
 import {getDynamicUrl} from '../../constants/url';
 import {timestampToString, truncateText} from '../../lib/common';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import Skeleton from '../skeleton/skeleton';
 
 interface IContractDetailDetailProps {
   contractData: IContractBrief;
@@ -16,16 +18,29 @@ const ContractDetail = ({contractData}: IContractDetailDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {contractAddress, chainId, creatorAddressId, createdTimestamp, sourceCode} = contractData;
 
+  const [isShow, setIsShow] = useState(false);
+
+  useEffect(() => {
+    // Info: (20240219 - Julian) 如果沒有拿到資料就持續 Loading
+    if (!contractAddress) return;
+    // Info: (20240219 - Julian) 1 秒後顯示資料
+    const timer = setTimeout(() => {
+      setIsShow(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [contractData]);
+
   const addressLink = getDynamicUrl(chainId, `${creatorAddressId}`).ADDRESS;
 
-  const displayContractAddress = contractAddress ? (
+  const displayContractAddress = isShow ? (
     <p className="break-all text-sm lg:text-base">{contractAddress}</p>
   ) : (
     // Info: (20240215 - Julian) Loading Animation
-    <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    <Skeleton width={200} height={24} />
   );
 
-  const displayCreator = creatorAddressId ? (
+  const displayCreator = isShow ? (
     <Link href={addressLink} title={creatorAddressId}>
       <BoltButton className="px-3 py-1" color="blue" style="solid">
         {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}{' '}
@@ -34,29 +49,29 @@ const ContractDetail = ({contractData}: IContractDetailDetailProps) => {
     </Link>
   ) : (
     // Info: (20240215 - Julian) Loading Animation
-    <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    <Skeleton width={100} height={24} />
   );
 
-  const displayTime = createdTimestamp ? (
+  const displayTime = isShow ? (
     <div className="flex flex-wrap items-center">
       <p className="mr-2">{timestampToString(createdTimestamp).date}</p>
       <p className="mr-2">{timestampToString(createdTimestamp).time}</p>
     </div>
   ) : (
     // Info: (20240215 - Julian) Loading Animation
-    <div className="flex items-center space-x-3">
-      <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-      <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    <div className="flex items-center gap-3">
+      <Skeleton height={24} width={100} />
+      <Skeleton height={24} width={100} />
     </div>
   );
 
-  const displaySourceCode = sourceCode ? (
+  const displaySourceCode = isShow ? (
     <div className="max-h-200px flex-1 overflow-scroll break-all bg-darkPurple3 p-4 text-sm">
       {sourceCode}
     </div>
   ) : (
     // Info: (20240215 - Julian) Loading Animation
-    <div className="h-50px w-200px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    <Skeleton height={24} width={200} />
   );
 
   return (

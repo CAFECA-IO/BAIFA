@@ -360,7 +360,8 @@
     "TITLE": "公开标签",
     "UNKNOWN_USER": "未知用户",
     "HACKER": "黑客",
-    "BINANCE_COLDWALLET": "币安冷钱包"
+    "BINANCE_COLDWALLET": "币安冷钱包",
+    "TOOLTIP_CONTENT": "公开标签是由稗法社群提供的标签，用于标记特定地址的风险等级。用户登入后可自行新增私人标签。"
   },
   "FOOTER": {
     "POWERED_BY": "技术支持 稗法",
