@@ -1,12 +1,11 @@
-import {IRedFlagType} from '../constants/red_flag_type';
 import {ICommonData} from './common_data';
 
 export interface IBlackList extends ICommonData {
   address: string;
-  publicTag: string[];
+  tagName: string;
+  targetType: string;
+  latestActiveTime: number;
 }
 
-export interface IBlackListDetail extends IBlackList {
-  latestActiveTime: number;
-  flaggingRecords: IRedFlagType[];
-}
+// export interface IBlackListDetail extends IBlackList {
+// }

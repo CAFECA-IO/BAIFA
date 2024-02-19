@@ -9,7 +9,7 @@ import SortingMenu from '../../components/sorting_menu/sorting_menu';
 import Pagination from '../../components/pagination/pagination';
 import SearchBar from '../../components/search_bar/search_bar';
 import BlacklistItem from '../../components/blacklist_item/blacklist_item';
-import {IBlackListDetail} from '../../interfaces/blacklist';
+import {IBlackList} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ILocale, TranslateFunction} from '../../interfaces/locale';
@@ -22,32 +22,29 @@ const BlackListPage = () => {
   const {blacklist} = useContext(MarketContext);
 
   useEffect(() => {
+    // Info: (20231113 - Julian) Initialize App Context
     if (!appCtx.isInit) {
       appCtx.init();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Info: (20231113 - Julian) Flagging Options
-  const flaggingType = blacklist
-    .flatMap(address => address.flaggingRecords)
-    .map(flagging => flagging);
-  const flaggingOptions = ['SORTING.ALL'];
-  flaggingType.forEach(type => {
-    if (!flaggingOptions.includes(type)) {
-      flaggingOptions.push(type);
-    }
-  });
+  // Info: (20240216 - Liz) 從 blacklist 中取得所有的 tagName，做成選項給下拉式選單使用
+  const tagNames = new Set(blacklist.map(BlacklistItem => BlacklistItem.tagName));
+  const tagNameOptions = ['SORTING.ALL', ...Array.from(tagNames)];
 
   // Info: (20231113 - Julian) Page State
   const [activePage, setActivePage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
   // Info: (20231113 - Julian) Filter State
   const [search, setSearch, searchRef] = useStateRef('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [filteredFlagging, setFilteredFlagging] = useState<string>(flaggingOptions[0]);
+  const [filteredTagName, setFilteredTagName] = useState<string>(tagNameOptions[0]);
+
   // Info: (20231113 - Julian) Blacklist State
-  const [filteredBlacklist, setFilteredBlacklist] = useState<IBlackListDetail[]>(blacklist);
+  const [filteredBlacklist, setFilteredBlacklist] = useState<IBlackList[]>(blacklist);
 
   const headTitle = `${t('BLACKLIST_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
   const crumbs = [
@@ -63,17 +60,14 @@ const BlackListPage = () => {
 
   useEffect(() => {
     const result = blacklist
-      .filter(address => {
+      .filter(blacklistItem => {
         // Info: (20231113 - Julian) filter by Search bar
         const searchTerm = searchRef.current.toLowerCase();
-        const id = address.id.toLowerCase();
-        return searchTerm !== '' ? id.includes(searchTerm) : true;
+        return searchTerm !== '' ? blacklistItem.address.includes(searchTerm) : true;
       })
-      .filter(address => {
-        // Info: (20231113 - Julian) filter by Flagging Select Menu
-        const flagging = address.flaggingRecords;
-        const type = filteredFlagging;
-        return type === 'SORTING.ALL' ? true : flagging.some(flagging => flagging === type);
+      .filter(blacklistItem => {
+        // Info: (20231113 - Julian) filter by Tag Select Menu
+        return filteredTagName === 'SORTING.ALL' ? true : blacklistItem.tagName === filteredTagName;
       })
       .sort(
         // Info: (20231113 - Julian) sort by Sorting Menu
@@ -89,11 +83,10 @@ const BlackListPage = () => {
     setFilteredBlacklist(result);
     setTotalPages(Math.ceil(result.length / 10));
     setActivePage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, filteredFlagging, sorting]);
+  }, [search, filteredTagName, sorting, blacklist, searchRef]);
 
-  const displayBlacklist = filteredBlacklist.slice(0, 10).map((address, index) => {
-    return <BlacklistItem key={index} blacklistAddress={address} />;
+  const displayBlacklist = filteredBlacklist.slice(0, 10).map((blacklistItem, index) => {
+    return <BlacklistItem key={index} blacklistAddress={blacklistItem} />;
   });
 
   return (
@@ -136,9 +129,9 @@ const BlackListPage = () => {
                   {/* Info: (20231113 - Julian) Flagging Select Menu */}
                   <div className="relative flex w-full items-center space-y-2 text-base lg:w-fit">
                     <SortingMenu
-                      sortingOptions={flaggingOptions}
-                      sorting={filteredFlagging}
-                      setSorting={setFilteredFlagging}
+                      sortingOptions={tagNameOptions}
+                      sorting={filteredTagName}
+                      setSorting={setFilteredTagName}
                       bgColor="bg-darkPurple"
                     />
                   </div>
@@ -155,7 +148,7 @@ const BlackListPage = () => {
                 </div>
               </div>
 
-              {/* Info: (20231113 - Julian) Blcak List */}
+              {/* Info: (20231113 - Julian) Black List */}
               <div className="mt-10 flex w-full flex-col items-center space-y-10">
                 <div className="flex w-full flex-col space-y-2 lg:space-y-0">
                   {displayBlacklist}

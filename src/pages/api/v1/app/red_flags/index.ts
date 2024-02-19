@@ -24,13 +24,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // Info: (今天 - Liz) 若查無 redFlags 資料，回傳 404
+  // Info: (20240205 - Liz) 若查無 redFlags 資料，回傳 404
   if (redFlags === null) {
     res.status(404).send('404 - redFlagData Not Found');
     return;
   }
 
-  // Info: (今天 - Liz) 從 DB 撈出所有 codes 的資料用來對照
+  // Info: (20240205 - Liz) 從 DB 撈出所有 codes 的資料用來對照
   const codes = await prisma.codes.findMany({
     select: {
       value: true,
