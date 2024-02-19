@@ -88,9 +88,11 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       appCtx.init();
     }
 
-    const init = async (chainId: string, addressId: string) => {
-      await addressDetailsCtx.init(chainId, addressId);
-    };
+    // const init = async (chainId: string, addressId: string) => {
+    //   // if (route)
+    //   console.log('route', router);
+    //   await addressDetailsCtx.init(chainId, addressId);
+    // };
 
     const getAddressBriefData = async (chainId: string, addressId: string) => {
       try {
@@ -101,7 +103,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       }
     };
 
-    init(chainId, addressId);
+    // init(chainId, addressId);
     getAddressBriefData(chainId, addressId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

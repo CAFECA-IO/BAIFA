@@ -173,6 +173,9 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
       offset: offset,
       order: addressDetailsCtx.blocksOrder,
     });
+
+    // eslint-disable-next-line no-console
+    console.log('blockPaginationHandler', {page, offset, order: addressDetailsCtx.blocksOrder});
   };
 
   const blockSortingHandler = async ({order}: {order: SortingType}) => {
@@ -182,6 +185,14 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
   const blockDateFilterHandler = async (start: number, end: number) => {
     addressDetailsCtx.clickBlockDatePicker(start, end);
   };
+
+  const blockInit = async () => {
+    await addressDetailsCtx.blockInit();
+  };
+
+  useEffect(() => {
+    addressDetailsCtx.blockInit();
+  }, []);
 
   // useEffect(() => {
   //   // addressDetailsCtx.blocksLoading
@@ -240,6 +251,7 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
           paginationClickHandler={blockPaginationHandler}
           loading={addressDetailsCtx.blocksLoading}
           pagePrefix={`blocks`}
+          pageInit={blockInit}
         />
       </div>
     </div>

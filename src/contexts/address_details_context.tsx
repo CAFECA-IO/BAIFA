@@ -3,7 +3,12 @@ import {ITransactionData} from '../interfaces/transaction';
 import {IProducedBlock} from '../interfaces/block';
 import useStateRef from 'react-usestateref';
 import {MarketContext} from './market_context';
-import {IAddressHistoryQuery, IPaginationOptions, SortingType} from '../constants/api_request';
+import {
+  IAddressHistoryQuery,
+  IAddressTransactionQuery,
+  IPaginationOptions,
+  SortingType,
+} from '../constants/api_request';
 import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../constants/config';
 import {useRouter} from 'next/router';
 import {convertMillisecondsToSeconds} from '../lib/common';
@@ -42,6 +47,20 @@ export interface IAddressDetailsContext {
   ) => Promise<void>;
   clickTransactionSortingMenu: (order: SortingType) => Promise<void>;
   clickTransactionDatePicker: (start: number, end: number) => Promise<void>;
+  transactionInit: (
+    chainId?: string,
+    addressId?: string,
+    options?: IAddressTransactionQuery
+  ) => Promise<void>;
+  blockInit: (
+    chainId?: string,
+    addressId?: string,
+    options?: IAddressHistoryQuery
+  ) => Promise<void>;
+  setBlockParameters: (options: IAddressHistoryQuery) => boolean;
+  setTransactionParameters: (options: IAddressTransactionQuery) => boolean;
+  isBlockInit: boolean;
+  isTransactionInit: boolean;
 }
 
 export const AddressDetailsContext = createContext<IAddressDetailsContext>({
@@ -70,6 +89,12 @@ export const AddressDetailsContext = createContext<IAddressDetailsContext>({
   clickTransactionPagination: () => Promise.resolve(),
   clickTransactionSortingMenu: () => Promise.resolve(),
   clickTransactionDatePicker: () => Promise.resolve(),
+  transactionInit: () => Promise.resolve(),
+  blockInit: () => Promise.resolve(),
+  setBlockParameters: () => false,
+  setTransactionParameters: () => false,
+  isBlockInit: false,
+  isTransactionInit: false,
 });
 
 export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
@@ -127,6 +152,9 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   // Info: for the use of useStateRef (20240216 - Shirley)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionsEnd, setTransactionsEnd, transactionsEndRef] = useStateRef(Date.now());
+  // const [query, setQuery] = useStateRef(useRouter().query);
+  const [isBlockInit, setIsBlockInit, isBlockInitRef] = useStateRef(false);
+  const [isTransactionInit, setIsTransactionInit, isTransactionInitRef] = useStateRef(false);
 
   const router = useRouter();
   const {query} = router;
@@ -190,6 +218,24 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     setTransactionsLoading(false);
   };
 
+  const setBlockParameters = (options: IAddressHistoryQuery) => {
+    setBlocksPage(options.page);
+    setBlocksOffset(options.offset);
+    setBlocksOrder(options.order);
+    setBlocksStart(options.start_date || 0);
+    setBlocksEnd(options.end_date || Date.now());
+    return true;
+  };
+
+  const setTransactionParameters = (options: IAddressTransactionQuery) => {
+    setTransactionsPage(options.page);
+    setTransactionsOffset(options.offset);
+    setTransactionsOrder(options.order);
+    setTransactionsStart(options.start_date || 0);
+    setTransactionsEnd(options.end_date || Date.now());
+    return true;
+  };
+
   const clickBlockDatePicker = async (start: number, end: number) => {
     const startSeconds = convertMillisecondsToSeconds(start);
     const endSeconds = convertMillisecondsToSeconds(end);
@@ -229,6 +275,10 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
       addressIdForBlock,
       options
     );
+
+    // eslint-disable-next-line no-console
+    console.log('clickBlockPagination', options.page);
+
     setProducedBlocks(prev => {
       return {...producedBlocksRef.current, ...blockData};
     });
@@ -251,10 +301,60 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     setBlocksLoading(false);
   };
 
+  const blockInit = async (
+    chainId?: string,
+    addressId?: string,
+    options?: IAddressHistoryQuery
+  ) => {
+    if (isBlockInitRef.current) return;
+
+    setBlocksLoading(true);
+    const blockData = await marketCtx.getAddressProducedBlocks(
+      chainId || (query.chainId?.toString() ?? ''),
+      addressId || (query.addressId?.toString() ?? ''),
+      options || {
+        page: DEFAULT_PAGE,
+        offset: ITEM_PER_PAGE,
+        order: SortingType.DESC,
+      }
+    );
+    // eslint-disable-next-line no-console
+    console.log('blockData in blockInit', blockData);
+    setProducedBlocks(blockData);
+    setBlocksLoading(false);
+
+    setIsBlockInit(true);
+  };
+
+  const transactionInit = async (
+    chainId?: string,
+    addressId?: string,
+    options?: IAddressTransactionQuery
+  ) => {
+    if (isTransactionInitRef.current) return;
+
+    setTransactionsLoading(true);
+    const transactionData = await marketCtx.getAddressRelatedTransactions(
+      chainId || (query.chainId?.toString() ?? ''),
+      addressId || (query.addressId?.toString() ?? ''),
+      options || {
+        page: DEFAULT_PAGE,
+        offset: ITEM_PER_PAGE,
+        order: SortingType.DESC,
+      }
+    );
+    // eslint-disable-next-line no-console
+    console.log('transactionData in transactionInit', transactionData);
+    setTransactions(transactionData);
+    setTransactionsLoading(false);
+
+    setIsTransactionInit(true);
+  };
+
   const init = async (chainId: string, addressId: string, options?: IAddressHistoryQuery) => {
     // setBlocksLoading(true);
     // setTransactionsLoading(true);
-    // Info: Init blocks (20240207 - Shirley)
+    // // Info: Init blocks (20240207 - Shirley)
     // const blockData = await marketCtx.getAddressProducedBlocks(
     //   chainId,
     //   addressId,
@@ -272,7 +372,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     // );
     // setProducedBlocks(blockData);
 
-    clickBlockSortingMenu(SortingType.DESC);
+    // clickBlockSortingMenu(SortingType.DESC);
 
     // Info: Init transactions (20240207 - Shirley)
     // const transactionData = await marketCtx.getAddressRelatedTransactions(
@@ -297,16 +397,18 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     return await Promise.resolve();
   };
 
-  useEffect(() => {
-    if (query.chainId && query.addressId) {
-      init(query.chainId as string, query.addressId as string);
-    }
-  }, [query.chainId, query.addressId]);
+  // useEffect(() => {
+  //   if (query.chainId && query.addressId) {
+  //     init(query.chainId as string, query.addressId as string);
+  //   }
+  // }, [query.chainId, query.addressId]);
 
   const defaultValue = {
     transactions: transactionsRef.current,
     producedBlocks: producedBlocksRef.current,
     init,
+    transactionInit,
+    blockInit,
 
     blocksLoading: blocksLoadingRef.current,
     blocksOrder: blocksOrderRef.current,
@@ -329,6 +431,12 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     clickTransactionPagination,
     clickTransactionSortingMenu,
     clickTransactionDatePicker,
+
+    setBlockParameters,
+    setTransactionParameters,
+
+    isBlockInit: isBlockInitRef.current,
+    isTransactionInit: isTransactionInitRef.current,
   };
 
   return (

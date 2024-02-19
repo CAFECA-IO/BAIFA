@@ -2,6 +2,7 @@ import React, {createContext, useCallback, useState} from 'react';
 import {
   APIURL,
   IAddressHistoryQuery,
+  IAddressTransactionQuery,
   IPaginationOptions,
   SortingType,
 } from '../constants/api_request';
@@ -57,7 +58,7 @@ export interface IMarketContext {
   getAddressRelatedTransactions: (
     chainId: string,
     addressId: string,
-    options?: IAddressHistoryQuery
+    options?: IAddressTransactionQuery
   ) => Promise<ITransactionData>;
   getAddressProducedBlocks: (
     chainId: string,
@@ -340,7 +341,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, []);
 
   const getAddressRelatedTransactions = useCallback(
-    async (chainId: string, addressId: string, options?: IAddressHistoryQuery) => {
+    async (chainId: string, addressId: string, options?: IAddressTransactionQuery) => {
       let data: ITransactionData = {transactions: [], transactionCount: 0, totalPage: 0};
       try {
         // Build the query string from the options object

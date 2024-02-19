@@ -309,6 +309,14 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
     return Promise.resolve();
   };
 
+  const transactionInit = async () => {
+    if (dataType === TransactionDataType.ADDRESS_DETAILS) {
+      await addressDetailsCtx.transactionInit();
+    }
+    // Info: (20240216 - Shirley) default case
+    return Promise.resolve();
+  };
+
   // eslint-disable-next-line no-console
   console.log('addressDetailsCtx.transactionsLoading:', addressDetailsCtx.transactionsLoading);
 
@@ -355,6 +363,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
           activePage={activePage}
           setActivePage={setActivePage}
           totalPages={totalPages}
+          pageInit={transactionInit}
         />
       </div>
     </div>

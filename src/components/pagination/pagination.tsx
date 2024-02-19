@@ -3,6 +3,7 @@ import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
 import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../constants/config';
 import useStateRef from 'react-usestateref';
 import {useRouter} from 'next/router';
+import {IAddressHistoryQuery} from '../../constants/api_request';
 
 interface IPagination {
   activePage: number;
@@ -12,6 +13,11 @@ interface IPagination {
   paginationClickHandler?: ({page, offset}: {page: number; offset: number}) => Promise<void>;
   loading?: boolean;
   pagePrefix?: string;
+  pageInit?: (
+    chainId?: string,
+    addressId?: string,
+    options?: IAddressHistoryQuery
+  ) => Promise<void>;
 }
 
 const Pagination = ({
@@ -22,6 +28,7 @@ const Pagination = ({
   paginationClickHandler,
   loading,
   pagePrefix,
+  pageInit,
 }: IPagination) => {
   const [url, setUrl] = useState<URL | null>(null);
   const [targetPage, setTargetPage, targetPageRef] = useStateRef<number>(activePage);
@@ -32,17 +39,38 @@ const Pagination = ({
   const {query} = router;
 
   useEffect(() => {
+    // let page = DEFAULT_PAGE;
     const queryPage = query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`];
+    // eslint-disable-next-line no-console
+    console.log('query in pagination useEffect', router, query, queryPage);
     if (query && queryPage) {
       if (!isNaN(parseInt(queryPage as string, 10))) {
         const page = parseInt(query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`] as string, 10);
+        // page = parseInt(query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`] as string, 10);
+        // page = Math.abs(page);
+
+        // eslint-disable-next-line no-console
+        console.log('page in pagination useEffect(query)', page);
         const abs = Math.abs(page);
         changePage(abs);
-      } else {
-        const page = DEFAULT_PAGE;
-        changePage(page);
       }
+
+      // else {
+      //   // const page = DEFAULT_PAGE;
+      //   // changePage(page);
+      // }
+    } else {
+      pageInit && pageInit();
     }
+
+    // else {
+    //   // const page = DEFAULT_PAGE;
+    //   // changePage(page);
+    //   return;
+    // }
+
+    // changePage(page);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
@@ -51,6 +79,14 @@ const Pagination = ({
       const url = new URL(window.location.href);
       const pageParam = url.searchParams.get(pagePrefix ? `${pagePrefix}_page` : 'page');
       const page = pageParam ? parseInt(pageParam, 10) : 1;
+      // eslint-disable-next-line no-console
+      console.log(
+        'page in pagination useEffect(handleUrlChange)',
+        page,
+        activePage,
+        pageParam,
+        url.searchParams.get(pagePrefix ? `${pagePrefix}_page` : 'page')
+      );
       if (!isNaN(page) && page !== activePage) {
         setActivePage(page);
       }
