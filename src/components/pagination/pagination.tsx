@@ -1,8 +1,9 @@
 import {Dispatch, SetStateAction, useState, useEffect} from 'react';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
-import {IAddressHistoryQuery, IPaginationOptions, SortingType} from '../../constants/api_request';
-import {ITEM_PER_PAGE} from '../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../constants/config';
 import useStateRef from 'react-usestateref';
+import {useRouter} from 'next/router';
+import {IAddressHistoryQuery} from '../../constants/api_request';
 
 interface IPagination {
   activePage: number;
@@ -12,6 +13,11 @@ interface IPagination {
   paginationClickHandler?: ({page, offset}: {page: number; offset: number}) => Promise<void>;
   loading?: boolean;
   pagePrefix?: string;
+  pageInit?: (
+    chainId?: string,
+    addressId?: string,
+    options?: IAddressHistoryQuery
+  ) => Promise<void>;
 }
 
 const Pagination = ({
@@ -22,12 +28,33 @@ const Pagination = ({
   paginationClickHandler,
   loading,
   pagePrefix,
+  pageInit,
 }: IPagination) => {
-  const [url, setUrl] = useState<URL | null>(null);
+  /* Deprecated: 直接拿 window.location.href 來做 url，避免重複 (20240229 - Shirley)
+  // const [url, setUrl] = useState<URL | null>(null);
+  */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [targetPage, setTargetPage, targetPageRef] = useStateRef<number>(activePage);
 
   const buttonStyle =
     'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
+  const router = useRouter();
+  const {query} = router;
+
+  useEffect(() => {
+    const queryPage = query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`];
+    if (query && queryPage) {
+      if (!isNaN(parseInt(queryPage as string, 10))) {
+        const page = parseInt(query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`] as string, 10);
+        const abs = Math.abs(page);
+        changePage(abs);
+      }
+    } else {
+      pageInit && pageInit();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
 
   useEffect(() => {
     const handleUrlChange = () => {
@@ -60,18 +87,31 @@ const Pagination = ({
       await paginationClickHandler({page: newPage, offset: ITEM_PER_PAGE});
     }
     updateUrl(newPage);
+    setTargetPage(newPage);
   };
 
   const previousHandler = () => {
-    if (activePage > 1) {
-      changePage(activePage - 1);
+    let newPage = DEFAULT_PAGE;
+    if (activePage > totalPages) {
+      newPage = totalPages;
+    } else if (activePage > 1) {
+      newPage = activePage - 1;
+    } else {
+      newPage = DEFAULT_PAGE;
     }
+    changePage(newPage);
   };
 
   const nextHandler = () => {
-    if (activePage < totalPages) {
-      changePage(activePage + 1);
+    let newPage = totalPages;
+    if (activePage < 1) {
+      newPage = DEFAULT_PAGE;
+    } else if (activePage < totalPages) {
+      newPage = activePage + 1;
+    } else {
+      newPage = totalPages;
     }
+    changePage(newPage);
   };
 
   const pageChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,7 +220,11 @@ const Pagination = ({
   const nextBtn = (
     <button
       onClick={nextHandler}
-      disabled={loading || activePage === totalPages || totalPages === 0 ? true : false}
+      disabled={
+        loading || activePage === totalPages || activePage > totalPages || totalPages === 0
+          ? true
+          : false
+      }
       className={buttonStyle}
     >
       <RiArrowRightSLine className="text-2xl" />
