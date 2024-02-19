@@ -18,7 +18,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
-import {IEvidenceDetail} from '../../../../../interfaces/evidence';
+import {IEvidenceBrief} from '../../../../../interfaces/evidence';
 import {IDisplayTransaction} from '../../../../../interfaces/transaction';
 import {DEFAULT_CHAIN_ICON} from '../../../../../constants/config';
 import DataNotFound from '../../../../../components/data_not_found/data_not_found';
@@ -32,17 +32,16 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getEvidenceDetail} = useContext(MarketContext);
+  const {getEvidenceDetail, getEvidenceTransactions} = useContext(MarketContext);
 
-  const headTitle = `${t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} ${evidenceId} - BAIFA`;
-  const [evidenceData, setEvidenceData] = useState<IEvidenceDetail>({} as IEvidenceDetail);
+  const [evidenceData, setEvidenceData] = useState<IEvidenceBrief>({} as IEvidenceBrief);
+  const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
   const [isNoData, setIsNoData] = useState(false);
 
-  const {transactionHistoryData} = evidenceData;
-  // Info: (20240102 - Julian) Transaction history
-  const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
-
+  const headTitle = `${t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} ${evidenceId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
+
+  const backClickHandler = () => router.back();
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -54,7 +53,13 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
       setEvidenceData(evidenceData);
     };
 
+    const getTransactionData = async (chainId: string, evidenceId: string) => {
+      const transactionHistoryData = await getEvidenceTransactions(chainId, evidenceId);
+      setTransactionData(transactionHistoryData);
+    };
+
     getEvidenceData(chainId, evidenceId);
+    getTransactionData(chainId, evidenceId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -68,8 +73,6 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
 
     return () => clearTimeout(timer);
   }, [evidenceData]);
-
-  const backClickHandler = () => router.back();
 
   const isDownloadButton = isNoData ? null : (
     <Link href={BFAURL.COMING_SOON}>
