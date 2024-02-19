@@ -4,7 +4,8 @@ import {IDisplayTransaction} from './transaction';
 
 export interface IHolder {
   addressId: string;
-  holdingAmount: number;
+  // holdingAmount: number;
+  holdingAmount: string;
   holdingPercentage: number;
   holdingBarWidth: number;
   publicTag: string[];
