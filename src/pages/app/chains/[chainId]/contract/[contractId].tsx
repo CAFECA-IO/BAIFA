@@ -25,10 +25,11 @@ import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../../../../consta
 import DataNotFound from '../../../../../components/data_not_found/data_not_found';
 
 interface IContractDetailDetailPageProps {
+  chainId: string;
   contractId: string;
 }
 
-const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
+const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
@@ -39,7 +40,7 @@ const ContractDetailPage = ({contractId}: IContractDetailDetailPageProps) => {
   const [isNoData, setIsNoData] = useState(false);
 
   const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
-  const {publicTag, chainId} = contractData;
+  const {publicTag} = contractData;
 
   const backClickHandler = () => router.back();
 
@@ -226,10 +227,11 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
     };
   }
 
+  const chainId = params.chainId;
   const contractId = params.contractId;
 
   return {
-    props: {contractId, ...(await serverSideTranslations(locale as string, ['common']))},
+    props: {chainId, contractId, ...(await serverSideTranslations(locale as string, ['common']))},
   };
 };
 

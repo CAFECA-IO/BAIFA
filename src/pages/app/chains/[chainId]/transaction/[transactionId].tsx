@@ -127,6 +127,8 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
     <TransactionDetail transactionData={transactionData} />
   );
 
+  const isPrivateNoteSection = isNoData ? null : <PrivateNoteSection />;
+
   return (
     <>
       <Head>
@@ -144,9 +146,7 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
             {/* Info: (20230907 - Julian) Transaction Detail */}
             <div className="my-10 w-full">{isTransactionData}</div>
 
-            <div className="w-full">
-              <PrivateNoteSection />
-            </div>
+            <div className="w-full">{isPrivateNoteSection}</div>
 
             {/* Info: (20231017 - Julian) Back Button */}
             <div className="mt-10">
