@@ -23,7 +23,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
 
   useEffect(() => {
     // Info: (20240219 - Julian) 如果沒有拿到資料就持續 Loading
-    if (!evidenceAddress) return;
+    if (!evidenceData.id) return;
     // Info: (20240219 - Julian) 1 秒後顯示資料
     const timer = setTimeout(() => {
       setIsShow(true);
