@@ -190,9 +190,9 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
     await addressDetailsCtx.blockInit();
   };
 
-  useEffect(() => {
-    addressDetailsCtx.blockInit();
-  }, []);
+  // useEffect(() => {
+  //   addressDetailsCtx.blockInit();
+  // }, []);
 
   // useEffect(() => {
   //   // addressDetailsCtx.blocksLoading

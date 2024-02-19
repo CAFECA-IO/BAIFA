@@ -28,6 +28,7 @@ import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
   DEFAULT_TRUNCATE_LENGTH,
   ITEM_PER_PAGE,
   sortOldAndNewOptions,
@@ -105,6 +106,13 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
     // init(chainId, addressId);
     getAddressBriefData(chainId, addressId);
+
+    initData(
+      chainId,
+      addressId,
+      router?.query?.blocks_page as string,
+      router?.query?.transaction_page as string
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -118,17 +126,53 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     }
   }, [addressBriefData]);
 
-  useEffect(() => {
-    if (transactionHistoryData) {
-      setTransactionData(transactionHistoryData);
-    }
-  }, [transactionHistoryData]);
+  const initData = async (
+    chainId: string,
+    addressId: string,
+    blocks_page?: string,
+    transaction_page?: string
+  ) => {
+    // eslint-disable-next-line no-console
+    console.log('initData', chainId, addressId, blocks_page, transaction_page);
+
+    const blockPage = !!blocks_page ? parseInt(blocks_page) : 1;
+    const transactionPage = !!transaction_page ? parseInt(transaction_page) : 1;
+
+    // eslint-disable-next-line no-console
+    console.log('blockPage', blockPage, 'transactionPage', transactionPage);
+
+    await addressDetailsCtx.blockInit(chainId, addressId, {
+      page: blockPage,
+      offset: ITEM_PER_PAGE,
+      order: SortingType.DESC,
+    });
+    await addressDetailsCtx.transactionInit(chainId, addressId, {
+      page: transactionPage,
+      offset: ITEM_PER_PAGE,
+      order: SortingType.DESC,
+    });
+  };
 
   useEffect(() => {
-    if (blockProducedData) {
-      setBlockData(blockProducedData);
-    }
-  }, [blockProducedData]);
+    initData(
+      chainId,
+      addressId,
+      router.query.blocks_page as string,
+      router.query.transaction_page as string
+    );
+  }, [chainId, addressId, addressDetailsCtx]);
+
+  // useEffect(() => {
+  //   if (transactionHistoryData) {
+  //     setTransactionData(transactionHistoryData);
+  //   }
+  // }, [transactionHistoryData]);
+
+  // useEffect(() => {
+  //   if (blockProducedData) {
+  //     setBlockData(blockProducedData);
+  //   }
+  // }, [blockProducedData]);
 
   const backClickHandler = () => router.back();
 
@@ -339,33 +383,19 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {chainId: 'isun', addressId: '1'},
-      locale: 'en',
-    },
-  ];
+export const getServerSideProps: GetServerSideProps = async ({query, locale}) => {
+  const {addressId = '', chainId = ''} = query; // Extracting addressId and chainId from query
 
-  return {paths, fallback: 'blocking'};
-};
-
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
-  if (!params || !params.addressId || typeof params.addressId !== 'string') {
+  // Info: Ensure addressId and chainId are strings for type safety (20240219 - Shirley)
+  // TODO: check whether `addressId` and `chainId` is valid (20240219 - Shirley)
+  if (typeof addressId !== 'string' || !isAddress(addressId) || typeof chainId !== 'string') {
     return {
       notFound: true,
     };
   }
 
-  const addressId = params.addressId;
-  const chainId = params.chainId;
-
-  if (!addressId || !isAddress(addressId) || !chainId) {
-    return {
-      notFound: true,
-    };
-  }
+  // eslint-disable-next-line no-console
+  console.log('getServerSideProps in AddressDetailPage', addressId, chainId, query);
 
   return {
     props: {
@@ -377,3 +407,42 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
 };
 
 export default AddressDetailPage;
+
+/* Deprecated: (20240219 - Shirley) use `getServerSideProps` instead of `getStaticPaths` and `getStaticProps`
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   // ToDo: (20231213 - Julian) Add dynamic paths
+//   const paths = [
+//     {
+//       params: {chainId: 'isun', addressId: '1'},
+//       locale: 'en',
+//     },
+//   ];
+
+//   return {paths, fallback: 'blocking'};
+// };
+
+// export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+//   if (!params || !params.addressId || typeof params.addressId !== 'string') {
+//     return {
+//       notFound: true,
+//     };
+//   }
+
+//   const addressId = params.addressId;
+//   const chainId = params.chainId;
+
+//   if (!addressId || !isAddress(addressId) || !chainId) {
+//     return {
+//       notFound: true,
+//     };
+//   }
+
+//   return {
+//     props: {
+//       addressId,
+//       chainId,
+//       ...(await serverSideTranslations(locale as string, ['common'])),
+//     },
+//   };
+// };
+*/

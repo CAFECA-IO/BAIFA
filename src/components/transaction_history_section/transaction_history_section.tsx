@@ -282,11 +282,13 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
         })
     : [];
 
+  const displayedAddressTransactions = !addressDetailsCtx.transactionsLoading
+    ? transactionList
+    : listSkeleton;
+
   const displayedTransactionList =
     dataType === TransactionDataType.ADDRESS_DETAILS
-      ? !addressDetailsCtx.transactionsLoading
-        ? transactionList
-        : listSkeleton
+      ? displayedAddressTransactions
       : transactionList;
 
   const paginationClickHandler = async ({page, offset}: {page: number; offset: number}) => {
@@ -316,9 +318,6 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
     // Info: (20240216 - Shirley) default case
     return Promise.resolve();
   };
-
-  // eslint-disable-next-line no-console
-  console.log('addressDetailsCtx.transactionsLoading:', addressDetailsCtx.transactionsLoading);
 
   return (
     <div className="flex w-full flex-col space-y-4">
