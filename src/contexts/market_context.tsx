@@ -47,6 +47,8 @@ export interface IMarketContext {
   currencyList: ICurrency[];
   blacklist: IBlackListDetail[];
 
+  chainLoading: boolean;
+
   getChains: () => Promise<void>;
   getChainDetail: (chainId: string) => Promise<IChain>;
   getBlockList: (chainId: string, queryStr?: string) => Promise<IBlockList>;
@@ -104,6 +106,8 @@ export const MarketContext = createContext<IMarketContext>({
   currencyList: [],
   blacklist: [],
 
+  chainLoading: true,
+
   getChains: () => Promise.resolve(),
   getChainDetail: () => Promise.resolve({} as IChain),
   getBlockList: () => Promise.resolve({} as IBlockList),
@@ -135,6 +139,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
   const [blacklist, setBlacklist] = useState<IBlackListDetail[]>([]);
 
+  const [chainLoading, setChainLoading] = useState<boolean>(true);
+
   const getPromotion = useCallback(async () => {
     let data: IPromotion = defaultPromotion;
     try {
@@ -150,11 +156,13 @@ export const MarketProvider = ({children}: IMarketProvider) => {
 
   const getChains = useCallback(async () => {
     let data: IChainDetail[] = [];
+    setChainLoading(true);
     try {
       const response = await fetch(`${APIURL.CHAINS}`, {
         method: 'GET',
       });
       data = await response.json();
+      setChainLoading(false);
     } catch (error) {
       //console.log('getChains error', error);
     }
@@ -583,6 +591,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     chainList: chainList,
     currencyList: currencyList,
     blacklist: blacklist,
+
+    chainLoading: chainLoading,
 
     getChains,
     getChainDetail,

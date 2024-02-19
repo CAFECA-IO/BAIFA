@@ -6,10 +6,11 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
 import {MarketContext} from '../../contexts/market_context';
+import Skeleton from '../skeleton/skeleton';
 
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {chainList} = useContext(MarketContext);
+  const {chainList, chainLoading} = useContext(MarketContext);
 
   const crumbs = [
     {
@@ -22,9 +23,19 @@ const AllChainPageBody = () => {
     },
   ];
 
-  const displayChains = chainList.map((chain, index) => (
-    <ChainsCard key={index} chainData={chain} />
-  ));
+  const displayChains = chainLoading ? (
+    // Info: (20240219 - Julian) Skeleton
+    <div className="flex w-250px flex-col space-y-3 rounded-xl border border-transparent bg-darkPurple p-4 shadow-xl">
+      <div className="inline-flex gap-4 items-center">
+        <Skeleton width={60} height={60} rounded />
+        <Skeleton width={100} height={20} />
+      </div>
+      <Skeleton width={100} height={20} />
+      <Skeleton width={100} height={20} />
+    </div>
+  ) : (
+    chainList.map((chain, index) => <ChainsCard key={index} chainData={chain} />)
+  );
 
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">

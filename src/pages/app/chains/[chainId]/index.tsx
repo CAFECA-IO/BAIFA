@@ -17,6 +17,7 @@ import {BFAURL} from '../../../../constants/url';
 import {DEFAULT_CHAIN_ICON, chainList} from '../../../../constants/config';
 import {getChainIcon} from '../../../../lib/common';
 import Skeleton from '../../../../components/skeleton/skeleton';
+import DataNotFound from '../../../../components/data_not_found/data_not_found';
 
 export interface IChainDetailPageProps {
   chainId: string;
@@ -35,6 +36,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const [activeTab, setActiveTab] = useState<ChainDetailTab>(ChainDetailTab.BLOCKS);
   const [chainData, setChainData] = useState<IChain>({} as IChain);
   const [isLoading, setIsLoading] = useState(true);
+  const [isNoData, setIsNoData] = useState(false);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -55,14 +57,22 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   }, []);
 
   useEffect(() => {
-    if (chainData.chainId) {
+    setIsLoading(true);
+    // Info: (20240217 - Julian) 如果沒有 1 秒內沒有資料，就顯示 No Data，並且停止 Loading
+    const timer = setTimeout(() => {
+      if (!chainData.chainId) {
+        setIsNoData(true);
+      }
       setIsLoading(false);
-    } else {
-      setIsLoading(true);
-    }
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, [chainData]);
 
-  const {chainId: chainIdFromData, chainName} = chainData;
+  // Info: (20240217 - Julian) 如果 isNoData 為 true，顯示預設值
+  const {chainId: chainIdFromData, chainName} = isNoData
+    ? {chainId: '--', chainName: '--'}
+    : chainData;
   const headTitle = isLoading ? 'Loading...' : `${chainName} - BAIFA`;
   const chainIcon = getChainIcon(chainIdFromData);
 
@@ -146,6 +156,20 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
 
   const tabContent = activeTab === ChainDetailTab.BLOCKS ? <BlockTab /> : <TransactionTab />;
 
+  const diaplayBody = isNoData ? (
+    <DataNotFound />
+  ) : (
+    <>
+      {/* Info: (20230904 - Julian) Tabs */}
+      <div className="flex items-center justify-center space-x-6 lg:py-7">
+        {blocksButton}
+        {transactionsButton}
+      </div>
+      {/* Info: (20230904 - Julian) Tab Content */}
+      {tabContent}
+    </>
+  );
+
   return (
     <>
       <Head>
@@ -164,13 +188,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
             </div>
             {/* Info: (20230904 - Julian) Page Title */}
             {displayedTitle}
-            {/* Info: (20230904 - Julian) Tabs */}
-            <div className="flex items-center justify-center space-x-6 lg:py-7">
-              {blocksButton}
-              {transactionsButton}
-            </div>
-            {/* Info: (20230904 - Julian) Tab Content */}
-            {tabContent}
+            {diaplayBody}
           </div>
         </div>
       </main>
