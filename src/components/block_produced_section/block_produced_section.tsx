@@ -173,9 +173,6 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
       offset: offset,
       order: addressDetailsCtx.blocksOrder,
     });
-
-    // eslint-disable-next-line no-console
-    console.log('blockPaginationHandler', {page, offset, order: addressDetailsCtx.blocksOrder});
   };
 
   const blockSortingHandler = async ({order}: {order: SortingType}) => {
@@ -189,17 +186,6 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
   const blockInit = async () => {
     await addressDetailsCtx.blockInit();
   };
-
-  // useEffect(() => {
-  //   addressDetailsCtx.blockInit();
-  // }, []);
-
-  // useEffect(() => {
-  //   // addressDetailsCtx.blocksLoading
-  //   console.log('activePageRef.current in blockProducedSection', activePageRef.current);
-  //   blockPaginationHandler({page: activePageRef.current, offset: ITEM_PER_PAGE});
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [activePageRef.current]);
 
   return (
     <div className="flex w-full flex-col space-y-4">

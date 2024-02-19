@@ -30,7 +30,10 @@ const Pagination = ({
   pagePrefix,
   pageInit,
 }: IPagination) => {
-  const [url, setUrl] = useState<URL | null>(null);
+  /* Deprecated: 直接拿 window.location.href 來做 url，避免重複 (20240229 - Shirley)
+  // const [url, setUrl] = useState<URL | null>(null);
+  */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [targetPage, setTargetPage, targetPageRef] = useStateRef<number>(activePage);
 
   const buttonStyle =
@@ -39,37 +42,16 @@ const Pagination = ({
   const {query} = router;
 
   useEffect(() => {
-    // let page = DEFAULT_PAGE;
     const queryPage = query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`];
-    // eslint-disable-next-line no-console
-    console.log('query in pagination useEffect', router, query, queryPage);
     if (query && queryPage) {
       if (!isNaN(parseInt(queryPage as string, 10))) {
         const page = parseInt(query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`] as string, 10);
-        // page = parseInt(query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`] as string, 10);
-        // page = Math.abs(page);
-
-        // eslint-disable-next-line no-console
-        console.log('page in pagination useEffect(query)', page);
         const abs = Math.abs(page);
         changePage(abs);
       }
-
-      // else {
-      //   // const page = DEFAULT_PAGE;
-      //   // changePage(page);
-      // }
     } else {
       pageInit && pageInit();
     }
-
-    // else {
-    //   // const page = DEFAULT_PAGE;
-    //   // changePage(page);
-    //   return;
-    // }
-
-    // changePage(page);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
@@ -79,14 +61,6 @@ const Pagination = ({
       const url = new URL(window.location.href);
       const pageParam = url.searchParams.get(pagePrefix ? `${pagePrefix}_page` : 'page');
       const page = pageParam ? parseInt(pageParam, 10) : 1;
-      // eslint-disable-next-line no-console
-      console.log(
-        'page in pagination useEffect(handleUrlChange)',
-        page,
-        activePage,
-        pageParam,
-        url.searchParams.get(pagePrefix ? `${pagePrefix}_page` : 'page')
-      );
       if (!isNaN(page) && page !== activePage) {
         setActivePage(page);
       }
