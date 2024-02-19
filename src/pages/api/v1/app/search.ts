@@ -110,7 +110,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const searchInput = req.query.search_input as string;
 
-  if (!searchInput) {
+  if (!searchInput || searchInput === '0x') {
     return res.status(400).json([]);
   }
 
@@ -118,6 +118,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   let stability = StabilityLevel.LOW;
 
   try {
+    const searchId = isValid64BitInteger(searchInput) ? parseInt(searchInput, 10) : undefined;
+
     // Info: calculate the stability for the targeted block (20240201 - Shirley)
     const latestBlock = await prisma.blocks.findFirst({
       orderBy: {
@@ -137,19 +139,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         created_timestamp: 'desc',
       },
       where: {
-        OR: [
-          {
-            hash: {
-              contains: searchInput,
-            },
-          },
-          {
-            id:
-              !searchInput.startsWith('0x') && isValid64BitInteger(searchInput)
-                ? +searchInput
-                : undefined,
-          },
-        ],
+        id: searchId,
       },
       select: {
         id: true,
@@ -161,8 +151,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     blocks.forEach(item => {
-      if (latestBlock && latestBlock.number && item.number) {
-        stability = calculateBlockStability(item.number, latestBlock.number);
+      if (latestBlock && latestBlock.number) {
+        const targetBlockId = item.number ? +item.number : 0;
+        stability = calculateBlockStability(targetBlockId, latestBlock.number);
       }
 
       result.push({
@@ -179,7 +170,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const transactions = await prisma.transactions.findMany({
       where: {
         hash: {
-          contains: searchInput,
+          startsWith: searchInput,
         },
       },
       select: {
@@ -205,7 +196,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const contracts = await prisma.contracts.findMany({
       where: {
         contract_address: {
-          contains: searchInput,
+          startsWith: searchInput,
         },
       },
       select: {
@@ -230,7 +221,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const evidences = await prisma.evidences.findMany({
       where: {
-        OR: [{evidence_id: {contains: searchInput}}, {contract_address: {contains: searchInput}}],
+        OR: [
+          {evidence_id: {startsWith: searchInput}},
+          {contract_address: {startsWith: searchInput}},
+        ],
       },
       select: {
         id: true,
@@ -290,19 +284,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const addresses = await prisma.addresses.findMany({
       where: {
-        OR: [
-          {
-            address: {
-              contains: searchInput,
-            },
-          },
-          {
-            id:
-              !searchInput.startsWith('0x') && isValid64BitInteger(searchInput)
-                ? +searchInput
-                : undefined,
-          },
-        ],
+        address: {
+          startsWith: searchInput,
+        },
       },
       select: {
         id: true,
@@ -330,7 +314,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const blacklistedAddresses = await prisma.public_tags.findMany({
       where: {
         name: {
-          contains: searchInput,
+          startsWith: searchInput,
         },
         tag_type: '9',
       },
