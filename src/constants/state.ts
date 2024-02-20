@@ -7,7 +7,7 @@ interface IEvidenceState {
 
 export const EvidenceState: IEvidenceState = {
   'public': {
-    text: 'EVIDENCE_DETAIL_PAGEㄡSTATE_PUBLIC',
+    text: 'EVIDENCE_DETAIL_PAGE.STATE_PUBLIC',
     color: '#3DD08C',
   },
   'private': {

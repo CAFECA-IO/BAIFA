@@ -3,13 +3,9 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import {FaChevronDown} from 'react-icons/fa';
-import {
-  convertSortingTypeToString,
-  convertStringToSortingType,
-  truncateText,
-} from '../../lib/common';
-import {DEFAULT_TRUNCATE_LENGTH, sortOldAndNewOptions} from '../../constants/config';
-import {IPaginationOptions, SortingType} from '../../constants/api_request';
+import {convertStringToSortingType, truncateText} from '../../lib/common';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {SortingType} from '../../constants/api_request';
 
 interface ISearchFilter {
   sortingOptions: string[];
@@ -18,6 +14,7 @@ interface ISearchFilter {
   bgColor: string;
   sortingHandler?: ({order}: {order: SortingType}) => Promise<void>;
   loading?: boolean;
+  sortPrefix?: string;
 }
 
 const SortingMenu = ({
@@ -27,6 +24,7 @@ const SortingMenu = ({
   bgColor,
   sortingHandler,
   loading,
+  sortPrefix = '', // TODO: URL query prefix (20240219 - Shirley)
 }: ISearchFilter) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
@@ -37,63 +35,28 @@ const SortingMenu = ({
     setComponentVisible: setSortingVisible,
   } = useOuterClick<HTMLDivElement>(false);
 
+  // Info: (20240207 - Liz) Remove duplicate options
   const uniqueOptions = Array.from(new Set(sortingOptions));
 
-  /* Deprecated: (20240220 - Shirley) to fix the issue of disabling sorting options and `Warning: Each child in a list should have a unique "key" prop.` React error
-  // Info: (20240207 - Liz) Remove duplicate options
-
-  const optionsUI = uniqueOptions.map((option, index) => {
+  const displayedOptions = uniqueOptions.map((option, index) => {
     const clickHandler = async () => {
-      console.log('option in displayedOptions', option);
       setSorting(option);
       setSortingVisible(false);
-
-      sortingHandler && (await sortingHandler({order: convertStringToSortingType(option)}));
+      if (sortingHandler) {
+        await sortingHandler({order: convertStringToSortingType(option)});
+      }
     };
     return (
-      <>
-        {' '}
-        <ul className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden">
-          <li
-            key={option}
-            onClick={clickHandler}
-            className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
-          >
-            {truncateText(t(option), DEFAULT_TRUNCATE_LENGTH)}
-          </li>{' '}
-        </ul>
-      </>
+      <li
+        key={index}
+        onClick={clickHandler}
+        className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
+      >
+        {/* Info: (20240124 - Julian) 將選項字數限制在 10 個字 */}
+        {truncateText(t(option), DEFAULT_TRUNCATE_LENGTH)}
+      </li>
     );
   });
-  */
-
-  const optionsUI = (
-    <ul className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden">
-      {uniqueOptions.map(option => {
-        const clickHandler = async () => {
-          setSorting(option);
-          setSortingVisible(false);
-
-          if (sortingHandler) {
-            await sortingHandler({order: convertStringToSortingType(option)});
-          }
-        };
-        return (
-          <li
-            key={option} // This ensures each child in the list has a unique "key" prop.
-            onClick={clickHandler}
-            className="w-full px-8 py-3 hover:cursor-pointer hover:bg-purpleLinear"
-          >
-            {/* Info: (20240124 - Julian) 將選項字數限制在 10 個字 */}
-
-            {truncateText(t(option), DEFAULT_TRUNCATE_LENGTH)}
-          </li>
-        );
-      })}
-    </ul>
-  );
-
-  const displayedOptions = <> {!loading ? optionsUI : null}</>;
 
   const menuOpenHandler = () => setSortingVisible(!sortingVisible);
 
@@ -124,7 +87,9 @@ const SortingMenu = ({
         } rounded bg-darkPurple2 text-left text-hoverWhite shadow-xl transition-all duration-300 ease-in-out`}
       >
         {/* Info: (20231101 - Julian) Sorting Options */}
-        {displayedOptions}
+        <ul className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden whitespace-nowrap">
+          {displayedOptions}
+        </ul>
       </div>
     </button>
   );

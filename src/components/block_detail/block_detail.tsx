@@ -36,7 +36,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
 
   useEffect(() => {
     // Info: (20240217 - Julian) 如果沒有拿到資料就持續 Loading
-    if (!blockId) return;
+    if (!blockData.id) return;
     // Info: (20240217 - Julian) 1 秒後顯示資料
     const timer = setTimeout(() => {
       setIsShow(true);

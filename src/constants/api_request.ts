@@ -33,7 +33,7 @@ export interface IAddressTransactionQuery extends IPaginationOptions {
   query?: {
     from_address: string;
     to_address: string;
-    block_id: number;
+    tx: number;
   };
   start_date?: number;
   end_date?: number;

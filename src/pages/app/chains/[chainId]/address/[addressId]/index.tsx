@@ -16,7 +16,7 @@ import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {IAddressBrief, IAddressDetail} from '../../../../../../interfaces/address';
+import {IAddressBrief} from '../../../../../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
 import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
@@ -33,9 +33,9 @@ import {
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
 import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/common';
-import {IDisplayTransaction, ITransaction} from '../../../../../../interfaces/transaction';
+import {ITransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
-import {APIURL, SortingType} from '../../../../../../constants/api_request';
+import {SortingType} from '../../../../../../constants/api_request';
 import {isAddress} from 'web3-validator';
 import {IReviewDetail, IReviews} from '../../../../../../interfaces/review';
 import useStateRef from 'react-usestateref';
@@ -63,23 +63,10 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const [addressBriefData, setAddressBriefData] = useState<IAddressBrief>({} as IAddressBrief);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
-  const [blockData, setBlockData, blockDataRef] = useStateRef<{
-    blocks: IProductionBlock[];
-    blockCount: number;
-  }>(
-    {} as {
-      blocks: IProductionBlock[];
-      blockCount: number;
-    }
-  );
 
   const {publicTag, score} = addressBriefData;
 
   const reviewData: IReviewDetail[] = [];
-
-  const transactionHistoryData = transactionData;
-
-  const blockProducedData = blockData;
 
   const chainIcon = getChainIcon(chainId);
 
@@ -87,11 +74,6 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     if (!appCtx.isInit) {
       appCtx.init();
     }
-
-    const init = async (chainId: string, addressId: string) => {
-      await addressDetailsCtx.init(chainId, addressId);
-    };
-
     const getAddressBriefData = async (chainId: string, addressId: string) => {
       try {
         const data = await getAddressBrief(chainId, addressId);
@@ -101,8 +83,14 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       }
     };
 
-    init(chainId, addressId);
     getAddressBriefData(chainId, addressId);
+
+    initData(
+      chainId,
+      addressId,
+      router?.query?.blocks_page as string,
+      router?.query?.transaction_page as string
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -116,17 +104,36 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     }
   }, [addressBriefData]);
 
-  useEffect(() => {
-    if (transactionHistoryData) {
-      setTransactionData(transactionHistoryData);
-    }
-  }, [transactionHistoryData]);
+  const initData = async (
+    chainId: string,
+    addressId: string,
+    blocks_page?: string,
+    transaction_page?: string
+  ) => {
+    const blockPage = !!blocks_page ? parseInt(blocks_page) : 1;
+    const transactionPage = !!transaction_page ? parseInt(transaction_page) : 1;
+
+    await addressDetailsCtx.blockInit(chainId, addressId, {
+      page: blockPage,
+      offset: ITEM_PER_PAGE,
+      order: SortingType.DESC,
+    });
+    await addressDetailsCtx.transactionInit(chainId, addressId, {
+      page: transactionPage,
+      offset: ITEM_PER_PAGE,
+      order: SortingType.DESC,
+    });
+  };
 
   useEffect(() => {
-    if (blockProducedData) {
-      setBlockData(blockProducedData);
-    }
-  }, [blockProducedData]);
+    initData(
+      chainId,
+      addressId,
+      router.query.blocks_page as string,
+      router.query.transaction_page as string
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId, addressId, addressDetailsCtx]);
 
   const backClickHandler = () => router.back();
 
@@ -337,29 +344,12 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {chainId: 'isun', addressId: '1'},
-      locale: 'en',
-    },
-  ];
+export const getServerSideProps: GetServerSideProps = async ({query, locale}) => {
+  const {addressId = '', chainId = ''} = query;
 
-  return {paths, fallback: 'blocking'};
-};
-
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
-  if (!params || !params.addressId || typeof params.addressId !== 'string') {
-    return {
-      notFound: true,
-    };
-  }
-
-  const addressId = params.addressId;
-  const chainId = params.chainId;
-
-  if (!addressId || !isAddress(addressId) || !chainId) {
+  // Info: Ensure addressId and chainId are strings for type safety (20240219 - Shirley)
+  // TODO: check whether `addressId` and `chainId` is valid (20240219 - Shirley)
+  if (typeof addressId !== 'string' || !isAddress(addressId) || typeof chainId !== 'string') {
     return {
       notFound: true,
     };
@@ -375,3 +365,42 @@ export const getStaticProps: GetStaticProps = async ({params, locale}) => {
 };
 
 export default AddressDetailPage;
+
+/* Deprecated: (20240219 - Shirley) use `getServerSideProps` instead of `getStaticPaths` and `getStaticProps`
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   // ToDo: (20231213 - Julian) Add dynamic paths
+//   const paths = [
+//     {
+//       params: {chainId: 'isun', addressId: '1'},
+//       locale: 'en',
+//     },
+//   ];
+
+//   return {paths, fallback: 'blocking'};
+// };
+
+// export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+//   if (!params || !params.addressId || typeof params.addressId !== 'string') {
+//     return {
+//       notFound: true,
+//     };
+//   }
+
+//   const addressId = params.addressId;
+//   const chainId = params.chainId;
+
+//   if (!addressId || !isAddress(addressId) || !chainId) {
+//     return {
+//       notFound: true,
+//     };
+//   }
+
+//   return {
+//     props: {
+//       addressId,
+//       chainId,
+//       ...(await serverSideTranslations(locale as string, ['common'])),
+//     },
+//   };
+// };
+*/

@@ -36,7 +36,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
 
   useEffect(() => {
     // Info: (20240217 - Julian) 如果沒有拿到資料就持續 Loading
-    if (!hash) return;
+    if (!transactionData.id) return;
     // Info: (20240217 - Julian) 1 秒後顯示資料
     const timer = setTimeout(() => {
       setIsShow(true);

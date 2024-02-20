@@ -40,7 +40,7 @@ const listSkeleton = (
     className="w-full animate-pulse space-y-4 divide-y divide-gray-200 rounded border border-gray-200 p-4 shadow dark:divide-gray-700 dark:border-gray-700 md:p-6"
   >
     {/* Info: generate 10 skeletons (20240207 - Shirley) */}
-    {Array.from({length: 10}, (_, index) => (
+    {Array.from({length: ITEM_PER_PAGE}, (_, index) => (
       <div key={index} className={`${index !== 0 ? `pt-4` : ``}`}>
         {itemSkeleton}
       </div>
@@ -144,12 +144,6 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
     // setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, sorting, period]);
-
-  // Info: (20240103 - Julian) The count of transaction history
-  // const transactionCount =
-  //   dataType === TransactionDataType.ADDRESS_DETAILS
-  //     ? addressDetailsCtx.transactions.transactionCount
-  //     : transactions.length;
 
   // Info: (20231113 - Julian) Pagination
   const transactionList = filteredTransactions
@@ -288,11 +282,13 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
         })
     : [];
 
+  const displayedAddressTransactions = !addressDetailsCtx.transactionsLoading
+    ? transactionList
+    : listSkeleton;
+
   const displayedTransactionList =
     dataType === TransactionDataType.ADDRESS_DETAILS
-      ? !addressDetailsCtx.transactionsLoading
-        ? transactionList
-        : listSkeleton
+      ? displayedAddressTransactions
       : transactionList;
 
   const paginationClickHandler = async ({page, offset}: {page: number; offset: number}) => {
@@ -310,6 +306,14 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
   const sortingClickHandler = async ({order}: {order: SortingType}) => {
     if (dataType === TransactionDataType.ADDRESS_DETAILS) {
       await addressDetailsCtx.clickTransactionSortingMenu(order);
+    }
+    // Info: (20240216 - Shirley) default case
+    return Promise.resolve();
+  };
+
+  const transactionInit = async () => {
+    if (dataType === TransactionDataType.ADDRESS_DETAILS) {
+      await addressDetailsCtx.transactionInit();
     }
     // Info: (20240216 - Shirley) default case
     return Promise.resolve();
@@ -339,6 +343,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
                 setSorting={setSorting}
                 bgColor="bg-purpleLinear"
                 sortingHandler={sortingClickHandler}
+                sortPrefix={`transaction`}
               />
             </div>
           </div>
@@ -357,6 +362,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
           activePage={activePage}
           setActivePage={setActivePage}
           totalPages={totalPages}
+          pageInit={transactionInit}
         />
       </div>
     </div>
