@@ -182,7 +182,8 @@
     "SIGN_UP_TIME_TOOLTIP": "The date and time the address was created.",
     "LATEST_ACTIVE_TIME_TOOLTIP": "The date and time the address was last active.",
     "INTERACTED_WITH_TOOLTIP": "The addresses that have interacted with this address.",
-    "RED_FLAG_TOOLTIP": "Record of suspicious behavior occurring at the address."
+    "RED_FLAG_TOOLTIP": "Record of suspicious behavior occurring at the address.",
+    "PUBLIC_TAG_TOOLTIP": "The public tag is provided by the BAIFA community to mark the risk level of specific addresses. Users can add private tags after logging in."
   },
   "CONTRACT_DETAIL_PAGE": {
     "MAIN_TITLE": "Contract",

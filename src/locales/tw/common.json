@@ -182,7 +182,8 @@
     "SIGN_UP_TIME_TOOLTIP": "地址首次出現在區塊鏈上的日期與時間。",
     "LATEST_ACTIVE_TIME_TOOLTIP": "地址最後一次出現在區塊鏈上的日期與時間。",
     "INTERACTED_WITH_TOOLTIP": "與此地址有過交易的其他地址。",
-    "RED_FLAG_TOOLTIP": "地址發生的可疑行為記錄。"
+    "RED_FLAG_TOOLTIP": "地址發生的可疑行為記錄。",
+    "PUBLIC_TAG_TOOLTIP": "公開標籤是由稗法社群提供的標籤，用於標記特定地址的風險等級。用戶登入後可自行新增私人標籤。"
   },
   "CONTRACT_DETAIL_PAGE": {
     "MAIN_TITLE": "合約",

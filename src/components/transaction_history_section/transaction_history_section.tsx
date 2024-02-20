@@ -14,6 +14,7 @@ import {IDisplayTransaction} from '../../interfaces/transaction';
 import DatePicker from '../date_picker/date_picker';
 import {AddressDetailsContext} from '../../contexts/address_details_context';
 import {SortingType} from '../../constants/api_request';
+import {SkeletonList} from '../skeleton/skeleton';
 
 export enum TransactionDataType {
   ADDRESS_DETAILS = 'ADDRESS_DETAILS',
@@ -282,9 +283,11 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
         })
     : [];
 
-  const displayedAddressTransactions = !addressDetailsCtx.transactionsLoading
-    ? transactionList
-    : listSkeleton;
+  const displayedAddressTransactions = !addressDetailsCtx.transactionsLoading ? (
+    transactionList
+  ) : (
+    <SkeletonList count={ITEM_PER_PAGE} />
+  );
 
   const displayedTransactionList =
     dataType === TransactionDataType.ADDRESS_DETAILS

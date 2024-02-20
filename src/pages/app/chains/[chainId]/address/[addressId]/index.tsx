@@ -223,9 +223,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
           <div className="flex items-center space-x-4">
             <div className="flex items-center text-base font-bold text-lilac">
               {t('PUBLIC_TAG.TITLE')}&nbsp;
-              <Tooltip>
-                This is tooltip Sample Text. So if I type in more content, it would be like this.
-              </Tooltip>
+              <Tooltip>{t('ADDRESS_DETAIL_PAGE.PUBLIC_TAG_TOOLTIP')} </Tooltip>
               &nbsp;:
             </div>
             <div className="">{displayPublicTag}</div>
