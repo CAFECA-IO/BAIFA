@@ -177,7 +177,12 @@
     "RED_FLAG": "警示記錄",
     "BALANCE": "餘額",
     "TOTAL_SENT": "總發送金額",
-    "TOTAL_RECEIVED": "總接收金額"
+    "TOTAL_RECEIVED": "總接收金額",
+    "ADDRESS_TOOLTIP": "地址的唯一識別碼。",
+    "SIGN_UP_TIME_TOOLTIP": "地址首次出現在區塊鏈上的日期與時間。",
+    "LATEST_ACTIVE_TIME_TOOLTIP": "地址最後一次出現在區塊鏈上的日期與時間。",
+    "INTERACTED_WITH_TOOLTIP": "與此地址有過交易的其他地址。",
+    "RED_FLAG_TOOLTIP": "地址發生的可疑行為記錄。"
   },
   "CONTRACT_DETAIL_PAGE": {
     "MAIN_TITLE": "合約",

@@ -177,7 +177,12 @@
     "RED_FLAG": "Red Flag",
     "BALANCE": "Balance",
     "TOTAL_SENT": "Total Sent",
-    "TOTAL_RECEIVED": "Total Received"
+    "TOTAL_RECEIVED": "Total Received",
+    "ADDRESS_TOOLTIP": "The unique identifier of the address.",
+    "SIGN_UP_TIME_TOOLTIP": "The date and time the address was created.",
+    "LATEST_ACTIVE_TIME_TOOLTIP": "The date and time the address was last active.",
+    "INTERACTED_WITH_TOOLTIP": "The addresses that have interacted with this address.",
+    "RED_FLAG_TOOLTIP": "Record of suspicious behavior occurring at the address."
   },
   "CONTRACT_DETAIL_PAGE": {
     "MAIN_TITLE": "Contract",

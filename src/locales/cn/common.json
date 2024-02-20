@@ -177,7 +177,12 @@
     "RED_FLAG": "警示记录",
     "BALANCE": "余额",
     "TOTAL_SENT": "总发送金额",
-    "TOTAL_RECEIVED": "总接收金额"
+    "TOTAL_RECEIVED": "总接收金额",
+    "ADDRESS_TOOLTIP": "地址的唯一识别码。",
+    "SIGN_UP_TIME_TOOLTIP": "地址首次出现在区块链上的日期与时间。",
+    "LATEST_ACTIVE_TIME_TOOLTIP": "地址最后一次出现在区块链上的日期与时间。",
+    "INTERACTED_WITH_TOOLTIP": "与此地址有过交易的其他地址。",
+    "RED_FLAG_TOOLTIP": "地址发生的可疑行为记录。"
   },
   "CONTRACT_DETAIL_PAGE": {
     "MAIN_TITLE": "合约",

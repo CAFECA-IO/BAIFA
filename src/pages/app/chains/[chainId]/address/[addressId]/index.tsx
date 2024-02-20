@@ -29,7 +29,6 @@ import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu'
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_TRUNCATE_LENGTH,
-  ITEM_PER_PAGE,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
 import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/common';

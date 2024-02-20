@@ -226,9 +226,7 @@ const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => 
       <div className="flex flex-col space-y-2 px-3 py-4 text-sm lg:flex-row lg:items-center lg:space-y-0 lg:text-base">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('ADDRESS_DETAIL_PAGE.ADDRESS_TOOLTIP')}</Tooltip>
         </div>
         {displayedAddress}
       </div>
@@ -236,9 +234,7 @@ const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => 
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('ADDRESS_DETAIL_PAGE.SIGN_UP_TIME')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('ADDRESS_DETAIL_PAGE.SIGN_UP_TIME_TOOLTIP')} </Tooltip>
         </div>
         {displaySignUpTime}
       </div>
@@ -246,9 +242,7 @@ const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => 
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('ADDRESS_DETAIL_PAGE.LATEST_ACTIVE_TIME')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('ADDRESS_DETAIL_PAGE.LATEST_ACTIVE_TIME_TOOLTIP')} </Tooltip>
         </div>
         {displayLatestActiveTime}
       </div>
@@ -266,9 +260,7 @@ const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => 
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('ADDRESS_DETAIL_PAGE.INTERACTED_WITH')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('ADDRESS_DETAIL_PAGE.INTERACTED_WITH_TOOLTIP')} </Tooltip>
         </div>
         {displayInteractedWith}
       </div>
@@ -276,9 +268,7 @@ const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => 
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('ADDRESS_DETAIL_PAGE.RED_FLAG')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('ADDRESS_DETAIL_PAGE.RED_FLAG_TOOLTIP')} </Tooltip>
         </div>
         {displayRedFlag}
       </div>
