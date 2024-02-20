@@ -3,9 +3,9 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 import {AddressType} from '../../../../../../../../interfaces/address_info';
-import {IContractBrief} from '../../../../../../../../interfaces/contract';
+import {IContractDetail} from '../../../../../../../../interfaces/contract';
 
-type ResponseData = IContractBrief | undefined;
+type ResponseData = IContractDetail | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();

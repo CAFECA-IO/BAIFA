@@ -2,9 +2,9 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
-import {IEvidenceBrief} from '../../../../../../../../interfaces/evidence';
+import {IEvidenceDetail} from '../../../../../../../../interfaces/evidence';
 
-type ResponseData = IEvidenceBrief | undefined;
+type ResponseData = IEvidenceDetail | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();

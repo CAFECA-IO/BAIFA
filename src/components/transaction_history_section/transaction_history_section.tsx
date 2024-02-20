@@ -6,8 +6,13 @@ import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {ITEM_PER_PAGE, sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
-import {timestampToString} from '../../lib/common';
+import {
+  ITEM_PER_PAGE,
+  sortOldAndNewOptions,
+  default30DayPeriod,
+  DEFAULT_TRUNCATE_LENGTH,
+} from '../../constants/config';
+import {timestampToString, truncateText} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 import {IDisplayTransaction} from '../../interfaces/transaction';
@@ -161,16 +166,16 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
                   style: 'text-hoverWhite',
                 }
               : status === 'Success'
-              ? {
-                  str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
-                  icon: '/icons/success_icon.svg',
-                  style: 'text-lightGreen',
-                }
-              : {
-                  str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
-                  icon: '/icons/failed_icon.svg',
-                  style: 'text-lightRed',
-                };
+                ? {
+                    str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
+                    icon: '/icons/success_icon.svg',
+                    style: 'text-lightGreen',
+                  }
+                : {
+                    str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
+                    icon: '/icons/failed_icon.svg',
+                    style: 'text-lightRed',
+                  };
 
           return (
             // Info: (20231113 - Julian) Transaction History Item
@@ -187,9 +192,12 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
                   href={transactionLink}
                   className="inline-flex flex-1 items-baseline space-x-2"
                 >
-                  <h2 className="text-sm lg:text-xl">
+                  <h2 title={transaction.id} className="text-sm lg:text-xl">
                     {t('COMMON.TRANSACTION_HISTORY_TRANSACTION_ID')}
-                    <span className="text-primaryBlue"> {transaction.id}</span>
+                    <span className="text-primaryBlue">
+                      {' '}
+                      {truncateText(transaction.id, DEFAULT_TRUNCATE_LENGTH)}
+                    </span>
                   </h2>
                 </Link>
                 {/* Info: (20231113 - Julian) Status */}
@@ -227,16 +235,16 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
                   style: 'text-hoverWhite',
                 }
               : status === 'Success'
-              ? {
-                  str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
-                  icon: '/icons/success_icon.svg',
-                  style: 'text-lightGreen',
-                }
-              : {
-                  str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
-                  icon: '/icons/failed_icon.svg',
-                  style: 'text-lightRed',
-                };
+                ? {
+                    str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
+                    icon: '/icons/success_icon.svg',
+                    style: 'text-lightGreen',
+                  }
+                : {
+                    str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
+                    icon: '/icons/failed_icon.svg',
+                    style: 'text-lightRed',
+                  };
 
           return (
             // Info: (20231113 - Julian) Transaction History Item
