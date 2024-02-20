@@ -61,7 +61,7 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
 
   const [activePage, setActivePage, activePageRef] = useStateRef(1);
   const [totalPages, setTotalPages] = useState(
-    Math.ceil(addressDetailsCtx.producedBlocks.blockCount / ITEM_PER_PAGE)
+    Math.ceil(addressDetailsCtx.producedBlocks.totalPage)
   );
   const [filteredBlocks, setFilteredBlocks, filteredBlocksRef] = useStateRef<IProductionBlock[]>(
     addressDetailsCtx.producedBlocks.blockData
@@ -183,6 +183,10 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
     addressDetailsCtx.clickBlockDatePicker(start, end);
   };
 
+  const blockInit = async () => {
+    await addressDetailsCtx.blockInit();
+  };
+
   return (
     <div className="flex w-full flex-col space-y-4">
       {/* Info: (20231103 - Julian) Title */}
@@ -214,6 +218,7 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
                 sortingHandler={blockSortingHandler}
                 sortingOptions={sortOldAndNewOptions}
                 loading={addressDetailsCtx.blocksLoading}
+                sortPrefix={`blocks`}
               />
             </div>
           </div>
@@ -226,12 +231,13 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
         {/* Info: (20231103 - Julian) Address List */}
         <div className="my-10 flex w-full flex-1 flex-col">{displayedBlocks}</div>
         <Pagination
-          paginationClickHandler={blockPaginationHandler}
-          loading={addressDetailsCtx.blocksLoading}
-          pagePrefix={`blocks`}
           activePage={activePage}
           setActivePage={setActivePage}
           totalPages={totalPages}
+          paginationClickHandler={blockPaginationHandler}
+          loading={addressDetailsCtx.blocksLoading}
+          pagePrefix={`blocks`}
+          pageInit={blockInit}
         />
       </div>
     </div>

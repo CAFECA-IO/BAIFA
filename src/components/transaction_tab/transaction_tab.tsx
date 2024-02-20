@@ -95,7 +95,7 @@ const TransactionTab = () => {
             a.createdTimestamp - b.createdTimestamp;
       });
     setFilteredTransactions(searchResult);
-  }, [transactionData, search, sorting]);
+  }, [transactions, search, sorting]);
 
   const displayTransactionList = isLoading ? (
     // Info: (20240206 - Julian) Loading animation

@@ -360,7 +360,8 @@
     "TITLE": "Public tag",
     "UNKNOWN_USER": "Unknown User",
     "HACKER": "Hacker",
-    "BINANCE_COLDWALLET": "Binance Cold Wallet"
+    "BINANCE_COLDWALLET": "Binance Cold Wallet",
+    "TOOLTIP_CONTENT": "The public tag is provided by the BAIFA community to mark the risk level of specific addresses. Users can add private tags after logging in."
   },
   "FOOTER": {
     "POWERED_BY": "Powered by BAIFA",

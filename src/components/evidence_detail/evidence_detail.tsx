@@ -1,3 +1,4 @@
+import {useState, useEffect} from 'react';
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -5,30 +6,44 @@ import Tooltip from '../tooltip/tooltip';
 import BoltButton from '../bolt_button/bolt_button';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {timestampToString, truncateText} from '../../lib/common';
-import {IEvidenceDetail} from '../../interfaces/evidence';
+import {IEvidenceBrief} from '../../interfaces/evidence';
 import {EvidenceState, DefaultEvidenceState} from '../../constants/state';
 import {BFA_EVIDENCE_CONTENT_URL, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import Skeleton from '../skeleton/skeleton';
 
 interface IEvidenceDetailProps {
-  evidenceData: IEvidenceDetail;
+  evidenceData: IEvidenceBrief;
 }
 
 const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {evidenceAddress, chainId, state, creatorAddressId, createdTimestamp} = evidenceData;
 
+  const [isShow, setIsShow] = useState(false);
+
+  useEffect(() => {
+    // Info: (20240219 - Julian) 如果沒有拿到資料就持續 Loading
+    if (!evidenceData.id) return;
+    // Info: (20240219 - Julian) 1 秒後顯示資料
+    const timer = setTimeout(() => {
+      setIsShow(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [evidenceData]);
+
   const addressLink = getDynamicUrl(chainId, `${creatorAddressId}`).ADDRESS;
 
-  const displayHash = evidenceAddress ? (
+  const displayHash = isShow ? (
     <p className="max-w-550px break-all text-sm lg:text-base">{evidenceAddress}</p>
   ) : (
     // Info: (20240215 - Julian) Loading Animation
-    <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    <Skeleton width={200} height={24} />
   );
 
   // Info: (20230205 - Julian) 取得 Evidence State 的文字內容，若無對應的文字內容，則使用預設值
   const stateContent = EvidenceState[state] ?? DefaultEvidenceState;
-  const displayState = state ? (
+  const displayState = isShow ? (
     <div className="flex items-center text-hoverWhite">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -44,12 +59,12 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-1">
-      <div className="h-20px w-20px animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-      <div className="h-20px w-70px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+      <Skeleton height={24} width={24} rounded />
+      <Skeleton height={24} width={100} />
     </div>
   );
 
-  const displayCreator = creatorAddressId ? (
+  const displayCreator = isShow ? (
     <Link href={addressLink} title={creatorAddressId}>
       <BoltButton className="px-3 py-1" color="blue" style="solid">
         {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}{' '}
@@ -57,22 +72,22 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
       </BoltButton>
     </Link>
   ) : (
-    <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+    <Skeleton width={100} height={24} />
   );
 
-  const displayTime = createdTimestamp ? (
+  const displayTime = isShow ? (
     <div className="flex flex-wrap items-center">
       <p className="mr-2">{timestampToString(createdTimestamp).date}</p>
       <p className="mr-2">{timestampToString(createdTimestamp).time}</p>
     </div> // Info: (20240206 - Julian) Loading Animation
   ) : (
     <div className="flex items-center space-x-3">
-      <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-      <div className="h-20px w-100px animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+      <Skeleton height={24} width={100} />
+      <Skeleton height={24} width={100} />
     </div>
   );
 
-  const displayContent =
+  const displayContent = isShow ? (
     state === 'public' ? (
       <div className="w-full">
         {/* Info: (20240202 - Julian) Reports */}
@@ -83,7 +98,10 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
       <Link href={BFAURL.COMING_SOON}>
         <p className="text-primaryBlue underline underline-offset-2">{t('COMMON.LOG_IN_ONLY')}</p>
       </Link>
-    );
+    )
+  ) : (
+    <Skeleton height={24} width={200} />
+  );
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
