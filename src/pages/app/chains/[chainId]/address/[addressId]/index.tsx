@@ -44,6 +44,7 @@ import {
   AddressDetailsProvider,
 } from '../../../../../../contexts/address_details_context';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
+import {validate, getAddressInfo} from 'bitcoin-address-validation';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;
@@ -57,6 +58,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const {getAddressBrief} = useContext(MarketContext);
   const addressDetailsCtx = useContext(AddressDetailsContext);
 
+  const [isLoading, setIsLoading] = useState(true);
   const [addressBriefData, setAddressBriefData] = useState<IAddressBrief>({} as IAddressBrief);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
@@ -74,17 +76,21 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       appCtx.init();
     }
 
-    const getAddressBriefData = async (chainId: string, addressId: string) => {
-      try {
-        const data = await getAddressBrief(chainId, addressId);
-        setAddressBriefData(data);
-      } catch (error) {
-        //console.log('getAddressData error', error);
-      } finally {
-      }
-    };
+    // const getAddressBriefData = async (chainId: string, addressId: string) => {
+    //   try {
+    //     const data = await getAddressBrief(chainId, addressId);
+    //     setAddressBriefData(data);
+    //   } catch (error) {
+    //     //console.log('getAddressData error', error);
+    //   } finally {
+    //   }
+    // };
 
-    getAddressBriefData(chainId, addressId);
+    // (async () => {
+    //   setIsLoading(true);
+
+    //   await getAddressBriefData(chainId, addressId);
+    // })();
 
     initData(
       chainId,
@@ -102,6 +108,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
     if (addressBriefData) {
       setAddressBriefData(addressBriefData);
+      setIsLoading(false);
     }
   }, [addressBriefData]);
 
@@ -111,19 +118,24 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     blocks_page?: string,
     transaction_page?: string
   ) => {
+    // eslint-disable-next-line no-console
+    console.log('initData called', chainId, addressId, blocks_page, transaction_page);
+
     const blockPage = !!blocks_page ? parseInt(blocks_page) : 1;
     const transactionPage = !!transaction_page ? parseInt(transaction_page) : 1;
 
-    await addressDetailsCtx.blockInit(chainId, addressId, {
-      page: blockPage,
-      offset: ITEM_PER_PAGE,
-      order: SortingType.DESC,
-    });
-    await addressDetailsCtx.transactionInit(chainId, addressId, {
-      page: transactionPage,
-      offset: ITEM_PER_PAGE,
-      order: SortingType.DESC,
-    });
+    await addressDetailsCtx.addressBriefInit(chainId, addressId);
+
+    // await addressDetailsCtx.blockInit(chainId, addressId, {
+    //   page: blockPage,
+    //   offset: ITEM_PER_PAGE,
+    //   order: SortingType.DESC,
+    // });
+    // await addressDetailsCtx.transactionInit(chainId, addressId, {
+    //   page: transactionPage,
+    //   offset: ITEM_PER_PAGE,
+    //   order: SortingType.DESC,
+    // });
   };
 
   useEffect(() => {
@@ -194,7 +206,12 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     </div>
   );
 
-  const displayedAddressDetail = <AddressDetail addressData={addressBriefData} />;
+  const displayedAddressDetail = (
+    <AddressDetail
+      addressData={addressDetailsCtx.addressBrief}
+      isLoading={addressDetailsCtx.addressBriefLoading}
+    />
+  );
 
   const displayedTransactionHistory = (
     <TransactionHistorySection
@@ -215,7 +232,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       <div className="flex items-center text-xl text-lilac">
         <h2 className="text-xl text-lilac"> {t('REVIEWS_PAGE.TITLE')}</h2>
 
-        {!score ? (
+        {isLoading ? (
           <span className="ml-2">
             {' '}
             <Skeleton width={60} height={30} />
@@ -341,10 +358,12 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
 export const getServerSideProps: GetServerSideProps = async ({query, locale}) => {
   const {addressId = '', chainId = ''} = query;
+  const address = `${addressId}`;
+  const validAddress = isAddress(address) || validate(address);
 
   // Info: Ensure addressId and chainId are strings for type safety (20240219 - Shirley)
-  // TODO: check whether `addressId` and `chainId` is valid (20240219 - Shirley)
-  if (typeof addressId !== 'string' || !isAddress(addressId) || typeof chainId !== 'string') {
+  // TODO: check whether `addressId` and `chainId` is valid For BTC (20240219 - Shirley)
+  if (typeof addressId !== 'string' || !validAddress || typeof chainId !== 'string') {
     return {
       notFound: true,
     };

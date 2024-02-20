@@ -12,6 +12,7 @@ import {
 import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../constants/config';
 import {useRouter} from 'next/router';
 import {convertMillisecondsToSeconds} from '../lib/common';
+import {IAddressBrief} from '../interfaces/address';
 
 export interface IAddressDetailsProvider {
   children: React.ReactNode;
@@ -60,6 +61,10 @@ export interface IAddressDetailsContext {
   setTransactionParameters: (options: IAddressTransactionQuery) => boolean;
   isBlockInit: boolean;
   isTransactionInit: boolean;
+  isAddressBriefInit: boolean;
+  addressBrief: IAddressBrief;
+  addressBriefLoading: boolean;
+  addressBriefInit: (chainId?: string, addressId?: string) => Promise<void>;
 }
 
 export const AddressDetailsContext = createContext<IAddressDetailsContext>({
@@ -93,6 +98,10 @@ export const AddressDetailsContext = createContext<IAddressDetailsContext>({
   setTransactionParameters: () => false,
   isBlockInit: false,
   isTransactionInit: false,
+  isAddressBriefInit: false,
+  addressBrief: {} as IAddressBrief,
+  addressBriefLoading: false,
+  addressBriefInit: () => Promise.resolve(),
 });
 
 export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
@@ -156,6 +165,11 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   // Info: for the use of useStateRef (20240216 - Shirley)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isTransactionInit, setIsTransactionInit, isTransactionInitRef] = useStateRef(false);
+  const [isAddressBriefInit, setIsAddressBriefInit, isAddressBriefInitRef] = useStateRef(false);
+  const [addressBrief, setAddressBrief, addressBriefRef] = useStateRef<IAddressBrief>(
+    {} as IAddressBrief
+  );
+  const [addressBriefLoading, setAddressBriefLoading, addressBriefLoadingRef] = useStateRef(false);
 
   const router = useRouter();
   const {query} = router;
@@ -299,27 +313,58 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     setBlocksLoading(false);
   };
 
+  const addressBriefInit = async (chainId?: string, addressId?: string) => {
+    // eslint-disable-next-line no-console
+    console.log('addressBriefInit called');
+    if (isAddressBriefInitRef.current) return;
+    try {
+      setAddressBriefLoading(true);
+      const addressData = await marketCtx.getAddressBrief(
+        chainId || (query.chainId?.toString() ?? ''),
+        addressId || (query.addressId?.toString() ?? '')
+      );
+
+      setAddressBrief(addressData);
+      setIsAddressBriefInit(true);
+      // eslint-disable-next-line no-console
+      console.log(
+        'addressBriefInit data & loading',
+        addressBriefRef.current,
+        addressBriefLoadingRef.current
+      );
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('addressBriefInit', error);
+    } finally {
+      setAddressBriefLoading(false);
+    }
+  };
+
   const blockInit = async (
     chainId?: string,
     addressId?: string,
     options?: IAddressHistoryQuery
   ) => {
     if (isBlockInitRef.current) return;
-
-    setBlocksLoading(true);
-    const blockData = await marketCtx.getAddressProducedBlocks(
-      chainId || (query.chainId?.toString() ?? ''),
-      addressId || (query.addressId?.toString() ?? ''),
-      options || {
-        page: DEFAULT_PAGE,
-        offset: ITEM_PER_PAGE,
-        order: SortingType.DESC,
-      }
-    );
-    setProducedBlocks(blockData);
-    setBlocksLoading(false);
-
-    setIsBlockInit(true);
+    try {
+      setBlocksLoading(true);
+      const blockData = await marketCtx.getAddressProducedBlocks(
+        chainId || (query.chainId?.toString() ?? ''),
+        addressId || (query.addressId?.toString() ?? ''),
+        options || {
+          page: DEFAULT_PAGE,
+          offset: ITEM_PER_PAGE,
+          order: SortingType.DESC,
+        }
+      );
+      setProducedBlocks(blockData);
+      setIsBlockInit(true);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('blockInit', error);
+    } finally {
+      setBlocksLoading(false);
+    }
   };
 
   const transactionInit = async (
@@ -329,20 +374,26 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   ) => {
     if (isTransactionInitRef.current) return;
 
-    setTransactionsLoading(true);
-    const transactionData = await marketCtx.getAddressRelatedTransactions(
-      chainId || (query.chainId?.toString() ?? ''),
-      addressId || (query.addressId?.toString() ?? ''),
-      options || {
-        page: DEFAULT_PAGE,
-        offset: ITEM_PER_PAGE,
-        order: SortingType.DESC,
-      }
-    );
-    setTransactions(transactionData);
-    setTransactionsLoading(false);
+    try {
+      setTransactionsLoading(true);
+      const transactionData = await marketCtx.getAddressRelatedTransactions(
+        chainId || (query.chainId?.toString() ?? ''),
+        addressId || (query.addressId?.toString() ?? ''),
+        options || {
+          page: DEFAULT_PAGE,
+          offset: ITEM_PER_PAGE,
+          order: SortingType.DESC,
+        }
+      );
+      setTransactions(transactionData);
 
-    setIsTransactionInit(true);
+      setIsTransactionInit(true);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('transactionInit', error);
+    } finally {
+      setTransactionsLoading(false);
+    }
   };
 
   const defaultValue = {
@@ -378,6 +429,11 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
 
     isBlockInit: isBlockInitRef.current,
     isTransactionInit: isTransactionInitRef.current,
+
+    isAddressBriefInit: isAddressBriefInitRef.current,
+    addressBrief: addressBriefRef.current,
+    addressBriefLoading: addressBriefLoadingRef.current,
+    addressBriefInit,
   };
 
   return (

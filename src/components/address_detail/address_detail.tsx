@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef, useContext} from 'react';
 import Link from 'next/link';
 import Tooltip from '../tooltip/tooltip';
 import {timestampToString, getTimeString} from '../../lib/common';
@@ -8,13 +8,32 @@ import {IAddressBrief, IAddressDetail} from '../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
 import Skeleton from '../skeleton/skeleton';
-import {MILLISECONDS_IN_A_SECOND} from '../../constants/config';
+import {
+  DEFAULT_INTERACTED_ACCOUNT_COUNT,
+  DEFAULT_RED_FLAG_COUNT,
+  MILLISECONDS_IN_A_SECOND,
+} from '../../constants/config';
+import {AddressDetailsContext} from '../../contexts/address_details_context';
 
 interface IAddressDetailProps {
   addressData: IAddressBrief;
+  isLoading?: boolean;
 }
 
-const AddressDetail = ({addressData}: IAddressDetailProps) => {
+const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => {
+  // eslint-disable-next-line no-console
+  console.log('isLoading in AddressDetail', isLoading, 'addressData in AddressDetail', addressData);
+
+  // const addressDetail
+  const addressDetailsCtx = useContext(AddressDetailsContext);
+  // eslint-disable-next-line no-console
+  console.log(
+    'in addressDetailsCtx',
+    addressDetailsCtx.addressBrief,
+    addressDetailsCtx.addressBriefLoading,
+    addressDetailsCtx.transactions
+  );
+
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     address,
@@ -31,14 +50,15 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     totalReceived,
   } = addressData;
   const [sinceTime, setSinceTime] = useState(0);
-  const [loading, setLoading] = useState(!address);
+  const [loading, setLoading] = useState(isLoading);
 
   // Info: 用是否有資料被傳進來作為是否還在載入的依據 (20240220 - Shirley)
   useEffect(() => {
-    if (address && address.length > 0) {
-      setLoading(false);
-    }
-  }, [address]);
+    setLoading(isLoading);
+
+    // if (address && address.length > 0) {
+    // }
+  }, [isLoading]);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -59,21 +79,25 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
 
   const dynamicUrl = getDynamicUrl(`${chainId}`, `${address}`);
 
+  const addressToDisplay = address ? address : '-';
+
   const displayedAddress = loading ? (
     <Skeleton width={250} height={20} />
   ) : (
-    <p className="break-all">{address}</p>
+    <p className="break-all">{addressToDisplay}</p>
   );
 
   const displaySignUpTime = (
     <div className="flex flex-wrap items-center">
       {loading ? (
         <Skeleton width={250} height={20} />
-      ) : (
+      ) : createdTimestamp > 0 ? (
         <>
           <p className="mr-2">{timestampToString(createdTimestamp).date}</p>
           <p className="mr-2">{timestampToString(createdTimestamp).time}</p>
         </>
+      ) : (
+        '-'
       )}
     </div>
   );
@@ -82,7 +106,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     <div className="flex flex-wrap items-center">
       {loading ? (
         <Skeleton width={250} height={20} />
-      ) : (
+      ) : latestActiveTime > 0 ? (
         <>
           <p className="mr-2">{timestampToString(latestActiveTime).date}</p>
           <div className="mr-2 flex items-center space-x-2">
@@ -90,6 +114,8 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
             <p>{t('COMMON.AGO')}</p>
           </div>
         </>
+      ) : (
+        '-'
       )}
     </div>
   );
@@ -124,7 +150,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
             </span>
           </Link>
         ) : (
-          <span className="mr-2 text-primaryBlue">{interactedAddressCount}</span>
+          <span className="mr-2 text-primaryBlue">{DEFAULT_INTERACTED_ACCOUNT_COUNT}</span>
         )}
         <p>{t('COMMON.ADDRESSES')} /</p>
       </div>
@@ -138,7 +164,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
             </span>
           </Link>
         ) : (
-          <span className="mr-2 text-primaryBlue">{interactedContactCount}</span>
+          <span className="mr-2 text-primaryBlue">{DEFAULT_INTERACTED_ACCOUNT_COUNT}</span>
         )}
         <p>{t('COMMON.CONTRACTS')}</p>
       </div>
@@ -151,12 +177,15 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
       : riskLevel === RiskLevel.MEDIUM_RISK
       ? '#FFA600'
       : '#3DD08C';
+
   const riskText =
     riskLevel === RiskLevel.HIGH_RISK
       ? t('COMMON.RISK_HIGH')
       : riskLevel === RiskLevel.MEDIUM_RISK
       ? t('COMMON.RISK_MEDIUM')
-      : t('COMMON.RISK_LOW');
+      : riskLevel === RiskLevel.LOW_RISK
+      ? t('COMMON.RISK_LOW')
+      : '';
 
   const flaggingLink =
     flaggingCount > 0 ? (
@@ -164,7 +193,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
         <span className="mr-2 text-primaryBlue underline underline-offset-2">{flaggingCount}</span>
       </Link>
     ) : (
-      <span className="mr-2 text-primaryBlue">{flaggingCount}</span>
+      <span className="mr-2 text-primaryBlue">{DEFAULT_RED_FLAG_COUNT}</span>
     );
 
   const displayRedFlag = loading ? (
@@ -178,15 +207,17 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
       {/* Info: (20231017 - Julian) Risk */}
       <div className="flex items-center space-x-2 px-2">
         {/* Info: (20231017 - Julian) The circle svg */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="15"
-          height="16"
-          viewBox="0 0 15 16"
-          fill="none"
-        >
-          <circle cx="7.5" cy="8.48853" r="7.5" fill={riskColor} />
-        </svg>
+        {latestActiveTime && (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="15"
+            height="16"
+            viewBox="0 0 15 16"
+            fill="none"
+          >
+            <circle cx="7.5" cy="8.48853" r="7.5" fill={riskColor} />
+          </svg>
+        )}
         <p className="text-sm">{riskText}</p>
       </div>
     </div>
@@ -203,6 +234,14 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const displayBalance = balance ? <></> : contentLoginOnly;
   const displayTotalSent = totalSent ? <></> : contentLoginOnly;
   const displayTotalReceived = totalReceived ? <></> : contentLoginOnly;
+
+  const addressInit = async () => {
+    await addressDetailsCtx.addressBriefInit();
+  };
+
+  useEffect(() => {
+    addressInit();
+  }, []);
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
