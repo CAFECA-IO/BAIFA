@@ -281,7 +281,6 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     setBlocksPage(options.page);
     setBlocksOffset(options.offset);
 
-    const {page, offset, order} = options;
     const chainIdForBlock = chainId || (query.chainId?.toString() ?? '');
     const addressIdForBlock = addressId || (query.addressId?.toString() ?? '');
 
@@ -314,8 +313,6 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   };
 
   const addressBriefInit = async (chainId?: string, addressId?: string) => {
-    // eslint-disable-next-line no-console
-    console.log('addressBriefInit called');
     if (isAddressBriefInitRef.current) return;
     try {
       setAddressBriefLoading(true);
@@ -326,12 +323,6 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
 
       setAddressBrief(addressData);
       setIsAddressBriefInit(true);
-      // eslint-disable-next-line no-console
-      console.log(
-        'addressBriefInit data & loading',
-        addressBriefRef.current,
-        addressBriefLoadingRef.current
-      );
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('addressBriefInit', error);

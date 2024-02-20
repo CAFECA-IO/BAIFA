@@ -1,10 +1,10 @@
-import {useState, useEffect, useRef, useContext} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
 import Tooltip from '../tooltip/tooltip';
 import {timestampToString, getTimeString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IAddressBrief, IAddressDetail} from '../../interfaces/address';
+import {IAddressBrief} from '../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
 import Skeleton from '../skeleton/skeleton';
@@ -13,7 +13,6 @@ import {
   DEFAULT_RED_FLAG_COUNT,
   MILLISECONDS_IN_A_SECOND,
 } from '../../constants/config';
-import {AddressDetailsContext} from '../../contexts/address_details_context';
 
 interface IAddressDetailProps {
   addressData: IAddressBrief;
@@ -21,19 +20,6 @@ interface IAddressDetailProps {
 }
 
 const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => {
-  // eslint-disable-next-line no-console
-  console.log('isLoading in AddressDetail', isLoading, 'addressData in AddressDetail', addressData);
-
-  // const addressDetail
-  const addressDetailsCtx = useContext(AddressDetailsContext);
-  // eslint-disable-next-line no-console
-  console.log(
-    'in addressDetailsCtx',
-    addressDetailsCtx.addressBrief,
-    addressDetailsCtx.addressBriefLoading,
-    addressDetailsCtx.transactions
-  );
-
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     address,
@@ -50,15 +36,14 @@ const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => 
     totalReceived,
   } = addressData;
   const [sinceTime, setSinceTime] = useState(0);
-  const [loading, setLoading] = useState(isLoading);
+  const [loading, setLoading] = useState(true);
 
   // Info: 用是否有資料被傳進來作為是否還在載入的依據 (20240220 - Shirley)
   useEffect(() => {
-    setLoading(isLoading);
-
-    // if (address && address.length > 0) {
-    // }
-  }, [isLoading]);
+    if (address && address.length > 0) {
+      setLoading(false);
+    }
+  }, [address]);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -234,14 +219,6 @@ const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => 
   const displayBalance = balance ? <></> : contentLoginOnly;
   const displayTotalSent = totalSent ? <></> : contentLoginOnly;
   const displayTotalReceived = totalReceived ? <></> : contentLoginOnly;
-
-  const addressInit = async () => {
-    await addressDetailsCtx.addressBriefInit();
-  };
-
-  useEffect(() => {
-    addressInit();
-  }, []);
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
