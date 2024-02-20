@@ -13,6 +13,7 @@ import {
   sortOldAndNewOptions,
 } from '../../constants/config';
 import {
+  cn,
   convertSortingTypeToString,
   getChainIcon,
   roundToDecimal,
@@ -24,6 +25,7 @@ import DatePicker from '../date_picker/date_picker';
 import {IProductionBlock} from '../../interfaces/block';
 import {IPaginationOptions, SortingType} from '../../constants/api_request';
 import {AddressDetailsContext} from '../../contexts/address_details_context';
+import Skeleton, {SkeletonList} from '../skeleton/skeleton';
 
 interface IBlockProducedHistorySectionProps {
   blocks: IProductionBlock[];
@@ -33,22 +35,25 @@ interface IBlockProducedHistorySectionProps {
 const blockItemSkeleton = (
   <div className="flex items-center justify-between">
     <div>
-      <div className="mb-2.5 h-2.5 w-full rounded-full bg-gray-300 dark:bg-gray-600"></div>
-      <div className="h-2 w-32 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+      <div className={cn('mb-2.5 h-2.5 w-full rounded-full bg-skeleton')}></div>
+      <div className={cn('h-2 w-32 rounded-full bg-skeleton')}></div>
     </div>
-    <div className="h-2.5 w-12 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+    <div className={cn('h-2.5 w-12 rounded-full bg-skeleton')}></div>
   </div>
 );
 
 const blockListSkeleton = (
   <div
     role="status"
-    className="w-full animate-pulse space-y-4 divide-y divide-gray-200 rounded border border-gray-200 p-4 shadow dark:divide-gray-700 dark:border-gray-700 md:p-6"
+    className="space-y-2 divide-y divide-gray-200 rounded border border-gray-200 p-4 shadow dark:divide-gray-700 dark:border-gray-700 md:p-6"
   >
     {/* Info: generate 10 skeletons (20240207 - Shirley) */}
-    {Array.from({length: 10}, (_, index) => (
+    {Array.from({length: ITEM_PER_PAGE}, (_, index) => (
       <div key={index} className={`${index !== 0 ? `pt-4` : ``}`}>
-        {blockItemSkeleton}
+        <div className="flex items-center justify-between">
+          {' '}
+          <Skeleton width={200} height={30} /> <Skeleton width={50} height={30} />{' '}
+        </div>
       </div>
     ))}
     <span className="sr-only">Loading...</span>
@@ -165,7 +170,9 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
         })
       : [];
 
-  const displayedBlocks = <>{addressDetailsCtx.blocksLoading ? blockListSkeleton : blockList}</>;
+  const displayedBlocks = (
+    <>{addressDetailsCtx.blocksLoading ? <SkeletonList count={ITEM_PER_PAGE} /> : blockList}</>
+  );
 
   const blockPaginationHandler = async ({page, offset}: {page: number; offset: number}) => {
     await addressDetailsCtx.clickBlockPagination({

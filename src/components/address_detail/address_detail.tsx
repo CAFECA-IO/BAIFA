@@ -1,4 +1,3 @@
-
 import {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
 import Tooltip from '../tooltip/tooltip';
@@ -8,6 +7,8 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {IAddressBrief, IAddressDetail} from '../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {RiskLevel} from '../../constants/risk_level';
+import Skeleton from '../skeleton/skeleton';
+import {MILLISECONDS_IN_A_SECOND} from '../../constants/config';
 
 interface IAddressDetailProps {
   addressData: IAddressBrief;
@@ -30,16 +31,24 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     totalReceived,
   } = addressData;
   const [sinceTime, setSinceTime] = useState(0);
+  const [loading, setLoading] = useState(!address);
+
+  // Info: 用是否有資料被傳進來作為是否還在載入的依據 (20240220 - Shirley)
+  useEffect(() => {
+    if (address && address.length > 0) {
+      setLoading(false);
+    }
+  }, [address]);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Info: (20231017 - Julian) 算出 latestActiveTime 距離現在過了多少時間
     timerRef.current = setTimeout(() => {
-      const now = Math.ceil(Date.now() / 1000);
+      const now = Math.ceil(Date.now() / MILLISECONDS_IN_A_SECOND);
       const timeSpan = now - latestActiveTime;
       setSinceTime(timeSpan);
-    }, 1000);
+    }, MILLISECONDS_IN_A_SECOND);
 
     return () => {
       if (timerRef.current) {
@@ -50,20 +59,38 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
 
   const dynamicUrl = getDynamicUrl(`${chainId}`, `${address}`);
 
+  const displayedAddress = loading ? (
+    <Skeleton width={250} height={20} />
+  ) : (
+    <p className="break-all">{address}</p>
+  );
+
   const displaySignUpTime = (
     <div className="flex flex-wrap items-center">
-      <p className="mr-2">{timestampToString(createdTimestamp).date}</p>
-      <p className="mr-2">{timestampToString(createdTimestamp).time}</p>
+      {loading ? (
+        <Skeleton width={250} height={20} />
+      ) : (
+        <>
+          <p className="mr-2">{timestampToString(createdTimestamp).date}</p>
+          <p className="mr-2">{timestampToString(createdTimestamp).time}</p>
+        </>
+      )}
     </div>
   );
 
   const displayLatestActiveTime = (
     <div className="flex flex-wrap items-center">
-      <p className="mr-2">{timestampToString(latestActiveTime).date}</p>
-      <div className="mr-2 flex items-center space-x-2">
-        <p>{getTimeString(sinceTime)}</p>
-        <p>{t('COMMON.AGO')}</p>
-      </div>
+      {loading ? (
+        <Skeleton width={250} height={20} />
+      ) : (
+        <>
+          <p className="mr-2">{timestampToString(latestActiveTime).date}</p>
+          <div className="mr-2 flex items-center space-x-2">
+            <p>{getTimeString(sinceTime)}</p>
+            <p>{t('COMMON.AGO')}</p>
+          </div>
+        </>
+      )}
     </div>
   );
 
@@ -88,7 +115,9 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const displayInteractedWith = (
     <div className="flex items-center space-x-2 text-base">
       <div className="flex items-center whitespace-nowrap">
-        {interactedAddressCount > 0 ? (
+        {loading ? (
+          <Skeleton width={30} height={20} />
+        ) : interactedAddressCount > 0 ? (
           <Link href={`${dynamicUrl.INTERACTION}?type=address`}>
             <span className="mr-2 text-primaryBlue underline underline-offset-2">
               {interactedAddressCount}
@@ -100,7 +129,9 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
         <p>{t('COMMON.ADDRESSES')} /</p>
       </div>
       <div className="flex items-center whitespace-nowrap">
-        {interactedContactCount > 0 ? (
+        {loading ? (
+          <Skeleton width={30} height={20} />
+        ) : interactedContactCount > 0 ? (
           <Link href={`${dynamicUrl.INTERACTION}?type=contract`}>
             <span className="mr-2 text-primaryBlue underline underline-offset-2">
               {interactedContactCount}
@@ -136,7 +167,9 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
       <span className="mr-2 text-primaryBlue">{flaggingCount}</span>
     );
 
-  const displayRedFlag = (
+  const displayRedFlag = loading ? (
+    <Skeleton width={250} height={20} />
+  ) : (
     <div className="flex items-center space-x-4">
       {/* Info: (20231017 - Julian) Flagging */}
       <div className="flex items-center whitespace-nowrap">
@@ -181,7 +214,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
         </div>
-        <p className="break-all">{address}</p>
+        {displayedAddress}
       </div>
       {/* Info: (20231017 - Julian) Sign Up time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">

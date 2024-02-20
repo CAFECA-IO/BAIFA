@@ -43,6 +43,7 @@ import {
   AddressDetailsContext,
   AddressDetailsProvider,
 } from '../../../../../../contexts/address_details_context';
+import Skeleton from '../../../../../../components/skeleton/skeleton';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;
@@ -53,18 +54,16 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getAddressBrief, getAddressRelatedTransactions, getAddressProducedBlocks} =
-    useContext(MarketContext);
+  const {getAddressBrief} = useContext(MarketContext);
   const addressDetailsCtx = useContext(AddressDetailsContext);
 
-  const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [addressBriefData, setAddressBriefData] = useState<IAddressBrief>({} as IAddressBrief);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
   const {publicTag, score} = addressBriefData;
+
+  const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
 
   const reviewData: IReviewDetail[] = [];
 
@@ -74,12 +73,14 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     if (!appCtx.isInit) {
       appCtx.init();
     }
+
     const getAddressBriefData = async (chainId: string, addressId: string) => {
       try {
         const data = await getAddressBrief(chainId, addressId);
         setAddressBriefData(data);
       } catch (error) {
         //console.log('getAddressData error', error);
+      } finally {
       }
     };
 
@@ -193,39 +194,36 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     </div>
   );
 
-  const displayedAddressDetail = !isLoading ? (
-    <AddressDetail addressData={addressBriefData} />
-  ) : (
-    // ToDo: (20231213 - Julian) Add loading animation
-    <h1>Loading..</h1>
-  );
+  const displayedAddressDetail = <AddressDetail addressData={addressBriefData} />;
 
-  const displayedTransactionHistory = !isLoading ? (
+  const displayedTransactionHistory = (
     <TransactionHistorySection
       transactions={transactionData}
       dataType={TransactionDataType.ADDRESS_DETAILS}
     />
-  ) : (
-    // ToDo: (20231213 - Julian) Add loading animation
-    <h1>Loading..</h1>
   );
 
-  const displayedBlockProducedHistory = !isLoading ? (
+  const displayedBlockProducedHistory = (
     <BlockProducedHistorySection
       blocks={addressDetailsCtx.producedBlocks.blockData}
       totalBlocks={addressDetailsCtx.producedBlocks.blockCount}
     />
-  ) : (
-    // ToDo: (20231213 - Julian) Add loading animation
-    <h1>Loading..</h1>
   );
 
-  const displayedReviewSection = !isLoading ? (
+  const displayedReviewSection = (
     <div className="flex w-full flex-col space-y-4">
-      <h2 className="text-xl text-lilac">
-        {t('REVIEWS_PAGE.TITLE')}
-        <span className="ml-2">({roundToDecimal(score, 1)})</span>
-      </h2>
+      <div className="flex items-center text-xl text-lilac">
+        <h2 className="text-xl text-lilac"> {t('REVIEWS_PAGE.TITLE')}</h2>
+
+        {!score ? (
+          <span className="ml-2">
+            {' '}
+            <Skeleton width={60} height={30} />
+          </span>
+        ) : (
+          <span className="ml-2">({roundToDecimal(score, 1)}) </span>
+        )}
+      </div>
       <div className="flex w-full flex-col rounded bg-darkPurple p-4">
         {/* Info: (20231020 - Julian) Sort & Leave review button */}
         <div className="flex flex-col-reverse items-center justify-between lg:flex-row">
@@ -244,9 +242,6 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
         </div>
       </div>
     </div>
-  ) : (
-    // ToDo: (20231213 - Julian) Add loading animation
-    <h1>Loading..</h1>
   );
 
   return (
