@@ -58,13 +58,13 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
 
   useEffect(() => {
     setIsLoading(true);
-    // Info: (20240217 - Julian) 如果沒有 1 秒內沒有資料，就顯示 No Data，並且停止 Loading
+    // Info: (20240217 - Julian) 如果沒有 5 秒內沒有資料，就顯示 No Data，並且停止 Loading
     const timer = setTimeout(() => {
       if (!chainData.chainId) {
         setIsNoData(true);
       }
       setIsLoading(false);
-    }, 1000);
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, [chainData]);

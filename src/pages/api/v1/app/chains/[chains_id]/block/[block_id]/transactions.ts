@@ -45,8 +45,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           },
         },
         select: {
-          id: true,
           chain_id: true,
+          hash: true,
           created_timestamp: true,
           type: true,
           status: true,
@@ -87,7 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       statusList.find(code => code.value === parseInt(transaction.status ?? ''))?.meaning ?? '';
 
     return {
-      id: `${transaction.id}`,
+      id: `${transaction.hash}`,
       chainId: `${transaction.chain_id}`,
       createdTimestamp: transaction.created_timestamp ?? 0,
       type: type,

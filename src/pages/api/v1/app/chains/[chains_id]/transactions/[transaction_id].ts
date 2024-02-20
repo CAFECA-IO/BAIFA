@@ -11,11 +11,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const prisma = getPrismaInstance();
   // Info: (20240116 - Julian) 解構 URL 參數，同時進行類型轉換
   const transaction_id =
-    typeof req.query.transaction_id === 'string' ? parseInt(req.query.transaction_id) : undefined;
+    typeof req.query.transaction_id === 'string' ? req.query.transaction_id : undefined;
 
   const transactionData = await prisma.transactions.findUnique({
     where: {
-      id: transaction_id,
+      hash: `${transaction_id}`,
     },
     select: {
       id: true,

@@ -60,8 +60,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const transactionListOfChain = await prisma.transactions.findMany({
       where,
       select: {
-        id: true,
         chain_id: true,
+        hash: true,
         created_timestamp: true,
         type: true,
         status: true,
@@ -83,7 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         typeList.find(code => code.value === parseInt(transaction.type ?? ''))?.meaning ?? '';
 
       return {
-        id: `${transaction.id}`,
+        id: `${transaction.hash}`,
         chainId: `${transaction.chain_id}`,
         createdTimestamp: transaction?.created_timestamp ?? 0,
         type: type,
@@ -124,8 +124,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const transactionListBetweenAddresses = await prisma.transactions.findMany({
       where,
       select: {
-        id: true,
         chain_id: true,
+        hash: true,
         created_timestamp: true,
         type: true,
         status: true,
@@ -147,7 +147,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         const status =
           statusList.find(code => code.value === parseInt(transaction.status ?? ''))?.meaning ?? '';
         return {
-          id: `${transaction.id}`,
+          id: `${transaction.hash}`,
           chainId: `${transaction.chain_id}`,
           createdTimestamp: transaction?.created_timestamp ?? 0,
           type: type,
