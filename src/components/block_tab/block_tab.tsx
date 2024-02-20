@@ -13,44 +13,44 @@ import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
 import Skeleton from '../skeleton/skeleton';
 
-const BlockTab = () => {
+interface IBlockTabProps {
+  chainDetailLoading: boolean;
+}
+
+const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {getBlockList} = useContext(MarketContext);
 
   // Info: (20240119 - Julian) get chainId from URL
   const router = useRouter();
   const chainId = router.query.chainId as string;
-
+  // Info: (20240220 - Julian) 搜尋條件
   const [search, setSearch, searchRef] = useStateRef('');
   const [period, setPeriod] = useState(default30DayPeriod);
+  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+  // Info: (20240220 - Julian) API 查詢參數
+  const [apiQueryStr, setApiQueryStr] = useState('');
+  // Info: (20240220 - Julian) UI
   const [blockList, setBlockList] = useState<IBlockList>();
   const [isLoading, setIsLoading] = useState(true);
   const [activePage, setActivePage] = useState(1);
 
-  // Info: (20240119 - Julian) 設定 API 查詢參數
-  const dateQuery =
-    period.startTimeStamp === 0 || period.endTimeStamp === 0
-      ? ''
-      : `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`;
-  const pageQuery = `page=${activePage}`;
-
-  const apiQueryStr = `${pageQuery}${dateQuery}`;
-
   // Info: (20240119 - Julian) Call API to get block data
   const getBlockData = async () => {
-    const data = await getBlockList(chainId, apiQueryStr);
-    setBlockList(data);
+    // Info: (20240220 - Julian) Loading 畫面
+    setIsLoading(true);
+
+    try {
+      const data = await getBlockList(chainId, apiQueryStr);
+      setBlockList(data);
+    } catch (error) {
+      //console.log('getTransactionList error', error);
+    }
+    // Info: (20240220 - Julian) 如果拿到資料，就將 isLoading 設為 false
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    // Info: (20240217 - Julian) Loading animation
-    setIsLoading(true);
-
-    // Info: (20240217 - Julian) 如果拿到資料，就將 isLoading 設為 false
-    if (blockList?.blocks && blockList?.blocks.length > 0) {
-      setIsLoading(false);
-    }
-
     // Info: (20240217 - Julian) 如果 3 秒後還沒拿到資料，也將 isLoading 設為 false
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -60,63 +60,45 @@ const BlockTab = () => {
   }, [chainId, blockList]);
 
   useEffect(() => {
+    // Info: (20240220 - Julian) 當日期改變時，重設 activePage
     setActivePage(1);
-    getBlockData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, chainId]);
+  }, [period]);
 
   useEffect(() => {
+    // Info: (20240220 - Julian) 當 activePage 改變時，重新取得資料
     getBlockData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePage]);
 
+  useEffect(() => {
+    // Info: (20240119 - Julian) 設定 API 查詢參數
+    // ToDo: (20240220 - Julian) date query string
+    const pageQuery = `page=${activePage}`;
+    // Info: (20240220 - Julian) 當搜尋條件改變時，重新取得資料
+    setApiQueryStr(`${pageQuery}`);
+  }, [activePage, period]);
+
   const {blocks, totalPages} = blockList ?? {blocks: [], totalPages: 0};
 
-  // Info: (20240119 - Julian) 關鍵字搜尋 & 排序
-  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [filteredBlockData, setFilteredBlockData] = useState<IBlock[]>(blocks);
-
-  useEffect(() => {
-    const searchResult = blocks
-      // Info: (20230905 - Julian) filter by search term
-      .filter((block: IBlock) => {
-        const searchTerm = searchRef.current.toLowerCase();
-        const stability = block.stability ? block.stability.toLowerCase() : 'low'; // ToDo: (20240116 - Julian) remove this after API is fixed
-
-        return searchTerm !== ''
-          ? block.id.toString().includes(searchTerm) || stability.includes(searchTerm)
-          : true;
-      })
-      .sort((a: IBlock, b: IBlock) => {
-        return sorting === sortOldAndNewOptions[0]
-          ? // Info: (20231101 - Julian) Newest
-            b.createdTimestamp - a.createdTimestamp
-          : // Info: (20231101 - Julian) Oldest
-            a.createdTimestamp - b.createdTimestamp;
-      });
-    setFilteredBlockData(searchResult);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blockList, search, sorting]);
-
-  const displayBlockList = isLoading ? (
-    // Info: (20240206 - Julian) Loading animation
-    <div className="flex w-full flex-col py-10 divide-y divide-darkPurple4">
-      {Array.from({length: 3}).map((_, index) => (
-        <div key={index} className="flex w-full items-center gap-5 py-2">
-          <Skeleton width={60} height={60} />
-          <div className="flex-1">
-            <Skeleton width={100} height={20} />
+  const isShowBlockList =
+    // Info: (20240220 - Julian) BlockTab 和 ChainDetailPage 都完成 Loading 後才顯示 BlockList
+    isLoading || chainDetailLoading ? (
+      // Info: (20240206 - Julian) Loading animation
+      <div className="flex w-full flex-col py-10 divide-y divide-darkPurple4 h-680px">
+        {Array.from({length: 10}).map((_, index) => (
+          <div key={index} className="flex w-full items-center gap-8 py-5px">
+            <Skeleton width={50} height={50} />
+            <Skeleton width={80} height={20} />
+            <div className="ml-auto">
+              <Skeleton width={80} height={20} />
+            </div>
           </div>
-          <Skeleton width={100} height={20} />
-        </div>
-      ))}
-    </div>
-  ) : (
-    <div className="flex w-full flex-col items-center">
-      <BlockList blockData={filteredBlockData} />
-      <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
-    </div>
-  );
+        ))}
+      </div>
+    ) : (
+      <BlockList blockData={blocks} />
+    );
 
   return (
     <div className="flex w-full flex-col items-center font-inter">
@@ -148,7 +130,10 @@ const BlockTab = () => {
         </div>
       </div>
       {/* Info: (20230904 - Julian) Block List */}
-      {displayBlockList}
+      <div className="flex w-full flex-col items-center">
+        {isShowBlockList}
+        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
+      </div>
     </div>
   );
 };

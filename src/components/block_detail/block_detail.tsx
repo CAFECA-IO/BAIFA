@@ -108,7 +108,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-1">
       <Skeleton height={24} width={24} rounded />
-      <Skeleton height={24} width={100} />
+      <Skeleton height={24} width={80} />
     </div>
   );
 
@@ -123,8 +123,8 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-3">
-      <Skeleton height={24} width={100} />
-      <Skeleton height={24} width={100} />
+      <Skeleton height={24} width={80} />
+      <Skeleton height={24} width={80} />
     </div>
   );
 
@@ -168,7 +168,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-3">
-      <Skeleton height={24} width={100} />
+      <Skeleton height={24} width={80} />
       <Skeleton height={24} width={70} />
     </div>
   );
@@ -179,7 +179,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     // Info: (20231213 - Julian) If there is no management team
     <p>{t('COMMON.NONE')}</p>
   );
-  const displayExtraData = isShow ? extraDataText : <Skeleton height={24} width={100} />;
+  const displayExtraData = isShow ? extraDataText : <Skeleton height={24} width={80} />;
 
   const displaySize = isShow ? (
     <p>
@@ -187,7 +187,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       <span> bytes</span>
     </p>
   ) : (
-    <Skeleton height={24} width={100} />
+    <Skeleton height={24} width={80} />
   );
 
   return (
