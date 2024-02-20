@@ -84,11 +84,14 @@ const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
     // Info: (20240220 - Julian) TransactionTab 和 ChainDetailPage 都完成 Loading 後才顯示 TransactionList
     isLoading || chainDetailLoading ? (
       // Info: (20240206 - Julian) Loading animation
-      <div className="flex w-full flex-col py-10 divide-y divide-darkPurple4 h-680px">
+      <div className="flex w-full flex-col py-10 h-680px">
         {Array.from({length: 10}).map((_, index) => (
-          <div key={index} className="flex w-full items-center gap-8 py-5px">
+          <div
+            key={index}
+            className="flex w-full items-center gap-8 h-60px border-darkPurple4 border-b px-1"
+          >
             <Skeleton width={50} height={50} />
-            <Skeleton width={80} height={20} />
+            <Skeleton width={200} height={20} />
             <div className="ml-auto">
               <Skeleton width={80} height={20} />
             </div>
