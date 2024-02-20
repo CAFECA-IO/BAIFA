@@ -13,6 +13,7 @@ import {
   DEFAULT_RED_FLAG_COUNT,
   MILLISECONDS_IN_A_SECOND,
 } from '../../constants/config';
+import useStateRef from 'react-usestateref';
 
 interface IAddressDetailProps {
   addressData: IAddressBrief;
@@ -20,6 +21,8 @@ interface IAddressDetailProps {
 }
 
 const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => {
+  // eslint-disable-next-line no-console
+  console.log('isLoading', isLoading);
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     address,
@@ -36,13 +39,18 @@ const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => 
     totalReceived,
   } = addressData;
   const [sinceTime, setSinceTime] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading, loadingRef] = useStateRef(true);
 
   // Info: 用是否有資料被傳進來作為是否還在載入的依據 (20240220 - Shirley)
   useEffect(() => {
-    if (address && address.length > 0) {
+    if (!!address) {
+      // if (address !== 'N/A') {
+      //   setLoading(false);
+      // }
       setLoading(false);
     }
+    // eslint-disable-next-line no-console
+    console.log('address in address_detail', address, 'loading', loadingRef.current);
   }, [address]);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -64,7 +72,7 @@ const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => 
 
   const dynamicUrl = getDynamicUrl(`${chainId}`, `${address}`);
 
-  const addressToDisplay = address ? address : '-';
+  const addressToDisplay = !!address && address !== 'N/A' ? address : '-';
 
   const displayedAddress = loading ? (
     <Skeleton width={250} height={20} />

@@ -28,6 +28,7 @@ import {
   IAddressDetail,
   IAddressProducedBlock,
   IAddressRelatedTransaction,
+  dummyAddressBrief,
 } from '../interfaces/address';
 import {IReviews} from '../interfaces/review';
 import {IRedFlag, IRedFlagDetail} from '../interfaces/red_flag';
@@ -365,6 +366,9 @@ export const MarketProvider = ({children}: IMarketProvider) => {
         method: 'GET',
       });
       data = await response.json();
+      data = !!data ? data : ({...dummyAddressBrief} as IAddressBrief);
+      // eslint-disable-next-line no-console
+      console.log('data in getAddressBrief marketContext', data);
     } catch (error) {
       //console.log('getAddressDetail error', error);
     }

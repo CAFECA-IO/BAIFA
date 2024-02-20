@@ -16,7 +16,7 @@ import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {IAddressBrief} from '../../../../../../interfaces/address';
+import {IAddressBrief, dummyAddressBrief} from '../../../../../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
 import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
@@ -43,7 +43,7 @@ import {
   AddressDetailsProvider,
 } from '../../../../../../contexts/address_details_context';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
-import {validate, getAddressInfo} from 'bitcoin-address-validation';
+import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 
 interface IAddressDetailDetailPageProps {
@@ -59,7 +59,9 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const addressDetailsCtx = useContext(AddressDetailsContext);
 
   const [isLoading, setIsLoading, isLoadingRef] = useStateRef(true);
-  const [addressBriefData, setAddressBriefData] = useState<IAddressBrief>({} as IAddressBrief);
+  const [addressBriefData, setAddressBriefData, addressBriefDataRef] = useStateRef<IAddressBrief>(
+    {} as IAddressBrief
+  );
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
@@ -79,7 +81,15 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     const getAddressBriefData = async (chainId: string, addressId: string) => {
       try {
         const data = await getAddressBrief(chainId, addressId);
-        setAddressBriefData(data);
+        // eslint-disable-next-line no-console
+        console.log('data in getAddressBriefData', data);
+        if (data && Object.keys(data).length > 0) {
+          setAddressBriefData(data);
+        } else {
+          setAddressBriefData(dummyAddressBrief as IAddressBrief);
+        }
+        // eslint-disable-next-line no-console
+        console.log('data in getAddressBriefData after setting', data);
       } catch (error) {
         //console.log('getAddressData error', error);
       } finally {
@@ -87,21 +97,35 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     };
 
     (async () => {
+      setIsLoading(true);
+      // eslint-disable-next-line no-console
+      // console.log(
+      //   'loadingRef.current before calling getAddressBriefData in addressDetailPage',
+      //   isLoadingRef.current
+      // );
       await getAddressBriefData(chainId, addressId);
+      // eslint-disable-next-line no-console
+      // console.log(
+      //   'loadingRef.current after calling getAddressBriefData in addressDetailPage',
+      //   isLoadingRef.current
+      // );
+      setIsLoading(false);
     })();
+    // eslint-disable-next-line no-console
+    console.log('addressBriefData in AddressDetailPage after async', addressBriefDataRef.current);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    // TODO: validate BTC address (20240207 - Shirley)
+  // useEffect(() => {
+  //   // TODO: validate BTC address (20240207 - Shirley)
 
-    if (addressBriefData) {
-      setAddressBriefData(addressBriefData);
-      setIsLoading(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addressBriefData]);
+  //   if (addressBriefData) {
+  //     setAddressBriefData(addressBriefData);
+  //     setIsLoading(false);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [addressBriefData]);
 
   const backClickHandler = () => router.back();
 
