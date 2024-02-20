@@ -58,7 +58,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
     // Info: (20240202 - Julian) 依照持有比例降冪排序
     .sort((a, b) => Number(b.holdingAmount) - Number(a.holdingAmount))
     .map((holder, index) => {
-      const holdingPercentage = roundToDecimal(holder.holdingPercentage, 2);
+      const holdingPercentage = holder.holdingPercentage;
       const addressLink = getDynamicUrl(currencyId, holder.addressId).ADDRESS;
       // Info: (20240206 - Julian) 最多顯示 100% 的持有比例
       const holdingBarWidth = holder.holdingBarWidth > 100 ? 100 : holder.holdingBarWidth;

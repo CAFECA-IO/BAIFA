@@ -6,7 +6,8 @@ export interface IHolder {
   addressId: string;
   // holdingAmount: number;
   holdingAmount: string;
-  holdingPercentage: number;
+  // holdingPercentage: number;
+  holdingPercentage: string;
   holdingBarWidth: number;
   publicTag: string[];
 }
@@ -30,7 +31,7 @@ export interface ICurrencyDetail extends ICurrency {
   transactionHistoryData: IDisplayTransaction[];
 }
 
-// Info: (今天 - Liz) 後端回傳的 totalAmount 是 string 故新增 ICurrencyDetailString
+// Info: (20240219 - Liz) 後端回傳的 totalAmount 是 string 故新增 ICurrencyDetailString
 export interface ICurrencyDetailString extends ICurrency {
   price: number;
   volumeIn24h: number;

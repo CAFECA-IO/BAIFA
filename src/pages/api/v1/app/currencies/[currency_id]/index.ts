@@ -68,37 +68,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const volumeIn24hRaw = parseInt(`${currencyData?.volume_in_24h ?? 0}`);
   const volumeIn24h = volumeIn24hRaw / Math.pow(10, decimal);
 
-  // Info: (20240125 - Julian) currency 的總量 (total_amount 格式是小數點後有18位數的字串 & 小數點前每三位數一個逗號)
+  // Info: (20240125 - Julian) currency 的總量
   const totalAmountRaw = currencyData?.total_amount ?? '0';
-  // Info: (今天 - Liz) 取得切割點後第一個索引
+
+  // Info: (20240219 - Liz) 取得切割點後第一個索引
   const splitIndex = totalAmountRaw.length - decimal; // decimal = 18
-  // Info: (今天 - Liz) 切割字串
+
+  // Info: (20240219 - Liz) 切割字串
   const firstPart = totalAmountRaw.substring(0, splitIndex);
   const secondPart = totalAmountRaw.substring(splitIndex);
 
-  // Info: (今天 - Liz) firstPart 每三位數一個逗號
+  // Info: (20240219 - Liz) firstPart 每三位數一個逗號
   const firstPartWithComma = firstPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-  // Info: (今天 - Liz) 組合字串
+  // Info: (20240219 - Liz) 組合字串
   const totalAmount = `${firstPartWithComma}.${secondPart}`;
 
-  // Deprecated: (今天 - Liz)
-  // eslint-disable-next-line no-console
-  console.log('totalAmountRaw', totalAmountRaw, 'totalAmount', totalAmount);
-
   const holders: IHolder[] = holderData.map(holder => {
-    // Info: (20240130 - Julian) 計算持有比例
-
-    // const value = parseInt(`${holder.value ?? 0}`);
-    // const holdingPercentage = value / parseInt(totalAmount);
-
+    // Info: (20240220 - Liz) 取得持有數
     const rawHoldingValue = holder.value ?? '0';
 
-    // Deprecated: (今天 - Liz)
-    // eslint-disable-next-line no-console
-    console.log('rawHoldingValue', rawHoldingValue);
-
-    // Info: (今天 - Liz) 持有數格式化
+    // Info: (20240220 - Liz) 持有數格式化
     const splitIndex = rawHoldingValue.length - decimal; // decimal = 18
     const firstPart = rawHoldingValue.substring(0, splitIndex);
     const secondPart = rawHoldingValue.substring(splitIndex);
@@ -106,11 +96,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const holdingAmount = `${firstPartWithComma}.${secondPart}`;
 
     // Info: (20240130 - Julian) 計算持有比例
-    const value = BigInt(rawHoldingValue);
-    const holdingPercentage = Number(value / BigInt(totalAmountRaw));
+    const rawHoldingValueBigInt = BigInt(rawHoldingValue);
+    const scale = BigInt(10000);
+    const scaleRawHoldingValueBigInt = rawHoldingValueBigInt * scale;
+    const holdingPercentageBigInt = scaleRawHoldingValueBigInt / BigInt(totalAmountRaw);
+    const holdingPercentageString = holdingPercentageBigInt.toString();
 
-    // Info: (20240202 - Julian) 計算持有比例的 bar 寬度，取到小數點後兩位
-    const holdingBarWidth = Math.round(Number(value / maxHoldingAmount) * 10000) / 100;
+    // Info: (20240220 - Liz) 將持有比例格式化為小數點後2位小數
+    const formatString = (str: string) => {
+      const paddedA = str.padStart(3, '0'); // 字串前面補零，直到長度為3
+      const integerPart = paddedA.slice(0, -2); // 整數部分
+      const decimalPart = paddedA.slice(-2); // 小數部分
+      return `${integerPart}.${decimalPart}`;
+    };
+
+    const holdingPercentage = formatString(holdingPercentageString);
+
+    // Info: (20240202 - Julian) 計算持有比例的 bar 寬度
+    const holdingBarWidth = Math.round(Number(rawHoldingValueBigInt) / Number(maxHoldingAmount));
 
     return {
       addressId: `${holder.address}`,

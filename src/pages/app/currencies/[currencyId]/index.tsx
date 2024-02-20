@@ -45,10 +45,6 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
       try {
         const data = await getCurrencyDetail(currencyId);
         setCurrencyData(data);
-
-        // Deprecated: (今天 - Liz)
-        // eslint-disable-next-line no-console
-        console.log('getCurrencyData return:', data);
       } catch (error) {
         //console.log('getBlockDetail error', error);
       }
@@ -93,10 +89,6 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
       </div>
     </div>
   );
-
-  // Deprecated: (今天 - Liz)
-  // eslint-disable-next-line no-console
-  console.log('currencyData: ', currencyData);
 
   const displayedCurrencyDetail = !isLoading ? (
     <CurrencyDetail currencyData={currencyData} />
