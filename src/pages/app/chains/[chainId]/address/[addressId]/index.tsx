@@ -28,7 +28,9 @@ import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_REVIEW_COUNT,
   DEFAULT_TRUNCATE_LENGTH,
+  ITEM_PER_PAGE,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
 import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/common';
@@ -42,7 +44,7 @@ import {
   AddressDetailsContext,
   AddressDetailsProvider,
 } from '../../../../../../contexts/address_details_context';
-import Skeleton from '../../../../../../components/skeleton/skeleton';
+import Skeleton, {SkeletonList} from '../../../../../../components/skeleton/skeleton';
 import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 
@@ -55,21 +57,20 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getAddressBrief} = useContext(MarketContext);
+  const {getAddressBrief, getAddressReviewList} = useContext(MarketContext);
   const addressDetailsCtx = useContext(AddressDetailsContext);
 
   const [isLoading, setIsLoading, isLoadingRef] = useStateRef(true);
   const [addressBriefData, setAddressBriefData, addressBriefDataRef] = useStateRef<IAddressBrief>(
     {} as IAddressBrief
   );
+  const [reviewData, setReviewData] = useState<IReviewDetail[]>([]);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
   const {publicTag, score} = addressBriefData;
 
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
-
-  const reviewData: IReviewDetail[] = [];
 
   const chainIcon = getChainIcon(chainId);
 
@@ -92,9 +93,22 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       }
     };
 
+    const getReviewListData = async (chainId: string, addressId: string) => {
+      try {
+        const data = await getAddressReviewList(chainId, addressId);
+        if (data && data.length > 0) {
+          // reviewData.push(...data);
+          setReviewData(data);
+        }
+      } catch (error) {
+        //console.log('getReviewListData error', error);
+      }
+    };
+
     (async () => {
       setIsLoading(true);
       await getAddressBriefData(chainId, addressId);
+      await getReviewListData(chainId, addressId);
       setIsLoading(false);
     })();
 
@@ -104,7 +118,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const backClickHandler = () => router.back();
 
   const reviewLink = getDynamicUrl(chainId, addressId).REVIEWS;
-  const reviewList =
+  const reviewList = !isLoadingRef.current ? (
     reviewData.length > 0 ? (
       reviewData
         // Info: (20231214 - Julian) Sort reviews by createdTimestamp
@@ -115,11 +129,17 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
             return a.createdTimestamp - b.createdTimestamp;
           }
         })
+        .slice(0, DEFAULT_REVIEW_COUNT)
         // Info: (20231214 - Julian) Print reviews
         .map((review, index) => <ReviewItem key={index} review={review} />)
     ) : (
       <></>
-    );
+    )
+  ) : (
+    Array.from({length: DEFAULT_REVIEW_COUNT}, (_, index) => (
+      <ReviewItem key={index} review={{} as IReviewDetail} />
+    ))
+  );
 
   const displayPublicTag = publicTag ? (
     publicTag.map((tag, index) => (
@@ -201,7 +221,11 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
           <LeaveReviewButton />
         </div>
         {/* Info: (20231020 - Julian) Reviews List */}
+        {/* {isLoading ? (
+          <SkeletonList count={ITEM_PER_PAGE} />
+        ) : ( */}
         <div className="my-6 flex flex-col space-y-4">{reviewList}</div>
+        {/* )} */}
         <div className="mx-auto py-5 text-sm underline underline-offset-2">
           <Link href={reviewLink}>{t('REVIEWS_PAGE.SEE_ALL')}</Link>
         </div>
