@@ -25,17 +25,15 @@ import {
 } from '../interfaces/transaction';
 import {
   IAddressBrief,
-  IAddressDetail,
   IAddressProducedBlock,
   IAddressRelatedTransaction,
-  dummyAddressBrief,
 } from '../interfaces/address';
 import {IReviews} from '../interfaces/review';
 import {IRedFlag, IRedFlagDetail} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
-import {IContractBrief} from '../interfaces/contract';
-import {IEvidenceBrief} from '../interfaces/evidence';
-import {ICurrency, ICurrencyDetail, ICurrencyDetailString} from '../interfaces/currency';
+import {IContractDetail} from '../interfaces/contract';
+import {IEvidenceDetail} from '../interfaces/evidence';
+import {ICurrency, ICurrencyDetailString} from '../interfaces/currency';
 import {IBlackList} from '../interfaces/blacklist';
 
 export interface IMarketProvider {
