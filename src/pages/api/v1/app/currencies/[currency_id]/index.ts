@@ -63,14 +63,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240125 - Julian) currency 的總量
   const totalAmountRaw = currencyData?.total_amount ?? '0';
 
+  // Info: (20240219 - Liz) currency 總量小數後未滿18位數自動補零
+  const totalAmountRawFilled = totalAmountRaw.padStart(19, '0');
+
   // Info: (20240219 - Liz) 取得切割點後第一個索引
-  const splitIndex = totalAmountRaw.length - decimal; // decimal = 18
+  const splitIndex = totalAmountRawFilled.length - decimal; // decimal = 18
 
-  // Info: (20240219 - Liz) 切割字串
-  const firstPart = totalAmountRaw.substring(0, splitIndex);
-  const secondPart = totalAmountRaw.substring(splitIndex);
+  // Info: (20240219 - Liz) 切割字串兩部分：整數部分和小數部分
+  const firstPart = totalAmountRawFilled.substring(0, splitIndex);
+  const secondPart = totalAmountRawFilled.substring(splitIndex);
 
-  // Info: (20240219 - Liz) firstPart 每三位數一個逗號
+  // Info: (20240219 - Liz) 整數部分每三位數一個逗號
   const firstPartWithComma = firstPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   // Info: (20240219 - Liz) 組合字串
@@ -80,10 +83,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240220 - Liz) 取得持有數
     const rawHoldingValue = holder.value ?? '0';
 
+    // Info: (20240220 - Liz) 持有數小數後未滿18位數自動補零
+    const rawHoldingValueFilled = rawHoldingValue.padStart(19, '0');
+
     // Info: (20240220 - Liz) 持有數格式化
-    const splitIndex = rawHoldingValue.length - decimal; // decimal = 18
-    const firstPart = rawHoldingValue.substring(0, splitIndex);
-    const secondPart = rawHoldingValue.substring(splitIndex);
+    const splitIndex = rawHoldingValueFilled.length - decimal; // decimal = 18
+    const firstPart = rawHoldingValueFilled.substring(0, splitIndex);
+    const secondPart = rawHoldingValueFilled.substring(splitIndex);
     const firstPartWithComma = firstPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     const holdingAmount = `${firstPartWithComma}.${secondPart}`;
 
@@ -134,7 +140,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     };
   });
 
-  // Info: (20240125 - Julian) 從 transactions Table 中取得 transactionHistoryData
+  // Info: (20240125 - Julian) 從 token_transfers Table 中取得 transactionHistoryData
   const transactionData = await prisma.token_transfers.findMany({
     where: {
       chain_id: chainId,
@@ -149,12 +155,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
+  // Info: (20240221 - Liz) 從 transactions Table 撈出 transaction_hash 和 status 組合成一個物件陣列
+  const transactionHashStatusArr = await prisma.transactions.findMany({
+    select: {
+      hash: true,
+      status: true,
+    },
+  });
+
+  // Info: (20240221 - Liz) 從 codes Table 撈出 status 對照表
+  const statusCodes = await prisma.codes.findMany({
+    where: {
+      table_name: 'transactions',
+      table_column: 'status',
+    },
+    select: {
+      value: true,
+      meaning: true,
+    },
+  });
+
   const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
+
     const from: IAddressInfo[] = fromAddresses
-      // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
-      .filter(address => address !== 'null')
+      .filter(address => address !== 'null') // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
       .map(address => {
         return {
           type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
@@ -164,6 +190,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // Info: (20240130 - Julian) to address 轉換
     const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
+
     const to: IAddressInfo[] = toAddresses
       // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
       .filter(address => address !== 'null')
@@ -174,6 +201,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         };
       });
 
+    const statusStr =
+      transactionHashStatusArr.find(item => item.hash === transaction.transaction_hash)?.status ??
+      '0';
+
+    // Info: (20240221 - Liz) 找出對應的 status
+    const status =
+      statusCodes.find(code => code.value === Number(statusStr))?.meaning ?? 'Unknown Status';
+
     return {
       id: transaction.transaction_hash ?? '',
       chainId: `${transaction.chain_id}`,
@@ -181,10 +216,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       from: from,
       to: to,
       type: 'Crypto Currency', // ToDo: (20240131 - Julian) 畫面需要調整，此欄位可能刪除
-      status: 'Success', // ToDo: (20240131 - Julian) 畫面需要調整，此欄位可能刪除
+      status: status, // ToDo: (20240131 - Julian) 畫面需要調整，此欄位可能刪除
     };
   });
 
+  // Info: (20240221 - Liz) 組合回傳資料並轉換成 API 要的格式
   const result: ResponseData = currencyData
     ? {
         currencyId: currencyData.id,
