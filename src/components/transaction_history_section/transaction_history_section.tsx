@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect, use, useContext} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import useStateRef from 'react-usestateref';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
