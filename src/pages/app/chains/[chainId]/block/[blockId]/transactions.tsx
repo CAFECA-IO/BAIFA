@@ -37,9 +37,13 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   const appCtx = useContext(AppContext);
   const {getTransactionListOfBlock} = useContext(MarketContext);
   const router = useRouter();
-
+  // Info: (20240220 - Julian) 搜尋條件
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
+  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+  // Info: (20240220 - Julian) API 查詢參數
+  const [apiQueryStr, setApiQueryStr] = useState('');
+  // Info: (20240220 - Julian) UI
   const [transactionData, setTransitionData] = useState<IDisplayTransaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -52,17 +56,12 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   const headTitle = `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_BLOCK')} ${blockId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
-  // Info: (20240119 - Julian) 設定 API 查詢參數
-  const dateQuery =
-    period.startTimeStamp === 0 || period.endTimeStamp === 0
-      ? ''
-      : `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`;
-  const pageQuery = `page=${activePage}`;
-  const apiQueryStr = `${pageQuery}${dateQuery}`;
-
   const backClickHandler = () => router.back();
 
   const getTransactionData = async () => {
+    // Info: (20240220 - Julian) Loading 畫面
+    setIsLoading(true);
+
     try {
       const data = await getTransactionListOfBlock(chainId, blockId, apiQueryStr);
       setTransitionData(data);
@@ -71,6 +70,8 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
     } catch (error) {
       //console.log('getTransactionListOfBlock error', error);
     }
+    // Info: (20240220 - Julian) 如果拿到資料，就將 isLoading 設為 false
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -82,14 +83,6 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   }, []);
 
   useEffect(() => {
-    // Info: (20240219 - Julian) Loading animation
-    setIsLoading(true);
-
-    // Info: (20240219 - Julian) 如果拿到資料，就將 isLoading 設為 false
-    if (transactionData && transactionData.length > 0) {
-      setIsLoading(false);
-    }
-
     // Info: (20240219 - Julian) 如果 3 秒後還沒拿到資料，也將 isLoading 設為 false
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -99,47 +92,44 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   }, [transactionData]);
 
   useEffect(() => {
+    // Info: (20240220 - Julian) 當日期或 blockId 改變時，重設 activePage
     setActivePage(1);
-    getTransactionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, blockId, chainId]);
+  }, [period, blockId]);
 
   useEffect(() => {
+    // Info: (20240220 - Julian) 當 activePage 改變時，重新取得資料
     getTransactionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePage]);
 
-  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [filteredTransactions, setFilteredTransactions] =
-    useState<IDisplayTransaction[]>(transactionData);
-
   useEffect(() => {
-    const searchResult = transactionData.sort((a, b) => {
-      return sorting === sortOldAndNewOptions[0]
-        ? // Info: (20231101 - Julian) Newest
-          b.createdTimestamp - a.createdTimestamp
-        : // Info: (20231101 - Julian) Oldest
-          a.createdTimestamp - b.createdTimestamp;
-    });
-    setFilteredTransactions(searchResult);
-  }, [transactionData, search, sorting]);
+    // Info: (20240220 - Julian) 設定 API 查詢參數
+    // ToDo: (20240220 - Julian) date query string
+    const pageQuery = `page=${activePage}`;
+    // Info: (20240220 - Julian) 當搜尋條件改變時，重新取得資料
+    setApiQueryStr(`${pageQuery}`);
+  }, [activePage, period]);
 
   const displayTransactionList = isLoading ? (
     // Info: (20240206 - Julian) Loading animation
-    <div className="flex w-full flex-col py-10 divide-y divide-darkPurple4">
-      {Array.from({length: 3}).map((_, index) => (
-        <div key={index} className="flex w-full items-center gap-5 py-2">
-          <Skeleton width={60} height={60} />
-          <div className="flex-1">
-            <Skeleton width={100} height={20} />
+    <div className="flex w-full flex-col py-10 divide-y divide-darkPurple4 h-680px">
+      {Array.from({length: 10}).map((_, index) => (
+        <div
+          key={index}
+          className="flex w-full items-center gap-8 h-60px border-darkPurple4 border-b px-1"
+        >
+          <Skeleton width={50} height={50} />
+          <Skeleton width={150} height={20} />
+          <div className="ml-auto">
+            <Skeleton width={80} height={20} />
           </div>
-          <Skeleton width={100} height={20} />
         </div>
       ))}
     </div>
   ) : (
     <div className="flex w-full flex-col items-center">
-      <TransactionList transactions={filteredTransactions} />
+      <TransactionList transactions={transactionData} />
       <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
     </div>
   );

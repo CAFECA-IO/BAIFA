@@ -33,8 +33,8 @@ import {
 import {IReviews} from '../interfaces/review';
 import {IRedFlag, IRedFlagDetail} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
-import {IContractBrief} from '../interfaces/contract';
-import {IEvidenceBrief} from '../interfaces/evidence';
+import {IContractDetail} from '../interfaces/contract';
+import {IEvidenceDetail} from '../interfaces/evidence';
 import {ICurrency, ICurrencyDetail} from '../interfaces/currency';
 import {IBlackList} from '../interfaces/blacklist';
 
@@ -86,13 +86,13 @@ export interface IMarketContext {
     addressId: string,
     type: string
   ) => Promise<IInteractionItem[]>;
-  getContractDetail: (chainId: string, contractId: string) => Promise<IContractBrief>;
+  getContractDetail: (chainId: string, contractId: string) => Promise<IContractDetail>;
   getContractTransactions: (
     chainId: string,
     contractId: string,
     queryStr?: string
   ) => Promise<ITransaction[]>;
-  getEvidenceDetail: (chainId: string, evidenceId: string) => Promise<IEvidenceBrief>;
+  getEvidenceDetail: (chainId: string, evidenceId: string) => Promise<IEvidenceDetail>;
   getEvidenceTransactions: (
     chainId: string,
     contractId: string,
@@ -129,9 +129,9 @@ export const MarketContext = createContext<IMarketContext>({
   getReviews: () => Promise.resolve({} as IReviews),
   getRedFlagsFromAddress: () => Promise.resolve([] as IRedFlag[]),
   getInteractions: () => Promise.resolve([] as IInteractionItem[]),
-  getContractDetail: () => Promise.resolve({} as IContractBrief),
+  getContractDetail: () => Promise.resolve({} as IContractDetail),
   getContractTransactions: () => Promise.resolve([] as ITransaction[]),
-  getEvidenceDetail: () => Promise.resolve({} as IEvidenceBrief),
+  getEvidenceDetail: () => Promise.resolve({} as IEvidenceDetail),
   getEvidenceTransactions: () => Promise.resolve([] as ITransaction[]),
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetail),
   getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlag[]),
@@ -493,7 +493,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, []);
 
   const getContractDetail = useCallback(async (chainId: string, contractId: string) => {
-    let data: IContractBrief = {} as IContractBrief;
+    let data: IContractDetail = {} as IContractDetail;
     try {
       const response = await fetch(`${APIURL.CHAINS}/${chainId}/contracts/${contractId}`, {
         method: 'GET',
@@ -529,7 +529,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   );
 
   const getEvidenceDetail = useCallback(async (chainId: string, evidenceId: string) => {
-    let data: IEvidenceBrief = {} as IEvidenceBrief;
+    let data: IEvidenceDetail = {} as IEvidenceDetail;
     try {
       const response = await fetch(`${APIURL.CHAINS}/${chainId}/evidence/${evidenceId}`, {
         method: 'GET',

@@ -6,13 +6,13 @@ import Tooltip from '../tooltip/tooltip';
 import BoltButton from '../bolt_button/bolt_button';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {timestampToString, truncateText} from '../../lib/common';
-import {IEvidenceBrief} from '../../interfaces/evidence';
+import {IEvidenceDetail} from '../../interfaces/evidence';
 import {EvidenceState, DefaultEvidenceState} from '../../constants/state';
 import {BFA_EVIDENCE_CONTENT_URL, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 import Skeleton from '../skeleton/skeleton';
 
 interface IEvidenceDetailProps {
-  evidenceData: IEvidenceBrief;
+  evidenceData: IEvidenceDetail;
 }
 
 const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {

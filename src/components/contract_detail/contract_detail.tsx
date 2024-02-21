@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IContractBrief} from '../../interfaces/contract';
+import {IContractDetail} from '../../interfaces/contract';
 import Tooltip from '../tooltip/tooltip';
 import BoltButton from '../bolt_button/bolt_button';
 import {getDynamicUrl} from '../../constants/url';
@@ -11,7 +11,7 @@ import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 import Skeleton from '../skeleton/skeleton';
 
 interface IContractDetailDetailProps {
-  contractData: IContractBrief;
+  contractData: IContractDetail;
 }
 
 const ContractDetail = ({contractData}: IContractDetailDetailProps) => {

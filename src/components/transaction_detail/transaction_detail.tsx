@@ -65,7 +65,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-1">
       <Skeleton height={24} width={24} rounded />
-      <Skeleton height={24} width={100} />
+      <Skeleton height={24} width={80} />
     </div>
   );
 
@@ -77,7 +77,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     </Link>
   ) : (
     // Info: (20240206 - Julian) Loading Animation
-    <Skeleton height={24} width={100} />
+    <Skeleton height={24} width={80} />
   );
 
   const displayTime = isShow ? (
@@ -88,8 +88,8 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <div className="flex items-center space-x-3">
-      <Skeleton height={24} width={100} />
-      <Skeleton height={24} width={100} />
+      <Skeleton height={24} width={80} />
+      <Skeleton height={24} width={80} />
     </div>
   );
 
@@ -117,7 +117,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     ) : (
       <p>{t('COMMON.NONE')}</p>
     );
-  const displayFrom = isShow ? fromList : <Skeleton height={24} width={100} />;
+  const displayFrom = isShow ? fromList : <Skeleton height={24} width={80} />;
 
   const toList =
     // Info: (20240205 - Julian) 如果 to 不為 null 且長度不是 0，則印出 to 的內容；否則顯示 NONE
@@ -143,7 +143,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     ) : (
       <p>{t('COMMON.NONE')}</p>
     );
-  const displayTo = isShow ? toList : <Skeleton height={24} width={100} />;
+  const displayTo = isShow ? toList : <Skeleton height={24} width={80} />;
 
   const evidence = !!evidenceId ? (
     <Link title={evidenceId} href={getDynamicUrl(`${chainId}`, `${evidenceId}`).EVIDENCE}>
@@ -154,7 +154,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
   ) : (
     <p>{t('COMMON.NONE')}</p>
   );
-  const displayContent = isShow ? evidence : <Skeleton height={24} width={100} />;
+  const displayContent = isShow ? evidence : <Skeleton height={24} width={80} />;
 
   const displayFee = isShow ? (
     <p>
@@ -162,7 +162,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     </p>
   ) : (
     // Info: (20240206 - Julian) Loading Animation
-    <Skeleton height={24} width={100} />
+    <Skeleton height={24} width={80} />
   );
 
   const displayValue = isShow ? (
@@ -171,7 +171,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     </Link>
   ) : (
     // Info: (20240206 - Julian) Loading Animation
-    <Skeleton height={24} width={100} />
+    <Skeleton height={24} width={80} />
   );
 
   const Flagging =
@@ -190,7 +190,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     ) : (
       <p>{t('COMMON.NONE')}</p>
     );
-  const displayFlagging = isShow ? Flagging : <Skeleton height={24} width={100} />;
+  const displayFlagging = isShow ? Flagging : <Skeleton height={24} width={80} />;
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">

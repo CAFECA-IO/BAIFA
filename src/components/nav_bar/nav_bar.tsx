@@ -164,7 +164,7 @@ const NavBar = () => {
 
   return (
     <>
-      <div className="container fixed inset-x-0 top-0 z-40 mx-auto max-w-full font-inter shadow-xl">
+      <div className="container fixed inset-x-0 top-0 z-60 mx-auto max-w-full font-inter shadow-xl">
         {desktopNavBar}
         {mobileNavBar}
       </div>
