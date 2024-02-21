@@ -124,6 +124,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         chain_id: true,
         created_timestamp: true,
         reward: true,
+        number: true,
       },
     });
 
@@ -135,7 +136,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       const reward = rewardRaw / Math.pow(10, decimals);
 
       return {
-        id: `${block.id}`,
+        id: `${block.number}`,
         chainId: `${block.chain_id}`,
         createdTimestamp: block.created_timestamp ?? 0,
         stability: 'MEDIUM', // TODO: block stability (20240207 - Shirley)
