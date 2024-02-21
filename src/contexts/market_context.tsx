@@ -28,6 +28,7 @@ import {
   IAddressDetail,
   IAddressProducedBlock,
   IAddressRelatedTransaction,
+  dummyAddressBrief,
 } from '../interfaces/address';
 import {IReviews} from '../interfaces/review';
 import {IRedFlag, IRedFlagDetail} from '../interfaces/red_flag';

@@ -14,6 +14,7 @@ import {IDisplayTransaction} from '../../interfaces/transaction';
 import DatePicker from '../date_picker/date_picker';
 import {AddressDetailsContext} from '../../contexts/address_details_context';
 import {SortingType} from '../../constants/api_request';
+import {SkeletonList} from '../skeleton/skeleton';
 
 export enum TransactionDataType {
   ADDRESS_DETAILS = 'ADDRESS_DETAILS',
@@ -80,6 +81,12 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
       ? transactionData?.transactions
       : transactions;
 
+    const sortedTransaction = transaction.sort((a, b) => {
+      return sorting === sortOldAndNewOptions[0]
+        ? +b.id - +a.id // Info: (20240219 - Shirley) Newest
+        : +a.id - +b.id; // Info: (20240219 - Shirley) Oldest
+    });
+
     const count =
       dataType === TransactionDataType.ADDRESS_DETAILS
         ? addressDetailsCtx.transactions.transactionCount
@@ -90,7 +97,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
         ? addressDetailsCtx.transactions.totalPage
         : count / ITEM_PER_PAGE;
 
-    setFilteredTransactions(transaction);
+    setFilteredTransactions(sortedTransaction);
     setTransactionCount(count);
     setTotalPages(pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,9 +129,9 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
       .sort((a, b) => {
         return sorting === sortOldAndNewOptions[0]
           ? // Info: (20231113 - Julian) Newest
-            b.createdTimestamp - a.createdTimestamp
+            +b.id - +a.id
           : // Info: (20231113 - Julian) Oldest
-            a.createdTimestamp - b.createdTimestamp;
+            +a.id - +b.id;
       });
 
     const pages =
@@ -276,9 +283,11 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
         })
     : [];
 
-  const displayedAddressTransactions = !addressDetailsCtx.transactionsLoading
-    ? transactionList
-    : listSkeleton;
+  const displayedAddressTransactions = !addressDetailsCtx.transactionsLoading ? (
+    transactionList
+  ) : (
+    <SkeletonList count={ITEM_PER_PAGE} />
+  );
 
   const displayedTransactionList =
     dataType === TransactionDataType.ADDRESS_DETAILS

@@ -42,7 +42,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const transactionData = await prisma.transactions.findMany({
       where: {related_addresses: {hasSome: [address_id]}},
       orderBy: {
-        created_timestamp: order,
+        id: order,
+        // created_timestamp: order,
       },
       take: offset,
       skip: skip,

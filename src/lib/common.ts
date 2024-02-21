@@ -10,6 +10,9 @@ import {
   THRESHOLD_FOR_BLOCK_STABILITY,
 } from '../constants/config';
 import {StabilityLevel} from '../constants/stability_level';
+import clsx from 'clsx';
+import type {ClassValue} from 'clsx';
+import {twMerge} from 'tailwind-merge';
 
 export const timestampToString = (timestamp: number) => {
   if (timestamp === 0)
@@ -279,4 +282,8 @@ export function convertSortingTypeToString(sorting: IPaginationOptions['order'])
 
 export function convertMillisecondsToSeconds(milliseconds: number) {
   return Math.floor(milliseconds / MILLISECONDS_IN_A_SECOND);
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
