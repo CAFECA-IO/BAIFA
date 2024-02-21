@@ -107,10 +107,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240202 - Julian) 計算持有比例的 bar 寬度
     const holdingBarWidth = Number(holdingPercentage);
 
-    // Deprecated: (今天 - Liz)
-    // eslint-disable-next-line no-console
-    console.log('holdingBarWidth', holdingBarWidth);
-
     return {
       addressId: `${holder.address}`,
       holdingAmount: holdingAmount,
@@ -185,7 +181,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       from: from,
       to: to,
       type: 'Crypto Currency', // ToDo: (20240131 - Julian) 畫面需要調整，此欄位可能刪除
-      status: 'SUCCESS', // ToDo: (20240131 - Julian) 畫面需要調整，此欄位可能刪除
+      status: 'Success', // ToDo: (20240131 - Julian) 畫面需要調整，此欄位可能刪除
     };
   });
 

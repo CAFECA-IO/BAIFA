@@ -57,7 +57,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
     .slice(startIdx, endIdx)
     // Info: (20240202 - Julian) 依照持有比例降冪排序
     .sort((a, b) => {
-      // Info: (今天 - Liz) 持有數字串先補零再以字串排序
+      // Info: (20240221 - Liz) 持有數字串先補零再以字串排序
       const paddedHoldingAmountA = a.holdingAmount.padStart(64, '0');
       const paddedHoldingAmountB = b.holdingAmount.padStart(64, '0');
       if (paddedHoldingAmountA > paddedHoldingAmountB) return -1;

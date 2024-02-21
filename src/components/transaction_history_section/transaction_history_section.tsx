@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect, use, useContext} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import useStateRef from 'react-usestateref';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
@@ -141,7 +141,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
 
   // Info: (20231113 - Julian) Pagination
   const transactionList = filteredTransactions
-    ? TransactionDataType.ADDRESS_DETAILS
+    ? TransactionDataType.ADDRESS_DETAILS === dataType
       ? filteredTransactions.map((transaction, index) => {
           const {id, chainId, createdTimestamp, status} = transaction;
           const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
@@ -323,9 +323,9 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
         {/* Info: (20231113 - Julian) Search Filter */}
         <div className="flex w-full flex-col items-end gap-4">
           <div className="flex w-full flex-col items-start justify-between xl:flex-row">
-            {/* Info: (20231101 - Julian) Address Menu */}
+            {/* Info: (20231101 - Julian) Date Menu */}
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
-              <p className="hidden text-lilac lg:block">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} :</p>
+              <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
               <DatePicker period={period} setFilteredPeriod={setPeriod} isLinearBg />
             </div>
             {/* Info: (20231113 - Julian) Sorting Menu */}
