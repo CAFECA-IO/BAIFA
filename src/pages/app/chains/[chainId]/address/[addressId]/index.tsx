@@ -81,15 +81,11 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     const getAddressBriefData = async (chainId: string, addressId: string) => {
       try {
         const data = await getAddressBrief(chainId, addressId);
-        // eslint-disable-next-line no-console
-        console.log('data in getAddressBriefData', data);
         if (data && Object.keys(data).length > 0) {
           setAddressBriefData(data);
         } else {
           setAddressBriefData(dummyAddressBrief as IAddressBrief);
         }
-        // eslint-disable-next-line no-console
-        console.log('data in getAddressBriefData after setting', data);
       } catch (error) {
         //console.log('getAddressData error', error);
       } finally {
@@ -98,34 +94,12 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
     (async () => {
       setIsLoading(true);
-      // eslint-disable-next-line no-console
-      // console.log(
-      //   'loadingRef.current before calling getAddressBriefData in addressDetailPage',
-      //   isLoadingRef.current
-      // );
       await getAddressBriefData(chainId, addressId);
-      // eslint-disable-next-line no-console
-      // console.log(
-      //   'loadingRef.current after calling getAddressBriefData in addressDetailPage',
-      //   isLoadingRef.current
-      // );
       setIsLoading(false);
     })();
-    // eslint-disable-next-line no-console
-    console.log('addressBriefData in AddressDetailPage after async', addressBriefDataRef.current);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // useEffect(() => {
-  //   // TODO: validate BTC address (20240207 - Shirley)
-
-  //   if (addressBriefData) {
-  //     setAddressBriefData(addressBriefData);
-  //     setIsLoading(false);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [addressBriefData]);
 
   const backClickHandler = () => router.back();
 
@@ -185,9 +159,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     </div>
   );
 
-  const displayedAddressDetail = (
-    <AddressDetail addressData={addressBriefData} isLoading={isLoadingRef.current} />
-  );
+  const displayedAddressDetail = <AddressDetail addressData={addressBriefData} />;
 
   const displayedTransactionHistory = (
     <TransactionHistorySection

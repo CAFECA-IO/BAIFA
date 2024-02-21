@@ -17,12 +17,9 @@ import useStateRef from 'react-usestateref';
 
 interface IAddressDetailProps {
   addressData: IAddressBrief;
-  isLoading?: boolean;
 }
 
-const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => {
-  // eslint-disable-next-line no-console
-  console.log('isLoading', isLoading);
+const AddressDetail = ({addressData}: IAddressDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     address,
@@ -44,13 +41,9 @@ const AddressDetail = ({addressData, isLoading = true}: IAddressDetailProps) => 
   // Info: 用是否有資料被傳進來作為是否還在載入的依據 (20240220 - Shirley)
   useEffect(() => {
     if (!!address) {
-      // if (address !== 'N/A') {
-      //   setLoading(false);
-      // }
       setLoading(false);
     }
-    // eslint-disable-next-line no-console
-    console.log('address in address_detail', address, 'loading', loadingRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
