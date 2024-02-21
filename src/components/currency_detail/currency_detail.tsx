@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
-import {ICurrencyDetail} from '../../interfaces/currency';
+import {ICurrencyDetailString} from '../../interfaces/currency';
 import {TranslateFunction} from '../../interfaces/locale';
 import {roundToDecimal, withCommas} from '../../lib/common';
 import {BFAURL} from '../../constants/url';
@@ -8,7 +8,7 @@ import {RiskLevel} from '../../constants/risk_level';
 import Tooltip from '../tooltip/tooltip';
 
 interface ICurrencyDetailProps {
-  currencyData: ICurrencyDetail;
+  currencyData: ICurrencyDetailString;
 }
 
 const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
@@ -59,7 +59,7 @@ const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
           <p>{t('CURRENCY_DETAIL_PAGE.TOTAL_AMOUNT')}</p>
         </div>
         <p>
-          {withCommas(totalAmount)} {unit}
+          {totalAmount} {unit}
         </p>
       </div>
       {/* Info: (20231101 - Julian) Holders */}

@@ -153,7 +153,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
 
   // Info: (20231113 - Julian) Pagination
   const transactionList = filteredTransactions
-    ? TransactionDataType.ADDRESS_DETAILS
+    ? TransactionDataType.ADDRESS_DETAILS === dataType
       ? filteredTransactions.map((transaction, index) => {
           const {id, chainId, createdTimestamp, status} = transaction;
           const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;

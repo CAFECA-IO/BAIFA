@@ -6,7 +6,7 @@ import CurrencyDetail from '../../../../components/currency_detail/currency_deta
 import {useContext, useEffect, useState} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {ICurrencyDetail} from '../../../../interfaces/currency';
+import {ICurrencyDetailString} from '../../../../interfaces/currency';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
 import Top100HolderSection from '../../../../components/top_100_holder_section/top_100_holder_section';
@@ -30,7 +30,9 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const {getCurrencyDetail} = useContext(MarketContext);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [currencyData, setCurrencyData] = useState<ICurrencyDetail>({} as ICurrencyDetail);
+  const [currencyData, setCurrencyData] = useState<ICurrencyDetailString>(
+    {} as ICurrencyDetailString
+  );
 
   const chainIcon = getCurrencyIcon(currencyId);
 
