@@ -1,17 +1,17 @@
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect, useContext, KeyboardEvent} from 'react';
 import {useRouter} from 'next/router';
-import useStateRef from 'react-usestateref';
 import BlockList from '../block_list/block_list';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IBlockList} from '../../interfaces/block';
 import DatePicker from '../date_picker/date_picker';
-import SearchBar from '../search_bar/search_bar';
+//import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
 import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
 import Skeleton from '../skeleton/skeleton';
+import {RiSearchLine} from 'react-icons/ri';
 
 interface IBlockTabProps {
   chainDetailLoading: boolean;
@@ -25,7 +25,7 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
   const router = useRouter();
   const chainId = router.query.chainId as string;
   // Info: (20240220 - Julian) 搜尋條件
-  const [search, setSearch, searchRef] = useStateRef('');
+  const [search, setSearch] = useState('');
   const [period, setPeriod] = useState(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   // Info: (20240220 - Julian) API 查詢參數
@@ -34,6 +34,13 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
   const [blockList, setBlockList] = useState<IBlockList>();
   const [isLoading, setIsLoading] = useState(true);
   const [activePage, setActivePage] = useState(1);
+
+  // Info: (20240221 - Julian) 按下 Enter 鍵時，修改 search state 並觸發搜尋
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setSearch(e.currentTarget.value);
+    }
+  };
 
   // Info: (20240119 - Julian) Call API to get block data
   const getBlockData = async () => {
@@ -60,24 +67,31 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
   }, [chainId, blockList]);
 
   useEffect(() => {
-    // Info: (20240220 - Julian) 當日期改變時，重設 activePage
+    // Info: (20240220 - Julian) 當日期、排序條件改變時，將 activePage 設為 1
+    // ToDo: (20240220 - Julian) 關鍵字
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period]);
+  }, [period, sorting, search]);
 
   useEffect(() => {
-    // Info: (20240220 - Julian) 當 activePage 改變時，重新取得資料
+    // Info: (20240220 - Julian) 當 API 查詢參數改變時，重新取得資料
     getBlockData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activePage]);
+  }, [apiQueryStr]);
 
   useEffect(() => {
     // Info: (20240119 - Julian) 設定 API 查詢參數
-    // ToDo: (20240220 - Julian) date query string
     const pageQuery = `page=${activePage}`;
+    const sortQuery = `&sort=${sorting}`;
+    const searchQuery = search ? `&search=${search}` : '';
+    // Info: (20240221 - Julian) 檢查日期區間是否有效
+    const isPeriodValid = period.startTimeStamp && period.endTimeStamp;
+    const timeStampQuery = isPeriodValid
+      ? `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`
+      : '';
     // Info: (20240220 - Julian) 當搜尋條件改變時，重新取得資料
-    setApiQueryStr(`${pageQuery}`);
-  }, [activePage, period]);
+    setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${timeStampQuery}`);
+  }, [activePage, search, sorting, period]);
 
   const {blocks, totalPages} = blockList ?? {blocks: [], totalPages: 0};
 
@@ -85,11 +99,11 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
     // Info: (20240220 - Julian) BlockTab 和 ChainDetailPage 都完成 Loading 後才顯示 BlockList
     isLoading || chainDetailLoading ? (
       // Info: (20240206 - Julian) Loading animation
-      <div className="flex w-full flex-col py-10 h-680px">
+      <div className="flex h-680px w-full flex-col py-10">
         {Array.from({length: 10}).map((_, index) => (
           <div
             key={index}
-            className="flex w-full items-center gap-8 h-60px border-darkPurple4 border-b px-1"
+            className="flex h-60px w-full items-center gap-8 border-b border-darkPurple4 px-1"
           >
             <Skeleton width={50} height={50} />
             <Skeleton width={150} height={20} />
@@ -109,10 +123,18 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
       <div className="flex w-full flex-col items-center">
         {/* Info: (20231101 - Julian) Search Bar */}
         <div className="w-full lg:w-7/10">
-          <SearchBar
-            searchBarPlaceholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_BLOCKS')}
-            setSearch={setSearch}
-          />
+          {/* Info: (20240221 - Julian) Search Bar */}
+          <div className="relative w-full drop-shadow-xl">
+            <input
+              type="search"
+              className="w-full items-center rounded-full bg-purpleLinear px-6 py-3 text-base placeholder:text-sm placeholder:lg:text-base"
+              placeholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_BLOCKS')}
+              onKeyDown={handleKeyDown}
+            />
+            <div className="absolute right-5 top-3 text-2xl">
+              <RiSearchLine />
+            </div>
+          </div>
         </div>
         <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
           {/* Info: (20231101 - Julian) Date Picker */}
