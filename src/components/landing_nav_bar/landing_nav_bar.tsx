@@ -6,6 +6,7 @@ import I18n from '../../components/i18n/i18n';
 import {BFAURL} from '../../constants/url';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
+import version from '../../lib/utils/version';
 
 const LandingNavBar = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -41,6 +42,7 @@ const LandingNavBar = () => {
         <li>
           <Link href={BFAURL.HOME}>
             <Image src="/logo/baifaaa_logo.svg" width={190} height={40} alt="BAIFA_logo" />
+            <p className="flex justify-end text-xxs text-lightGray">v{version}</p>
           </Link>
         </li>
         <li>
@@ -78,6 +80,7 @@ const LandingNavBar = () => {
       <div className="">
         <Link href={BFAURL.HOME}>
           <Image src="/logo/baifa_logo_small.svg" width={44} height={60} alt="BAIFA_logo" />
+          <p className="flex justify-end text-xxs text-lightGray">v{version}</p>
         </Link>
       </div>
       <ul

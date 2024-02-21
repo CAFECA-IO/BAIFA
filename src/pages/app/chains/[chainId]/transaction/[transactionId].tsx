@@ -17,8 +17,8 @@ import {TranslateFunction} from '../../../../../interfaces/locale';
 import {BFAURL} from '../../../../../constants/url';
 import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
-import {getChainIcon} from '../../../../../lib/common';
-import {DEFAULT_CHAIN_ICON} from '../../../../../constants/config';
+import {getChainIcon, truncateText} from '../../../../../lib/common';
+import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../../../../constants/config';
 import DataNotFound from '../../../../../components/data_not_found/data_not_found';
 
 interface ITransactionDetailPageProps {
@@ -92,10 +92,12 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
           height={40}
           onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
         />
-        <h1 className="text-2xl font-bold lg:text-32px">
-          {t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')}
-          <span className="ml-2 text-primaryBlue"> {transactionId}</span>
-        </h1>
+        <div className="text-2xl font-bold lg:inline-flex lg:text-32px" title={transactionId}>
+          <span>{t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')}</span>
+          <h1 className="text-primaryBlue lg:ml-2">
+            {truncateText(transactionId, DEFAULT_TRUNCATE_LENGTH)}
+          </h1>
+        </div>
       </div>
 
       {/* Info: (20231017 - Julian) Tracing Tool Button */}

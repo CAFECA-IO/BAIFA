@@ -32,6 +32,8 @@ module.exports = {
         primaryBlue: '#11FFF5',
         'primaryBlue-500': 'rgba(17, 255, 245, 0.5)',
         hoverWhite: '#F0F0F0',
+
+        lightGray: '#9ca3ae',
       },
       backgroundImage: {
         purpleLinear: 'linear-gradient(180deg, #3F497A 0%, #313866 100%)',
@@ -228,6 +230,7 @@ module.exports = {
         '640px': '640px',
         '650px': '650px',
         '660px': '660px',
+        '680px': '680px',
         '700px': '700px',
         '726px': '726px',
         '800px': '800px',
@@ -357,6 +360,10 @@ module.exports = {
         'fit': 'fit-content',
         '200px': '200px',
         '320px': '320px',
+      },
+      zIndex: {
+        60: 60,
+        70: 70,
       },
       gridTemplateRows: {
         0: 'repeat(1, minmax(0px, 0fr))',

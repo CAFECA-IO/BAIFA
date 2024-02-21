@@ -6,14 +6,20 @@ import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {ITEM_PER_PAGE, sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
-import {timestampToString} from '../../lib/common';
+import {
+  ITEM_PER_PAGE,
+  sortOldAndNewOptions,
+  default30DayPeriod,
+  DEFAULT_TRUNCATE_LENGTH,
+} from '../../constants/config';
+import {timestampToString, truncateText} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 import {IDisplayTransaction} from '../../interfaces/transaction';
 import DatePicker from '../date_picker/date_picker';
 import {AddressDetailsContext} from '../../contexts/address_details_context';
 import {SortingType} from '../../constants/api_request';
+import {SkeletonList} from '../skeleton/skeleton';
 
 export enum TransactionDataType {
   ADDRESS_DETAILS = 'ADDRESS_DETAILS',
@@ -37,7 +43,7 @@ const itemSkeleton = (
 const listSkeleton = (
   <div
     role="status"
-    className="w-full animate-pulse space-y-4 divide-y divide-gray-200 rounded border border-gray-200 p-4 shadow dark:divide-gray-700 dark:border-gray-700 md:p-6"
+    className="w-full animate-pulse space-y-4 divide-y divide-gray-200 rounded border border-gray-200 p-4 shadow md:p-6 dark:divide-gray-700 dark:border-gray-700"
   >
     {/* Info: generate 10 skeletons (20240207 - Shirley) */}
     {Array.from({length: ITEM_PER_PAGE}, (_, index) => (
@@ -80,6 +86,12 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
       ? transactionData?.transactions
       : transactions;
 
+    const sortedTransaction = transaction.sort((a, b) => {
+      return sorting === sortOldAndNewOptions[0]
+        ? +b.id - +a.id // Info: (20240219 - Shirley) Newest
+        : +a.id - +b.id; // Info: (20240219 - Shirley) Oldest
+    });
+
     const count =
       dataType === TransactionDataType.ADDRESS_DETAILS
         ? addressDetailsCtx.transactions.transactionCount
@@ -90,7 +102,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
         ? addressDetailsCtx.transactions.totalPage
         : count / ITEM_PER_PAGE;
 
-    setFilteredTransactions(transaction);
+    setFilteredTransactions(sortedTransaction);
     setTransactionCount(count);
     setTotalPages(pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,9 +134,9 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
       .sort((a, b) => {
         return sorting === sortOldAndNewOptions[0]
           ? // Info: (20231113 - Julian) Newest
-            b.createdTimestamp - a.createdTimestamp
+            +b.id - +a.id
           : // Info: (20231113 - Julian) Oldest
-            a.createdTimestamp - b.createdTimestamp;
+            +a.id - +b.id;
       });
 
     const pages =
@@ -187,9 +199,12 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
                   href={transactionLink}
                   className="inline-flex flex-1 items-baseline space-x-2"
                 >
-                  <h2 className="text-sm lg:text-xl">
+                  <h2 title={transaction.id} className="text-sm lg:text-xl">
                     {t('COMMON.TRANSACTION_HISTORY_TRANSACTION_ID')}
-                    <span className="text-primaryBlue"> {transaction.id}</span>
+                    <span className="text-primaryBlue">
+                      {' '}
+                      {truncateText(transaction.id, DEFAULT_TRUNCATE_LENGTH)}
+                    </span>
                   </h2>
                 </Link>
                 {/* Info: (20231113 - Julian) Status */}
@@ -276,9 +291,11 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
         })
     : [];
 
-  const displayedAddressTransactions = !addressDetailsCtx.transactionsLoading
-    ? transactionList
-    : listSkeleton;
+  const displayedAddressTransactions = !addressDetailsCtx.transactionsLoading ? (
+    transactionList
+  ) : (
+    <SkeletonList count={ITEM_PER_PAGE} />
+  );
 
   const displayedTransactionList =
     dataType === TransactionDataType.ADDRESS_DETAILS
@@ -323,7 +340,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
         {/* Info: (20231113 - Julian) Search Filter */}
         <div className="flex w-full flex-col items-end gap-4">
           <div className="flex w-full flex-col items-start justify-between xl:flex-row">
-            {/* Info: (20231101 - Julian) Date Menu */}
+            {/* Info: (20240221 - Julian) Date Picker */}
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
               <DatePicker period={period} setFilteredPeriod={setPeriod} isLinearBg />

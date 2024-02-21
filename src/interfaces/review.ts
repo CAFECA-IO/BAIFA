@@ -25,4 +25,13 @@ export const dummyReview: IReviewDetail[] = [
     content: 'This is a review',
     stars: 3,
   },
+  {
+    id: 'T93130200002',
+    transactionId: '9313029',
+    chainId: 'eth',
+    createdTimestamp: 1689352795,
+    authorAddressId: '3248012',
+    content: 'This is a review',
+    stars: 5,
+  },
 ];

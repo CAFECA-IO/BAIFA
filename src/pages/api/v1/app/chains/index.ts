@@ -16,24 +16,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // Info:(20240219 - Julian) 從 DB 撈出所有 block，再找出對應 chainId 的 block 數量
-  const allBLocks = await prisma.blocks.findMany({
-    select: {
+  // Info:(20240221 - Julian) 將相同 chainId 的 block 數量加總
+  const blockGroup = await prisma.blocks.groupBy({
+    by: ['chain_id'],
+    _count: {
       chain_id: true,
     },
   });
-  const blockCount = chains.map(chain => {
-    return allBLocks.filter(block => block.chain_id === chain.id).length;
+  // Info:(20240221 - Julian) 扁平化 blockGroup，輸出 number array
+  const blockCount = blockGroup.map(block => {
+    return block._count.chain_id;
   });
 
-  // Info:(20240219 - Julian) 從 DB 撈出所有 transaction，再找出對應 chainId 的 transaction 數量
-  const allTransactions = await prisma.transactions.findMany({
-    select: {
+  // Info:(20240221 - Julian) 將相同 chainId 的 transaction 數量加總
+  const transactionGroup = await prisma.transactions.groupBy({
+    by: ['chain_id'],
+    _count: {
       chain_id: true,
     },
   });
-  const transactionCount = chains.map(chain => {
-    return allTransactions.filter(transaction => transaction.chain_id === chain.id).length;
+  // Info:(20240221 - Julian) 扁平化 transactionGroup，輸出 number array
+  const transactionCount = transactionGroup.map(transaction => {
+    return transaction._count.chain_id;
   });
 
   // Info:(20240118 - Julian) 將撈出來的資料轉換成 API 要的格式

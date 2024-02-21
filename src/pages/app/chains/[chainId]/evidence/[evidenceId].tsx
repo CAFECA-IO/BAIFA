@@ -18,7 +18,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
-import {IEvidenceBrief} from '../../../../../interfaces/evidence';
+import {IEvidenceDetail} from '../../../../../interfaces/evidence';
 import {IDisplayTransaction} from '../../../../../interfaces/transaction';
 import {DEFAULT_CHAIN_ICON} from '../../../../../constants/config';
 import DataNotFound from '../../../../../components/data_not_found/data_not_found';
@@ -34,7 +34,7 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
   const appCtx = useContext(AppContext);
   const {getEvidenceDetail, getEvidenceTransactions} = useContext(MarketContext);
 
-  const [evidenceData, setEvidenceData] = useState<IEvidenceBrief>({} as IEvidenceBrief);
+  const [evidenceData, setEvidenceData] = useState<IEvidenceDetail>({} as IEvidenceDetail);
   const [transactionData, setTransactionData] = useState<IDisplayTransaction[]>([]);
   const [isNoData, setIsNoData] = useState(false);
 
