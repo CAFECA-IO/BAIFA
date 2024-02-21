@@ -12,12 +12,12 @@ import {
   ITEM_PER_PAGE,
 } from '../../constants/config';
 import {getCurrencyIcon, roundToDecimal, truncateText, withCommas} from '../../lib/common';
-import {ICurrencyDetail, IHolder} from '../../interfaces/currency';
+import {ICurrencyDetailString, IHolder} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 
 interface ITop100HolderSectionProps {
-  currencyData: ICurrencyDetail;
+  currencyData: ICurrencyDetailString;
 }
 
 const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
@@ -56,9 +56,16 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
     // Info: (20231102 - Julian) Pagination
     .slice(startIdx, endIdx)
     // Info: (20240202 - Julian) 依照持有比例降冪排序
-    .sort((a, b) => b.holdingAmount - a.holdingAmount)
+    .sort((a, b) => {
+      // Info: (20240221 - Liz) 持有數字串先補零再以字串排序
+      const paddedHoldingAmountA = a.holdingAmount.padStart(64, '0');
+      const paddedHoldingAmountB = b.holdingAmount.padStart(64, '0');
+      if (paddedHoldingAmountA > paddedHoldingAmountB) return -1;
+      if (paddedHoldingAmountA < paddedHoldingAmountB) return 1;
+      return 0;
+    })
     .map((holder, index) => {
-      const holdingPercentage = roundToDecimal(holder.holdingPercentage, 2);
+      const holdingPercentage = holder.holdingPercentage;
       const addressLink = getDynamicUrl(currencyId, holder.addressId).ADDRESS;
       // Info: (20240206 - Julian) 最多顯示 100% 的持有比例
       const holdingBarWidth = holder.holdingBarWidth > 100 ? 100 : holder.holdingBarWidth;
@@ -119,7 +126,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
               </Link>
               {/* Info: (20231102 - Julian) Holding Amount */}
               <p>
-                {withCommas(holder.holdingAmount)} {unit}
+                {holder.holdingAmount} {unit}
               </p>
             </div>
 

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect, use, useContext} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import useStateRef from 'react-usestateref';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
@@ -43,7 +43,7 @@ const itemSkeleton = (
 const listSkeleton = (
   <div
     role="status"
-    className="w-full animate-pulse space-y-4 divide-y divide-gray-200 rounded border border-gray-200 p-4 shadow dark:divide-gray-700 dark:border-gray-700 md:p-6"
+    className="w-full animate-pulse space-y-4 divide-y divide-gray-200 rounded border border-gray-200 p-4 shadow md:p-6 dark:divide-gray-700 dark:border-gray-700"
   >
     {/* Info: generate 10 skeletons (20240207 - Shirley) */}
     {Array.from({length: ITEM_PER_PAGE}, (_, index) => (
@@ -153,7 +153,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
 
   // Info: (20231113 - Julian) Pagination
   const transactionList = filteredTransactions
-    ? TransactionDataType.ADDRESS_DETAILS
+    ? TransactionDataType.ADDRESS_DETAILS === dataType
       ? filteredTransactions.map((transaction, index) => {
           const {id, chainId, createdTimestamp, status} = transaction;
           const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
@@ -173,16 +173,16 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
                   style: 'text-hoverWhite',
                 }
               : status === 'Success'
-                ? {
-                    str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
-                    icon: '/icons/success_icon.svg',
-                    style: 'text-lightGreen',
-                  }
-                : {
-                    str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
-                    icon: '/icons/failed_icon.svg',
-                    style: 'text-lightRed',
-                  };
+              ? {
+                  str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
+                  icon: '/icons/success_icon.svg',
+                  style: 'text-lightGreen',
+                }
+              : {
+                  str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
+                  icon: '/icons/failed_icon.svg',
+                  style: 'text-lightRed',
+                };
 
           return (
             // Info: (20231113 - Julian) Transaction History Item
@@ -242,16 +242,16 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
                   style: 'text-hoverWhite',
                 }
               : status === 'Success'
-                ? {
-                    str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
-                    icon: '/icons/success_icon.svg',
-                    style: 'text-lightGreen',
-                  }
-                : {
-                    str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
-                    icon: '/icons/failed_icon.svg',
-                    style: 'text-lightRed',
-                  };
+              ? {
+                  str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
+                  icon: '/icons/success_icon.svg',
+                  style: 'text-lightGreen',
+                }
+              : {
+                  str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
+                  icon: '/icons/failed_icon.svg',
+                  style: 'text-lightRed',
+                };
 
           return (
             // Info: (20231113 - Julian) Transaction History Item
@@ -340,9 +340,9 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
         {/* Info: (20231113 - Julian) Search Filter */}
         <div className="flex w-full flex-col items-end gap-4">
           <div className="flex w-full flex-col items-start justify-between xl:flex-row">
-            {/* Info: (20231101 - Julian) Address Menu */}
+            {/* Info: (20240221 - Julian) Date Picker */}
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
-              <p className="hidden text-lilac lg:block">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} :</p>
+              <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
               <DatePicker period={period} setFilteredPeriod={setPeriod} isLinearBg />
             </div>
             {/* Info: (20231113 - Julian) Sorting Menu */}

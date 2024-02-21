@@ -28,10 +28,18 @@ import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
+  DEFAULT_REVIEW_COUNT,
   DEFAULT_TRUNCATE_LENGTH,
+  ITEM_PER_PAGE,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
-import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/common';
+import {
+  convertStringToSortingType,
+  getChainIcon,
+  roundToDecimal,
+  truncateText,
+} from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
 import {SortingType} from '../../../../../../constants/api_request';
@@ -42,7 +50,7 @@ import {
   AddressDetailsContext,
   AddressDetailsProvider,
 } from '../../../../../../contexts/address_details_context';
-import Skeleton from '../../../../../../components/skeleton/skeleton';
+import Skeleton, {SkeletonList} from '../../../../../../components/skeleton/skeleton';
 import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 
@@ -55,13 +63,14 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getAddressBrief} = useContext(MarketContext);
+  const {getAddressBrief, getAddressReviewList} = useContext(MarketContext);
   const addressDetailsCtx = useContext(AddressDetailsContext);
 
   const [isLoading, setIsLoading, isLoadingRef] = useStateRef(true);
   const [addressBriefData, setAddressBriefData, addressBriefDataRef] = useStateRef<IAddressBrief>(
     {} as IAddressBrief
   );
+  const [reviewData, setReviewData] = useState<IReviewDetail[]>([]);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
@@ -69,42 +78,66 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
 
-  const reviewData: IReviewDetail[] = [];
-
   const chainIcon = getChainIcon(chainId);
+
+  const getAddressBriefData = async (chainId: string, addressId: string) => {
+    try {
+      const data = await getAddressBrief(chainId, addressId);
+      if (data && Object.keys(data).length > 0) {
+        setAddressBriefData(data);
+      } else {
+        setAddressBriefData(dummyAddressBrief as IAddressBrief);
+      }
+    } catch (error) {
+      //console.log('getAddressData error', error);
+    } finally {
+    }
+  };
+
+  const getReviewListData = async (chainId: string, addressId: string) => {
+    try {
+      const data = await getAddressReviewList(chainId, addressId, {
+        offset: DEFAULT_REVIEW_COUNT,
+        page: DEFAULT_PAGE,
+        order: convertStringToSortingType(reviewSorting),
+      });
+      if (data && data.length > 0) {
+        // reviewData.push(...data);
+        setReviewData(data);
+      }
+    } catch (error) {
+      //console.log('getReviewListData error', error);
+    }
+  };
 
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
 
-    const getAddressBriefData = async (chainId: string, addressId: string) => {
-      try {
-        const data = await getAddressBrief(chainId, addressId);
-        if (data && Object.keys(data).length > 0) {
-          setAddressBriefData(data);
-        } else {
-          setAddressBriefData(dummyAddressBrief as IAddressBrief);
-        }
-      } catch (error) {
-        //console.log('getAddressData error', error);
-      } finally {
-      }
-    };
-
     (async () => {
       setIsLoading(true);
       await getAddressBriefData(chainId, addressId);
+      await getReviewListData(chainId, addressId);
       setIsLoading(false);
     })();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      await getReviewListData(chainId, addressId);
+      setIsLoading(false);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reviewSorting]);
+
   const backClickHandler = () => router.back();
 
   const reviewLink = getDynamicUrl(chainId, addressId).REVIEWS;
-  const reviewList =
+  const reviewList = !isLoadingRef.current ? (
     reviewData.length > 0 ? (
       reviewData
         // Info: (20231214 - Julian) Sort reviews by createdTimestamp
@@ -115,11 +148,17 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
             return a.createdTimestamp - b.createdTimestamp;
           }
         })
+        .slice(0, DEFAULT_REVIEW_COUNT)
         // Info: (20231214 - Julian) Print reviews
         .map((review, index) => <ReviewItem key={index} review={review} />)
     ) : (
       <></>
-    );
+    )
+  ) : (
+    Array.from({length: DEFAULT_REVIEW_COUNT}, (_, index) => (
+      <ReviewItem key={index} review={{} as IReviewDetail} />
+    ))
+  );
 
   const displayPublicTag = publicTag ? (
     publicTag.map((tag, index) => (
@@ -180,14 +219,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       <div className="flex items-center text-xl text-lilac">
         <h2 className="text-xl text-lilac"> {t('REVIEWS_PAGE.TITLE')}</h2>
 
-        {isLoading ? (
-          <span className="ml-2">
-            {' '}
-            <Skeleton width={60} height={30} />
-          </span>
-        ) : (
-          <span className="ml-2">({roundToDecimal(score, 1)}) </span>
-        )}
+        <span className="ml-2">({roundToDecimal(score, 1)}) </span>
       </div>
       <div className="flex w-full flex-col rounded bg-darkPurple p-4">
         {/* Info: (20231020 - Julian) Sort & Leave review button */}
