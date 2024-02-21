@@ -28,12 +28,18 @@ import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
   DEFAULT_REVIEW_COUNT,
   DEFAULT_TRUNCATE_LENGTH,
   ITEM_PER_PAGE,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
-import {getChainIcon, roundToDecimal, truncateText} from '../../../../../../lib/common';
+import {
+  convertStringToSortingType,
+  getChainIcon,
+  roundToDecimal,
+  truncateText,
+} from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 import {IProductionBlock} from '../../../../../../interfaces/block';
 import {SortingType} from '../../../../../../constants/api_request';
@@ -74,36 +80,40 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
   const chainIcon = getChainIcon(chainId);
 
+  const getAddressBriefData = async (chainId: string, addressId: string) => {
+    try {
+      const data = await getAddressBrief(chainId, addressId);
+      if (data && Object.keys(data).length > 0) {
+        setAddressBriefData(data);
+      } else {
+        setAddressBriefData(dummyAddressBrief as IAddressBrief);
+      }
+    } catch (error) {
+      //console.log('getAddressData error', error);
+    } finally {
+    }
+  };
+
+  const getReviewListData = async (chainId: string, addressId: string) => {
+    try {
+      const data = await getAddressReviewList(chainId, addressId, {
+        offset: DEFAULT_REVIEW_COUNT,
+        page: DEFAULT_PAGE,
+        order: convertStringToSortingType(reviewSorting),
+      });
+      if (data && data.length > 0) {
+        // reviewData.push(...data);
+        setReviewData(data);
+      }
+    } catch (error) {
+      //console.log('getReviewListData error', error);
+    }
+  };
+
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
-
-    const getAddressBriefData = async (chainId: string, addressId: string) => {
-      try {
-        const data = await getAddressBrief(chainId, addressId);
-        if (data && Object.keys(data).length > 0) {
-          setAddressBriefData(data);
-        } else {
-          setAddressBriefData(dummyAddressBrief as IAddressBrief);
-        }
-      } catch (error) {
-        //console.log('getAddressData error', error);
-      } finally {
-      }
-    };
-
-    const getReviewListData = async (chainId: string, addressId: string) => {
-      try {
-        const data = await getAddressReviewList(chainId, addressId);
-        if (data && data.length > 0) {
-          // reviewData.push(...data);
-          setReviewData(data);
-        }
-      } catch (error) {
-        //console.log('getReviewListData error', error);
-      }
-    };
 
     (async () => {
       setIsLoading(true);
@@ -114,6 +124,15 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      await getReviewListData(chainId, addressId);
+      setIsLoading(false);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reviewSorting]);
 
   const backClickHandler = () => router.back();
 
@@ -200,14 +219,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       <div className="flex items-center text-xl text-lilac">
         <h2 className="text-xl text-lilac"> {t('REVIEWS_PAGE.TITLE')}</h2>
 
-        {isLoading ? (
-          <span className="ml-2">
-            {' '}
-            <Skeleton width={60} height={30} />
-          </span>
-        ) : (
-          <span className="ml-2">({roundToDecimal(score, 1)}) </span>
-        )}
+        <span className="ml-2">({roundToDecimal(score, 1)}) </span>
       </div>
       <div className="flex w-full flex-col rounded bg-darkPurple p-4">
         {/* Info: (20231020 - Julian) Sort & Leave review button */}
@@ -221,11 +233,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
           <LeaveReviewButton />
         </div>
         {/* Info: (20231020 - Julian) Reviews List */}
-        {/* {isLoading ? (
-          <SkeletonList count={ITEM_PER_PAGE} />
-        ) : ( */}
         <div className="my-6 flex flex-col space-y-4">{reviewList}</div>
-        {/* )} */}
         <div className="mx-auto py-5 text-sm underline underline-offset-2">
           <Link href={reviewLink}>{t('REVIEWS_PAGE.SEE_ALL')}</Link>
         </div>
