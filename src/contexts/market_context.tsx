@@ -28,7 +28,7 @@ import {
   IAddressProducedBlock,
   IAddressRelatedTransaction,
 } from '../interfaces/address';
-import {IReviews} from '../interfaces/review';
+import {IReviewDetail, IReviews} from '../interfaces/review';
 import {IRedFlag, IRedFlagDetail} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContractDetail} from '../interfaces/contract';
@@ -67,6 +67,11 @@ export interface IMarketContext {
   ) => Promise<ITransaction[]>;
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
   getAddressBrief: (chainId: string, addressId: string) => Promise<IAddressBrief>;
+  getAddressReviewList: (
+    chainId: string,
+    addressId: string,
+    options?: IPaginationOptions
+  ) => Promise<IReviewDetail[]>;
   getAddressRelatedTransactions: (
     chainId: string,
     addressId: string,
@@ -122,6 +127,7 @@ export const MarketContext = createContext<IMarketContext>({
   getTransactionListOfBlock: () => Promise.resolve({} as ITransaction[]),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressBrief: () => Promise.resolve({} as IAddressBrief),
+  getAddressReviewList: () => Promise.resolve([] as IReviewDetail[]),
   getAddressRelatedTransactions: () => Promise.resolve({} as ITransactionData),
   getAddressProducedBlocks: () => Promise.resolve({} as IProducedBlock),
   getReviews: () => Promise.resolve({} as IReviews),
@@ -369,6 +375,35 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     }
     return data;
   }, []);
+
+  const getAddressReviewList = useCallback(
+    async (chainId: string, addressId: string, options?: IPaginationOptions) => {
+      let data: IReviewDetail[] = [];
+      try {
+        const queryParams = new URLSearchParams();
+        if (options?.order) {
+          queryParams.set('order', options.order);
+        } else {
+          queryParams.set('order', SortingType.DESC);
+        }
+        if (options?.page !== undefined) queryParams.set('page', options.page.toString());
+        if (options?.offset !== undefined) queryParams.set('offset', options.offset.toString());
+        const response = await fetch(
+          `${
+            APIURL.CHAINS
+          }/${chainId}/addresses/${addressId}/review_list?${queryParams.toString()}`,
+          {
+            method: 'GET',
+          }
+        );
+        data = await response.json();
+      } catch (error) {
+        //console.log('getAddressReviewList error', error);
+      }
+      return data;
+    },
+    []
+  );
 
   const getAddressRelatedTransactions = useCallback(
     async (chainId: string, addressId: string, options?: IAddressTransactionQuery) => {
@@ -632,6 +667,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getTransactionListOfBlock,
     getTransactionDetail,
     getAddressBrief,
+    getAddressReviewList,
     getAddressRelatedTransactions,
     getAddressProducedBlocks,
     getReviews,

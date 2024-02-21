@@ -50,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         transactionId: '', // TODO: no property named transaction_id in review_datas table (20240130 - Shirley)
         chainId: `${addressData?.chain_id ?? chains_id}`,
         createdTimestamp: r.created_timestamp ? r.created_timestamp : 0,
-        authorAddressId: r?.author_address ?? '',
+        authorAddress: r?.author_address ?? '',
         content: r?.content ?? '',
         stars: r?.stars ?? 0,
       })),
