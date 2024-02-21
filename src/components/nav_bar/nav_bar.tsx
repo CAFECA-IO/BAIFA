@@ -8,6 +8,7 @@ import useOuterClick from '../../lib/hooks/use_outer_click';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
+import version from '../../lib/utils/version';
 
 const NavBar = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -87,6 +88,7 @@ const NavBar = () => {
       <div className="flex flex-1 space-x-5">
         <Link href={BFAURL.APP}>
           <Image src="/logo/baifaaa_logo.svg" width={190} height={40} alt="BAIFA_logo" />
+          <p className="flex justify-end text-xxs text-lightGray">v{version}</p>
         </Link>
 
         <I18n />
@@ -147,6 +149,7 @@ const NavBar = () => {
       {/* Info: (20230712 - Julian) logo */}
       <Link href={BFAURL.APP}>
         <Image src="/logo/baifa_logo_small.svg" width={44} height={60} alt="BAIFA_logo" />
+        <p className="flex justify-end text-xxs text-lightGray">v{version}</p>
       </Link>
 
       {/* Info: (20230712 - Julian) profile */}
