@@ -56,14 +56,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // Info: (20240125 - Julian) 取得持有數最多的 value
-  const maxHolding = await prisma.token_balances.aggregate({
-    _max: {
-      value: true,
-    },
-  });
-  const maxHoldingAmount = BigInt(maxHolding._max.value ?? 0);
-
   // Info: (20240125 - Julian) currency 的 24 小時交易量
   const volumeIn24hRaw = parseInt(`${currencyData?.volume_in_24h ?? 0}`);
   const volumeIn24h = volumeIn24hRaw / Math.pow(10, decimal);
@@ -113,14 +105,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const holdingPercentage = formatString(holdingPercentageString);
 
     // Info: (20240202 - Julian) 計算持有比例的 bar 寬度
-    const holdingBarWidth = Math.round(Number(rawHoldingValueBigInt) / Number(maxHoldingAmount));
+    const holdingBarWidth = Number(holdingPercentage);
+
+    // Deprecated: (今天 - Liz)
+    // eslint-disable-next-line no-console
+    console.log('holdingBarWidth', holdingBarWidth);
 
     return {
       addressId: `${holder.address}`,
       holdingAmount: holdingAmount,
       holdingPercentage: holdingPercentage,
       holdingBarWidth: holdingBarWidth,
-      publicTag: [''], // ToDo: (20240130 - Julian) 待補上
+      publicTag: ['Unknown User'], // ToDo: (20240130 - Julian) 待補上
     };
   });
 
@@ -150,17 +146,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     select: {
       id: true,
       chain_id: true,
-      // created_timestamp: true, ToDo: (20240131 - Julian) 待 DB 補上這個欄位
+      created_timestamp: true,
       from_address: true,
       to_address: true,
+      transaction_hash: true,
     },
   });
 
   const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
-    // Info: (20240130 - Julian) 轉換 timestamp
-    // ToDo: (20240131 - Julian) 待 DB 補上這個欄位
-    const transactionCreatedTimestamp = 0;
-
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
     const from: IAddressInfo[] = fromAddresses
@@ -186,9 +179,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
 
     return {
-      id: `${transaction.id}`,
+      id: transaction.transaction_hash ?? '',
       chainId: `${transaction.chain_id}`,
-      createdTimestamp: transactionCreatedTimestamp,
+      createdTimestamp: transaction.created_timestamp ?? 0,
       from: from,
       to: to,
       type: 'Crypto Currency', // ToDo: (20240131 - Julian) 畫面需要調整，此欄位可能刪除

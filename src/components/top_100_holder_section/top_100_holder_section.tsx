@@ -56,7 +56,14 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
     // Info: (20231102 - Julian) Pagination
     .slice(startIdx, endIdx)
     // Info: (20240202 - Julian) 依照持有比例降冪排序
-    .sort((a, b) => Number(b.holdingAmount) - Number(a.holdingAmount))
+    .sort((a, b) => {
+      // Info: (今天 - Liz) 持有數字串先補零再以字串排序
+      const paddedHoldingAmountA = a.holdingAmount.padStart(64, '0');
+      const paddedHoldingAmountB = b.holdingAmount.padStart(64, '0');
+      if (paddedHoldingAmountA > paddedHoldingAmountB) return -1;
+      if (paddedHoldingAmountA < paddedHoldingAmountB) return 1;
+      return 0;
+    })
     .map((holder, index) => {
       const holdingPercentage = holder.holdingPercentage;
       const addressLink = getDynamicUrl(currencyId, holder.addressId).ADDRESS;
