@@ -4,7 +4,7 @@ import TransactionList from '../transaction_list/transaction_list';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {ITransactionList} from '../../interfaces/transaction';
-import SearchBar from '../search_bar/search_bar';
+import {SearchBarWithKeyDown} from '../search_bar/search_bar';
 import DatePicker from '../date_picker/date_picker';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
@@ -59,26 +59,32 @@ const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
   }, [chainId, transactionData]);
 
   useEffect(() => {
-    // Info: (20240220 - Julian) 當日期改變時，重設 activePage
+    // Info: (20240222 - Julian) 當 period, search 或 sorting 改變時，將 activePage 設為 1
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period]);
+  }, [period, sorting, search]);
 
   useEffect(() => {
     // Info: (20240220 - Julian) 當 activePage 改變時，重新取得資料
     getTransactionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activePage]);
+  }, [apiQueryStr]);
 
   useEffect(() => {
     // Info: (20240119 - Julian) 設定 API 查詢參數
-    // ToDo: (20240220 - Julian) date query string
     const pageQuery = `page=${activePage}`;
-    // Info: (20240220 - Julian) 當搜尋條件改變時，重新取得資料
-    setApiQueryStr(`${pageQuery}`);
-  }, [activePage, period]);
+    const sortQuery = `&sort=${sorting}`;
+    const searchQuery = search ? `&search=${search}` : '';
+    // Info: (20240222 - Julian) 檢查日期區間是否有效
+    const isPeriodValid = period.startTimeStamp && period.endTimeStamp;
+    const timeStampQuery = isPeriodValid
+      ? `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`
+      : '';
+    // Info: (20240222 - Julian) 當搜尋條件改變時，重新取得資料
+    setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${timeStampQuery}`);
+  }, [activePage, period, search, sorting]);
 
-  const {transactions, totalPages} = transactionData || {transactions: [], totalPages: 0};
+  const {transactions, totalPages} = transactionData ?? {transactions: [], totalPages: 0};
 
   // Info: (20240206 - Julian) Loading animation
   const skeletonTransactionList = (
@@ -112,10 +118,11 @@ const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
       <div className="flex w-full flex-col items-center">
         {/* Info: (20231101 - Julian) Search Bar */}
         <div className="flex w-full items-center justify-center lg:w-7/10">
-          <SearchBar
-            searchBarPlaceholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_TRANSACTIONS')}
-            setSearch={setSearch}
-          />
+          {/* Info: (20240222 - Julian) Search Bar */}
+          {SearchBarWithKeyDown({
+            searchBarPlaceholder: t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_TRANSACTIONS'),
+            setSearch,
+          })}
         </div>
         <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
           {/* Info: (20231101 - Julian) Date Picker */}

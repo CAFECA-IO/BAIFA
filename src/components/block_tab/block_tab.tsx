@@ -5,13 +5,12 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IBlockList} from '../../interfaces/block';
 import DatePicker from '../date_picker/date_picker';
-//import SearchBar from '../search_bar/search_bar';
+import {SearchBarWithKeyDown} from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {sortOldAndNewOptions, default30DayPeriod, ITEM_PER_PAGE} from '../../constants/config';
 import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
 import Skeleton from '../skeleton/skeleton';
-import {RiSearchLine} from 'react-icons/ri';
 
 interface IBlockTabProps {
   chainDetailLoading: boolean;
@@ -34,13 +33,6 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
   const [blockList, setBlockList] = useState<IBlockList>();
   const [isLoading, setIsLoading] = useState(true);
   const [activePage, setActivePage] = useState(1);
-
-  // Info: (20240221 - Julian) 按下 Enter 鍵時，修改 search state 並觸發搜尋
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      setSearch(e.currentTarget.value);
-    }
-  };
 
   // Info: (20240119 - Julian) Call API to get block data
   const getBlockData = async () => {
@@ -68,7 +60,6 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
 
   useEffect(() => {
     // Info: (20240220 - Julian) 當日期、排序條件改變時，將 activePage 設為 1
-    // ToDo: (20240220 - Julian) 關鍵字
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, sorting, search]);
@@ -123,18 +114,10 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
       <div className="flex w-full flex-col items-center">
         {/* Info: (20231101 - Julian) Search Bar */}
         <div className="w-full lg:w-7/10">
-          {/* Info: (20240221 - Julian) Search Bar */}
-          <div className="relative w-full drop-shadow-xl">
-            <input
-              type="search"
-              className="w-full items-center rounded-full bg-purpleLinear px-6 py-3 text-base placeholder:text-sm placeholder:lg:text-base"
-              placeholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_BLOCKS')}
-              onKeyDown={handleKeyDown}
-            />
-            <div className="absolute right-5 top-3 text-2xl">
-              <RiSearchLine />
-            </div>
-          </div>
+          {SearchBarWithKeyDown({
+            searchBarPlaceholder: t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_BLOCKS'),
+            setSearch: setSearch,
+          })}
         </div>
         <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
           {/* Info: (20231101 - Julian) Date Picker */}
