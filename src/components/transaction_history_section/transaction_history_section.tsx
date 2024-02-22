@@ -165,24 +165,26 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
               ? `${t(createdStr.month).slice(0, 3)}.`
               : t(createdStr.month);
 
-          const statusStyle =
-            status === 'Pending'
-              ? {
-                  str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
-                  icon: '/animations/trade_processing.gif',
-                  style: 'text-hoverWhite',
-                }
-              : status === 'Success'
-              ? {
-                  str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
-                  icon: '/icons/success_icon.svg',
-                  style: 'text-lightGreen',
-                }
-              : {
-                  str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
-                  icon: '/icons/failed_icon.svg',
-                  style: 'text-lightRed',
-                };
+          const statusMappings: {[key: string]: {str: string; icon: string; style: string}} = {
+            'Pending': {
+              str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
+              icon: '/animations/trade_processing.gif',
+              style: 'text-hoverWhite',
+            },
+            'Success': {
+              str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
+              icon: '/icons/success_icon.svg',
+              style: 'text-lightGreen',
+            },
+            'Failed': {
+              str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
+              icon: '/icons/failed_icon.svg',
+              style: 'text-lightRed',
+            },
+          };
+
+          // Info: (20240222 - Liz) 如果 status 不是 Pending, Success, Failed 之一，就會顯示 Failed 的樣式
+          const statusStyle = statusMappings[status] ?? statusMappings['Failed'];
 
           return (
             // Info: (20231113 - Julian) Transaction History Item
@@ -234,24 +236,26 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
               ? `${t(createdStr.month).slice(0, 3)}.`
               : t(createdStr.month);
 
-          const statusStyle =
-            status === 'Pending'
-              ? {
-                  str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
-                  icon: '/animations/trade_processing.gif',
-                  style: 'text-hoverWhite',
-                }
-              : status === 'Success'
-              ? {
-                  str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
-                  icon: '/icons/success_icon.svg',
-                  style: 'text-lightGreen',
-                }
-              : {
-                  str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
-                  icon: '/icons/failed_icon.svg',
-                  style: 'text-lightRed',
-                };
+          const statusMappings: {[key: string]: {str: string; icon: string; style: string}} = {
+            'Pending': {
+              str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
+              icon: '/animations/trade_processing.gif',
+              style: 'text-hoverWhite',
+            },
+            'Success': {
+              str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
+              icon: '/icons/success_icon.svg',
+              style: 'text-lightGreen',
+            },
+            'Failed': {
+              str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
+              icon: '/icons/failed_icon.svg',
+              style: 'text-lightRed',
+            },
+          };
+
+          // Info: (20240222 - Liz) 如果 status 不是 Pending, Success, Failed 之一，就會顯示 Failed 的樣式
+          const statusStyle = statusMappings[status] ?? statusMappings['Failed'];
 
           return (
             // Info: (20231113 - Julian) Transaction History Item
