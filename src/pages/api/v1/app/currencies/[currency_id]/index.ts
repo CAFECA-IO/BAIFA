@@ -175,6 +175,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
+  // Info: (20240222 - Liz) 從 codes Table 撈出 risk_level 對照表
+  const riskLevelCodes = await prisma.codes.findMany({
+    where: {
+      table_name: 'currencies',
+      table_column: 'risk_level',
+    },
+    select: {
+      value: true,
+      meaning: true,
+    },
+  });
+  const riskLevelCodesObj: {
+    [key: string]: string;
+  } = {};
+  riskLevelCodes.forEach(item => {
+    if (item.value !== null) {
+      const itemValue = item.value?.toString();
+      riskLevelCodesObj[itemValue] = item.meaning as string;
+    }
+  });
+
+  // Info: (20240222 - Liz) risk_level 轉換
+  const riskLevel = currencyData?.risk_level
+    ? riskLevelCodesObj[currencyData.risk_level]
+    : 'Unknown Risk Level';
+
   const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
@@ -235,7 +261,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         totalTransfers: currencyData.total_transfers ?? 0,
         flagging: flagging,
         flaggingCount: flagging.length,
-        riskLevel: 'LOW_RISK', // ToDo: (20240125 - Julian) 需要參考 codes Table 並補上 riskLevel 的轉換
+        riskLevel: riskLevel,
         transactionHistoryData: transactionHistoryData,
       }
     : // Info: (20240130 - Julian) 如果沒有找到資料，回傳 undefined
