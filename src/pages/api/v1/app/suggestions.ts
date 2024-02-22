@@ -96,20 +96,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     // Info: search hash in blocks (20240130 - Shirley)
-    if (suggestions.size < INPUT_SUGGESTION_LIMIT) {
+    if (suggestions.size < INPUT_SUGGESTION_LIMIT && !!searchId) {
       const blocks = await prisma.blocks.findMany({
         where: {
-          id: searchId,
+          number: searchId,
         },
         take: INPUT_SUGGESTION_LIMIT - suggestions.size,
         select: {
-          id: true,
+          number: true,
         },
       });
 
       blocks.forEach(item => {
-        if (item.id) {
-          suggestions.add(item.id);
+        // eslint-disable-next-line no-console
+        console.log(
+          'block item number',
+          item.number,
+          'searchId',
+          searchId,
+          'searchInput',
+          searchInput
+        );
+        if (item.number === +searchInput) {
+          suggestions.add(item.number);
         }
       });
     }
@@ -117,6 +126,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const limitedSuggestions = Array.from(suggestions)
       .filter(suggestion => suggestion !== 'null')
       .slice(0, INPUT_SUGGESTION_LIMIT) as string[];
+
+    // eslint-disable-next-line no-console
+    console.log('suggestion API', limitedSuggestions);
 
     res.status(200).json({suggestions: limitedSuggestions} as ResponseData);
   } catch (error) {

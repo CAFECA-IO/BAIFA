@@ -43,7 +43,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       where: {related_addresses: {hasSome: [address_id]}},
       orderBy: {
         id: order,
-        // created_timestamp: order,
       },
       take: offset,
       skip: skip,
