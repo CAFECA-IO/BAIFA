@@ -1,12 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {timestampToString} from '../../lib/common';
+import {timestampToString, truncateText} from '../../lib/common';
 import {IDisplayTransaction} from '../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {getDynamicUrl} from '../../constants/url';
 import {TransactionType, DefaultTransactionType} from '../../constants/transaction_type';
 import {TransactionStatus, DefaultTransactionStatus} from '../../constants/transaction_status';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface ITransactionItemProps {
   transaction: IDisplayTransaction;
@@ -36,10 +37,11 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
         <p className="text-xs text-lilac">{createdStr.time}</p>
       </div>
       <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
-        {/* Info: (20230907 - Julian) Transaction ID & Type */}
+        {/* Info: (20230907 - Julian) Transaction ID (hash) & Type */}
         <Link href={transactionLink} className="inline-flex flex-1 items-baseline space-x-2">
-          <h2 className="text-sm lg:text-xl">
-            {t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')} <span className="text-primaryBlue">{id}</span>
+          <h2 title={id} className="text-sm lg:text-xl">
+            {t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')}
+            <span className="text-primaryBlue"> {truncateText(id, DEFAULT_TRUNCATE_LENGTH)}</span>
           </h2>
           <p className="hidden text-sm text-lilac lg:block"> - {t(typeStr)}</p>
         </Link>

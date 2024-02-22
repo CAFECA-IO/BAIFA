@@ -25,16 +25,15 @@ import {
 } from '../interfaces/transaction';
 import {
   IAddressBrief,
-  IAddressDetail,
   IAddressProducedBlock,
   IAddressRelatedTransaction,
 } from '../interfaces/address';
-import {IReviews} from '../interfaces/review';
+import {IReviewDetail, IReviews} from '../interfaces/review';
 import {IRedFlag, IRedFlagDetail} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
-import {IContractBrief} from '../interfaces/contract';
-import {IEvidenceBrief} from '../interfaces/evidence';
-import {ICurrency, ICurrencyDetail} from '../interfaces/currency';
+import {IContractDetail} from '../interfaces/contract';
+import {IEvidenceDetail} from '../interfaces/evidence';
+import {ICurrency, ICurrencyDetailString} from '../interfaces/currency';
 import {IBlackList} from '../interfaces/blacklist';
 
 export interface IMarketProvider {
@@ -68,6 +67,11 @@ export interface IMarketContext {
   ) => Promise<ITransaction[]>;
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
   getAddressBrief: (chainId: string, addressId: string) => Promise<IAddressBrief>;
+  getAddressReviewList: (
+    chainId: string,
+    addressId: string,
+    options?: IPaginationOptions
+  ) => Promise<IReviewDetail[]>;
   getAddressRelatedTransactions: (
     chainId: string,
     addressId: string,
@@ -85,19 +89,19 @@ export interface IMarketContext {
     addressId: string,
     type: string
   ) => Promise<IInteractionItem[]>;
-  getContractDetail: (chainId: string, contractId: string) => Promise<IContractBrief>;
+  getContractDetail: (chainId: string, contractId: string) => Promise<IContractDetail>;
   getContractTransactions: (
     chainId: string,
     contractId: string,
     queryStr?: string
   ) => Promise<ITransaction[]>;
-  getEvidenceDetail: (chainId: string, evidenceId: string) => Promise<IEvidenceBrief>;
+  getEvidenceDetail: (chainId: string, evidenceId: string) => Promise<IEvidenceDetail>;
   getEvidenceTransactions: (
     chainId: string,
     contractId: string,
     queryStr?: string
   ) => Promise<ITransaction[]>;
-  getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetail>;
+  getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetailString>;
   getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlag[]>;
   getAllRedFlags: () => Promise<IRedFlag[]>;
   getRedFlagDetail: (redFlagId: string) => Promise<IRedFlagDetail>;
@@ -123,16 +127,17 @@ export const MarketContext = createContext<IMarketContext>({
   getTransactionListOfBlock: () => Promise.resolve({} as ITransaction[]),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressBrief: () => Promise.resolve({} as IAddressBrief),
+  getAddressReviewList: () => Promise.resolve([] as IReviewDetail[]),
   getAddressRelatedTransactions: () => Promise.resolve({} as ITransactionData),
   getAddressProducedBlocks: () => Promise.resolve({} as IProducedBlock),
   getReviews: () => Promise.resolve({} as IReviews),
   getRedFlagsFromAddress: () => Promise.resolve([] as IRedFlag[]),
   getInteractions: () => Promise.resolve([] as IInteractionItem[]),
-  getContractDetail: () => Promise.resolve({} as IContractBrief),
+  getContractDetail: () => Promise.resolve({} as IContractDetail),
   getContractTransactions: () => Promise.resolve([] as ITransaction[]),
-  getEvidenceDetail: () => Promise.resolve({} as IEvidenceBrief),
+  getEvidenceDetail: () => Promise.resolve({} as IEvidenceDetail),
   getEvidenceTransactions: () => Promise.resolve([] as ITransaction[]),
-  getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetail),
+  getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetailString),
   getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlag[]),
   getAllRedFlags: () => Promise.resolve([] as IRedFlag[]),
   getRedFlagDetail: () => Promise.resolve({} as IRedFlagDetail),
@@ -371,6 +376,35 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getAddressReviewList = useCallback(
+    async (chainId: string, addressId: string, options?: IPaginationOptions) => {
+      let data: IReviewDetail[] = [];
+      try {
+        const queryParams = new URLSearchParams();
+        if (options?.order) {
+          queryParams.set('order', options.order);
+        } else {
+          queryParams.set('order', SortingType.DESC);
+        }
+        if (options?.page !== undefined) queryParams.set('page', options.page.toString());
+        if (options?.offset !== undefined) queryParams.set('offset', options.offset.toString());
+        const response = await fetch(
+          `${
+            APIURL.CHAINS
+          }/${chainId}/addresses/${addressId}/review_list?${queryParams.toString()}`,
+          {
+            method: 'GET',
+          }
+        );
+        data = await response.json();
+      } catch (error) {
+        //console.log('getAddressReviewList error', error);
+      }
+      return data;
+    },
+    []
+  );
+
   const getAddressRelatedTransactions = useCallback(
     async (chainId: string, addressId: string, options?: IAddressTransactionQuery) => {
       let data: ITransactionData = {transactions: [], transactionCount: 0, totalPage: 0};
@@ -492,7 +526,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, []);
 
   const getContractDetail = useCallback(async (chainId: string, contractId: string) => {
-    let data: IContractBrief = {} as IContractBrief;
+    let data: IContractDetail = {} as IContractDetail;
     try {
       const response = await fetch(`${APIURL.CHAINS}/${chainId}/contracts/${contractId}`, {
         method: 'GET',
@@ -528,7 +562,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   );
 
   const getEvidenceDetail = useCallback(async (chainId: string, evidenceId: string) => {
-    let data: IEvidenceBrief = {} as IEvidenceBrief;
+    let data: IEvidenceDetail = {} as IEvidenceDetail;
     try {
       const response = await fetch(`${APIURL.CHAINS}/${chainId}/evidence/${evidenceId}`, {
         method: 'GET',
@@ -564,7 +598,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   );
 
   const getCurrencyDetail = useCallback(async (currencyId: string) => {
-    let data: ICurrencyDetail = {} as ICurrencyDetail;
+    let data: ICurrencyDetailString = {} as ICurrencyDetailString;
     try {
       const response = await fetch(`${APIURL.CURRENCIES}/${currencyId}`, {
         method: 'GET',
@@ -633,6 +667,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getTransactionListOfBlock,
     getTransactionDetail,
     getAddressBrief,
+    getAddressReviewList,
     getAddressRelatedTransactions,
     getAddressProducedBlocks,
     getReviews,

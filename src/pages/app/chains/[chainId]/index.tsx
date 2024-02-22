@@ -44,12 +44,16 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     }
 
     const getChainData = async (chainId: string) => {
+      // Info: (20240220 - Julian) 顯示 Loading 畫面
+      setIsLoading(true);
       try {
         const data = await getChainDetail(chainId);
         setChainData(data);
       } catch (error) {
         //console.log('getChainDetail error', error);
       }
+      // Info: (20240220 - Julian) 拿到資料就將 isLoading 設為 false
+      setIsLoading(false);
     };
 
     getChainData(chainId);
@@ -57,14 +61,13 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
-    // Info: (20240217 - Julian) 如果沒有 1 秒內沒有資料，就顯示 No Data，並且停止 Loading
+    // Info: (20240217 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data，並且停止 Loading
     const timer = setTimeout(() => {
       if (!chainData.chainId) {
         setIsNoData(true);
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    }, 1000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, [chainData]);
@@ -154,7 +157,12 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     </div>
   );
 
-  const tabContent = activeTab === ChainDetailTab.BLOCKS ? <BlockTab /> : <TransactionTab />;
+  const tabContent =
+    activeTab === ChainDetailTab.BLOCKS ? (
+      <BlockTab chainDetailLoading={isLoading} />
+    ) : (
+      <TransactionTab chainDetailLoading={isLoading} />
+    );
 
   const diaplayBody = isNoData ? (
     <DataNotFound />

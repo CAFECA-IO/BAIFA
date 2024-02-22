@@ -14,7 +14,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
-import {IContractBrief} from '../../../../../interfaces/contract';
+import {IContractDetail} from '../../../../../interfaces/contract';
 import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
 import TransactionHistorySection from '../../../../../components/transaction_history_section/transaction_history_section';
 import Tooltip from '../../../../../components/tooltip/tooltip';
@@ -35,7 +35,7 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
   const appCtx = useContext(AppContext);
   const {getContractDetail, getContractTransactions} = useContext(MarketContext);
 
-  const [contractData, setContractData] = useState<IContractBrief>({} as IContractBrief);
+  const [contractData, setContractData] = useState<IContractDetail>({} as IContractDetail);
   const [transactionHistoryData, setTransactionHistoryData] = useState<IDisplayTransaction[]>([]);
   const [isNoData, setIsNoData] = useState(false);
 

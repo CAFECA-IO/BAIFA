@@ -1,21 +1,49 @@
+import {cn} from '../../lib/common';
+
 interface ISkeletonProps {
   width: number;
   height: number;
   rounded?: boolean;
+  className?: string;
 }
 
-const Skeleton = ({width, height, rounded}: ISkeletonProps) => {
-  const skeletonWidth = `w-${width.toString()}px`;
-  const skeletonHeight = `h-${height.toString()}px`;
-  const skeletonRounded = rounded ? 'rounded-full' : 'rounded';
+interface ISkeletonListProps {
+  count: number;
+}
 
+const Skeleton = ({width, height, rounded, className}: ISkeletonProps) => {
   return (
     <div
-      className={`${skeletonHeight} ${skeletonWidth} ${skeletonRounded} bg-skeleton relative overflow-hidden`}
+      className={cn('relative overflow-hidden bg-skeleton', rounded ? 'rounded-full' : 'rounded')}
+      style={{width: `${width}px`, height: `${height}px`}}
     >
       <span
-        className={`absolute bg-skeletonCube ${skeletonHeight} left-0 top-0 w-full blur-xl animate-loading`}
+        className={cn(
+          'absolute left-0 top-0 w-full animate-loading bg-skeletonCube blur-xl',
+          className
+        )}
+        style={{height: `${height}px`}}
       ></span>
+    </div>
+  );
+};
+
+export const SkeletonList = ({count}: ISkeletonListProps) => {
+  return (
+    <div
+      role="status"
+      className="space-y-2 divide-y divide-gray-200 rounded border border-gray-200 p-4 shadow dark:divide-gray-700 dark:border-gray-700 md:p-6"
+    >
+      {' '}
+      {Array.from({length: count}, (_, index) => (
+        <div key={index} className={`${index !== 0 ? `pt-4` : ``}`}>
+          <div className="flex items-center justify-between">
+            {' '}
+            <Skeleton width={200} height={30} /> <Skeleton width={50} height={30} />{' '}
+          </div>
+        </div>
+      ))}
+      <span className="sr-only">Loading...</span>
     </div>
   );
 };

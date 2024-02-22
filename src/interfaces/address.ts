@@ -50,9 +50,9 @@ export interface IAddressDetail
 }
 
 export const dummyAddressBrief: IAddressBrief = {
-  id: '1',
+  id: 'N/A',
   type: AddressType.ADDRESS,
-  address: '0x',
+  address: 'N/A',
   chainId: '1',
   createdTimestamp: 0,
   latestActiveTime: 0,

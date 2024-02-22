@@ -12,11 +12,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
+  // Info: (20240221 - Julian) query string
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
+  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const search = typeof req.query.search === 'string' ? req.query.search : undefined;
   const start_date =
     typeof req.query.start_date === 'string' ? parseInt(req.query.start_date) : undefined;
   const end_date =
     typeof req.query.end_date === 'string' ? parseInt(req.query.end_date) : undefined;
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
 
   // Info: (20240119 - Julian) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // (20240119 - Julian) 跳過前面幾筆
@@ -30,7 +33,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       gte: start_date,
       lte: end_date,
     },
+    // Info: (20240221 - Julian) 關鍵字
+    number: search ? parseInt(search) : undefined,
   };
+  // Info: (20240221 - Julian) 排序
+  const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
   // Info: (20240216 - Julian) 取得 blocks 筆數
   const totalBlocks = await prisma.blocks.count({where});
@@ -45,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
     // Info: (20240119 - Julian) 從新到舊排序
     orderBy: {
-      created_timestamp: 'desc',
+      created_timestamp: sorting,
     },
     // Info: (20240119 - Julian) 分頁
     skip: skip,

@@ -159,7 +159,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       result.push({
         type: RESPONSE_DATA_TYPE.BLOCK,
         data: {
-          id: `${item.id}`,
+          id: `${item.number}`,
           chainId: `${item.chain_id}`,
           createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
           stability: stability,
