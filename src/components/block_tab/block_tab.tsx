@@ -7,7 +7,7 @@ import {IBlockList} from '../../interfaces/block';
 import DatePicker from '../date_picker/date_picker';
 //import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
-import {sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
+import {sortOldAndNewOptions, default30DayPeriod, ITEM_PER_PAGE} from '../../constants/config';
 import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
 import Skeleton from '../skeleton/skeleton';
@@ -95,27 +95,27 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
 
   const {blocks, totalPages} = blockList ?? {blocks: [], totalPages: 0};
 
+  // Info: (20240206 - Julian) Loading animation
+  const skeletonBlockList = (
+    <div className="flex h-680px w-full flex-col py-10">
+      {Array.from({length: ITEM_PER_PAGE}).map((_, index) => (
+        <div
+          key={index}
+          className="flex h-60px w-full items-center gap-8 border-b border-darkPurple4 px-1"
+        >
+          <Skeleton width={50} height={50} />
+          <Skeleton width={150} height={20} />
+          <div className="ml-auto">
+            <Skeleton width={80} height={20} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   const isShowBlockList =
     // Info: (20240220 - Julian) BlockTab 和 ChainDetailPage 都完成 Loading 後才顯示 BlockList
-    isLoading || chainDetailLoading ? (
-      // Info: (20240206 - Julian) Loading animation
-      <div className="flex h-680px w-full flex-col py-10">
-        {Array.from({length: 10}).map((_, index) => (
-          <div
-            key={index}
-            className="flex h-60px w-full items-center gap-8 border-b border-darkPurple4 px-1"
-          >
-            <Skeleton width={50} height={50} />
-            <Skeleton width={150} height={20} />
-            <div className="ml-auto">
-              <Skeleton width={80} height={20} />
-            </div>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <BlockList blockData={blocks} />
-    );
+    isLoading || chainDetailLoading ? skeletonBlockList : <BlockList blockData={blocks} />;
 
   return (
     <div className="flex w-full flex-col items-center font-inter">

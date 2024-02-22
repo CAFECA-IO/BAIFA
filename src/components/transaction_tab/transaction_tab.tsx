@@ -7,7 +7,7 @@ import {ITransactionList} from '../../interfaces/transaction';
 import SearchBar from '../search_bar/search_bar';
 import DatePicker from '../date_picker/date_picker';
 import SortingMenu from '../sorting_menu/sorting_menu';
-import {default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
+import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
 import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
 import Skeleton from '../skeleton/skeleton';
@@ -80,24 +80,28 @@ const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
 
   const {transactions, totalPages} = transactionData || {transactions: [], totalPages: 0};
 
+  // Info: (20240206 - Julian) Loading animation
+  const skeletonTransactionList = (
+    <div className="flex h-680px w-full flex-col py-10">
+      {Array.from({length: ITEM_PER_PAGE}).map((_, index) => (
+        <div
+          key={index}
+          className="flex h-60px w-full items-center gap-8 border-b border-darkPurple4 px-1"
+        >
+          <Skeleton width={50} height={50} />
+          <Skeleton width={200} height={20} />
+          <div className="ml-auto">
+            <Skeleton width={80} height={20} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   const isShowTransactionList =
     // Info: (20240220 - Julian) TransactionTab 和 ChainDetailPage 都完成 Loading 後才顯示 TransactionList
     isLoading || chainDetailLoading ? (
-      // Info: (20240206 - Julian) Loading animation
-      <div className="flex w-full flex-col py-10 h-680px">
-        {Array.from({length: 10}).map((_, index) => (
-          <div
-            key={index}
-            className="flex w-full items-center gap-8 h-60px border-darkPurple4 border-b px-1"
-          >
-            <Skeleton width={50} height={50} />
-            <Skeleton width={200} height={20} />
-            <div className="ml-auto">
-              <Skeleton width={80} height={20} />
-            </div>
-          </div>
-        ))}
-      </div>
+      skeletonTransactionList
     ) : (
       <TransactionList transactions={transactions} />
     );

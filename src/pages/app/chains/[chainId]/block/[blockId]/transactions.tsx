@@ -111,13 +111,13 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
     setApiQueryStr(`${pageQuery}`);
   }, [activePage, period]);
 
-  const displayTransactionList = isLoading ? (
-    // Info: (20240206 - Julian) Loading animation
-    <div className="flex w-full flex-col py-10 divide-y divide-darkPurple4 h-680px">
-      {Array.from({length: 10}).map((_, index) => (
+  // Info: (20240206 - Julian) Loading animation
+  const skeletonTransactionList = (
+    <div className="flex h-680px w-full flex-col divide-y divide-darkPurple4 py-10">
+      {Array.from({length: ITEM_PER_PAGE}).map((_, index) => (
         <div
           key={index}
-          className="flex w-full items-center gap-8 h-60px border-darkPurple4 border-b px-1"
+          className="flex h-60px w-full items-center gap-8 border-b border-darkPurple4 px-1"
         >
           <Skeleton width={50} height={50} />
           <Skeleton width={150} height={20} />
@@ -127,6 +127,10 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
         </div>
       ))}
     </div>
+  );
+
+  const displayTransactionList = isLoading ? (
+    skeletonTransactionList
   ) : (
     <div className="flex w-full flex-col items-center">
       <TransactionList transactions={transactionData} />
