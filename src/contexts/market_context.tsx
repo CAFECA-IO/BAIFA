@@ -64,7 +64,7 @@ export interface IMarketContext {
     chainId: string,
     blockId: string,
     queryStr?: string
-  ) => Promise<ITransaction[]>;
+  ) => Promise<ITransactionList>;
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
   getAddressBrief: (chainId: string, addressId: string) => Promise<IAddressBrief>;
   getAddressReviewList: (
@@ -124,7 +124,7 @@ export const MarketContext = createContext<IMarketContext>({
   getBlockDetail: () => Promise.resolve({} as IBlockDetail),
   getInteractionTransaction: () => Promise.resolve([] as ITransaction[]),
   getTransactionList: () => Promise.resolve({} as ITransactionList),
-  getTransactionListOfBlock: () => Promise.resolve({} as ITransaction[]),
+  getTransactionListOfBlock: () => Promise.resolve({} as ITransactionList),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressBrief: () => Promise.resolve({} as IAddressBrief),
   getAddressReviewList: () => Promise.resolve([] as IReviewDetail[]),
@@ -333,7 +333,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
 
   const getTransactionListOfBlock = useCallback(
     async (chainId: string, blockId: string, queryStr?: string) => {
-      let data: ITransaction[] = [];
+      let data: ITransactionList = {} as ITransactionList;
       try {
         const response = await fetch(
           `${APIURL.CHAINS}/${chainId}/block/${blockId}/transactions?${queryStr}`,
