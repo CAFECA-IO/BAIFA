@@ -114,7 +114,7 @@
     "VOLUME_IN_24H": "24 小时交易量",
     "TOTAL_AMOUNT": "总发行量",
     "HOLDERS": "持有人数",
-    "TTOTAL_TRANSFERS": "总转帐次数",
+    "TOTAL_TRANSFERS": "总转帐次数",
     "RED_FLAG": "警示记录"
   },
   "BLOCK_DETAIL_PAGE": {
