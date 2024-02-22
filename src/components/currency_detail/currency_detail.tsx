@@ -75,7 +75,7 @@ const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
       {/* Info: (20231101 - Julian) Total Transfers */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
-          <p>{t('CURRENCY_DETAIL_PAGE.TTOTAL_TRANSFERS')}</p>
+          <p>{t('CURRENCY_DETAIL_PAGE.TOTAL_TRANSFERS')}</p>
           <Tooltip>
             This is tooltip Sample Text. So if I type in more content, it would be like this.
           </Tooltip>
