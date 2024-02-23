@@ -93,7 +93,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     chainId: `${redFlagData.chain_id}` ?? '',
   }));
 
-  const totalAmount = Number(redFlagData.total_amount) ?? 0; // ToDo: (20240223 - Liz) 想將 totalAmount 的 interface 型別改成 string
+  const totalAmount = redFlagData.total_amount ?? '0';
 
   const unit = redFlagData.symbol ?? '';
 

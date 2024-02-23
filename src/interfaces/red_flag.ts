@@ -15,6 +15,6 @@ export interface IRedFlagSearchResult extends IRedFlag {
 
 export interface IRedFlagDetail extends IRedFlagSearchResult {
   unit: string;
-  totalAmount: number; // Info:(20231228 - Julian) 交易總金額
+  totalAmount: string; // Info:(20231228 - Julian) 交易總金額
   transactionHistoryData: ITransaction[]; // Info:(20231228 - Julian) 被警示的交易記錄
 }
