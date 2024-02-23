@@ -3,7 +3,6 @@ import Link from 'next/link';
 import {getCurrencyIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {RiskLevel} from '../../constants/risk_level';
 import {BFAURL} from '../../constants/url';
 import {DEFAULT_CURRENCY_ICON} from '../../constants/config';
 
@@ -18,18 +17,14 @@ const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItem
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const chainIcon = getCurrencyIcon(currencyId);
 
-  const riskColor =
-    riskLevel === RiskLevel.HIGH_RISK
-      ? '#FC8181'
-      : riskLevel === RiskLevel.MEDIUM_RISK
-      ? '#FFA600'
-      : '#3DD08C';
-  const riskText =
-    riskLevel === RiskLevel.HIGH_RISK
-      ? t('COMMON.RISK_HIGH')
-      : riskLevel === RiskLevel.MEDIUM_RISK
-      ? t('COMMON.RISK_MEDIUM')
-      : t('COMMON.RISK_LOW');
+  // Info: (20240222 - Liz) riskLevel 有三種值 Low, Normal, High 要轉換成對應的顏色和文字
+  const riskLevelMappings: {[key: string]: {riskColor: string; riskText: string}} = {
+    'High': {riskColor: '#FC8181', riskText: t('COMMON.RISK_HIGH')},
+    'Normal': {riskColor: '#FFA600', riskText: t('COMMON.RISK_MEDIUM')},
+    'Low': {riskColor: '#3DD08C', riskText: t('COMMON.RISK_LOW')},
+  };
+  // Info: (20240222 - Liz) 如果 riskLevel 從後端傳來的值不是 'High', 'Normal', 'Low' 就預設為 'High'
+  const {riskColor, riskText} = riskLevelMappings[riskLevel] ?? riskLevelMappings['High'];
 
   return (
     <div className="flex w-full items-center border-b border-darkPurple4 p-5 font-inter">

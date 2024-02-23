@@ -4,7 +4,6 @@ import {ICurrencyDetailString} from '../../interfaces/currency';
 import {TranslateFunction} from '../../interfaces/locale';
 import {roundToDecimal, withCommas} from '../../lib/common';
 import {BFAURL} from '../../constants/url';
-import {RiskLevel} from '../../constants/risk_level';
 import Tooltip from '../tooltip/tooltip';
 
 interface ICurrencyDetailProps {
@@ -24,18 +23,15 @@ const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
     riskLevel,
   } = currencyData;
 
-  const riskColor =
-    riskLevel === RiskLevel.HIGH_RISK
-      ? '#FC8181'
-      : riskLevel === RiskLevel.MEDIUM_RISK
-      ? '#FFA600'
-      : '#3DD08C';
-  const riskText =
-    riskLevel === RiskLevel.HIGH_RISK
-      ? t('COMMON.RISK_HIGH')
-      : riskLevel === RiskLevel.MEDIUM_RISK
-      ? t('COMMON.RISK_MEDIUM')
-      : t('COMMON.RISK_LOW');
+  // Info: (20240222 - Liz) riskLevel 有三種值 Low, Normal, High 要轉換成對應的顏色和文字
+  const riskLevelMappings: {[key: string]: {riskColor: string; riskText: string}} = {
+    'High': {riskColor: '#FC8181', riskText: t('COMMON.RISK_HIGH')},
+    'Normal': {riskColor: '#FFA600', riskText: t('COMMON.RISK_MEDIUM')},
+    'Low': {riskColor: '#3DD08C', riskText: t('COMMON.RISK_LOW')},
+  };
+
+  // Info: (20240222 - Liz) 如果 riskLevel 從後端傳來的值不是 'High', 'Normal', 'Low' 就預設為 'High'
+  const {riskColor, riskText} = riskLevelMappings[riskLevel] ?? riskLevelMappings['High'];
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">

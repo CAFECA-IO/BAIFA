@@ -155,6 +155,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
+  // Info: (20240222 - Liz) 從 codes Table 撈出 risk_level 的 value 和 meaning 的對照表為一個物件陣列
+  const riskLevelCodes = await prisma.codes.findMany({
+    where: {
+      table_name: 'currencies',
+      table_column: 'risk_level',
+    },
+    select: {
+      value: true,
+      meaning: true,
+    },
+  });
+
+  // Info: (20240222 - Liz) 遍歷物件陣列 轉換成物件
+  const riskLevelCodesObj: {
+    [key: string]: string;
+  } = {};
+  riskLevelCodes.forEach(item => {
+    if (item.value !== null) {
+      riskLevelCodesObj[item.value] = item.meaning as string;
+    }
+  });
+
+  // Info: (20240222 - Liz) 將資料庫傳來的 risk_level 轉換成對應的 meaning
+  const riskLevel = currencyData?.risk_level
+    ? riskLevelCodesObj[currencyData.risk_level]
+    : 'Unknown Risk Level';
+
   // Info: (20240221 - Liz) 從 transactions Table 撈出 transaction_hash 和 status 組合成一個物件陣列
   const transactionHashStatusArr = await prisma.transactions.findMany({
     select: {
@@ -163,7 +190,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   });
 
-  // Info: (20240221 - Liz) 從 codes Table 撈出 status 對照表
+  // Info: (20240222 - Liz) 將 transaction_hash 和 status 組合的物件陣列遍歷為一個物件
+  const transactionHashStatusObj: {
+    [key: string]: string;
+  } = {};
+  transactionHashStatusArr.forEach(item => {
+    if (item.hash !== null) {
+      transactionHashStatusObj[item.hash] = item.status as string;
+    }
+  });
+
+  // Info: (20240222 - Liz) 從 codes Table 撈出 status 的 value 和 meaning 的對照表為一個物件陣列
   const statusCodes = await prisma.codes.findMany({
     where: {
       table_name: 'transactions',
@@ -173,6 +210,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       value: true,
       meaning: true,
     },
+  });
+
+  // Info: (20240222 - Liz) 遍歷物件陣列 轉換成物件
+  const statusCodesObj: {
+    [key: string]: string;
+  } = {};
+  statusCodes.forEach(item => {
+    if (item.value !== null) {
+      statusCodesObj[item.value] = item.meaning as string;
+    }
   });
 
   const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
@@ -201,13 +248,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         };
       });
 
-    const statusStr =
-      transactionHashStatusArr.find(item => item.hash === transaction.transaction_hash)?.status ??
-      '0';
+    // Info: (20240222 - Liz) 得到該筆交易 hash 所對應的 status
+    const statusStr = transaction.transaction_hash
+      ? transactionHashStatusObj[transaction.transaction_hash]
+      : 'Unknown Status';
 
-    // Info: (20240221 - Liz) 找出對應的 status
-    const status =
-      statusCodes.find(code => code.value === Number(statusStr))?.meaning ?? 'Unknown Status';
+    // Info: (20240221 - Liz) 再將 status 轉換成對應的 meaning
+    const status = statusCodesObj[statusStr] ?? 'Unknown Status';
 
     return {
       id: transaction.transaction_hash ?? '',
@@ -235,7 +282,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         totalTransfers: currencyData.total_transfers ?? 0,
         flagging: flagging,
         flaggingCount: flagging.length,
-        riskLevel: 'LOW_RISK', // ToDo: (20240125 - Julian) 需要參考 codes Table 並補上 riskLevel 的轉換
+        riskLevel: riskLevel,
         transactionHistoryData: transactionHistoryData,
       }
     : // Info: (20240130 - Julian) 如果沒有找到資料，回傳 undefined

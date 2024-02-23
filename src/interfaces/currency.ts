@@ -1,4 +1,3 @@
-import {IRiskLevel} from '../constants/risk_level';
 import {IRedFlag} from './red_flag';
 import {IDisplayTransaction} from './transaction';
 
@@ -16,7 +15,7 @@ export interface ICurrency {
   currencyId: string;
   currencyName: string;
   rank: number;
-  riskLevel: IRiskLevel;
+  riskLevel: string;
 }
 export interface ICurrencyDetail extends ICurrency {
   price: number;
