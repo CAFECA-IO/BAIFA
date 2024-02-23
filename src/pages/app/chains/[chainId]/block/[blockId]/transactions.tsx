@@ -86,10 +86,10 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   }, [transactionData]);
 
   useEffect(() => {
-    // Info: (20240220 - Julian) 當日期、search、排序條件改變時，將 activePage 設為 1
+    // Info: (20240220 - Julian) 當日期、search 改變時，將 activePage 設為 1
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, search, sorting]);
+  }, [period, search]);
 
   useEffect(() => {
     // Info: (20240220 - Julian) 當 activePage 改變時，重新取得資料

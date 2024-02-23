@@ -58,7 +58,7 @@ export interface IMarketContext {
     addressA: string | undefined,
     addressB: string | undefined,
     queryStr?: string
-  ) => Promise<ITransaction[]>;
+  ) => Promise<ITransactionList>;
   getTransactionList: (chainId: string, queryStr?: string) => Promise<ITransactionList>;
   getTransactionListOfBlock: (
     chainId: string,
@@ -122,7 +122,7 @@ export const MarketContext = createContext<IMarketContext>({
   getChainDetail: () => Promise.resolve({} as IChain),
   getBlockList: () => Promise.resolve({} as IBlockList),
   getBlockDetail: () => Promise.resolve({} as IBlockDetail),
-  getInteractionTransaction: () => Promise.resolve([] as ITransaction[]),
+  getInteractionTransaction: () => Promise.resolve({} as ITransactionList),
   getTransactionList: () => Promise.resolve({} as ITransactionList),
   getTransactionListOfBlock: () => Promise.resolve({} as ITransactionList),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
@@ -290,7 +290,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       addressB: string | undefined,
       queryStr?: string
     ) => {
-      let data: ITransaction[] = [];
+      let data: ITransactionList = {} as ITransactionList;
       try {
         if (addressA && addressB) {
           const response = await fetch(
