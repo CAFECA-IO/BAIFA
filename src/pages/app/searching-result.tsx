@@ -54,9 +54,9 @@ const SearchingResultItemSkeleton = () => {
           {/* Info: (20240223 - Shirley) Line 1 */}
           <div className="flex w-full flex-col items-start gap-2 border-b border-darkPurple4 py-5 lg:flex-row lg:items-center">
             <div className="flex w-200px items-center space-x-2">
-              <p className="text-base font-bold text-lilac">
+              <div className="">
                 <Skeleton width={200} height={30} />{' '}
-              </p>
+              </div>
             </div>
             {/* Info: (20240223 - Shirley) Line 1 Content */}
             <Skeleton width={250} height={30} />{' '}
@@ -64,9 +64,9 @@ const SearchingResultItemSkeleton = () => {
           {/* Info: (20240223 - Shirley) Line 2 */}
           <div className="flex w-full flex-col items-start gap-2 border-b border-darkPurple4 py-5 lg:flex-row lg:items-center">
             <div className="flex w-200px items-center space-x-2">
-              <p className="text-base font-bold text-lilac">
+              <div className="">
                 <Skeleton width={200} height={30} />{' '}
-              </p>
+              </div>
             </div>
             {/* Info: (20240223 - Shirley) Line 2 Content */}
             <Skeleton width={250} height={30} />{' '}
