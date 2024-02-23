@@ -15,7 +15,7 @@ import {StabilityLevel} from '../../constants/stability_level';
 import {IContract} from '../../interfaces/contract';
 import {IEvidence} from '../../interfaces/evidence';
 import {ITransactionDetail} from '../../interfaces/transaction';
-import {IRedFlagDetail} from '../../interfaces/red_flag';
+import {IRedFlagSearchResult} from '../../interfaces/red_flag';
 import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface ISearchingResultItemProps {
@@ -166,7 +166,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- RED FLAG -----------------
       case SearchType.RED_FLAG:
-        const {redFlagType, interactedAddresses} = data as IRedFlagDetail;
+        const {redFlagType, interactedAddresses} = data as IRedFlagSearchResult;
         const displayedRedFlagType = (
           <div className="flex items-center gap-2">
             <Image src="/icons/red_flag.svg" alt="red_flag_icon" width={24} height={24} />
