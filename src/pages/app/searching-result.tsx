@@ -20,6 +20,7 @@ import GlobalSearch from '../../components/global_search/global_search';
 import {BFAURL} from '../../constants/url';
 import {GetServerSideProps} from 'next';
 import {ParsedUrlQuery} from 'querystring';
+import Skeleton from '../../components/skeleton/skeleton';
 
 interface ISearchingResultPageProps {
   searchQuery: string;
@@ -29,10 +30,65 @@ interface IServerSideProps extends ParsedUrlQuery {
   search: string;
 }
 
+const SearchingResultItemSkeleton = () => {
+  return (
+    <div className="">
+      {/* Info: (20240223 - Shirley) Link */}
+      <div className="rounded-lg bg-darkPurple p-6 shadow-xl transition-all duration-300 ease-in-out hover:bg-purpleLinear lg:p-8">
+        {/* Info: (20240223 - Shirley) Title */}
+        <div className="flex w-full items-center lg:w-4/5">
+          {/* Info: (20240223 - Shirley) ID */}
+          <div className="flex-1">
+            {' '}
+            <Skeleton width={300} height={30} />
+          </div>
+          {/* Info: (20240223 - Shirley) SubTitle - For Desktop */}
+          <div className="hidden lg:block">
+            {' '}
+            <Skeleton width={100} height={20} />
+          </div>
+        </div>
+
+        {/* Info: (20240223 - Shirley) Content */}
+        <div className="flex flex-col items-center lg:px-12">
+          {/* Info: (20240223 - Shirley) Line 1 */}
+          <div className="flex w-full flex-col items-start gap-2 border-b border-darkPurple4 py-5 lg:flex-row lg:items-center">
+            <div className="flex w-200px items-center space-x-2">
+              <p className="text-base font-bold text-lilac">
+                <Skeleton width={200} height={30} />{' '}
+              </p>
+            </div>
+            {/* Info: (20240223 - Shirley) Line 1 Content */}
+            <Skeleton width={250} height={30} />{' '}
+          </div>
+          {/* Info: (20240223 - Shirley) Line 2 */}
+          <div className="flex w-full flex-col items-start gap-2 border-b border-darkPurple4 py-5 lg:flex-row lg:items-center">
+            <div className="flex w-200px items-center space-x-2">
+              <p className="text-base font-bold text-lilac">
+                <Skeleton width={200} height={30} />{' '}
+              </p>
+            </div>
+            {/* Info: (20240223 - Shirley) Line 2 Content */}
+            <Skeleton width={250} height={30} />{' '}
+          </div>
+
+          {/* Info: (20240223 - Shirley) SubTitle - For Mobile */}
+          <div className="flex items-center py-5 lg:hidden">
+            {' '}
+            <Skeleton width={100} height={20} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
   const {getSearchResult} = useContext(MarketContext);
+
+  const [isLoading, setIsLoading, isLoadingRef] = useStateRef(true);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -83,6 +139,13 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
+  const getSearchResultData = async (searchText: string) => {
+    try {
+      const data = await getSearchResult(searchText);
+      setSearchResult(data);
+    } catch (error) {}
+  };
+
   useEffect(() => {
     if (searchQuery) {
       setSearchText(searchQuery);
@@ -94,19 +157,22 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
 
   useEffect(() => {
     if (searchTextRef.current.length === 0) return;
-    getSearchResult(searchTextRef.current).then(data => {
-      setSearchResult(data);
-    });
+    (async () => {
+      setIsLoading(true);
+      await getSearchResultData(searchTextRef.current);
+      setIsLoading(false);
+    })();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTextRef.current]);
 
   useEffect(() => {
     const result = searchResult
+      /* TODO: don't filter data out by string (20240229 - Shirley)
       .filter(searchResult => {
         return true;
         // Info: (20231115 - Julian) filter by Search bar
-        /* Deprecated: don't filter data out by string (20240201 - Shirley)
+        
         // const searchTerm = searchTextRef.current.toLowerCase();
         // const id = searchResult.data.id.toLowerCase();
         // const chainId = searchResult.data.chainId.toLowerCase();
@@ -115,8 +181,8 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
         // return searchTerm === ''
         //   ? true
         //   : id.includes(searchTerm) || chainId.includes(searchTerm) || type.includes(searchTerm);
-        */
       })
+      */
       .filter(searchResult => {
         // Info: (20231115 - Julian) filter by Filter Tabs
         const type = searchResult.type;
@@ -147,9 +213,14 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText, sorting, activeTab, period, searchResult]);
 
-  const resultList = filteredResult.slice(startIdx, endIdx).map((searchResult, index) => {
-    return <SearchingResultItem key={index} searchResult={searchResult} />;
-  });
+  const resultList = !isLoadingRef.current
+    ? filteredResult.slice(startIdx, endIdx).map((searchResult, index) => {
+        return <SearchingResultItem key={index} searchResult={searchResult} />;
+      })
+    : Array.from({length: ITEM_PER_PAGE}).map((_, index) => (
+        <SearchingResultItemSkeleton key={index} />
+      ));
+  // <Skeleton width={300} height={300} />
 
   const displayedFilterTabs = filterTabs.map((tab, index) => {
     const tabClickHandler = () => setActiveTab(tab);
