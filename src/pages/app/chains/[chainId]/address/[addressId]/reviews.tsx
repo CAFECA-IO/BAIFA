@@ -17,12 +17,9 @@ import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {
   DEFAULT_CHAIN_ICON,
-  DEFAULT_REVIEW_COUNT,
   DEFAULT_TRUNCATE_LENGTH,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
-import ReviewItem from '../../../../../../components/review_item/review_item';
-import Skeleton from '../../../../../../components/skeleton/skeleton';
 import {SortingType} from '../../../../../../constants/api_request';
 
 interface IReviewDetailsPageProps {
@@ -39,13 +36,6 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [reviews, setReviews] = useState<IReviews>({} as IReviews);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-
-  // const getSoring = (sorting: string) => {
-  //   const sortingType = convertStringToSortingType(sorting);
-  //   // eslint-disable-next-line no-console
-  //   console.log('sorting', sorting, 'sortingType', sortingType);
-  //   getReviewData(chainId, addressId, sortingType);
-  // };
 
   const getReviewData = async (chainId: string, blockId: string, order: SortingType) => {
     try {
@@ -86,7 +76,6 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
   const backClickHandler = () => router.back();
 
   const displayedReviews = (
-    // !isLoading ? (
     <ReviewSection
       reviews={reviews}
       sorting={sorting}
@@ -94,26 +83,6 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
       isLoading={isLoading}
     />
   );
-  // ) : (
-  // <div className="flex w-full flex-col space-y-4">
-  //   <div className="flex w-full flex-col items-center justify-between space-y-10 rounded lg:flex-row lg:space-y-0">
-  //     <h2 className="text-6xl">
-  //       <Skeleton width={200} height={50} />
-  //     </h2>
-  //     {/* Info: (20231031 - Julian) Sort & Leave review button */}
-  //     <div className="flex flex-col items-end space-y-10 lg:space-y-4">
-  //       <Skeleton width={200} height={50} />
-  //       <Skeleton width={200} height={50} />
-  //     </div>
-  //   </div>
-  //   {/* Info: (20231031 - Julian) Reviews List */}
-  //   <div className="my-6 flex flex-col space-y-4 lg:space-y-0">
-  //     {Array.from({length: DEFAULT_REVIEW_COUNT}).map((_, index) => (
-  //       <ReviewItem key={index} review={{} as IReviewDetail} />
-  //     ))}
-  //   </div>
-  // </div>
-  // );
 
   return (
     <>

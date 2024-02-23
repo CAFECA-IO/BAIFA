@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {Dispatch, SetStateAction} from 'react';
 import {IReviewDetail, IReviews} from '../../interfaces/review';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';

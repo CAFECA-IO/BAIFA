@@ -31,7 +31,6 @@ import {
   DEFAULT_PAGE,
   DEFAULT_REVIEW_COUNT,
   DEFAULT_TRUNCATE_LENGTH,
-  ITEM_PER_PAGE,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
 import {
@@ -41,8 +40,6 @@ import {
   truncateText,
 } from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
-import {IProductionBlock} from '../../../../../../interfaces/block';
-import {SortingType} from '../../../../../../constants/api_request';
 import {isAddress} from 'web3-validator';
 import {IReviewDetail, IReviews} from '../../../../../../interfaces/review';
 import useStateRef from 'react-usestateref';
@@ -50,7 +47,6 @@ import {
   AddressDetailsContext,
   AddressDetailsProvider,
 } from '../../../../../../contexts/address_details_context';
-import Skeleton, {SkeletonList} from '../../../../../../components/skeleton/skeleton';
 import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 
