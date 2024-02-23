@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import {useState, useEffect, useContext} from 'react';
-import {AppContext} from '../../contexts/app_context';
+//import {AppContext} from '../../contexts/app_context';
 import {MarketContext} from '../../contexts/market_context';
 import useStateRef from 'react-usestateref';
 import NavBar from '../../components/nav_bar/nav_bar';
@@ -18,15 +18,21 @@ import {sortOldAndNewOptions} from '../../constants/config';
 
 const BlackListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const appCtx = useContext(AppContext);
-  const {blacklist} = useContext(MarketContext);
+  //const appCtx = useContext(AppContext);
+  const {getAllBlackList} = useContext(MarketContext);
+
+  const [blacklist, setBlacklist] = useState<IBlackList[]>([]);
 
   useEffect(() => {
-    // Info: (20231113 - Julian) Initialize App Context
-    if (!appCtx.isInit) {
-      appCtx.init();
-    }
-
+    const fetchBlacklist = async () => {
+      try {
+        const data = await getAllBlackList();
+        setBlacklist(data);
+      } catch (error) {
+        //console.log('getAllBlackList error', error);
+      }
+    };
+    fetchBlacklist();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

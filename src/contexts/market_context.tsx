@@ -43,13 +43,13 @@ export interface IMarketProvider {
 export interface IMarketContext {
   init: () => Promise<void>;
   promotionData: IPromotion;
-  chainList: IChainDetail[];
-  currencyList: ICurrency[];
-  blacklist: IBlackList[];
+  //chainList: IChainDetail[];
+  //currencyList: ICurrency[];
+  //blacklist: IBlackList[];
 
-  chainLoading: boolean;
+  //chainLoading: boolean;
 
-  getChains: () => Promise<void>;
+  getChains: () => Promise<IChainDetail[]>;
   getChainDetail: (chainId: string) => Promise<IChain>;
   getBlockList: (chainId: string, queryStr?: string) => Promise<IBlockList>;
   getBlockDetail: (chainId: string, blockId: string) => Promise<IBlockDetail>;
@@ -101,24 +101,27 @@ export interface IMarketContext {
     contractId: string,
     queryStr?: string
   ) => Promise<ITransaction[]>;
+
+  getCurrencies: () => Promise<ICurrency[]>;
   getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetailString>;
   getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlag[]>;
   getAllRedFlags: () => Promise<IRedFlag[]>;
   getRedFlagDetail: (redFlagId: string) => Promise<IRedFlagDetail>;
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
+  getAllBlackList: () => Promise<IBlackList[]>;
 }
 
 export const MarketContext = createContext<IMarketContext>({
   init: () => Promise.resolve(),
   promotionData: defaultPromotion,
-  chainList: [],
-  currencyList: [],
-  blacklist: [],
+  //chainList: [],
+  //currencyList: [],
+  //blacklist: [],
 
-  chainLoading: true,
+  //chainLoading: true,
 
-  getChains: () => Promise.resolve(),
+  getChains: () => Promise.resolve([] as IChainDetail[]),
   getChainDetail: () => Promise.resolve({} as IChain),
   getBlockList: () => Promise.resolve({} as IBlockList),
   getBlockDetail: () => Promise.resolve({} as IBlockDetail),
@@ -137,19 +140,21 @@ export const MarketContext = createContext<IMarketContext>({
   getContractTransactions: () => Promise.resolve([] as ITransaction[]),
   getEvidenceDetail: () => Promise.resolve({} as IEvidenceDetail),
   getEvidenceTransactions: () => Promise.resolve([] as ITransaction[]),
+  getCurrencies: () => Promise.resolve([] as ICurrency[]),
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetailString),
   getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlag[]),
   getAllRedFlags: () => Promise.resolve([] as IRedFlag[]),
   getRedFlagDetail: () => Promise.resolve({} as IRedFlagDetail),
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
+  getAllBlackList: () => Promise.resolve([] as IBlackList[]),
 });
 
 export const MarketProvider = ({children}: IMarketProvider) => {
   const [promotion, setPromotion] = useState<IPromotion>(defaultPromotion);
-  const [chainList, setChainList] = useState<IChainDetail[]>([]);
-  const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
-  const [blacklist, setBlacklist] = useState<IBlackList[]>([]);
+  //const [chainList, setChainList] = useState<IChainDetail[]>([]);
+  //const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
+  //const [blacklist, setBlacklist] = useState<IBlackList[]>([]);
 
   const [chainLoading, setChainLoading] = useState<boolean>(true);
 
@@ -174,12 +179,13 @@ export const MarketProvider = ({children}: IMarketProvider) => {
         method: 'GET',
       });
       data = await response.json();
-      setChainLoading(false);
+      // setChainLoading(false);
     } catch (error) {
       //console.log('getChains error', error);
     }
-    setChainList(data);
-  }, [setChainList]);
+    //setChainList(data);
+    return data;
+  }, []);
 
   const getCurrencies = useCallback(async () => {
     let data: ICurrency[] = [];
@@ -191,10 +197,11 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     } catch (error) {
       //console.log('getCurrencies error', error);
     }
-    setCurrencyList(data);
-  }, [setCurrencyList]);
+    //setCurrencyList(data);
+    return data;
+  }, []);
 
-  const getBlacklist = useCallback(async () => {
+  const getAllBlackList = useCallback(async () => {
     let data: IBlackList[] = [];
     try {
       const response = await fetch(`${APIURL.BLACKLIST}`, {
@@ -204,15 +211,16 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     } catch (error) {
       //console.log('getBlacklist error', error);
     }
-    setBlacklist(data);
-  }, [setBlacklist]);
+    //setBlacklist(data);
+    return data;
+  }, []);
 
   const init = useCallback(async () => {
     await getPromotion();
-    await getChains();
-    await getCurrencies();
-    await getBlacklist();
-  }, [getBlacklist, getChains, getCurrencies, getPromotion]);
+    //await getChains();
+    //await getCurrencies();
+    //await getBlacklist();
+  }, [getPromotion]);
 
   const getSuggestions = useCallback(async (searchInput: string) => {
     let data: ISuggestions = defaultSuggestions;
@@ -652,11 +660,11 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const defaultValues = {
     init,
     promotionData: promotion,
-    chainList: chainList,
-    currencyList: currencyList,
-    blacklist: blacklist,
+    //chainList: chainList,
+    //currencyList: currencyList,
+    //blacklist: blacklist,
 
-    chainLoading: chainLoading,
+    //chainLoading: chainLoading,
 
     getChains,
     getChainDetail,
@@ -677,12 +685,14 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getContractTransactions,
     getEvidenceDetail,
     getEvidenceTransactions,
+    getCurrencies,
     getCurrencyDetail,
     getRedFlagsFromCurrency,
     getAllRedFlags,
     getRedFlagDetail,
     getSearchResult,
     getSuggestions,
+    getAllBlackList,
   };
 
   return <MarketContext.Provider value={defaultValues}>{children}</MarketContext.Provider>;
