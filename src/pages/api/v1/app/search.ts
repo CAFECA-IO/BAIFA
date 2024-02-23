@@ -170,13 +170,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    // eslint-disable-next-line no-console
-    console.log('redFlags found', redFlags);
-
     redFlags.forEach(item => {
       if (item.related_addresses.some(address => address.startsWith(searchInput))) {
-        // eslint-disable-next-line no-console
-        console.log('found redFlags which startsWith searchInput', redFlags, searchInput);
         result.push({
           type: SearchType.RED_FLAG,
           data: {
