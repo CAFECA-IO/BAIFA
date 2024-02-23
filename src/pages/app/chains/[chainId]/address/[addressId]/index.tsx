@@ -29,7 +29,7 @@ import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu'
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
-  DEFAULT_REVIEW_COUNT,
+  DEFAULT_REVIEWS_COUNT_IN_PAGE,
   DEFAULT_TRUNCATE_LENGTH,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
@@ -93,7 +93,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const getReviewListData = async (chainId: string, addressId: string) => {
     try {
       const data = await getAddressReviewList(chainId, addressId, {
-        offset: DEFAULT_REVIEW_COUNT,
+        offset: DEFAULT_REVIEWS_COUNT_IN_PAGE,
         page: DEFAULT_PAGE,
         order: convertStringToSortingType(reviewSorting),
       });
@@ -144,14 +144,14 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
             return a.createdTimestamp - b.createdTimestamp;
           }
         })
-        .slice(0, DEFAULT_REVIEW_COUNT)
+        .slice(0, DEFAULT_REVIEWS_COUNT_IN_PAGE)
         // Info: (20231214 - Julian) Print reviews
         .map((review, index) => <ReviewItem key={index} review={review} />)
     ) : (
       <></>
     )
   ) : (
-    Array.from({length: DEFAULT_REVIEW_COUNT}, (_, index) => (
+    Array.from({length: DEFAULT_REVIEWS_COUNT_IN_PAGE}, (_, index) => (
       <ReviewItem key={index} review={{} as IReviewDetail} />
     ))
   );

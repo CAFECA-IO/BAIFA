@@ -6,7 +6,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import ReviewItem from '../review_item/review_item';
 import BoltButton from '../bolt_button/bolt_button';
 import {BFAURL} from '../../constants/url';
-import {DEFAULT_REVIEW_COUNT, sortOldAndNewOptions} from '../../constants/config';
+import {DEFAULT_REVIEWS_COUNT_IN_PAGE, sortOldAndNewOptions} from '../../constants/config';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {roundToDecimal} from '../../lib/common';
 import Skeleton from '../skeleton/skeleton';
@@ -65,7 +65,7 @@ const ReviewSection = ({reviews, sorting, setSorting, isLoading}: IReviewDetailS
       </div>
       {/* Info: (20231031 - Julian) Reviews List */}
       <div className="my-6 flex flex-col space-y-4 lg:space-y-0">
-        {Array.from({length: DEFAULT_REVIEW_COUNT}).map((_, index) => (
+        {Array.from({length: DEFAULT_REVIEWS_COUNT_IN_PAGE}).map((_, index) => (
           <ReviewItem key={index} review={{} as IReviewDetail} />
         ))}
       </div>

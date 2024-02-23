@@ -15,12 +15,72 @@ import RedFlagList from '../../../../../../components/red_flag_list/red_flag_lis
 import {useContext, useEffect, useRef, useState} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
-import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../../../../../constants/config';
+import {
+  DEFAULT_CHAIN_ICON,
+  DEFAULT_RED_FLAG_COUNT_IN_PAGE,
+  DEFAULT_TRUNCATE_LENGTH,
+  ITEM_PER_PAGE,
+} from '../../../../../../constants/config';
+import Skeleton from '../../../../../../components/skeleton/skeleton';
 
 interface IRedFlagOfAddressPageProps {
   chainId: string;
   addressId: string;
 }
+
+const RedFlagListSkeleton = () => {
+  const listSkeletons = Array.from({length: DEFAULT_RED_FLAG_COUNT_IN_PAGE}, (_, i) => (
+    <div key={i} className="flex w-full flex-col">
+      <div className="flex h-60px w-full items-center">
+        {/* Info: (20231109 - Julian) Flagging Time square */}
+        <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-darkPurple">
+          <Skeleton width={60} height={40} />{' '}
+        </div>
+        <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
+          {/* Info: (20231109 - Julian) Address ID */}
+          <Skeleton width={150} height={40} /> {/* Info: (20231109 - Julian) Flag Type */}
+          <div className="flex w-full justify-end">
+            <Skeleton width={80} height={40} />{' '}
+          </div>
+        </div>
+      </div>{' '}
+    </div>
+  ));
+  return (
+    <>
+      {/* Info: (20231109 - Julian) Search Filter */}
+      <div className="flex w-full flex-col items-end space-y-10">
+        {/* Info: (20231109 - Julian) Search Bar */}
+        <div className="mx-auto my-5 flex w-full justify-center lg:w-7/10">
+          <Skeleton width={800} height={40} />
+        </div>
+        <div className="flex w-full flex-col items-center gap-2 lg:h-72px lg:flex-row lg:justify-between">
+          {/* Info: (20231109 - Julian) Type Select Menu */}
+          <div className="relative flex w-full items-center space-y-2 text-base lg:w-200px">
+            <Skeleton width={1023} height={40} />
+          </div>
+          {/* Info: (20231109 - Julian) Date Picker */}
+          <div className="flex w-full items-center text-sm lg:w-220px lg:space-x-2">
+            <Skeleton width={1023} height={40} />{' '}
+          </div>
+          {/* Info: (20231109 - Julian) Sorting Menu */}
+          <div className="relative flex w-full items-center text-sm lg:w-220px lg:space-x-2">
+            <Skeleton width={1023} height={40} />
+          </div>
+        </div>
+      </div>
+
+      {/* Info: (20231109 - Julian) Red Flag List */}
+      <div className="mb-10 mt-16 flex w-full flex-col items-center space-y-0 lg:mt-10">
+        {listSkeletons}
+        {/* Info: Pagination (20240223 - Shirley) */}
+      </div>
+      <div className="flex w-full justify-center">
+        <Skeleton width={200} height={40} />{' '}
+      </div>
+    </>
+  );
+};
 
 const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -36,33 +96,28 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [redFlagData, setRedFlagData] = useState<IRedFlag[]>([]);
 
+  const getRedFlagData = async (chainId: string, addressId: string) => {
+    try {
+      const redFlagData = await getRedFlagsFromAddress(chainId, addressId);
+      setRedFlagData(redFlagData);
+    } catch (error) {
+      // console.log('getRedFlagData error', error);
+    }
+  };
+
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
 
-    const getRedFlagData = async (chainId: string, addressId: string) => {
-      const redFlagData = await getRedFlagsFromAddress(chainId, addressId);
-      setRedFlagData(redFlagData);
-    };
+    (async () => {
+      setIsLoading(true);
+      await getRedFlagData(chainId, addressId);
+      setIsLoading(false);
+    })();
 
-    getRedFlagData(chainId, addressId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (redFlagData) {
-      setRedFlagData(redFlagData);
-    }
-    timerRef.current = setTimeout(() => setIsLoading(false), 500);
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [redFlagData]);
 
   const backClickHandler = () => router.back();
 
@@ -70,7 +125,24 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
     <RedFlagList redFlagData={redFlagData} />
   ) : (
     // ToDo: (20231214 - Julian) Add loading animation
-    <h1>Loading...</h1>
+    <RedFlagListSkeleton />
+  );
+
+  const displayedAddress = !isLoading ? (
+    <div className="flex items-center space-x-2">
+      <Image
+        src={chainIcon.src}
+        alt={chainIcon.alt}
+        width={30}
+        height={30}
+        onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+      />
+      <p className="text-xl">
+        {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
+      </p>{' '}
+    </div>
+  ) : (
+    <Skeleton width={250} height={30} />
   );
 
   return (
@@ -98,19 +170,8 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
                   </span>
                   {t('RED_FLAG_DETAIL_PAGE.MAIN_TITLE')}
                 </h1>
-                <div className="flex items-center space-x-2">
-                  <Image
-                    src={chainIcon.src}
-                    alt={chainIcon.alt}
-                    width={30}
-                    height={30}
-                    onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
-                  />
-                  <p className="text-xl">
-                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}{' '}
-                    {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
-                  </p>
-                </div>
+
+                {displayedAddress}
               </div>
             </div>
 
