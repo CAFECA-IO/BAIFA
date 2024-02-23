@@ -13,10 +13,10 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {getChainIcon} from '../../../../../../lib/common';
-import {IDisplayTransaction} from '../../../../../../interfaces/transaction';
+import {ITransactionList} from '../../../../../../interfaces/transaction';
 import DatePicker from '../../../../../../components/date_picker/date_picker';
 import Pagination from '../../../../../../components/pagination/pagination';
-import SearchBar from '../../../../../../components/search_bar/search_bar';
+import {SearchBarWithKeyDown} from '../../../../../../components/search_bar/search_bar';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import TransactionList from '../../../../../../components/transaction_list/transaction_list';
 import {
@@ -37,6 +37,7 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   const appCtx = useContext(AppContext);
   const {getTransactionListOfBlock} = useContext(MarketContext);
   const router = useRouter();
+
   // Info: (20240220 - Julian) 搜尋條件
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
@@ -44,13 +45,8 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   // Info: (20240220 - Julian) API 查詢參數
   const [apiQueryStr, setApiQueryStr] = useState('');
   // Info: (20240220 - Julian) UI
-  const [transactionData, setTransitionData] = useState<IDisplayTransaction[]>([]);
+  const [transactionData, setTransitionData] = useState<ITransactionList>();
   const [isLoading, setIsLoading] = useState(true);
-
-  // Info: (20240215 - Julian) 計算總頁數
-  const [totalPages, setTotalPages] = useState<number>(
-    Math.ceil(transactionData.length / ITEM_PER_PAGE)
-  );
   const [activePage, setActivePage] = useState(1);
 
   const headTitle = `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_BLOCK')} ${blockId} - BAIFA`;
@@ -65,8 +61,6 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
     try {
       const data = await getTransactionListOfBlock(chainId, blockId, apiQueryStr);
       setTransitionData(data);
-      // Info: (20240215 - Julian) 每次取得資料後，重新計算總頁數
-      setTotalPages(Math.ceil(data.length / ITEM_PER_PAGE));
     } catch (error) {
       //console.log('getTransactionListOfBlock error', error);
     }
@@ -92,32 +86,38 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   }, [transactionData]);
 
   useEffect(() => {
-    // Info: (20240220 - Julian) 當日期或 blockId 改變時，重設 activePage
+    // Info: (20240220 - Julian) 當日期、search、排序條件改變時，將 activePage 設為 1
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, blockId]);
+  }, [period, search, sorting]);
 
   useEffect(() => {
     // Info: (20240220 - Julian) 當 activePage 改變時，重新取得資料
     getTransactionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activePage]);
+  }, [apiQueryStr]);
 
   useEffect(() => {
     // Info: (20240220 - Julian) 設定 API 查詢參數
-    // ToDo: (20240220 - Julian) date query string
     const pageQuery = `page=${activePage}`;
-    // Info: (20240220 - Julian) 當搜尋條件改變時，重新取得資料
-    setApiQueryStr(`${pageQuery}`);
-  }, [activePage, period]);
+    const sortQuery = `&sort=${sorting}`;
+    const searchQuery = search ? `&search=${search}` : '';
+    // Info: (20240222 - Julian) 檢查日期區間是否有效
+    const isPeriodValid = period.startTimeStamp && period.endTimeStamp;
+    const timeStampQuery = isPeriodValid
+      ? `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`
+      : '';
+    // Info: (20240222 - Julian) 當搜尋條件改變時，重新取得資料
+    setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${timeStampQuery}`);
+  }, [activePage, period, search, sorting]);
 
-  const displayTransactionList = isLoading ? (
-    // Info: (20240206 - Julian) Loading animation
-    <div className="flex w-full flex-col py-10 divide-y divide-darkPurple4 h-680px">
-      {Array.from({length: 10}).map((_, index) => (
+  // Info: (20240206 - Julian) Loading animation
+  const skeletonTransactionList = (
+    <div className="flex h-680px w-full flex-col divide-y divide-darkPurple4 py-10">
+      {Array.from({length: ITEM_PER_PAGE}).map((_, index) => (
         <div
           key={index}
-          className="flex w-full items-center gap-8 h-60px border-darkPurple4 border-b px-1"
+          className="flex h-60px w-full items-center gap-8 border-b border-darkPurple4 px-1"
         >
           <Skeleton width={50} height={50} />
           <Skeleton width={150} height={20} />
@@ -127,9 +127,16 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
         </div>
       ))}
     </div>
+  );
+
+  const transactionList = transactionData ?? {transactions: [], totalPages: 0};
+  const {transactions, totalPages} = transactionList;
+
+  const displayTransactionList = isLoading ? (
+    skeletonTransactionList
   ) : (
     <div className="flex w-full flex-col items-center">
-      <TransactionList transactions={transactionData} />
+      <TransactionList transactions={transactions} />
       <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
     </div>
   );
@@ -140,10 +147,10 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
       <div className="flex w-full flex-col items-center">
         {/* Info: (20240125 - Julian) Search Bar */}
         <div className="flex w-full items-center justify-center lg:w-7/10">
-          <SearchBar
-            searchBarPlaceholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_TRANSACTIONS')}
-            setSearch={setSearch}
-          />
+          {SearchBarWithKeyDown({
+            searchBarPlaceholder: t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_TRANSACTIONS'),
+            setSearch,
+          })}
         </div>
         <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
           {/* Info: (20240125 - Julian) Date Picker */}

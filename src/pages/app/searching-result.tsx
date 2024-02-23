@@ -89,6 +89,7 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     } else if (search) {
       setSearchText(search.toString());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -235,7 +236,7 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({query, locale}) => {
-  const {search = ''} = query as IServerSideProps; // Casting query to ensure type safety.
+  const {search = ''} = query as IServerSideProps; // Info: Casting query to ensure type safety. (20240202 - Shirley)
 
   return {
     props: {

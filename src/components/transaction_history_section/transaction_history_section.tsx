@@ -1,19 +1,11 @@
-import Image from 'next/image';
-import Link from 'next/link';
 import {useState, useEffect, useContext} from 'react';
 import useStateRef from 'react-usestateref';
 import SearchBar from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {
-  ITEM_PER_PAGE,
-  sortOldAndNewOptions,
-  default30DayPeriod,
-  DEFAULT_TRUNCATE_LENGTH,
-} from '../../constants/config';
-import {timestampToString, truncateText} from '../../lib/common';
-import {getDynamicUrl} from '../../constants/url';
+import {ITEM_PER_PAGE, sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
+import TransactionHistoryItem from '../transaction_history_item/transaction_history_item';
 import Pagination from '../pagination/pagination';
 import {IDisplayTransaction} from '../../interfaces/transaction';
 import DatePicker from '../date_picker/date_picker';
@@ -100,7 +92,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
     const pages =
       dataType === TransactionDataType.ADDRESS_DETAILS
         ? addressDetailsCtx.transactions.totalPage
-        : count / ITEM_PER_PAGE;
+        : Math.ceil(sortedTransaction.length / ITEM_PER_PAGE);
 
     setFilteredTransactions(sortedTransaction);
     setTransactionCount(count);
@@ -154,145 +146,14 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
   // Info: (20231113 - Julian) Pagination
   const transactionList = filteredTransactions
     ? TransactionDataType.ADDRESS_DETAILS === dataType
-      ? filteredTransactions.map((transaction, index) => {
-          const {id, chainId, createdTimestamp, status} = transaction;
-          const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
-
-          const createdStr = timestampToString(createdTimestamp);
-          // Info: (20231113 - Julian) If month is longer than 3 letters, slice it and add a dot
-          const monthStr =
-            t(createdStr.month).length > 3
-              ? `${t(createdStr.month).slice(0, 3)}.`
-              : t(createdStr.month);
-
-          const statusMappings: {[key: string]: {str: string; icon: string; style: string}} = {
-            'Pending': {
-              str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
-              icon: '/animations/trade_processing.gif',
-              style: 'text-hoverWhite',
-            },
-            'Success': {
-              str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
-              icon: '/icons/success_icon.svg',
-              style: 'text-lightGreen',
-            },
-            'Failed': {
-              str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
-              icon: '/icons/failed_icon.svg',
-              style: 'text-lightRed',
-            },
-          };
-
-          // Info: (20240222 - Liz) 如果 status 不是 Pending, Success, Failed 之一，就會顯示 Failed 的樣式
-          const statusStyle = statusMappings[status] ?? statusMappings['Failed'];
-
-          return (
-            // Info: (20231113 - Julian) Transaction History Item
-            <div key={index} className="flex h-60px w-full items-center">
-              {/* Info: (20231113 - Julian) Create Time square */}
-              <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-purpleLinear">
-                <p className="text-xl">{createdStr.day}</p>
-                <p className="text-xs">{monthStr}</p>
-                <p className="text-xs text-lilac">{createdStr.time}</p>
-              </div>
-              <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
-                {/* Info: (20231113 - Julian) Transaction ID & Type */}
-                <Link
-                  href={transactionLink}
-                  className="inline-flex flex-1 items-baseline space-x-2"
-                >
-                  <h2 title={transaction.id} className="text-sm lg:text-xl">
-                    {t('COMMON.TRANSACTION_HISTORY_TRANSACTION_ID')}
-                    <span className="text-primaryBlue">
-                      {' '}
-                      {truncateText(transaction.id, DEFAULT_TRUNCATE_LENGTH)}
-                    </span>
-                  </h2>
-                </Link>
-                {/* Info: (20231113 - Julian) Status */}
-                <div className="flex items-center space-x-2 px-2">
-                  <Image
-                    src={statusStyle.icon}
-                    width={16}
-                    height={16}
-                    alt={`${statusStyle.str}_icon`}
-                  />
-                  <p className={`hidden text-sm lg:block ${statusStyle.style}`}>
-                    {statusStyle.str}
-                  </p>
-                </div>
-              </div>
-            </div>
-          );
-        })
-      : filteredTransactions.slice(startIdx, endIdx).map((transaction, index) => {
-          const {id, chainId, createdTimestamp, status} = transaction;
-          const transactionLink = getDynamicUrl(chainId, `${id}`).TRANSACTION;
-
-          const createdStr = timestampToString(createdTimestamp);
-          // Info: (20231113 - Julian) If month is longer than 3 letters, slice it and add a dot
-          const monthStr =
-            t(createdStr.month).length > 3
-              ? `${t(createdStr.month).slice(0, 3)}.`
-              : t(createdStr.month);
-
-          const statusMappings: {[key: string]: {str: string; icon: string; style: string}} = {
-            'Pending': {
-              str: t('CHAIN_DETAIL_PAGE.STATUS_PROCESSING'),
-              icon: '/animations/trade_processing.gif',
-              style: 'text-hoverWhite',
-            },
-            'Success': {
-              str: t('CHAIN_DETAIL_PAGE.STATUS_SUCCESS'),
-              icon: '/icons/success_icon.svg',
-              style: 'text-lightGreen',
-            },
-            'Failed': {
-              str: t('CHAIN_DETAIL_PAGE.STATUS_FAILED'),
-              icon: '/icons/failed_icon.svg',
-              style: 'text-lightRed',
-            },
-          };
-
-          // Info: (20240222 - Liz) 如果 status 不是 Pending, Success, Failed 之一，就會顯示 Failed 的樣式
-          const statusStyle = statusMappings[status] ?? statusMappings['Failed'];
-
-          return (
-            // Info: (20231113 - Julian) Transaction History Item
-            <div key={index} className="flex h-60px w-full items-center">
-              {/* Info: (20231113 - Julian) Create Time square */}
-              <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-purpleLinear">
-                <p className="text-xl">{createdStr.day}</p>
-                <p className="text-xs">{monthStr}</p>
-                <p className="text-xs text-lilac">{createdStr.time}</p>
-              </div>
-              <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
-                {/* Info: (20231113 - Julian) Transaction ID & Type */}
-                <Link
-                  href={transactionLink}
-                  className="inline-flex flex-1 items-baseline space-x-2"
-                >
-                  <h2 className="text-sm lg:text-xl">
-                    {t('COMMON.TRANSACTION_HISTORY_TRANSACTION_ID')}
-                    <span className="text-primaryBlue"> {transaction.id}</span>
-                  </h2>
-                </Link>
-                {/* Info: (20231113 - Julian) Status */}
-                <div className="flex items-center space-x-2 px-2">
-                  <Image
-                    src={statusStyle.icon}
-                    width={16}
-                    height={16}
-                    alt={`${statusStyle.str}_icon`}
-                  />
-                  <p className={`hidden text-sm lg:block ${statusStyle.style}`}>
-                    {statusStyle.str}
-                  </p>
-                </div>
-              </div>
-            </div>
-          );
-        })
+      ? filteredTransactions.map((transaction, index) => (
+          <TransactionHistoryItem key={index} transaction={transaction} />
+        ))
+      : filteredTransactions
+          .slice(startIdx, endIdx)
+          .map((transaction, index) => (
+            <TransactionHistoryItem key={index} transaction={transaction} />
+          ))
     : [];
 
   const displayedAddressTransactions = !addressDetailsCtx.transactionsLoading ? (

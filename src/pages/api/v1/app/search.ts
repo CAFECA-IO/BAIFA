@@ -2,122 +2,30 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
-import {THRESHOLD_FOR_BLOCK_STABILITY} from '../../../../constants/config';
 import {calculateBlockStability, isValid64BitInteger} from '../../../../lib/common';
-import {IStabilityLevel, StabilityLevel} from '../../../../constants/stability_level';
-
-// Info: Base type for common fields (20240131 - Shirley)
-interface BaseResponseData {
-  id: string;
-  chainId: string;
-  createdTimestamp: number;
-}
-
-enum RESPONSE_DATA_TYPE {
-  BLOCK = 'BLOCK',
-  ADDRESS = 'ADDRESS',
-  CONTRACT = 'CONTRACT',
-  EVIDENCE = 'EVIDENCE',
-  TRANSACTION = 'TRANSACTION',
-  BLACKLIST = 'BLACKLIST',
-  RED_FLAG = 'RED_FLAG',
-}
-
-enum STABILITY {
-  HIGH = 'HIGH',
-  MEDIUM = 'MEDIUM',
-  LOW = 'LOW',
-}
-
-enum RISK_LEVEL {
-  LOW_RISK = 'LOW_RISK',
-  MEDIUM_RISK = 'MEDIUM_RISK',
-  HIGH_RISK = 'HIGH_RISK',
-}
-
-// Info: Extending BaseResponseData for specific types (20240131 - Shirley)
-interface ResponseDataBlock extends BaseResponseData {
-  stability: IStabilityLevel;
-}
-
-interface ResponseDataAddress extends BaseResponseData {
-  address: string;
-  flaggingCount: number;
-  riskLevel: RISK_LEVEL;
-}
-
-interface ResponseDataContract extends BaseResponseData {
-  contractAddress: string;
-}
-
-interface ResponseDataEvidence extends BaseResponseData {
-  evidenceAddress: string;
-}
-
-interface ResponseDataTransaction extends BaseResponseData {
-  hash: string;
-}
-
-interface ResponseDataBlacklist extends BaseResponseData {
-  address: string;
-  publicTag: string[];
-}
-
-interface ResponseDataRedFlag extends BaseResponseData {
-  redFlagType: string;
-  interactedAddresses?: {
-    id: string;
-    chainId: string;
-  }[];
-}
-
-// Info: Combining all types into a single union type (20240201 - Shirley)
-type ResponseDataItem =
-  | {
-      type: RESPONSE_DATA_TYPE.BLOCK;
-      data: ResponseDataBlock;
-    }
-  | {
-      type: RESPONSE_DATA_TYPE.ADDRESS;
-      data: ResponseDataAddress;
-    }
-  | {
-      type: RESPONSE_DATA_TYPE.CONTRACT;
-      data: ResponseDataContract;
-    }
-  | {
-      type: RESPONSE_DATA_TYPE.EVIDENCE;
-      data: ResponseDataEvidence;
-    }
-  | {
-      type: RESPONSE_DATA_TYPE.TRANSACTION;
-      data: ResponseDataTransaction;
-    }
-  | {
-      type: RESPONSE_DATA_TYPE.BLACKLIST;
-      data: ResponseDataBlacklist;
-    }
-  | {
-      type: RESPONSE_DATA_TYPE.RED_FLAG;
-      data: ResponseDataRedFlag;
-    };
+import {StabilityLevel} from '../../../../constants/stability_level';
+import {ISearchResult} from '../../../../interfaces/search_result';
+import {SearchType} from '../../../../constants/search_type';
+import {RiskLevel} from '../../../../constants/risk_level';
 
 // Info: Array of ResponseDataItem (20240131 - Shirley)
-type ResponseData = ResponseDataItem[];
+type ResponseData = ISearchResult[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
 
   const searchInput = req.query.search_input as string;
 
-  if (!searchInput) {
+  if (!searchInput || searchInput === '0x') {
     return res.status(400).json([]);
   }
 
-  const result: ResponseDataItem[] = [];
+  const result: ISearchResult[] = [];
   let stability = StabilityLevel.LOW;
 
   try {
+    const searchId = isValid64BitInteger(searchInput) ? parseInt(searchInput, 10) : undefined;
+
     // Info: calculate the stability for the targeted block (20240201 - Shirley)
     const latestBlock = await prisma.blocks.findFirst({
       orderBy: {
@@ -132,54 +40,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    const blocks = await prisma.blocks.findMany({
-      orderBy: {
-        created_timestamp: 'desc',
-      },
-      where: {
-        OR: [
-          {
-            hash: {
-              contains: searchInput,
-            },
-          },
-          {
-            id:
-              !searchInput.startsWith('0x') && isValid64BitInteger(searchInput)
-                ? +searchInput
-                : undefined,
-          },
-        ],
-      },
-      select: {
-        id: true,
-        chain_id: true,
-        created_timestamp: true,
-        hash: true,
-        number: true,
-      },
-    });
-
-    blocks.forEach(item => {
-      if (latestBlock && latestBlock.number && item.number) {
-        stability = calculateBlockStability(item.number, latestBlock.number);
-      }
-
-      result.push({
-        type: RESPONSE_DATA_TYPE.BLOCK,
-        data: {
-          id: `${item.number}`,
-          chainId: `${item.chain_id}`,
-          createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-          stability: stability,
+    if (!!searchId) {
+      const blocks = await prisma.blocks.findMany({
+        orderBy: {
+          created_timestamp: 'desc',
+        },
+        where: {
+          number: searchId,
+        },
+        select: {
+          id: true,
+          chain_id: true,
+          created_timestamp: true,
+          hash: true,
+          number: true,
         },
       });
-    });
+
+      blocks.forEach(item => {
+        if (latestBlock && latestBlock.number) {
+          const targetBlockId = item.number ? +item.number : 0;
+          stability = calculateBlockStability(targetBlockId, latestBlock.number);
+        }
+
+        result.push({
+          type: SearchType.BLOCK,
+          data: {
+            id: `${item.number}`,
+            chainId: `${item.chain_id}`,
+            createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
+            stability: stability,
+          },
+        });
+      });
+    }
 
     const transactions = await prisma.transactions.findMany({
       where: {
         hash: {
-          contains: searchInput,
+          startsWith: searchInput,
         },
       },
       select: {
@@ -192,7 +91,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     transactions.forEach(item => {
       result.push({
-        type: RESPONSE_DATA_TYPE.TRANSACTION,
+        type: SearchType.TRANSACTION,
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
@@ -205,7 +104,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const contracts = await prisma.contracts.findMany({
       where: {
         contract_address: {
-          contains: searchInput,
+          startsWith: searchInput,
         },
       },
       select: {
@@ -218,7 +117,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     contracts.forEach(item => {
       result.push({
-        type: RESPONSE_DATA_TYPE.CONTRACT,
+        type: SearchType.CONTRACT,
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
@@ -230,7 +129,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const evidences = await prisma.evidences.findMany({
       where: {
-        OR: [{evidence_id: {contains: searchInput}}, {contract_address: {contains: searchInput}}],
+        OR: [
+          {evidence_id: {startsWith: searchInput}},
+          {contract_address: {startsWith: searchInput}},
+        ],
       },
       select: {
         id: true,
@@ -243,7 +145,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     evidences.forEach(item => {
       result.push({
-        type: RESPONSE_DATA_TYPE.EVIDENCE,
+        type: SearchType.EVIDENCE,
         data: {
           id: `${item.evidence_id}`,
           chainId: `${item.chain_id}`,
@@ -271,7 +173,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     redFlags.forEach(item => {
       if (item.related_addresses.some(address => address.startsWith(searchInput))) {
         result.push({
-          type: RESPONSE_DATA_TYPE.RED_FLAG,
+          type: SearchType.RED_FLAG,
           data: {
             id: `${item.id}`,
             chainId: `${item.chain_id}`,
@@ -290,19 +192,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const addresses = await prisma.addresses.findMany({
       where: {
-        OR: [
-          {
-            address: {
-              contains: searchInput,
-            },
-          },
-          {
-            id:
-              !searchInput.startsWith('0x') && isValid64BitInteger(searchInput)
-                ? +searchInput
-                : undefined,
-          },
-        ],
+        address: {
+          startsWith: searchInput,
+        },
       },
       select: {
         id: true,
@@ -314,14 +206,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     addresses.forEach(item => {
       result.push({
-        type: RESPONSE_DATA_TYPE.ADDRESS,
+        type: SearchType.ADDRESS,
         data: {
           id: `${item.id}`,
           chainId: `${item.chain_id}`,
           createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
           address: `${item.address}`,
           flaggingCount: redFlags.length,
-          riskLevel: RISK_LEVEL.LOW_RISK,
+          riskLevel: RiskLevel.LOW_RISK, // TODO: Risk level calculation (20240201 - Shirley)
         },
       });
     });
@@ -329,8 +221,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: Find public tags with tag_type "9" matching search input (20240216 - Shirley)
     const blacklistedAddresses = await prisma.public_tags.findMany({
       where: {
-        name: {
-          contains: searchInput,
+        target: {
+          startsWith: searchInput,
         },
         tag_type: '9',
       },
@@ -367,10 +259,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       select: {
         address: true,
         chain_id: true,
+        latest_active_time: true,
       },
     });
 
     const chainIdMap = new Map();
+    const lastActiveTimeMap = new Map();
+
+    addressesChainIds.forEach(address =>
+      lastActiveTimeMap.set(address.address, address.latest_active_time)
+    );
 
     contractsChainIds.forEach(contract =>
       chainIdMap.set(contract.contract_address, contract.chain_id)
@@ -380,16 +278,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     blacklistedAddresses.forEach(item => {
       const chainId = chainIdMap.get(item.target) ?? '';
       result.push({
-        type: RESPONSE_DATA_TYPE.BLACKLIST,
+        type: SearchType.BLACKLIST,
         data: {
           id: `${item?.id}`,
           chainId: `${chainId}`,
           createdTimestamp: item?.created_timestamp ? item?.created_timestamp : 0,
           address: `${item.target}`,
-          publicTag: [`${item.target_type}`],
+          targetType: `${item.target_type}`, // TODO: 需要參考 codes table，回傳能判斷的字串，現在直接回傳 DB 裡面存的 target_type (20240216 - Shirley)
+          latestActiveTime: lastActiveTimeMap.get(item.target) ?? 0,
+          tagName: `${item.name}`,
         },
       });
     });
+
+    // eslint-disable-next-line no-console
+    console.log('search result API', result);
 
     res.status(200).json(result);
   } catch (error) {

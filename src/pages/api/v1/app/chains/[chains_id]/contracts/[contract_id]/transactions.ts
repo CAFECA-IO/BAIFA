@@ -13,7 +13,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   // Info: (20240216 - Julian) 解構 URL 參數，同時進行類型轉換
   const contractId = typeof req.query.contract_id === 'string' ? req.query.contract_id : undefined;
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : 0;
+  const page =
+    typeof req.query.transaction_page === 'string' ? parseInt(req.query.transaction_page) : 0;
   const start_date =
     typeof req.query.start_date === 'string' ? parseInt(req.query.start_date) : undefined;
   const end_date =

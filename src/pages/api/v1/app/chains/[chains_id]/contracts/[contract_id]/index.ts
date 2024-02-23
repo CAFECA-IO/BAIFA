@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         creatorAddressId: `${contractData.creator_address}`,
         createdTimestamp: contractData.created_timestamp ?? 0,
         sourceCode: `${contractData.source_code}`,
-        publicTag: [], // ToDo: (20240124 - Julian) 補上這個欄位
+        publicTag: ['Unknown User'], // ToDo: (20240124 - Julian) 補上這個欄位
       }
     : undefined;
 

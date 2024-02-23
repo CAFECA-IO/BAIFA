@@ -97,11 +97,11 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const displayedTitle = isLoading ? (
     // Info: (20240206 - Julian) Loading animation
     <>
-      <div className="lg:flex hidden items-center justify-center space-x-4 p-5">
+      <div className="hidden items-center justify-center space-x-4 p-5 lg:flex">
         <Skeleton width={60} height={60} rounded />
         <Skeleton width={250} height={60} />
       </div>
-      <div className="flex lg:hidden items-center justify-center space-x-4 p-5">
+      <div className="flex items-center justify-center space-x-4 p-5 lg:hidden">
         <Skeleton width={30} height={30} rounded />
         <Skeleton width={100} height={30} />
       </div>
@@ -116,6 +116,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
         height={30}
         // Info: (20230206 - Julian) If the image fails to load, it will display the default icon.
         onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+        priority
       />
       <Image
         className="hidden lg:block"
@@ -124,6 +125,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
         width={60}
         height={60}
         onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+        priority
       />
       <h1>{chainName}</h1>
     </div>

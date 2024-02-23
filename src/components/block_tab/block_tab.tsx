@@ -5,13 +5,12 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IBlockList} from '../../interfaces/block';
 import DatePicker from '../date_picker/date_picker';
-//import SearchBar from '../search_bar/search_bar';
+import {SearchBarWithKeyDown} from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
-import {sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
+import {sortOldAndNewOptions, default30DayPeriod, ITEM_PER_PAGE} from '../../constants/config';
 import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
 import Skeleton from '../skeleton/skeleton';
-import {RiSearchLine} from 'react-icons/ri';
 
 interface IBlockTabProps {
   chainDetailLoading: boolean;
@@ -34,13 +33,6 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
   const [blockList, setBlockList] = useState<IBlockList>();
   const [isLoading, setIsLoading] = useState(true);
   const [activePage, setActivePage] = useState(1);
-
-  // Info: (20240221 - Julian) 按下 Enter 鍵時，修改 search state 並觸發搜尋
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      setSearch(e.currentTarget.value);
-    }
-  };
 
   // Info: (20240119 - Julian) Call API to get block data
   const getBlockData = async () => {
@@ -68,7 +60,6 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
 
   useEffect(() => {
     // Info: (20240220 - Julian) 當日期、排序條件改變時，將 activePage 設為 1
-    // ToDo: (20240220 - Julian) 關鍵字
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, sorting, search]);
@@ -95,27 +86,27 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
 
   const {blocks, totalPages} = blockList ?? {blocks: [], totalPages: 0};
 
+  // Info: (20240206 - Julian) Loading animation
+  const skeletonBlockList = (
+    <div className="flex h-680px w-full flex-col py-10">
+      {Array.from({length: ITEM_PER_PAGE}).map((_, index) => (
+        <div
+          key={index}
+          className="flex h-60px w-full items-center gap-8 border-b border-darkPurple4 px-1"
+        >
+          <Skeleton width={50} height={50} />
+          <Skeleton width={150} height={20} />
+          <div className="ml-auto">
+            <Skeleton width={80} height={20} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   const isShowBlockList =
     // Info: (20240220 - Julian) BlockTab 和 ChainDetailPage 都完成 Loading 後才顯示 BlockList
-    isLoading || chainDetailLoading ? (
-      // Info: (20240206 - Julian) Loading animation
-      <div className="flex h-680px w-full flex-col py-10">
-        {Array.from({length: 10}).map((_, index) => (
-          <div
-            key={index}
-            className="flex h-60px w-full items-center gap-8 border-b border-darkPurple4 px-1"
-          >
-            <Skeleton width={50} height={50} />
-            <Skeleton width={150} height={20} />
-            <div className="ml-auto">
-              <Skeleton width={80} height={20} />
-            </div>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <BlockList blockData={blocks} />
-    );
+    isLoading || chainDetailLoading ? skeletonBlockList : <BlockList blockData={blocks} />;
 
   return (
     <div className="flex w-full flex-col items-center font-inter">
@@ -123,18 +114,10 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
       <div className="flex w-full flex-col items-center">
         {/* Info: (20231101 - Julian) Search Bar */}
         <div className="w-full lg:w-7/10">
-          {/* Info: (20240221 - Julian) Search Bar */}
-          <div className="relative w-full drop-shadow-xl">
-            <input
-              type="search"
-              className="w-full items-center rounded-full bg-purpleLinear px-6 py-3 text-base placeholder:text-sm placeholder:lg:text-base"
-              placeholder={t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_BLOCKS')}
-              onKeyDown={handleKeyDown}
-            />
-            <div className="absolute right-5 top-3 text-2xl">
-              <RiSearchLine />
-            </div>
-          </div>
+          {SearchBarWithKeyDown({
+            searchBarPlaceholder: t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_BLOCKS'),
+            setSearch: setSearch,
+          })}
         </div>
         <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
           {/* Info: (20231101 - Julian) Date Picker */}
