@@ -5,7 +5,7 @@ import {useRouter} from 'next/router';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../../../components/footer/footer';
 import ReviewSection from '../../../../../../components/review_section/review_section';
-import {IReviews} from '../../../../../../interfaces/review';
+import {IReviewDetail, IReviews} from '../../../../../../interfaces/review';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {getChainIcon, truncateText} from '../../../../../../lib/common';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
@@ -15,7 +15,13 @@ import {TranslateFunction} from '../../../../../../interfaces/locale';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
-import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../../../../../constants/config';
+import {
+  DEFAULT_CHAIN_ICON,
+  DEFAULT_REVIEW_COUNT,
+  DEFAULT_TRUNCATE_LENGTH,
+} from '../../../../../../constants/config';
+import ReviewItem from '../../../../../../components/review_item/review_item';
+import Skeleton from '../../../../../../components/skeleton/skeleton';
 
 interface IReviewDetailsPageProps {
   addressId: string;
@@ -31,37 +37,27 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [reviews, setReviews] = useState<IReviews>({} as IReviews);
 
+  const getReviewData = async (chainId: string, blockId: string) => {
+    try {
+      const data = await getReviews(chainId, blockId);
+      setReviews(data);
+    } catch (error) {
+      //console.log('getAddressData error', error);
+    }
+  };
+
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
+    (async () => {
+      setIsLoading(true);
+      await getReviewData(chainId, addressId);
+      setIsLoading(false);
+    })();
 
-    const getReviewData = async (chainId: string, blockId: string) => {
-      try {
-        const data = await getReviews(chainId, blockId);
-        setReviews(data);
-      } catch (error) {
-        //console.log('getAddressData error', error);
-      }
-    };
-
-    getReviewData(chainId, addressId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (reviews) {
-      setReviews(reviews);
-    }
-    timerRef.current = setTimeout(() => setIsLoading(false), 500);
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [reviews]);
 
   const headTitle = `${t('REVIEWS_PAGE.TITLE')} ${t('COMMON.OF')} ${t(
     'ADDRESS_DETAIL_PAGE.MAIN_TITLE'
@@ -70,7 +66,28 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
 
   const backClickHandler = () => router.back();
 
-  const displayedReviews = !isLoading ? <ReviewSection reviews={reviews} /> : <h1>Loading...</h1>;
+  const displayedReviews = !isLoading ? (
+    <ReviewSection reviews={reviews} />
+  ) : (
+    <div className="flex w-full flex-col space-y-4">
+      <div className="flex w-full flex-col items-center justify-between space-y-10 rounded lg:flex-row lg:space-y-0">
+        <h2 className="text-6xl">
+          <Skeleton width={200} height={50} />
+        </h2>
+        {/* Info: (20231031 - Julian) Sort & Leave review button */}
+        <div className="flex flex-col items-end space-y-10 lg:space-y-4">
+          <Skeleton width={200} height={50} />
+          <Skeleton width={200} height={50} />
+        </div>
+      </div>
+      {/* Info: (20231031 - Julian) Reviews List */}
+      <div className="my-6 flex flex-col space-y-4 lg:space-y-0">
+        {Array.from({length: DEFAULT_REVIEW_COUNT}).map((_, index) => (
+          <ReviewItem key={index} review={{} as IReviewDetail} />
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <>
