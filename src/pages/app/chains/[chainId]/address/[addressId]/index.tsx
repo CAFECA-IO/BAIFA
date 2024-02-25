@@ -29,9 +29,8 @@ import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu'
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
-  DEFAULT_REVIEW_COUNT,
+  DEFAULT_REVIEWS_COUNT_IN_PAGE,
   DEFAULT_TRUNCATE_LENGTH,
-  ITEM_PER_PAGE,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
 import {
@@ -41,8 +40,6 @@ import {
   truncateText,
 } from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
-import {IProductionBlock} from '../../../../../../interfaces/block';
-import {SortingType} from '../../../../../../constants/api_request';
 import {isAddress} from 'web3-validator';
 import {IReviewDetail, IReviews} from '../../../../../../interfaces/review';
 import useStateRef from 'react-usestateref';
@@ -50,7 +47,6 @@ import {
   AddressDetailsContext,
   AddressDetailsProvider,
 } from '../../../../../../contexts/address_details_context';
-import Skeleton, {SkeletonList} from '../../../../../../components/skeleton/skeleton';
 import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 
@@ -97,7 +93,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const getReviewListData = async (chainId: string, addressId: string) => {
     try {
       const data = await getAddressReviewList(chainId, addressId, {
-        offset: DEFAULT_REVIEW_COUNT,
+        offset: DEFAULT_REVIEWS_COUNT_IN_PAGE,
         page: DEFAULT_PAGE,
         order: convertStringToSortingType(reviewSorting),
       });
@@ -148,14 +144,14 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
             return a.createdTimestamp - b.createdTimestamp;
           }
         })
-        .slice(0, DEFAULT_REVIEW_COUNT)
+        .slice(0, DEFAULT_REVIEWS_COUNT_IN_PAGE)
         // Info: (20231214 - Julian) Print reviews
         .map((review, index) => <ReviewItem key={index} review={review} />)
     ) : (
       <></>
     )
   ) : (
-    Array.from({length: DEFAULT_REVIEW_COUNT}, (_, index) => (
+    Array.from({length: DEFAULT_REVIEWS_COUNT_IN_PAGE}, (_, index) => (
       <ReviewItem key={index} review={{} as IReviewDetail} />
     ))
   );

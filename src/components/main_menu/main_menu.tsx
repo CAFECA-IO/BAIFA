@@ -5,6 +5,7 @@ import {MarketContext} from '../../contexts/market_context';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
+import Skeleton from '../skeleton/skeleton';
 
 const MainMenu = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -41,15 +42,7 @@ const MainMenu = () => {
           <Image src={icon} width={80} height={80} alt={alt} />
           {/* Info: if the description is NaN, show the animation */}
           {description === 'N/A' || isNaN(+description) ? (
-            <div
-              role="status"
-              className="animate-pulse space-y-8 rtl:space-x-reverse md:flex md:items-center md:space-x-8 md:space-y-0"
-            >
-              <div className="w-full">
-                <div className="my-2 h-5 w-20 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-              </div>
-              <span className="sr-only">Loading...</span>
-            </div>
+            <Skeleton width={60} height={20} />
           ) : (
             <div className="flex text-3xl font-bold text-primaryBlue">{description}</div>
           )}{' '}

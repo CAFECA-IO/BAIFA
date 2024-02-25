@@ -82,7 +82,7 @@ export interface IMarketContext {
     addressId: string,
     options?: IAddressHistoryQuery
   ) => Promise<IProducedBlock>;
-  getReviews: (chainId: string, addressId: string) => Promise<IReviews>;
+  getReviews: (chainId: string, addressId: string, order?: SortingType) => Promise<IReviews>;
   getRedFlagsFromAddress: (chainId: string, addressId: string) => Promise<IRedFlag[]>;
   getInteractions: (
     chainId: string,
@@ -483,18 +483,31 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   };
 
-  const getReviews = useCallback(async (chainId: string, addressId: string) => {
-    let data: IReviews = {} as IReviews;
-    try {
-      const response = await fetch(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}/reviews`, {
-        method: 'GET',
-      });
-      data = await response.json();
-    } catch (error) {
-      //console.log('getReviews error', error);
-    }
-    return data;
-  }, []);
+  const getReviews = useCallback(
+    async (chainId: string, addressId: string, order?: SortingType) => {
+      let data: IReviews = {} as IReviews;
+      try {
+        const queryParams = new URLSearchParams();
+        if (order) {
+          queryParams.set('order', order);
+        } else {
+          queryParams.set('order', SortingType.DESC);
+        }
+
+        const response = await fetch(
+          `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/reviews?${queryParams.toString()}`,
+          {
+            method: 'GET',
+          }
+        );
+        data = await response.json();
+      } catch (error) {
+        //console.log('getReviews error', error);
+      }
+      return data;
+    },
+    []
+  );
 
   const getRedFlagsFromAddress = useCallback(async (chainId: string, addressId: string) => {
     let data: IRedFlag[] = [];

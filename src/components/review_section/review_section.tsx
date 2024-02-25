@@ -1,24 +1,26 @@
 import Link from 'next/link';
-import {useState} from 'react';
-import {IReviews} from '../../interfaces/review';
+import {Dispatch, SetStateAction} from 'react';
+import {IReviewDetail, IReviews} from '../../interfaces/review';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import ReviewItem from '../review_item/review_item';
 import BoltButton from '../bolt_button/bolt_button';
 import {BFAURL} from '../../constants/url';
-import {sortOldAndNewOptions} from '../../constants/config';
+import {DEFAULT_REVIEWS_COUNT_IN_PAGE, sortOldAndNewOptions} from '../../constants/config';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {roundToDecimal} from '../../lib/common';
+import Skeleton from '../skeleton/skeleton';
 
 interface IReviewDetailSection {
   reviews: IReviews;
+  sorting: string;
+  setSorting: Dispatch<SetStateAction<string>>;
+  isLoading?: boolean;
 }
 
-const ReviewSection = ({reviews}: IReviewDetailSection) => {
+const ReviewSection = ({reviews, sorting, setSorting, isLoading}: IReviewDetailSection) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {score, reviewData} = reviews;
-
-  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
 
   const sortedReviews = reviewData
     ? reviewData.sort((a, b) => {
@@ -43,7 +45,32 @@ const ReviewSection = ({reviews}: IReviewDetailSection) => {
     </Link>
   );
 
-  return (
+  const displayedReviewSection = isLoading ? (
+    <div className="flex w-full flex-col space-y-4">
+      <div className="flex w-full flex-col items-center justify-between space-y-10 rounded lg:flex-row lg:space-y-0">
+        <h2 className="text-6xl">
+          <Skeleton width={200} height={50} />
+        </h2>
+        {/* Info: (20231031 - Julian) Sort & Leave review button */}
+        <div className="flex flex-col items-end space-y-10 lg:space-y-4">
+          {leaveReviewButton}
+          <SortingMenu
+            sortingOptions={sortOldAndNewOptions}
+            sorting={sorting}
+            setSorting={setSorting}
+            bgColor="bg-darkPurple"
+            loading={isLoading}
+          />{' '}
+        </div>
+      </div>
+      {/* Info: (20231031 - Julian) Reviews List */}
+      <div className="my-6 flex flex-col space-y-4 lg:space-y-0">
+        {Array.from({length: DEFAULT_REVIEWS_COUNT_IN_PAGE}).map((_, index) => (
+          <ReviewItem key={index} review={{} as IReviewDetail} />
+        ))}
+      </div>
+    </div>
+  ) : (
     <div className="flex w-full flex-col space-y-4">
       <div className="flex w-full flex-col items-center justify-between space-y-10 rounded lg:flex-row lg:space-y-0">
         <h2 className="text-6xl">
@@ -58,6 +85,7 @@ const ReviewSection = ({reviews}: IReviewDetailSection) => {
             sorting={sorting}
             setSorting={setSorting}
             bgColor="bg-darkPurple"
+            loading={isLoading}
           />
         </div>
       </div>
@@ -65,6 +93,8 @@ const ReviewSection = ({reviews}: IReviewDetailSection) => {
       <div className="my-6 flex flex-col space-y-4 lg:space-y-0">{displayedReviews}</div>
     </div>
   );
+
+  return <>{displayedReviewSection}</>;
 };
 
 export default ReviewSection;

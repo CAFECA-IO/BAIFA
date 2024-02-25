@@ -297,7 +297,21 @@
     "ITEM_TITLE_RED_FLAG": "警示記錄",
     "ITEM_SUBTITLE_RED_FLAG": "警示記錄",
     "ITEM_LINE_1_RED_FLAG": "警示類型",
-    "ITEM_LINE_2_RED_FLAG": "關聯地址"
+    "ITEM_LINE_2_RED_FLAG": "關聯地址",
+    "TOOL_TIP_1_BLOCK": "區塊資料的信賴等級",
+    "TOOL_TIP_2_BLOCK": "區塊生成的日期與時間。",
+    "TOOL_TIP_1_ADDRESS": "地址的唯一識別碼。",
+    "TOOL_TIP_2_ADDRESS": "地址發生的可疑行為記錄。",
+    "TOOL_TIP_1_CONTRACT": "合約的唯一識別碼。",
+    "TOOL_TIP_2_CONTRACT": "合約在區塊鏈上建立日期與時間。",
+    "TOOL_TIP_1_EVIDENCE": "證據的唯一識別碼。",
+    "TOOL_TIP_2_EVIDENCE": "證據在區塊鏈上建立日期與時間。",
+    "TOOL_TIP_1_TRANSACTION": "交易的唯一識別碼。",
+    "TOOL_TIP_2_TRANSACTION": "交易完成的日期與時間。",
+    "TOOL_TIP_1_BLACKLIST": "地址的唯一識別碼。",
+    "TOOL_TIP_2_BLACKLIST": "地址發生的可疑行為記錄。",
+    "TOOL_TIP_1_RED_FLAG": "警示記錄的唯一識別碼。",
+    "TOOL_TIP_2_RED_FLAG": "警示記錄的詳細內容。"
   },
   "DATE_PICKER": {
     "DATE": "日期",

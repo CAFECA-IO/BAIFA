@@ -297,7 +297,21 @@
     "ITEM_TITLE_RED_FLAG": "警示记录",
     "ITEM_SUBTITLE_RED_FLAG": "警示记录",
     "ITEM_LINE_1_RED_FLAG": "警示类型",
-    "ITEM_LINE_2_RED_FLAG": "关联地址"
+    "ITEM_LINE_2_RED_FLAG": "关联地址",
+    "TOOL_TIP_1_BLOCK": "区块资料的信赖等级",
+    "TOOL_TIP_2_BLOCK": "区块生成的日期与时间。",
+    "TOOL_TIP_1_ADDRESS": "地址的唯一识别码。",
+    "TOOL_TIP_2_ADDRESS": "地址发生的可疑行为记录。",
+    "TOOL_TIP_1_CONTRACT": "合约的唯一识别码。",
+    "TOOL_TIP_2_CONTRACT": "合约在区块链上建立日期与时间。",
+    "TOOL_TIP_1_EVIDENCE": "证据的唯一识别码。",
+    "TOOL_TIP_2_EVIDENCE": "证据在区块链上建立日期与时间。",
+    "TOOL_TIP_1_TRANSACTION": "交易的唯一识别码。",
+    "TOOL_TIP_2_TRANSACTION": "交易完成的日期与时间。",
+    "TOOL_TIP_1_BLACKLIST": "地址的唯一识别码。",
+    "TOOL_TIP_2_BLACKLIST": "地址发生的可疑行为记录。",
+    "TOOL_TIP_1_RED_FLAG": "警示记录的唯一识别码。",
+    "TOOL_TIP_2_RED_FLAG": "警示记录的详细内容。"
   },
   "DATE_PICKER": {
     "DATE": "日期",
