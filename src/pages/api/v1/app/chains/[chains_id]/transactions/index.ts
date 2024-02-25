@@ -123,10 +123,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240119 - Julian) 查詢條件
     const where = {
       chain_id: chain_id,
+      // Info: (20240118 - Julian) 選出 from_address 或 to_address 有包含 addressId 的交易
       OR: [
-        // Info: (20240118 - Julian) 選出 from_address 或 to_address 有包含 addressId 的交易
-        {from_address: {equals: addressId[0] || addressId[1]}},
-        {to_address: {equals: addressId[0] || addressId[1]}},
+        // 1. from_address = addressId[0] and to_address = addressId[1]
+        {from_address: addressId[0], to_address: addressId[1]},
+        // 2. from_address = addressId[1] and to_address = addressId[0]
+        {from_address: addressId[1], to_address: addressId[0]},
       ],
       created_timestamp: {
         gte: start_date,

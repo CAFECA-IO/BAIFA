@@ -59,10 +59,10 @@ const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
   }, [chainId, transactionData]);
 
   useEffect(() => {
-    // Info: (20240222 - Julian) 當 period, search 或 sorting 改變時，將 activePage 設為 1
+    // Info: (20240222 - Julian) 當 period 或 search 改變時，將 activePage 設為 1
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, sorting, search]);
+  }, [period, search]);
 
   useEffect(() => {
     // Info: (20240220 - Julian) 當 activePage 改變時，重新取得資料

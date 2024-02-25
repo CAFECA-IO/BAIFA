@@ -11,7 +11,7 @@ const TransactionList = ({transactions}: ITransactionListProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const transactionList =
-    transactions.length > 0 ? (
+    transactions && transactions.length > 0 ? (
       transactions.map((transaction, index) => (
         <TransactionItem key={index} transaction={transaction} />
       ))
