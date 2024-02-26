@@ -37,9 +37,13 @@ export const SkeletonList = ({count}: ISkeletonListProps) => {
       {' '}
       {Array.from({length: count}, (_, index) => (
         <div key={index} className={`${index !== 0 ? `pt-4` : ``}`}>
-          <div className="flex items-center justify-between">
-            {' '}
-            <Skeleton width={200} height={30} /> <Skeleton width={50} height={30} />{' '}
+          {/* Info: (20240226 - Julian) Desktop */}
+          <div className="hidden items-center justify-between lg:flex">
+            <Skeleton width={200} height={30} /> <Skeleton width={50} height={30} />
+          </div>
+          {/* Info: (20240226 - Julian) Mobile */}
+          <div className="flex items-center justify-between lg:hidden">
+            <Skeleton width={100} height={30} /> <Skeleton width={40} height={30} />
           </div>
         </div>
       ))}

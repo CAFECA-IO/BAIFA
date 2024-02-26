@@ -22,30 +22,30 @@ interface ITransactionHistorySectionProps {
 
   dataType?: TransactionDataType;
 
-  periodInherit?: {startTimeStamp: number; endTimeStamp: number};
-  setPeriodInherit?: Dispatch<SetStateAction<{startTimeStamp: number; endTimeStamp: number}>>;
-  sortingInherit?: string;
-  setSortingInherit?: Dispatch<SetStateAction<string>>;
+  period?: {startTimeStamp: number; endTimeStamp: number};
+  setPeriod?: Dispatch<SetStateAction<{startTimeStamp: number; endTimeStamp: number}>>;
+  sorting?: string;
+  setSorting?: Dispatch<SetStateAction<string>>;
   //searchInherit?: string;
-  setSearchInherit?: Dispatch<SetStateAction<string>>;
-  activePageInherit?: number;
-  setActivePageInherit?: Dispatch<SetStateAction<number>>;
-  isLoadingInherit?: boolean;
+  setSearch?: Dispatch<SetStateAction<string>>;
+  activePage?: number;
+  setActivePage?: Dispatch<SetStateAction<number>>;
+  isLoading?: boolean;
   //setLoadingInherit?: Dispatch<SetStateAction<boolean>>;
 
-  totalPageInherit?: number;
-  transactionCountInherit?: number;
+  totalPage?: number;
+  transactionCount?: number;
 }
 
-const itemSkeleton = (
-  <div className="flex items-center justify-between">
-    <div>
-      <div className="mb-2.5 h-2.5 w-full rounded-full bg-gray-300 dark:bg-gray-600"></div>
-      <div className="h-2 w-32 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-    </div>
-    <div className="h-2.5 w-12 rounded-full bg-gray-300 dark:bg-gray-700"></div>
-  </div>
-);
+// const itemSkeleton = (
+//   <div className="flex items-center justify-between">
+//     <div>
+//       <div className="mb-2.5 h-2.5 w-full rounded-full bg-gray-300 dark:bg-gray-600"></div>
+//       <div className="h-2 w-32 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+//     </div>
+//     <div className="h-2.5 w-12 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+//   </div>
+// );
 
 // const listSkeleton = (
 //   <div
@@ -65,18 +65,17 @@ const itemSkeleton = (
 const TransactionHistorySection = ({
   transactions,
   dataType,
-  periodInherit,
-  setPeriodInherit,
-  sortingInherit,
-  setSortingInherit,
-  //searchInherit,
-  setSearchInherit,
-  activePageInherit,
-  setActivePageInherit,
-  isLoadingInherit,
-  //setLoadingInherit,
-  totalPageInherit,
-  transactionCountInherit,
+  period,
+  setPeriod,
+  sorting,
+  setSorting,
+
+  setSearch,
+  activePage,
+  setActivePage,
+  isLoading,
+  totalPage,
+  transactionCount,
 }: ITransactionHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const addressDetailsCtx = useContext(AddressDetailsContext);
@@ -85,16 +84,17 @@ const TransactionHistorySection = ({
       ? addressDetailsCtx.transactions.totalPage
       : Math.ceil(1 / ITEM_PER_PAGE);
 
-  const [activePage, setActivePage] = useState(1);
-  const totalPages = totalPageInherit ?? defaultPages;
+  // ToDo: (20240226 - Julian) 等其他頁面都補上 props 後，看要不要把這邊刪掉
+  const [activePageDefault, setActivePageDefault] = useState(1);
+  const totalPagesDefault = totalPage ?? defaultPages;
 
-  const [_, setSearch] = useState('');
-  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [period, setPeriod] = useState(default30DayPeriod);
+  const [search, setSearchDefault] = useState('');
+  const [sortingDefault, setSortingDefault] = useState<string>(sortOldAndNewOptions[0]);
+  const [periodDefault, setPeriodDefault] = useState(default30DayPeriod);
 
-  const isLoading = isLoadingInherit ?? false;
+  const isLoadingDefault = isLoading ?? false;
 
-  const transactionCount = transactionCountInherit ?? transactions.length;
+  const transactionCountDefault = transactionCount ?? transactions.length;
 
   // const transactionData =
   //   dataType === TransactionDataType.ADDRESS_DETAILS ? addressDetailsCtx.transactions : null;
@@ -119,7 +119,7 @@ const TransactionHistorySection = ({
   //   <SkeletonList count={ITEM_PER_PAGE} />
   // );
 
-  const displayedTransactionList = isLoading ? (
+  const displayedTransactionList = isLoadingDefault ? (
     <SkeletonList count={ITEM_PER_PAGE} />
   ) : (
     transactionList
@@ -157,7 +157,7 @@ const TransactionHistorySection = ({
     <div className="flex w-full flex-col space-y-4">
       {/* Info: (20231113 - Julian) Title */}
       <h2 className="text-xl text-lilac">
-        {t('COMMON.TRANSACTION_HISTORY_TITLE')} ({transactionCount})
+        {t('COMMON.TRANSACTION_HISTORY_TITLE')} ({transactionCountDefault})
       </h2>
       <div className="flex w-full flex-col rounded-lg bg-darkPurple px-6 py-4 drop-shadow-xl lg:h-1050px">
         {/* Info: (20231113 - Julian) Search Filter */}
@@ -167,8 +167,8 @@ const TransactionHistorySection = ({
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
               <DatePicker
-                period={periodInherit ?? period}
-                setFilteredPeriod={setPeriodInherit ?? setPeriod}
+                period={period ?? periodDefault}
+                setFilteredPeriod={setPeriod ?? setPeriodDefault}
                 isLinearBg
               />
             </div>
@@ -177,8 +177,8 @@ const TransactionHistorySection = ({
               <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
               <SortingMenu
                 sortingOptions={sortOldAndNewOptions}
-                sorting={sortingInherit ?? sorting}
-                setSorting={setSortingInherit ?? setSorting}
+                sorting={sorting ?? sortingDefault}
+                setSorting={setSorting ?? setSortingDefault}
                 bgColor="bg-purpleLinear"
                 sortingHandler={sortingClickHandler}
                 sortPrefix={`transaction`}
@@ -188,7 +188,7 @@ const TransactionHistorySection = ({
           {/* Info: (20231113 - Julian) Search Bar */}
           {SearchBarWithKeyDown({
             searchBarPlaceholder: t('COMMON.TRANSACTION_HISTORY_PLACEHOLDER'),
-            setSearch: setSearchInherit ?? setSearch,
+            setSearch: setSearch ?? setSearchDefault,
           })}
         </div>
         {/* Info: (20231113 - Julian) To Address List */}
@@ -197,9 +197,9 @@ const TransactionHistorySection = ({
           paginationClickHandler={paginationClickHandler}
           loading={addressDetailsCtx.transactionsLoading}
           pagePrefix={`transaction`}
-          activePage={activePageInherit ?? activePage}
-          setActivePage={setActivePageInherit ?? setActivePage}
-          totalPages={totalPageInherit ?? totalPages}
+          activePage={activePage ?? activePageDefault}
+          setActivePage={setActivePage ?? setActivePageDefault}
+          totalPages={totalPagesDefault}
           pageInit={transactionInit}
         />
       </div>

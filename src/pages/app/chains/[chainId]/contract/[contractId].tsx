@@ -156,16 +156,16 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
   const isTransactionHistoryData = isNoData ? null : (
     <TransactionHistorySection
       transactions={transactions}
-      periodInherit={period}
-      setPeriodInherit={setPeriod}
-      sortingInherit={sorting}
-      setSortingInherit={setSorting}
-      setSearchInherit={setSearch}
-      activePageInherit={activePage}
-      setActivePageInherit={setActivePage}
-      isLoadingInherit={isLoading}
-      totalPageInherit={totalPages}
-      transactionCountInherit={transactionCount}
+      period={period}
+      setPeriod={setPeriod}
+      sorting={sorting}
+      setSorting={setSorting}
+      setSearch={setSearch}
+      activePage={activePage}
+      setActivePage={setActivePage}
+      isLoading={isLoading}
+      totalPage={totalPages}
+      transactionCount={transactionCount}
     />
   );
 

@@ -91,7 +91,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
     state === 'public' ? (
       <div className="w-full">
         {/* Info: (20240202 - Julian) Reports */}
-        <iframe src={BFA_EVIDENCE_CONTENT_URL} className="h-600px w-full" />
+        <iframe src={BFA_EVIDENCE_CONTENT_URL} className="h-200px w-full lg:h-600px" />
       </div>
     ) : (
       /* ToDo: (20230911 - Julian) log in button */
