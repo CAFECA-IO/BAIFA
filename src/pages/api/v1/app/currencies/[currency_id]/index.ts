@@ -222,7 +222,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
   });
 
-  // Info: (今天 - Liz) 將 transactionData 轉換成 transactionHistoryData
+  // Info: (20240226 - Liz) 將 transactionData 轉換成 transactionHistoryData
   const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
