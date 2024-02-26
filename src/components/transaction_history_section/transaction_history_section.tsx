@@ -84,7 +84,6 @@ const TransactionHistorySection = ({
       ? addressDetailsCtx.transactions.totalPage
       : Math.ceil(1 / ITEM_PER_PAGE);
 
-  // ToDo: (20240226 - Julian) 等其他頁面都補上 props 後，看要不要把這邊刪掉
   const [activePageDefault, setActivePageDefault] = useState(1);
   const totalPagesDefault = totalPage ?? defaultPages;
 

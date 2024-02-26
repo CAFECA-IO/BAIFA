@@ -1,13 +1,12 @@
 // 016 - GET /app/chains/:chain_id/evidence/:evidence_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../../../../prisma/client';
 import {IEvidenceBrief} from '../../../../../../../../interfaces/evidence';
 
 type ResponseData = IEvidenceBrief | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
   const evidenceId = typeof req.query.evidence_id === 'string' ? req.query.evidence_id : undefined;
 
