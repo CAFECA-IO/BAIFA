@@ -32,7 +32,7 @@ export const SkeletonList = ({count}: ISkeletonListProps) => {
   return (
     <div
       role="status"
-      className="space-y-2 divide-y divide-gray-200 rounded border border-gray-200 p-4 shadow dark:divide-gray-700 dark:border-gray-700 md:p-6"
+      className="space-y-2 divide-y divide-darkPurple4 rounded border border-darkPurple4 p-4 shadow md:p-6"
     >
       {' '}
       {Array.from({length: count}, (_, index) => (
