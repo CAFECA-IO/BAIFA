@@ -145,9 +145,9 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     data: searchResults,
     isLoading: isSearchLoading,
     error: searchError,
-  } = useStaleWhileRevalidateWithWorker<ISearchResult[]>(
-    `${APIURL.SEARCH_RESULT}?search_input=${searchTextRef.current}`
-  );
+  } = useStaleWhileRevalidateWithWorker<ISearchResult[]>(`${APIURL.SEARCH_RESULT}`, {
+    search_input: searchTextRef.current,
+  });
   // eslint-disable-next-line no-console
   console.log('data', searchResults, 'searchError', searchError);
 
