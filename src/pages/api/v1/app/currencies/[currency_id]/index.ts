@@ -273,6 +273,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     ? {
         currencyId: currencyData.id,
         currencyName: `${currencyData.name}`,
+        chainId: `${chainId}`,
         rank: 0, // ToDo: (20240125 - Julian) 討論去留
         holderCount: currencyData.holder_count ?? 0,
         price: currencyData.price ?? 0,
@@ -285,7 +286,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         flaggingCount: flagging.length,
         riskLevel: riskLevel,
         transactionHistoryData: transactionHistoryData,
-        chainId: `${chainId}`,
       }
     : // Info: (20240130 - Julian) 如果沒有找到資料，回傳 undefined
       undefined;

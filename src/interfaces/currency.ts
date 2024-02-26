@@ -32,6 +32,7 @@ export interface ICurrencyDetail extends ICurrency {
 
 // Info: (20240219 - Liz) 後端回傳的 totalAmount 是 string 故新增 ICurrencyDetailString
 export interface ICurrencyDetailString extends ICurrency {
+  chainId: string;
   price: number;
   volumeIn24h: number;
   unit: string;
@@ -42,5 +43,4 @@ export interface ICurrencyDetailString extends ICurrency {
   flagging: IRedFlag[];
   flaggingCount: number;
   transactionHistoryData: IDisplayTransaction[];
-  chainId: string;
 }
