@@ -42,7 +42,10 @@ const GlobalSearch = ({
   } = useOuterClick<HTMLInputElement>(false);
 
   const {data, isLoading, error} = useStaleWhileRevalidateWithWorker<ISuggestions>(
-    `${APIURL.SEARCH_SUGGESTIONS}?search_input=${inputValueRef.current}`
+    `${APIURL.SEARCH_SUGGESTIONS}`,
+    {
+      search_input: inputValueRef.current,
+    }
   );
 
   // useEffect(() => {
@@ -61,6 +64,7 @@ const GlobalSearch = ({
       // Info: (20231115 - Julian) 按下 Enter 後，導向搜尋結果頁面
       e.preventDefault();
       getInputValue && getInputValue(inputValueRef.current);
+      setSuggestionVisible(false);
       router.push(`${BFAURL.SEARCHING_RESULT}?search=${inputValueRef.current}`);
     }
   };

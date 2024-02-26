@@ -51,11 +51,126 @@ import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 import useStaleWhileRevalidateWithWorker from '../../../../../../lib/hooks/use_swr_with_worker';
 import {APIURL, SortingType} from '../../../../../../constants/api_request';
+import Skeleton from '../../../../../../components/skeleton/skeleton';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;
   chainId: string;
 }
+
+const AddressDetailSectionSkeleton = () => {
+  const {t}: {t: TranslateFunction} = useTranslation('common');
+
+  return (
+    <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">
+      {/* Info: (20231017 - Julian) Address Level */}
+      <div className="flex flex-col space-y-2 px-3 py-4 text-sm lg:flex-row lg:items-center lg:space-y-0 lg:text-base">
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')}</p>
+          <Tooltip>{t('ADDRESS_DETAIL_PAGE.ADDRESS_TOOLTIP')}</Tooltip>
+        </div>
+        <Skeleton width={400} height={20} />
+      </div>
+      {/* Info: (20231017 - Julian) Sign Up time */}
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('ADDRESS_DETAIL_PAGE.SIGN_UP_TIME')}</p>
+          <Tooltip>{t('ADDRESS_DETAIL_PAGE.SIGN_UP_TIME_TOOLTIP')} </Tooltip>
+        </div>
+        <Skeleton width={200} height={20} />
+      </div>
+      {/* Info: (20231017 - Julian) Latest Active Time */}
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('ADDRESS_DETAIL_PAGE.LATEST_ACTIVE_TIME')}</p>
+          <Tooltip>{t('ADDRESS_DETAIL_PAGE.LATEST_ACTIVE_TIME_TOOLTIP')} </Tooltip>
+        </div>
+        <Skeleton width={200} height={20} />
+      </div>
+      {/* Deprecated: (20240201 - Julian) Related Address */}
+      {/* <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('ADDRESS_DETAIL_PAGE.RELATED_ADDRESS')}</p>
+          <Tooltip>
+            This is tooltip Sample Text. So if I type in more content, it would be like this.
+          </Tooltip>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">{displayRelatedAddress}</div>
+      </div> */}
+      {/* Info: (20231017 - Julian) Interacted With */}
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('ADDRESS_DETAIL_PAGE.INTERACTED_WITH')}</p>
+          <Tooltip>{t('ADDRESS_DETAIL_PAGE.INTERACTED_WITH_TOOLTIP')} </Tooltip>
+        </div>
+        <Skeleton width={220} height={20} />
+      </div>
+      {/* Info: (20231017 - Julian) Red Flag */}
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          <p>{t('ADDRESS_DETAIL_PAGE.RED_FLAG')}</p>
+          <Tooltip>{t('ADDRESS_DETAIL_PAGE.RED_FLAG_TOOLTIP')} </Tooltip>
+        </div>
+        <Skeleton width={200} height={20} />
+      </div>
+      {/* Info: (20231017 - Julian) Balance */}
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          {t('ADDRESS_DETAIL_PAGE.BALANCE')}
+        </p>
+        <Skeleton width={200} height={20} />
+      </div>
+      {/* Info: (20231017 - Julian) Total Sent */}
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          {t('ADDRESS_DETAIL_PAGE.TOTAL_SENT')}
+        </p>
+        <Skeleton width={200} height={20} />
+      </div>
+      {/* Info: (20231017 - Julian) Total Received */}
+      <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
+        <p className="text-sm font-bold text-lilac lg:w-200px lg:text-base">
+          {t('ADDRESS_DETAIL_PAGE.TOTAL_RECEIVED')}
+        </p>
+        <Skeleton width={200} height={20} />
+      </div>
+    </div>
+  );
+};
+
+const ReviewSectionSkeleton = () => {
+  return (
+    <div className="flex flex-col items-start border-b border-darkPurple4 bg-darkPurple2 px-3 py-4 lg:h-100px lg:flex-row lg:items-center lg:p-5">
+      {/* Info: (20231031 - Julian) Transaction & Stars */}
+      <div className="flex flex-col items-start space-y-2">
+        {/* Info: (20240221 - Shirley) hide transaction cause it's unnecessary */}
+        {/* <Link href={transactionLink}>
+          <BoltButton style="solid" color="purple" className="px-3 py-2 text-sm">
+            {t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')} {transactionId}
+          </BoltButton>
+        </Link> */}
+        <div className="flex w-100px items-center space-x-5px">
+          <Skeleton width={100} height={30} />
+        </div>
+      </div>
+      {/* Info: (20231031 - Julian) Divider */}
+      <span className="my-2 h-px w-full bg-darkPurple4 lg:mx-10 lg:h-full lg:w-px"></span>
+      {/* Info: (20231031 - Julian) Review Content */}
+      <div className="line-clamp-3 flex-1 text-sm leading-5">
+        <Skeleton width={300} height={30} />
+      </div>
+      {/* Info: (20231031 - Julian) Reviewer & Date */}
+      <div className="mt-2 flex h-full flex-col items-start space-y-2 text-sm text-lilac lg:ml-10 lg:mt-0 lg:items-end lg:justify-between">
+        <div>
+          <Skeleton width={50} height={20} />
+        </div>
+        <div>
+          <Skeleton width={200} height={20} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -65,14 +180,22 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const addressDetailsCtx = useContext(AddressDetailsContext);
 
   const [isLoading, setIsLoading, isLoadingRef] = useStateRef(true);
-  const [addressBriefData, setAddressBriefData, addressBriefDataRef] = useStateRef<IAddressBrief>(
-    {} as IAddressBrief
-  );
+  // const [addressBriefData, setAddressBriefData, addressBriefDataRef] = useStateRef<IAddressBrief>(
+  //   {} as IAddressBrief
+  // );
   const [reviewData, setReviewData] = useState<IReviewDetail[]>([]);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
-  const {publicTag, score} = addressBriefData;
+  const {
+    data: addressBriefData,
+    isLoading: isAddressBriefLoading,
+    error: addressBriefError,
+  } = useStaleWhileRevalidateWithWorker<IAddressBrief>(
+    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}`
+  );
+
+  const {publicTag, score} = addressBriefData ?? ({} as IAddressBrief);
 
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
 
@@ -87,19 +210,19 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     {order: convertStringToSortingType(reviewSorting)}
   );
 
-  const getAddressBriefData = async (chainId: string, addressId: string) => {
-    try {
-      const data = await getAddressBrief(chainId, addressId);
-      if (data && Object.keys(data).length > 0) {
-        setAddressBriefData(data);
-      } else {
-        setAddressBriefData(dummyAddressBrief as IAddressBrief);
-      }
-    } catch (error) {
-      //console.log('getAddressData error', error);
-    } finally {
-    }
-  };
+  // const getAddressBriefData = async (chainId: string, addressId: string) => {
+  //   try {
+  //     const data = await getAddressBrief(chainId, addressId);
+  //     if (data && Object.keys(data).length > 0) {
+  //       setAddressBriefData(data);
+  //     } else {
+  //       setAddressBriefData(dummyAddressBrief as IAddressBrief);
+  //     }
+  //   } catch (error) {
+  //     //console.log('getAddressData error', error);
+  //   } finally {
+  //   }
+  // };
 
   const getReviewListData = async (chainId: string, addressId: string) => {
     try {
@@ -124,7 +247,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
     (async () => {
       setIsLoading(true);
-      await getAddressBriefData(chainId, addressId);
+      // await getAddressBriefData(chainId, addressId);
       // await getReviewListData(chainId, addressId);
       setIsLoading(false);
     })();
@@ -164,7 +287,9 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       )
     ) : (
       Array.from({length: DEFAULT_REVIEWS_COUNT_IN_PAGE}, (_, index) => (
-        <ReviewItem key={index} review={{} as IReviewDetail} />
+        <ReviewSectionSkeleton key={index} />
+
+        // <ReviewItem key={index} review={{} as IReviewDetail} />
       ))
     );
 
@@ -206,7 +331,13 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     </div>
   );
 
-  const displayedAddressDetail = <AddressDetail addressData={addressBriefData} />;
+  const displayedAddressDetail = isAddressBriefLoading ? (
+    <AddressDetailSectionSkeleton />
+  ) : addressBriefData ? (
+    <AddressDetail addressData={addressBriefData} />
+  ) : (
+    <AddressDetail addressData={dummyAddressBrief} />
+  );
 
   const displayedTransactionHistory = (
     <TransactionHistorySection
@@ -251,82 +382,81 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
   // TODO: check addresses of other chains (20240219 - Shirley)
   const isValidEVMAddress = isAddress(addressId);
-  const displayedUI =
-    isValidEVMAddress && addressBriefData ? (
-      <>
-        <div className="my-4 flex w-full flex-col items-center space-y-10">
-          {/* Info: (20231018 - Julian) Public Tag */}
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center text-base font-bold text-lilac">
-              {t('PUBLIC_TAG.TITLE')}&nbsp;
-              <Tooltip>{t('ADDRESS_DETAIL_PAGE.PUBLIC_TAG_TOOLTIP')} </Tooltip>
-              &nbsp;:
-            </div>
-            <div className="">{displayPublicTag}</div>
+  const displayedUI = isValidEVMAddress ? (
+    <>
+      <div className="my-4 flex w-full flex-col items-center space-y-10">
+        {/* Info: (20231018 - Julian) Public Tag */}
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center text-base font-bold text-lilac">
+            {t('PUBLIC_TAG.TITLE')}&nbsp;
+            <Tooltip>{t('ADDRESS_DETAIL_PAGE.PUBLIC_TAG_TOOLTIP')} </Tooltip>
+            &nbsp;:
           </div>
-          <div className="flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-6 lg:space-y-0">
-            {/* Info: (20231018 - Julian) Tracing Tool Button */}
-            <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
-              <BoltButton
-                className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
-                color="purple"
-                style="solid"
-              >
-                <Image
-                  src="/icons/tracing.svg"
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="invert group-hover:invert-0"
-                />
-                <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
-              </BoltButton>
-            </Link>
-            {/* Info: (20231018 - Julian) Follow Button */}
-            <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
-              <BoltButton
-                className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
-                color="purple"
-                style="solid"
-              >
-                <AiOutlinePlus className="text-2xl" />
-                <p>{t('COMMON.FOLLOW')}</p>
-              </BoltButton>
-            </Link>
-          </div>
+          <div className="">{displayPublicTag}</div>
         </div>
-        {/* Info: (20231020 - Julian) Address Detail */}
-        <div className="my-10 w-full">{displayedAddressDetail}</div>
-        {/* Info: (20231020 - Julian) Private Note Section */}
-        <div className="w-full">
-          <PrivateNoteSection />
+        <div className="flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-6 lg:space-y-0">
+          {/* Info: (20231018 - Julian) Tracing Tool Button */}
+          <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
+            <BoltButton
+              className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+              color="purple"
+              style="solid"
+            >
+              <Image
+                src="/icons/tracing.svg"
+                alt=""
+                width={24}
+                height={24}
+                className="invert group-hover:invert-0"
+              />
+              <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
+            </BoltButton>
+          </Link>
+          {/* Info: (20231018 - Julian) Follow Button */}
+          <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
+            <BoltButton
+              className="flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+              color="purple"
+              style="solid"
+            >
+              <AiOutlinePlus className="text-2xl" />
+              <p>{t('COMMON.FOLLOW')}</p>
+            </BoltButton>
+          </Link>
         </div>
-        {/* Info: (20231020 - Julian) Review Section */}
-        <div className="mt-6 w-full">{displayedReviewSection}</div>
-        {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
-        <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
-          {displayedTransactionHistory}
-          {displayedBlockProducedHistory}
-        </div>
-
-        {/* Info: (20231006 - Julian) Back button */}
-        <div className="mt-10">
-          <BoltButton
-            onClick={backClickHandler}
-            className="px-12 py-4 font-bold"
-            color="blue"
-            style="hollow"
-          >
-            {t('COMMON.BACK')}
-          </BoltButton>
-        </div>
-      </>
-    ) : (
-      <div className="mt-20 w-full">
-        {' '}
-        <DataNotFound />
       </div>
-    );
+      {/* Info: (20231020 - Julian) Address Detail */}
+      <div className="my-10 w-full">{displayedAddressDetail}</div>
+      {/* Info: (20231020 - Julian) Private Note Section */}
+      <div className="w-full">
+        <PrivateNoteSection />
+      </div>
+      {/* Info: (20231020 - Julian) Review Section */}
+      <div className="mt-6 w-full">{displayedReviewSection}</div>
+      {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
+      <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
+        {displayedTransactionHistory}
+        {displayedBlockProducedHistory}
+      </div>
+
+      {/* Info: (20231006 - Julian) Back button */}
+      <div className="mt-10">
+        <BoltButton
+          onClick={backClickHandler}
+          className="px-12 py-4 font-bold"
+          color="blue"
+          style="hollow"
+        >
+          {t('COMMON.BACK')}
+        </BoltButton>
+      </div>
+    </>
+  ) : (
+    <div className="mt-20 w-full">
+      {' '}
+      <DataNotFound />
+    </div>
+  );
 
   return (
     <AddressDetailsProvider>

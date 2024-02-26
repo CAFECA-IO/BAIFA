@@ -23,13 +23,18 @@ function useStaleWhileRevalidateWithWorker<Data>(
   const queryParamsRef = useRef<QueryParams | undefined>(queryParams);
 
   const fetchData = useCallback(() => {
-    const worker = getWorkerInstance();
-    const currentRequestId = Date.now().toString();
-    requestIdRef.current = currentRequestId;
+    // useEffect(() => {
+    const worker = new Worker(new URL('../utils/data_fetcher_worker', import.meta.url), {
+      type: 'module',
+    });
+    // const worker = getWorkerInstance();
+    const keyId = `${key}`;
+    // const currentRequestId = Date.now().toString();
+    requestIdRef.current = `${keyId}`;
 
     setIsLoading(true);
 
-    worker.postMessage({key, requestId: currentRequestId, query: queryParamsRef.current});
+    worker.postMessage({key, requestId: requestIdRef.current, query: queryParamsRef.current});
 
     const handleMessage = (event: MessageEvent) => {
       const {data: newData, error: workerError, requestId} = event.data;
@@ -39,6 +44,7 @@ function useStaleWhileRevalidateWithWorker<Data>(
         'handleMessage',
         newData,
         workerError,
+        'requestId',
         requestId,
         'query',
         queryParamsRef.current
@@ -62,13 +68,17 @@ function useStaleWhileRevalidateWithWorker<Data>(
 
     return () => {
       worker.removeEventListener('message', handleMessage);
-      worker.postMessage({key, requestId: currentRequestId, action: 'cancel'});
+      worker.postMessage({key, requestId: requestIdRef.current, action: 'cancel'});
+      // Info: Close worker in worker after receiving cancel message for 1 sec (20240227 - Shirley)
+      // worker.terminate();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, JSON.stringify(queryParams)]); // Dependency on both key and queryParams
 
   useEffect(() => {
-    queryParamsRef.current = queryParams; // Update queryParamsRef on queryParams change
-    return fetchData(); // Call fetchData and return the cleanup function
+    queryParamsRef.current = queryParams; // Info: Update queryParamsRef on queryParams change (20240227 - Shirley)
+    return fetchData(); // Info: Call fetchData and return the cleanup function (20240227 - Shirley)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchData]);
 
   return {data, isLoading, error};

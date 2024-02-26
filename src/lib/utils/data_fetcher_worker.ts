@@ -15,10 +15,17 @@ async function fetchData(
   query: Record<string, string | number> = {},
   signal: AbortSignal
 ): Promise<unknown> {
+  let url;
   const queryString = Object.keys(query)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(String(query[key]))}`)
     .join('&');
-  const url = `${api}?${queryString}`;
+
+  if (queryString) {
+    url = `${api}?${queryString}`;
+  } else {
+    url = `${api}`;
+  }
+
   return fetch(url, {signal}).then(response => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -30,10 +37,19 @@ async function fetchData(
 self.onmessage = async (event: MessageEvent<FetchRequestData>) => {
   const {key, requestId, query, action} = event.data;
 
+  // eslint-disable-next-line no-console
+  console.log('in worker', activeRequest, requestId, query, action);
+
   if (action === 'cancel') {
     if (activeRequest === requestId) {
-      controller?.abort();
-      controller = null;
+      if (controller) {
+        controller.abort();
+        controller = null;
+        // Info: after 1 sec, terminate itself (20240227 - Shirley)
+        setTimeout(() => {
+          self.close();
+        }, 1000);
+      }
     }
     return;
   }

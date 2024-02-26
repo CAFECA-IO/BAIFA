@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect, useContext, ChangeEvent, KeyboardEvent} from 'react';
 import {AppContext} from '../../contexts/app_context';
 import {MarketContext} from '../../contexts/market_context';
 import useStateRef from 'react-usestateref';
