@@ -117,8 +117,8 @@
     "TOTAL_TRANSFERS": "总转帐次数",
     "RED_FLAG": "警示记录",
     "RED_FLAG_TOOLTIP": "标记可疑或有警示记录的交易。",
-    "TOTAL_TRANSFERS_TOOLTIP": "这个转帐的计数是每隔几小时更新一次，而不是即时更新。",
-    "HOLDERS_TOOLTIP": "持有该货币的唯一地址数量。"
+    "TOTAL_TRANSFERS_TOOLTIP": "这个转帐的计数是每隔几分钟更新一次，而不是即时更新。",
+    "HOLDERS_TOOLTIP": "持有该货币的地址数量。"
   },
   "BLOCK_DETAIL_PAGE": {
     "MAIN_TITLE": "区块",
