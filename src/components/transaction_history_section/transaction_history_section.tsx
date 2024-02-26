@@ -26,12 +26,11 @@ interface ITransactionHistorySectionProps {
   setPeriod?: Dispatch<SetStateAction<{startTimeStamp: number; endTimeStamp: number}>>;
   sorting?: string;
   setSorting?: Dispatch<SetStateAction<string>>;
-  //searchInherit?: string;
+
   setSearch?: Dispatch<SetStateAction<string>>;
   activePage?: number;
   setActivePage?: Dispatch<SetStateAction<number>>;
   isLoading?: boolean;
-  //setLoadingInherit?: Dispatch<SetStateAction<boolean>>;
 
   totalPage?: number;
   transactionCount?: number;
@@ -97,10 +96,6 @@ const TransactionHistorySection = ({
 
   // const transactionData =
   //   dataType === TransactionDataType.ADDRESS_DETAILS ? addressDetailsCtx.transactions : null;
-
-  // const [filteredTransactions, setFilteredTransactions] = useState<IDisplayTransaction[]>(
-  //   transactionData?.transactions ?? transactions
-  // );
 
   // Info: (20231113 - Julian) Pagination
   const transactionList =
