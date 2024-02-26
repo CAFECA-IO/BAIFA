@@ -24,9 +24,11 @@ import {ITransactionHistorySection} from '../../../../../interfaces/transaction'
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_TRUNCATE_LENGTH,
+  default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../../../constants/config';
 import DataNotFound from '../../../../../components/data_not_found/data_not_found';
+import {IDatePeriod} from '../../../../../interfaces/date_period';
 
 interface IContractDetailDetailPageProps {
   chainId: string;
@@ -45,7 +47,7 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
   // Info: (20240226 - Julian) Transaction History States
   const [transactionHistoryData, setTransactionHistoryData] =
     useState<ITransactionHistorySection>();
-  const [period, setPeriod] = useState({startTimeStamp: 0, endTimeStamp: 0});
+  const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState(sortOldAndNewOptions[0]);
   const [search, setSearch] = useState('');
   const [activePage, setActivePage] = useState(1);

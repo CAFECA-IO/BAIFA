@@ -11,6 +11,7 @@ import DatePicker from '../date_picker/date_picker';
 import {AddressDetailsContext} from '../../contexts/address_details_context';
 import {SortingType} from '../../constants/api_request';
 import {SkeletonList} from '../skeleton/skeleton';
+import {IDatePeriod} from '../../interfaces/date_period';
 
 export enum TransactionDataType {
   ADDRESS_DETAILS = 'ADDRESS_DETAILS',
@@ -22,8 +23,8 @@ interface ITransactionHistorySectionProps {
 
   dataType?: TransactionDataType;
 
-  period?: {startTimeStamp: number; endTimeStamp: number};
-  setPeriod?: Dispatch<SetStateAction<{startTimeStamp: number; endTimeStamp: number}>>;
+  period?: IDatePeriod;
+  setPeriod?: Dispatch<SetStateAction<IDatePeriod>>;
   sorting?: string;
   setSorting?: Dispatch<SetStateAction<string>>;
 
