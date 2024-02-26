@@ -45,11 +45,11 @@ const GlobalSearch = ({
     `${APIURL.SEARCH_SUGGESTIONS}?search_input=${inputValueRef.current}`
   );
 
-  useEffect(() => {
-    if (inputValue.length === 0) return;
-    getSuggestions(inputValue).then(data => setSuggestionData(data));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputValue]);
+  // useEffect(() => {
+  //   if (inputValue.length === 0) return;
+  //   getSuggestions(inputValue).then(data => setSuggestionData(data));
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [inputValue]);
 
   // Info: (20231212 - Julian) focus 搜尋欄位時，顯示搜尋建議
   const handleInputFocus = () => setSuggestionVisible(true);
@@ -80,10 +80,10 @@ const GlobalSearch = ({
   };
 
   const suggestionList =
-    !!data && data.suggestions.length === 0
+    !data || (!!data && data?.suggestions?.length === 0)
       ? null
       : !!data &&
-        data.suggestions.map((suggestion, i) => (
+        data?.suggestions?.map((suggestion, i) => (
           <li
             key={i}
             className="px-4 py-3 text-sm text-white hover:cursor-pointer hover:bg-purpleLinear"

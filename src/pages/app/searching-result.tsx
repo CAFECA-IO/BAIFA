@@ -149,7 +149,7 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     `${APIURL.SEARCH_RESULT}?search_input=${searchTextRef.current}`
   );
   // eslint-disable-next-line no-console
-  console.log('data', searchResults);
+  console.log('data', searchResults, 'searchError', searchError);
 
   const getSearchResultData = async (searchText: string) => {
     try {

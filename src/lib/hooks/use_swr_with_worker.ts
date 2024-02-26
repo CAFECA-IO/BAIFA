@@ -12,23 +12,25 @@ function useStaleWhileRevalidateWithWorker<Data>(key: string): FetcherResponse<D
   const [data, setData] = useState<Data | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const requestIdRef = useRef<string>('0');
+  const requestIdRef = useRef<string>(Date.now().toString());
 
   useEffect(() => {
-    const worker =
-      // getWorkerInstance();
-      new Worker(new URL('../utils/data_fetcher_worker', import.meta.url), {
-        type: 'module',
-      });
-    // eslint-disable-next-line no-console
-    console.log('worker', worker, 'requestIdRef', requestIdRef.current);
+    const worker = getWorkerInstance();
+    // new Worker(new URL('../utils/data_fetcher_worker', import.meta.url), {
+    //   type: 'module',
+    // });
+    const currentRequestId = Date.now().toString();
+    requestIdRef.current = currentRequestId; // Update the current request ID
 
     setIsLoading(true);
 
-    const currentRequestId = requestIdRef.current;
+    // Send the request
     worker.postMessage({key, requestId: currentRequestId});
 
-    worker.onmessage = (event: MessageEvent) => {
+    // eslint-disable-next-line no-console
+    console.log('useStaleWhileRevalidateWithWorker', key, currentRequestId, requestIdRef.current);
+
+    const handleMessage = (event: MessageEvent) => {
       const {data: newData, error: workerError, requestId} = event.data;
 
       if (requestId !== requestIdRef.current) return; // Ignore if not the latest request
@@ -41,13 +43,16 @@ function useStaleWhileRevalidateWithWorker<Data>(key: string): FetcherResponse<D
       setIsLoading(false);
     };
 
+    worker.addEventListener('message', handleMessage);
     worker.onerror = (e: ErrorEvent) => {
       setError(new Error(e.message));
       setIsLoading(false);
     };
 
     return () => {
-      worker.terminate();
+      worker.removeEventListener('message', handleMessage);
+      // Send a cancellation message for the current request
+      worker.postMessage({key, requestId: currentRequestId, action: 'cancel'});
     };
   }, [key]);
 

@@ -49,6 +49,8 @@ import {
 } from '../../../../../../contexts/address_details_context';
 import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
+import useStaleWhileRevalidateWithWorker from '../../../../../../lib/hooks/use_swr_with_worker';
+import {APIURL} from '../../../../../../constants/api_request';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;
@@ -75,6 +77,14 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
 
   const chainIcon = getChainIcon(chainId);
+
+  const {
+    data: reviews,
+    isLoading: reviewLoading,
+    error,
+  } = useStaleWhileRevalidateWithWorker<IReviewDetail[]>(
+    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/review_list`
+  );
 
   const getAddressBriefData = async (chainId: string, addressId: string) => {
     try {
@@ -114,7 +124,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     (async () => {
       setIsLoading(true);
       await getAddressBriefData(chainId, addressId);
-      await getReviewListData(chainId, addressId);
+      // await getReviewListData(chainId, addressId);
       setIsLoading(false);
     })();
 
@@ -133,28 +143,29 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const backClickHandler = () => router.back();
 
   const reviewLink = getDynamicUrl(chainId, addressId).REVIEWS;
-  const reviewList = !isLoadingRef.current ? (
-    reviewData.length > 0 ? (
-      reviewData
-        // Info: (20231214 - Julian) Sort reviews by createdTimestamp
-        .sort((a, b) => {
-          if (reviewSorting === sortOldAndNewOptions[0]) {
-            return b.createdTimestamp - a.createdTimestamp;
-          } else {
-            return a.createdTimestamp - b.createdTimestamp;
-          }
-        })
-        .slice(0, DEFAULT_REVIEWS_COUNT_IN_PAGE)
-        // Info: (20231214 - Julian) Print reviews
-        .map((review, index) => <ReviewItem key={index} review={review} />)
+  const reviewList =
+    !reviewLoading && !!reviews ? (
+      reviews.length > 0 ? (
+        reviews
+          // Info: (20231214 - Julian) Sort reviews by createdTimestamp
+          .sort((a, b) => {
+            if (reviewSorting === sortOldAndNewOptions[0]) {
+              return b.createdTimestamp - a.createdTimestamp;
+            } else {
+              return a.createdTimestamp - b.createdTimestamp;
+            }
+          })
+          .slice(0, DEFAULT_REVIEWS_COUNT_IN_PAGE)
+          // Info: (20231214 - Julian) Print reviews
+          .map((review, index) => <ReviewItem key={index} review={review} />)
+      ) : (
+        <></>
+      )
     ) : (
-      <></>
-    )
-  ) : (
-    Array.from({length: DEFAULT_REVIEWS_COUNT_IN_PAGE}, (_, index) => (
-      <ReviewItem key={index} review={{} as IReviewDetail} />
-    ))
-  );
+      Array.from({length: DEFAULT_REVIEWS_COUNT_IN_PAGE}, (_, index) => (
+        <ReviewItem key={index} review={{} as IReviewDetail} />
+      ))
+    );
 
   const displayPublicTag = publicTag ? (
     publicTag.map((tag, index) => (

@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const searchInput = req.query.search_input as string;
 
-  if (!searchInput) {
+  if (!searchInput || searchInput === '0x') {
     return res.status(400).json([]);
   }
 
