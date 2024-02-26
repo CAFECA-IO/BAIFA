@@ -21,7 +21,7 @@ import {BFAURL} from '../../constants/url';
 import {GetServerSideProps} from 'next';
 import {ParsedUrlQuery} from 'querystring';
 import Skeleton from '../../components/skeleton/skeleton';
-import useStaleWhileRevalidateWithWorker from '../../lib/hooks/use_swr_with_worker';
+import useAPIWorker from '../../lib/hooks/use_api_worker';
 import {APIURL} from '../../constants/api_request';
 
 interface ISearchingResultPageProps {
@@ -145,7 +145,7 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     data: searchResults,
     isLoading: isSearchLoading,
     error: searchError,
-  } = useStaleWhileRevalidateWithWorker<ISearchResult[]>(`${APIURL.SEARCH_RESULT}`, {
+  } = useAPIWorker<ISearchResult[]>(`${APIURL.SEARCH_RESULT}`, {
     search_input: searchTextRef.current,
   });
   // eslint-disable-next-line no-console

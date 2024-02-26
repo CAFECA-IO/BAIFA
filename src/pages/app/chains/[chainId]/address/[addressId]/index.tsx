@@ -49,7 +49,7 @@ import {
 } from '../../../../../../contexts/address_details_context';
 import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
-import useStaleWhileRevalidateWithWorker from '../../../../../../lib/hooks/use_swr_with_worker';
+import useAPIWorker from '../../../../../../lib/hooks/use_api_worker';
 import {APIURL, SortingType} from '../../../../../../constants/api_request';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 
@@ -191,9 +191,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     data: addressBriefData,
     isLoading: isAddressBriefLoading,
     error: addressBriefError,
-  } = useStaleWhileRevalidateWithWorker<IAddressBrief>(
-    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}`
-  );
+  } = useAPIWorker<IAddressBrief>(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}`);
 
   const {publicTag, score} = addressBriefData ?? ({} as IAddressBrief);
 
@@ -205,7 +203,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     data: reviews,
     isLoading: reviewLoading,
     error,
-  } = useStaleWhileRevalidateWithWorker<IReviewDetail[]>(
+  } = useAPIWorker<IReviewDetail[]>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/review_list`,
     {order: convertStringToSortingType(reviewSorting)}
   );

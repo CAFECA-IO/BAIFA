@@ -9,8 +9,9 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {ISuggestions, defaultSuggestions} from '../../interfaces/suggestions';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import useStateRef from 'react-usestateref';
-import useStaleWhileRevalidateWithWorker from '../../lib/hooks/use_swr_with_worker';
+import useAPIWorker from '../../lib/hooks/use_api_worker';
 import {APIURL} from '../../constants/api_request';
+import useAPIResponse from '../../lib/hooks/use_api_response';
 
 interface IGlobalSearchProps {
   coverShowed?: boolean;
@@ -41,12 +42,13 @@ const GlobalSearch = ({
     setComponentVisible: setSuggestionVisible,
   } = useOuterClick<HTMLInputElement>(false);
 
-  const {data, isLoading, error} = useStaleWhileRevalidateWithWorker<ISuggestions>(
-    `${APIURL.SEARCH_SUGGESTIONS}`,
-    {
-      search_input: inputValueRef.current,
-    }
-  );
+  // const {data, isLoading, error} = useAPIWorker<ISuggestions>(`${APIURL.SEARCH_SUGGESTIONS}`, {
+  //   search_input: inputValueRef.current,
+  // });
+
+  const {data, isLoading, error} = useAPIResponse<ISuggestions>(`${APIURL.SEARCH_SUGGESTIONS}`, {
+    search_input: inputValueRef.current,
+  });
 
   // useEffect(() => {
   //   if (inputValue.length === 0) return;

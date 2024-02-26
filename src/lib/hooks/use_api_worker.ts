@@ -12,10 +12,7 @@ interface QueryParams {
   [key: string]: string | number;
 }
 
-function useStaleWhileRevalidateWithWorker<Data>(
-  key: string,
-  queryParams?: QueryParams
-): FetcherResponse<Data> {
+function useAPIWorker<Data>(key: string, queryParams?: QueryParams): FetcherResponse<Data> {
   const [data, setData] = useState<Data | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
@@ -84,4 +81,4 @@ function useStaleWhileRevalidateWithWorker<Data>(
   return {data, isLoading, error};
 }
 
-export default useStaleWhileRevalidateWithWorker;
+export default useAPIWorker;
