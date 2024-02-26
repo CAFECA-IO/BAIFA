@@ -34,7 +34,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     {} as ICurrencyDetailString
   );
 
-  const chainIcon = getCurrencyIcon(currencyId);
+  const currencyIcon = getCurrencyIcon(currencyId);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -77,8 +77,8 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
       {/* Info: (20231018 -Julian) Block Title */}
       <div className="flex flex-1 items-center justify-center space-x-2">
         <Image
-          src={chainIcon.src}
-          alt={chainIcon.alt}
+          src={currencyIcon.src}
+          alt={currencyIcon.alt}
           width={40}
           height={40} // Info: (20240206 - Julian) If the image fails to load, use the default currency icon
           onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}

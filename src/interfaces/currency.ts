@@ -42,4 +42,5 @@ export interface ICurrencyDetailString extends ICurrency {
   flagging: IRedFlag[];
   flaggingCount: number;
   transactionHistoryData: IDisplayTransaction[];
+  chainId: string;
 }

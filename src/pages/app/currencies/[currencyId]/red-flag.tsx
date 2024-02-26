@@ -33,7 +33,7 @@ const RedFlagOfCurrencyPage = ({currencyId, currencyName}: IRedFlagOfCurrencyPag
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} ${t(
     'COMMON.OF'
   )} ${currencyName} - BAIFA`;
-  const chainIcon = getCurrencyIcon(currencyId);
+  const currencyIcon = getCurrencyIcon(currencyId);
 
   const router = useRouter();
   const backClickHandler = () => router.back();
@@ -104,8 +104,8 @@ const RedFlagOfCurrencyPage = ({currencyId, currencyName}: IRedFlagOfCurrencyPag
                 </h1>
                 <div className="flex items-center space-x-2">
                   <Image
-                    src={chainIcon.src}
-                    alt={chainIcon.alt}
+                    src={currencyIcon.src}
+                    alt={currencyIcon.alt}
                     width={30}
                     height={30}
                     onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
