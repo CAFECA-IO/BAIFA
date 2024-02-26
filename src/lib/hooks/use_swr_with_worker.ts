@@ -1,5 +1,5 @@
 // useStaleWhileRevalidateWithWorker.ts
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef, useCallback} from 'react';
 import {getWorkerInstance} from '../utils/api_worker_singleton';
 
 interface FetcherResponse<Data> {
@@ -8,32 +8,43 @@ interface FetcherResponse<Data> {
   error: Error | null;
 }
 
-function useStaleWhileRevalidateWithWorker<Data>(key: string): FetcherResponse<Data> {
+interface QueryParams {
+  [key: string]: string | number;
+}
+
+function useStaleWhileRevalidateWithWorker<Data>(
+  key: string,
+  queryParams?: QueryParams
+): FetcherResponse<Data> {
   const [data, setData] = useState<Data | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const requestIdRef = useRef<string>(Date.now().toString());
+  const queryParamsRef = useRef<QueryParams | undefined>(queryParams);
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     const worker = getWorkerInstance();
-    // new Worker(new URL('../utils/data_fetcher_worker', import.meta.url), {
-    //   type: 'module',
-    // });
     const currentRequestId = Date.now().toString();
-    requestIdRef.current = currentRequestId; // Update the current request ID
+    requestIdRef.current = currentRequestId;
 
     setIsLoading(true);
 
-    // Send the request
-    worker.postMessage({key, requestId: currentRequestId});
-
-    // eslint-disable-next-line no-console
-    console.log('useStaleWhileRevalidateWithWorker', key, currentRequestId, requestIdRef.current);
+    worker.postMessage({key, requestId: currentRequestId, query: queryParamsRef.current});
 
     const handleMessage = (event: MessageEvent) => {
       const {data: newData, error: workerError, requestId} = event.data;
 
-      if (requestId !== requestIdRef.current) return; // Ignore if not the latest request
+      // eslint-disable-next-line no-console
+      console.log(
+        'handleMessage',
+        newData,
+        workerError,
+        requestId,
+        'query',
+        queryParamsRef.current
+      );
+
+      if (requestId !== requestIdRef.current) return;
       if (workerError) {
         setError(new Error(workerError));
       } else {
@@ -51,10 +62,14 @@ function useStaleWhileRevalidateWithWorker<Data>(key: string): FetcherResponse<D
 
     return () => {
       worker.removeEventListener('message', handleMessage);
-      // Send a cancellation message for the current request
       worker.postMessage({key, requestId: currentRequestId, action: 'cancel'});
     };
-  }, [key]);
+  }, [key, JSON.stringify(queryParams)]); // Dependency on both key and queryParams
+
+  useEffect(() => {
+    queryParamsRef.current = queryParams; // Update queryParamsRef on queryParams change
+    return fetchData(); // Call fetchData and return the cleanup function
+  }, [fetchData]);
 
   return {data, isLoading, error};
 }

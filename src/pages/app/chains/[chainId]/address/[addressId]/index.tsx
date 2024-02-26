@@ -50,7 +50,7 @@ import {
 import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 import useStaleWhileRevalidateWithWorker from '../../../../../../lib/hooks/use_swr_with_worker';
-import {APIURL} from '../../../../../../constants/api_request';
+import {APIURL, SortingType} from '../../../../../../constants/api_request';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;
@@ -83,7 +83,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     isLoading: reviewLoading,
     error,
   } = useStaleWhileRevalidateWithWorker<IReviewDetail[]>(
-    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/review_list`
+    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/review_list`,
+    {order: convertStringToSortingType(reviewSorting)}
   );
 
   const getAddressBriefData = async (chainId: string, addressId: string) => {
@@ -131,14 +132,14 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-      await getReviewListData(chainId, addressId);
-      setIsLoading(false);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reviewSorting]);
+  // useEffect(() => {
+  //   (async () => {
+  //     setIsLoading(true);
+  //     await getReviewListData(chainId, addressId);
+  //     setIsLoading(false);
+  //   })();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [reviewSorting]);
 
   const backClickHandler = () => router.back();
 
