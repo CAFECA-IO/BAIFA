@@ -9,6 +9,8 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {ISuggestions, defaultSuggestions} from '../../interfaces/suggestions';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import useStateRef from 'react-usestateref';
+import useStaleWhileRevalidateWithWorker from '../../lib/hooks/use_swr_with_worker';
+import {APIURL} from '../../constants/api_request';
 
 interface IGlobalSearchProps {
   coverShowed?: boolean;
@@ -38,6 +40,10 @@ const GlobalSearch = ({
     componentVisible: suggestionVisible,
     setComponentVisible: setSuggestionVisible,
   } = useOuterClick<HTMLInputElement>(false);
+
+  const {data, isLoading, error} = useStaleWhileRevalidateWithWorker<ISuggestions>(
+    `${APIURL.SEARCH_SUGGESTIONS}?search_input=${inputValueRef.current}`
+  );
 
   useEffect(() => {
     if (inputValue.length === 0) return;
@@ -74,9 +80,10 @@ const GlobalSearch = ({
   };
 
   const suggestionList =
-    suggestionData.suggestions.length === 0
+    !!data && data.suggestions.length === 0
       ? null
-      : suggestionData.suggestions.map((suggestion, i) => (
+      : !!data &&
+        data.suggestions.map((suggestion, i) => (
           <li
             key={i}
             className="px-4 py-3 text-sm text-white hover:cursor-pointer hover:bg-purpleLinear"
