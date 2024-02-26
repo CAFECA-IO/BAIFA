@@ -15,10 +15,25 @@ import SortingMenu from '../sorting_menu/sorting_menu';
 
 const AllCurrenciesPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {currencyList} = useContext(MarketContext);
+  const {getCurrencies} = useContext(MarketContext);
 
   const currenciesOptions = ['SORTING.ALL', 'Ethereum', 'Bitcoin', 'iSunCloud', 'BNB', 'Tether'];
   const sortingOptions = ['A to Z', 'Z to A']; // Info: (20240125 - Julian) 暫時以字母排序
+
+  const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
+
+  useEffect(() => {
+    const fetchCurrencies = async () => {
+      try {
+        const data = await getCurrencies();
+        setCurrencyList(data);
+      } catch (error) {
+        //console.log('getCurrencies error', error);
+      }
+    };
+
+    fetchCurrencies();
+  }, []);
 
   const [search, setSearch, searchRef] = useStateRef('');
   const [currencies, setCurrencies] = useState(currenciesOptions[0]);
@@ -37,11 +52,11 @@ const AllCurrenciesPageBody = () => {
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(currencyList.length / ITEM_PER_PAGE));
-  const [filteredCurrencyData, setFilteredCurrencyData] = useState<ICurrency[]>(currencyList);
+  //const [filteredCurrencyData, setFilteredCurrencyData] = useState<ICurrency[]>(currencyList);
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
-
+  /* 
   useEffect(() => {
     const searchResult = currencyList
       .filter(currency => {
@@ -70,14 +85,14 @@ const AllCurrenciesPageBody = () => {
 
     setFilteredCurrencyData(searchResult);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, currencies, sorting]);
+  }, [search, currencies, sorting]); */
 
   useEffect(() => {
     setActivePage(1);
     setTotalPages(Math.ceil(currencyList.length / ITEM_PER_PAGE));
   }, [currencyList]);
 
-  const currenciesList = filteredCurrencyData
+  const currenciesList = currencyList
     .map((currency, index) => (
       <CurrencyItem
         key={index}

@@ -1,4 +1,4 @@
-import {useContext} from 'react';
+import {useContext, useState, useEffect} from 'react';
 import Footer from '../footer/footer';
 import ChainsCard from '../chain_card/chain_card';
 import Breadcrumb from '../../components/breadcrumb/breadcrumb';
@@ -7,10 +7,28 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
 import {MarketContext} from '../../contexts/market_context';
 import Skeleton from '../skeleton/skeleton';
+import {IChainDetail} from '../../interfaces/chain';
 
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {chainList, chainLoading} = useContext(MarketContext);
+  const {getChains} = useContext(MarketContext);
+
+  const [chainList, setChainList] = useState<IChainDetail[]>([]);
+  const [chainLoading, setChainLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchChains = async () => {
+      try {
+        const data = await getChains();
+        setChainList(data);
+      } catch (error) {
+        //console.log('getChains error', error);
+      }
+      setChainLoading(false);
+    };
+
+    fetchChains();
+  }, []);
 
   const crumbs = [
     {
@@ -26,7 +44,7 @@ const AllChainPageBody = () => {
   const displayChains = chainLoading ? (
     // Info: (20240219 - Julian) Skeleton
     <div className="flex w-250px flex-col space-y-3 rounded-xl border border-transparent bg-darkPurple p-4 shadow-xl">
-      <div className="inline-flex gap-4 items-center">
+      <div className="inline-flex items-center gap-4">
         <Skeleton width={60} height={60} rounded />
         <Skeleton width={100} height={20} />
       </div>

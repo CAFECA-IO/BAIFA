@@ -1,13 +1,13 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, useEffect, useContext, useRef} from 'react';
+import {useState, useEffect, useContext, useRef, use} from 'react';
 import {useRouter} from 'next/router';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../../../components/footer/footer';
 import ReviewSection from '../../../../../../components/review_section/review_section';
-import {IReviews} from '../../../../../../interfaces/review';
+import {IReviewDetail, IReviews} from '../../../../../../interfaces/review';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {getChainIcon, truncateText} from '../../../../../../lib/common';
+import {convertStringToSortingType, getChainIcon, truncateText} from '../../../../../../lib/common';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {useTranslation} from 'next-i18next';
@@ -15,7 +15,12 @@ import {TranslateFunction} from '../../../../../../interfaces/locale';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
-import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../../../../../constants/config';
+import {
+  DEFAULT_CHAIN_ICON,
+  DEFAULT_TRUNCATE_LENGTH,
+  sortOldAndNewOptions,
+} from '../../../../../../constants/config';
+import {SortingType} from '../../../../../../constants/api_request';
 
 interface IReviewDetailsPageProps {
   addressId: string;
@@ -30,38 +35,38 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [reviews, setReviews] = useState<IReviews>({} as IReviews);
+  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+
+  const getReviewData = async (chainId: string, blockId: string, order: SortingType) => {
+    try {
+      const data = await getReviews(chainId, blockId, order);
+      setReviews(data);
+    } catch (error) {
+      //console.log('getAddressData error', error);
+    }
+  };
 
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
+    (async () => {
+      setIsLoading(true);
+      await getReviewData(chainId, addressId, SortingType.DESC);
+      setIsLoading(false);
+    })();
 
-    const getReviewData = async (chainId: string, blockId: string) => {
-      try {
-        const data = await getReviews(chainId, blockId);
-        setReviews(data);
-      } catch (error) {
-        //console.log('getAddressData error', error);
-      }
-    };
-
-    getReviewData(chainId, addressId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
-    if (reviews) {
-      setReviews(reviews);
-    }
-    timerRef.current = setTimeout(() => setIsLoading(false), 500);
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [reviews]);
+    (async () => {
+      setIsLoading(true);
+      await getReviewData(chainId, addressId, convertStringToSortingType(sorting));
+      setIsLoading(false);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sorting]);
 
   const headTitle = `${t('REVIEWS_PAGE.TITLE')} ${t('COMMON.OF')} ${t(
     'ADDRESS_DETAIL_PAGE.MAIN_TITLE'
@@ -70,7 +75,14 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
 
   const backClickHandler = () => router.back();
 
-  const displayedReviews = !isLoading ? <ReviewSection reviews={reviews} /> : <h1>Loading...</h1>;
+  const displayedReviews = (
+    <ReviewSection
+      reviews={reviews}
+      sorting={sorting}
+      setSorting={setSorting}
+      isLoading={isLoading}
+    />
+  );
 
   return (
     <>

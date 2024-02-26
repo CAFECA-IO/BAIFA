@@ -15,7 +15,7 @@ import {StabilityLevel} from '../../constants/stability_level';
 import {IContract} from '../../interfaces/contract';
 import {IEvidence} from '../../interfaces/evidence';
 import {ITransactionDetail} from '../../interfaces/transaction';
-import {IRedFlagDetail} from '../../interfaces/red_flag';
+import {IRedFlagSearchResult} from '../../interfaces/red_flag';
 import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 
 interface ISearchingResultItemProps {
@@ -99,14 +99,14 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
           riskLevel === RiskLevel.HIGH_RISK
             ? '#FC8181'
             : riskLevel === RiskLevel.MEDIUM_RISK
-              ? '#FFA600'
-              : '#3DD08C';
+            ? '#FFA600'
+            : '#3DD08C';
         const riskText =
           riskLevel === RiskLevel.HIGH_RISK
             ? t('COMMON.RISK_HIGH')
             : riskLevel === RiskLevel.MEDIUM_RISK
-              ? t('COMMON.RISK_MEDIUM')
-              : t('COMMON.RISK_LOW');
+            ? t('COMMON.RISK_MEDIUM')
+            : t('COMMON.RISK_LOW');
 
         const addressFlagging = (
           <div className="flex items-center space-x-4">
@@ -166,7 +166,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- RED FLAG -----------------
       case SearchType.RED_FLAG:
-        const {redFlagType, interactedAddresses} = data as IRedFlagDetail;
+        const {redFlagType, interactedAddresses} = data as IRedFlagSearchResult;
         const displayedRedFlagType = (
           <div className="flex items-center gap-2">
             <Image src="/icons/red_flag.svg" alt="red_flag_icon" width={24} height={24} />
@@ -273,9 +273,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
                 <p className="text-base font-bold text-lilac">
                   {t(`SEARCHING_RESULT_PAGE.ITEM_LINE_1_${type}`)}
                 </p>
-                <Tooltip>
-                  This is tooltip Sample Text. So if I type in more content, it would be like this.
-                </Tooltip>
+                <Tooltip>{t(`SEARCHING_RESULT_PAGE.TOOL_TIP_1_${type}`)}</Tooltip>
               </div>
               {/* Info: (20231115 - Julian) Line 1 Content */}
               {displayedLine1}
@@ -286,9 +284,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
                 <p className="text-base font-bold text-lilac">
                   {t(`SEARCHING_RESULT_PAGE.ITEM_LINE_2_${type}`)}
                 </p>
-                <Tooltip>
-                  This is tooltip Sample Text. So if I type in more content, it would be like this.
-                </Tooltip>
+                <Tooltip>{t(`SEARCHING_RESULT_PAGE.TOOL_TIP_2_${type}`)}</Tooltip>
               </div>
               {/* Info: (20231115 - Julian) Line 2 Content */}
               {displayedLine2}

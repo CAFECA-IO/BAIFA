@@ -127,9 +127,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       .filter(suggestion => suggestion !== 'null')
       .slice(0, INPUT_SUGGESTION_LIMIT) as string[];
 
-    // eslint-disable-next-line no-console
-    console.log('suggestion API', limitedSuggestions);
-
     res.status(200).json({suggestions: limitedSuggestions} as ResponseData);
   } catch (error) {
     // Info: (20240130 - Shirley) Request error

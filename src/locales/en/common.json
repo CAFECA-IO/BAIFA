@@ -297,7 +297,21 @@
     "ITEM_TITLE_RED_FLAG": "Red Flag",
     "ITEM_SUBTITLE_RED_FLAG": "Red Flag",
     "ITEM_LINE_1_RED_FLAG": "Red Flag Type",
-    "ITEM_LINE_2_RED_FLAG": "Interacted With"
+    "ITEM_LINE_2_RED_FLAG": "Interacted With",
+    "TOOL_TIP_1_BLOCK": "The trust level of the block data.",
+    "TOOL_TIP_2_BLOCK": "The date and time the block was produced.",
+    "TOOL_TIP_1_ADDRESS": "The unique identifier of the address.",
+    "TOOL_TIP_2_ADDRESS": "Record of suspicious behavior occurring at the address.",
+    "TOOL_TIP_1_CONTRACT": "The unique identifier of the contract.",
+    "TOOL_TIP_2_CONTRACT": "The date and time the contract was created on the blockchain.",
+    "TOOL_TIP_1_EVIDENCE": "The unique identifier of the evidence.",
+    "TOOL_TIP_2_EVIDENCE": "The date and time the evidence was created on the blockchain.",
+    "TOOL_TIP_1_TRANSACTION": "The unique identifier of the transaction.",
+    "TOOL_TIP_2_TRANSACTION": "The date and time the transaction was completed.",
+    "TOOL_TIP_1_BLACKLIST": "The unique identifier of the address.",
+    "TOOL_TIP_2_BLACKLIST": "The public tag is provided by the BAIFA community to mark the risk level of specific addresses. Users can add private tags after logging in.",
+    "TOOL_TIP_1_RED_FLAG": "The type of red flag.",
+    "TOOL_TIP_2_RED_FLAG": "The addresses that have interacted with this address."
   },
   "DATE_PICKER": {
     "DATE": "Date",

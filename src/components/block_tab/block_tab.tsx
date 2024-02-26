@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext, KeyboardEvent} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import {useRouter} from 'next/router';
 import BlockList from '../block_list/block_list';
 import {useTranslation} from 'next-i18next';
@@ -59,10 +59,10 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
   }, [chainId, blockList]);
 
   useEffect(() => {
-    // Info: (20240220 - Julian) 當日期、排序條件改變時，將 activePage 設為 1
+    // Info: (20240220 - Julian) 當日期、搜尋條件改變時，將 activePage 設為 1
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, sorting, search]);
+  }, [period, search]);
 
   useEffect(() => {
     // Info: (20240220 - Julian) 當 API 查詢參數改變時，重新取得資料

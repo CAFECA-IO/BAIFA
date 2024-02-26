@@ -7,6 +7,7 @@ import {StabilityLevel} from '../../../../constants/stability_level';
 import {ISearchResult} from '../../../../interfaces/search_result';
 import {SearchType} from '../../../../constants/search_type';
 import {RiskLevel} from '../../../../constants/risk_level';
+import {RED_FLAG_CODE_WHEN_NULL} from '../../../../constants/config';
 
 // Info: Array of ResponseDataItem (20240131 - Shirley)
 type ResponseData = ISearchResult[];
@@ -170,25 +171,71 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    redFlags.forEach(item => {
-      if (item.related_addresses.some(address => address.startsWith(searchInput))) {
-        result.push({
-          type: SearchType.RED_FLAG,
-          data: {
-            id: `${item.id}`,
-            chainId: `${item.chain_id}`,
-            createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-            redFlagType: `${item.red_flag_type}`,
-            interactedAddresses: item.related_addresses.map(address => {
-              return {
-                id: `${address}`, // TODO: addressID or address? (20240201 - Shirley)
-                chainId: `${item.chain_id}`,
-              };
-            }),
-          },
-        });
-      }
+    const redFlagCodes = await prisma.codes.findMany({
+      where: {
+        table_name: 'red_flags',
+      },
+      select: {
+        table_column: true,
+        value: true,
+        meaning: true,
+      },
     });
+
+    const redFlagHistoryData = redFlags.map(redFlag => {
+      const relatedAddresses = redFlag.related_addresses.map(address => {
+        return {
+          id: `${address}`,
+          chainId: `${redFlag.chain_id}`,
+        };
+      });
+
+      const redFlagTypeCode = redFlag.red_flag_type
+        ? +redFlag.red_flag_type
+        : RED_FLAG_CODE_WHEN_NULL;
+      const redFlagType = redFlagCodes.find(code => code.value === redFlagTypeCode)?.meaning ?? '';
+
+      return {
+        id: `${redFlag.id}`,
+        chainId: `${redFlag.chain_id}`,
+        createdTimestamp: redFlag.created_timestamp ? redFlag.created_timestamp : 0,
+        redFlagType: redFlagType,
+        interactedAddresses: relatedAddresses,
+      };
+    });
+
+    result.push(
+      ...redFlagHistoryData.map(item => ({
+        type: SearchType.RED_FLAG,
+        data: {
+          id: `${item.id}`,
+          chainId: `${item.chainId}`,
+          createdTimestamp: item.createdTimestamp,
+          redFlagType: item.redFlagType,
+          interactedAddresses: item.interactedAddresses,
+        },
+      }))
+    );
+
+    // redFlags.forEach(item => {
+    //   if (item.related_addresses.some(address => address.startsWith(searchInput))) {
+    //     result.push({
+    //       type: SearchType.RED_FLAG,
+    //       data: {
+    //         id: `${item.id}`,
+    //         chainId: `${item.chain_id}`,
+    //         createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
+    //         redFlagType: `${item.red_flag_type}`,
+    //         interactedAddresses: item.related_addresses.map(address => {
+    //           return {
+    //             id: `${address}`, // TODO: addressID or address? (20240201 - Shirley)
+    //             chainId: `${item.chain_id}`,
+    //           };
+    //         }),
+    //       },
+    //     });
+    //   }
+    // });
 
     const addresses = await prisma.addresses.findMany({
       where: {
@@ -290,9 +337,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
       });
     });
-
-    // eslint-disable-next-line no-console
-    console.log('search result API', result);
 
     res.status(200).json(result);
   } catch (error) {
