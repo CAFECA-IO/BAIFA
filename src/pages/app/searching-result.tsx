@@ -21,6 +21,8 @@ import {BFAURL} from '../../constants/url';
 import {GetServerSideProps} from 'next';
 import {ParsedUrlQuery} from 'querystring';
 import Skeleton from '../../components/skeleton/skeleton';
+import useStaleWhileRevalidateWithWorker from '../../lib/hooks/use_swr_with_worker';
+import {APIURL} from '../../constants/api_request';
 
 interface ISearchingResultPageProps {
   searchQuery: string;
@@ -139,6 +141,16 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
+  const {
+    data: searchResults,
+    isLoading: isSearchLoading,
+    error: searchError,
+  } = useStaleWhileRevalidateWithWorker<ISearchResult[]>(
+    `${APIURL.SEARCH_RESULT}?search_input=${searchTextRef.current}`
+  );
+  // eslint-disable-next-line no-console
+  console.log('data', searchResults);
+
   const getSearchResultData = async (searchText: string) => {
     try {
       const data = await getSearchResult(searchText);
@@ -155,42 +167,43 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (searchTextRef.current.length === 0) return;
-    (async () => {
-      setIsLoading(true);
-      await getSearchResultData(searchTextRef.current);
-      setIsLoading(false);
-    })();
+  // useEffect(() => {
+  //   if (searchTextRef.current.length === 0) return;
+  //   (async () => {
+  //     setIsLoading(true);
+  //     await getSearchResultData(searchTextRef.current);
+  //     setIsLoading(false);
+  //   })();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTextRef.current]);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [searchTextRef.current]);
 
   useEffect(() => {
-    const result = searchResult
+    if (!searchResults) return;
+    const result = searchResults
       /* TODO: don't filter data out by string (20240229 - Shirley)
-      .filter(searchResult => {
+      .filter(searchResults => {
         return true;
         // Info: (20231115 - Julian) filter by Search bar
         
         // const searchTerm = searchTextRef.current.toLowerCase();
-        // const id = searchResult.data.id.toLowerCase();
-        // const chainId = searchResult.data.chainId.toLowerCase();
-        // const type = searchResult.type.toLowerCase();
+        // const id = searchResults.data.id.toLowerCase();
+        // const chainId = searchResults.data.chainId.toLowerCase();
+        // const type = searchResults.type.toLowerCase();
         // return id.includes(searchTextRef.current);
         // return searchTerm === ''
         //   ? true
         //   : id.includes(searchTerm) || chainId.includes(searchTerm) || type.includes(searchTerm);
       })
       */
-      .filter(searchResult => {
+      .filter(searchResults => {
         // Info: (20231115 - Julian) filter by Filter Tabs
-        const type = searchResult.type;
+        const type = searchResults.type;
         return activeTab === filterTabs[0] ? true : activeTab.includes(type);
       })
-      .filter(searchResult => {
+      .filter(searchResults => {
         // Info: (20231115 - Julian) filter by Date Picker
-        const timestamp = searchResult.data.createdTimestamp;
+        const timestamp = searchResults.data.createdTimestamp;
         const startTimeStamp = period.startTimeStamp;
         const endTimeStamp = period.endTimeStamp;
         return startTimeStamp !== 0 && endTimeStamp !== 0
@@ -211,11 +224,12 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     setTotalPages(Math.ceil(result.length / ITEM_PER_PAGE));
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText, sorting, activeTab, period, searchResult]);
+  }, [searchText, sorting, activeTab, period, searchResults]);
 
-  const resultList = !isLoadingRef.current
-    ? filteredResult.slice(startIdx, endIdx).map((searchResult, index) => {
-        return <SearchingResultItem key={index} searchResult={searchResult} />;
+  const resultList = !isSearchLoading
+    ? // !isLoadingRef.current
+      filteredResult.slice(startIdx, endIdx).map((searchResults, index) => {
+        return <SearchingResultItem key={index} searchResult={searchResults} />;
       })
     : Array.from({length: ITEM_PER_PAGE}).map((_, index) => (
         <SearchingResultItemSkeleton key={index} />
