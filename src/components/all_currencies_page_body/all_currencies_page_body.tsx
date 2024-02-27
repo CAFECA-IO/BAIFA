@@ -17,26 +17,30 @@ const AllCurrenciesPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {getCurrencies} = useContext(MarketContext);
 
-  const currenciesOptions = ['SORTING.ALL', 'Ethereum', 'Bitcoin', 'iSunCloud', 'BNB', 'Tether'];
-  const sortingOptions = ['A to Z', 'Z to A']; // Info: (20240125 - Julian) 暫時以字母排序
-
-  const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
+  const [currenciesData, setCurrenciesData] = useState<ICurrency[]>([]);
 
   useEffect(() => {
     const fetchCurrencies = async () => {
       try {
         const data = await getCurrencies();
-        setCurrencyList(data);
+        setCurrenciesData(data);
       } catch (error) {
         //console.log('getCurrencies error', error);
       }
     };
 
     fetchCurrencies();
-  }, []);
+  }, [getCurrencies]);
+
+  // Info: (20240226) 貨幣種類選項
+  const currencyTypes = currenciesData.map(currency => currency.currencyName);
+  const typeOptions = ['SORTING.ALL', ...currencyTypes];
+
+  const sortingOptions = ['A to Z', 'Z to A']; // Info: (20240125 - Julian) 暫時以字母排序
 
   const [search, setSearch, searchRef] = useStateRef('');
-  const [currencies, setCurrencies] = useState(currenciesOptions[0]);
+
+  const [filteredType, setFilteredType] = useState(typeOptions[0]);
   const [sorting, setSorting] = useState(sortingOptions[0]);
 
   const crumbs = [
@@ -51,48 +55,41 @@ const AllCurrenciesPageBody = () => {
   ];
 
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(currencyList.length / ITEM_PER_PAGE));
-  //const [filteredCurrencyData, setFilteredCurrencyData] = useState<ICurrency[]>(currencyList);
+  const [totalPages, setTotalPages] = useState(Math.ceil(currenciesData.length / ITEM_PER_PAGE));
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
-  /* 
-  useEffect(() => {
-    const searchResult = currencyList
-      .filter(currency => {
-        // Info: (20231101 - Julian) filter by search term
-        const searchTerm = searchRef.current.toLowerCase();
-        const currencyId = currency.currencyId.toString().toLowerCase();
-        const currencyName = currency.currencyName.toLowerCase();
-        return searchTerm !== ''
-          ? currencyId.includes(searchTerm) || currencyName.includes(searchTerm)
-          : true;
-      })
-      .filter(currency => {
-        // Info: (20231101 - Julian) filter by currency
-        const currencyId = currency.currencyId;
-        const currencyName = currency.currencyName;
-        return currencies !== currenciesOptions[0]
-          ? currencyName === currencies || currencyId === currencies
-          : true;
-      })
-      .sort((a, b) => {
-        // Info: (20231101 - Julian) sort by alphabet
-        return sorting === sortingOptions[0]
-          ? a.currencyName.localeCompare(b.currencyName)
-          : b.currencyName.localeCompare(a.currencyName);
-      });
-
-    setFilteredCurrencyData(searchResult);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, currencies, sorting]); */
 
   useEffect(() => {
     setActivePage(1);
-    setTotalPages(Math.ceil(currencyList.length / ITEM_PER_PAGE));
-  }, [currencyList]);
+    setTotalPages(Math.ceil(currenciesData.length / ITEM_PER_PAGE));
+  }, [currenciesData]);
 
-  const currenciesList = currencyList
+  const searchResult = currenciesData
+    .filter(currency => {
+      const currencyId = currency.currencyId.toString().toLowerCase();
+      const currencyNameLc = currency.currencyName.toLowerCase();
+      const searchTerm = searchRef.current.toLowerCase();
+      const currencyName = currency.currencyName;
+
+      // Info: (20240226) 根據搜尋條件篩選
+      const matchesSearchTerm =
+        searchTerm === '' || currencyId.includes(searchTerm) || currencyNameLc.includes(searchTerm);
+
+      // Info: (20240226) 根據貨幣種類的選擇做篩選
+      const isAllCurrencies = filteredType === typeOptions[0];
+      const matchesCurrency = isAllCurrencies || currencyName === filteredType;
+
+      return matchesSearchTerm && matchesCurrency;
+    })
+    .sort((a, b) => {
+      // Info: (20240226) 按照字母排序
+      return sorting === sortingOptions[0]
+        ? a.currencyName.localeCompare(b.currencyName)
+        : b.currencyName.localeCompare(a.currencyName);
+    });
+
+  const displayCurrenciesList = searchResult
     .map((currency, index) => (
       <CurrencyItem
         key={index}
@@ -102,7 +99,7 @@ const AllCurrenciesPageBody = () => {
         riskLevel={currency.riskLevel}
       />
     ))
-    .slice(startIdx, endIdx);
+    .slice(startIdx, endIdx); // Info: (20240226) 依照分頁切段
 
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
@@ -129,9 +126,9 @@ const AllCurrenciesPageBody = () => {
           <div className="flex w-full flex-col items-center justify-between lg:flex-row">
             <div className="w-full lg:w-fit">
               <SortingMenu
-                sortingOptions={currenciesOptions}
-                sorting={currencies}
-                setSorting={setCurrencies}
+                sortingOptions={typeOptions}
+                sorting={filteredType}
+                setSorting={setFilteredType}
                 bgColor="bg-darkPurple"
               />
             </div>
@@ -149,7 +146,7 @@ const AllCurrenciesPageBody = () => {
         </div>
 
         {/* Info: (20230927 - Julian) Currency list */}
-        <div className="flex flex-col py-10 lg:px-20">{currenciesList}</div>
+        <div className="flex flex-col py-10 lg:px-20">{displayCurrenciesList}</div>
         <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
       </div>
 

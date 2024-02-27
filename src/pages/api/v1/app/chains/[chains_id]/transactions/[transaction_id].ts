@@ -1,14 +1,13 @@
 // 010 - GET /app/chains/:chain_id/transactions/:transaction_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../../../prisma/client';
 import {ITransactionDetail} from '../../../../../../../interfaces/transaction';
 import {AddressType, IAddressInfo} from '../../../../../../../interfaces/address_info';
 
 type ResponseData = ITransactionDetail | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
   // Info: (20240116 - Julian) 解構 URL 參數，同時進行類型轉換
   const transaction_id =
     typeof req.query.transaction_id === 'string' ? req.query.transaction_id : undefined;

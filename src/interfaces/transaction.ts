@@ -38,3 +38,9 @@ export interface ITransactionList {
   transactions: IDisplayTransaction[];
   totalPages: number;
 }
+
+export interface ITransactionHistorySection {
+  transactions: IDisplayTransaction[];
+  totalPages: number;
+  transactionCount: number;
+}

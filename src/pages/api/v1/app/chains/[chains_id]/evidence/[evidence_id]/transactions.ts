@@ -1,7 +1,7 @@
 // 026 - GET /app/chains/:chain_id/evidence/:evidence_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../../../../prisma/client';
 import {AddressType, IAddressInfo} from '../../../../../../../../interfaces/address_info';
 import {IDisplayTransaction} from '../../../../../../../../interfaces/transaction';
 import {ITEM_PER_PAGE} from '../../../../../../../../constants/config';
@@ -9,8 +9,6 @@ import {ITEM_PER_PAGE} from '../../../../../../../../constants/config';
 type ResponseData = IDisplayTransaction[] | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
   // Info: (20240219 - Julian) 解構 URL 參數，同時進行類型轉換
   const evidenceId = typeof req.query.evidence_id === 'string' ? req.query.evidence_id : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : 0;

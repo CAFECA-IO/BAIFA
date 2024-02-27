@@ -115,7 +115,10 @@
     "TOTAL_AMOUNT": "總發行量",
     "HOLDERS": "持有人數",
     "TOTAL_TRANSFERS": "總轉帳次數",
-    "RED_FLAG": "警示記錄"
+    "RED_FLAG": "警示記錄",
+    "RED_FLAG_TOOLTIP": "地址發生的可疑行為記錄。",
+    "TOTAL_TRANSFERS_TOOLTIP": "這個轉帳的計數是每隔幾分鐘更新一次，而不是即時更新。",
+    "HOLDERS_TOOLTIP": "持有該貨幣的地址數量。"
   },
   "BLOCK_DETAIL_PAGE": {
     "MAIN_TITLE": "區塊",

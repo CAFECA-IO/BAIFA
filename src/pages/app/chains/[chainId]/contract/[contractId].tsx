@@ -20,9 +20,15 @@ import TransactionHistorySection from '../../../../../components/transaction_his
 import Tooltip from '../../../../../components/tooltip/tooltip';
 import {AppContext} from '../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../contexts/market_context';
-import {IDisplayTransaction} from '../../../../../interfaces/transaction';
-import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../../../../constants/config';
+import {ITransactionHistorySection} from '../../../../../interfaces/transaction';
+import {
+  DEFAULT_CHAIN_ICON,
+  DEFAULT_TRUNCATE_LENGTH,
+  default30DayPeriod,
+  sortOldAndNewOptions,
+} from '../../../../../constants/config';
 import DataNotFound from '../../../../../components/data_not_found/data_not_found';
+import {IDatePeriod} from '../../../../../interfaces/date_period';
 
 interface IContractDetailDetailPageProps {
   chainId: string;
@@ -36,31 +42,42 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
   const {getContractDetail, getContractTransactions} = useContext(MarketContext);
 
   const [contractData, setContractData] = useState<IContractDetail>({} as IContractDetail);
-  const [transactionHistoryData, setTransactionHistoryData] = useState<IDisplayTransaction[]>([]);
   const [isNoData, setIsNoData] = useState(false);
+
+  // Info: (20240226 - Julian) Transaction History States
+  const [transactionHistoryData, setTransactionHistoryData] =
+    useState<ITransactionHistorySection>();
+  const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
+  const [sorting, setSorting] = useState(sortOldAndNewOptions[0]);
+  const [search, setSearch] = useState('');
+  const [activePage, setActivePage] = useState(1);
+
+  const [apiQueryStr, setApiQueryStr] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
   const {publicTag} = contractData;
 
   const backClickHandler = () => router.back();
 
+  const getContractData = async () => {
+    const contractData = await getContractDetail(chainId, contractId);
+    setContractData(contractData);
+  };
+  const getTransactionHistoryData = async () => {
+    setIsLoading(true);
+    const transactionHistoryData = await getContractTransactions(chainId, contractId, apiQueryStr);
+    setTransactionHistoryData(transactionHistoryData);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
 
-    const getContractData = async (chainId: string, contractId: string) => {
-      const contractData = await getContractDetail(chainId, contractId);
-      setContractData(contractData);
-    };
-
-    const getTransactionHistoryData = async (chainId: string, contractId: string) => {
-      const transactionHistoryData = await getContractTransactions(chainId, contractId);
-      setTransactionHistoryData(transactionHistoryData);
-    };
-
-    getContractData(chainId, contractId);
-    getTransactionHistoryData(chainId, contractId);
+    getContractData();
+    getTransactionHistoryData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -87,6 +104,23 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
   ) : (
     <></>
   );
+
+  useEffect(() => {
+    const pageStr = `page=${activePage}`;
+    const sortStr = `&sort=${sorting}`;
+    const searchStr = search ? `&search=${search}` : '';
+    const isPeriodValid = period.startTimeStamp && period.endTimeStamp;
+    const timeStampStr = isPeriodValid
+      ? `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`
+      : '';
+
+    setApiQueryStr(`${pageStr}${sortStr}${searchStr}${timeStampStr}`);
+  }, [activePage, search, sorting, period]);
+
+  useEffect(() => {
+    getTransactionHistoryData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiQueryStr]);
 
   const isPlatformLink = isNoData ? null : (
     <Link href={BFAURL.COMING_SOON}>
@@ -115,8 +149,26 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
 
   const isPrivateNoteSection = isNoData ? null : <PrivateNoteSection />;
 
+  const {transactions, totalPages, transactionCount} = transactionHistoryData ?? {
+    transactions: [],
+    totalPages: 0,
+    transactionCount: 0,
+  };
+
   const isTransactionHistoryData = isNoData ? null : (
-    <TransactionHistorySection transactions={transactionHistoryData} />
+    <TransactionHistorySection
+      transactions={transactions}
+      period={period}
+      setPeriod={setPeriod}
+      sorting={sorting}
+      setSorting={setSorting}
+      setSearch={setSearch}
+      activePage={activePage}
+      setActivePage={setActivePage}
+      isLoading={isLoading}
+      totalPage={totalPages}
+      transactionCount={transactionCount}
+    />
   );
 
   return (
