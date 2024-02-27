@@ -88,7 +88,7 @@ const InteractionPageSkeleton = () => {
       {/* Info: (20240227 - Shirley) Search Filter */}
       <div className="flex w-full flex-col items-end space-y-10">
         {/* Info: (20240227 - Shirley) Search Bar */}
-        <div className="mx-auto w-full lg:w-7/10">
+        <div className="mx-auto flex w-full justify-center">
           <Skeleton width={800} height={40} />
         </div>
         <div className="flex w-full flex-col items-center gap-2 lg:h-72px lg:flex-row lg:justify-between">
