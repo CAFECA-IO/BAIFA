@@ -37,7 +37,7 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
         clearTimeout(timerRef.current);
       }
     };
-  }, [latestActiveTime, sinceTime]);
+  }, [latestActiveTime]);
 
   // const displayAddressLength = true ? 100 : DEFAULT_TRUNCATE_LENGTH;
   // Todo: (20240216 - Liz) 要隨著寬度改變，標題 Address 顯示完整地址

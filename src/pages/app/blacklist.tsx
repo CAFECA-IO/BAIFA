@@ -37,8 +37,11 @@ const BlackListPage = () => {
   }, []);
 
   // Info: (20240216 - Liz) 從 blacklist 中取得所有的 tagName，做成選項給下拉式選單使用
-  const tagNames = new Set(blacklist.map(BlacklistItem => BlacklistItem.tagName));
-  const tagNameOptions = ['SORTING.ALL', ...Array.from(tagNames)];
+
+  const tagNames = blacklist.map(blacklistItem => blacklistItem.tagName);
+  const tagNameOptionDefault = 'SORTING.ALL';
+
+  const tagNameOptions = [tagNameOptionDefault, ...tagNames];
 
   // Info: (20231113 - Julian) Page State
   const [activePage, setActivePage] = useState<number>(1);
@@ -73,7 +76,9 @@ const BlackListPage = () => {
       })
       .filter(blacklistItem => {
         // Info: (20231113 - Julian) filter by Tag Select Menu
-        return filteredTagName === 'SORTING.ALL' ? true : blacklistItem.tagName === filteredTagName;
+        return (
+          filteredTagName === tagNameOptionDefault || filteredTagName === blacklistItem.tagName
+        );
       })
       .sort(
         // Info: (20231113 - Julian) sort by Sorting Menu
@@ -91,8 +96,8 @@ const BlackListPage = () => {
     setActivePage(1);
   }, [search, filteredTagName, sorting, blacklist, searchRef]);
 
-  const displayBlacklist = filteredBlacklist.slice(0, 10).map((blacklistItem, index) => {
-    return <BlacklistItem key={index} blacklistAddress={blacklistItem} />;
+  const displayBlacklist = filteredBlacklist.slice(0, 10).map((filteredBlacklistItem, index) => {
+    return <BlacklistItem key={index} blacklistAddress={filteredBlacklistItem} />;
   });
 
   return (
