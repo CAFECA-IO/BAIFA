@@ -5,12 +5,12 @@ import ComprehensiveIncomeStatements from '../../../components/comprehensive_inc
 import StatementsOfCashFlow from '../../../components/statements_of_cash_flow/statements_of_cash_flow';
 import {BaifaReports} from '../../../constants/baifa_reports';
 
-interface IBalanceSheetsProps {
+interface IAllReportsPageProps {
   projectId: string;
 }
 
-const BalanceSheetsPage = ({projectId}: IBalanceSheetsProps) => {
-  const reportTitle = BaifaReports.BALANCE_SHEETS;
+const AllReportsPage = ({projectId}: IAllReportsPageProps) => {
+  const reportTitle = 'All Reports';
   const projectName = projectId;
   const headTitle = `${reportTitle} of ${projectName} - BAIFA`;
 
@@ -57,4 +57,4 @@ export const getStaticProps: GetStaticProps = async ({params}) => {
   };
 };
 
-export default BalanceSheetsPage;
+export default AllReportsPage;
