@@ -1,12 +1,10 @@
 import Head from 'next/head';
-import {useState, useEffect, useContext, ChangeEvent, KeyboardEvent} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import {AppContext} from '../../contexts/app_context';
-import {MarketContext} from '../../contexts/market_context';
 import useStateRef from 'react-usestateref';
 import {useRouter} from 'next/router';
 import NavBar from '../../components/nav_bar/nav_bar';
 import Footer from '../../components/footer/footer';
-import SearchBar from '../../components/search_bar/search_bar';
 import DatePicker from '../../components/date_picker/date_picker';
 import SortingMenu from '../../components/sorting_menu/sorting_menu';
 import SearchingResultItem from '../../components/searching_result_item/searching_result_item';
@@ -14,10 +12,9 @@ import Pagination from '../../components/pagination/pagination';
 import {sortOldAndNewOptions, ITEM_PER_PAGE, default30DayPeriod} from '../../constants/config';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
-import {ILocale, TranslateFunction} from '../../interfaces/locale';
+import {TranslateFunction} from '../../interfaces/locale';
 import {ISearchResult} from '../../interfaces/search_result';
 import GlobalSearch from '../../components/global_search/global_search';
-import {BFAURL} from '../../constants/url';
 import {GetServerSideProps} from 'next';
 import {ParsedUrlQuery} from 'querystring';
 import Skeleton from '../../components/skeleton/skeleton';
@@ -88,9 +85,6 @@ const SearchingResultItemSkeleton = () => {
 const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
-  const {getSearchResult} = useContext(MarketContext);
-
-  const [isLoading, setIsLoading, isLoadingRef] = useStateRef(true);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -122,7 +116,6 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   const shadowClassNameR =
     'after:absolute after:-inset-1 after:ml-auto after:top-0 after:block xl:after:hidden after:w-5 after:bg-gradient-to-l after:from-black after:to-transparent';
 
-  const [searchResult, setSearchResult] = useState<ISearchResult[]>([]);
   const [filteredResult, setFilteredResult] = useState<ISearchResult[]>([]);
   // Info: (20231114 - Julian) Filter State
   const [searchText, setSearchText, searchTextRef] = useStateRef<string>(keyWord);
@@ -148,15 +141,6 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   } = useAPIWorker<ISearchResult[]>(`${APIURL.SEARCH_RESULT}`, {
     search_input: searchTextRef.current,
   });
-  // eslint-disable-next-line no-console
-  console.log('data', searchResults, 'searchError', searchError);
-
-  const getSearchResultData = async (searchText: string) => {
-    try {
-      const data = await getSearchResult(searchText);
-      setSearchResult(data);
-    } catch (error) {}
-  };
 
   useEffect(() => {
     if (searchQuery) {
@@ -166,17 +150,6 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // useEffect(() => {
-  //   if (searchTextRef.current.length === 0) return;
-  //   (async () => {
-  //     setIsLoading(true);
-  //     await getSearchResultData(searchTextRef.current);
-  //     setIsLoading(false);
-  //   })();
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [searchTextRef.current]);
 
   useEffect(() => {
     if (!searchResults) return;
@@ -227,14 +200,12 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   }, [searchText, sorting, activeTab, period, searchResults]);
 
   const resultList = !isSearchLoading
-    ? // !isLoadingRef.current
-      filteredResult.slice(startIdx, endIdx).map((searchResults, index) => {
+    ? filteredResult.slice(startIdx, endIdx).map((searchResults, index) => {
         return <SearchingResultItem key={index} searchResult={searchResults} />;
       })
     : Array.from({length: ITEM_PER_PAGE}).map((_, index) => (
         <SearchingResultItemSkeleton key={index} />
       ));
-  // <Skeleton width={300} height={300} />
 
   const displayedFilterTabs = filterTabs.map((tab, index) => {
     const tabClickHandler = () => setActiveTab(tab);

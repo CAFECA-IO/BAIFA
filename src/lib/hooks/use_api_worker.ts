@@ -12,8 +12,11 @@ interface QueryParams {
 }
 
 function useAPIWorker<Data>(key: string, queryParams?: QueryParams): FetcherResponse<Data> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [data, setData, dataRef] = useStateRef<Data | undefined>(undefined);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading, isLoadingRef] = useStateRef<boolean>(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError, errorRef] = useStateRef<Error | null>(null);
   const requestIdRef = useRef<string>(Date.now().toString());
   const queryParamsRef = useRef<QueryParams | undefined>(queryParams);

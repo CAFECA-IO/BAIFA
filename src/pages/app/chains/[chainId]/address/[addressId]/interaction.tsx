@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, useEffect, useContext, useRef} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import useStateRef from 'react-usestateref';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
@@ -10,7 +10,6 @@ import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import SearchBar from '../../../../../../components/search_bar/search_bar';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import DatePicker from '../../../../../../components/date_picker/date_picker';
-import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import InteractionItem from '../../../../../../components/interaction_item/interaction_item';
 import Footer from '../../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
@@ -27,8 +26,6 @@ import {
 import Pagination from '../../../../../../components/pagination/pagination';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
-import {AddressType} from '../../../../../../interfaces/address_info';
-import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import {APIURL} from '../../../../../../constants/api_request';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 import useAPIWorker from '../../../../../../lib/hooks/use_api_worker';
@@ -69,22 +66,6 @@ const queryToTextOptionsMap = {
 
 const InteractionPageSkeleton = () => {
   const listSkeletons = Array.from({length: ITEM_PER_PAGE}, (_, i) => (
-    // <div key={i} className="flex w-full flex-col">
-    //   <div className="flex h-60px w-full items-center">
-    //     {/* Info: (20240227 - Shirley) Flagging Time square */}
-    //     <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-darkPurple">
-    //       <Skeleton width={100} height={40} />{' '}
-    //     </div>
-    //     <div className="flex h-full flex-1 items-center border-b border-darkPurple4">
-    //       {/* Info: (20240227 - Shirley) Address ID */}
-    //       <Skeleton width={200} height={40} /> {/* Info: (20240227 - Shirley) Flag Type */}
-    //       <div className="flex w-full justify-end">
-    //         <Skeleton width={80} height={40} />{' '}
-    //       </div>
-    //     </div>
-    //   </div>{' '}
-    // </div>
-
     <div
       key={i}
       className="flex h-60px w-full items-center space-x-4 border-b border-darkPurple4 p-2"
@@ -199,9 +180,10 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
     Math.ceil((interactedList?.length ?? 0) / ITEM_PER_PAGE)
   );
 
+  // Deprecated: (20240310 - Shirley) 用其他方式取代 binding URL and sorting menu
   // Info: (20231214 - Julian) 取得 type 的查詢字串
-  const queryType =
-    typeOptions.find(typeOption => typeOption.text === filteredType)?.queryString ?? '';
+  // const queryType =
+  //   typeOptions.find(typeOption => typeOption.text === filteredType)?.queryString ?? '';
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -209,29 +191,6 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // useEffect(() => {
-  //   const getInteractionData = async (chainId: string, addressId: string, type: string) => {
-  //     const interactedList = await getInteractions(chainId, addressId, type);
-  //     setInteractedList(interactedList);
-  //   };
-
-  //   getInteractionData(chainId, addressId, queryType);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [filteredType]);
-
-  // const timerRef = useRef<NodeJS.Timeout | null>(null);
-  // useEffect(() => {
-  //   if (interactedList) {
-  //     setInteractedList(interactedList);
-  //   }
-  //   timerRef.current = setTimeout(() => setIsLoading(false), 500);
-  //   return () => {
-  //     if (timerRef.current) {
-  //       clearTimeout(timerRef.current);
-  //     }
-  //   };
-  // }, [interactedList]);
 
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
@@ -242,12 +201,12 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
         textToQueryOptionsMap[filteredTypeRef.current as keyof typeof textToQueryOptionsMap]; // Update the query param
       router.push(router); // Refresh the page with the new query param
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredTypeRef.current]);
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('in type effect', type);
     setFilteredType(queryToTextOptionsMap[type as keyof typeof queryToTextOptionsMap] ?? 'all');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
 
   useEffect(() => {

@@ -2,8 +2,8 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
-import {useState, useContext, useEffect, useRef} from 'react';
-import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
+import {useState, useContext, useEffect} from 'react';
+import {GetServerSideProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
@@ -23,12 +23,10 @@ import BlockProducedHistorySection from '../../../../../../components/block_prod
 import TransactionHistorySection, {
   TransactionDataType,
 } from '../../../../../../components/transaction_history_section/transaction_history_section';
-import {MarketContext} from '../../../../../../contexts/market_context';
 import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {
   DEFAULT_CHAIN_ICON,
-  DEFAULT_PAGE,
   DEFAULT_REVIEWS_COUNT_IN_PAGE,
   DEFAULT_TRUNCATE_LENGTH,
   sortOldAndNewOptions,
@@ -41,8 +39,7 @@ import {
 } from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 import {isAddress} from 'web3-validator';
-import {IReviewDetail, IReviews} from '../../../../../../interfaces/review';
-import useStateRef from 'react-usestateref';
+import {IReviewDetail} from '../../../../../../interfaces/review';
 import {
   AddressDetailsContext,
   AddressDetailsProvider,
@@ -50,7 +47,7 @@ import {
 import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 import useAPIWorker from '../../../../../../lib/hooks/use_api_worker';
-import {APIURL, SortingType} from '../../../../../../constants/api_request';
+import {APIURL} from '../../../../../../constants/api_request';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 
@@ -177,14 +174,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getAddressBrief, getAddressReviewList} = useContext(MarketContext);
   const addressDetailsCtx = useContext(AddressDetailsContext);
 
-  const [isLoading, setIsLoading, isLoadingRef] = useStateRef(true);
-  // const [addressBriefData, setAddressBriefData, addressBriefDataRef] = useStateRef<IAddressBrief>(
-  //   {} as IAddressBrief
-  // );
-  const [reviewData, setReviewData] = useState<IReviewDetail[]>([]);
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
 
@@ -209,59 +200,12 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     {order: convertStringToSortingType(reviewSorting)}
   );
 
-  // const getAddressBriefData = async (chainId: string, addressId: string) => {
-  //   try {
-  //     const data = await getAddressBrief(chainId, addressId);
-  //     if (data && Object.keys(data).length > 0) {
-  //       setAddressBriefData(data);
-  //     } else {
-  //       setAddressBriefData(dummyAddressBrief as IAddressBrief);
-  //     }
-  //   } catch (error) {
-  //     //console.log('getAddressData error', error);
-  //   } finally {
-  //   }
-  // };
-
-  const getReviewListData = async (chainId: string, addressId: string) => {
-    try {
-      const data = await getAddressReviewList(chainId, addressId, {
-        offset: DEFAULT_REVIEWS_COUNT_IN_PAGE,
-        page: DEFAULT_PAGE,
-        order: convertStringToSortingType(reviewSorting),
-      });
-      if (data && data.length > 0) {
-        // reviewData.push(...data);
-        setReviewData(data);
-      }
-    } catch (error) {
-      //console.log('getReviewListData error', error);
-    }
-  };
-
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
-
-    (async () => {
-      setIsLoading(true);
-      // await getAddressBriefData(chainId, addressId);
-      // await getReviewListData(chainId, addressId);
-      setIsLoading(false);
-    })();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     setIsLoading(true);
-  //     await getReviewListData(chainId, addressId);
-  //     setIsLoading(false);
-  //   })();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [reviewSorting]);
 
   const backClickHandler = () => router.back();
 
@@ -505,42 +449,3 @@ export const getServerSideProps: GetServerSideProps = async ({query, locale}) =>
 };
 
 export default AddressDetailPage;
-
-/* Deprecated: (20240219 - Shirley) use `getServerSideProps` instead of `getStaticPaths` and `getStaticProps`
-// export const getStaticPaths: GetStaticPaths = async () => {
-//   // ToDo: (20231213 - Julian) Add dynamic paths
-//   const paths = [
-//     {
-//       params: {chainId: 'isun', addressId: '1'},
-//       locale: 'en',
-//     },
-//   ];
-
-//   return {paths, fallback: 'blocking'};
-// };
-
-// export const getStaticProps: GetStaticProps = async ({params, locale}) => {
-//   if (!params || !params.addressId || typeof params.addressId !== 'string') {
-//     return {
-//       notFound: true,
-//     };
-//   }
-
-//   const addressId = params.addressId;
-//   const chainId = params.chainId;
-
-//   if (!addressId || !isAddress(addressId) || !chainId) {
-//     return {
-//       notFound: true,
-//     };
-//   }
-
-//   return {
-//     props: {
-//       addressId,
-//       chainId,
-//       ...(await serverSideTranslations(locale as string, ['common'])),
-//     },
-//   };
-// };
-*/

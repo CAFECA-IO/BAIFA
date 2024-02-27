@@ -12,14 +12,13 @@ import {getChainIcon, truncateText} from '../../../../../../lib/common';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {IRedFlag} from '../../../../../../interfaces/red_flag';
 import RedFlagList from '../../../../../../components/red_flag_list/red_flag_list';
-import {useContext, useEffect, useRef, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_RED_FLAG_COUNT_IN_PAGE,
   DEFAULT_TRUNCATE_LENGTH,
-  ITEM_PER_PAGE,
 } from '../../../../../../constants/config';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 

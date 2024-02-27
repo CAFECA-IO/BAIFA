@@ -1,15 +1,13 @@
 import Image from 'next/image';
-import {useState, useEffect, useContext, ChangeEvent, KeyboardEvent} from 'react';
-import {MarketContext} from '../../contexts/market_context';
+import {useEffect, ChangeEvent, KeyboardEvent} from 'react';
 import {useRouter} from 'next/router';
 import {BFAURL} from '../../constants/url';
 import {FiSearch} from 'react-icons/fi';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {ISuggestions, defaultSuggestions} from '../../interfaces/suggestions';
+import {ISuggestions} from '../../interfaces/suggestions';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import useStateRef from 'react-usestateref';
-import useAPIWorker from '../../lib/hooks/use_api_worker';
 import {APIURL} from '../../constants/api_request';
 import useAPIResponse from '../../lib/hooks/use_api_response';
 
@@ -26,14 +24,11 @@ const GlobalSearch = ({
 }: IGlobalSearchProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
-  const {getSuggestions} = useContext(MarketContext);
 
   // Info: (20231212 - Julian) 搜尋欄位的值
   const [inputValue, setInputValue, inputValueRef] = useStateRef<string>(
     inputValueFromParent ? inputValueFromParent : ''
   );
-  // Info: (20231212 - Julian) 搜尋建議的內容
-  const [suggestionData, setSuggestionData] = useState<ISuggestions>(defaultSuggestions);
 
   // Info: (20231212 - Julian) 點擊搜尋欄位外的地方，隱藏搜尋建議
   const {
@@ -42,19 +37,9 @@ const GlobalSearch = ({
     setComponentVisible: setSuggestionVisible,
   } = useOuterClick<HTMLInputElement>(false);
 
-  // const {data, isLoading, error} = useAPIWorker<ISuggestions>(`${APIURL.SEARCH_SUGGESTIONS}`, {
-  //   search_input: inputValueRef.current,
-  // });
-
   const {data, isLoading, error} = useAPIResponse<ISuggestions>(`${APIURL.SEARCH_SUGGESTIONS}`, {
     search_input: inputValueRef.current,
   });
-
-  // useEffect(() => {
-  //   if (inputValue.length === 0) return;
-  //   getSuggestions(inputValue).then(data => setSuggestionData(data));
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [inputValue]);
 
   // Info: (20231212 - Julian) focus 搜尋欄位時，顯示搜尋建議
   const handleInputFocus = () => setSuggestionVisible(true);
@@ -78,6 +63,7 @@ const GlobalSearch = ({
     if (!!inputValueFromParent) {
       setInputValue(inputValueFromParent);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValueFromParent]);
 
   // Info: (20231212 - Julian) 點擊搜尋建議後，導向搜尋結果頁面

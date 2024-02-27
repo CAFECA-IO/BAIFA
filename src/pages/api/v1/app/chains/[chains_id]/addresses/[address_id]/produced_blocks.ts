@@ -17,16 +17,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const order = (req.query.order as string)?.toLowerCase() === 'desc' ? 'desc' : 'asc';
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
   const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
-  const start_date =
-    typeof req.query.start_date === 'string' ? parseInt(req.query.start_date, 10) : undefined;
-  const end_date =
-    typeof req.query.end_date === 'string' ? parseInt(req.query.end_date, 10) : undefined;
+  // TODO: input query (20240227 - Shirley)
+  // const start_date =
+  //   typeof req.query.start_date === 'string' ? parseInt(req.query.start_date, 10) : undefined;
+  // const end_date =
+  //   typeof req.query.end_date === 'string' ? parseInt(req.query.end_date, 10) : undefined;
   // const block_id = typeof req.query.query === 'string' ? parseInt(req.query.block_id, 10) : 0;
 
   if (!address_id || !chain_id) {
     return res.status(400).json(undefined);
   }
 
+  // TODO: input query (20240227 - Shirley)
   let queryObject;
   try {
     queryObject = req.query.query ? JSON.parse(req.query.query as string) : undefined;

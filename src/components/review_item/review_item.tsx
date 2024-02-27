@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {IReviewDetail} from '../../interfaces/review';
 import {getDynamicUrl} from '../../constants/url';
-import BoltButton from '../bolt_button/bolt_button';
 import {timestampToString, truncateText} from '../../lib/common';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
