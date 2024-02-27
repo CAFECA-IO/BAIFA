@@ -43,13 +43,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         })
       : [];
 
+    // Info: (20240227 - Liz) 從 codes table 撈出 red_flag_type 的 value 和 meaning 為一個物件陣列
+    const redFlagTypeCodes = await prisma.codes.findMany({
+      where: {
+        table_name: 'red_flags',
+        table_column: 'red_flag_type',
+      },
+      select: {
+        value: true,
+        meaning: true,
+      },
+    });
+
+    // Info: (20240227 - Liz) 遍歷物件陣列 轉換成物件
+    const redFlagTypeCodesObj: {[key: string]: string} = {};
+    redFlagTypeCodes.forEach(item => {
+      if (item.value && item.meaning) {
+        redFlagTypeCodesObj[item.value] = item.meaning;
+      }
+    });
+
     // Info: (20240227 - Liz) 組合回傳資料
     const result: ResponseData = redFlagData.map(redFlag => {
+      // Info: (20240227 - Liz) 將資料庫傳來的 red_flag_type 轉換成對應的 meaning
+      const redFlagType = redFlag.red_flag_type
+        ? redFlagTypeCodesObj[redFlag.red_flag_type]
+        : 'Unknown Red Flag Type';
+
       return {
         id: `${redFlag.id}`,
         chainId: `${redFlag.chain_id}`,
         chainName: `${currencyData?.name}`,
-        redFlagType: `${redFlag.red_flag_type}`,
+        redFlagType: redFlagType,
         createdTimestamp: redFlag.created_timestamp ?? 0,
       };
     });

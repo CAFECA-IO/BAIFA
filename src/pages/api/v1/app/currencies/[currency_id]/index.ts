@@ -172,8 +172,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     [key: string]: string;
   } = {};
   riskLevelCodes.forEach(item => {
-    if (item.value !== null) {
-      riskLevelCodesObj[item.value] = item.meaning as string;
+    if (item.value && item.meaning) {
+      riskLevelCodesObj[item.value] = item.meaning;
     }
   });
 
