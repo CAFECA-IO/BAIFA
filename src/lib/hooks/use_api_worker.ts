@@ -1,3 +1,4 @@
+// Info: 搭配 Web worker 寫出多線程管理 API 的調用，包含發起 request 跟取消 request 的功能，但目前只有 GET (20240227 - Shirley)
 import {useEffect, useRef, useCallback} from 'react';
 import useStateRef from 'react-usestateref';
 

@@ -1,3 +1,4 @@
+// Info: 與 `useAPIWorker` 做比較，有時候不要另開線程會比較快，管理 API 的調用，包含發起 request 跟取消 request 的功能，但目前只有 GET (20240227 - Shirley)
 import {useEffect, useCallback} from 'react';
 import useStateRef from 'react-usestateref';
 
@@ -61,12 +62,12 @@ function useAPIResponse<Data>(key: string, queryParams?: QueryParams): FetcherRe
         setIsLoading(false);
       });
 
-    return () => controller.abort(); // Cleanup function to abort fetch request
+    return () => controller.abort(); // Info: Cleanup function to abort fetch request (20240227 - Shirley)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, JSON.stringify(queryParams)]);
 
   useEffect(() => {
-    return fetchDataCallback(); // Execute fetchDataCallback and return the cleanup function
+    return fetchDataCallback(); // Info: Execute fetchDataCallback and return the cleanup function (20240227 - Shirley)
   }, [fetchDataCallback]);
 
   return {data: dataRef.current, isLoading: isLoadingRef.current, error: errorRef.current};
