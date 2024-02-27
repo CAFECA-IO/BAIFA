@@ -52,6 +52,7 @@ import DataNotFound from '../../../../../../components/data_not_found/data_not_f
 import useAPIWorker from '../../../../../../lib/hooks/use_api_worker';
 import {APIURL, SortingType} from '../../../../../../constants/api_request';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
+import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;
@@ -191,7 +192,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     data: addressBriefData,
     isLoading: isAddressBriefLoading,
     error: addressBriefError,
-  } = useAPIWorker<IAddressBrief>(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}`);
+  } = useAPIResponse<IAddressBrief>(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}`);
 
   const {publicTag, score} = addressBriefData ?? ({} as IAddressBrief);
 
@@ -265,33 +266,28 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const backClickHandler = () => router.back();
 
   const reviewLink = getDynamicUrl(chainId, addressId).REVIEWS;
-  const reviewList =
-    !reviewLoading && !!reviews ? (
-      reviews.length > 0 ? (
-        reviews
-          // Info: (20231214 - Julian) Sort reviews by createdTimestamp
-          .sort((a, b) => {
-            if (reviewSorting === sortOldAndNewOptions[0]) {
-              return b.createdTimestamp - a.createdTimestamp;
-            } else {
-              return a.createdTimestamp - b.createdTimestamp;
-            }
-          })
-          .slice(0, DEFAULT_REVIEWS_COUNT_IN_PAGE)
-          // Info: (20231214 - Julian) Print reviews
-          .map((review, index) => <ReviewItem key={index} review={review} />)
-      ) : (
-        <></>
-      )
-    ) : (
-      Array.from({length: DEFAULT_REVIEWS_COUNT_IN_PAGE}, (_, index) => (
-        <ReviewSectionSkeleton key={index} />
+  const reviewList = reviewLoading ? (
+    Array.from({length: DEFAULT_REVIEWS_COUNT_IN_PAGE}, (_, index) => (
+      <ReviewSectionSkeleton key={index} />
+    ))
+  ) : !!reviews && reviews.length > 0 ? (
+    reviews
+      .sort((a, b) => {
+        if (reviewSorting === sortOldAndNewOptions[0]) {
+          return b.createdTimestamp - a.createdTimestamp;
+        } else {
+          return a.createdTimestamp - b.createdTimestamp;
+        }
+      })
+      .slice(0, DEFAULT_REVIEWS_COUNT_IN_PAGE)
+      .map((review, index) => <ReviewItem key={index} review={review} />)
+  ) : (
+    <></>
+  );
 
-        // <ReviewItem key={index} review={{} as IReviewDetail} />
-      ))
-    );
-
-  const displayPublicTag = publicTag ? (
+  const displayPublicTag = isAddressBriefLoading ? (
+    <Skeleton width={150} height={40} />
+  ) : publicTag ? (
     publicTag.map((tag, index) => (
       <div
         key={index}

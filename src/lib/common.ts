@@ -7,6 +7,7 @@ import {
   MIN_64_BIT_INTEGER_PARAMETER,
   MONTH_LIST,
   sortOldAndNewOptions,
+  THRESHOLD_FOR_ADDRESS_RISK_LEVEL,
   THRESHOLD_FOR_BLOCK_STABILITY,
 } from '../constants/config';
 import {StabilityLevel} from '../constants/stability_level';
@@ -14,6 +15,7 @@ import clsx from 'clsx';
 import type {ClassValue} from 'clsx';
 import {twMerge} from 'tailwind-merge';
 import {AddressType} from '../interfaces/address_info';
+import {IRiskLevel, RiskLevel} from '../constants/risk_level';
 
 export const timestampToString = (timestamp: number) => {
   if (timestamp === 0)
@@ -233,7 +235,7 @@ export function isValid64BitInteger(input: string | number | bigint) {
 }
 
 // Info: 藉由 targetBlockId 跟 latestBlockId 計算區塊的穩定度，越新的 block ，穩定性越低 (20240201 - Shirley)
-export const calculateBlockStability = (targetBlockId: number, latestBlockId: number) => {
+export const assessBlockStability = (targetBlockId: number, latestBlockId: number) => {
   let stability = StabilityLevel.LOW;
   if (isNaN(+targetBlockId) || isNaN(+latestBlockId)) return stability;
 
@@ -321,4 +323,23 @@ export function convertAddressTypeToString(addressType: AddressType): string {
   }
 
   return type;
+}
+
+export function assessAddressRisk(input: number | string): IRiskLevel {
+  const value = typeof input === 'string' ? parseFloat(input) : input;
+  let result = RiskLevel.HIGH_RISK;
+
+  if (isNaN(value)) {
+    return result;
+  }
+
+  if (value < THRESHOLD_FOR_ADDRESS_RISK_LEVEL.LOW) {
+    result = RiskLevel.LOW_RISK;
+  } else if (value <= THRESHOLD_FOR_ADDRESS_RISK_LEVEL.HIGH) {
+    result = RiskLevel.MEDIUM_RISK;
+  } else if (value > THRESHOLD_FOR_ADDRESS_RISK_LEVEL.HIGH) {
+    result = RiskLevel.HIGH_RISK;
+  }
+
+  return result;
 }

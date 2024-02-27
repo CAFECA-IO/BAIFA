@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     typeof req.query.end_date === 'string' ? parseInt(req.query.end_date, 10) : undefined;
   // const block_id = typeof req.query.query === 'string' ? parseInt(req.query.block_id, 10) : 0;
 
-  if (!address_id || !chain_id || !isAddress(address_id)) {
+  if (!address_id || !chain_id) {
     return res.status(400).json(undefined);
   }
 
@@ -71,6 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         id: chain_id,
       },
       select: {
+        id: true,
         symbol: true,
         decimals: true,
       },

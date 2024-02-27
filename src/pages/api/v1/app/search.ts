@@ -2,7 +2,7 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
-import {calculateBlockStability, isValid64BitInteger} from '../../../../lib/common';
+import {assessBlockStability, isValid64BitInteger} from '../../../../lib/common';
 import {StabilityLevel} from '../../../../constants/stability_level';
 import {ISearchResult} from '../../../../interfaces/search_result';
 import {SearchType} from '../../../../constants/search_type';
@@ -61,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       blocks.forEach(item => {
         if (latestBlock && latestBlock.number) {
           const targetBlockId = item.number ? +item.number : 0;
-          stability = calculateBlockStability(targetBlockId, latestBlock.number);
+          stability = assessBlockStability(targetBlockId, latestBlock.number);
         }
 
         result.push({
