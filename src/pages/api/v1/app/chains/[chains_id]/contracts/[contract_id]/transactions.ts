@@ -1,20 +1,19 @@
 // 025 - GET /app/chains/:chain_id/contracts/:contract_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 import {AddressType, IAddressInfo} from '../../../../../../../../interfaces/address_info';
-import {IDisplayTransaction} from '../../../../../../../../interfaces/transaction';
+import {ITransactionHistorySection} from '../../../../../../../../interfaces/transaction';
 import {ITEM_PER_PAGE} from '../../../../../../../../constants/config';
+import prisma from '../../../../../../../../../prisma/client';
 
-type ResponseData = IDisplayTransaction[] | undefined;
+type ResponseData = ITransactionHistorySection | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
   // Info: (20240216 - Julian) 解構 URL 參數，同時進行類型轉換
   const contractId = typeof req.query.contract_id === 'string' ? req.query.contract_id : undefined;
-  const page =
-    typeof req.query.transaction_page === 'string' ? parseInt(req.query.transaction_page) : 0;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : 0;
+  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const search = typeof req.query.search === 'string' ? req.query.search : undefined;
   const start_date =
     typeof req.query.start_date === 'string' ? parseInt(req.query.start_date) : undefined;
   const end_date =
@@ -24,26 +23,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // (20240216 - Julian) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // (20240216 - Julian) 取幾筆
 
+  // Info: (20240222 - Julian) 排序
+  const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
+
+  // Info: (20240226 - Julian) 查詢和 contract 相關的 transaction
+  const queryConditon = {
+    related_addresses: {
+      hasSome: [`${contractId}`],
+    },
+  };
+
+  // Info: (20240226 - Julian) 撈出 transaction data
+  const transactionCount = await prisma.transactions.count({where: queryConditon});
   // Info: (20240216 - Julian) 撈出 transaction data
   const transactionData = contractId
     ? await prisma.transactions.findMany({
         where: {
-          related_addresses: {
-            hasSome: [`${contractId}`],
-          },
+          ...queryConditon,
           // Info: (20240216 - Julian) 日期區間
           created_timestamp: {
             gte: start_date,
             lte: end_date,
           },
+          // Info: (20240226 - Julian) 關鍵字
+          hash: search ? {contains: search} : undefined,
         },
-        // Info: (20240216 - Julian) 從新到舊排序
-        orderBy: {
-          created_timestamp: 'desc',
-        },
-        // Info: (20240125 - Julian) 分頁
-        skip: skip,
-        take: take,
+        // Info: (20240226 - Julian) 撈出的欄位
         select: {
           chain_id: true,
           hash: true,
@@ -53,6 +58,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           type: true,
           status: true,
         },
+        // Info: (20240226 - Julian) 排序方式：
+        orderBy: [
+          {
+            // Info: (20240226 - Julian) 1. created_timestamp 由 sorting 決定
+            created_timestamp: sorting,
+          },
+          {
+            // Info: (20240226 - Julian) 2. id 由小到大
+            id: 'asc',
+          },
+        ],
+        // Info: (20240125 - Julian) 分頁
+        skip: skip,
+        take: take,
       })
     : [];
 
@@ -81,7 +100,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
   const allAddressArray = allAddress.map(address => address.address);
 
-  const result: ResponseData = transactionData.map(transaction => {
+  const transactionList = transactionData.map(transaction => {
     // Info: (20240216 - Julian) from address 轉換
     const fromAddressesRaw = transaction.from_address ? transaction.from_address.split(',') : [];
     // Info: (20240216 - Julian) 如果 address 為 null 就過濾掉
@@ -128,6 +147,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       status: status,
     };
   });
+
+  // Info: (20240226 - Julian) 計算總頁數
+  const totalPages = Math.ceil(transactionCount / ITEM_PER_PAGE);
+
+  // Info: (20240226 - Julian) 組合回傳資料
+  const result: ResponseData = {
+    transactions: transactionList,
+    totalPages: totalPages,
+    transactionCount: transactionCount,
+  };
 
   res.status(200).json(result);
 }

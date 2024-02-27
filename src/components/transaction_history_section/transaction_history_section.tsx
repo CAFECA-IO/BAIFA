@@ -1,6 +1,5 @@
-import {useState, useEffect, useContext} from 'react';
-import useStateRef from 'react-usestateref';
-import SearchBar from '../search_bar/search_bar';
+import {useState, useContext, Dispatch, SetStateAction} from 'react';
+import {SearchBarWithKeyDown} from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
@@ -12,42 +11,72 @@ import DatePicker from '../date_picker/date_picker';
 import {AddressDetailsContext} from '../../contexts/address_details_context';
 import {SortingType} from '../../constants/api_request';
 import {SkeletonList} from '../skeleton/skeleton';
+import {IDatePeriod} from '../../interfaces/date_period';
 
 export enum TransactionDataType {
   ADDRESS_DETAILS = 'ADDRESS_DETAILS',
 }
 
 interface ITransactionHistorySectionProps {
+  // Info: (20240226 - Julian) transaction history list
   transactions: IDisplayTransaction[];
+
   dataType?: TransactionDataType;
+
+  period?: IDatePeriod;
+  setPeriod?: Dispatch<SetStateAction<IDatePeriod>>;
+  sorting?: string;
+  setSorting?: Dispatch<SetStateAction<string>>;
+
+  setSearch?: Dispatch<SetStateAction<string>>;
+  activePage?: number;
+  setActivePage?: Dispatch<SetStateAction<number>>;
+  isLoading?: boolean;
+
+  totalPage?: number;
+  transactionCount?: number;
 }
 
-const itemSkeleton = (
-  <div className="flex items-center justify-between">
-    <div>
-      <div className="mb-2.5 h-2.5 w-full rounded-full bg-gray-300 dark:bg-gray-600"></div>
-      <div className="h-2 w-32 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-    </div>
-    <div className="h-2.5 w-12 rounded-full bg-gray-300 dark:bg-gray-700"></div>
-  </div>
-);
+// const itemSkeleton = (
+//   <div className="flex items-center justify-between">
+//     <div>
+//       <div className="mb-2.5 h-2.5 w-full rounded-full bg-gray-300 dark:bg-gray-600"></div>
+//       <div className="h-2 w-32 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+//     </div>
+//     <div className="h-2.5 w-12 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+//   </div>
+// );
 
-const listSkeleton = (
-  <div
-    role="status"
-    className="w-full animate-pulse space-y-4 divide-y divide-gray-200 rounded border border-gray-200 p-4 shadow md:p-6 dark:divide-gray-700 dark:border-gray-700"
-  >
-    {/* Info: generate 10 skeletons (20240207 - Shirley) */}
-    {Array.from({length: ITEM_PER_PAGE}, (_, index) => (
-      <div key={index} className={`${index !== 0 ? `pt-4` : ``}`}>
-        {itemSkeleton}
-      </div>
-    ))}
-    <span className="sr-only">Loading...</span>
-  </div>
-);
+// const listSkeleton = (
+//   <div
+//     role="status"
+//     className="w-full animate-pulse space-y-4 divide-y divide-gray-200 rounded border border-gray-200 p-4 shadow md:p-6 dark:divide-gray-700 dark:border-gray-700"
+//   >
+//     {/* Info: generate 10 skeletons (20240207 - Shirley) */}
+//     {Array.from({length: ITEM_PER_PAGE}, (_, index) => (
+//       <div key={index} className={`${index !== 0 ? `pt-4` : ``}`}>
+//         {itemSkeleton}
+//       </div>
+//     ))}
+//     <span className="sr-only">Loading...</span>
+//   </div>
+// );
 
-const TransactionHistorySection = ({transactions, dataType}: ITransactionHistorySectionProps) => {
+const TransactionHistorySection = ({
+  transactions,
+  dataType,
+  period,
+  setPeriod,
+  sorting,
+  setSorting,
+
+  setSearch,
+  activePage,
+  setActivePage,
+  isLoading,
+  totalPage,
+  transactionCount,
+}: ITransactionHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const addressDetailsCtx = useContext(AddressDetailsContext);
   const defaultPages =
@@ -55,117 +84,41 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
       ? addressDetailsCtx.transactions.totalPage
       : Math.ceil(1 / ITEM_PER_PAGE);
 
-  const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(defaultPages);
-  const [search, setSearch, searchRef] = useStateRef('');
-  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [period, setPeriod] = useState(default30DayPeriod);
-  const [transactionCount, setTransactionCount] = useState(0);
+  const [activePageDefault, setActivePageDefault] = useState(1);
+  const totalPagesDefault = totalPage ?? defaultPages;
 
-  const transactionData =
-    dataType === TransactionDataType.ADDRESS_DETAILS ? addressDetailsCtx.transactions : null;
+  const [search, setSearchDefault] = useState('');
+  const [sortingDefault, setSortingDefault] = useState<string>(sortOldAndNewOptions[0]);
+  const [periodDefault, setPeriodDefault] = useState(default30DayPeriod);
 
-  const [filteredTransactions, setFilteredTransactions] = useState<IDisplayTransaction[]>(
-    transactionData?.transactions ?? transactions
-  );
+  const isLoadingDefault = isLoading ?? false;
 
-  const endIdx = activePage * ITEM_PER_PAGE;
-  const startIdx = endIdx - ITEM_PER_PAGE;
+  const transactionCountDefault = transactionCount ?? transactions.length;
 
-  // Info: (20240103 - Julian) Update the address options when transactions are updated
-  useEffect(() => {
-    const transaction = transactionData?.transactions
-      ? transactionData?.transactions
-      : transactions;
-
-    const sortedTransaction = transaction.sort((a, b) => {
-      return sorting === sortOldAndNewOptions[0]
-        ? +b.id - +a.id // Info: (20240219 - Shirley) Newest
-        : +a.id - +b.id; // Info: (20240219 - Shirley) Oldest
-    });
-
-    const count =
-      dataType === TransactionDataType.ADDRESS_DETAILS
-        ? addressDetailsCtx.transactions.transactionCount
-        : transactions.length;
-
-    const pages =
-      dataType === TransactionDataType.ADDRESS_DETAILS
-        ? addressDetailsCtx.transactions.totalPage
-        : Math.ceil(sortedTransaction.length / ITEM_PER_PAGE);
-
-    setFilteredTransactions(sortedTransaction);
-    setTransactionCount(count);
-    setTotalPages(pages);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transactionData, transactions]);
-
-  // Info: (20231113 - Julian) Filter by search term, to address, and sorting
-  useEffect(() => {
-    const searchResult = (transactionData?.transactions ?? transactions)
-      // Info: (20231113 - Julian) filter by search term
-      .filter((transaction: IDisplayTransaction) => {
-        const searchTerm = searchRef.current.toLowerCase();
-        const transactionId = transaction.id.toString().toLowerCase();
-        const status = transaction.status.toLowerCase();
-
-        return searchTerm !== ''
-          ? transactionId.includes(searchTerm) || status.includes(searchTerm)
-          : true;
-      })
-      // Info: (20240205 - Julian) filter by date range
-      .filter((transaction: IDisplayTransaction) => {
-        const {createdTimestamp} = transaction;
-        const {startTimeStamp, endTimeStamp} = period;
-        const isSelectingDate = startTimeStamp !== 0 && endTimeStamp !== 0;
-
-        return isSelectingDate
-          ? createdTimestamp >= startTimeStamp && createdTimestamp <= endTimeStamp
-          : true;
-      })
-      .sort((a, b) => {
-        return sorting === sortOldAndNewOptions[0]
-          ? // Info: (20231113 - Julian) Newest
-            +b.id - +a.id
-          : // Info: (20231113 - Julian) Oldest
-            +a.id - +b.id;
-      });
-
-    const pages =
-      dataType === TransactionDataType.ADDRESS_DETAILS
-        ? addressDetailsCtx.transactions.totalPage
-        : Math.ceil(searchResult.length / ITEM_PER_PAGE);
-
-    setFilteredTransactions(searchResult);
-    setTotalPages(pages);
-    // TODO: 在 input 作為 API query 時可能會用到 (20240216 - Shirley)
-    // setActivePage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, sorting, period]);
+  // const transactionData =
+  //   dataType === TransactionDataType.ADDRESS_DETAILS ? addressDetailsCtx.transactions : null;
 
   // Info: (20231113 - Julian) Pagination
-  const transactionList = filteredTransactions
-    ? TransactionDataType.ADDRESS_DETAILS === dataType
-      ? filteredTransactions.map((transaction, index) => (
-          <TransactionHistoryItem key={index} transaction={transaction} />
-        ))
-      : filteredTransactions
-          .slice(startIdx, endIdx)
-          .map((transaction, index) => (
-            <TransactionHistoryItem key={index} transaction={transaction} />
-          ))
-    : [];
+  const transactionList =
+    transactions.length > 0 ? (
+      transactions.map((transaction, index) => (
+        <TransactionHistoryItem key={index} transaction={transaction} />
+      ))
+    ) : (
+      <h2 className="text-center">{t('COMMON.NO_DATA')}</h2>
+    );
 
-  const displayedAddressTransactions = !addressDetailsCtx.transactionsLoading ? (
-    transactionList
-  ) : (
+  // const displayedAddressTransactions = !addressDetailsCtx.transactionsLoading ? (
+  //   transactionList
+  // ) : (
+  //   <SkeletonList count={ITEM_PER_PAGE} />
+  // );
+
+  const displayedTransactionList = isLoadingDefault ? (
     <SkeletonList count={ITEM_PER_PAGE} />
+  ) : (
+    transactionList
   );
-
-  const displayedTransactionList =
-    dataType === TransactionDataType.ADDRESS_DETAILS
-      ? displayedAddressTransactions
-      : transactionList;
 
   const paginationClickHandler = async ({page, offset}: {page: number; offset: number}) => {
     if (dataType === TransactionDataType.ADDRESS_DETAILS) {
@@ -199,7 +152,7 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
     <div className="flex w-full flex-col space-y-4">
       {/* Info: (20231113 - Julian) Title */}
       <h2 className="text-xl text-lilac">
-        {t('COMMON.TRANSACTION_HISTORY_TITLE')} ({transactionCount})
+        {t('COMMON.TRANSACTION_HISTORY_TITLE')} ({transactionCountDefault})
       </h2>
       <div className="flex w-full flex-col rounded-lg bg-darkPurple px-6 py-4 drop-shadow-xl lg:h-1050px">
         {/* Info: (20231113 - Julian) Search Filter */}
@@ -208,15 +161,19 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
             {/* Info: (20240221 - Julian) Date Picker */}
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-              <DatePicker period={period} setFilteredPeriod={setPeriod} isLinearBg />
+              <DatePicker
+                period={period ?? periodDefault}
+                setFilteredPeriod={setPeriod ?? setPeriodDefault}
+                isLinearBg
+              />
             </div>
             {/* Info: (20231113 - Julian) Sorting Menu */}
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
               <SortingMenu
                 sortingOptions={sortOldAndNewOptions}
-                sorting={sorting}
-                setSorting={setSorting}
+                sorting={sorting ?? sortingDefault}
+                setSorting={setSorting ?? setSortingDefault}
                 bgColor="bg-purpleLinear"
                 sortingHandler={sortingClickHandler}
                 sortPrefix={`transaction`}
@@ -224,10 +181,10 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
             </div>
           </div>
           {/* Info: (20231113 - Julian) Search Bar */}
-          <SearchBar
-            searchBarPlaceholder={t('COMMON.TRANSACTION_HISTORY_PLACEHOLDER')}
-            setSearch={setSearch}
-          />
+          {SearchBarWithKeyDown({
+            searchBarPlaceholder: t('COMMON.TRANSACTION_HISTORY_PLACEHOLDER'),
+            setSearch: setSearch ?? setSearchDefault,
+          })}
         </div>
         {/* Info: (20231113 - Julian) To Address List */}
         <div className="my-10 flex w-full flex-1 flex-col">{displayedTransactionList}</div>
@@ -235,9 +192,9 @@ const TransactionHistorySection = ({transactions, dataType}: ITransactionHistory
           paginationClickHandler={paginationClickHandler}
           loading={addressDetailsCtx.transactionsLoading}
           pagePrefix={`transaction`}
-          activePage={activePage}
-          setActivePage={setActivePage}
-          totalPages={totalPages}
+          activePage={activePage ?? activePageDefault}
+          setActivePage={setActivePage ?? setActivePageDefault}
+          totalPages={totalPagesDefault}
           pageInit={transactionInit}
         />
       </div>

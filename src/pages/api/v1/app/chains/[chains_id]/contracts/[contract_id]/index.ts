@@ -1,14 +1,13 @@
 // 015 - GET /app/chains/:chain_id/contracts/:contract_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../../../../prisma/client';
 import {AddressType} from '../../../../../../../../interfaces/address_info';
 import {IContractBrief} from '../../../../../../../../interfaces/contract';
 
 type ResponseData = IContractBrief | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
   const contractId = typeof req.query.contract_id === 'string' ? req.query.contract_id : undefined;
 

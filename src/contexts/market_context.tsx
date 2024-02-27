@@ -22,6 +22,7 @@ import {
   ITransactionData,
   ITransactionDetail,
   ITransactionList,
+  ITransactionHistorySection,
 } from '../interfaces/transaction';
 import {
   IAddressBrief,
@@ -94,7 +95,7 @@ export interface IMarketContext {
     chainId: string,
     contractId: string,
     queryStr?: string
-  ) => Promise<ITransaction[]>;
+  ) => Promise<ITransactionHistorySection>;
   getEvidenceDetail: (chainId: string, evidenceId: string) => Promise<IEvidenceDetail>;
   getEvidenceTransactions: (
     chainId: string,
@@ -137,7 +138,7 @@ export const MarketContext = createContext<IMarketContext>({
   getRedFlagsFromAddress: () => Promise.resolve([] as IRedFlag[]),
   getInteractions: () => Promise.resolve([] as IInteractionItem[]),
   getContractDetail: () => Promise.resolve({} as IContractDetail),
-  getContractTransactions: () => Promise.resolve([] as ITransaction[]),
+  getContractTransactions: () => Promise.resolve({} as ITransactionHistorySection),
   getEvidenceDetail: () => Promise.resolve({} as IEvidenceDetail),
   getEvidenceTransactions: () => Promise.resolve([] as ITransaction[]),
   getCurrencies: () => Promise.resolve([] as ICurrency[]),
@@ -561,7 +562,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
 
   const getContractTransactions = useCallback(
     async (chainId: string, contractId: string, queryStr?: string) => {
-      let data: ITransaction[] = [];
+      let data: ITransactionHistorySection = {} as ITransactionHistorySection;
       try {
         const response = queryStr
           ? await fetch(
