@@ -1,6 +1,4 @@
-// useStaleWhileRevalidateWithWorker.ts
 import {useState, useEffect, useRef, useCallback} from 'react';
-import {getWorkerInstance} from '../utils/api_worker_singleton';
 
 interface FetcherResponse<Data> {
   data: Data | undefined;
