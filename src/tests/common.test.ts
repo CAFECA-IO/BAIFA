@@ -19,8 +19,6 @@ describe('assessAddressRisk function test', () => {
   });
 
   test('handles invalid input gracefully', () => {
-    // Since the actual function logs an error and returns HIGH_RISK for invalid input,
-    // we test for HIGH_RISK. Adjust based on actual desired behavior.
     expect(assessAddressRisk('not a number')).toBe(RiskLevel.HIGH_RISK);
     expect(assessAddressRisk(NaN)).toBe(RiskLevel.HIGH_RISK);
   });
