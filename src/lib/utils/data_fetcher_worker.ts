@@ -37,9 +37,6 @@ async function fetchData(
 self.onmessage = async (event: MessageEvent<FetchRequestData>) => {
   const {key, requestId, query, action} = event.data;
 
-  // eslint-disable-next-line no-console
-  console.log('in worker', activeRequest, requestId, query, action);
-
   if (action === 'cancel') {
     if (activeRequest === requestId) {
       if (controller) {

@@ -22,11 +22,12 @@ import {
   DEFAULT_TRUNCATE_LENGTH,
   ITEM_PER_PAGE,
   default30DayPeriod,
-  sortOldAndNewOptions,
+  sortMostAndLeastOptions,
 } from '../../../../../../constants/config';
 import Pagination from '../../../../../../components/pagination/pagination';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
+import {AddressType} from '../../../../../../interfaces/address_info';
 
 interface IInteractionPageProps {
   addressId: string;
@@ -63,9 +64,9 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   ];
 
   const selectedType = type
-    ? type.toString() === 'address'
+    ? type.toString() === AddressType.ADDRESS
       ? typeOptions[1]
-      : type.toString() === 'contract'
+      : type.toString() === AddressType.CONTRACT
       ? typeOptions[2]
       : typeOptions[0]
     : typeOptions[0];
@@ -79,9 +80,9 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   const [interactedList, setInteractedList] = useState<IInteractionItem[]>([]);
   // Info: (20231214 - Julian) Search Filter
   const [search, setSearch, searchRef] = useStateRef('');
-  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+  const [sorting, setSorting] = useState<string>(sortMostAndLeastOptions[0]);
   const [period, setPeriod] = useState(default30DayPeriod);
-  const [filteredType, setFilteredType] = useState<string>(selectedType.text);
+  const [filteredType, setFilteredType, filteredTypeRef] = useStateRef<string>(selectedType.text);
   const [filteredInteractedList, setFilteredInteractedList] =
     useState<IInteractionItem[]>(interactedList);
   // Info: (20231214 - Julian) Pagination
@@ -153,17 +154,29 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
       //   return isCreatedTimestampInRange;
       // })
       // Info: (20231108 - Julian) filter by type
-      // .filter((interactedData: IInteractionItem) => {
-      //   const type = interactedData.type.toLowerCase();
-      //   return filteredType !== typeOptions[0].queryString
-      //     ? filteredType.toLowerCase().includes(type)
-      //     : true;
-      // })
+      .filter((interactedData: IInteractionItem) => {
+        const type = interactedData.type.toLowerCase();
+        // eslint-disable-next-line no-console
+        console.log(
+          'type',
+          type,
+          'interactedData type',
+          interactedData.type,
+          'filteredTypeRef',
+          filteredTypeRef.current
+        );
+        return filteredTypeRef.current === typeOptions[0].text
+          ? // ? filteredType.toLowerCase().includes(type)
+
+            true
+          : filteredType.toLowerCase().includes(type);
+        // : interactedData.type.toLowerCase() === type;
+      })
       // Info: (20231108 - Julian) sort by Newest or Oldest
       .sort((a: IInteractionItem, b: IInteractionItem) => {
-        return sorting === sortOldAndNewOptions[0]
-          ? a.createdTimestamp - b.createdTimestamp
-          : b.createdTimestamp - a.createdTimestamp;
+        return sorting === sortMostAndLeastOptions[0]
+          ? b.transactionCount - a.transactionCount
+          : a.transactionCount - b.transactionCount;
       });
 
     setFilteredInteractedList(searchResult);
@@ -256,7 +269,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
                 <div className="relative flex w-full items-center text-sm lg:w-fit lg:space-x-2">
                   <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
                   <SortingMenu
-                    sortingOptions={sortOldAndNewOptions}
+                    sortingOptions={sortMostAndLeastOptions}
                     sorting={sorting}
                     setSorting={setSorting}
                     bgColor="bg-darkPurple"

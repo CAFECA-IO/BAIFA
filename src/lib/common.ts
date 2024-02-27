@@ -13,6 +13,7 @@ import {StabilityLevel} from '../constants/stability_level';
 import clsx from 'clsx';
 import type {ClassValue} from 'clsx';
 import {twMerge} from 'tailwind-merge';
+import {AddressType} from '../interfaces/address_info';
 
 export const timestampToString = (timestamp: number) => {
   if (timestamp === 0)
@@ -286,4 +287,38 @@ export function convertMillisecondsToSeconds(milliseconds: number) {
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function convertStringToAddressType(sorting: string): AddressType {
+  let addressType: AddressType = AddressType.ADDRESS;
+  switch (sorting) {
+    case 'address':
+      addressType = AddressType.ADDRESS;
+      break;
+    case 'contract':
+      addressType = AddressType.CONTRACT;
+      break;
+    default:
+      addressType = AddressType.ADDRESS;
+      break;
+  }
+
+  return addressType;
+}
+
+export function convertAddressTypeToString(addressType: AddressType): string {
+  let type = 'address';
+  switch (addressType) {
+    case AddressType.ADDRESS:
+      type = 'address';
+      break;
+    case AddressType.CONTRACT:
+      type = 'contract';
+      break;
+    default:
+      type = 'address';
+      break;
+  }
+
+  return type;
 }

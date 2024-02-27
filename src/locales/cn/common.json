@@ -345,7 +345,9 @@
     "POPULAR": "热门",
     "UNPOPULAR": "冷门",
     "ALL": "全部",
-    "RELEVANCY": "相关性"
+    "RELEVANCY": "相关性",
+    "MOST": "最多",
+    "LEAST": "最少"
   },
   "COMMON": {
     "NONE": "无",

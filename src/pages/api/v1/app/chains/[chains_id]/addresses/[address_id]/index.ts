@@ -56,7 +56,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const relatedAddresses = Array.from(new Set(relatedAddressRaw));
-    // TODO: check the relatedAddress number vs the interaction address number on the page (20240206 - Shirley)
     const responseData: ResponseData = addressData
       ? {
           id: `${addressData.id}`,
@@ -76,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     res.status(200).json(responseData);
   } catch (error) {
-    // Info: (20240506 - Shirley) 如果有錯誤就回傳 500
+    // Info: (20240206 - Shirley) 如果有錯誤就回傳 500
     // eslint-disable-next-line no-console
     console.error('Failed to fetch address details:', error);
     res.status(500).json(undefined);

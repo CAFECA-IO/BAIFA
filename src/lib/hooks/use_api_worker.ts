@@ -36,17 +36,6 @@ function useAPIWorker<Data>(key: string, queryParams?: QueryParams): FetcherResp
     const handleMessage = (event: MessageEvent) => {
       const {data: newData, error: workerError, requestId} = event.data;
 
-      // eslint-disable-next-line no-console
-      console.log(
-        'handleMessage',
-        newData,
-        workerError,
-        'requestId',
-        requestId,
-        'query',
-        queryParamsRef.current
-      );
-
       if (requestId !== requestIdRef.current) return;
       if (workerError) {
         setError(new Error(workerError));

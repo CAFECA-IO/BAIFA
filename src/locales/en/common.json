@@ -345,7 +345,9 @@
     "POPULAR": "Popular",
     "UNPOPULAR": "Unpopular",
     "ALL": "All",
-    "RELEVANCY": "Relevancy"
+    "RELEVANCY": "Relevancy",
+    "MOST": "Most",
+    "LEAST": "Least"
   },
   "COMMON": {
     "NONE": "None",
