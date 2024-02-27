@@ -15,7 +15,7 @@ interface ICurrencyItemProps {
 
 const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const chainIcon = getCurrencyIcon(currencyId);
+  const currencyIcon = getCurrencyIcon(currencyId);
 
   // Info: (20240222 - Liz) riskLevel 有三種值 Low, Normal, High 要轉換成對應的顏色和文字
   const riskLevelMappings: {[key: string]: {riskColor: string; riskText: string}} = {
@@ -36,10 +36,10 @@ const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItem
         className="flex flex-1 items-center space-x-2"
       >
         <Image
-          src={chainIcon.src}
+          src={currencyIcon.src}
           width={30}
           height={30}
-          alt={chainIcon.alt}
+          alt={currencyIcon.alt}
           // Info: (20240206 - Julian) If the image fails to load, use the default currency icon
           onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
         />

@@ -115,7 +115,10 @@
     "TOTAL_AMOUNT": "Total Amount",
     "HOLDERS": "Holders",
     "TOTAL_TRANSFERS": "Total Transfers",
-    "RED_FLAG": "Red Flag"
+    "RED_FLAG": "Red Flag",
+    "RED_FLAG_TOOLTIP": "Record of suspicious behavior occurring at the address.",
+    "TOTAL_TRANSFERS_TOOLTIP": "This count of token transfers is updated every few minutes instead of in real-time.",
+    "HOLDERS_TOOLTIP": "The number of addresses that hold the token."
   },
   "BLOCK_DETAIL_PAGE": {
     "MAIN_TITLE": "Block",

@@ -10,30 +10,89 @@ import BoltButton from '../../../../components/bolt_button/bolt_button';
 import Footer from '../../../../components/footer/footer';
 import {AppContext} from '../../../../contexts/app_context';
 import {MarketContext} from '../../../../contexts/market_context';
-import {DEFAULT_CHAIN_ICON, chainIdToCurrencyName} from '../../../../constants/config';
+import {DEFAULT_CHAIN_ICON, DEFAULT_RED_FLAG_COUNT_IN_PAGE} from '../../../../constants/config';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {getCurrencyIcon} from '../../../../lib/common';
 import {TranslateFunction} from '../../../../interfaces/locale';
-import {IRedFlag} from '../../../../interfaces/red_flag';
+import {IRedFlagOfCurrency} from '../../../../interfaces/red_flag';
 import RedFlagList from '../../../../components/red_flag_list/red_flag_list';
+import Skeleton from '../../../../components/skeleton/skeleton';
 
 interface IRedFlagOfCurrencyPageProps {
   currencyId: string;
-  currencyName: string;
 }
 
-const RedFlagOfCurrencyPage = ({currencyId, currencyName}: IRedFlagOfCurrencyPageProps) => {
+// Info: (20240227 - Liz) Skeleton
+const RedFlagListSkeleton = () => {
+  const listSkeletons = Array.from({length: DEFAULT_RED_FLAG_COUNT_IN_PAGE}, (_, i) => (
+    <div key={i} className="flex w-full flex-col">
+      <div className="flex h-60px w-full items-center">
+        {/* Info: (20231109 - Julian) Flagging Time square */}
+        <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-darkPurple">
+          <Skeleton width={60} height={40} />
+        </div>
+        <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
+          {/* Info: (20231109 - Julian) Address ID */}
+          <Skeleton width={150} height={40} />
+          {/* Info: (20231109 - Julian) Flag Type */}
+          <div className="flex w-full justify-end">
+            <Skeleton width={80} height={40} />
+          </div>
+        </div>
+      </div>
+    </div>
+  ));
+  return (
+    <>
+      {/* Info: (20231109 - Julian) Search Filter */}
+      <div className="flex w-full flex-col items-end space-y-10">
+        {/* Info: (20231109 - Julian) Search Bar */}
+        <div className="mx-auto my-5 flex w-full justify-center lg:w-7/10">
+          <Skeleton width={800} height={40} />
+        </div>
+        <div className="flex w-full flex-col items-center gap-2 lg:h-72px lg:flex-row lg:justify-between">
+          {/* Info: (20231109 - Julian) Type Select Menu */}
+          <div className="relative flex w-full items-center space-y-2 text-base lg:w-200px">
+            <Skeleton width={1023} height={40} />
+          </div>
+          {/* Info: (20231109 - Julian) Date Picker */}
+          <div className="flex w-full items-center text-sm lg:w-220px lg:space-x-2">
+            <Skeleton width={1023} height={40} />
+          </div>
+          {/* Info: (20231109 - Julian) Sorting Menu */}
+          <div className="relative flex w-full items-center text-sm lg:w-220px lg:space-x-2">
+            <Skeleton width={1023} height={40} />
+          </div>
+        </div>
+      </div>
+
+      {/* Info: (20231109 - Julian) Red Flag List */}
+      <div className="mb-10 mt-16 flex w-full flex-col items-center space-y-0 lg:mt-10">
+        {listSkeletons}
+        {/* Info: Pagination (20240223 - Shirley) */}
+      </div>
+      <div className="flex w-full justify-center">
+        <Skeleton width={200} height={40} />
+      </div>
+    </>
+  );
+};
+
+const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
   const {getRedFlagsFromCurrency} = useContext(MarketContext);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [redFlagData, setRedFlagData] = useState<IRedFlag[]>([]);
+  const [redFlagData, setRedFlagData] = useState<IRedFlagOfCurrency[]>([]);
+
+  // Info: (20240227 - Liz) 用第一筆 redFlagData 的 chainName 來當作 currencyName 呈現在標題
+  const currencyName = redFlagData[0]?.chainName ?? '';
 
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} ${t(
     'COMMON.OF'
   )} ${currencyName} - BAIFA`;
-  const chainIcon = getCurrencyIcon(currencyId);
+  const currencyIcon = getCurrencyIcon(currencyId);
 
   const router = useRouter();
   const backClickHandler = () => router.back();
@@ -74,7 +133,7 @@ const RedFlagOfCurrencyPage = ({currencyId, currencyName}: IRedFlagOfCurrencyPag
     <RedFlagList redFlagData={redFlagData} />
   ) : (
     // ToDo: (20231215 - Julian) Add loading animation
-    <h1>Loading...</h1>
+    <RedFlagListSkeleton />
   );
 
   return (
@@ -104,8 +163,8 @@ const RedFlagOfCurrencyPage = ({currencyId, currencyName}: IRedFlagOfCurrencyPag
                 </h1>
                 <div className="flex items-center space-x-2">
                   <Image
-                    src={chainIcon.src}
-                    alt={chainIcon.alt}
+                    src={currencyIcon.src}
+                    alt={currencyIcon.alt}
                     width={30}
                     height={30}
                     onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
@@ -165,12 +224,10 @@ export const getStaticProps: GetStaticProps<IRedFlagOfCurrencyPageProps> = async
   }
 
   const currencyId = params.currencyId;
-  const currencyName = chainIdToCurrencyName.find(chain => chain.id === currencyId)?.name ?? '';
 
   return {
     props: {
       currencyId,
-      currencyName,
       ...(await serverSideTranslations(locale as string, ['common'])),
     },
   };

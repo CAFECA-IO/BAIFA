@@ -2,8 +2,12 @@ import {ITransaction} from './transaction';
 import {ICommonData} from './common_data';
 
 export interface IRedFlag extends ICommonData {
-  //chainName: string; // TODO: Info:(20240201 - Julian) 可能移除
+  // chainName: string; // TODO: Info:(20240201 - Julian) 可能移除
   redFlagType: string;
+}
+
+export interface IRedFlagOfCurrency extends IRedFlag {
+  chainName: string;
 }
 
 export interface IRedFlagSearchResult extends IRedFlag {
