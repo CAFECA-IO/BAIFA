@@ -19,8 +19,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   if (!address_id || !chain_id) {
     return res.status(400).json(undefined);
   }
-  // eslint-disable-next-line no-console
-  console.log('chain_id:', chain_id);
 
   try {
     const addressData = await prisma.addresses.findUnique({
@@ -69,27 +67,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const relatedAddresses = Array.from(new Set(relatedAddressRaw));
 
-    // // Calculate interacted addresses and contracts separately
-    // const interactedAddresses = await prisma.addresses.findMany({
-    //   where: {
-    //     address: {
-    //       in: relatedAddresses,
-    //     },
-    //   },
-    // });
-
-    // const interactedContracts = await prisma.contracts.findMany({
-    //   where: {
-    //     contract_address: {
-    //       in: relatedAddresses,
-    //     },
-    //   },
-    // });
-
-    // // Calculate counts
-    // const interactedAddressCount = interactedAddresses.length;
-    // const interactedContractCount = interactedContracts.length;
-
     const interactedAddressCount = await prisma.addresses.count({
       where: {address: {in: relatedAddresses}},
     });
@@ -98,14 +75,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       where: {contract_address: {in: relatedAddresses}},
     });
 
-    // const [interactedAddressCount, interactedContractCount] = await Promise.all([
-    //   prisma.addresses.count({
-    //     where: {address: {in: relatedAddresses}},
-    //   }),
-    //   prisma.contracts.count({
-    //     where: {contract_address: {in: relatedAddresses}},
-    //   }),
-    // ]);
     const riskRecords = flaggingRecords.length;
 
     const riskLevel = assessAddressRisk(riskRecords);
@@ -113,16 +82,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const responseData: ResponseData = addressData
       ? {
           id: `${addressData.id}`,
-          type: AddressType.ADDRESS, // ToDo: (20240122 - Julian) 補上這個欄位
+          type: AddressType.ADDRESS,
           chainId: `${addressData.chain_id}`,
           createdTimestamp: addressData.created_timestamp ?? 0,
           address: `${addressData.address}`,
           latestActiveTime: addressData.latest_active_time ?? 0,
           score: addressData.score ?? 0,
           flaggingCount: riskRecords,
-          riskLevel: riskLevel, // ToDo: (20240122 - Julian) 補上這個欄位
+          riskLevel: riskLevel,
           interactedAddressCount: interactedAddressCount,
-          interactedContactCount: interactedContractCount, // ToDo: (20240122 - Julian) 補上這個欄位
+          interactedContactCount: interactedContractCount,
           publicTag:
             publicTags.length > 0
               ? publicTags.map(tag => tag.name ?? 'Unknown User')
