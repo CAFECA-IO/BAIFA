@@ -32,13 +32,13 @@ const RedFlagListSkeleton = () => {
   const listSkeletons = Array.from({length: DEFAULT_RED_FLAG_COUNT_IN_PAGE}, (_, i) => (
     <div key={i} className="flex w-full flex-col">
       <div className="flex h-60px w-full items-center">
-        {/* Info: (20231109 - Julian) Flagging Time square */}
+        {/* Info: (20240227 - Shirley) Flagging Time square */}
         <div className="flex w-60px flex-col items-center justify-center border-b border-darkPurple bg-darkPurple">
           <Skeleton width={60} height={40} />{' '}
         </div>
         <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
-          {/* Info: (20231109 - Julian) Address ID */}
-          <Skeleton width={150} height={40} /> {/* Info: (20231109 - Julian) Flag Type */}
+          {/* Info: (20240227 - Shirley) Address ID */}
+          <Skeleton width={150} height={40} /> {/* Info: (20240227 - Shirley) Flag Type */}
           <div className="flex w-full justify-end">
             <Skeleton width={80} height={40} />{' '}
           </div>
@@ -48,29 +48,29 @@ const RedFlagListSkeleton = () => {
   ));
   return (
     <>
-      {/* Info: (20231109 - Julian) Search Filter */}
+      {/* Info: (20240227 - Shirley) Search Filter */}
       <div className="flex w-full flex-col items-end space-y-10">
-        {/* Info: (20231109 - Julian) Search Bar */}
+        {/* Info: (20240227 - Shirley) Search Bar */}
         <div className="mx-auto my-5 flex w-full justify-center lg:w-7/10">
           <Skeleton width={800} height={40} />
         </div>
         <div className="flex w-full flex-col items-center gap-2 lg:h-72px lg:flex-row lg:justify-between">
-          {/* Info: (20231109 - Julian) Type Select Menu */}
+          {/* Info: (20240227 - Shirley) Type Select Menu */}
           <div className="relative flex w-full items-center space-y-2 text-base lg:w-200px">
             <Skeleton width={1023} height={40} />
           </div>
-          {/* Info: (20231109 - Julian) Date Picker */}
+          {/* Info: (20240227 - Shirley) Date Picker */}
           <div className="flex w-full items-center text-sm lg:w-220px lg:space-x-2">
             <Skeleton width={1023} height={40} />{' '}
           </div>
-          {/* Info: (20231109 - Julian) Sorting Menu */}
+          {/* Info: (20240227 - Shirley) Sorting Menu */}
           <div className="relative flex w-full items-center text-sm lg:w-220px lg:space-x-2">
             <Skeleton width={1023} height={40} />
           </div>
         </div>
       </div>
 
-      {/* Info: (20231109 - Julian) Red Flag List */}
+      {/* Info: (20240227 - Shirley) Red Flag List */}
       <div className="mb-10 mt-16 flex w-full flex-col items-center space-y-0 lg:mt-10">
         {listSkeletons}
         {/* Info: Pagination (20240223 - Shirley) */}
@@ -124,7 +124,6 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
   const displayedRedFlagList = !isLoading ? (
     <RedFlagList redFlagData={redFlagData} />
   ) : (
-    // ToDo: (20231214 - Julian) Add loading animation
     <RedFlagListSkeleton />
   );
 

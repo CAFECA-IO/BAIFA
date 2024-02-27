@@ -102,10 +102,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         id: `${interacted.address}`,
         type: AddressType.ADDRESS,
         chainId: `${chain_id}`,
-        publicTag:
-          publicTagMap.get(interacted?.address ?? '')?.length === 0
-            ? ['Unknown User']
-            : publicTagMap.get(interacted?.address ?? '') || ['Unknown User'], // Info: Assign a default value of ['Unknown User'] if publicTag is undefined (20240227 - Shirley)
+        publicTag: publicTagMap.get(interacted?.address ?? '') || ['Unknown User'], // Info: Assign a default value of ['Unknown User'] if publicTag is undefined (20240227 - Shirley)
         createdTimestamp: interacted.created_timestamp ?? 0,
         transactionCount: addressTransactionCountMap.get(interacted?.address ?? '') || 0,
       }))
@@ -114,10 +111,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           id: `${interacted.contract_address}`,
           type: AddressType.CONTRACT,
           chainId: `${chain_id}`,
-          publicTag:
-            publicTagMap.get(interacted?.contract_address ?? '')?.length === 0
-              ? ['Unknown Contract']
-              : publicTagMap.get(interacted?.contract_address ?? '') || ['Unknown Contract'], // Info: Assign a default value of ['Unknown Contract'] if publicTag is undefined (20240227 - Shirley)
+          publicTag: publicTagMap.get(interacted?.contract_address ?? '') || ['Unknown User'], // Info: Assign a default value of ['Unknown Contract'] if publicTag is undefined (20240227 - Shirley)
           createdTimestamp: interacted.created_timestamp ?? 0,
           transactionCount: addressTransactionCountMap.get(interacted?.contract_address ?? '') || 0,
         }))

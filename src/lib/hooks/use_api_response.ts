@@ -1,4 +1,5 @@
-import {useState, useEffect, useCallback} from 'react';
+import {useEffect, useCallback} from 'react';
+import useStateRef from 'react-usestateref';
 
 interface FetcherResponse<Data> {
   data: Data | undefined;
@@ -38,9 +39,9 @@ async function fetchData<Data>(
 }
 
 function useAPIResponse<Data>(key: string, queryParams?: QueryParams): FetcherResponse<Data> {
-  const [data, setData] = useState<Data | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [data, setData, dataRef] = useStateRef<Data | undefined>(undefined);
+  const [isLoading, setIsLoading, isLoadingRef] = useStateRef<boolean>(true);
+  const [error, setError, errorRef] = useStateRef<Error | null>(null);
 
   const fetchDataCallback = useCallback(() => {
     const controller = new AbortController();
@@ -65,7 +66,7 @@ function useAPIResponse<Data>(key: string, queryParams?: QueryParams): FetcherRe
     return fetchDataCallback(); // Execute fetchDataCallback and return the cleanup function
   }, [fetchDataCallback]);
 
-  return {data, isLoading, error};
+  return {data: dataRef.current, isLoading: isLoadingRef.current, error: errorRef.current};
 }
 
 export default useAPIResponse;

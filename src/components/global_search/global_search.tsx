@@ -59,7 +59,10 @@ const GlobalSearch = ({
   // Info: (20231212 - Julian) focus 搜尋欄位時，顯示搜尋建議
   const handleInputFocus = () => setSuggestionVisible(true);
   // Info: (20231212 - Julian) 改變搜尋欄位的值
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value);
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    setSuggestionVisible(true);
+  };
   // Info: (20231212 - Julian) 搜尋欄位的按鈕事件
   const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {

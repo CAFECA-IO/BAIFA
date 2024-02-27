@@ -1,4 +1,5 @@
-import {useState, useEffect, useRef, useCallback} from 'react';
+import {useEffect, useRef, useCallback} from 'react';
+import useStateRef from 'react-usestateref';
 
 interface FetcherResponse<Data> {
   data: Data | undefined;
@@ -11,9 +12,9 @@ interface QueryParams {
 }
 
 function useAPIWorker<Data>(key: string, queryParams?: QueryParams): FetcherResponse<Data> {
-  const [data, setData] = useState<Data | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [data, setData, dataRef] = useStateRef<Data | undefined>(undefined);
+  const [isLoading, setIsLoading, isLoadingRef] = useStateRef<boolean>(true);
+  const [error, setError, errorRef] = useStateRef<Error | null>(null);
   const requestIdRef = useRef<string>(Date.now().toString());
   const queryParamsRef = useRef<QueryParams | undefined>(queryParams);
 
@@ -65,7 +66,7 @@ function useAPIWorker<Data>(key: string, queryParams?: QueryParams): FetcherResp
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchData]);
 
-  return {data, isLoading, error};
+  return {data: dataRef.current, isLoading: isLoadingRef.current, error: errorRef.current};
 }
 
 export default useAPIWorker;
