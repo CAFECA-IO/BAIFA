@@ -59,14 +59,28 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
   const backClickHandler = () => router.back();
 
   const getEvidenceData = async () => {
-    const evidenceData = await getEvidenceDetail(chainId, evidenceId);
-    setEvidenceData(evidenceData);
+    try {
+      const evidenceData = await getEvidenceDetail(chainId, evidenceId);
+      setEvidenceData(evidenceData);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('getEvidenceData error: ', error);
+    }
   };
 
   const getTransactionData = async () => {
     setIsLoading(true);
-    const transactionHistoryData = await getEvidenceTransactions(chainId, evidenceId, apiQueryStr);
-    setTransactionHistoryData(transactionHistoryData);
+    try {
+      const transactionHistoryData = await getEvidenceTransactions(
+        chainId,
+        evidenceId,
+        apiQueryStr
+      );
+      setTransactionHistoryData(transactionHistoryData);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('getTransactionData error: ', error);
+    }
     setIsLoading(false);
   };
 

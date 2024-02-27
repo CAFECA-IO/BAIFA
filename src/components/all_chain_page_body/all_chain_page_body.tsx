@@ -22,7 +22,8 @@ const AllChainPageBody = () => {
         const data = await getChains();
         setChainList(data);
       } catch (error) {
-        //console.log('getChains error', error);
+        // eslint-disable-next-line no-console
+        console.error('getChains error', error);
       }
       setChainLoading(false);
     };

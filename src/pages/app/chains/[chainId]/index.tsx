@@ -50,7 +50,8 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
         const data = await getChainDetail(chainId);
         setChainData(data);
       } catch (error) {
-        //console.log('getChainDetail error', error);
+        // eslint-disable-next-line no-console
+        console.error('getChainDetail error', error);
       }
       // Info: (20240220 - Julian) 拿到資料就將 isLoading 設為 false
       setIsLoading(false);

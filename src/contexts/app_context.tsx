@@ -20,10 +20,16 @@ export const AppProvider = ({children}: IAppProvider) => {
   const [isInit, setIsInit] = useState<boolean>(false);
 
   const init = async () => {
-    if (!isInit) {
-      await marketCtx.init();
-      setIsInit(true);
+    try {
+      if (!isInit) {
+        await marketCtx.init();
+        setIsInit(true);
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('AppProvider init error', error);
     }
+
     return;
   };
 

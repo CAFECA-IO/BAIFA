@@ -103,8 +103,13 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
 
   useEffect(() => {
     const getInteractionData = async (chainId: string, addressId: string, type: string) => {
-      const interactedList = await getInteractions(chainId, addressId, type);
-      setInteractedList(interactedList);
+      try {
+        const interactedList = await getInteractions(chainId, addressId, type);
+        setInteractedList(interactedList);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('getInteractionData error:', error);
+      }
     };
 
     getInteractionData(chainId, addressId, queryType);

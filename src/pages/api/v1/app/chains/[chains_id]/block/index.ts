@@ -20,69 +20,76 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const end_date =
     typeof req.query.end_date === 'string' ? parseInt(req.query.end_date) : undefined;
 
-  // Info: (20240119 - Julian) 計算分頁的 skip 與 take
-  const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // (20240119 - Julian) 跳過前面幾筆
-  const take = ITEM_PER_PAGE; // (20240119 - Julian) 取幾筆
+  try {
+    // Info: (20240119 - Julian) 計算分頁的 skip 與 take
+    const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // (20240119 - Julian) 跳過前面幾筆
+    const take = ITEM_PER_PAGE; // (20240119 - Julian) 取幾筆
 
-  // Info: (20240216 - Julian) 查詢條件
-  const where = {
-    chain_id: chain_id,
-    // Info: (20240118 - Julian) 日期區間
-    created_timestamp: {
-      gte: start_date,
-      lte: end_date,
-    },
-    // Info: (20240221 - Julian) 關鍵字
-    number: search ? parseInt(search) : undefined,
-  };
-  // Info: (20240221 - Julian) 排序
-  const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
-
-  // Info: (20240216 - Julian) 取得 blocks 筆數
-  const totalBlocks = await prisma.blocks.count({where});
-  // Info: (20240216 - Julian) 取得 blocks 資料
-  const blocks = await prisma.blocks.findMany({
-    where,
-    select: {
-      id: true,
-      chain_id: true,
-      created_timestamp: true,
-      number: true,
-    },
-    // Info: (20240222 - Julian) 排序方式：
-    orderBy: [
-      {
-        // Info: (20240222 - Julian) 1. created_timestamp 由 sorting 決定
-        created_timestamp: sorting,
+    // Info: (20240216 - Julian) 查詢條件
+    const where = {
+      chain_id: chain_id,
+      // Info: (20240118 - Julian) 日期區間
+      created_timestamp: {
+        gte: start_date,
+        lte: end_date,
       },
-      {
-        // Info: (20240222 - Julian) 2. id 由小到大
-        id: 'asc',
-      },
-    ],
-    // Info: (20240119 - Julian) 分頁
-    skip: skip,
-    take: take,
-  });
-
-  const blockList: IBlock[] = blocks.map(block => {
-    return {
-      id: `${block.number}`,
-      chainId: `${block.chain_id}`,
-      createdTimestamp: block.created_timestamp ?? 0,
-      // ToDo: (20240118 - Julian) 參考 codes Table，補上這個欄位
-      stability: 'HIGH',
+      // Info: (20240221 - Julian) 關鍵字
+      number: search ? parseInt(search) : undefined,
     };
-  });
+    // Info: (20240221 - Julian) 排序
+    const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
-  const totalPages = Math.ceil(totalBlocks / ITEM_PER_PAGE);
+    // Info: (20240216 - Julian) 取得 blocks 筆數
+    const totalBlocks = await prisma.blocks.count({where});
+    // Info: (20240216 - Julian) 取得 blocks 資料
+    const blocks = await prisma.blocks.findMany({
+      where,
+      select: {
+        id: true,
+        chain_id: true,
+        created_timestamp: true,
+        number: true,
+      },
+      // Info: (20240222 - Julian) 排序方式：
+      orderBy: [
+        {
+          // Info: (20240222 - Julian) 1. created_timestamp 由 sorting 決定
+          created_timestamp: sorting,
+        },
+        {
+          // Info: (20240222 - Julian) 2. id 由小到大
+          id: 'asc',
+        },
+      ],
+      // Info: (20240119 - Julian) 分頁
+      skip: skip,
+      take: take,
+    });
 
-  // Info: (20240118 - Julian) 轉換成 API 要的格式
-  const result = {
-    blocks: blockList,
-    totalPages: totalPages,
-  };
+    const blockList: IBlock[] = blocks.map(block => {
+      return {
+        id: `${block.number}`,
+        chainId: `${block.chain_id}`,
+        createdTimestamp: block.created_timestamp ?? 0,
+        // ToDo: (20240118 - Julian) 參考 codes Table，補上這個欄位
+        stability: 'HIGH',
+      };
+    });
 
-  prisma.$connect();
-  res.status(200).json(result);
+    const totalPages = Math.ceil(totalBlocks / ITEM_PER_PAGE);
+
+    // Info: (20240118 - Julian) 轉換成 API 要的格式
+    const result = {
+      blocks: blockList,
+      totalPages: totalPages,
+    };
+
+    res.status(200).json(result);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to fetch blocks data: ', error);
+    res.status(500).json({blocks: [], totalPages: 0});
+  } finally {
+    await prisma.$disconnect();
+  }
 }

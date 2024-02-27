@@ -65,7 +65,8 @@ const StatementsOfCashFlow = ({projectId}: IStatementsOfCashFlowProps) => {
         reportData = result.data as IStatementsOfCashFlow;
       }
     } catch (error) {
-      // console.log('Get statements of cash Flow error');
+      // eslint-disable-next-line no-console
+      console.error('Get statements of cash Flow error');
     }
     return reportData;
   };
