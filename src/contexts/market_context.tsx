@@ -29,7 +29,7 @@ import {
   IAddressRelatedTransaction,
 } from '../interfaces/address';
 import {IReviewDetail, IReviews} from '../interfaces/review';
-import {IRedFlag, IRedFlagDetail} from '../interfaces/red_flag';
+import {IRedFlag, IRedFlagDetail, IRedFlagOfCurrency} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContractDetail} from '../interfaces/contract';
 import {IEvidenceDetail} from '../interfaces/evidence';
@@ -104,7 +104,7 @@ export interface IMarketContext {
 
   getCurrencies: () => Promise<ICurrency[]>;
   getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetailString>;
-  getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlag[]>;
+  getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlagOfCurrency[]>;
   getAllRedFlags: () => Promise<IRedFlag[]>;
   getRedFlagDetail: (redFlagId: string) => Promise<IRedFlagDetail>;
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
@@ -142,7 +142,7 @@ export const MarketContext = createContext<IMarketContext>({
   getEvidenceTransactions: () => Promise.resolve([] as ITransaction[]),
   getCurrencies: () => Promise.resolve([] as ICurrency[]),
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetailString),
-  getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlag[]),
+  getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlagOfCurrency[]),
   getAllRedFlags: () => Promise.resolve([] as IRedFlag[]),
   getRedFlagDetail: () => Promise.resolve({} as IRedFlagDetail),
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
@@ -632,7 +632,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, []);
 
   const getRedFlagsFromCurrency = useCallback(async (currencyId: string) => {
-    let data: IRedFlag[] = [];
+    let data: IRedFlagOfCurrency[] = [];
     try {
       const response = await fetch(`${APIURL.CURRENCIES}/${currencyId}/red_flags`, {
         method: 'GET',
