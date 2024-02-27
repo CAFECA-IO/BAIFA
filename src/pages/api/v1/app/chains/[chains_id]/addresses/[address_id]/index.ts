@@ -5,15 +5,18 @@ import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 import {AddressType} from '../../../../../../../../interfaces/address_info';
 import {IAddressBrief} from '../../../../../../../../interfaces/address';
 import {isAddress} from 'web3-validator';
+import {assessAddressRisk} from '../../../../../../../../lib/common';
 
 type ResponseData = IAddressBrief | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const prisma = getPrismaInstance();
   // Info: (20240122 - Julian) 解構 URL 參數，同時進行類型轉換
+  const chain_id =
+    typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id, 10) : undefined;
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
 
-  if (!address_id || !isAddress(address_id)) {
+  if (!address_id || !chain_id) {
     return res.status(400).json(undefined);
   }
 
@@ -30,6 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
+    if (addressData?.chain_id !== chain_id) return res.status(404).json(undefined);
+
     const transactionData = await prisma.transactions.findMany({
       where: {related_addresses: {hasSome: [address_id]}},
       select: {
@@ -44,6 +49,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
+    const publicTags = await prisma.public_tags.findMany({
+      where: {target: address_id},
+      select: {name: true, target: true},
+    });
+
     const flaggingRecords = await prisma.red_flags.findMany({
       where: {related_addresses: {hasSome: [address_id]}},
       select: {id: true, red_flag_type: true},
@@ -56,27 +66,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const relatedAddresses = Array.from(new Set(relatedAddressRaw));
-    // TODO: check the relatedAddress number vs the interaction address number on the page (20240206 - Shirley)
+
+    const interactedAddressCount = await prisma.addresses.count({
+      where: {address: {in: relatedAddresses}},
+    });
+
+    const interactedContractCount = await prisma.contracts.count({
+      where: {contract_address: {in: relatedAddresses}},
+    });
+
+    const riskRecords = flaggingRecords.length;
+
+    const riskLevel = assessAddressRisk(riskRecords);
+
     const responseData: ResponseData = addressData
       ? {
           id: `${addressData.id}`,
-          type: AddressType.ADDRESS, // ToDo: (20240122 - Julian) 補上這個欄位
+          type: AddressType.ADDRESS,
           chainId: `${addressData.chain_id}`,
           createdTimestamp: addressData.created_timestamp ?? 0,
           address: `${addressData.address}`,
           latestActiveTime: addressData.latest_active_time ?? 0,
           score: addressData.score ?? 0,
-          flaggingCount: flaggingRecords.length,
-          riskLevel: 'LOW_RISK', // ToDo: (20240122 - Julian) 補上這個欄位
-          interactedAddressCount: relatedAddresses.length,
-          interactedContactCount: 0,
-          publicTag: [], // ToDo: (20240122 - Julian) 補上這個欄位
+          flaggingCount: riskRecords,
+          riskLevel: riskLevel,
+          interactedAddressCount: interactedAddressCount,
+          interactedContactCount: interactedContractCount,
+          publicTag:
+            publicTags.length > 0
+              ? publicTags.map(tag => tag.name ?? 'Unknown User')
+              : ['Unknown User'],
         }
       : undefined;
 
     res.status(200).json(responseData);
   } catch (error) {
-    // Info: (20240506 - Shirley) 如果有錯誤就回傳 500
+    // Info: (20240206 - Shirley) 如果有錯誤就回傳 500
     // eslint-disable-next-line no-console
     console.error('Failed to fetch address details:', error);
     res.status(500).json(undefined);

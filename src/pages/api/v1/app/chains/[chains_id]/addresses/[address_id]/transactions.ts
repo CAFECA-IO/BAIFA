@@ -14,7 +14,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const prisma = getPrismaInstance();
   // Info: (20240122 - Julian) 解構 URL 參數，同時進行類型轉換
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
-  const chain_id = typeof req.query.chain_id === 'string' ? req.query.chain_id : undefined;
+  const chain_id =
+    typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
   const order = (req.query.order as string)?.toLowerCase() === 'desc' ? 'desc' : 'asc';
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
   const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
@@ -23,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const end_date =
     typeof req.query.end_date === 'string' ? parseInt(req.query.end_date, 10) : undefined;
 
-  if (!address_id || !isAddress(address_id)) {
+  if (!address_id || !chain_id) {
     return res.status(400).json(undefined);
   }
 
@@ -70,6 +71,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
+      if (`${transaction.chain_id}` !== `${chain_id}`) {
+        res.status(404).json(undefined);
+      }
       // Info: (20240130 - Julian) from address 轉換
       const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
       const from: IAddressInfo[] = fromAddresses

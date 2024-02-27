@@ -348,7 +348,9 @@
     "POPULAR": "熱門",
     "UNPOPULAR": "冷門",
     "ALL": "全部",
-    "RELEVANCY": "相關性"
+    "RELEVANCY": "相關性",
+    "MOST": "最多",
+    "LEAST": "最少"
   },
   "COMMON": {
     "NONE": "無",

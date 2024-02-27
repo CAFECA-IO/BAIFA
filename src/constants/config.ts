@@ -225,3 +225,11 @@ export const DEFAULT_REVIEWS_COUNT_IN_PAGE = 3;
 export const DEFAULT_RED_FLAG_COUNT_IN_PAGE = 3;
 
 export const RED_FLAG_CODE_WHEN_NULL = 9999999999;
+
+export const sortMostAndLeastOptions = ['SORTING.MOST', 'SORTING.LEAST'];
+
+export const THRESHOLD_FOR_ADDRESS_RISK_LEVEL = {
+  HIGH: 100,
+  MEDIUM: 10,
+  LOW: 10,
+};

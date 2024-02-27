@@ -23,6 +23,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     const skip = page > 0 ? (page - 1) * offset : 0;
 
+    const addressData = await prisma.addresses.findUnique({
+      where: {
+        address: `${address_id}`,
+      },
+      select: {
+        chain_id: true,
+      },
+    });
+
+    if (addressData?.chain_id !== chain_id) {
+      return res.status(400).json([]);
+    }
+
     const reviews = await prisma.review_datas.findMany({
       where: {
         target: `${address_id}`,
@@ -34,6 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       skip: skip,
       select: {
         id: true,
+
         created_timestamp: true,
         author_address: true,
         content: true,

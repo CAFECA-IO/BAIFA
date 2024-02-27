@@ -1,12 +1,10 @@
 import Head from 'next/head';
 import {useState, useEffect, useContext} from 'react';
 import {AppContext} from '../../contexts/app_context';
-import {MarketContext} from '../../contexts/market_context';
 import useStateRef from 'react-usestateref';
 import {useRouter} from 'next/router';
 import NavBar from '../../components/nav_bar/nav_bar';
 import Footer from '../../components/footer/footer';
-import SearchBar from '../../components/search_bar/search_bar';
 import DatePicker from '../../components/date_picker/date_picker';
 import SortingMenu from '../../components/sorting_menu/sorting_menu';
 import SearchingResultItem from '../../components/searching_result_item/searching_result_item';
@@ -14,13 +12,14 @@ import Pagination from '../../components/pagination/pagination';
 import {sortOldAndNewOptions, ITEM_PER_PAGE, default30DayPeriod} from '../../constants/config';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
-import {ILocale, TranslateFunction} from '../../interfaces/locale';
+import {TranslateFunction} from '../../interfaces/locale';
 import {ISearchResult} from '../../interfaces/search_result';
 import GlobalSearch from '../../components/global_search/global_search';
-import {BFAURL} from '../../constants/url';
 import {GetServerSideProps} from 'next';
 import {ParsedUrlQuery} from 'querystring';
 import Skeleton from '../../components/skeleton/skeleton';
+import useAPIWorker from '../../lib/hooks/use_api_worker';
+import {APIURL} from '../../constants/api_request';
 
 interface ISearchingResultPageProps {
   searchQuery: string;
@@ -86,9 +85,6 @@ const SearchingResultItemSkeleton = () => {
 const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
-  const {getSearchResult} = useContext(MarketContext);
-
-  const [isLoading, setIsLoading, isLoadingRef] = useStateRef(true);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -120,7 +116,6 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   const shadowClassNameR =
     'after:absolute after:-inset-1 after:ml-auto after:top-0 after:block xl:after:hidden after:w-5 after:bg-gradient-to-l after:from-black after:to-transparent';
 
-  const [searchResult, setSearchResult] = useState<ISearchResult[]>([]);
   const [filteredResult, setFilteredResult] = useState<ISearchResult[]>([]);
   // Info: (20231114 - Julian) Filter State
   const [searchText, setSearchText, searchTextRef] = useStateRef<string>(keyWord);
@@ -139,12 +134,13 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
 
-  const getSearchResultData = async (searchText: string) => {
-    try {
-      const data = await getSearchResult(searchText);
-      setSearchResult(data);
-    } catch (error) {}
-  };
+  const {
+    data: searchResults,
+    isLoading: isSearchLoading,
+    error: searchError,
+  } = useAPIWorker<ISearchResult[]>(`${APIURL.SEARCH_RESULT}`, {
+    search_input: searchTextRef.current,
+  });
 
   useEffect(() => {
     if (searchQuery) {
@@ -156,41 +152,31 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   }, []);
 
   useEffect(() => {
-    if (searchTextRef.current.length === 0) return;
-    (async () => {
-      setIsLoading(true);
-      await getSearchResultData(searchTextRef.current);
-      setIsLoading(false);
-    })();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTextRef.current]);
-
-  useEffect(() => {
-    const result = searchResult
+    if (!searchResults) return;
+    const result = searchResults
       /* TODO: don't filter data out by string (20240229 - Shirley)
-      .filter(searchResult => {
+      .filter(searchResults => {
         return true;
         // Info: (20231115 - Julian) filter by Search bar
         
         // const searchTerm = searchTextRef.current.toLowerCase();
-        // const id = searchResult.data.id.toLowerCase();
-        // const chainId = searchResult.data.chainId.toLowerCase();
-        // const type = searchResult.type.toLowerCase();
+        // const id = searchResults.data.id.toLowerCase();
+        // const chainId = searchResults.data.chainId.toLowerCase();
+        // const type = searchResults.type.toLowerCase();
         // return id.includes(searchTextRef.current);
         // return searchTerm === ''
         //   ? true
         //   : id.includes(searchTerm) || chainId.includes(searchTerm) || type.includes(searchTerm);
       })
       */
-      .filter(searchResult => {
+      .filter(searchResults => {
         // Info: (20231115 - Julian) filter by Filter Tabs
-        const type = searchResult.type;
+        const type = searchResults.type;
         return activeTab === filterTabs[0] ? true : activeTab.includes(type);
       })
-      .filter(searchResult => {
+      .filter(searchResults => {
         // Info: (20231115 - Julian) filter by Date Picker
-        const timestamp = searchResult.data.createdTimestamp;
+        const timestamp = searchResults.data.createdTimestamp;
         const startTimeStamp = period.startTimeStamp;
         const endTimeStamp = period.endTimeStamp;
         return startTimeStamp !== 0 && endTimeStamp !== 0
@@ -211,16 +197,15 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     setTotalPages(Math.ceil(result.length / ITEM_PER_PAGE));
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText, sorting, activeTab, period, searchResult]);
+  }, [searchText, sorting, activeTab, period, searchResults]);
 
-  const resultList = !isLoadingRef.current
-    ? filteredResult.slice(startIdx, endIdx).map((searchResult, index) => {
-        return <SearchingResultItem key={index} searchResult={searchResult} />;
+  const resultList = !isSearchLoading
+    ? filteredResult.slice(startIdx, endIdx).map((searchResults, index) => {
+        return <SearchingResultItem key={index} searchResult={searchResults} />;
       })
     : Array.from({length: ITEM_PER_PAGE}).map((_, index) => (
         <SearchingResultItemSkeleton key={index} />
       ));
-  // <Skeleton width={300} height={300} />
 
   const displayedFilterTabs = filterTabs.map((tab, index) => {
     const tabClickHandler = () => setActiveTab(tab);
