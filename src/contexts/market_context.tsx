@@ -101,7 +101,7 @@ export interface IMarketContext {
     chainId: string,
     contractId: string,
     queryStr?: string
-  ) => Promise<ITransaction[]>;
+  ) => Promise<ITransactionHistorySection>;
 
   getCurrencies: () => Promise<ICurrency[]>;
   getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetailString>;
@@ -140,7 +140,7 @@ export const MarketContext = createContext<IMarketContext>({
   getContractDetail: () => Promise.resolve({} as IContractDetail),
   getContractTransactions: () => Promise.resolve({} as ITransactionHistorySection),
   getEvidenceDetail: () => Promise.resolve({} as IEvidenceDetail),
-  getEvidenceTransactions: () => Promise.resolve([] as ITransaction[]),
+  getEvidenceTransactions: () => Promise.resolve({} as ITransactionHistorySection),
   getCurrencies: () => Promise.resolve([] as ICurrency[]),
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetailString),
   getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlag[]),
@@ -598,7 +598,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
 
   const getEvidenceTransactions = useCallback(
     async (chainId: string, evidenceId: string, queryStr?: string) => {
-      let data: ITransaction[] = [];
+      let data: ITransactionHistorySection = {} as ITransactionHistorySection;
       try {
         const response = queryStr
           ? await fetch(

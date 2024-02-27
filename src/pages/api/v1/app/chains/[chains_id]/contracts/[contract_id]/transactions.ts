@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     },
   };
 
-  // Info: (20240226 - Julian) 撈出 transaction data
+  // Info: (20240226 - Julian) 撈出總筆數
   const transactionCount = await prisma.transactions.count({where: queryConditon});
   // Info: (20240216 - Julian) 撈出 transaction data
   const transactionData = contractId
