@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect} from 'react';
+import React, {createContext, useContext} from 'react';
 import {ITransactionData} from '../interfaces/transaction';
 import {IProducedBlock} from '../interfaces/block';
 import useStateRef from 'react-usestateref';
@@ -165,10 +165,13 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   // Info: for the use of useStateRef (20240216 - Shirley)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isTransactionInit, setIsTransactionInit, isTransactionInitRef] = useStateRef(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isAddressBriefInit, setIsAddressBriefInit, isAddressBriefInitRef] = useStateRef(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [addressBrief, setAddressBrief, addressBriefRef] = useStateRef<IAddressBrief>(
     {} as IAddressBrief
   );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [addressBriefLoading, setAddressBriefLoading, addressBriefLoadingRef] = useStateRef(false);
 
   const router = useRouter();

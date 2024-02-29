@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const searchInput = req.query.search_input as string;
 
   if (!searchInput) {
-    return res.status(400).json({suggestions: []});
+    return res.status(200).json({suggestions: []});
   }
 
   try {

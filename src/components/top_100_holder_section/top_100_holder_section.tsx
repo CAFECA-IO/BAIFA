@@ -22,9 +22,9 @@ interface ITop100HolderSectionProps {
 
 const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {currencyId, holders, holderCount, unit} = currencyData;
+  const {holders, holderCount, unit, chainId, currencyId} = currencyData;
 
-  const chainIcon = getCurrencyIcon(currencyId);
+  const currencyIcon = getCurrencyIcon(currencyId);
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(holderCount / ITEM_PER_PAGE));
@@ -66,7 +66,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
     })
     .map((holder, index) => {
       const holdingPercentage = holder.holdingPercentage;
-      const addressLink = getDynamicUrl(currencyId, holder.addressId).ADDRESS;
+      const addressLink = getDynamicUrl(chainId, holder.addressId).ADDRESS;
       // Info: (20240206 - Julian) 最多顯示 100% 的持有比例
       const holdingBarWidth = holder.holdingBarWidth > 100 ? 100 : holder.holdingBarWidth;
 
@@ -89,8 +89,8 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
             {displayedPublicTag}
             <div className="flex items-center space-x-2 text-xl">
               <Image
-                src={chainIcon.src}
-                alt={chainIcon.alt}
+                src={currencyIcon.src}
+                alt={currencyIcon.alt}
                 width={30}
                 height={30}
                 onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
@@ -110,8 +110,8 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
               <Link href={addressLink} className="flex space-x-4 lg:hidden">
                 <div className="flex items-center space-x-2 text-sm">
                   <Image
-                    src={chainIcon.src}
-                    alt={chainIcon.alt}
+                    src={currencyIcon.src}
+                    alt={currencyIcon.alt}
                     width={20}
                     height={20}
                     onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}

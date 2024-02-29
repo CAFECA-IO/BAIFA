@@ -12,18 +12,12 @@ import {
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../constants/config';
-import {
-  cn,
-  convertSortingTypeToString,
-  getChainIcon,
-  roundToDecimal,
-  timestampToString,
-} from '../../lib/common';
+import {getChainIcon, roundToDecimal, timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 import DatePicker from '../date_picker/date_picker';
 import {IProductionBlock} from '../../interfaces/block';
-import {IPaginationOptions, SortingType} from '../../constants/api_request';
+import {SortingType} from '../../constants/api_request';
 import {AddressDetailsContext} from '../../contexts/address_details_context';
 import {SkeletonList} from '../skeleton/skeleton';
 
@@ -40,6 +34,7 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
   const [totalPages, setTotalPages] = useState(
     Math.ceil(addressDetailsCtx.producedBlocks.totalPage)
   );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [filteredBlocks, setFilteredBlocks, filteredBlocksRef] = useStateRef<IProductionBlock[]>(
     addressDetailsCtx.producedBlocks.blockData
   );

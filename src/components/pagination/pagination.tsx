@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useState, useEffect} from 'react';
+import {Dispatch, SetStateAction, useEffect} from 'react';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
 import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../constants/config';
 import useStateRef from 'react-usestateref';

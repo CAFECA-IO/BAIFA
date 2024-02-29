@@ -172,8 +172,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     [key: string]: string;
   } = {};
   riskLevelCodes.forEach(item => {
-    if (item.value !== null) {
-      riskLevelCodesObj[item.value] = item.meaning as string;
+    if (item.value && item.meaning) {
+      riskLevelCodesObj[item.value] = item.meaning;
     }
   });
 
@@ -222,6 +222,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
   });
 
+  // Info: (20240226 - Liz) 將 transactionData 轉換成 transactionHistoryData
   const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
     // Info: (20240130 - Julian) from address 轉換
     const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
@@ -272,6 +273,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     ? {
         currencyId: currencyData.id,
         currencyName: `${currencyData.name}`,
+        chainId: `${chainId}`,
         rank: 0, // ToDo: (20240125 - Julian) 討論去留
         holderCount: currencyData.holder_count ?? 0,
         price: currencyData.price ?? 0,

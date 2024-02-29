@@ -62,9 +62,7 @@ const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('CURRENCY_DETAIL_PAGE.HOLDERS')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('CURRENCY_DETAIL_PAGE.HOLDERS_TOOLTIP')}</Tooltip>
         </div>
         <p>{holderCount}</p>
       </div>
@@ -72,9 +70,7 @@ const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('CURRENCY_DETAIL_PAGE.TOTAL_TRANSFERS')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('CURRENCY_DETAIL_PAGE.TOTAL_TRANSFERS_TOOLTIP')}</Tooltip>
         </div>
         <p>{withCommas(totalTransfers)}</p>
       </div>
@@ -82,9 +78,7 @@ const CurrencyDetail = ({currencyData}: ICurrencyDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('CURRENCY_DETAIL_PAGE.RED_FLAG')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('CURRENCY_DETAIL_PAGE.RED_FLAG_TOOLTIP')}</Tooltip>
         </div>
         <div className="flex items-center space-x-6">
           <p className="text-base">
