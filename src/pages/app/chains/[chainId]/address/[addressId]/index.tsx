@@ -16,7 +16,11 @@ import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {IAddressBrief, dummyAddressBrief} from '../../../../../../interfaces/address';
+import {
+  IAddressBrief,
+  IAddressRelatedTransaction,
+  dummyAddressBrief,
+} from '../../../../../../interfaces/address';
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
 import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
@@ -29,6 +33,8 @@ import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_REVIEWS_COUNT_IN_PAGE,
   DEFAULT_TRUNCATE_LENGTH,
+  ITEM_PER_PAGE,
+  default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
 import {
@@ -37,7 +43,7 @@ import {
   roundToDecimal,
   truncateText,
 } from '../../../../../../lib/common';
-import {ITransaction} from '../../../../../../interfaces/transaction';
+import {ITransaction, ITransactionHistorySection} from '../../../../../../interfaces/transaction';
 import {isAddress} from 'web3-validator';
 import {IReviewDetail} from '../../../../../../interfaces/review';
 import {
@@ -50,6 +56,7 @@ import useAPIWorker from '../../../../../../lib/hooks/use_api_worker';
 import {APIURL} from '../../../../../../constants/api_request';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
+import {IDatePeriod} from '../../../../../../interfaces/date_period';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;
@@ -176,8 +183,16 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const appCtx = useContext(AppContext);
   const addressDetailsCtx = useContext(AddressDetailsContext);
 
+  const {transaction_page} = router.query;
+
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+  const [transactionActivePage, setTransactionActivePage] = useState<number>(
+    transaction_page ? +transaction_page : 1
+  );
+
+  const [transactionPeriod, setTransactionPeriod] = useState<IDatePeriod>(default30DayPeriod);
+  const [transactionSorting, setTransactionSorting] = useState<string>(sortOldAndNewOptions[0]);
+  const [transactionSearch, setTransactionSearch] = useState<string>('');
 
   const {
     data: addressBriefData,
@@ -185,20 +200,36 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     error: addressBriefError,
   } = useAPIResponse<IAddressBrief>(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}`);
 
+  const {
+    data: reviews,
+    isLoading: reviewLoading,
+    error: reviewsError,
+  } = useAPIWorker<IReviewDetail[]>(
+    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/review_list`,
+    {order: convertStringToSortingType(reviewSorting)}
+  );
+
+  const {
+    data: transactionData,
+    isLoading: isTransactionDataLoading,
+    error: transactionDataError,
+  } = useAPIResponse<IAddressRelatedTransaction>(
+    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/transactions`,
+    {
+      order: convertStringToSortingType(transactionSorting),
+      page: transactionActivePage,
+      offset: ITEM_PER_PAGE,
+      search: transactionSearch,
+      start_date: transactionPeriod.startTimeStamp === 0 ? '' : transactionPeriod.startTimeStamp,
+      end_date: transactionPeriod.endTimeStamp === 0 ? '' : transactionPeriod.endTimeStamp,
+    }
+  );
+
   const {publicTag, score} = addressBriefData ?? ({} as IAddressBrief);
 
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
 
   const chainIcon = getChainIcon(chainId);
-
-  const {
-    data: reviews,
-    isLoading: reviewLoading,
-    error,
-  } = useAPIWorker<IReviewDetail[]>(
-    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/review_list`,
-    {order: convertStringToSortingType(reviewSorting)}
-  );
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -279,8 +310,18 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
   const displayedTransactionHistory = (
     <TransactionHistorySection
-      transactions={transactionData}
-      dataType={TransactionDataType.ADDRESS_DETAILS}
+      transactions={transactionData?.transactions ?? []}
+      // dataType={TransactionDataType.ADDRESS_DETAILS}
+      activePage={transactionActivePage}
+      setActivePage={setTransactionActivePage}
+      sorting={transactionSorting}
+      setSorting={setTransactionSorting}
+      totalPage={transactionData?.totalPage ?? 0}
+      isLoading={isTransactionDataLoading}
+      transactionCount={transactionData?.transactionCount ?? 0}
+      period={transactionPeriod}
+      setPeriod={setTransactionPeriod}
+      setSearch={setTransactionSearch}
     />
   );
 

@@ -20,9 +20,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
   const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
   const start_date =
-    typeof req.query.start_date === 'string' ? parseInt(req.query.start_date, 10) : undefined;
+    typeof req.query.start_date === 'string' && parseInt(req.query.start_date, 10) > 0
+      ? parseInt(req.query.start_date, 10)
+      : undefined;
   const end_date =
-    typeof req.query.end_date === 'string' ? parseInt(req.query.end_date, 10) : undefined;
+    typeof req.query.end_date === 'string' && parseInt(req.query.end_date, 10) > 0
+      ? parseInt(req.query.end_date, 10)
+      : undefined;
+  const search = typeof req.query.search === 'string' ? req.query.search : undefined;
 
   if (!address_id || !chain_id) {
     return res.status(400).json(undefined);
@@ -30,21 +35,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   try {
     const skip = page > 0 ? (page - 1) * offset : 0;
+    const queries = {
+      related_addresses: {hasSome: [address_id]},
+      created_timestamp: {
+        gte: start_date,
+        lte: end_date,
+      },
+      hash: search ? {contains: search} : undefined,
+    };
     const totalCount = await prisma.transactions.count({
       where: {
-        related_addresses: {hasSome: [address_id]},
-        created_timestamp: {
-          gte: start_date,
-          lte: end_date,
-        },
+        ...queries,
       },
     });
 
     const transactionData = await prisma.transactions.findMany({
-      where: {related_addresses: {hasSome: [address_id]}},
-      orderBy: {
-        id: order,
+      where: {
+        ...queries,
       },
+      orderBy: [
+        {
+          // Info: (20240301 - Shirley) 1. created_timestamp 由 sorting 決定
+          created_timestamp: order,
+        },
+        {
+          // Info: (20240301 - Shirley) 2. id 由小到大
+          id: order,
+        },
+      ],
       take: offset,
       skip: skip,
       select: {
@@ -56,6 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         status: true,
         created_timestamp: true,
         related_addresses: true,
+        hash: true,
       },
     });
 
@@ -106,7 +125,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           .find(code => code.value === parseInt(transaction?.status ?? ''))?.meaning ?? '';
 
       return {
-        id: `${transaction.id}`,
+        id: `${transaction.hash}`,
         chainId: `${transaction.chain_id}`,
         createdTimestamp: transaction.created_timestamp ?? 0,
         from: from,

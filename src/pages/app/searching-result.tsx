@@ -138,9 +138,13 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     data: searchResults,
     isLoading: isSearchLoading,
     error: searchError,
-  } = useAPIWorker<ISearchResult[]>(`${APIURL.SEARCH_RESULT}`, {
-    search_input: searchTextRef.current,
-  });
+  } = useAPIWorker<ISearchResult[]>(
+    `${APIURL.SEARCH_RESULT}`,
+    {
+      search_input: searchTextRef.current,
+    },
+    true
+  );
 
   useEffect(() => {
     if (searchQuery) {

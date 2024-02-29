@@ -12,7 +12,11 @@ interface QueryParams {
   [key: string]: string | number;
 }
 
-function useAPIWorker<Data>(key: string, queryParams?: QueryParams): FetcherResponse<Data> {
+function useAPIWorker<Data>(
+  key: string,
+  queryParams?: QueryParams,
+  cancel?: boolean
+): FetcherResponse<Data> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [data, setData, dataRef] = useStateRef<Data | undefined>(undefined);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -57,7 +61,7 @@ function useAPIWorker<Data>(key: string, queryParams?: QueryParams): FetcherResp
 
     return () => {
       worker.removeEventListener('message', handleMessage);
-      worker.postMessage({key, requestId: requestIdRef.current, action: 'cancel'});
+      if (cancel) worker.postMessage({key, requestId: requestIdRef.current, action: 'cancel'});
       // Info: Close worker in worker after receiving cancel message for 1 sec (20240227 - Shirley)
       // worker.terminate();
     };

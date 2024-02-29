@@ -189,13 +189,13 @@ const TransactionHistorySection = ({
         {/* Info: (20231113 - Julian) To Address List */}
         <div className="my-10 flex w-full flex-1 flex-col">{displayedTransactionList}</div>
         <Pagination
-          paginationClickHandler={paginationClickHandler}
-          loading={addressDetailsCtx.transactionsLoading}
+          // paginationClickHandler={paginationClickHandler}
+          // loading={addressDetailsCtx.transactionsLoading}
           pagePrefix={`transaction`}
           activePage={activePage ?? activePageDefault}
           setActivePage={setActivePage ?? setActivePageDefault}
           totalPages={totalPagesDefault}
-          pageInit={transactionInit}
+          // pageInit={transactionInit}
         />
       </div>
     </div>
