@@ -70,23 +70,27 @@ const ContactUsPage = () => {
       comment: `<h3>姓名：${inputName}</h3><h3>手機：${inputPhone}</h3><h3>Email：${inputEmail}</h3><h3>意見：${inputMessage}</h3><p>${now}<p>`,
     };
 
-    // Info: (20230731 - Julian) 3 秒顯示動畫
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    try {
+      // Info: (20230731 - Julian) 3 秒顯示動畫
+      await new Promise(resolve => setTimeout(resolve, 3000));
 
-    // Info: (20230731 - Julian) call API
-    const res = await fetch('/api/email', {
-      method: 'POST',
-      body: JSON.stringify(emailData),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    });
-    const result = await res.json();
+      // Info: (20230731 - Julian) call API
+      const res = await fetch('/api/email', {
+        method: 'POST',
+        body: JSON.stringify(emailData),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      });
+      const result = await res.json();
 
-    const success = result.success;
-    if (success) {
-      await successProcess();
-    } else {
+      const success = result.success;
+      if (success) {
+        await successProcess();
+      } else {
+        await failedProcess();
+      }
+    } catch (error) {
       await failedProcess();
     }
   };

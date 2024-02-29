@@ -46,7 +46,8 @@ const BaifaPlugin = ({projectId}: IBaifaPluginProps) => {
         reserveRatio = result.data as IWebsiteReserve;
       }
     } catch (error) {
-      // console.log('getWebsiteReserve error');
+      // eslint-disable-next-line no-console
+      console.error('getWebsiteReserve error', error);
     }
     return reserveRatio;
   };

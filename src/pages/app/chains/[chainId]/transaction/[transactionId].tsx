@@ -52,7 +52,8 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
         const data = await getTransactionDetail(chainId, blockId);
         setTransactionData(data);
       } catch (error) {
-        //console.log('getBlockDetail error', error);
+        // eslint-disable-next-line no-console
+        console.error('getBlockDetail error', error);
       }
     };
 

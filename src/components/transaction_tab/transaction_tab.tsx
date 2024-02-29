@@ -43,7 +43,8 @@ const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
       const data = await getTransactionList(chainId, apiQueryStr);
       setTransactionData(data);
     } catch (error) {
-      //console.log('getTransactionList error', error);
+      // eslint-disable-next-line no-console
+      console.error('getTransactionList error', error);
     }
     // Info: (20240220 - Julian) 如果拿到資料，就將 isLoading 設為 false
     setIsLoading(false);
