@@ -18,11 +18,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
   const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
   // TODO: input query (20240227 - Shirley)
-  // const start_date =
-  //   typeof req.query.start_date === 'string' ? parseInt(req.query.start_date, 10) : undefined;
-  // const end_date =
-  //   typeof req.query.end_date === 'string' ? parseInt(req.query.end_date, 10) : undefined;
-  // const block_id = typeof req.query.query === 'string' ? parseInt(req.query.block_id, 10) : 0;
+  const start_date =
+    typeof req.query.start_date === 'string' && parseInt(req.query.start_date, 10) > 0
+      ? parseInt(req.query.start_date, 10)
+      : undefined;
+  const end_date =
+    typeof req.query.end_date === 'string' && parseInt(req.query.end_date, 10) > 0
+      ? parseInt(req.query.end_date, 10)
+      : undefined;
+  const search =
+    typeof req.query.search === 'string' && !isNaN(+req.query.search)
+      ? +req.query.search
+      : undefined;
 
   if (!address_id || !chain_id) {
     return res.status(400).json(undefined);
@@ -81,8 +88,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const skip = page > 0 ? (page - 1) * offset : 0;
 
+    const queries = {
+      created_timestamp: {
+        gte: start_date,
+        lte: end_date,
+      },
+      number: search ? +search : undefined,
+    };
+
     const totalCount = await prisma.blocks.count({
       where: {
+        ...queries,
         miner: address_id,
         chain_id: chain_id,
       },
@@ -90,6 +106,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const blockData = await prisma.blocks.findMany({
       where: {
+        ...queries,
         miner: address_id,
         chain_id: chain_id,
         /* TODO: time range and string query (20240216 - Shirley)

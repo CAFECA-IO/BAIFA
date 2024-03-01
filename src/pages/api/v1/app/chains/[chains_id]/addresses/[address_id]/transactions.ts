@@ -151,7 +151,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const responseData: ResponseData = transactionData
       ? {
           id: `${address_id}`,
-          type: AddressType.ADDRESS,
+          type: AddressType.ADDRESS, // Info: transactions of certain address (20240301 - Shirley)
           address: `${address_id}`,
           transactions: transactionHistoryData,
           transactionCount: totalCount,

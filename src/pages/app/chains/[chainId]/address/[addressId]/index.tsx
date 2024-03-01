@@ -18,6 +18,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {
   IAddressBrief,
+  IAddressProducedBlock,
   IAddressRelatedTransaction,
   dummyAddressBrief,
 } from '../../../../../../interfaces/address';
@@ -31,6 +32,7 @@ import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
   DEFAULT_REVIEWS_COUNT_IN_PAGE,
   DEFAULT_TRUNCATE_LENGTH,
   ITEM_PER_PAGE,
@@ -181,18 +183,24 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const addressDetailsCtx = useContext(AddressDetailsContext);
 
-  const {transaction_page} = router.query;
+  const {transaction_page, blocks_page} = router.query;
 
   const [reviewSorting, setReviewSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [transactionActivePage, setTransactionActivePage] = useState<number>(
-    transaction_page ? +transaction_page : 1
-  );
 
+  const [transactionActivePage, setTransactionActivePage] = useState<number>(
+    transaction_page ? +transaction_page : DEFAULT_PAGE
+  );
   const [transactionPeriod, setTransactionPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [transactionSorting, setTransactionSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [transactionSearch, setTransactionSearch] = useState<string>('');
+
+  const [blocksActivePage, setBlocksActivePage] = useState<number>(
+    blocks_page ? +blocks_page : DEFAULT_PAGE
+  );
+  const [blocksSorting, setBlocksSorting] = useState<string>(sortOldAndNewOptions[0]);
+  const [blocksPeriod, setBlocksPeriod] = useState<IDatePeriod>(default30DayPeriod);
+  const [blocksSearch, setBlocksSearch] = useState<string>('');
 
   const {
     data: addressBriefData,
@@ -222,6 +230,22 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       search: transactionSearch,
       start_date: transactionPeriod.startTimeStamp === 0 ? '' : transactionPeriod.startTimeStamp,
       end_date: transactionPeriod.endTimeStamp === 0 ? '' : transactionPeriod.endTimeStamp,
+    }
+  );
+
+  const {
+    data: blocksData,
+    isLoading: isBlocksDataLoading,
+    error: blocksDataError,
+  } = useAPIResponse<IAddressProducedBlock>(
+    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/produced_blocks`,
+    {
+      order: convertStringToSortingType(blocksSorting),
+      page: blocksActivePage,
+      offset: ITEM_PER_PAGE,
+      search: blocksSearch,
+      start_date: blocksPeriod.startTimeStamp === 0 ? '' : blocksPeriod.startTimeStamp,
+      end_date: blocksPeriod.endTimeStamp === 0 ? '' : blocksPeriod.endTimeStamp,
     }
   );
 
@@ -311,7 +335,6 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const displayedTransactionHistory = (
     <TransactionHistorySection
       transactions={transactionData?.transactions ?? []}
-      // dataType={TransactionDataType.ADDRESS_DETAILS}
       activePage={transactionActivePage}
       setActivePage={setTransactionActivePage}
       sorting={transactionSorting}
@@ -327,8 +350,17 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
   const displayedBlockProducedHistory = (
     <BlockProducedHistorySection
-      blocks={addressDetailsCtx.producedBlocks.blockData}
-      totalBlocks={addressDetailsCtx.producedBlocks.blockCount}
+      blocks={blocksData?.blockData ?? []}
+      blockCount={blocksData?.blockCount ?? 0}
+      totalPages={blocksData?.totalPage ?? 0}
+      activePage={blocksActivePage}
+      setActivePage={setBlocksActivePage}
+      sorting={blocksSorting}
+      setSorting={setBlocksSorting}
+      period={blocksPeriod}
+      setPeriod={setBlocksPeriod}
+      setSearch={setBlocksSearch}
+      isLoading={isBlocksDataLoading}
     />
   );
 
