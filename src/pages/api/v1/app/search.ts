@@ -6,8 +6,9 @@ import {StabilityLevel} from '../../../../constants/stability_level';
 import {ISearchResult} from '../../../../interfaces/search_result';
 import {SearchType} from '../../../../constants/search_type';
 import {RiskLevel} from '../../../../constants/risk_level';
-import {RED_FLAG_CODE_WHEN_NULL} from '../../../../constants/config';
+import {RED_FLAG_CODE_WHEN_NULL, TAG_TYPE} from '../../../../constants/config';
 import prisma from '../../../../../prisma/client';
+import {AddressType} from '../../../../interfaces/address_info';
 
 // Info: Array of ResponseDataItem (20240131 - Shirley)
 type ResponseData = ISearchResult[];
@@ -191,6 +192,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       const redFlagTypeCode = redFlag.red_flag_type
         ? +redFlag.red_flag_type
         : RED_FLAG_CODE_WHEN_NULL;
+
       const redFlagType = redFlagCodes.find(code => code.value === redFlagTypeCode)?.meaning ?? '';
 
       return {
@@ -269,7 +271,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         target: {
           startsWith: searchInput,
         },
-        tag_type: '9',
+        tag_type: TAG_TYPE.BLACKLIST,
       },
       select: {
         id: true,
@@ -310,18 +312,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const chainIdMap = new Map();
     const lastActiveTimeMap = new Map();
+    const addressTypeMap = new Map();
 
-    addressesChainIds.forEach(address =>
-      lastActiveTimeMap.set(address.address, address.latest_active_time)
-    );
+    addressesChainIds.forEach(address => {
+      lastActiveTimeMap.set(address.address, address.latest_active_time);
+      addressTypeMap.set(address.address, AddressType.ADDRESS);
+    });
 
-    contractsChainIds.forEach(contract =>
-      chainIdMap.set(contract.contract_address, contract.chain_id)
-    );
+    contractsChainIds.forEach(contract => {
+      chainIdMap.set(contract.contract_address, contract.chain_id);
+      addressTypeMap.set(contract.contract_address, AddressType.CONTRACT);
+    });
     addressesChainIds.forEach(address => chainIdMap.set(address.address, address.chain_id));
+
+    // eslint-disable-next-line no-console
+    console.log('addressTypeMap', addressTypeMap);
 
     blacklistedAddresses.forEach(item => {
       const chainId = chainIdMap.get(item.target) ?? '';
+      const addressType = addressTypeMap.get(item.target) ?? AddressType.ADDRESS;
+      const rs = {
+        type: SearchType.BLACKLIST,
+        data: {
+          id: `${item?.id}`,
+          chainId: `${chainId}`,
+          createdTimestamp: item?.created_timestamp ? item?.created_timestamp : 0,
+          address: `${item.target}`,
+          targetType: `${addressType}`,
+          latestActiveTime: lastActiveTimeMap.get(item.target) ?? 0,
+          tagName: `${item.name}`,
+        },
+      };
+
       result.push({
         type: SearchType.BLACKLIST,
         data: {
@@ -329,11 +351,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           chainId: `${chainId}`,
           createdTimestamp: item?.created_timestamp ? item?.created_timestamp : 0,
           address: `${item.target}`,
-          targetType: `${item.target_type}`, // TODO: 需要參考 codes table，回傳能判斷的字串，現在直接回傳 DB 裡面存的 target_type (20240216 - Shirley)
+          targetType: `${addressType}`,
           latestActiveTime: lastActiveTimeMap.get(item.target) ?? 0,
           tagName: `${item.name}`,
         },
       });
+      // eslint-disable-next-line no-console
+      console.log('blacklistedAddresses rs', rs);
     });
 
     res.status(200).json(result);
