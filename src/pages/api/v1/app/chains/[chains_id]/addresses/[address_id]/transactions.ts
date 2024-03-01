@@ -1,17 +1,14 @@
 // 023 - GET /app/chains/:chain_id/addresses/:address_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 import {AddressType, IAddressInfo} from '../../../../../../../../interfaces/address_info';
 import {IAddressRelatedTransaction} from '../../../../../../../../interfaces/address';
 import {ITransaction} from '../../../../../../../../interfaces/transaction';
-import {isAddress} from 'web3-validator';
-import {FAILED_TRANSACTION_STATUS_CODE} from '../../../../../../../../constants/config';
+import prisma from '../../../../../../../../../prisma/client';
 
 type ResponseData = IAddressRelatedTransaction | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
   // Info: (20240122 - Julian) 解構 URL 參數，同時進行類型轉換
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
   const chain_id =

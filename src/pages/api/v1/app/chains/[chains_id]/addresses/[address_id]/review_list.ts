@@ -1,14 +1,12 @@
 // 027 - GET /app/chains/:chain_id/addresses/:address_id/review_list
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 import {IReviewDetail} from '../../../../../../../../interfaces/review';
+import prisma from '../../../../../../../../../prisma/client';
 
 type ResponseData = IReviewDetail[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;

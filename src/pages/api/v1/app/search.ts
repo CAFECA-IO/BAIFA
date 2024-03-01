@@ -1,20 +1,18 @@
 // 003 - GET /app/search?search_input=${searchInput}
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
 import {assessBlockStability, isValid64BitInteger} from '../../../../lib/common';
 import {StabilityLevel} from '../../../../constants/stability_level';
 import {ISearchResult} from '../../../../interfaces/search_result';
 import {SearchType} from '../../../../constants/search_type';
 import {RiskLevel} from '../../../../constants/risk_level';
 import {RED_FLAG_CODE_WHEN_NULL} from '../../../../constants/config';
+import prisma from '../../../../../prisma/client';
 
 // Info: Array of ResponseDataItem (20240131 - Shirley)
 type ResponseData = ISearchResult[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
   const searchInput = req.query.search_input as string;
 
   if (!searchInput) {
