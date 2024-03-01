@@ -325,9 +325,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
     addressesChainIds.forEach(address => chainIdMap.set(address.address, address.chain_id));
 
-    // eslint-disable-next-line no-console
-    console.log('addressTypeMap', addressTypeMap);
-
     blacklistedAddresses.forEach(item => {
       const chainId = chainIdMap.get(item.target) ?? '';
       const addressType = addressTypeMap.get(item.target) ?? AddressType.ADDRESS;
@@ -356,8 +353,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           tagName: `${item.name}`,
         },
       });
-      // eslint-disable-next-line no-console
-      console.log('blacklistedAddresses rs', rs);
     });
 
     res.status(200).json(result);
