@@ -148,12 +148,12 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- EVIDENCE -----------------
       case SearchType.EVIDENCE:
-        const {evidenceAddress} = data as IEvidence;
+        const {id} = data as IEvidence;
         return {
-          ID: evidenceAddress,
-          LINE_1: <p className="break-all text-base">{evidenceAddress}</p>,
+          ID: id,
+          LINE_1: <p className="break-all text-base">{id}</p>,
           LINE_2: displayedTime,
-          LINK: getDynamicUrl(data.chainId, evidenceAddress).EVIDENCE,
+          LINK: getDynamicUrl(data.chainId, id).EVIDENCE,
         };
       // Info: (20231115 - Julian) ----------------- TRANSACTION -----------------
       case SearchType.TRANSACTION:
