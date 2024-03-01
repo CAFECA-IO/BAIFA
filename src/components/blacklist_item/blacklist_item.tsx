@@ -15,7 +15,7 @@ interface IBlackListItemProps {
 
 const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {address, chainId, latestActiveTime, tagName} = blacklistAddress;
+  const {address, chainId, latestActiveTime, tagName, targetType} = blacklistAddress;
 
   const [sinceTime, setSinceTime] = useState(0);
 
@@ -23,6 +23,13 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
   const chainIcon = getChainIcon(chainId);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const mainTitle =
+    targetType === '0'
+      ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_CONTRACT')
+      : targetType === '1'
+        ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')
+        : '';
 
   useEffect(() => {
     // Info: (20231113 - Julian) 算出 latestActiveTime 距離現在過了多少時間
@@ -38,9 +45,6 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
       }
     };
   }, [latestActiveTime]);
-
-  // const displayAddressLength = true ? 100 : DEFAULT_TRUNCATE_LENGTH;
-  // Todo: (20240216 - Liz) 要隨著寬度改變，標題 Address 顯示完整地址
 
   return (
     <div className="flex flex-col items-start border-b border-darkPurple4 px-4 py-2 lg:h-60px lg:flex-row lg:items-center">
@@ -59,7 +63,7 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
             onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
           />
           <p title={address}>
-            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
+            {mainTitle}
             <span className="ml-2 font-semibold text-primaryBlue">
               {' '}
               {truncateText(address, DEFAULT_TRUNCATE_LENGTH)}

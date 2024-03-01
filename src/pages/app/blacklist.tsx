@@ -37,7 +37,6 @@ const BlackListPage = () => {
   }, []);
 
   // Info: (20240216 - Liz) 從 blacklist 中取得所有的 tagName，做成選項給下拉式選單使用
-
   const tagNames = blacklist.map(blacklistItem => blacklistItem.tagName);
   const tagNameOptionDefault = 'SORTING.ALL';
 
