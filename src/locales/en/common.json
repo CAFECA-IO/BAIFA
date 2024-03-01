@@ -19,7 +19,7 @@
     "BREADCRUMB_TITLE": "Home",
     "CHAINS_TITLE": "Chains",
     "CRYPTO_TITLE": "Crypto Currencies",
-    "BLACKLIST_TITLE": "Black List",
+    "BLACKLIST_TITLE": "Blacklist",
     "SEARCH_PLACEHOLDER": "What do you want to know?"
   },
   "LANDING_PAGE": {
@@ -234,7 +234,7 @@
     "FLAG_TYPE_LARGE_WITHDRAW": "Large Withdraw",
     "FLAG_TYPE_MIXING_SERVICE": "With Mixing Service",
     "FLAG_TYPE_GAMBLING_SITE": "With Gambling Site",
-    "FLAG_TYPE_BLACK_LIST": "With Black List",
+    "FLAG_TYPE_BLACK_LIST": "With Blacklist",
     "FLAG_TYPE_DARKNET": "With Darknet",
     "FLAG_TYPE_HIGH_RISK_LOCATION": "To High Risk Location",
     "FLAG_TYPE_PRIVACY_COINS": "Transactions with Privacy Coins"
@@ -258,8 +258,8 @@
   "BLACKLIST_PAGE": {
     "MAIN_TITLE_HIGHLIGHT": "Black ",
     "MAIN_TITLE": "List",
-    "SEARCH_PLACEHOLDER": "Search in Black List",
-    "BREADCRUMB_TITLE": "Black List",
+    "SEARCH_PLACEHOLDER": "Search in Blacklist",
+    "BREADCRUMB_TITLE": "Blacklist",
     "LASTED_ACTIVE_TIME": "Lasted Active Time"
   },
   "SEARCHING_RESULT_PAGE": {
@@ -271,7 +271,7 @@
     "CONTRACTS_TAB": "Contracts",
     "EVIDENCES_TAB": "Evidences",
     "TRANSACTIONS_TAB": "Transactions",
-    "BLACKLIST_TAB": "Black List",
+    "BLACKLIST_TAB": "Blacklist",
     "RED_FLAGS_TAB": "Red Flags",
     "ITEM_TITLE_BLOCK": "Block",
     "ITEM_SUBTITLE_BLOCK": "Blocks",
@@ -295,7 +295,7 @@
     "ITEM_LINE_2_TRANSACTION": "Transaction Time",
     "ITEM_TITLE_BLACKLIST_ADDRESS": "Address",
     "ITEM_TITLE_BLACKLIST_CONTRACT": "Contract",
-    "ITEM_SUBTITLE_BLACKLIST": "Black List",
+    "ITEM_SUBTITLE_BLACKLIST": "Blacklist",
     "ITEM_LINE_1_BLACKLIST_ADDRESS": "Address",
     "ITEM_LINE_1_BLACKLIST_CONTRACT": "Contract Address",
     "ITEM_LINE_2_BLACKLIST": "Public Tag",
