@@ -1,17 +1,15 @@
 // 002 - GET /app/suggestions?search_input=${searchInput}
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
 import {INPUT_SUGGESTION_LIMIT} from '../../../../constants/config';
 import {isValid64BitInteger} from '../../../../lib/common';
+import prisma from '../../../../../prisma/client';
 
 type ResponseData = {
   suggestions: string[];
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
   const searchInput = req.query.search_input as string;
 
   if (!searchInput) {
@@ -108,15 +106,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
 
       blocks.forEach(item => {
-        // eslint-disable-next-line no-console
-        console.log(
-          'block item number',
-          item.number,
-          'searchId',
-          searchId,
-          'searchInput',
-          searchInput
-        );
         if (item.number === +searchInput) {
           suggestions.add(item.number);
         }

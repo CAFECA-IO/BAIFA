@@ -1,16 +1,14 @@
 // 011 - GET /app/chains/:chain_id/addresses/:address_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 import {AddressType} from '../../../../../../../../interfaces/address_info';
 import {IAddressBrief} from '../../../../../../../../interfaces/address';
-import {isAddress} from 'web3-validator';
 import {assessAddressRisk} from '../../../../../../../../lib/common';
+import prisma from '../../../../../../../../../prisma/client';
 
 type ResponseData = IAddressBrief | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
   // Info: (20240122 - Julian) 解構 URL 參數，同時進行類型轉換
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id, 10) : undefined;

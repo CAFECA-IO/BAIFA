@@ -233,3 +233,8 @@ export const THRESHOLD_FOR_ADDRESS_RISK_LEVEL = {
   MEDIUM: 10,
   LOW: 10,
 };
+
+// Info: 為 public_tags table 的 tag_type 欄位 (20240301 - Shirley)
+export const TAG_TYPE = {
+  BLACKLIST: '9',
+};
