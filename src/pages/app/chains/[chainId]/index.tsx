@@ -166,7 +166,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
       <TransactionTab chainDetailLoading={isLoading} />
     );
 
-  const diaplayBody = isNoData ? (
+  const displayBody = isNoData ? (
     <DataNotFound />
   ) : (
     <>
@@ -198,7 +198,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
             </div>
             {/* Info: (20230904 - Julian) Page Title */}
             {displayedTitle}
-            {diaplayBody}
+            {displayBody}
           </div>
         </div>
       </main>
