@@ -54,10 +54,6 @@ const RedFlagListSkeleton = () => {
       {/* Info: (20240227 - Shirley) Red Flag List */}
       <div className="mb-10 mt-16 flex w-full flex-col items-center space-y-0 lg:mt-10">
         {listSkeletons}
-        {/* Info: Pagination (20240223 - Shirley) */}
-      </div>
-      <div className="flex w-full justify-center">
-        <Skeleton width={200} height={40} />{' '}
       </div>
     </>
   );
