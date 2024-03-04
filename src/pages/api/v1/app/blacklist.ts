@@ -98,6 +98,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       }
     });
 
+    // Info: (20240304 - Liz) 從 codes Table 撈出 target_type 的 value 和 meaning 的對照表為一個物件陣列
+    const targetTypesCodes = await prisma.codes.findMany({
+      where: {
+        table_name: 'public_tags',
+        table_column: 'target_type',
+      },
+      select: {
+        value: true,
+        meaning: true,
+      },
+    });
+
+    // Info: (20240304 - Liz) 遍歷物件陣列 轉換成物件
+    const targetTypesCodesObj: {
+      [key: string]: string;
+    } = {};
+    targetTypesCodes.forEach(item => {
+      if (item.value !== null) {
+        targetTypesCodesObj[item.value] = item.meaning as string;
+      }
+    });
+
     // Info: (20240216 - Liz) 將取得的資料轉換成 API 要的格式
     const blacklistData = blacklist
       .filter(item => item.target !== null && item.target !== undefined) // Info: (20240301 - Liz) 過濾掉 item.target 為 null 或 undefined 的資料
@@ -117,13 +139,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             break;
         }
 
+        const targetType = item.target_type
+          ? targetTypesCodesObj[item.target_type]
+          : 'Unknown Target Type';
+
         return {
           id: `${item.id}`,
           chainId,
           createdTimestamp: item.created_timestamp ?? 0,
           address: target,
           tagName: item.name ?? '',
-          targetType: item.target_type ?? '',
+          targetType,
           latestActiveTime,
         };
       });

@@ -25,9 +25,9 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const mainTitle =
-    targetType === '0'
+    targetType === 'contract'
       ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_CONTRACT')
-      : targetType === '1'
+      : targetType === 'address'
         ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')
         : '';
 
