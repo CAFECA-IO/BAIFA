@@ -24,12 +24,12 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Info: (今天 - Liz) mainTitle 是根據 targetType 決定，只有兩種可能，contract 或 address
   const mainTitle =
-    targetType === 'contract'
-      ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_CONTRACT')
-      : targetType === 'address'
-        ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')
-        : '';
+    {
+      'contract': t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_CONTRACT'),
+      'address': t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS'),
+    }[targetType] || '';
 
   useEffect(() => {
     // Info: (20231113 - Julian) 算出 latestActiveTime 距離現在過了多少時間

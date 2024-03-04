@@ -33,8 +33,7 @@ const BlackListPage = () => {
       }
     };
     fetchBlacklist();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [getAllBlackList]);
 
   // Info: (20240216 - Liz) 從 blacklist 中取得所有的 tagName，做成選項給下拉式選單使用
   const tagNames = blacklist.map(blacklistItem => blacklistItem.tagName);
