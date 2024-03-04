@@ -1,18 +1,34 @@
 // 020 - GET /app/blacklist
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../lib/utils/prismaUtils';
-import {IBlackList} from '../../../../interfaces/blacklist';
+import {IBlackListData} from '../../../../interfaces/blacklist';
+import prisma from '../../../../../prisma/client';
+import {ITEM_PER_PAGE} from '../../../../constants/config';
 
-type ResponseData = IBlackList[] | string;
+type ResponseData = IBlackListData | string;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
+  // Info: (今天 - Liz) query string
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
+  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const search = typeof req.query.search === 'string' ? req.query.search : undefined;
+
+  // Info: (今天 - Liz) 計算分頁的 skip 與 take
+  const skip = page ? (page - 1) * 10 : undefined; // (今天 - Liz) 跳過前面幾筆
+  const take = 10; // (今天 - Liz) 取幾筆
+
+  // Info: (今天 - Liz) 排序
+  const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
+
   try {
-    // Info: (20240216 - Liz) 從 public_tags table 中取得 tag_type = 9 (黑名單標籤) 的資料
+    // Info: (今天 - Liz) 取得 blacklist 筆數
+    const totalBlacklistAmount = await prisma.public_tags.count();
+
+    // Info: (20240216 - Liz) 從 public_tags table 中取得 tag_type = 9 (黑名單標籤) 的資料為 blacklist
     const blacklist = await prisma.public_tags.findMany({
       where: {
         tag_type: '9', // Info: (20240216 - Liz) 9:黑名單標籤
+        target: search ? {contains: search} : undefined, // Info: (今天 - Liz) 搜尋條件
       },
       select: {
         id: true,
@@ -21,6 +37,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         target_type: true, // Info: (20240216 - Liz)  0:contract / 1:address
         created_timestamp: true, // Info: (20240216 - Liz) 標籤建立時間
       },
+      orderBy: [
+        {
+          created_timestamp: sorting, // Info: (今天 - Liz) 1. created_timestamp 由 sorting 決定排序
+        },
+        {
+          id: 'asc', // Info: (今天 - Liz) 2. id 由小到大排序
+        },
+      ],
+      // Info: (今天 - Liz) 分頁
+      skip,
+      take,
     });
 
     // Info: (20240216 - Liz) 若查無黑名單資料，回傳 404
@@ -51,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       select: {
         contract_address: true,
         chain_id: true,
-        created_timestamp: true,
+        created_timestamp: true, // ToDo: (今天 - Liz) 等資料庫修改後就會改成最後更新時間
       },
     });
 
@@ -120,7 +147,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       }
     });
 
-    // Info: (20240216 - Liz) 將取得的資料轉換成 API 要的格式
+    // Info: (20240216 - Liz) 將取得的 blacklist 資料轉換成 API 要的格式
     const blacklistData = blacklist
       .filter(item => item.target !== null && item.target !== undefined) // Info: (20240301 - Liz) 過濾掉 item.target 為 null 或 undefined 的資料
       .map(item => {
@@ -153,8 +180,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           latestActiveTime,
         };
       });
+    const totalPages = Math.ceil(totalBlacklistAmount / ITEM_PER_PAGE);
 
-    const result: ResponseData = blacklistData;
+    const result = {
+      blacklist: blacklistData,
+      totalPages,
+    };
 
     prisma.$connect();
     res.status(200).json(result);
@@ -162,6 +193,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240216 - Shirley) Request error
     // eslint-disable-next-line no-console
     console.error('Error fetching blacklist data:', error);
-    res.status(500).json([]);
+    res.status(500).json({} as ResponseData);
   }
 }

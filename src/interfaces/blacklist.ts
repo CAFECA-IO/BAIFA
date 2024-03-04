@@ -7,5 +7,10 @@ export interface IBlackList extends ICommonData {
   latestActiveTime: number;
 }
 
+export interface IBlackListData {
+  blacklist: IBlackList[];
+  totalPages: number;
+}
+
 // export interface IBlackListDetail extends IBlackList {
 // }
