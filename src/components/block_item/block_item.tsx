@@ -42,7 +42,10 @@ const BlockItem = ({block}: IBlockItemProps) => {
           href={blockLink}
           className="inline-flex flex-1 items-baseline space-x-2 text-primaryBlue"
         >
-          <h2 className="w-200px flex-grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl">
+          <h2
+            title={id}
+            className="w-200px flex-grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl"
+          >
             <span className=" text-hoverWhite">{t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')}</span> {id}
           </h2>
         </Link>
