@@ -251,7 +251,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
         <BsArrowLeftShort className="text-48px" />
       </button>
       {/* Info: (20230912 -Julian) Address Title */}
-      <div className="flex flex-1 items-center justify-center space-x-2">
+      <div className="inline-flex w-200px flex-1 items-center justify-center space-x-2 text-center text-primaryBlue lg:w-500px lg:px-10">
         <Image
           src={chainIcon.src}
           alt={chainIcon.alt}
@@ -259,11 +259,12 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
           height={40}
           onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
         />
-        <h1 className="text-2xl font-bold lg:text-32px">
-          {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-          <span title={addressId} className="ml-2 text-primaryBlue">
-            {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
-          </span>
+        <h1
+          title={addressId}
+          className="grow overflow-hidden text-ellipsis whitespace-nowrap text-2xl font-bold lg:text-32px"
+        >
+          <span className="text-hoverWhite">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} </span>
+          {addressId}
         </h1>
       </div>
     </div>

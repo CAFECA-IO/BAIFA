@@ -8,7 +8,7 @@ import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import Footer from '../../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {getChainIcon, truncateText} from '../../../../../../lib/common';
+import {getChainIcon} from '../../../../../../lib/common';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {IRedFlag} from '../../../../../../interfaces/red_flag';
 import RedFlagList from '../../../../../../components/red_flag_list/red_flag_list';
@@ -18,7 +18,6 @@ import {MarketContext} from '../../../../../../contexts/market_context';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_RED_FLAG_COUNT_IN_PAGE,
-  DEFAULT_TRUNCATE_LENGTH,
 } from '../../../../../../constants/config';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 
@@ -126,21 +125,25 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
     <RedFlagListSkeleton />
   );
 
-  const displayedAddress = !isLoading ? (
-    <div className="flex items-center space-x-2">
-      <Image
-        src={chainIcon.src}
-        alt={chainIcon.alt}
-        width={30}
-        height={30}
-        onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
-      />
-      <p className="text-xl">
-        {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
-      </p>{' '}
+  const displayedAddress = (
+    <div className="flex w-full flex-1 items-center justify-center space-x-2 whitespace-nowrap">
+      {!isLoading ? (
+        <div className="flex w-200px grow items-center justify-center space-x-2 text-xl">
+          <Image
+            src={chainIcon.src}
+            alt={chainIcon.alt}
+            width={30}
+            height={30}
+            onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+          />
+          <p title={addressId} className="overflow-hidden text-ellipsis">
+            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {addressId}
+          </p>{' '}
+        </div>
+      ) : (
+        <Skeleton width={250} height={30} />
+      )}
     </div>
-  ) : (
-    <Skeleton width={250} height={30} />
   );
 
   return (

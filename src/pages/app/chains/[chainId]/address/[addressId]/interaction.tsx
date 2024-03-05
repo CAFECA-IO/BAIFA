@@ -13,12 +13,11 @@ import DatePicker from '../../../../../../components/date_picker/date_picker';
 import InteractionItem from '../../../../../../components/interaction_item/interaction_item';
 import Footer from '../../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {getChainIcon, truncateText} from '../../../../../../lib/common';
+import {getChainIcon} from '../../../../../../lib/common';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {IInteractionItem} from '../../../../../../interfaces/interaction_item';
 import {
   DEFAULT_CHAIN_ICON,
-  DEFAULT_TRUNCATE_LENGTH,
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortMostAndLeastOptions,
@@ -267,7 +266,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
         <BsArrowLeftShort className="text-48px" />
       </button>
       {/* Info: (20231108 -Julian) Interaction Title */}
-      <div className="flex flex-1 flex-col items-center justify-center space-y-6">
+      <div className="flex flex-1 flex-col items-center justify-center space-y-6 lg:w-auto">
         <h1 className="text-2xl font-bold lg:text-48px">
           <span className="text-primaryBlue">
             {t('INTERACTION_LIST_PAGE.MAIN_TITLE_HIGHLIGHT')}
@@ -275,9 +274,9 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
           {t('INTERACTION_LIST_PAGE.MAIN_TITLE')}
         </h1>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex w-full flex-1 items-center justify-center space-x-2 whitespace-nowrap">
           {!isLoading ? (
-            <>
+            <div className="flex w-200px grow items-center justify-center space-x-2 text-xl">
               <Image
                 src={chainIcon.src}
                 alt={chainIcon.alt}
@@ -285,11 +284,11 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
                 height={30}
                 onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
               />
-              <p className="text-xl" title={addressId}>
-                {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}{' '}
-                {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
+              <p className="overflow-hidden text-ellipsis" title={addressId}>
+                {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
+                <span> {addressId}</span>
               </p>
-            </>
+            </div>
           ) : (
             <Skeleton width={200} height={40} />
           )}
