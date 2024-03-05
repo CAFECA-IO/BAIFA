@@ -36,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
       orderBy: [
         {
-          created_timestamp: sorting, // Info: (20240305 - Liz) 1. created_timestamp 由 sorting 決定排序
+          created_timestamp: 'desc', // Info: (20240305 - Liz) 1. created_timestamp 由新到舊排序
         },
         {
           id: 'asc', // Info: (20240305 - Liz) 2. id 由小到大排序
@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     // Info: (20240305 - Liz) 取得所有的 tagName 並去除重複
-    const uniqueNames = await prisma.public_tags.findMany({
+    const uniqueTagNames = await prisma.public_tags.findMany({
       where: {
         tag_type: '9',
       },
@@ -60,10 +60,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // Deprecated: (今天 - Liz)
     // eslint-disable-next-line no-console
-    console.log('uniqueNames: ', uniqueNames);
+    console.log('uniqueTagNames: ', uniqueTagNames);
 
     // Info: (20240305 - Liz) 用不重複的 tag name 做成下拉式選單的選項
-    const dropdownOptions = uniqueNames.map(tag => tag.name);
+    const tagNameOptions = uniqueTagNames.map(tag => tag.name);
 
     // ToDo: (今天 - Liz) 依照 tag name 篩選資料
 
@@ -103,7 +103,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       select: {
         contract_address: true,
         chain_id: true,
-        created_timestamp: true, // ToDo: (今天 - Liz) 等資料庫修改後就會改成最後更新時間
+        created_timestamp: true, // ToDo: (20240305 - Liz) 等資料庫修改後就要改成拿"最後更新時間"
       },
     });
 
@@ -172,7 +172,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       }
     });
 
-    // Info: (20240216 - Liz) 將取得的 blacklist 資料轉換成 API 要的格式
+    // Info: (20240216 - Liz) 將取得的 blacklist 資料轉換成 API 要的格式，並且依照 sorting 排序
     const blacklistData = blacklist
       .filter(item => item.target !== null && item.target !== undefined) // Info: (20240301 - Liz) 過濾掉 item.target 為 null 或 undefined 的資料
       .map(item => {
@@ -204,6 +204,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           targetType,
           latestActiveTime,
         };
+      })
+      .sort((a, b) => {
+        if (sorting === 'asc') {
+          return a.latestActiveTime - b.latestActiveTime;
+        }
+        return b.latestActiveTime - a.latestActiveTime;
       });
 
     // Info: (20240305 - Liz) 計算總頁數
@@ -212,6 +218,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const result = {
       blacklist: blacklistData,
       totalPages,
+      // tagNameOptions,
       // ToDo: (今天 - Liz) 從 blacklist 中取得所有的 tagName，做成選項給下拉式選單使用
     };
 
