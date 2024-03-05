@@ -8,27 +8,24 @@ import {ITEM_PER_PAGE} from '../../../../constants/config';
 type ResponseData = IBlackListData | string;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  // Info: (今天 - Liz) query string
+  // Info: (20240305 - Liz) query string
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
   const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
 
-  // Info: (今天 - Liz) 計算分頁的 skip 與 take
+  // Info: (20240305 - Liz) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * 10 : undefined; // (今天 - Liz) 跳過前面幾筆
   const take = 10; // (今天 - Liz) 取幾筆
 
-  // Info: (今天 - Liz) 排序
+  // Info: (20240305 - Liz) 排序
   const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
   try {
-    // Info: (今天 - Liz) 取得 blacklist 筆數
-    const totalBlacklistAmount = await prisma.public_tags.count();
-
-    // Info: (20240216 - Liz) 從 public_tags table 中取得 tag_type = 9 (黑名單標籤) 的資料為 blacklist
+    // Info: (20240216 - Liz) 從 public_tags table 中取得 tag_type = 9 (黑名單標籤) 的資料為 blacklist，並做條件篩選以及分頁
     const blacklist = await prisma.public_tags.findMany({
       where: {
         tag_type: '9', // Info: (20240216 - Liz) 9:黑名單標籤
-        target: search ? {contains: search} : undefined, // Info: (今天 - Liz) 搜尋條件
+        target: search ? {contains: search} : undefined, // Info: (20240305 - Liz) 搜尋條件
       },
       select: {
         id: true,
@@ -39,15 +36,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
       orderBy: [
         {
-          created_timestamp: sorting, // Info: (今天 - Liz) 1. created_timestamp 由 sorting 決定排序
+          created_timestamp: sorting, // Info: (20240305 - Liz) 1. created_timestamp 由 sorting 決定排序
         },
         {
-          id: 'asc', // Info: (今天 - Liz) 2. id 由小到大排序
+          id: 'asc', // Info: (20240305 - Liz) 2. id 由小到大排序
         },
       ],
-      // Info: (今天 - Liz) 分頁
+      // Info: (20240305 - Liz) 分頁
       skip,
       take,
+    });
+
+    // Info: (20240305 - Liz) 取得所有的 tagName 並去除重複
+    const uniqueNames = await prisma.public_tags.findMany({
+      where: {
+        tag_type: '9',
+      },
+      select: {
+        name: true,
+      },
+      distinct: ['name'],
+    });
+
+    // Deprecated: (今天 - Liz)
+    // eslint-disable-next-line no-console
+    console.log('uniqueNames: ', uniqueNames);
+
+    // Info: (20240305 - Liz) 用不重複的 tag name 做成下拉式選單的選項
+    const dropdownOptions = uniqueNames.map(tag => tag.name);
+
+    // ToDo: (今天 - Liz) 依照 tag name 篩選資料
+
+    // Info: (20240305 - Liz) 取得 blacklist 總筆數
+    const totalBlacklistAmount = await prisma.public_tags.count({
+      where: {
+        tag_type: '9', // Info: (20240216 - Liz) 9:黑名單標籤
+        target: search ? {contains: search} : undefined, // Info: (20240305 - Liz) 搜尋條件
+      },
     });
 
     // Info: (20240216 - Liz) 若查無黑名單資料，回傳 404
@@ -56,13 +81,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return;
     }
 
-    // Info: (20240301 - Liz) 從 blacklistData 中 target_type 為 0 的 target 值(target 值為地址)
+    // Info: (20240301 - Liz) 從 blacklist 中 target_type 為 0 的 target 值(target 值為地址)
     const contractTargets = blacklist
       .filter(item => item.target_type === '0')
       .map(item => item.target)
       .filter(value => typeof value === 'string') as string[];
 
-    // Info: (20240301 - Liz) 從 blacklistData 中 target_type 為 1 的 target 值(target 值為地址)
+    // Info: (20240301 - Liz) 從 blacklist 中 target_type 為 1 的 target 值(target 值為地址)
     const addressTargets = blacklist
       .filter(item => item.target_type === '1')
       .map(item => item.target)
@@ -180,11 +205,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           latestActiveTime,
         };
       });
+
+    // Info: (20240305 - Liz) 計算總頁數
     const totalPages = Math.ceil(totalBlacklistAmount / ITEM_PER_PAGE);
 
     const result = {
       blacklist: blacklistData,
       totalPages,
+      // ToDo: (今天 - Liz) 從 blacklist 中取得所有的 tagName，做成選項給下拉式選單使用
     };
 
     prisma.$connect();

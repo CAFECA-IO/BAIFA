@@ -24,7 +24,7 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Info: (今天 - Liz) mainTitle 是根據 targetType 決定，只有兩種可能，contract 或 address
+  // Info: (20240305 - Liz) mainTitle 是根據 targetType 決定，只有兩種可能，contract 或 address
   const mainTitle =
     {
       'contract': t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_CONTRACT'),
