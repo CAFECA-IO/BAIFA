@@ -1590,6 +1590,10 @@ async function countResultsByType(
   // Function to count the results based on type and input without actually retrieving all data
   // Use similar logic to searchByType but for counting
   // Return the count as a number
+  const whereClause = {
+    ...(start_date && end_date ? {created_timestamp: {gte: start_date, lte: end_date}} : {}),
+  };
+
   switch (type) {
     case SearchType.BLOCK:
       // Count blocks matching the search input
@@ -1597,6 +1601,7 @@ async function countResultsByType(
 
       const blocksCount = await prisma.blocks.count({
         where: {
+          ...whereClause,
           number: searchId,
         },
       });
@@ -1610,6 +1615,7 @@ async function countResultsByType(
       // Count transactions matching the search input
       const transactionsCount = await prisma.transactions.count({
         where: {
+          ...whereClause,
           hash: {
             startsWith: searchInput,
           },
@@ -1621,6 +1627,7 @@ async function countResultsByType(
       // Count contracts matching the search input
       const contractsCount = await prisma.contracts.count({
         where: {
+          ...whereClause,
           contract_address: {
             startsWith: searchInput,
           },
@@ -1632,6 +1639,7 @@ async function countResultsByType(
       // Count evidences matching the search input
       const evidencesCount = await prisma.evidences.count({
         where: {
+          ...whereClause,
           OR: [
             {evidence_id: {startsWith: searchInput}},
             {contract_address: {startsWith: searchInput}},
@@ -1644,6 +1652,7 @@ async function countResultsByType(
       // Count red flags matching the search input
       const redFlagsCount = await prisma.red_flags.count({
         where: {
+          ...whereClause,
           related_addresses: {
             hasSome: [`${searchInput}`],
           },
@@ -1655,6 +1664,7 @@ async function countResultsByType(
       // Count addresses matching the search input
       const addressesCount = await prisma.addresses.count({
         where: {
+          ...whereClause,
           address: {
             startsWith: searchInput,
           },
@@ -1666,6 +1676,7 @@ async function countResultsByType(
       // Count blacklisted items matching the search input
       const blacklistedAddressesCount = await prisma.public_tags.count({
         where: {
+          ...whereClause,
           target: {
             startsWith: searchInput,
           },
@@ -1684,6 +1695,7 @@ async function countResultsByType(
 
       const countTx = await prisma.transactions.count({
         where: {
+          ...whereClause,
           hash: {
             startsWith: searchInput,
           },
@@ -1692,6 +1704,8 @@ async function countResultsByType(
 
       const countContract = await prisma.contracts.count({
         where: {
+          ...whereClause,
+
           contract_address: {
             startsWith: searchInput,
           },
@@ -1700,6 +1714,8 @@ async function countResultsByType(
 
       const countEvidence = await prisma.evidences.count({
         where: {
+          ...whereClause,
+
           OR: [
             {evidence_id: {startsWith: searchInput}},
             {contract_address: {startsWith: searchInput}},
@@ -1709,6 +1725,8 @@ async function countResultsByType(
 
       const countRedFlag = await prisma.red_flags.count({
         where: {
+          ...whereClause,
+
           related_addresses: {
             hasSome: [`${searchInput}`],
           },
@@ -1717,6 +1735,8 @@ async function countResultsByType(
 
       const countAddress = await prisma.addresses.count({
         where: {
+          ...whereClause,
+
           address: {
             startsWith: searchInput,
           },
@@ -1725,6 +1745,8 @@ async function countResultsByType(
 
       const countBlacklist = await prisma.public_tags.count({
         where: {
+          ...whereClause,
+
           target: {
             startsWith: searchInput,
           },
