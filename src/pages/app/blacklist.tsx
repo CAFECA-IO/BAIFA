@@ -61,12 +61,13 @@ const BlackListPage = () => {
     // Info: (20240305 - Liz) 設定 API 查詢參數
     const pageQuery = `page=${activePage}`;
     const sortQuery = `&sort=${sorting}`;
-    const searchQuery = search ? `&search=${search}` : '';
+    const searchQuery = `&search=${search}`;
     // ToDo: (今天 - Liz) 新增用 tag name 篩選所有資料
+    const tagQuery = `&tag=${filteredTagName}`;
 
     // Info: (20240305 - Liz) 當搜尋條件改變時，重新取得資料
-    setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}`);
-  }, [activePage, search, sorting]);
+    setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${tagQuery}`);
+  }, [activePage, filteredTagName, search, sorting]);
 
   // ToDo: (今天 - Liz) 下拉式選單選項改為由 API 取得
   const tagNames = blacklist?.blacklist?.map(blacklistItem => blacklistItem.tagName) ?? [];

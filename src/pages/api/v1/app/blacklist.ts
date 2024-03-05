@@ -12,6 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
   const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
+  const tag = typeof req.query.tag === 'string' ? req.query.tag : undefined;
 
   // Info: (20240305 - Liz) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * 10 : undefined; // (今天 - Liz) 跳過前面幾筆
