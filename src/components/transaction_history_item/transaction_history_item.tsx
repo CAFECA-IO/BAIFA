@@ -42,7 +42,7 @@ const TransactionHistoryItem = ({transaction}: ITransactionHistoryItemProps) => 
         >
           <h2
             title={transaction.id}
-            className="w-200px flex-grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl"
+            className="w-200px grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl"
           >
             <span className=" text-hoverWhite">
               {t('COMMON.TRANSACTION_HISTORY_TRANSACTION_ID')}{' '}

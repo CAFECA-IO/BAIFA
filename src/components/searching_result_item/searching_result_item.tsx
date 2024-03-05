@@ -234,7 +234,7 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         />
         <h2>{t(`SEARCHING_RESULT_PAGE.ITEM_TITLE_${type}`)}</h2>
       </div>
-      <div title={displayedId} className="w-200px flex-grow text-primaryBlue lg:w-500px">
+      <div title={displayedId} className="w-200px grow text-primaryBlue lg:w-500px">
         <p className="overflow-hidden text-ellipsis whitespace-nowrap">{displayedId}</p>
       </div>
     </div>

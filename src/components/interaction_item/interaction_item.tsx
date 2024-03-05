@@ -49,7 +49,7 @@ const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemPro
       >
         {displayIcon}
         <p
-          className="w-200px flex-grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl"
+          className="w-200px grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl"
           title={id}
         >
           <span className="text-hoverWhite">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} </span>
@@ -63,7 +63,7 @@ const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemPro
       >
         {displayIcon}
         <p
-          className="w-200px flex-grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl"
+          className="w-200px grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl"
           title={id}
         >
           <span className="text-hoverWhite">{t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} </span>

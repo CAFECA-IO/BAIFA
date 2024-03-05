@@ -47,7 +47,7 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
           />
           <h2
             title={id}
-            className="w-200px flex-grow overflow-hidden text-ellipsis whitespace-nowrap lg:w-500px"
+            className="w-200px grow overflow-hidden text-ellipsis whitespace-nowrap lg:w-500px"
           >
             <span className="text-hoverWhite">{t('COMMON.RED_FLAG_ITEM_TITLE')} </span>
             {id}

@@ -93,7 +93,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
               />
               <p
                 title={holder.addressId}
-                className="w-300px flex-grow overflow-hidden text-ellipsis whitespace-nowrap"
+                className="w-300px grow overflow-hidden text-ellipsis whitespace-nowrap"
               >
                 <span className="text-hoverWhite">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} </span>
                 {holder.addressId}
@@ -112,7 +112,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
                   height={20}
                   onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
                 />
-                <p className="w-200px flex-grow overflow-hidden text-ellipsis whitespace-nowrap">
+                <p className="w-200px grow overflow-hidden text-ellipsis whitespace-nowrap">
                   <span className="text-hoverWhite">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} </span>
                   {holder.addressId}
                 </p>

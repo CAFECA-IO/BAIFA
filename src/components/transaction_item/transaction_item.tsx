@@ -43,7 +43,7 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
         >
           <h2
             title={id}
-            className="w-200px flex-grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl"
+            className="w-200px grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl"
           >
             <span className="text-hoverWhite">{t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')} </span>
             {id}
