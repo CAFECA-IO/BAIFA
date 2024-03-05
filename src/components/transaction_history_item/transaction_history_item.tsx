@@ -36,17 +36,22 @@ const TransactionHistoryItem = ({transaction}: ITransactionHistoryItemProps) => 
       </div>
       <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
         {/* Info: (20231113 - Julian) Transaction ID & Type */}
-        <Link href={transactionLink} className="inline-flex flex-1 items-baseline space-x-2">
-          <h2 title={transaction.id} className="text-sm lg:text-xl">
-            {t('COMMON.TRANSACTION_HISTORY_TRANSACTION_ID')}
-            <span className="text-primaryBlue">
-              {' '}
-              {truncateText(transaction.id, DEFAULT_TRUNCATE_LENGTH)}
+        <Link
+          href={transactionLink}
+          className="inline-flex flex-1 items-baseline space-x-2 text-primaryBlue"
+        >
+          <h2
+            title={transaction.id}
+            className="w-200px flex-grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl"
+          >
+            <span className=" text-hoverWhite">
+              {t('COMMON.TRANSACTION_HISTORY_TRANSACTION_ID')}{' '}
             </span>
+            {transaction.id}
           </h2>
         </Link>
         {/* Info: (20231113 - Julian) Status */}
-        <div className="flex items-center space-x-2 px-2">
+        <div className="flex h-20px w-20px items-center space-x-2 lg:w-100px lg:px-2">
           <Image src={statusContent.icon} width={16} height={16} alt={`${status}_icon`} />
           <p className={`hidden text-sm lg:block ${statusContent.color}`}>
             {t(statusContent.text)}
