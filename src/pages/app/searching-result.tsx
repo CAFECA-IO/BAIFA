@@ -44,7 +44,7 @@ const SearchingResultItemSkeleton = () => {
   return (
     <div className="">
       {/* Info: (20240223 - Shirley) Link */}
-      <div className="rounded-lg bg-darkPurple p-6 shadow-xl transition-all duration-300 ease-in-out hover:bg-purpleLinear lg:p-8">
+      <div className="rounded-lg bg-darkPurple p-6 shadow-xl transition-all duration-300 ease-in-out lg:p-8">
         {/* Info: (20240223 - Shirley) Title */}
         <div className="flex w-full items-center lg:w-4/5">
           {/* Info: (20240223 - Shirley) ID */}
