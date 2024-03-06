@@ -1,6 +1,6 @@
 {
   "name": "baifa",
-  "version": "0.1.0+18",
+  "version": "0.1.0+19",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

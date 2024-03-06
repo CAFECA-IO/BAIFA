@@ -9,8 +9,8 @@ import {RiskLevel} from '../../../../constants/risk_level';
 import {
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
+  PUBLIC_TAGS_REFERENCE,
   RED_FLAG_CODE_WHEN_NULL,
-  TAG_TYPE,
 } from '../../../../constants/config';
 import prisma from '../../../../../prisma/client';
 import {AddressType} from '../../../../interfaces/address_info';
@@ -23,6 +23,10 @@ type AddressRecords = {
     recordsCount: number;
     riskLevel: string;
   };
+};
+
+type CodesTargetType = {
+  [key: string]: string;
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
@@ -43,9 +47,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     typeof req.query.type === 'string' && isSearchType(req.query.type.toUpperCase())
       ? req.query.type.toUpperCase()
       : SearchType.ALL;
-
-  // eslint-disable-next-line no-console
-  console.log('all params', searchInput, order, page, offset, start_date, end_date, type);
 
   if (!searchInput) {
     return res.status(400).json({} as ResponseData);
@@ -72,725 +73,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const count = await countResultsByType(searchType, searchInput, start_date, end_date, searchId);
     const totalPage = Math.ceil(count / offset);
 
-    // if (type && type !== SearchType.ALL) {
-    //   switch (type) {
-    //     case SearchType.BLOCK:
-    //       const searchId = isValid64BitInteger(searchInput) ? parseInt(searchInput, 10) : undefined;
-
-    //       // Info: calculate the stability for the targeted block (20240201 - Shirley)
-    //       const latestBlock = await prisma.blocks.findFirst({
-    //         orderBy: {
-    //           created_timestamp: 'desc',
-    //         },
-
-    //         select: {
-    //           id: true,
-    //           chain_id: true,
-    //           created_timestamp: true,
-    //           hash: true,
-    //           number: true,
-    //         },
-    //       });
-
-    //       if (!!searchId) {
-    //         const blocks = await prisma.blocks.findMany({
-    //           orderBy: {
-    //             created_timestamp: order,
-    //           },
-    //           where: {
-    //             number: searchId,
-    //           },
-    //           take,
-    //           skip,
-    //           select: {
-    //             id: true,
-    //             chain_id: true,
-    //             created_timestamp: true,
-    //             hash: true,
-    //             number: true,
-    //           },
-    //         });
-
-    //         blocks.forEach(item => {
-    //           if (latestBlock && latestBlock.number) {
-    //             const targetBlockId = item.number ? +item.number : 0;
-    //             stability = assessBlockStability(targetBlockId, latestBlock.number);
-    //           }
-
-    //           resultData.push({
-    //             type: SearchType.BLOCK,
-    //             data: {
-    //               id: `${item.number}`,
-    //               chainId: `${item.chain_id}`,
-    //               createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //               stability: stability,
-    //             },
-    //           });
-    //         });
-    //       }
-
-    //       count = resultData.length;
-    //       totalPage = Math.ceil(count / offset);
-    //       break;
-    //     case SearchType.TRANSACTION:
-    //       const transactions = await prisma.transactions.findMany({
-    //         where: {
-    //           hash: {
-    //             startsWith: searchInput,
-    //           },
-    //         },
-    //         take,
-    //         skip,
-    //         select: {
-    //           id: true,
-    //           chain_id: true,
-    //           created_timestamp: true,
-    //           hash: true,
-    //         },
-    //       });
-
-    //       transactions.forEach(item => {
-    //         resultData.push({
-    //           type: SearchType.TRANSACTION,
-    //           data: {
-    //             id: `${item.id}`,
-    //             chainId: `${item.chain_id}`,
-    //             createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //             hash: `${item.hash}`,
-    //           },
-    //         });
-    //       });
-    //       break;
-    //     case SearchType.CONTRACT:
-    //       const contracts = await prisma.contracts.findMany({
-    //         where: {
-    //           contract_address: {
-    //             startsWith: searchInput,
-    //           },
-    //         },
-    //         take,
-    //         skip,
-    //         select: {
-    //           id: true,
-    //           chain_id: true,
-    //           created_timestamp: true,
-    //           contract_address: true,
-    //         },
-    //       });
-
-    //       contracts.forEach(item => {
-    //         resultData.push({
-    //           type: SearchType.CONTRACT,
-    //           data: {
-    //             id: `${item.id}`,
-    //             chainId: `${item.chain_id}`,
-    //             createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //             contractAddress: `${item.contract_address}`,
-    //           },
-    //         });
-    //       });
-
-    //       count = resultData.length;
-    //       totalPage = Math.ceil(count / offset);
-    //       break;
-    //     case SearchType.EVIDENCE:
-    //       const evidences = await prisma.evidences.findMany({
-    //         where: {
-    //           OR: [
-    //             {evidence_id: {startsWith: searchInput}},
-    //             {contract_address: {startsWith: searchInput}},
-    //           ],
-    //         },
-    //         take,
-    //         skip,
-    //         select: {
-    //           id: true,
-    //           chain_id: true,
-    //           created_timestamp: true,
-    //           contract_address: true,
-    //           evidence_id: true,
-    //         },
-    //       });
-
-    //       evidences.forEach(item => {
-    //         resultData.push({
-    //           type: SearchType.EVIDENCE,
-    //           data: {
-    //             id: `${item.evidence_id}`,
-    //             chainId: `${item.chain_id}`,
-    //             createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //             evidenceAddress: `${item.contract_address}`,
-    //           },
-    //         });
-    //       });
-
-    //       count = resultData.length;
-    //       totalPage = Math.ceil(count / offset);
-
-    //       break;
-    //     case SearchType.RED_FLAG:
-    //       const redFlags = await prisma.red_flags.findMany({
-    //         where: {
-    //           related_addresses: {
-    //             hasSome: [`${searchInput}`],
-    //           },
-    //         },
-    //         take,
-    //         skip,
-    //         select: {
-    //           id: true,
-    //           chain_id: true,
-    //           created_timestamp: true,
-    //           related_addresses: true,
-    //           red_flag_type: true,
-    //         },
-    //       });
-
-    //       const redFlagCodes = await prisma.codes.findMany({
-    //         where: {
-    //           table_name: 'red_flags',
-    //         },
-    //         select: {
-    //           table_column: true,
-    //           value: true,
-    //           meaning: true,
-    //         },
-    //       });
-
-    //       const redFlagHistoryData = redFlags.map(redFlag => {
-    //         const relatedAddresses = redFlag.related_addresses.map(address => {
-    //           return {
-    //             id: `${address}`,
-    //             chainId: `${redFlag.chain_id}`,
-    //           };
-    //         });
-
-    //         const redFlagTypeCode = redFlag.red_flag_type
-    //           ? +redFlag.red_flag_type
-    //           : RED_FLAG_CODE_WHEN_NULL;
-
-    //         const redFlagType =
-    //           redFlagCodes.find(code => code.value === redFlagTypeCode)?.meaning ?? '';
-
-    //         return {
-    //           id: `${redFlag.id}`,
-    //           chainId: `${redFlag.chain_id}`,
-    //           createdTimestamp: redFlag.created_timestamp ? redFlag.created_timestamp : 0,
-    //           redFlagType: redFlagType,
-    //           interactedAddresses: relatedAddresses,
-    //         };
-    //       });
-
-    //       resultData.push(
-    //         ...redFlagHistoryData.map(item => ({
-    //           type: SearchType.RED_FLAG,
-    //           data: {
-    //             id: `${item.id}`,
-    //             chainId: `${item.chainId}`,
-    //             createdTimestamp: item.createdTimestamp,
-    //             redFlagType: item.redFlagType,
-    //             interactedAddresses: item.interactedAddresses,
-    //           },
-    //         }))
-    //       );
-
-    //       count = resultData.length;
-    //       totalPage = Math.ceil(count / offset);
-    //       break;
-    //     case SearchType.ADDRESS:
-    //       const addresses = await prisma.addresses.findMany({
-    //         where: {
-    //           address: {
-    //             startsWith: searchInput,
-    //           },
-    //         },
-    //         take,
-    //         skip,
-    //         select: {
-    //           id: true,
-    //           chain_id: true,
-    //           created_timestamp: true,
-    //           address: true,
-    //         },
-    //       });
-
-    //       addresses.forEach(item => {
-    //         resultData.push({
-    //           type: SearchType.ADDRESS,
-    //           data: {
-    //             id: `${item.id}`,
-    //             chainId: `${item.chain_id}`,
-    //             createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //             address: `${item.address}`,
-    //             flaggingCount: redFlags.length,
-    //             riskLevel: RiskLevel.LOW_RISK, // TODO: Risk level calculation (20240201 - Shirley)
-    //           },
-    //         });
-    //       });
-
-    //       count = resultData.length;
-    //       totalPage = Math.ceil(count / offset);
-    //       break;
-    //     case SearchType.BLACKLIST:
-    //       // Info: Find public tags with tag_type "9" matching search input (20240216 - Shirley)
-    //       const blacklistedAddresses = await prisma.public_tags.findMany({
-    //         where: {
-    //           target: {
-    //             startsWith: searchInput,
-    //           },
-    //           tag_type: TAG_TYPE.BLACKLIST,
-    //         },
-    //         take,
-    //         skip,
-    //         select: {
-    //           id: true,
-    //           name: true,
-    //           target: true,
-    //           target_type: true,
-    //           created_timestamp: true,
-    //         },
-    //       });
-
-    //       // const blacklistedAddressesCount = await prisma.public_tags.count({
-    //       //   where: {
-    //       //     target: {
-    //       //       startsWith: searchInput,
-    //       //     },
-    //       //     tag_type: TAG_TYPE.BLACKLIST,
-    //       //   },
-    //       // });
-
-    //       // const resultTotalPage = Math.ceil(blacklistedAddressesCount / offset);
-
-    //       const contractTargets = blacklistedAddresses
-    //         .filter(tag => tag.target_type === '0')
-    //         .map(tag => tag.target as string);
-    //       const addressTargets = blacklistedAddresses
-    //         .filter(tag => tag.target_type === '1')
-    //         .map(tag => tag.target as string);
-
-    //       const contractsChainIds = await prisma.contracts.findMany({
-    //         where: {
-    //           contract_address: {in: contractTargets},
-    //         },
-    //         select: {
-    //           contract_address: true,
-    //           chain_id: true,
-    //         },
-    //       });
-
-    //       const addressesChainIds = await prisma.addresses.findMany({
-    //         where: {
-    //           address: {in: addressTargets},
-    //         },
-    //         select: {
-    //           address: true,
-    //           chain_id: true,
-    //           latest_active_time: true,
-    //         },
-    //       });
-
-    //       const chainIdMap = new Map();
-    //       const lastActiveTimeMap = new Map();
-    //       const addressTypeMap = new Map();
-
-    //       addressesChainIds.forEach(address => {
-    //         lastActiveTimeMap.set(address.address, address.latest_active_time);
-    //         addressTypeMap.set(address.address, AddressType.ADDRESS);
-    //       });
-
-    //       contractsChainIds.forEach(contract => {
-    //         chainIdMap.set(contract.contract_address, contract.chain_id);
-    //         addressTypeMap.set(contract.contract_address, AddressType.CONTRACT);
-    //       });
-    //       addressesChainIds.forEach(address => chainIdMap.set(address.address, address.chain_id));
-
-    //       blacklistedAddresses.forEach(item => {
-    //         const chainId = chainIdMap.get(item.target) ?? '';
-    //         const addressType = addressTypeMap.get(item.target) ?? AddressType.ADDRESS;
-    //         const rs = {
-    //           type: SearchType.BLACKLIST,
-    //           data: {
-    //             id: `${item?.id}`,
-    //             chainId: `${chainId}`,
-    //             createdTimestamp: item?.created_timestamp ? item?.created_timestamp : 0,
-    //             address: `${item.target}`,
-    //             targetType: `${addressType}`,
-    //             latestActiveTime: lastActiveTimeMap.get(item.target) ?? 0,
-    //             tagName: `${item.name}`,
-    //           },
-    //         };
-
-    //         resultData.push({
-    //           type: SearchType.BLACKLIST,
-    //           data: {
-    //             id: `${item?.id}`,
-    //             chainId: `${chainId}`,
-    //             createdTimestamp: item?.created_timestamp ? item?.created_timestamp : 0,
-    //             address: `${item.target}`,
-    //             targetType: `${addressType}`,
-    //             latestActiveTime: lastActiveTimeMap.get(item.target) ?? 0,
-    //             tagName: `${item.name}`,
-    //           },
-    //         });
-    //       });
-
-    //       count = resultData.length;
-    //       totalPage = Math.ceil(count / offset);
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // } else {
-    //   const searchId = isValid64BitInteger(searchInput) ? parseInt(searchInput, 10) : undefined;
-
-    //   // Info: calculate the stability for the targeted block (20240201 - Shirley)
-    //   const latestBlock = await prisma.blocks.findFirst({
-    //     orderBy: {
-    //       created_timestamp: 'desc',
-    //     },
-    //     select: {
-    //       id: true,
-    //       chain_id: true,
-    //       created_timestamp: true,
-    //       hash: true,
-    //       number: true,
-    //     },
-    //   });
-
-    //   if (!!searchId && resultData.length < offset) {
-    //     const blocks = await prisma.blocks.findMany({
-    //       orderBy: {
-    //         created_timestamp: order,
-    //       },
-    //       where: {
-    //         number: searchId,
-    //       },
-    //       take,
-    //       skip,
-    //       select: {
-    //         id: true,
-    //         chain_id: true,
-    //         created_timestamp: true,
-    //         hash: true,
-    //         number: true,
-    //       },
-    //     });
-
-    //     blocks.forEach(item => {
-    //       if (latestBlock && latestBlock.number) {
-    //         const targetBlockId = item.number ? +item.number : 0;
-    //         stability = assessBlockStability(targetBlockId, latestBlock.number);
-    //       }
-
-    //       resultData.push({
-    //         type: SearchType.BLOCK,
-    //         data: {
-    //           id: `${item.number}`,
-    //           chainId: `${item.chain_id}`,
-    //           createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //           stability: stability,
-    //         },
-    //       });
-    //     });
-    //   }
-
-    //   if (resultData.length < offset) {
-    //     const transactions = await prisma.transactions.findMany({
-    //       where: {
-    //         hash: {
-    //           startsWith: searchInput,
-    //         },
-    //       },
-    //       take,
-    //       skip,
-    //       select: {
-    //         id: true,
-    //         chain_id: true,
-    //         created_timestamp: true,
-    //         hash: true,
-    //       },
-    //     });
-
-    //     transactions.forEach(item => {
-    //       resultData.push({
-    //         type: SearchType.TRANSACTION,
-    //         data: {
-    //           id: `${item.id}`,
-    //           chainId: `${item.chain_id}`,
-    //           createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //           hash: `${item.hash}`,
-    //         },
-    //       });
-    //     });
-    //   }
-
-    //   if (resultData.length < offset) {
-    //     const contracts = await prisma.contracts.findMany({
-    //       where: {
-    //         contract_address: {
-    //           startsWith: searchInput,
-    //         },
-    //       },
-    //       take,
-    //       skip,
-    //       select: {
-    //         id: true,
-    //         chain_id: true,
-    //         created_timestamp: true,
-    //         contract_address: true,
-    //       },
-    //     });
-
-    //     contracts.forEach(item => {
-    //       resultData.push({
-    //         type: SearchType.CONTRACT,
-    //         data: {
-    //           id: `${item.id}`,
-    //           chainId: `${item.chain_id}`,
-    //           createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //           contractAddress: `${item.contract_address}`,
-    //         },
-    //       });
-    //     });
-    //   }
-
-    //   if (resultData.length < offset) {
-    //     const evidences = await prisma.evidences.findMany({
-    //       where: {
-    //         OR: [
-    //           {evidence_id: {startsWith: searchInput}},
-    //           {contract_address: {startsWith: searchInput}},
-    //         ],
-    //       },
-    //       take,
-    //       skip,
-    //       select: {
-    //         id: true,
-    //         chain_id: true,
-    //         created_timestamp: true,
-    //         contract_address: true,
-    //         evidence_id: true,
-    //       },
-    //     });
-
-    //     evidences.forEach(item => {
-    //       resultData.push({
-    //         type: SearchType.EVIDENCE,
-    //         data: {
-    //           id: `${item.evidence_id}`,
-    //           chainId: `${item.chain_id}`,
-    //           createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //           evidenceAddress: `${item.contract_address}`,
-    //         },
-    //       });
-    //     });
-    //   }
-
-    //   if (resultData.length < offset) {
-    //     const redFlags = await prisma.red_flags.findMany({
-    //       where: {
-    //         related_addresses: {
-    //           hasSome: [`${searchInput}`],
-    //         },
-    //       },
-    //       take,
-    //       skip,
-    //       select: {
-    //         id: true,
-    //         chain_id: true,
-    //         created_timestamp: true,
-    //         related_addresses: true,
-    //         red_flag_type: true,
-    //       },
-    //     });
-
-    //     const redFlagCodes = await prisma.codes.findMany({
-    //       where: {
-    //         table_name: 'red_flags',
-    //       },
-    //       select: {
-    //         table_column: true,
-    //         value: true,
-    //         meaning: true,
-    //       },
-    //     });
-
-    //     const redFlagHistoryData = redFlags.map(redFlag => {
-    //       const relatedAddresses = redFlag.related_addresses.map(address => {
-    //         return {
-    //           id: `${address}`,
-    //           chainId: `${redFlag.chain_id}`,
-    //         };
-    //       });
-
-    //       const redFlagTypeCode = redFlag.red_flag_type
-    //         ? +redFlag.red_flag_type
-    //         : RED_FLAG_CODE_WHEN_NULL;
-
-    //       const redFlagType =
-    //         redFlagCodes.find(code => code.value === redFlagTypeCode)?.meaning ?? '';
-
-    //       return {
-    //         id: `${redFlag.id}`,
-    //         chainId: `${redFlag.chain_id}`,
-    //         createdTimestamp: redFlag.created_timestamp ? redFlag.created_timestamp : 0,
-    //         redFlagType: redFlagType,
-    //         interactedAddresses: relatedAddresses,
-    //       };
-    //     });
-
-    //     resultData.push(
-    //       ...redFlagHistoryData.map(item => ({
-    //         type: SearchType.RED_FLAG,
-    //         data: {
-    //           id: `${item.id}`,
-    //           chainId: `${item.chainId}`,
-    //           createdTimestamp: item.createdTimestamp,
-    //           redFlagType: item.redFlagType,
-    //           interactedAddresses: item.interactedAddresses,
-    //         },
-    //       }))
-    //     );
-
-    //     //   redFlags.forEach(item => {
-    //     //     if (item.related_addresses.some(address => address.startsWith(searchInput))) {
-    //     //       resultData.push({
-    //     //         type: SearchType.RED_FLAG,
-    //     //         data: {
-    //     //           id: `${item.id}`,
-    //     //           chainId: `${item.chain_id}`,
-    //     //           createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //     //           redFlagType: `${item.red_flag_type}`,
-    //     //           interactedAddresses: item.related_addresses.map(address => {
-    //     //             return {
-    //     //               id: `${address}`, // TODO: addressID or address? (20240201 - Shirley)
-    //     //               chainId: `${item.chain_id}`,
-    //     //             };
-    //     //           }),
-    //     //         },
-    //     //       });
-    //     //     }
-    //     //   });
-    //     // }
-
-    //     if (resultData.length < offset) {
-    //       const addresses = await prisma.addresses.findMany({
-    //         where: {
-    //           address: {
-    //             startsWith: searchInput,
-    //           },
-    //         },
-    //         take,
-    //         skip,
-    //         select: {
-    //           id: true,
-    //           chain_id: true,
-    //           created_timestamp: true,
-    //           address: true,
-    //         },
-    //       });
-
-    //       addresses.forEach(item => {
-    //         resultData.push({
-    //           type: SearchType.ADDRESS,
-    //           data: {
-    //             id: `${item.id}`,
-    //             chainId: `${item.chain_id}`,
-    //             createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-    //             address: `${item.address}`,
-    //             flaggingCount: redFlags.length,
-    //             riskLevel: RiskLevel.LOW_RISK, // TODO: Risk level calculation (20240201 - Shirley)
-    //           },
-    //         });
-    //       });
-
-    //       // Info: Find public tags with tag_type "9" matching search input (20240216 - Shirley)
-    //       const blacklistedAddresses = await prisma.public_tags.findMany({
-    //         where: {
-    //           target: {
-    //             startsWith: searchInput,
-    //           },
-    //           tag_type: TAG_TYPE.BLACKLIST,
-    //         },
-    //         take,
-    //         skip,
-    //         select: {
-    //           id: true,
-    //           name: true,
-    //           target: true,
-    //           target_type: true,
-    //           created_timestamp: true,
-    //         },
-    //       });
-
-    //       const contractTargets = blacklistedAddresses
-    //         .filter(tag => tag.target_type === '0')
-    //         .map(tag => tag.target as string);
-    //       const addressTargets = blacklistedAddresses
-    //         .filter(tag => tag.target_type === '1')
-    //         .map(tag => tag.target as string);
-
-    //       const contractsChainIds = await prisma.contracts.findMany({
-    //         where: {
-    //           contract_address: {in: contractTargets},
-    //         },
-    //         select: {
-    //           contract_address: true,
-    //           chain_id: true,
-    //         },
-    //       });
-
-    //       const addressesChainIds = await prisma.addresses.findMany({
-    //         where: {
-    //           address: {in: addressTargets},
-    //         },
-    //         select: {
-    //           address: true,
-    //           chain_id: true,
-    //           latest_active_time: true,
-    //         },
-    //       });
-
-    //       const chainIdMap = new Map();
-    //       const lastActiveTimeMap = new Map();
-    //       const addressTypeMap = new Map();
-
-    //       addressesChainIds.forEach(address => {
-    //         lastActiveTimeMap.set(address.address, address.latest_active_time);
-    //         addressTypeMap.set(address.address, AddressType.ADDRESS);
-    //       });
-
-    //       contractsChainIds.forEach(contract => {
-    //         chainIdMap.set(contract.contract_address, contract.chain_id);
-    //         addressTypeMap.set(contract.contract_address, AddressType.CONTRACT);
-    //       });
-    //       addressesChainIds.forEach(address => chainIdMap.set(address.address, address.chain_id));
-
-    //       blacklistedAddresses.forEach(item => {
-    //         const chainId = chainIdMap.get(item.target) ?? '';
-    //         const addressType = addressTypeMap.get(item.target) ?? AddressType.ADDRESS;
-
-    //         resultData.push({
-    //           type: SearchType.BLACKLIST,
-    //           data: {
-    //             id: `${item?.id}`,
-    //             chainId: `${chainId}`,
-    //             createdTimestamp: item?.created_timestamp ? item?.created_timestamp : 0,
-    //             address: `${item.target}`,
-    //             targetType: `${addressType}`,
-    //             latestActiveTime: lastActiveTimeMap.get(item.target) ?? 0,
-    //             tagName: `${item.name}`,
-    //           },
-    //         });
-    //       });
-    //     }
-    //   }
-
-    //   count = resultData.length;
-    //   totalPage = Math.ceil(count / offset);
-    // }
-
     const result: ISearchResultData = {
       type: searchType,
       count: count,
@@ -807,6 +89,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 }
 
+/** Info: (20240306 - Shirley)
+ * @return data searched by type
+ */
 async function searchByType(
   type: ISearchType,
   searchInput: string,
@@ -823,11 +108,15 @@ async function searchByType(
     ...(start_date && end_date ? {created_timestamp: {gte: start_date, lte: end_date}} : {}),
   };
 
+  /** Info: (20240306 - Shirley)
+   * 如果 type 不是 ALL，則根據 type 進行搜尋，
+   * 如果沒有輸入 type 或者 type 是 ALL，則依序搜尋 block, transaction, contract, evidence, red flag, address, blacklist，
+   * 其中搜尋的邏輯一一對應 `switch (type)` 的 case ，
+   * 所以更改搜尋邏輯時需要更改兩個地方
+   *  */
   if (type && type !== SearchType.ALL) {
     switch (type) {
       case SearchType.BLOCK:
-        // const searchId = isValid64BitInteger(searchInput) ? parseInt(searchInput, 10) : undefined;
-
         // Info: calculate the stability for the targeted block (20240201 - Shirley)
         const latestBlock = await prisma.blocks.findFirst({
           orderBy: {
@@ -1110,6 +399,25 @@ async function searchByType(
 
         break;
       case SearchType.BLACKLIST:
+        const codes = await prisma.codes.findMany({
+          where: {
+            table_name: 'public_tags',
+            table_column: 'target_type',
+          },
+          select: {
+            table_column: true,
+            value: true,
+            meaning: true,
+          },
+        });
+
+        const codesTargetType: CodesTargetType = {};
+        codes.forEach(code => {
+          if (code.value !== null && code.value !== undefined && !!code.meaning) {
+            codesTargetType[code.meaning] = `${code.value}`;
+          }
+        });
+
         // Info: Find public tags with tag_type "9" matching search input (20240216 - Shirley)
         const blacklistedAddresses = await prisma.public_tags.findMany({
           where: {
@@ -1118,7 +426,7 @@ async function searchByType(
             target: {
               startsWith: searchInput,
             },
-            tag_type: TAG_TYPE.BLACKLIST,
+            tag_type: PUBLIC_TAGS_REFERENCE.TAG_TYPE.BLACKLIST,
           },
           take,
           skip,
@@ -1135,10 +443,12 @@ async function searchByType(
         });
 
         const contractTargets = blacklistedAddresses
-          .filter(tag => tag.target_type === '0')
+          .filter(tag => {
+            return tag.target_type === codesTargetType['contract'];
+          })
           .map(tag => tag.target as string);
         const addressTargets = blacklistedAddresses
-          .filter(tag => tag.target_type === '1')
+          .filter(tag => tag.target_type === codesTargetType['address'])
           .map(tag => tag.target as string);
 
         const contractsChainIds = await prisma.contracts.findMany({
@@ -1427,27 +737,6 @@ async function searchByType(
         }))
       );
 
-      //   redFlags.forEach(item => {
-      //     if (item.related_addresses.some(address => address.startsWith(searchInput))) {
-      //       resultData.push({
-      //         type: SearchType.RED_FLAG,
-      //         data: {
-      //           id: `${item.id}`,
-      //           chainId: `${item.chain_id}`,
-      //           createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
-      //           redFlagType: `${item.red_flag_type}`,
-      //           interactedAddresses: item.related_addresses.map(address => {
-      //             return {
-      //               id: `${address}`, // TODO: addressID or address? (20240201 - Shirley)
-      //               chainId: `${item.chain_id}`,
-      //             };
-      //           }),
-      //         },
-      //       });
-      //     }
-      //   });
-      // }
-
       if (resultData.length < take) {
         const addressRecords: AddressRecords = {};
 
@@ -1496,6 +785,25 @@ async function searchByType(
           });
         });
 
+        const codes = await prisma.codes.findMany({
+          where: {
+            table_name: 'public_tags',
+            table_column: 'target_type',
+          },
+          select: {
+            table_column: true,
+            value: true,
+            meaning: true,
+          },
+        });
+
+        const codesTargetType: CodesTargetType = {};
+        codes.forEach(code => {
+          if (code.value !== null && code.value !== undefined && !!code.meaning) {
+            codesTargetType[code.meaning] = `${code.value}`;
+          }
+        });
+
         // Info: Find public tags with tag_type "9" matching search input (20240216 - Shirley)
         const blacklistedAddresses = await prisma.public_tags.findMany({
           where: {
@@ -1503,7 +811,7 @@ async function searchByType(
             target: {
               startsWith: searchInput,
             },
-            tag_type: TAG_TYPE.BLACKLIST,
+            tag_type: PUBLIC_TAGS_REFERENCE.TAG_TYPE.BLACKLIST,
           },
           take,
           skip,
@@ -1519,10 +827,10 @@ async function searchByType(
         });
 
         const contractTargets = blacklistedAddresses
-          .filter(tag => tag.target_type === '0')
+          .filter(tag => tag.target_type === codesTargetType['contract'])
           .map(tag => tag.target as string);
         const addressTargets = blacklistedAddresses
-          .filter(tag => tag.target_type === '1')
+          .filter(tag => tag.target_type === codesTargetType['address'])
           .map(tag => tag.target as string);
 
         const contractsChainIds = await prisma.contracts.findMany({
@@ -1587,6 +895,9 @@ async function searchByType(
   return result;
 }
 
+/** Info: (20240306 - Shirley)
+ * @return count of data searched by type
+ */
 async function countResultsByType(
   type: string,
   searchInput: string,
@@ -1613,7 +924,6 @@ async function countResultsByType(
       } else {
         return 0;
       }
-      break;
     case SearchType.TRANSACTION:
       // Info: Count transactions matching the search input (20240306 - Shirley)
       const transactionsCount = await prisma.transactions.count({
@@ -1625,7 +935,6 @@ async function countResultsByType(
         },
       });
       return transactionsCount;
-      break;
     case SearchType.CONTRACT:
       // Info: Count contracts matching the search input (20240306 - Shirley)
       const contractsCount = await prisma.contracts.count({
@@ -1637,7 +946,6 @@ async function countResultsByType(
         },
       });
       return contractsCount;
-      break;
     case SearchType.EVIDENCE:
       // Info: Count evidences matching the search input (20240306 - Shirley)
       const evidencesCount = await prisma.evidences.count({
@@ -1650,7 +958,6 @@ async function countResultsByType(
         },
       });
       return evidencesCount;
-      break;
     case SearchType.RED_FLAG:
       // Info: Count red flags matching the search input (20240306 - Shirley)
       const redFlagsCount = await prisma.red_flags.count({
@@ -1662,7 +969,6 @@ async function countResultsByType(
         },
       });
       return redFlagsCount;
-      break;
     case SearchType.ADDRESS:
       // Info: Count addresses matching the search input (20240306 - Shirley)
       const addressesCount = await prisma.addresses.count({
@@ -1674,7 +980,6 @@ async function countResultsByType(
         },
       });
       return addressesCount;
-      break;
     case SearchType.BLACKLIST:
       // Info: Count blacklisted items matching the search input (20240306 - Shirley)
       const blacklistedAddressesCount = await prisma.public_tags.count({
@@ -1683,11 +988,10 @@ async function countResultsByType(
           target: {
             startsWith: searchInput,
           },
-          tag_type: TAG_TYPE.BLACKLIST,
+          tag_type: PUBLIC_TAGS_REFERENCE.TAG_TYPE.BLACKLIST,
         },
       });
       return blacklistedAddressesCount;
-      break;
     default:
       // Info: Count all types matching the search input (20240306 - Shirley)
       let countBlock = 0;
@@ -1759,7 +1063,7 @@ async function countResultsByType(
           target: {
             startsWith: searchInput,
           },
-          tag_type: TAG_TYPE.BLACKLIST,
+          tag_type: PUBLIC_TAGS_REFERENCE.TAG_TYPE.BLACKLIST,
         },
       });
 
@@ -1771,34 +1075,6 @@ async function countResultsByType(
         countRedFlag +
         countAddress +
         countBlacklist;
-
-      // eslint-disable-next-line no-console
-      console.log(
-        'parameters:',
-        'searchInput',
-        searchInput,
-        'searchId',
-        searchId,
-        'totalCount',
-        totalCount,
-        'countBlock',
-        countBlock,
-        'countTx',
-        countTx,
-        'countContract',
-        countContract,
-        'countEvidence',
-        countEvidence,
-        'countRedFlag',
-        countRedFlag,
-        'countAddress',
-        countAddress,
-        'countBlacklist',
-        countBlacklist
-      );
-
       return totalCount;
-
-      break;
   }
 }
