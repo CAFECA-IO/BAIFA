@@ -35,7 +35,7 @@ import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContractDetail} from '../interfaces/contract';
 import {IEvidenceDetail} from '../interfaces/evidence';
 import {ICurrency, ICurrencyDetailString} from '../interfaces/currency';
-import {IBlackList} from '../interfaces/blacklist';
+import {IBlackList, IBlackListData} from '../interfaces/blacklist';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -110,7 +110,7 @@ export interface IMarketContext {
   getRedFlagDetail: (redFlagId: string) => Promise<IRedFlagDetail>;
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
-  getAllBlackList: () => Promise<IBlackList[]>;
+  getAllBlackList: (queryStr?: string) => Promise<IBlackListData>;
 }
 
 export const MarketContext = createContext<IMarketContext>({
@@ -148,7 +148,7 @@ export const MarketContext = createContext<IMarketContext>({
   getRedFlagDetail: () => Promise.resolve({} as IRedFlagDetail),
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
-  getAllBlackList: () => Promise.resolve([] as IBlackList[]),
+  getAllBlackList: () => Promise.resolve({} as IBlackListData),
 });
 
 export const MarketProvider = ({children}: IMarketProvider) => {
@@ -202,15 +202,19 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
-  const getAllBlackList = useCallback(async () => {
-    let data: IBlackList[] = [];
+  const getAllBlackList = useCallback(async (queryStr?: string) => {
+    let data: IBlackListData = {} as IBlackListData;
     try {
-      const response = await fetch(`${APIURL.BLACKLIST}`, {
-        method: 'GET',
-      });
+      const response = queryStr
+        ? await fetch(`${APIURL.BLACKLIST}?${queryStr}`, {
+            method: 'GET',
+          })
+        : await fetch(`${APIURL.BLACKLIST}`, {
+            method: 'GET',
+          });
       data = await response.json();
     } catch (error) {
-      //console.log('getBlacklist error', error);
+      //console.log('getAllBlackList error', error);
     }
     //setBlacklist(data);
     return data;

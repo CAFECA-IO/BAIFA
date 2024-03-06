@@ -171,7 +171,8 @@
     "SEARCH_PLACEHOLDER": "在交易列表中搜尋"
   },
   "ADDRESS_DETAIL_PAGE": {
-    "MAIN_TITLE": "地址",
+    "MAIN_TITLE_ADDRESS": "地址",
+    "MAIN_TITLE_CONTRACT": "合約",
     "ADDRESS_ID": "地址",
     "SIGN_UP_TIME": "註冊時間",
     "LATEST_ACTIVE_TIME": "最後活動時間",

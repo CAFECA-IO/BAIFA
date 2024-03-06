@@ -171,7 +171,8 @@
     "SEARCH_PLACEHOLDER": "Search in Transaction list"
   },
   "ADDRESS_DETAIL_PAGE": {
-    "MAIN_TITLE": "Address",
+    "MAIN_TITLE_ADDRESS": "Address",
+    "MAIN_TITLE_CONTRACT": "Contract",
     "ADDRESS_ID": "Address",
     "SIGN_UP_TIME": "Sign Up Time",
     "LATEST_ACTIVE_TIME": "Latest Active Time",
