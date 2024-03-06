@@ -18,6 +18,13 @@ import {AddressType} from '../../../../interfaces/address_info';
 // Info: Array of ResponseDataItem (20240131 - Shirley)
 type ResponseData = ISearchResultData;
 
+type AddressRecords = {
+  [address: string]: {
+    recordsCount: number;
+    riskLevel: string;
+  };
+};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const searchInput = req.query.search_input as string;
   const order = (req.query.order as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
@@ -44,12 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(400).json({} as ResponseData);
   }
 
-  const resultType = isSearchType(type) ? type : SearchType.ALL;
-  // let totalPage = 0;
-  // let count = 0;
-  const resultData: ISearchResult[] = [];
-
-  // let stability = StabilityLevel.LOW;
+  const searchType = isSearchType(type) ? type : SearchType.ALL;
 
   try {
     const take = offset;
@@ -57,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const searchId = isValid64BitInteger(searchInput) ? parseInt(searchInput, 10) : undefined;
 
     const searchResult = await searchByType(
-      resultType,
+      searchType,
       searchInput,
       take,
       skip,
@@ -67,7 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       searchId
     );
 
-    const count = await countResultsByType(resultType, searchInput, start_date, end_date, searchId);
+    const count = await countResultsByType(searchType, searchInput, start_date, end_date, searchId);
     const totalPage = Math.ceil(count / offset);
 
     // if (type && type !== SearchType.ALL) {
@@ -790,7 +792,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // }
 
     const result: ISearchResultData = {
-      type: resultType,
+      type: searchType,
       count: count,
       totalPage: totalPage,
       data: searchResult,
@@ -1058,21 +1060,7 @@ async function searchByType(
 
         break;
       case SearchType.ADDRESS:
-        const flaggingRecords = await prisma.red_flags.findMany({
-          where: {related_addresses: {hasSome: [searchInput]}},
-          select: {id: true, red_flag_type: true},
-        });
-
-        // eslint-disable-next-line no-console
-        console.log('flaggingRecords', flaggingRecords);
-
-        // const flaggingRecords1 = await prisma.red_flags.count({
-        //   where: {related_addresses: {hasSome: [searchInput]}},
-        //   select: {id: true, red_flag_type: true},
-        // });
-
-        const riskRecords = flaggingRecords.length;
-        const riskLevel = assessAddressRisk(riskRecords);
+        const addressRecords: AddressRecords = {};
 
         const addresses = await prisma.addresses.findMany({
           where: {
@@ -1094,8 +1082,17 @@ async function searchByType(
           },
         });
 
-        // eslint-disable-next-line no-console
-        console.log('addresses', addresses);
+        for (const address of addresses) {
+          if (address) {
+            const addressStr = address.address ?? '';
+            const count = await prisma.red_flags.count({
+              where: {related_addresses: {hasSome: [addressStr]}},
+            });
+            const riskLevel = assessAddressRisk(count);
+
+            addressRecords[addressStr] = {recordsCount: count, riskLevel: riskLevel};
+          }
+        }
 
         addresses.forEach(item => {
           resultData.push({
@@ -1105,8 +1102,8 @@ async function searchByType(
               chainId: `${item.chain_id}`,
               createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
               address: `${item.address}`,
-              flaggingCount: riskRecords,
-              riskLevel: riskLevel, // TODO: Risk level calculation (20240201 - Shirley)
+              flaggingCount: addressRecords[item.address ?? '']?.recordsCount ?? 0,
+              riskLevel: addressRecords[item.address ?? '']?.riskLevel ?? RiskLevel.HIGH_RISK,
             },
           });
         });
@@ -1452,6 +1449,8 @@ async function searchByType(
       // }
 
       if (resultData.length < take) {
+        const addressRecords: AddressRecords = {};
+
         const addresses = await prisma.addresses.findMany({
           where: {
             ...whereClause,
@@ -1463,7 +1462,6 @@ async function searchByType(
           take,
           skip,
           orderBy: [{created_timestamp: order}],
-
           select: {
             id: true,
             chain_id: true,
@@ -1471,6 +1469,18 @@ async function searchByType(
             address: true,
           },
         });
+
+        for (const address of addresses) {
+          if (address) {
+            const addressStr = address.address ?? '';
+            const count = await prisma.red_flags.count({
+              where: {related_addresses: {hasSome: [addressStr]}},
+            });
+            const riskLevel = assessAddressRisk(count);
+
+            addressRecords[addressStr] = {recordsCount: count, riskLevel: riskLevel};
+          }
+        }
 
         addresses.forEach(item => {
           resultData.push({
@@ -1480,8 +1490,8 @@ async function searchByType(
               chainId: `${item.chain_id}`,
               createdTimestamp: item.created_timestamp ? item.created_timestamp : 0,
               address: `${item.address}`,
-              flaggingCount: redFlags.length,
-              riskLevel: RiskLevel.LOW_RISK, // TODO: Risk level calculation (20240201 - Shirley)
+              flaggingCount: addressRecords[item.address ?? '']?.recordsCount ?? 0,
+              riskLevel: addressRecords[item.address ?? '']?.riskLevel ?? RiskLevel.HIGH_RISK,
             },
           });
         });
