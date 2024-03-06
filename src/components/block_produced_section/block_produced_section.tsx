@@ -52,9 +52,6 @@ const BlockProducedHistorySection = ({
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const [activePageDefault, setActivePageDefault] = useStateRef(1);
-  // const [totalPages, setTotalPages] = useState(
-  //   Math.ceil(addressDetailsCtx.producedBlocks.totalPage)
-  // );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchDefault, setSearchDefault, searchRefDefault] = useStateRef('');
   const [sortingDefault, setSortingDefault] = useState<string>(sortOldAndNewOptions[0]);

@@ -5,6 +5,7 @@ import {AddressType} from '../../../../../../../../interfaces/address_info';
 import {IAddressProducedBlock} from '../../../../../../../../interfaces/address';
 import {IProductionBlock} from '../../../../../../../../interfaces/block';
 import prisma from '../../../../../../../../../prisma/client';
+import {DEFAULT_PAGE} from '../../../../../../../../constants/config';
 
 type ResponseData = IAddressProducedBlock | undefined;
 
@@ -13,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
   const order = (req.query.order as string)?.toLowerCase() === 'desc' ? 'desc' : 'asc';
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
   const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
   const start_date =
     typeof req.query.start_date === 'string' && parseInt(req.query.start_date, 10) > 0
