@@ -84,18 +84,25 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
       typeOptions={typeOptions}
     />
   );
+
   const displayedAddress = (
-    <div className="flex items-center space-x-2">
-      <Image
-        src={chainIcon.src}
-        alt={chainIcon.alt}
-        width={30}
-        height={30}
-        onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
-      />
-      <p className="text-xl">
-        {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
-      </p>{' '}
+    <div className="flex w-full flex-1 items-center justify-center space-x-2 whitespace-nowrap">
+      {!isLoading ? (
+        <div className="flex w-200px grow items-center justify-center space-x-2 text-xl">
+          <Image
+            src={chainIcon.src}
+            alt={chainIcon.alt}
+            width={30}
+            height={30}
+            onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+          />
+          <p title={addressId} className="overflow-hidden text-ellipsis">
+            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {addressId}
+          </p>{' '}
+        </div>
+      ) : (
+        <Skeleton width={250} height={30} />
+      )}
     </div>
   );
 

@@ -6,12 +6,8 @@ import SearchBar from '../search_bar/search_bar';
 import BoltButton from '../bolt_button/bolt_button';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {
-  DEFAULT_CURRENCY_ICON,
-  DEFAULT_TRUNCATE_LENGTH,
-  ITEM_PER_PAGE,
-} from '../../constants/config';
-import {getCurrencyIcon, roundToDecimal, truncateText, withCommas} from '../../lib/common';
+import {DEFAULT_CURRENCY_ICON, ITEM_PER_PAGE} from '../../constants/config';
+import {getCurrencyIcon} from '../../lib/common';
 import {ICurrencyDetailString, IHolder} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
@@ -87,7 +83,7 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
           {/* Info: (20231102 - Julian) Address ID (Desktop) */}
           <Link href={addressLink} className="hidden flex-1 items-center space-x-4 lg:flex">
             {displayedPublicTag}
-            <div className="flex items-center space-x-2 text-xl">
+            <div className="inline-flex flex-1 items-center space-x-2 text-xl font-semibold text-primaryBlue">
               <Image
                 src={currencyIcon.src}
                 alt={currencyIcon.alt}
@@ -95,41 +91,38 @@ const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
                 height={30}
                 onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
               />
-              <p title={holder.addressId}>
-                {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-                <span className="ml-2 font-semibold text-primaryBlue">
-                  {truncateText(holder.addressId, DEFAULT_TRUNCATE_LENGTH)}
-                </span>
+              <p
+                title={holder.addressId}
+                className="w-300px grow overflow-hidden text-ellipsis whitespace-nowrap"
+              >
+                <span className="text-hoverWhite">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} </span>
+                {holder.addressId}
               </p>
             </div>
           </Link>
           {/* Info: (20231102 - Julian) Holding Amount */}
-          <div className="flex w-full flex-col items-end space-y-1 text-sm lg:w-300px lg:space-y-0">
-            <div className="flex w-full items-center justify-between lg:justify-end">
-              {/* Info: (20231102 - Julian) Address ID (Mobile) */}
-              <Link href={addressLink} className="flex space-x-4 lg:hidden">
-                <div className="flex items-center space-x-2 text-sm">
-                  <Image
-                    src={currencyIcon.src}
-                    alt={currencyIcon.alt}
-                    width={20}
-                    height={20}
-                    onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
-                  />
-                  <p>
-                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
-                    <span className="ml-2 font-semibold text-primaryBlue">
-                      {truncateText(holder.addressId, DEFAULT_TRUNCATE_LENGTH)}
-                    </span>
-                  </p>
-                </div>
-              </Link>
-              {/* Info: (20231102 - Julian) Holding Amount */}
-              <p>
-                {holder.holdingAmount} {unit}
-              </p>
-            </div>
+          <div className="flex w-full flex-col space-y-1 text-sm lg:w-300px lg:space-y-0">
+            {/* Info: (20231102 - Julian) Address ID (Mobile) */}
+            <Link href={addressLink} className="flex space-x-4 lg:hidden">
+              <div className="inline-flex flex-1 items-center space-x-2 text-sm text-primaryBlue">
+                <Image
+                  src={currencyIcon.src}
+                  alt={currencyIcon.alt}
+                  width={20}
+                  height={20}
+                  onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
+                />
+                <p className="w-200px grow overflow-hidden text-ellipsis whitespace-nowrap">
+                  <span className="text-hoverWhite">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} </span>
+                  {holder.addressId}
+                </p>
+              </div>
+            </Link>
 
+            {/* Info: (20231102 - Julian) Holding Amount */}
+            <p className="text-right">
+              {holder.holdingAmount} {unit}
+            </p>
             <div className="relative flex w-full justify-end px-2 py-px">
               <p className="relative z-10">{holdingPercentage} %</p>
               {/* Info: (20231102 - Julian) Holding Amount Bar */}

@@ -38,9 +38,15 @@ const BlockItem = ({block}: IBlockItemProps) => {
       </div>
       <div className="flex h-full flex-1 items-center border-b border-darkPurple4 pl-2 lg:pl-8">
         {/* Info: (20230907 - Julian) Block ID */}
-        <Link href={blockLink} className="flex-1 text-sm lg:text-xl">
-          <h2>
-            {t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')} <span className="text-primaryBlue">{id}</span>
+        <Link
+          href={blockLink}
+          className="inline-flex flex-1 items-baseline space-x-2 text-primaryBlue"
+        >
+          <h2
+            title={id}
+            className="w-200px grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl"
+          >
+            <span className=" text-hoverWhite">{t('CHAIN_DETAIL_PAGE.BLOCKS_TAB')}</span> {id}
           </h2>
         </Link>
         {/* Info: (20230907 - Julian) Stability */}

@@ -245,9 +245,9 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
           )}
         </h2>
       </div>
-      <h2 title={displayedId} className="text-primaryBlue">
-        {truncateText(displayedId, DEFAULT_TRUNCATE_LENGTH)}
-      </h2>
+      <div title={displayedId} className="w-200px grow text-primaryBlue lg:w-500px">
+        <p className="overflow-hidden text-ellipsis whitespace-nowrap">{displayedId}</p>
+      </div>
     </div>
   );
 
@@ -269,11 +269,11 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         {/* Info: (20231115 - Julian) Link */}
         <div className="rounded-lg bg-darkPurple p-6 shadow-xl transition-all duration-300 ease-in-out hover:bg-purpleLinear lg:p-8">
           {/* Info: (20231115 - Julian) Title */}
-          <div className="flex w-full items-center lg:w-4/5">
+          <div className="flex w-full items-center">
             {/* Info: (20231115 - Julian) ID */}
             <div className="flex-1">{displayedTitle}</div>
             {/* Info: (20231115 - Julian) SubTitle - For Desktop */}
-            <div className="hidden lg:block">{displayedSubtitle}</div>
+            <div className="ml-auto mr-1/10 hidden lg:block">{displayedSubtitle}</div>
           </div>
 
           {/* Info: (20231115 - Julian) Content */}
