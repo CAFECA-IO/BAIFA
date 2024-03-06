@@ -30,14 +30,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  // Info: (20240205 - Liz) 從 DB 撈出所有 codes 的資料用來對照
-  const codes = await prisma.codes.findMany({
+  // Info: (20240205 - Liz) 從 codes Table 撈出 red_flag_type 的 value 和 meaning 的對照表為一個物件陣列
+  const redFlagTypeCodes = await prisma.codes.findMany({
+    where: {
+      table_name: 'red_flags',
+      table_column: 'red_flag_type',
+    },
     select: {
       value: true,
       meaning: true,
-      table_name: true,
-      table_column: true,
     },
+  });
+
+  // Info: (今天 - Liz) 遍歷物件陣列 轉換成物件
+  const redFlagTypeCodesObj: {[key: string]: string} = {};
+  redFlagTypeCodes.forEach(code => {
+    const codeValue = code.value ? `${code.value}` : '';
+    redFlagTypeCodesObj[codeValue] = code.meaning ?? '';
   });
 
   // Info:(20240118 - Liz) 將撈出來的資料轉換成 API 要的格式
@@ -45,13 +54,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const id = `${redFlag.id}`;
     const chainId = `${redFlag.chain_id}`;
     const chainName = `${redFlag.chains?.chain_name}`;
-    const redFlagType =
-      codes.find(
-        code =>
-          code.table_name === 'red_flags' &&
-          code.table_column === 'red_flag_type' &&
-          code.value === (redFlag.red_flag_type ? parseInt(redFlag.red_flag_type) : null)
-      )?.meaning ?? '';
+    const redFlagType = redFlag.red_flag_type
+      ? redFlagTypeCodesObj[redFlag.red_flag_type]
+      : 'Unknown Red Flag Type';
     const createdTimestamp = redFlag.created_timestamp ?? 0;
 
     return {
@@ -67,39 +72,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   prisma.$disconnect();
   res.status(200).json(result);
-
-  /*
-  const result: ResponseData = [
-    {
-      "id": "1223724980",
-      "chainId": "eth",
-      "chainName": "Ethereum",
-      "redFlagType": "RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_TRANSFER",
-      "createdTimestamp": 1677769870
-    },
-    {
-      "id": "1132480029",
-      "chainId": "btc",
-      "chainName": "Bitcoin",
-      "redFlagType": "RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_WITHDRAW",
-      "createdTimestamp": 1682172429
-    },
-    {
-      "id": "1468697785",
-      "chainId": "usdt",
-      "chainName": "Tether",
-      "redFlagType": "RED_FLAG_DETAIL_PAGE.FLAG_TYPE_GAMBLING_SITE",
-      "createdTimestamp": 1686548904
-    },
-    {
-      "id": "1378976701",
-      "chainId": "isun",
-      "chainName": "iSunCloud",
-      "redFlagType": "RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_DEPOSIT",
-      "createdTimestamp": 1690657412
-    }
-    // ... other red flags
-  ];
-  res.status(200).json(result);
-  */
 }
