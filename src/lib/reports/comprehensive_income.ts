@@ -24,7 +24,7 @@ export const createCISFirstPart = (
     tbody: [
       {
         rowType: RowType.title,
-        rowData: ['Revene:', '*-*', '*-*'],
+        rowData: ['Revenue:', '*-*', '*-*'],
       },
       {
         rowType: RowType.bookkeeping,
@@ -116,7 +116,7 @@ export const createCISFirstPart = (
     tbody: [
       {
         rowType: RowType.title,
-        rowData: ['Revene:', '*-*', '*-*'],
+        rowData: ['Revenue:', '*-*', '*-*'],
       },
       {
         rowType: RowType.bookkeeping,
