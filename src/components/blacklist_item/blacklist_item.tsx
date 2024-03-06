@@ -2,12 +2,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useState, useEffect, useRef} from 'react';
 import BoltButton from '../../components/bolt_button/bolt_button';
-import {getChainIcon, getTimeString, truncateText} from '../../lib/common';
+import {getChainIcon, getTimeString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import {IBlackList} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {DEFAULT_CHAIN_ICON} from '../../constants/config';
 
 interface IBlackListItemProps {
   blacklistAddress: IBlackList;
@@ -66,7 +66,7 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
             title={address}
             className="w-200px grow overflow-hidden text-ellipsis whitespace-nowrap lg:w-500px"
           >
-            <span className="text-hoverWhite">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} </span>
+            <span className="text-hoverWhite">{mainTitle} </span>
             {address}
           </p>
         </div>
