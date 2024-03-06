@@ -260,7 +260,7 @@ export function convertStringToSortingType(sorting: string): IPaginationOptions[
       order = SortingType.ASC;
       break;
     default:
-      order = SortingType.ASC;
+      order = SortingType.DESC;
       break;
   }
 

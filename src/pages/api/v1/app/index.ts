@@ -3,7 +3,7 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {IPromotion} from '../../../../interfaces/promotion';
 import prisma from '../../../../../prisma/client';
-import {TAG_TYPE} from '../../../../constants/config';
+import {PUBLIC_TAGS_REFERENCE} from '../../../../constants/config';
 
 type ResponseData = IPromotion;
 
@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240216 - Shirley) Count public tags where tag_type equals "9" as blacklist
     const blackListLength = await prisma.public_tags.count({
       where: {
-        tag_type: TAG_TYPE.BLACKLIST,
+        tag_type: PUBLIC_TAGS_REFERENCE.TAG_TYPE.BLACKLIST,
       },
     });
     const result: ResponseData = {

@@ -1,4 +1,5 @@
 export type ISearchType =
+  | 'ALL'
   | 'BLOCK'
   | 'ADDRESS'
   | 'CONTRACT'
@@ -8,6 +9,7 @@ export type ISearchType =
   | 'RED_FLAG';
 
 export type ISearchTypeConstant = {
+  ALL: ISearchType;
   BLOCK: ISearchType;
   ADDRESS: ISearchType;
   CONTRACT: ISearchType;
@@ -18,6 +20,7 @@ export type ISearchTypeConstant = {
 };
 
 export const SearchType: ISearchTypeConstant = {
+  ALL: 'ALL',
   BLOCK: 'BLOCK',
   ADDRESS: 'ADDRESS',
   CONTRACT: 'CONTRACT',
@@ -26,3 +29,7 @@ export const SearchType: ISearchTypeConstant = {
   BLACKLIST: 'BLACKLIST',
   RED_FLAG: 'RED_FLAG',
 };
+
+export function isSearchType(param: any): param is ISearchType {
+  return Object.values(SearchType).includes(param);
+}

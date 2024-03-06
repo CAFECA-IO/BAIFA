@@ -9,17 +9,28 @@ import DatePicker from '../../components/date_picker/date_picker';
 import SortingMenu from '../../components/sorting_menu/sorting_menu';
 import SearchingResultItem from '../../components/searching_result_item/searching_result_item';
 import Pagination from '../../components/pagination/pagination';
-import {sortOldAndNewOptions, ITEM_PER_PAGE, default30DayPeriod} from '../../constants/config';
+import {
+  sortOldAndNewOptions,
+  ITEM_PER_PAGE,
+  default30DayPeriod,
+  DEFAULT_PAGE,
+} from '../../constants/config';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {ISearchResult} from '../../interfaces/search_result';
+import {
+  ISearchResultData,
+  filterTabs,
+  filterTabsToSearchType,
+} from '../../interfaces/search_result';
 import GlobalSearch from '../../components/global_search/global_search';
 import {GetServerSideProps} from 'next';
 import {ParsedUrlQuery} from 'querystring';
 import Skeleton from '../../components/skeleton/skeleton';
 import useAPIWorker from '../../lib/hooks/use_api_worker';
 import {APIURL} from '../../constants/api_request';
+import {convertStringToSortingType} from '../../lib/common';
+import {SearchType} from '../../constants/search_type';
 
 interface ISearchingResultPageProps {
   searchQuery: string;
@@ -33,7 +44,7 @@ const SearchingResultItemSkeleton = () => {
   return (
     <div className="">
       {/* Info: (20240223 - Shirley) Link */}
-      <div className="rounded-lg bg-darkPurple p-6 shadow-xl transition-all duration-300 ease-in-out hover:bg-purpleLinear lg:p-8">
+      <div className="rounded-lg bg-darkPurple p-6 shadow-xl transition-all duration-300 ease-in-out lg:p-8">
         {/* Info: (20240223 - Shirley) Title */}
         <div className="flex w-full items-center lg:w-4/5">
           {/* Info: (20240223 - Shirley) ID */}
@@ -96,18 +107,10 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   const router = useRouter();
   const {search} = router.query;
   const keyWord = search ? search.toString() : '';
+  const {page} = router.query;
 
   const headTitle = `${t('SEARCHING_RESULT_PAGE.MAIN_TITLE')} - BAIFA`;
-  const filterTabs = [
-    'SEARCHING_RESULT_PAGE.ALL_TAB', // Info:(20231228 - Julian) All
-    'SEARCHING_RESULT_PAGE.BLOCKS_TAB', // Info:(20231228 - Julian) Blocks
-    'SEARCHING_RESULT_PAGE.ADDRESSES_TAB', // Info:(20231228 - Julian) Addresses
-    'SEARCHING_RESULT_PAGE.CONTRACTS_TAB', // Info:(20231228 - Julian) Contracts
-    'SEARCHING_RESULT_PAGE.EVIDENCES_TAB', // Info:(20231228 - Julian) Evidences
-    'SEARCHING_RESULT_PAGE.TRANSACTIONS_TAB', // Info:(20231228 - Julian) Transactions
-    'SEARCHING_RESULT_PAGE.BLACKLIST_TAB', // Info:(20231228 - Julian) Black List
-    'SEARCHING_RESULT_PAGE.RED_FLAGS_TAB', // Info:(20231228 - Julian) Red Flags
-  ];
+
   // Info: (20231114 - Julian) Sorting Menu Options
   const sortingOptions = ['SORTING.RELEVANCY', ...sortOldAndNewOptions];
   // Info: (20231114 - Julian) Filter Tabs Shadow
@@ -116,32 +119,33 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   const shadowClassNameR =
     'after:absolute after:-inset-1 after:ml-auto after:top-0 after:block xl:after:hidden after:w-5 after:bg-gradient-to-l after:from-black after:to-transparent';
 
-  const [filteredResult, setFilteredResult] = useState<ISearchResult[]>([]);
   // Info: (20231114 - Julian) Filter State
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchText, setSearchText, searchTextRef] = useStateRef<string>(keyWord);
   const [sorting, setSorting] = useState(sortingOptions[0]);
   const [activeTab, setActiveTab] = useState(filterTabs[0]);
   const [period, setPeriod] = useState(default30DayPeriod);
   // Info: (20231114 - Julian) Pagination State
-  const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(filteredResult.length / ITEM_PER_PAGE));
+  const [activePage, setActivePage] = useState(page ? +page : DEFAULT_PAGE);
 
   const getInputValue = (value: string) => {
     setSearchText(value);
   };
 
-  // Info: (20231115 - Julian) Pagination Index
-  const endIdx = activePage * ITEM_PER_PAGE;
-  const startIdx = endIdx - ITEM_PER_PAGE;
-
   const {
     data: searchResults,
     isLoading: isSearchLoading,
     error: searchError,
-  } = useAPIWorker<ISearchResult[]>(
+  } = useAPIWorker<ISearchResultData>(
     `${APIURL.SEARCH_RESULT}`,
     {
       search_input: searchTextRef.current,
+      start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
+      end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
+      order: convertStringToSortingType(sorting),
+      page: activePage,
+      offset: ITEM_PER_PAGE,
+      type: filterTabsToSearchType.get(activeTab) ?? SearchType.ALL,
     },
     true
   );
@@ -155,56 +159,8 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (!searchResults) return;
-    const result = searchResults
-      /* TODO: don't filter data out by string (20240229 - Shirley)
-      .filter(searchResults => {
-        return true;
-        // Info: (20231115 - Julian) filter by Search bar
-        
-        // const searchTerm = searchTextRef.current.toLowerCase();
-        // const id = searchResults.data.id.toLowerCase();
-        // const chainId = searchResults.data.chainId.toLowerCase();
-        // const type = searchResults.type.toLowerCase();
-        // return id.includes(searchTextRef.current);
-        // return searchTerm === ''
-        //   ? true
-        //   : id.includes(searchTerm) || chainId.includes(searchTerm) || type.includes(searchTerm);
-      })
-      */
-      .filter(searchResults => {
-        // Info: (20231115 - Julian) filter by Filter Tabs
-        const type = searchResults.type;
-        return activeTab === filterTabs[0] ? true : activeTab.includes(type);
-      })
-      .filter(searchResults => {
-        // Info: (20231115 - Julian) filter by Date Picker
-        const timestamp = searchResults.data.createdTimestamp;
-        const startTimeStamp = period.startTimeStamp;
-        const endTimeStamp = period.endTimeStamp;
-        return startTimeStamp !== 0 && endTimeStamp !== 0
-          ? timestamp >= startTimeStamp && timestamp <= endTimeStamp
-          : true;
-      })
-      .sort((a, b) => {
-        // Info: (20231115 - Julian) sort by Sorting Menu
-        return sorting === sortingOptions[0]
-          ? // ToDo: (20231115 - Julian) sort by Relevancy
-            0
-          : sorting === sortOldAndNewOptions[1]
-          ? a.data.createdTimestamp - b.data.createdTimestamp
-          : b.data.createdTimestamp - a.data.createdTimestamp;
-      });
-
-    setFilteredResult(result);
-    setTotalPages(Math.ceil(result.length / ITEM_PER_PAGE));
-    setActivePage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText, sorting, activeTab, period, searchResults]);
-
   const resultList = !isSearchLoading
-    ? filteredResult.slice(startIdx, endIdx).map((searchResults, index) => {
+    ? searchResults?.data.map((searchResults, index) => {
         return <SearchingResultItem key={index} searchResult={searchResults} />;
       })
     : Array.from({length: ITEM_PER_PAGE}).map((_, index) => (
@@ -283,7 +239,7 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
               <Pagination
                 activePage={activePage}
                 setActivePage={setActivePage}
-                totalPages={totalPages}
+                totalPages={searchResults?.totalPage ?? 0}
               />
             </div>
           </div>
