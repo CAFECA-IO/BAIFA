@@ -63,7 +63,8 @@ const ComprehensiveIncomeStatements = ({projectId}: IComprehensiveIncomeStatemen
         reportData = result.data as IComprehensiveIncomeStatements;
       }
     } catch (error) {
-      // console.log('Get comprehensive income statements error');
+      // eslint-disable-next-line no-console
+      console.error('Get comprehensive income statements error');
     }
     return reportData;
   };

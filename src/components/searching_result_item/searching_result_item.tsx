@@ -148,12 +148,12 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         };
       // Info: (20231115 - Julian) ----------------- EVIDENCE -----------------
       case SearchType.EVIDENCE:
-        const {evidenceAddress} = data as IEvidence;
+        const {id} = data as IEvidence;
         return {
-          ID: evidenceAddress,
-          LINE_1: <p className="break-all text-base">{evidenceAddress}</p>,
+          ID: id,
+          LINE_1: <p className="break-all text-base">{id}</p>,
           LINE_2: displayedTime,
-          LINK: getDynamicUrl(data.chainId, evidenceAddress).EVIDENCE,
+          LINK: getDynamicUrl(data.chainId, id).EVIDENCE,
         };
       // Info: (20231115 - Julian) ----------------- TRANSACTION -----------------
       case SearchType.TRANSACTION:
@@ -201,11 +201,14 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
             {t(tagName)}
           </div>
         );
+        const addressType = (data as IBlackList).targetType.toUpperCase();
         return {
           ID: blacklistAddress,
           LINE_1: <p className="break-all text-base">{blacklistAddress}</p>,
           LINE_2: displayedPublicTag,
-          LINK: getDynamicUrl(data.chainId, blacklistAddress).ADDRESS,
+          LINK: getDynamicUrl(data.chainId, blacklistAddress)[
+            addressType as keyof typeof getDynamicUrl
+          ],
         };
       default:
         return {
@@ -232,11 +235,19 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
           height={30}
           onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
         />
-        <h2>{t(`SEARCHING_RESULT_PAGE.ITEM_TITLE_${type}`)}</h2>
+        <h2>
+          {t(
+            `SEARCHING_RESULT_PAGE.ITEM_TITLE_${type}${
+              type === SearchType.BLACKLIST
+                ? `_${(data as IBlackList).targetType.toUpperCase()}`
+                : ``
+            }`
+          )}
+        </h2>
       </div>
-      <h2 title={displayedId} className="text-primaryBlue">
-        {truncateText(displayedId, DEFAULT_TRUNCATE_LENGTH)}
-      </h2>
+      <div title={displayedId} className="w-200px grow text-primaryBlue lg:w-500px">
+        <p className="overflow-hidden text-ellipsis whitespace-nowrap">{displayedId}</p>
+      </div>
     </div>
   );
 
@@ -258,11 +269,11 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
         {/* Info: (20231115 - Julian) Link */}
         <div className="rounded-lg bg-darkPurple p-6 shadow-xl transition-all duration-300 ease-in-out hover:bg-purpleLinear lg:p-8">
           {/* Info: (20231115 - Julian) Title */}
-          <div className="flex w-full items-center lg:w-4/5">
+          <div className="flex w-full items-center">
             {/* Info: (20231115 - Julian) ID */}
             <div className="flex-1">{displayedTitle}</div>
             {/* Info: (20231115 - Julian) SubTitle - For Desktop */}
-            <div className="hidden lg:block">{displayedSubtitle}</div>
+            <div className="ml-auto mr-1/10 hidden lg:block">{displayedSubtitle}</div>
           </div>
 
           {/* Info: (20231115 - Julian) Content */}
@@ -271,9 +282,23 @@ const SearchingResultItem = ({searchResult}: ISearchingResultItemProps) => {
             <div className="flex w-full flex-col items-start gap-2 border-b border-darkPurple4 py-5 lg:flex-row lg:items-center">
               <div className="flex w-200px items-center space-x-2">
                 <p className="text-base font-bold text-lilac">
-                  {t(`SEARCHING_RESULT_PAGE.ITEM_LINE_1_${type}`)}
+                  {t(
+                    `SEARCHING_RESULT_PAGE.ITEM_LINE_1_${type}${
+                      type === SearchType.BLACKLIST
+                        ? `_${(data as IBlackList).targetType.toUpperCase()}`
+                        : ``
+                    }`
+                  )}
                 </p>
-                <Tooltip>{t(`SEARCHING_RESULT_PAGE.TOOL_TIP_1_${type}`)}</Tooltip>
+                <Tooltip>
+                  {t(
+                    `SEARCHING_RESULT_PAGE.TOOL_TIP_1_${type}${
+                      type === SearchType.BLACKLIST
+                        ? `_${(data as IBlackList).targetType.toUpperCase()}`
+                        : ``
+                    }`
+                  )}
+                </Tooltip>
               </div>
               {/* Info: (20231115 - Julian) Line 1 Content */}
               {displayedLine1}

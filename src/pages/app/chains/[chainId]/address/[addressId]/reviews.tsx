@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, useEffect, useContext, useRef, use} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import {useRouter} from 'next/router';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../../../components/footer/footer';
 import ReviewSection from '../../../../../../components/review_section/review_section';
-import {IReviewDetail, IReviews} from '../../../../../../interfaces/review';
+import {IReviews} from '../../../../../../interfaces/review';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {convertStringToSortingType, getChainIcon, truncateText} from '../../../../../../lib/common';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';

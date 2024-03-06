@@ -35,7 +35,8 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
         {/* Info: (20231109 - Julian) Address ID */}
         <Link
           href={`${BFAURL.RED_FLAG}/${id}`}
-          className="flex flex-1 items-center space-x-2 text-sm font-bold lg:text-xl"
+          className="inline-flex flex-1 items-center space-x-2 text-sm font-bold
+          text-primaryBlue  lg:text-xl"
         >
           <Image
             src={chainIcon.src}
@@ -44,9 +45,12 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
             height={30}
             onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
           />
-          <h2>
-            {t('COMMON.RED_FLAG_ITEM_TITLE')}
-            <span className="text-primaryBlue"> {id}</span>
+          <h2
+            title={id}
+            className="w-200px grow overflow-hidden text-ellipsis whitespace-nowrap lg:w-500px"
+          >
+            <span className="text-hoverWhite">{t('COMMON.RED_FLAG_ITEM_TITLE')} </span>
+            {id}
           </h2>
         </Link>
         {/* Info: (20231109 - Julian) Flag Type */}

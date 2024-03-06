@@ -1,32 +1,39 @@
-// 023 - GET /app/chains/:chain_id/addresses/:address_id/transactions
+// 024 - GET /app/chains/:chain_id/addresses/:address_id/produced_blocks
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 import {AddressType} from '../../../../../../../../interfaces/address_info';
 import {IAddressProducedBlock} from '../../../../../../../../interfaces/address';
-import {isAddress} from 'web3-validator';
 import {IProductionBlock} from '../../../../../../../../interfaces/block';
+import prisma from '../../../../../../../../../prisma/client';
+import {DEFAULT_PAGE} from '../../../../../../../../constants/config';
 
 type ResponseData = IAddressProducedBlock | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
   const order = (req.query.order as string)?.toLowerCase() === 'desc' ? 'desc' : 'asc';
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
   const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
   const start_date =
-    typeof req.query.start_date === 'string' ? parseInt(req.query.start_date, 10) : undefined;
+    typeof req.query.start_date === 'string' && parseInt(req.query.start_date, 10) > 0
+      ? parseInt(req.query.start_date, 10)
+      : undefined;
   const end_date =
-    typeof req.query.end_date === 'string' ? parseInt(req.query.end_date, 10) : undefined;
-  // const block_id = typeof req.query.query === 'string' ? parseInt(req.query.block_id, 10) : 0;
+    typeof req.query.end_date === 'string' && parseInt(req.query.end_date, 10) > 0
+      ? parseInt(req.query.end_date, 10)
+      : undefined;
+  const search =
+    typeof req.query.search === 'string' && !isNaN(+req.query.search)
+      ? +req.query.search
+      : undefined;
 
-  if (!address_id || !chain_id || !isAddress(address_id)) {
+  if (!address_id || !chain_id) {
     return res.status(400).json(undefined);
   }
 
+  // TODO: input query (20240227 - Shirley)
   let queryObject;
   try {
     queryObject = req.query.query ? JSON.parse(req.query.query as string) : undefined;
@@ -71,6 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         id: chain_id,
       },
       select: {
+        id: true,
         symbol: true,
         decimals: true,
       },
@@ -78,8 +86,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const skip = page > 0 ? (page - 1) * offset : 0;
 
+    const queries = {
+      created_timestamp: {
+        gte: start_date,
+        lte: end_date,
+      },
+      number: search ? +search : undefined,
+    };
+
     const totalCount = await prisma.blocks.count({
       where: {
+        ...queries,
         miner: address_id,
         chain_id: chain_id,
       },
@@ -87,6 +104,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const blockData = await prisma.blocks.findMany({
       where: {
+        ...queries,
         miner: address_id,
         chain_id: chain_id,
         /* TODO: time range and string query (20240216 - Shirley)

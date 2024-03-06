@@ -61,13 +61,27 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
   const backClickHandler = () => router.back();
 
   const getContractData = async () => {
-    const contractData = await getContractDetail(chainId, contractId);
-    setContractData(contractData);
+    try {
+      const contractData = await getContractDetail(chainId, contractId);
+      setContractData(contractData);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('getContractData error: ', error);
+    }
   };
   const getTransactionHistoryData = async () => {
     setIsLoading(true);
-    const transactionHistoryData = await getContractTransactions(chainId, contractId, apiQueryStr);
-    setTransactionHistoryData(transactionHistoryData);
+    try {
+      const transactionHistoryData = await getContractTransactions(
+        chainId,
+        contractId,
+        apiQueryStr
+      );
+      setTransactionHistoryData(transactionHistoryData);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('getTransactionHistoryData error: ', error);
+    }
     setIsLoading(false);
   };
 

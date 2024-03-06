@@ -25,7 +25,8 @@ const AllCurrenciesPageBody = () => {
         const data = await getCurrencies();
         setCurrenciesData(data);
       } catch (error) {
-        //console.log('getCurrencies error', error);
+        // eslint-disable-next-line no-console
+        console.error('getCurrencies error', error);
       }
     };
 

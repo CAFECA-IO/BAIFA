@@ -36,6 +36,7 @@ const AddressDetail = ({addressData}: IAddressDetailProps) => {
     totalReceived,
   } = addressData;
   const [sinceTime, setSinceTime] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading, loadingRef] = useStateRef(true);
 
   // Info: 用是否有資料被傳進來作為是否還在載入的依據 (20240220 - Shirley)

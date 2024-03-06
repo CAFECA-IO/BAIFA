@@ -60,7 +60,8 @@ const BalanceSheets = ({projectId}: IBalanceSheetsProps) => {
         reportData = result.data as IBalanceSheet;
       }
     } catch (error) {
-      // console.log('Get balance sheet error');
+      // eslint-disable-next-line no-console
+      console.error('Get balance sheet error');
     }
     return reportData;
   };

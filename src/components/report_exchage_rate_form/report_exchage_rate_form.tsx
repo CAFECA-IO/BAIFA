@@ -33,7 +33,8 @@ const ReportExchageRateForm = ({projectId}: IReportExchageRateFormProps) => {
         reportData = result.data as IExchangeRates;
       }
     } catch (error) {
-      // console.log('Get exchange rate error');
+      // eslint-disable-next-line no-console
+      console.error('Get exchange rate error');
     }
     return reportData;
   };

@@ -46,7 +46,8 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
         const data = await getBlockDetail(chainId, blockId);
         setBlockData(data);
       } catch (error) {
-        //console.log('getBlockDetail error', error);
+        // eslint-disable-next-line no-console
+        console.error('getBlockDetail error', error);
       }
     };
 

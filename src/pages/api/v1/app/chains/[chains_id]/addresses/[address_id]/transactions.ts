@@ -1,49 +1,65 @@
 // 023 - GET /app/chains/:chain_id/addresses/:address_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 import {AddressType, IAddressInfo} from '../../../../../../../../interfaces/address_info';
 import {IAddressRelatedTransaction} from '../../../../../../../../interfaces/address';
 import {ITransaction} from '../../../../../../../../interfaces/transaction';
-import {isAddress} from 'web3-validator';
-import {FAILED_TRANSACTION_STATUS_CODE} from '../../../../../../../../constants/config';
+import prisma from '../../../../../../../../../prisma/client';
 
 type ResponseData = IAddressRelatedTransaction | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
   // Info: (20240122 - Julian) 解構 URL 參數，同時進行類型轉換
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
-  const chain_id = typeof req.query.chain_id === 'string' ? req.query.chain_id : undefined;
+  const chain_id =
+    typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
   const order = (req.query.order as string)?.toLowerCase() === 'desc' ? 'desc' : 'asc';
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
   const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
   const start_date =
-    typeof req.query.start_date === 'string' ? parseInt(req.query.start_date, 10) : undefined;
+    typeof req.query.start_date === 'string' && parseInt(req.query.start_date, 10) > 0
+      ? parseInt(req.query.start_date, 10)
+      : undefined;
   const end_date =
-    typeof req.query.end_date === 'string' ? parseInt(req.query.end_date, 10) : undefined;
+    typeof req.query.end_date === 'string' && parseInt(req.query.end_date, 10) > 0
+      ? parseInt(req.query.end_date, 10)
+      : undefined;
+  const search = typeof req.query.search === 'string' ? req.query.search : undefined;
 
-  if (!address_id || !isAddress(address_id)) {
+  if (!address_id || !chain_id) {
     return res.status(400).json(undefined);
   }
 
   try {
     const skip = page > 0 ? (page - 1) * offset : 0;
+    const queries = {
+      related_addresses: {hasSome: [address_id]},
+      created_timestamp: {
+        gte: start_date,
+        lte: end_date,
+      },
+      hash: search ? {contains: search} : undefined,
+    };
     const totalCount = await prisma.transactions.count({
       where: {
-        related_addresses: {hasSome: [address_id]},
-        created_timestamp: {
-          gte: start_date,
-          lte: end_date,
-        },
+        ...queries,
       },
     });
 
     const transactionData = await prisma.transactions.findMany({
-      where: {related_addresses: {hasSome: [address_id]}},
-      orderBy: {
-        id: order,
+      where: {
+        ...queries,
       },
+      orderBy: [
+        {
+          // Info: (20240301 - Shirley) 1. created_timestamp 由 sorting 決定
+          created_timestamp: order,
+        },
+        {
+          // Info: (20240301 - Shirley) 2. id 由小到大
+          id: order,
+        },
+      ],
       take: offset,
       skip: skip,
       select: {
@@ -55,6 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         status: true,
         created_timestamp: true,
         related_addresses: true,
+        hash: true,
       },
     });
 
@@ -70,6 +87,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
+      if (`${transaction.chain_id}` !== `${chain_id}`) {
+        res.status(404).json(undefined);
+      }
       // Info: (20240130 - Julian) from address 轉換
       const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
       const from: IAddressInfo[] = fromAddresses
@@ -102,7 +122,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           .find(code => code.value === parseInt(transaction?.status ?? ''))?.meaning ?? '';
 
       return {
-        id: `${transaction.id}`,
+        id: `${transaction.hash}`,
         chainId: `${transaction.chain_id}`,
         createdTimestamp: transaction.created_timestamp ?? 0,
         from: from,
@@ -128,7 +148,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const responseData: ResponseData = transactionData
       ? {
           id: `${address_id}`,
-          type: AddressType.ADDRESS,
+          type: AddressType.ADDRESS, // Info: transactions of certain address (20240301 - Shirley)
           address: `${address_id}`,
           transactions: transactionHistoryData,
           transactionCount: totalCount,

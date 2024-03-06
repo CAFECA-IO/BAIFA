@@ -101,7 +101,7 @@ export interface IMarketContext {
     chainId: string,
     contractId: string,
     queryStr?: string
-  ) => Promise<ITransaction[]>;
+  ) => Promise<ITransactionHistorySection>;
 
   getCurrencies: () => Promise<ICurrency[]>;
   getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetailString>;
@@ -140,7 +140,7 @@ export const MarketContext = createContext<IMarketContext>({
   getContractDetail: () => Promise.resolve({} as IContractDetail),
   getContractTransactions: () => Promise.resolve({} as ITransactionHistorySection),
   getEvidenceDetail: () => Promise.resolve({} as IEvidenceDetail),
-  getEvidenceTransactions: () => Promise.resolve([] as ITransaction[]),
+  getEvidenceTransactions: () => Promise.resolve({} as ITransactionHistorySection),
   getCurrencies: () => Promise.resolve([] as ICurrency[]),
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetailString),
   getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlagOfCurrency[]),
@@ -221,10 +221,12 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   }, []);
 
   const init = useCallback(async () => {
-    await getPromotion();
-    //await getChains();
-    //await getCurrencies();
-    //await getBlacklist();
+    try {
+      await getPromotion();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('AppProvider init error', error);
+    }
   }, [getPromotion]);
 
   const getSuggestions = useCallback(async (searchInput: string) => {
@@ -235,7 +237,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getSuggestions error', error);
+      // eslint-disable-next-line no-console
+      console.error('getSuggestions error', error);
     }
     return data;
   }, []);
@@ -248,7 +251,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getSearchResult error', error);
+      // eslint-disable-next-line no-console
+      console.error('getSearchResult error', error);
     }
     return data;
   }, []);
@@ -261,7 +265,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getChainDetail error', error);
+      // eslint-disable-next-line no-console
+      console.error('getChainDetail error', error);
     }
     return data;
   }, []);
@@ -278,7 +283,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
           });
       data = await response.json();
     } catch (error) {
-      //console.log('getBlockList error', error);
+      // eslint-disable-next-line no-console
+      console.error('getBlockList error', error);
     }
     return data;
   }, []);
@@ -291,7 +297,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getBlockDetail error', error);
+      // eslint-disable-next-line no-console
+      console.error('getBlockDetail error', error);
     }
     return data;
   }, []);
@@ -320,7 +327,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
           data = await response.json();
         }
       } catch (error) {
-        //console.log('getInteractionTransaction error', error);
+        // eslint-disable-next-line no-console
+        console.error('getInteractionTransaction error', error);
       }
       return data;
     },
@@ -339,7 +347,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
           });
       data = await response.json();
     } catch (error) {
-      //console.log('getTransactionList error', error);
+      // eslint-disable-next-line no-console
+      console.error('getTransactionList error', error);
     }
     return data;
   }, []);
@@ -356,7 +365,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
         );
         data = await response.json();
       } catch (error) {
-        //console.log('getTransactionListOfBlock error', error);
+        // eslint-disable-next-line no-console
+        console.error('getTransactionListOfBlock error', error);
       }
       return data;
     },
@@ -371,7 +381,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getTransactionDetail error', error);
+      // eslint-disable-next-line no-console
+      console.error('getTransactionDetail error', error);
     }
     return data;
   }, []);
@@ -384,7 +395,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getAddressDetail error', error);
+      // eslint-disable-next-line no-console
+      console.error('getAddressDetail error', error);
     }
     return data;
   }, []);
@@ -411,7 +423,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
         );
         data = await response.json();
       } catch (error) {
-        //console.log('getAddressReviewList error', error);
+        // eslint-disable-next-line no-console
+        console.error('getAddressReviewList error', error);
       }
       return data;
     },
@@ -450,7 +463,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
           totalPage: result.totalPage,
         };
       } catch (error) {
-        //console.log('getAddressRelatedTransactions error', error);
+        // eslint-disable-next-line no-console
+        console.error('getAddressRelatedTransactions error', error);
       }
       return data;
     },
@@ -491,7 +505,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
         totalPage: result.totalPage,
       };
     } catch (error) {
-      //console.log('getAddressProducedBlocks error', error);
+      // eslint-disable-next-line no-console
+      console.error('getAddressProducedBlocks error', error);
     }
     return data;
   };
@@ -515,7 +530,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
         );
         data = await response.json();
       } catch (error) {
-        //console.log('getReviews error', error);
+        // eslint-disable-next-line no-console
+        console.error('getReviews error', error);
       }
       return data;
     },
@@ -530,7 +546,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getRedFlagsFromAddress error', error);
+      // eslint-disable-next-line no-console
+      console.error('getRedFlagsFromAddress error', error);
     }
     return data;
   }, []);
@@ -546,7 +563,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       );
       data = await response.json();
     } catch (error) {
-      //console.log('getInteractions error', error);
+      // eslint-disable-next-line no-console
+      console.error('getInteractions error', error);
     }
     return data;
   }, []);
@@ -559,7 +577,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getContractDetail error', error);
+      // eslint-disable-next-line no-console
+      console.error('getContractDetail error', error);
     }
     return data;
   }, []);
@@ -580,7 +599,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
             });
         data = await response.json();
       } catch (error) {
-        //console.log('getContractTransactions error', error);
+        // eslint-disable-next-line no-console
+        console.error('getContractTransactions error', error);
       }
       return data;
     },
@@ -595,14 +615,15 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getEvidenceDetail error', error);
+      // eslint-disable-next-line no-console
+      console.error('getEvidenceDetail error', error);
     }
     return data;
   }, []);
 
   const getEvidenceTransactions = useCallback(
     async (chainId: string, evidenceId: string, queryStr?: string) => {
-      let data: ITransaction[] = [];
+      let data: ITransactionHistorySection = {} as ITransactionHistorySection;
       try {
         const response = queryStr
           ? await fetch(
@@ -616,7 +637,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
             });
         data = await response.json();
       } catch (error) {
-        //console.log('getContractTransactions error', error);
+        // eslint-disable-next-line no-console
+        console.error('getContractTransactions error', error);
       }
       return data;
     },
@@ -631,7 +653,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getChains error', error);
+      // eslint-disable-next-line no-console
+      console.error('getChains error', error);
     }
     return data;
   }, []);
@@ -644,7 +667,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getRedFlagsFromCurrency error', error);
+      // eslint-disable-next-line no-console
+      console.error('getRedFlagsFromCurrency error', error);
     }
     return data;
   }, []);
@@ -657,7 +681,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getAllRedFlags error', error);
+      // eslint-disable-next-line no-console
+      console.error('getAllRedFlags error', error);
     }
     return data;
   }, []);
@@ -670,7 +695,8 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       });
       data = await response.json();
     } catch (error) {
-      //console.log('getRedFlagDetail error', error);
+      // eslint-disable-next-line no-console
+      console.error('getRedFlagDetail error', error);
     }
     return data;
   }, []);

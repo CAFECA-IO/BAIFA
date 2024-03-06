@@ -47,14 +47,14 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
   }, [latestActiveTime]);
 
   return (
-    <div className="flex flex-col items-start border-b border-darkPurple4 px-4 py-2 lg:h-60px lg:flex-row lg:items-center">
+    <div className="flex items-start border-b border-darkPurple4 px-4 py-2 lg:h-60px lg:items-center">
       {/* Info: (20231113 - Julian) Address */}
       <Link href={addressLink} className="flex flex-1 items-center space-x-4">
         <BoltButton className="px-3 py-2 text-sm" style="solid" color="purple">
           {t(tagName)}
           {/* Todo: (20240216 - Liz) tagName尚未有內容，等之後有再調整多語言 */}
         </BoltButton>
-        <div className="flex items-center space-x-2 text-sm lg:text-xl">
+        <div className="inline-flex flex-1 items-center space-x-2 text-sm text-primaryBlue lg:text-xl">
           <Image
             src={chainIcon.src}
             alt={chainIcon.alt}
@@ -62,17 +62,17 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
             height={30}
             onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
           />
-          <p title={address}>
-            {mainTitle}
-            <span className="ml-2 font-semibold text-primaryBlue">
-              {' '}
-              {truncateText(address, DEFAULT_TRUNCATE_LENGTH)}
-            </span>
+          <p
+            title={address}
+            className="w-200px grow overflow-hidden text-ellipsis whitespace-nowrap lg:w-500px"
+          >
+            <span className="text-hoverWhite">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} </span>
+            {address}
           </p>
         </div>
       </Link>
       {/* Info: (20231113 - Julian) Lasted Active Time */}
-      <div className="flex w-full flex-col items-end space-y-1 text-sm lg:w-300px lg:space-y-0">
+      <div className="flex w-30px flex-col items-end space-y-1 text-sm lg:w-300px lg:space-y-0">
         <div className="hidden w-full items-center justify-end space-x-1 text-sm lg:flex">
           <p>{t('BLACKLIST_PAGE.LASTED_ACTIVE_TIME')} :</p>
           <div className="mr-2 flex items-center space-x-2">

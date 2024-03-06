@@ -294,9 +294,11 @@
     "ITEM_SUBTITLE_TRANSACTION": "交易",
     "ITEM_LINE_1_TRANSACTION": "Hash 值",
     "ITEM_LINE_2_TRANSACTION": "交易時間",
-    "ITEM_TITLE_BLACKLIST": "地址",
+    "ITEM_TITLE_BLACKLIST_ADDRESS": "地址",
+    "ITEM_TITLE_BLACKLIST_CONTRACT": "合約",
     "ITEM_SUBTITLE_BLACKLIST": "黑名單",
-    "ITEM_LINE_1_BLACKLIST": "地址",
+    "ITEM_LINE_1_BLACKLIST_ADDRESS": "地址",
+    "ITEM_LINE_1_BLACKLIST_CONTRACT": "合約地址",
     "ITEM_LINE_2_BLACKLIST": "公開標籤",
     "ITEM_TITLE_RED_FLAG": "警示記錄",
     "ITEM_SUBTITLE_RED_FLAG": "警示記錄",
@@ -312,7 +314,8 @@
     "TOOL_TIP_2_EVIDENCE": "證據在區塊鏈上建立日期與時間。",
     "TOOL_TIP_1_TRANSACTION": "交易的唯一識別碼。",
     "TOOL_TIP_2_TRANSACTION": "交易完成的日期與時間。",
-    "TOOL_TIP_1_BLACKLIST": "地址的唯一識別碼。",
+    "TOOL_TIP_1_BLACKLIST_ADDRESS": "地址的唯一識別碼。",
+    "TOOL_TIP_1_BLACKLIST_CONTRACT": "合約的唯一識別碼。",
     "TOOL_TIP_2_BLACKLIST": "地址發生的可疑行為記錄。",
     "TOOL_TIP_1_RED_FLAG": "警示記錄的唯一識別碼。",
     "TOOL_TIP_2_RED_FLAG": "警示記錄的詳細內容。"
@@ -349,7 +352,9 @@
     "POPULAR": "熱門",
     "UNPOPULAR": "冷門",
     "ALL": "全部",
-    "RELEVANCY": "相關性"
+    "RELEVANCY": "相關性",
+    "MOST": "最多",
+    "LEAST": "最少"
   },
   "COMMON": {
     "NONE": "無",

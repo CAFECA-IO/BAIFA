@@ -65,7 +65,8 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
       const data = await getInteractionTransaction(chainId, addressA, addressB, apiQueryStr);
       setTransactionData(data);
     } catch (error) {
-      //console.log('getInteractionTransaction error', error);
+      // eslint-disable-next-line no-console
+      console.error('getInteractionTransaction error', error);
     }
     // Info: (20240223 - Julian) 如果拿到資料，就將 isLoading 設為 false
     setIsLoading(false);

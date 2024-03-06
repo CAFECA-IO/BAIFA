@@ -2,12 +2,7 @@ import {useRef, useState, useEffect} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import LandingFooter from '../landing_footer/landing_footer';
-import {
-  SCROLL_END,
-  massiveDataContent,
-  servicesContent,
-  whyUsContent,
-} from '../../constants/config';
+import {massiveDataContent, servicesContent, whyUsContent} from '../../constants/config';
 import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -15,25 +10,55 @@ import {TranslateFunction} from '../../interfaces/locale';
 const LandingPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const scrl = useRef<HTMLDivElement>(null);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const [isAtScrollStart, setIsAtScrollStart] = useState(true);
+  const [isAtScrollEnd, setIsAtScrollEnd] = useState(false);
 
-  /* Info:(20230815 - Julian) slide X scroll function */
+  const checkScrollPosition = () => {
+    if (!scrl.current) return;
+
+    /* Info: (20240301 - Shirley)
+    `scroll.current.scrollWidth` 是整個 scroll bar 的寬度，元素的總滾動寬度，包括看不見的部分。
+    `scroll.current.scrollLeft` 是目前捲軸的位置，當前元素的水平滾動偏移量，表示元素滾動條的左邊距離元素左邊的距離。改變這個值可以使元素水平滾動。
+    `scroll.current.clientWidth` 個屬性表示元素內部可視區域的寬度，不包括滾動條、邊框和外邊距的寬度。 
+    */
+    const isAtEnd = scrl.current.scrollWidth - scrl.current.scrollLeft <= scrl.current.clientWidth;
+    const isAtStart = scrl.current.scrollLeft === 0;
+    setIsAtScrollEnd(isAtEnd);
+    setIsAtScrollStart(isAtStart);
+  };
+
   const slide = (shift: number) => {
-    if (scrl.current) scrl.current.scrollLeft += shift;
+    if (scrl.current) {
+      scrl.current.scrollLeft += shift;
+      checkScrollPosition();
+    }
   };
 
   useEffect(() => {
-    if (!!!scrl.current) return;
-    /* Info:(20230815 - Julian) 設定監聽事件，將捲軸位置更新到 scrollLeft */
-    const scrollLeft = scrl.current.scrollLeft;
-    const onScroll = () => setScrollLeft(scrollLeft);
-    scrl.current.addEventListener('scroll', onScroll);
-    const currentScrl = scrl.current;
-
-    return () => {
-      if (currentScrl) currentScrl.removeEventListener('scroll', onScroll);
+    const handleScroll = () => {
+      checkScrollPosition();
     };
-  }, [scrollLeft]);
+
+    // Info: 因為 scrl 可能在 useEffect 的 cleanup function 執行後改變，所以複製 scrl.current 為 currentScrl，並用 currentScrl 來設定監聽事件 (20240301 - Shirley)
+    const currentScrl = scrl.current;
+    currentScrl?.addEventListener('scroll', handleScroll);
+
+    return () => currentScrl?.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Deprecated: 用 `isAtScrollStart` 和 `isAtScrollEnd` 來判斷是否到達左右邊界 (20240301 - Shirley)
+  // useEffect(() => {
+  //   if (!!!scrl.current) return;
+  //   /* Info:(20230815 - Julian) 設定監聽事件，將捲軸位置更新到 scrollLeft */
+  //   const scrollLeft = scrl.current.scrollLeft;
+  //   const onScroll = () => setScrollLeft(scrollLeft);
+  //   scrl.current.addEventListener('scroll', onScroll);
+  //   const currentScrl = scrl.current;
+
+  //   return () => {
+  //     if (currentScrl) currentScrl.removeEventListener('scroll', onScroll);
+  //   };
+  // }, [scrollLeft]);
 
   /* Info:(20230815 - Julian) Slide Function */
   const slideLeft = () => slide(-200);
@@ -148,14 +173,14 @@ const LandingPageBody = () => {
             {/* Info:(20230711 - Julian) Arrow button, only show on desktop */}
             <div className="hidden items-center space-x-6 lg:flex">
               <button
-                disabled={scrollLeft <= 0}
+                disabled={isAtScrollStart}
                 onClick={slideLeft}
                 className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:border-primaryBlue hover:text-primaryBlue disabled:opacity-50 disabled:hover:border-hoverWhite disabled:hover:text-hoverWhite"
               >
                 <AiOutlineLeft className="text-2xl" />
               </button>
               <button
-                disabled={scrollLeft >= SCROLL_END}
+                disabled={isAtScrollEnd}
                 onClick={slideRight}
                 className="rounded border border-hoverWhite p-3 text-hoverWhite transition-all duration-150 ease-in-out hover:border-primaryBlue hover:text-primaryBlue disabled:opacity-50 disabled:hover:border-hoverWhite disabled:hover:text-hoverWhite"
               >
