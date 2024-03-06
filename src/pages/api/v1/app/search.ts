@@ -815,9 +815,6 @@ async function searchByType(
   end_date?: number,
   searchId?: number
 ): Promise<ISearchResult[]> {
-  // Function to perform the search based on type and return the formatted results
-  // Implement search logic similar to the original handler but more modular and efficient
-  // Return an array of ISearchResult based on the search type and input
   const resultData: ISearchResult[] = [];
   let stability = StabilityLevel.LOW;
   const whereClause = {
@@ -1587,32 +1584,28 @@ async function countResultsByType(
   end_date?: number,
   searchId?: number
 ): Promise<number> {
-  // Function to count the results based on type and input without actually retrieving all data
-  // Use similar logic to searchByType but for counting
-  // Return the count as a number
   const whereClause = {
     ...(start_date && end_date ? {created_timestamp: {gte: start_date, lte: end_date}} : {}),
   };
 
   switch (type) {
     case SearchType.BLOCK:
-      // Count blocks matching the search input
-      // const searchId = isValid64BitInteger(searchInput) ? parseInt(searchInput, 10) : undefined;
+      // Info: Count blocks matching the search input (20240306 - Shirley)
+      if (!!searchId) {
+        const blocksCount = await prisma.blocks.count({
+          where: {
+            ...whereClause,
+            number: searchId,
+          },
+        });
 
-      const blocksCount = await prisma.blocks.count({
-        where: {
-          ...whereClause,
-          number: searchId,
-        },
-      });
-
-      // eslint-disable-next-line no-console
-      console.log('blockCount', blocksCount);
-      return blocksCount;
-
+        return blocksCount;
+      } else {
+        return 0;
+      }
       break;
     case SearchType.TRANSACTION:
-      // Count transactions matching the search input
+      // Info: Count transactions matching the search input (20240306 - Shirley)
       const transactionsCount = await prisma.transactions.count({
         where: {
           ...whereClause,
@@ -1624,7 +1617,7 @@ async function countResultsByType(
       return transactionsCount;
       break;
     case SearchType.CONTRACT:
-      // Count contracts matching the search input
+      // Info: Count contracts matching the search input (20240306 - Shirley)
       const contractsCount = await prisma.contracts.count({
         where: {
           ...whereClause,
@@ -1636,7 +1629,7 @@ async function countResultsByType(
       return contractsCount;
       break;
     case SearchType.EVIDENCE:
-      // Count evidences matching the search input
+      // Info: Count evidences matching the search input (20240306 - Shirley)
       const evidencesCount = await prisma.evidences.count({
         where: {
           ...whereClause,
@@ -1649,7 +1642,7 @@ async function countResultsByType(
       return evidencesCount;
       break;
     case SearchType.RED_FLAG:
-      // Count red flags matching the search input
+      // Info: Count red flags matching the search input (20240306 - Shirley)
       const redFlagsCount = await prisma.red_flags.count({
         where: {
           ...whereClause,
@@ -1661,7 +1654,7 @@ async function countResultsByType(
       return redFlagsCount;
       break;
     case SearchType.ADDRESS:
-      // Count addresses matching the search input
+      // Info: Count addresses matching the search input (20240306 - Shirley)
       const addressesCount = await prisma.addresses.count({
         where: {
           ...whereClause,
@@ -1673,7 +1666,7 @@ async function countResultsByType(
       return addressesCount;
       break;
     case SearchType.BLACKLIST:
-      // Count blacklisted items matching the search input
+      // Info: Count blacklisted items matching the search input (20240306 - Shirley)
       const blacklistedAddressesCount = await prisma.public_tags.count({
         where: {
           ...whereClause,
@@ -1686,12 +1679,18 @@ async function countResultsByType(
       return blacklistedAddressesCount;
       break;
     default:
-      // Count all types matching the search input
-      const countBlock = await prisma.blocks.count({
-        where: {
-          number: searchId,
-        },
-      });
+      // Info: Count all types matching the search input (20240306 - Shirley)
+      let countBlock = 0;
+      if (!!searchId) {
+        countBlock = await prisma.blocks.count({
+          where: {
+            ...whereClause,
+            number: searchId,
+          },
+        });
+      } else {
+        countBlock = 0;
+      }
 
       const countTx = await prisma.transactions.count({
         where: {
@@ -1754,15 +1753,41 @@ async function countResultsByType(
         },
       });
 
-      return (
+      const totalCount =
         countBlock +
         countTx +
         countContract +
         countEvidence +
         countRedFlag +
         countAddress +
+        countBlacklist;
+
+      // eslint-disable-next-line no-console
+      console.log(
+        'parameters:',
+        'searchInput',
+        searchInput,
+        'searchId',
+        searchId,
+        'totalCount',
+        totalCount,
+        'countBlock',
+        countBlock,
+        'countTx',
+        countTx,
+        'countContract',
+        countContract,
+        'countEvidence',
+        countEvidence,
+        'countRedFlag',
+        countRedFlag,
+        'countAddress',
+        countAddress,
+        'countBlacklist',
         countBlacklist
       );
+
+      return totalCount;
 
       break;
   }
