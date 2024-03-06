@@ -15,11 +15,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const tag = typeof req.query.tag === 'string' ? req.query.tag : undefined;
 
   // Info: (20240305 - Liz) 計算分頁的 skip 與 take
-  const skip = page ? (page - 1) * 10 : undefined; // (今天 - Liz) 跳過前面幾筆
-  const take = 10; // (今天 - Liz) 取幾筆
+  const skip = page ? (page - 1) * 10 : undefined; // Info: (20240306 - Liz) 跳過前面幾筆
+  const take = 10; // Info: (20240306 - Liz) 取幾筆
 
   // Info: (20240305 - Liz) 排序
   const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
+
+  // Info: (20240306 - Liz) tag name 篩選，如果是空字串就搜尋全部
+  const tagName = tag === '' ? undefined : tag;
 
   try {
     // Info: (20240216 - Liz) 從 public_tags table 中取得 tag_type = 9 (黑名單標籤) 的資料為 blacklist，並做條件篩選以及分頁
@@ -27,6 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       where: {
         tag_type: '9', // Info: (20240216 - Liz) 9:黑名單標籤
         target: search ? {contains: search} : undefined, // Info: (20240305 - Liz) 搜尋條件
+        name: tagName, // Info: (20240306 - Liz) 篩選 tag name
       },
       select: {
         id: true,
@@ -59,20 +63,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       distinct: ['name'],
     });
 
-    // Deprecated: (今天 - Liz)
-    // eslint-disable-next-line no-console
-    console.log('uniqueTagNames: ', uniqueTagNames);
-
     // Info: (20240305 - Liz) 用不重複的 tag name 做成下拉式選單的選項
-    const tagNameOptions = uniqueTagNames.map(tag => tag.name);
-
-    // ToDo: (今天 - Liz) 依照 tag name 篩選資料
+    const tagNameOptions = uniqueTagNames.map(tag => tag.name ?? '');
 
     // Info: (20240305 - Liz) 取得 blacklist 總筆數
     const totalBlacklistAmount = await prisma.public_tags.count({
       where: {
         tag_type: '9', // Info: (20240216 - Liz) 9:黑名單標籤
         target: search ? {contains: search} : undefined, // Info: (20240305 - Liz) 搜尋條件
+        name: tagName, // Info: (20240306 - Liz) 篩選 tag name
       },
     });
 
@@ -219,8 +218,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const result = {
       blacklist: blacklistData,
       totalPages,
-      // tagNameOptions,
-      // ToDo: (今天 - Liz) 從 blacklist 中取得所有的 tagName，做成選項給下拉式選單使用
+      tagNameOptions, // Info: (20240306 - Liz) 下拉式選單選項
     };
 
     prisma.$connect();

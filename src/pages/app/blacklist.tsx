@@ -1,8 +1,7 @@
 import Head from 'next/head';
-import {useState, useEffect, useContext, use} from 'react';
+import {useState, useEffect, useContext} from 'react';
 //import {AppContext} from '../../contexts/app_context';
 import {MarketContext} from '../../contexts/market_context';
-// import useStateRef from 'react-usestateref';
 import NavBar from '../../components/nav_bar/nav_bar';
 import Breadcrumb from '../../components/breadcrumb/breadcrumb';
 import SortingMenu from '../../components/sorting_menu/sorting_menu';
@@ -33,47 +32,45 @@ const BlackListPage = () => {
   // Info: (20240305 - Liz) UI
   const [blacklist, setBlacklist] = useState<IBlackListData>();
   const [activePage, setActivePage] = useState<number>(1);
-  // const totalPages = blacklist?.totalPages ?? 0;
-  let totalPages = blacklist?.totalPages ?? 0; // ToDo: (20240305 - Liz) 之後拔掉 filter 改為由 API 處理，改成 const
+  const totalPages = blacklist?.totalPages ?? 0;
 
-  // Info: (20240305 - Liz) Call API to get blacklist data
-  const fetchBlacklist = async () => {
-    try {
-      const data = await getAllBlackList(apiQueryStr);
-      setBlacklist(data);
-    } catch (error) {
-      //console.log('getAllBlackList error', error);
-    }
-  };
+  // Info: (20240306 - Liz) 下拉式選單選項由 API 取得
+  const tagNames = blacklist?.tagNameOptions ?? [];
+  const tagNameOptions = [tagNameOptionDefault, ...tagNames];
 
-  // Info: (20240305 - Liz) 當搜尋條件改變時，將 activePage 設為 1
+  // Info: (20240305 - Liz) 當搜尋或篩選的條件改變時，將 activePage 設為 1。
+  // Info: (20240306 - Liz) 雖然搜尋、篩選、排序都是重新打 API 拿新資料，但是搜尋、篩選的條件改變可能導致資料筆數改變，而 sorting 只是就該頁面的 10 筆資料做排序，所以不需要重設 activePage。
   useEffect(() => {
     setActivePage(1);
-  }, [search]);
+  }, [search, filteredTagName]);
 
-  // Info: (20240305 - Liz) 當 API 查詢參數改變時，重新取得資料
+  // Info: (20240305 - Liz) Call API to get blacklist data
   useEffect(() => {
+    const fetchBlacklist = async () => {
+      try {
+        const data = await getAllBlackList(apiQueryStr);
+        setBlacklist(data);
+      } catch (error) {
+        //console.log('getAllBlackList error', error);
+      }
+    };
+
     fetchBlacklist();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiQueryStr]);
+    // Info: (20240305 - Liz) 當 API 查詢參數改變時，重新取得資料
+  }, [apiQueryStr, getAllBlackList]);
 
   useEffect(() => {
     // Info: (20240305 - Liz) 設定 API 查詢參數
     const pageQuery = `page=${activePage}`;
     const sortQuery = `&sort=${sorting}`;
     const searchQuery = `&search=${search}`;
-    // ToDo: (今天 - Liz) 新增用 tag name 篩選所有資料
-    const tagQuery = `&tag=${filteredTagName}`;
+    const tagQuery =
+      filteredTagName === tagNameOptionDefault ? `&tag=${''}` : `&tag=${filteredTagName}`;
 
-    // Info: (20240305 - Liz) 當搜尋條件改變時，重新取得資料
     setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${tagQuery}`);
   }, [activePage, filteredTagName, search, sorting]);
 
-  // ToDo: (今天 - Liz) 下拉式選單選項改為由 API 取得
-  const tagNames = blacklist?.blacklist?.map(blacklistItem => blacklistItem.tagName) ?? [];
-
-  const tagNameOptions = [tagNameOptionDefault, ...tagNames];
-
+  // Info: (20240306 - Liz) head title and breadcrumb
   const headTitle = `${t('BLACKLIST_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
   const crumbs = [
     {
@@ -86,23 +83,8 @@ const BlackListPage = () => {
     },
   ];
 
-  // ToDo: (今天 - Liz) 用 tag name 篩選資料要改成由 API 處理，這段會移除
-  const result = blacklist?.blacklist.filter(blacklistItem => {
-    // Info: (20240305 - Liz) filter by Tag Select Menu
-    return filteredTagName === tagNameOptionDefault || filteredTagName === blacklistItem.tagName;
-  });
-  const resultLength = result?.length ?? 0;
-  const resultPages = Math.ceil(resultLength / 10);
-
-  if (filteredTagName !== tagNameOptionDefault) {
-    totalPages = resultPages;
-  }
-
   const displayBlacklist =
-    // blacklist?.blacklist?.map((blacklistItem, index) => {
-    //   return <BlacklistItem key={index} blacklistAddress={blacklistItem} />;
-    // }) ?? [];
-    result?.map((blacklistItem, index) => {
+    blacklist?.blacklist?.map((blacklistItem, index) => {
       return <BlacklistItem key={index} blacklistAddress={blacklistItem} />;
     }) ?? [];
 
