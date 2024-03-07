@@ -29,7 +29,6 @@ const ComprehensiveIncomeStatementsNeo = () => {
 
   const startIncomeDate = timestampToString(previousIncomeData?.reportEndTime);
   const endIncomeDate = timestampToString(currentIncomeData?.reportEndTime);
-  const historicalIncomeDate = timestampToString(historicalIncomeData?.reportEndTime);
 
   // Info: (20231002 - Julian) Set scale for mobile view
   const pageRef = useRef<HTMLDivElement>(null);
