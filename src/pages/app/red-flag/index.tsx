@@ -28,7 +28,9 @@ const RedFlagListPage = () => {
   const [filteredFlagName, setFilteredFlagName] = useState<string>(flagNameOptionDefault);
 
   // Info: (20240307 - Liz) API 查詢參數
-  const [apiQueryStr, setApiQueryStr] = useState('');
+  const [apiQueryStr, setApiQueryStr] = useState(
+    `page=1&sort=SORTING.NEWEST&search=&flag=&start_date=0&end_date=0`
+  );
 
   // Info: (20240307 - Liz) UI
   const [redFlagData, setRedFlagData] = useState<IRedFlagPage>();
