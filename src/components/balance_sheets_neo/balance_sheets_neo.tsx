@@ -21,11 +21,11 @@ const BalanceSheetsNeo = () => {
   const contentList = [reportTitle, `Note To ${reportTitle}`];
 
   const [balanceSheetsResponse, setBalanceSheetsResponse] = useState<IBalanceSheetsResponse>();
-  const startBalanceData = balanceSheetsResponse?.thirtyDaysAgoReport;
-  const endBalanceData = balanceSheetsResponse?.currentReport;
+  const previousBalanceData = balanceSheetsResponse?.previousReport;
+  const currentBalanceData = balanceSheetsResponse?.currentReport;
 
-  const startDateStr = timestampToString(startBalanceData?.reportStartTime);
-  const endDateStr = timestampToString(endBalanceData?.reportEndTime);
+  const startDateStr = timestampToString(previousBalanceData?.reportStartTime);
+  const endDateStr = timestampToString(currentBalanceData?.reportEndTime);
 
   // Info: (20231002 - Julian) Set scale for mobile view
   const pageRef = useRef<HTMLDivElement>(null);
@@ -63,7 +63,11 @@ const BalanceSheetsNeo = () => {
   const theadDate = [endDateStr.dateFormatForForm, startDateStr.dateFormatForForm];
 
   // Info: (20230923 - Julian) ------- Main Balance Sheets -------
-  const balance_sheets_p3_1 = createBalanceSheetsTable(theadDate, endBalanceData, startBalanceData);
+  const balance_sheets_p3_1 = createBalanceSheetsTable(
+    theadDate,
+    currentBalanceData,
+    previousBalanceData
+  );
 
   // Info: (20231013 - Julian) ------- User Deposits -------
   // numero: 0. Total, 1. Bitcoin, 2. Ethereum, 3. USDT, 4. USD
@@ -71,8 +75,8 @@ const BalanceSheetsNeo = () => {
   const balance_sheets_p6_1 = createSummaryTable(
     'user deposits',
     theadDate,
-    endBalanceData?.liabilities.details.userDeposit,
-    startBalanceData?.liabilities.details.userDeposit,
+    currentBalanceData?.liabilities.details.userDeposit,
+    previousBalanceData?.liabilities.details.userDeposit,
     numeroOfUserDeposit
   );
 
@@ -81,8 +85,8 @@ const BalanceSheetsNeo = () => {
   const balance_sheets_p7_1 = createCryptocurrencyTable(
     'cryptocurrencies',
     theadDate,
-    endBalanceData?.assets.details.cryptocurrency,
-    startBalanceData?.assets.details.cryptocurrency,
+    currentBalanceData?.assets.details.cryptocurrency,
+    previousBalanceData?.assets.details.cryptocurrency,
     numeroOfCryptocurrencies
   );
   // Info: (20231011 - Julian) ------- Accounts Receivable -------
@@ -96,8 +100,8 @@ const BalanceSheetsNeo = () => {
   const balance_sheets_p8_1 = createCryptocurrencyTable(
     'accounts receivable',
     theadDate,
-    endBalanceData?.assets.details.accountsReceivable,
-    startBalanceData?.assets.details.accountsReceivable,
+    currentBalanceData?.assets.details.accountsReceivable,
+    previousBalanceData?.assets.details.accountsReceivable,
     numeroOfAccountsReceivable
   );
   // Info: (20231011 - Julian) ------- Accounts Payable -------
@@ -105,8 +109,8 @@ const BalanceSheetsNeo = () => {
   const balance_sheets_p9_1 = createSummaryTable(
     'accounts payable',
     theadDate,
-    endBalanceData?.liabilities.details.accountsPayable,
-    startBalanceData?.liabilities.details.accountsPayable,
+    currentBalanceData?.liabilities.details.accountsPayable,
+    previousBalanceData?.liabilities.details.accountsPayable,
     numeroOfAccountsPayable
   );
 
@@ -115,8 +119,8 @@ const BalanceSheetsNeo = () => {
   const balance_sheets_p10_1 = createSummaryTable(
     'retained earnings',
     theadDate,
-    endBalanceData?.equity.details.retainedEarning,
-    startBalanceData?.equity.details.retainedEarning,
+    currentBalanceData?.equity.details.retainedEarning,
+    previousBalanceData?.equity.details.retainedEarning,
     numeroOfRetainedEarnings
   );
 
@@ -131,16 +135,19 @@ const BalanceSheetsNeo = () => {
   const balance_sheets_p11_1 = createSummaryTable(
     'other capital reserve',
     theadDate,
-    endBalanceData?.equity.details.otherCapitalReserve,
-    startBalanceData?.equity.details.otherCapitalReserve,
+    currentBalanceData?.equity.details.otherCapitalReserve,
+    previousBalanceData?.equity.details.otherCapitalReserve,
     numeroOfOtherCapitalReserve
   );
 
   // Info: (20230923 - Julian) ------- Fair Value Measurements -------
-  const balance_sheets_p12_1 = createFairValueTable(endDateStr.dateFormatForForm, endBalanceData);
+  const balance_sheets_p12_1 = createFairValueTable(
+    endDateStr.dateFormatForForm,
+    currentBalanceData
+  );
   const balance_sheets_p13_1 = createFairValueTable(
     startDateStr.dateFormatForForm,
-    startBalanceData
+    previousBalanceData
   );
 
   return (
