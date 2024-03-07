@@ -1,5 +1,5 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IBalanceSheetsResponse} from '../../../../../../../../interfaces/reports';
+import {IBalanceSheetsResponse} from '../../../../../../../../interfaces/balance_sheets_neo';
 
 type ResponseData = IBalanceSheetsResponse | undefined;
 

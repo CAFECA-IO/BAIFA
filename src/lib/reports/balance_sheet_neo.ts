@@ -1,4 +1,8 @@
-import {IBalanceSheetsNeo, ICurrencyDetail, ICryptocurrencyDetail} from '../../interfaces/reports';
+import {
+  IBalanceSheetsNeo,
+  ICurrencyDetail,
+  ICryptocurrencyDetail,
+} from '../../interfaces/balance_sheets_neo';
 import {roundToDecimal} from '../common';
 import {ITable} from '../../interfaces/report_table';
 import {RowType} from '../../constants/table_row_type';

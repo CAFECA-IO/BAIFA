@@ -14,7 +14,7 @@ import ReportCover from '../report_cover/report_cover';
 import ReportPageBody from '../report_page_body/report_page_body';
 import ReportRiskPages from '../report_risk_pages/report_risk_pages';
 import ReportTable from '../report_table/report_table';
-import {IBalanceSheetsResponse} from '../../interfaces/reports';
+import {IBalanceSheetsResponse} from '../../interfaces/balance_sheets_neo';
 
 const BalanceSheetsNeo = () => {
   const reportTitle = BaifaReports.BALANCE_SHEETS;
