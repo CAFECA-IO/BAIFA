@@ -30,7 +30,7 @@ import {
   IAddressRelatedTransaction,
 } from '../interfaces/address';
 import {IReviewDetail, IReviews} from '../interfaces/review';
-import {IRedFlag, IRedFlagDetail, IRedFlagOfCurrency} from '../interfaces/red_flag';
+import {IRedFlag, IRedFlagDetail, IRedFlagOfCurrency, IRedFlagPage} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContractDetail} from '../interfaces/contract';
 import {IEvidenceDetail} from '../interfaces/evidence';
@@ -106,7 +106,7 @@ export interface IMarketContext {
   getCurrencies: () => Promise<ICurrency[]>;
   getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetailString>;
   getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlagOfCurrency[]>;
-  getAllRedFlags: () => Promise<IRedFlag[]>;
+  getAllRedFlags: (queryStr?: string) => Promise<IRedFlagPage>;
   getRedFlagDetail: (redFlagId: string) => Promise<IRedFlagDetail>;
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
   getSuggestions: (searchInput: string) => Promise<ISuggestions>;
@@ -144,7 +144,7 @@ export const MarketContext = createContext<IMarketContext>({
   getCurrencies: () => Promise.resolve([] as ICurrency[]),
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetailString),
   getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlagOfCurrency[]),
-  getAllRedFlags: () => Promise.resolve([] as IRedFlag[]),
+  getAllRedFlags: () => Promise.resolve({} as IRedFlagPage),
   getRedFlagDetail: () => Promise.resolve({} as IRedFlagDetail),
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
   getSuggestions: () => Promise.resolve(defaultSuggestions),
@@ -673,12 +673,17 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
-  const getAllRedFlags = useCallback(async () => {
-    let data: IRedFlag[] = [];
+  const getAllRedFlags = useCallback(async (queryStr?: string) => {
+    let data: IRedFlagPage = {} as IRedFlagPage;
     try {
-      const response = await fetch(`${APIURL.RED_FLAGS}`, {
-        method: 'GET',
-      });
+      const response = queryStr
+        ? await fetch(`${APIURL.RED_FLAGS}?${queryStr}`, {
+            method: 'GET',
+          })
+        : await fetch(`${APIURL.RED_FLAGS}`, {
+            method: 'GET',
+          });
+
       data = await response.json();
     } catch (error) {
       // eslint-disable-next-line no-console

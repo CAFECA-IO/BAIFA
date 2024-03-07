@@ -29,3 +29,10 @@ export interface IRedFlagOfAddress {
   totalPage: number;
   allRedFlagTypes: string[];
 }
+
+export interface IRedFlagPage {
+  redFlagData: IRedFlag[];
+  totalPages: number;
+  allRedFlagTypes: string[];
+  redFlagTypeCodeMeaningObj: {[key: string]: string};
+}
