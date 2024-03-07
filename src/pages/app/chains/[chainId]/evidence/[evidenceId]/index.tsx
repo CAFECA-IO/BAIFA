@@ -2,31 +2,31 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useState, useEffect, useContext} from 'react';
-import {AppContext} from '../../../../../contexts/app_context';
-import {MarketContext} from '../../../../../contexts/market_context';
+import {AppContext} from '../../../../../../contexts/app_context';
+import {MarketContext} from '../../../../../../contexts/market_context';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import NavBar from '../../../../../components/nav_bar/nav_bar';
-import BoltButton from '../../../../../components/bolt_button/bolt_button';
-import EvidenceDetail from '../../../../../components/evidence_detail/evidence_detail';
-import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
-import TransactionHistorySection from '../../../../../components/transaction_history_section/transaction_history_section';
-import Footer from '../../../../../components/footer/footer';
+import NavBar from '../../../../../../components/nav_bar/nav_bar';
+import BoltButton from '../../../../../../components/bolt_button/bolt_button';
+import EvidenceDetail from '../../../../../../components/evidence_detail/evidence_detail';
+import PrivateNoteSection from '../../../../../../components/private_note_section/private_note_section';
+import TransactionHistorySection from '../../../../../../components/transaction_history_section/transaction_history_section';
+import Footer from '../../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../../../interfaces/locale';
-import {getChainIcon, truncateText} from '../../../../../lib/common';
-import {BFAURL} from '../../../../../constants/url';
-import {IEvidenceDetail} from '../../../../../interfaces/evidence';
-import {ITransactionHistorySection} from '../../../../../interfaces/transaction';
+import {TranslateFunction} from '../../../../../../interfaces/locale';
+import {getChainIcon, truncateText} from '../../../../../../lib/common';
+import {BFAURL} from '../../../../../../constants/url';
+import {IEvidenceDetail} from '../../../../../../interfaces/evidence';
+import {ITransactionHistorySection} from '../../../../../../interfaces/transaction';
 import {
   DEFAULT_CHAIN_ICON,
   default30DayPeriod,
   sortOldAndNewOptions,
-} from '../../../../../constants/config';
-import DataNotFound from '../../../../../components/data_not_found/data_not_found';
-import {IDatePeriod} from '../../../../../interfaces/date_period';
+} from '../../../../../../constants/config';
+import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
+import {IDatePeriod} from '../../../../../../interfaces/date_period';
 
 interface IEvidenceDetailDetailPageProps {
   chainId: string;

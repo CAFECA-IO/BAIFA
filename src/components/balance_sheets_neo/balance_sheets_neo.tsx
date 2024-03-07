@@ -16,7 +16,12 @@ import ReportRiskPages from '../report_risk_pages/report_risk_pages';
 import ReportTable from '../report_table/report_table';
 import {IBalanceSheetsResponse} from '../../interfaces/balance_sheets_neo';
 
-const BalanceSheetsNeo = () => {
+interface IBalanceSheetsNeoProps {
+  chainId: string;
+  evidenceId: string;
+}
+
+const BalanceSheetsNeo = ({chainId, evidenceId}: IBalanceSheetsNeoProps) => {
   const reportTitle = BaifaReports.BALANCE_SHEETS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
 
@@ -43,9 +48,12 @@ const BalanceSheetsNeo = () => {
   const getBalanceSheet = async () => {
     let reportData: IBalanceSheetsResponse = {} as IBalanceSheetsResponse;
     try {
-      const response = await fetch(`/api/v1/app/chains/8017/evidence/000/balance_sheet`, {
-        method: 'GET',
-      });
+      const response = await fetch(
+        `/api/v1/app/chains/${chainId}/evidence/${evidenceId}/balance_sheet`,
+        {
+          method: 'GET',
+        }
+      );
       reportData = await response.json();
       setBalanceSheetsResponse(reportData);
     } catch (error) {

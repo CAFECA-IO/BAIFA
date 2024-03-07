@@ -17,7 +17,15 @@ import ReportRiskPages from '../report_risk_pages/report_risk_pages';
 import ReportTable from '../report_table/report_table';
 import {IComprehensiveIncomeResponse} from '../../interfaces/conprehensive_income_neo';
 
-const ComprehensiveIncomeStatementsNeo = () => {
+interface IComprehensiveIncomeStatementsNeoProps {
+  chainId: string;
+  evidenceId: string;
+}
+
+const ComprehensiveIncomeStatementsNeo = ({
+  chainId,
+  evidenceId,
+}: IComprehensiveIncomeStatementsNeoProps) => {
   const reportTitle = BaifaReports.COMPREHENSIVE_INCOME_STATEMENTS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
 
@@ -46,9 +54,12 @@ const ComprehensiveIncomeStatementsNeo = () => {
   const getComprehensiveIncomeStatements = async () => {
     let reportData: IComprehensiveIncomeResponse;
     try {
-      const response = await fetch(`/api/v1/app/chains/8017/evidence/000/comprehensive_income`, {
-        method: 'GET',
-      });
+      const response = await fetch(
+        `/api/v1/app/chains/${chainId}/evidence/${evidenceId}/comprehensive_income`,
+        {
+          method: 'GET',
+        }
+      );
       reportData = await response.json();
       setComprehensiveIncomeResponse(reportData);
     } catch (error) {
