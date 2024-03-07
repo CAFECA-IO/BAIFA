@@ -15,8 +15,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const tag = typeof req.query.tag === 'string' ? req.query.tag : undefined;
 
   // Info: (20240305 - Liz) 計算分頁的 skip 與 take
-  const skip = page ? (page - 1) * 10 : undefined; // Info: (20240306 - Liz) 跳過前面幾筆
-  const take = 10; // Info: (20240306 - Liz) 取幾筆
+  const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240306 - Liz) 跳過前面幾筆
+  const take = ITEM_PER_PAGE; // Info: (20240306 - Liz) 取幾筆
 
   // Info: (20240305 - Liz) 排序
   const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
