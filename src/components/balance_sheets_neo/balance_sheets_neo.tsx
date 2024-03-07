@@ -24,7 +24,7 @@ const BalanceSheetsNeo = () => {
   const previousBalanceData = balanceSheetsResponse?.previousReport;
   const currentBalanceData = balanceSheetsResponse?.currentReport;
 
-  const startDateStr = timestampToString(previousBalanceData?.reportStartTime);
+  const startDateStr = timestampToString(previousBalanceData?.reportEndTime);
   const endDateStr = timestampToString(currentBalanceData?.reportEndTime);
 
   // Info: (20231002 - Julian) Set scale for mobile view
