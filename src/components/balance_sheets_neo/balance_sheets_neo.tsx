@@ -46,8 +46,8 @@ const BalanceSheetsNeo = () => {
       const response = await fetch(`/api/v1/app/chains/8017/evidence/000/balance_sheet`, {
         method: 'GET',
       });
-      const data = await response.json();
-      setBalanceSheetsResponse(data);
+      reportData = await response.json();
+      setBalanceSheetsResponse(reportData);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Get balance sheet error');
