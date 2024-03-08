@@ -87,19 +87,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       [key: string]: string;
     } = {};
     riskLevelCodeMeaning.forEach(code => {
-      const codeValue = code.value ? `${code.value}` : '';
-      riskLevelCodeMeaningObj[codeValue] = code.meaning ?? '';
+      riskLevelCodeMeaningObj[`${code.value}`] = code.meaning ?? 'Unknown Risk Level';
     });
 
-    const currenciesData = currencies.map(currencies => {
+    const currenciesData = currencies.map(currency => {
       // Info: (20240223 - Liz) 將資料庫傳來的 risk_level 轉換成對應的 meaning
-      const riskLevel = currencies?.risk_level
-        ? riskLevelCodeMeaningObj[currencies.risk_level]
+      const riskLevel = currency.risk_level
+        ? riskLevelCodeMeaningObj[currency.risk_level]
         : 'Unknown Risk Level';
 
       return {
-        currencyId: currencies.id,
-        currencyName: `${currencies.name}`,
+        currencyId: currency.id,
+        currencyName: `${currency.name}`,
         rank: 0, // ToDo: (20240125 - Julian) 討論去留
         riskLevel: riskLevel,
       };
