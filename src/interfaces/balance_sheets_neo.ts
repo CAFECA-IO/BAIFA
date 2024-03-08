@@ -86,5 +86,5 @@ export interface IBalanceSheetsNeo {
 
 export interface IBalanceSheetsResponse {
   currentReport: IBalanceSheetsNeo;
-  thirtyDaysAgoReport: IBalanceSheetsNeo;
+  previousReport: IBalanceSheetsNeo;
 }

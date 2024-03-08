@@ -1,5 +1,5 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IBalanceSheetsResponse} from '../../../../../../../../interfaces/reports';
+import {IBalanceSheetsResponse} from '../../../../../../../../interfaces/balance_sheets_neo';
 
 type ResponseData = IBalanceSheetsResponse | undefined;
 
@@ -161,7 +161,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const result: IBalanceSheetsResponse = {
     currentReport: reports,
-    thirtyDaysAgoReport: reports,
+    previousReport: reports,
   };
 
   return res.status(200).json(result);
