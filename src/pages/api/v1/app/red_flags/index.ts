@@ -1,14 +1,13 @@
 // 021 - GET /app/red_flags
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../prisma/client';
 import {IRedFlagPage} from '../../../../../interfaces/red_flag';
 import {ITEM_PER_PAGE} from '../../../../../constants/config';
 
 type ResponseData = IRedFlagPage | string;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
   // Info: (20240307 - Liz) query string
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
   const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
