@@ -80,7 +80,7 @@ const ReviewItem = (review: ReviewItemProps) => {
                 title={authorAddress}
                 className="text-primaryBlue underline underline-offset-2"
               >
-                {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}{' '}
+                {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')}{' '}
                 {truncateText(authorAddress, DEFAULT_TRUNCATE_LENGTH)}
               </Link>
             </>

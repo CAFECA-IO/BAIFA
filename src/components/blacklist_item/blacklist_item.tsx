@@ -27,8 +27,8 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
   // Info: (20240305 - Liz) mainTitle 是根據 targetType 決定，只有兩種可能，contract 或 address
   const mainTitle =
     {
-      'contract': t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_CONTRACT'),
-      'address': t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS'),
+      'contract': t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS_CONTRACT'),
+      'address': t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS_ADDRESS'),
     }[targetType] || '';
 
   useEffect(() => {

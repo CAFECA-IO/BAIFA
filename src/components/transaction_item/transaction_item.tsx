@@ -39,16 +39,18 @@ const TransactionItem = ({transaction}: ITransactionItemProps) => {
         {/* Info: (20230907 - Julian) Transaction ID (hash) & Type */}
         <Link
           href={transactionLink}
-          className="inline-flex flex-1 items-baseline space-x-2 text-primaryBlue"
+          className="inline-flex flex-1 items-baseline space-x-2 text-sm text-primaryBlue lg:text-xl"
         >
+          <p className="hidden text-hoverWhite lg:block">
+            {t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')}{' '}
+          </p>
           <h2
             title={id}
-            className="w-200px grow overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:w-500px lg:text-xl"
+            className="w-100px grow space-x-2 overflow-hidden text-ellipsis whitespace-nowrap lg:w-500px"
           >
-            <span className="text-hoverWhite">{t('CHAIN_DETAIL_PAGE.TRANSACTIONS_TAB')} </span>
             {id}
           </h2>
-          <p className="hidden w-120px whitespace-nowrap text-sm text-lilac lg:block">
+          <p className="w-100px whitespace-nowrap text-xs text-lilac lg:w-120px lg:text-sm">
             {' '}
             - {t(typeStr)}
           </p>

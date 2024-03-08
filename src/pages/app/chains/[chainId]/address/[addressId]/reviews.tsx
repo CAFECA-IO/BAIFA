@@ -69,7 +69,7 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
   }, [sorting]);
 
   const headTitle = `${t('REVIEWS_PAGE.TITLE')} ${t('COMMON.OF')} ${t(
-    'ADDRESS_DETAIL_PAGE.MAIN_TITLE'
+    'ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS'
   )} ${addressId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
@@ -113,7 +113,7 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
                     onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
                   />
                   <p className="text-xl" title={addressId}>
-                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}{' '}
+                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')}{' '}
                     {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
                   </p>
                 </div>
