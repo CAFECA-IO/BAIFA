@@ -67,7 +67,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
   const displayCreator = isShow ? (
     <Link href={addressLink} title={creatorAddressId}>
       <BoltButton className="px-3 py-1" color="blue" style="solid">
-        {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}{' '}
+        {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')}{' '}
         {truncateText(creatorAddressId, DEFAULT_TRUNCATE_LENGTH)}
       </BoltButton>
     </Link>

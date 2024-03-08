@@ -141,7 +141,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
           onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
         />
         <h2 title={addressId[0]} className="text-sm lg:text-xl">
-          {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
+          {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')}
           <span className="text-primaryBlue">
             {' '}
             {truncateText(addressId[0], DEFAULT_TRUNCATE_LENGTH)}
@@ -158,7 +158,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
           onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
         />
         <h2 title={addressId[1]} className="text-sm lg:text-xl">
-          {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
+          {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')}
           <span className="text-primaryBlue">
             {' '}
             {truncateText(addressId[1], DEFAULT_TRUNCATE_LENGTH)}

@@ -43,7 +43,7 @@ const typeOptions = [
   },
   {
     queryString: 'address',
-    text: 'ADDRESS_DETAIL_PAGE.MAIN_TITLE',
+    text: 'ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS',
   },
   {
     queryString: 'contract',
@@ -53,13 +53,13 @@ const typeOptions = [
 
 const textToQueryOptionsMap = {
   'SORTING.ALL': 'all',
-  'ADDRESS_DETAIL_PAGE.MAIN_TITLE': 'address',
+  'ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS': 'address',
   'CONTRACT_DETAIL_PAGE.MAIN_TITLE': 'contract',
 };
 
 const queryToTextOptionsMap = {
   all: 'SORTING.ALL',
-  address: 'ADDRESS_DETAIL_PAGE.MAIN_TITLE',
+  address: 'ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS',
   contract: 'CONTRACT_DETAIL_PAGE.MAIN_TITLE',
 };
 
@@ -129,7 +129,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   // const {type} = router.query;
   const headTitle = `${t('INTERACTION_LIST_PAGE.MAIN_TITLE_HIGHLIGHT')}${t(
     'INTERACTION_LIST_PAGE.MAIN_TITLE'
-  )} ${t('COMMON.OF')} ${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
+  )} ${t('COMMON.OF')} ${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')} ${addressId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
   // const selectedType = type
@@ -285,7 +285,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
                 onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
               />
               <p className="overflow-hidden text-ellipsis" title={addressId}>
-                {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')}
+                {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')}
                 <span> {addressId}</span>
               </p>
             </div>

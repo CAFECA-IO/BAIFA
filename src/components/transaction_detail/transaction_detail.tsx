@@ -104,7 +104,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
 
         const fromText =
           data.type === 'address'
-            ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')
+            ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')
             : t('CONTRACT_DETAIL_PAGE.MAIN_TITLE');
         return (
           <Link href={fromLink} key={index} title={data.address}>
@@ -130,7 +130,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
 
         const toText =
           data.type === 'address'
-            ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')
+            ? t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')
             : t('CONTRACT_DETAIL_PAGE.MAIN_TITLE');
         return (
           <Link href={toLink} key={index} title={data.address}>

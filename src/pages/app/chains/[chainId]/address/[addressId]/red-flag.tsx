@@ -40,7 +40,7 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
   const {page} = router.query;
 
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} ${t('COMMON.OF')} ${t(
-    'ADDRESS_DETAIL_PAGE.MAIN_TITLE'
+    'ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS'
   )} ${addressId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
@@ -97,7 +97,7 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
             onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
           />
           <p title={addressId} className="overflow-hidden text-ellipsis">
-            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} {addressId}
+            {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')} {addressId}
           </p>{' '}
         </div>
       ) : (
