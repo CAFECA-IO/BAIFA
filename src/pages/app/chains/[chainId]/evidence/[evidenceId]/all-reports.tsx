@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import BalanceSheetsNeo from '../../../../../../components/balance_sheets_neo/balance_sheets_neo';
-import StatementsOfCashFlow from '../../../../../../components/statements_of_cash_flow/statements_of_cash_flow';
 import ComprehensiveIncomeStatementsNeo from '../../../../../../components/comprehensive_income_statements_neo/comprehensive_income_statements_neo';
+import StatementsOfCashFlowNeo from '../../../../../../components/statements_of_cash_flow_neo/statements_of_cash_flow_neo';
 
 interface IAllReportsPageProps {
   chainId: string;
@@ -25,7 +25,7 @@ const AllReportsPage = ({chainId, evidenceId}: IAllReportsPageProps) => {
         {/* Info: (20240202 - Julian) Income Statements */}
         <ComprehensiveIncomeStatementsNeo chainId={chainId} evidenceId={evidenceId} />
         {/* Info: (20240202 - Julian) Statements of Cash Flow */}
-        <StatementsOfCashFlow projectId={evidenceId} />
+        <StatementsOfCashFlowNeo chainId={chainId} evidenceId={evidenceId} />
       </div>
     </>
   );
@@ -35,7 +35,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [
       {
-        params: {projectId: '1'},
+        params: {chainId: 'isun', evidenceId: '1'},
       },
     ],
     fallback: 'blocking',
