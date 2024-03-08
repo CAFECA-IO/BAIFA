@@ -1,14 +1,13 @@
 // 014 - GET /app/chains/:chain_id/addresses/:address_id/interactions?type=address
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../../../lib/utils/prismaUtils';
 import {IInteractionItem} from '../../../../../../../../interfaces/interaction_item';
 import {AddressType} from '../../../../../../../../interfaces/address_info';
+import prisma from '../../../../../../../../../prisma/client';
 
 type ResponseData = IInteractionItem[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;

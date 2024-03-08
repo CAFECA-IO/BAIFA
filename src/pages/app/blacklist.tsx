@@ -2,14 +2,13 @@ import Head from 'next/head';
 import {useState, useEffect, useContext} from 'react';
 //import {AppContext} from '../../contexts/app_context';
 import {MarketContext} from '../../contexts/market_context';
-import useStateRef from 'react-usestateref';
 import NavBar from '../../components/nav_bar/nav_bar';
 import Breadcrumb from '../../components/breadcrumb/breadcrumb';
 import SortingMenu from '../../components/sorting_menu/sorting_menu';
 import Pagination from '../../components/pagination/pagination';
 import SearchBar from '../../components/search_bar/search_bar';
 import BlacklistItem from '../../components/blacklist_item/blacklist_item';
-import {IBlackList} from '../../interfaces/blacklist';
+import {IBlackListData} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ILocale, TranslateFunction} from '../../interfaces/locale';
@@ -21,37 +20,57 @@ const BlackListPage = () => {
   //const appCtx = useContext(AppContext);
   const {getAllBlackList} = useContext(MarketContext);
 
-  const [blacklist, setBlacklist] = useState<IBlackList[]>([]);
+  // Info: (20240305 - Liz) 搜尋條件
+  const [search, setSearch] = useState('');
+  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+  const tagNameOptionDefault = 'SORTING.ALL';
+  const [filteredTagName, setFilteredTagName] = useState<string>(tagNameOptionDefault);
 
+  // Info: (20240305 - Liz) API 查詢參數
+  const [apiQueryStr, setApiQueryStr] = useState('page=1&sort=SORTING.NEWEST&search=&tag=');
+
+  // Info: (20240305 - Liz) UI
+  const [blacklist, setBlacklist] = useState<IBlackListData>();
+  const [activePage, setActivePage] = useState<number>(1);
+  const totalPages = blacklist?.totalPages ?? 0;
+
+  // Info: (20240306 - Liz) 下拉式選單選項由 API 取得
+  const tagNames = blacklist?.tagNameOptions ?? [];
+  const tagNameOptions = [tagNameOptionDefault, ...tagNames];
+
+  // Info: (20240305 - Liz) 當搜尋或篩選的條件改變時，將 activePage 設為 1。
+  // Info: (20240306 - Liz) 雖然搜尋、篩選、排序都是重新打 API 拿新資料，但是搜尋、篩選的條件改變可能導致資料筆數改變，而 sorting 只是就該頁面的 10 筆資料做排序，所以不需要重設 activePage。
+  useEffect(() => {
+    setActivePage(1);
+  }, [search, filteredTagName]);
+
+  // Info: (20240305 - Liz) Call API to get blacklist data
   useEffect(() => {
     const fetchBlacklist = async () => {
       try {
-        const data = await getAllBlackList();
+        const data = await getAllBlackList(apiQueryStr);
         setBlacklist(data);
       } catch (error) {
         //console.log('getAllBlackList error', error);
       }
     };
+
     fetchBlacklist();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Info: (20240305 - Liz) 當 API 查詢參數改變時，重新取得資料
+  }, [apiQueryStr, getAllBlackList]);
 
-  // Info: (20240216 - Liz) 從 blacklist 中取得所有的 tagName，做成選項給下拉式選單使用
-  const tagNames = new Set(blacklist.map(BlacklistItem => BlacklistItem.tagName));
-  const tagNameOptions = ['SORTING.ALL', ...Array.from(tagNames)];
+  useEffect(() => {
+    // Info: (20240305 - Liz) 設定 API 查詢參數
+    const pageQuery = `page=${activePage}`;
+    const sortQuery = `&sort=${sorting}`;
+    const searchQuery = `&search=${search}`;
+    const tagQuery =
+      filteredTagName === tagNameOptionDefault ? `&tag=${''}` : `&tag=${filteredTagName}`;
 
-  // Info: (20231113 - Julian) Page State
-  const [activePage, setActivePage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+    setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${tagQuery}`);
+  }, [activePage, filteredTagName, search, sorting]);
 
-  // Info: (20231113 - Julian) Filter State
-  const [search, setSearch, searchRef] = useStateRef('');
-  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [filteredTagName, setFilteredTagName] = useState<string>(tagNameOptions[0]);
-
-  // Info: (20231113 - Julian) Blacklist State
-  const [filteredBlacklist, setFilteredBlacklist] = useState<IBlackList[]>(blacklist);
-
+  // Info: (20240306 - Liz) head title and breadcrumb
   const headTitle = `${t('BLACKLIST_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
   const crumbs = [
     {
@@ -64,36 +83,10 @@ const BlackListPage = () => {
     },
   ];
 
-  useEffect(() => {
-    const result = blacklist
-      .filter(blacklistItem => {
-        // Info: (20231113 - Julian) filter by Search bar
-        const searchTerm = searchRef.current.toLowerCase();
-        return searchTerm !== '' ? blacklistItem.address.includes(searchTerm) : true;
-      })
-      .filter(blacklistItem => {
-        // Info: (20231113 - Julian) filter by Tag Select Menu
-        return filteredTagName === 'SORTING.ALL' ? true : blacklistItem.tagName === filteredTagName;
-      })
-      .sort(
-        // Info: (20231113 - Julian) sort by Sorting Menu
-        (a, b) => {
-          const aTimestamp = a.latestActiveTime;
-          const bTimestamp = b.latestActiveTime;
-          return sorting === sortOldAndNewOptions[0]
-            ? bTimestamp - aTimestamp
-            : aTimestamp - bTimestamp;
-        }
-      );
-
-    setFilteredBlacklist(result);
-    setTotalPages(Math.ceil(result.length / 10));
-    setActivePage(1);
-  }, [search, filteredTagName, sorting, blacklist, searchRef]);
-
-  const displayBlacklist = filteredBlacklist.slice(0, 10).map((blacklistItem, index) => {
-    return <BlacklistItem key={index} blacklistAddress={blacklistItem} />;
-  });
+  const displayBlacklist =
+    blacklist?.blacklist?.map((blacklistItem, index) => {
+      return <BlacklistItem key={index} blacklistAddress={blacklistItem} />;
+    }) ?? [];
 
   return (
     <>

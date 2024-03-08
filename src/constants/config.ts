@@ -230,3 +230,10 @@ export const THRESHOLD_FOR_ADDRESS_RISK_LEVEL = {
   MEDIUM: 10,
   LOW: 10,
 };
+
+// Info: Documents/BFA/db_schema 寫定的 public_tags table 的 tag_type 欄位，因為不需要從 codes table 動態對照，所以先寫 static object 以利後續維護 (20240301 - Shirley)
+export const PUBLIC_TAGS_REFERENCE = {
+  TAG_TYPE: {
+    BLACKLIST: '9',
+  },
+};

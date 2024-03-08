@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect, Dispatch, SetStateAction} from 'react';
 import useStateRef from 'react-usestateref';
-import SearchBar from '../search_bar/search_bar';
+import {SearchBarWithKeyDown} from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
@@ -17,78 +17,52 @@ import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 import DatePicker from '../date_picker/date_picker';
 import {IProductionBlock} from '../../interfaces/block';
-import {SortingType} from '../../constants/api_request';
-import {AddressDetailsContext} from '../../contexts/address_details_context';
 import {SkeletonList} from '../skeleton/skeleton';
+import {IDatePeriod} from '../../interfaces/date_period';
 
 interface IBlockProducedHistorySectionProps {
   blocks: IProductionBlock[];
-  totalBlocks: number;
+  blockCount: number; // Info: (20240301 - Shirley) The count of blocks
+
+  period?: IDatePeriod;
+  setPeriod?: Dispatch<SetStateAction<IDatePeriod>>;
+  sorting?: string;
+  setSorting?: Dispatch<SetStateAction<string>>;
+
+  setSearch?: Dispatch<SetStateAction<string>>;
+  activePage?: number;
+  setActivePage?: Dispatch<SetStateAction<number>>;
+  isLoading?: boolean;
+  totalPages?: number;
 }
 
-const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
+const BlockProducedHistorySection = ({
+  blocks,
+  blockCount: blockCount,
+  totalPages,
+  period,
+  setPeriod,
+  sorting,
+  setSorting,
+  setSearch,
+  activePage,
+  setActivePage,
+  isLoading,
+}: IBlockProducedHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const addressDetailsCtx = useContext(AddressDetailsContext);
 
-  const [activePage, setActivePage, activePageRef] = useStateRef(1);
-  const [totalPages, setTotalPages] = useState(
-    Math.ceil(addressDetailsCtx.producedBlocks.totalPage)
-  );
+  const [activePageDefault, setActivePageDefault] = useStateRef(1);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [filteredBlocks, setFilteredBlocks, filteredBlocksRef] = useStateRef<IProductionBlock[]>(
-    addressDetailsCtx.producedBlocks.blockData
-  );
-  const [search, setSearch, searchRef] = useStateRef('');
-  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [period, setPeriod] = useState(default30DayPeriod);
+  const [searchDefault, setSearchDefault, searchRefDefault] = useStateRef('');
+  const [sortingDefault, setSortingDefault] = useState<string>(sortOldAndNewOptions[0]);
+  const [periodDefault, setPeriodDefault] = useState(default30DayPeriod);
 
-  useEffect(() => {
-    const searchResult = [...addressDetailsCtx.producedBlocks.blockData]; // Info: (20231103 - Julian) filter by search term
-    /* TODO: (20240207 - Shirley) filter by search term
-    // .filter((block: IProductionBlock) => {
-    //   const searchTerm = searchRef.current.toLowerCase();
-    //   const stability = block.stability.toLowerCase();
-
-    //   return searchTerm !== ''
-    //     ? block.id.toString().includes(searchTerm) || stability.includes(searchTerm)
-    //     : true;
-    // })
-    // // Info: (20231103 - Julian) filter by date range
-    // .filter((block: IProductionBlock) => {
-    //   const createdTimestamp = block.createdTimestamp;
-    //   const start = period.startTimeStamp;
-    //   const end = period.endTimeStamp;
-    //   // Info: (20231103 - Julian) if start and end are 0, it means that there is no period filter
-    //   const isCreatedTimestampInRange =
-    //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-    //   return isCreatedTimestampInRange;
-    // })
-    // .sort((a: IProductionBlock, b: IProductionBlock) => {
-    //   return sorting === sortOldAndNewOptions[0]
-    //     ? // Info: (20231101 - Julian) Newest
-    //       b.createdTimestamp - a.createdTimestamp
-    //     : // Info: (20231101 - Julian) Oldest
-    //       a.createdTimestamp - b.createdTimestamp;
-    // });
-    
-    // setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
-    // TODO: 在 input 作為 API query 時可能會用到 (20240216 - Shirley) 
-    // setActivePage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-
-    */
-    setFilteredBlocks(prev => searchResult);
-    setTotalPages(addressDetailsCtx.producedBlocks.totalPage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addressDetailsCtx.producedBlocks, search, sorting, period]);
-
-  // Info: (20240103 - Julian) The count of blocks
-  const blockCount = addressDetailsCtx.producedBlocks.blockCount;
+  const isLoadingDefault = isLoading ?? false;
 
   // Info: (20231103 - Julian) Pagination
   const blockList =
-    filteredBlocksRef.current.length > 0
-      ? filteredBlocksRef.current.map(block => {
+    blocks.length > 0
+      ? blocks.map(block => {
           const {id, chainId, createdTimestamp, reward, unit} = block;
           const chainIcon = getChainIcon(chainId);
 
@@ -138,28 +112,8 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
       : [];
 
   const displayedBlocks = (
-    <>{addressDetailsCtx.blocksLoading ? <SkeletonList count={ITEM_PER_PAGE} /> : blockList}</>
+    <>{isLoadingDefault ? <SkeletonList count={ITEM_PER_PAGE} /> : blockList}</>
   );
-
-  const blockPaginationHandler = async ({page, offset}: {page: number; offset: number}) => {
-    await addressDetailsCtx.clickBlockPagination({
-      page,
-      offset: offset,
-      order: addressDetailsCtx.blocksOrder,
-    });
-  };
-
-  const blockSortingHandler = async ({order}: {order: SortingType}) => {
-    addressDetailsCtx.clickBlockSortingMenu(order);
-  };
-
-  const blockDateFilterHandler = async (start: number, end: number) => {
-    addressDetailsCtx.clickBlockDatePicker(start, end);
-  };
-
-  const blockInit = async () => {
-    await addressDetailsCtx.blockInit();
-  };
 
   return (
     <div className="flex w-full flex-col space-y-4">
@@ -175,43 +129,48 @@ const BlockProducedHistorySection = ({}: IBlockProducedHistorySectionProps) => {
             <div className="flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
               <DatePicker
-                period={period}
-                setFilteredPeriod={setPeriod}
+                period={period ?? periodDefault}
+                setFilteredPeriod={setPeriod ?? setPeriodDefault}
                 isLinearBg
-                loading={addressDetailsCtx.blocksLoading}
-                datePickerHandler={blockDateFilterHandler}
+                // loading={addressDetailsCtx.blocksLoading}
+                // datePickerHandler={blockDateFilterHandler}
               />
             </div>
             {/* Info: (20231103 - Julian) Sorting Menu */}
             <div className="relative flex w-full flex-col items-start space-y-2 text-base lg:w-fit">
               <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
               <SortingMenu
-                sorting={sorting}
-                setSorting={setSorting}
+                sorting={sorting ?? sortingDefault}
+                setSorting={setSorting ?? setSortingDefault}
                 bgColor="bg-purpleLinear"
-                sortingHandler={blockSortingHandler}
+                // sortingHandler={blockSortingHandler}
                 sortingOptions={sortOldAndNewOptions}
-                loading={addressDetailsCtx.blocksLoading}
+                // loading={addressDetailsCtx.blocksLoading}
                 sortPrefix={`blocks`}
               />
             </div>
           </div>
           {/* Info: (20231103 - Julian) Search Bar */}
-          <SearchBar
+          {/* <SearchBar
             searchBarPlaceholder={t('COMMON.BLOCK_PRODUCED_HISTORY_PLACEHOLDER')}
-            setSearch={setSearch}
-          />
+            setSearch={setSearch ?? setSearchDefault}
+          /> */}
+
+          {SearchBarWithKeyDown({
+            searchBarPlaceholder: t('COMMON.BLOCK_PRODUCED_HISTORY_PLACEHOLDER'),
+            setSearch: setSearch ?? setSearchDefault,
+          })}
         </div>
         {/* Info: (20231103 - Julian) Address List */}
         <div className="my-10 flex w-full flex-1 flex-col">{displayedBlocks}</div>
         <Pagination
-          activePage={activePage}
-          setActivePage={setActivePage}
-          totalPages={totalPages}
-          paginationClickHandler={blockPaginationHandler}
-          loading={addressDetailsCtx.blocksLoading}
+          activePage={activePage ?? activePageDefault}
+          setActivePage={setActivePage ?? setActivePageDefault}
+          totalPages={totalPages ?? 0}
+          // paginationClickHandler={blockPaginationHandler}
+          // loading={addressDetailsCtx.blocksLoading}
           pagePrefix={`blocks`}
-          pageInit={blockInit}
+          // pageInit={blockInit}
         />
       </div>
     </div>

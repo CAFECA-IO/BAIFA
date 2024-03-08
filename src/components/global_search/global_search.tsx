@@ -37,9 +37,13 @@ const GlobalSearch = ({
     setComponentVisible: setSuggestionVisible,
   } = useOuterClick<HTMLInputElement>(false);
 
-  const {data, isLoading, error} = useAPIResponse<ISuggestions>(`${APIURL.SEARCH_SUGGESTIONS}`, {
-    search_input: inputValueRef.current,
-  });
+  const {data, isLoading, error} = useAPIResponse<ISuggestions>(
+    `${APIURL.SEARCH_SUGGESTIONS}`,
+    {
+      search_input: inputValueRef.current,
+    },
+    true
+  );
 
   // Info: (20231212 - Julian) focus 搜尋欄位時，顯示搜尋建議
   const handleInputFocus = () => setSuggestionVisible(true);

@@ -19,6 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
+  // Info: (20240131 - Liz) 從 codes table 中取得所有 code 資料
   const codes = await prisma.codes.findMany({
     select: {
       value: true,
