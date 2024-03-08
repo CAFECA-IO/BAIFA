@@ -34,7 +34,7 @@ import {IRedFlag, IRedFlagDetail, IRedFlagOfCurrency} from '../interfaces/red_fl
 import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContractDetail} from '../interfaces/contract';
 import {IEvidenceDetail} from '../interfaces/evidence';
-import {ICurrency, ICurrencyDetailString} from '../interfaces/currency';
+import {ICurrency, ICurrencyDetailString, ICurrencyListPage} from '../interfaces/currency';
 import {IBlackList, IBlackListData} from '../interfaces/blacklist';
 
 export interface IMarketProvider {
@@ -103,7 +103,7 @@ export interface IMarketContext {
     queryStr?: string
   ) => Promise<ITransactionHistorySection>;
 
-  getCurrencies: () => Promise<ICurrency[]>;
+  getCurrencies: (queryStr?: string) => Promise<ICurrencyListPage>;
   getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetailString>;
   getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlagOfCurrency[]>;
   getAllRedFlags: () => Promise<IRedFlag[]>;
@@ -141,7 +141,7 @@ export const MarketContext = createContext<IMarketContext>({
   getContractTransactions: () => Promise.resolve({} as ITransactionHistorySection),
   getEvidenceDetail: () => Promise.resolve({} as IEvidenceDetail),
   getEvidenceTransactions: () => Promise.resolve({} as ITransactionHistorySection),
-  getCurrencies: () => Promise.resolve([] as ICurrency[]),
+  getCurrencies: () => Promise.resolve({} as ICurrencyListPage),
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetailString),
   getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlagOfCurrency[]),
   getAllRedFlags: () => Promise.resolve([] as IRedFlag[]),
@@ -188,12 +188,17 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
-  const getCurrencies = useCallback(async () => {
-    let data: ICurrency[] = [];
+  const getCurrencies = useCallback(async (queryStr?: string) => {
+    let data: ICurrencyListPage = {} as ICurrencyListPage;
     try {
-      const response = await fetch(`${APIURL.CURRENCIES}`, {
-        method: 'GET',
-      });
+      const response = queryStr
+        ? await fetch(`${APIURL.CURRENCIES}?${queryStr}`, {
+            method: 'GET',
+          })
+        : await fetch(`${APIURL.CURRENCIES}`, {
+            method: 'GET',
+          });
+
       data = await response.json();
     } catch (error) {
       //console.log('getCurrencies error', error);

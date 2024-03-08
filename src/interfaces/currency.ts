@@ -17,6 +17,14 @@ export interface ICurrency {
   rank: number;
   riskLevel: string;
 }
+
+export interface ICurrencyListPage {
+  currencies: ICurrency[];
+  totalPages: number;
+  currencyTypes: string[];
+  // currencyTypeCodeMeaningObj: {[key: string]: string};
+}
+
 export interface ICurrencyDetail extends ICurrency {
   price: number;
   volumeIn24h: number;

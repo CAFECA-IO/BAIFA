@@ -6,23 +6,55 @@ import CurrencyItem from '../currency_item/currency_item';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
-import {ICurrency} from '../../interfaces/currency';
+import {ICurrencyListPage} from '../../interfaces/currency';
 import Pagination from '../pagination/pagination';
-import {ITEM_PER_PAGE} from '../../constants/config';
 import SearchBar from '../search_bar/search_bar';
-import useStateRef from 'react-usestateref';
 import SortingMenu from '../sorting_menu/sorting_menu';
 
 const AllCurrenciesPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {getCurrencies} = useContext(MarketContext);
 
-  const [currenciesData, setCurrenciesData] = useState<ICurrency[]>([]);
+  // Info: (20240308 - Liz) 搜尋條件
+  const [search, setSearch] = useState('');
 
+  const sortingOptions = ['A to Z', 'Z to A']; // Info: (20240125 - Julian) 暫時以字母排序
+
+  // Info: (20240308 - Liz) 如果是選擇 A ot Z, API req 參數 sort=asc, 如果是選擇 Z to A, API 參數 sort=desc
+  const [sorting, setSorting] = useState(sortingOptions[0]);
+
+  const sortingMap = {
+    [sortingOptions[0]]: 'asc',
+    [sortingOptions[1]]: 'desc',
+  };
+  const sortingReq = sortingMap[sorting];
+
+  const typeOptionDefault = 'SORTING.ALL';
+  const [filteredType, setFilteredType] = useState(typeOptionDefault);
+
+  // Info: (20240308 - Liz) API 查詢參數
+  const [apiQueryStr, setApiQueryStr] = useState(`page=1&sort=asc&search=&type=`);
+
+  // Info: (20240308 - Liz) UI
+  const [currenciesData, setCurrenciesData] = useState<ICurrencyListPage>();
+  const [activePage, setActivePage] = useState<number>(1);
+  // Info: (20240308 - Liz) 從 API 取得總頁數
+  const totalPages = currenciesData?.totalPages ?? 0;
+
+  // Info: (20240308 - Liz) 下拉式選單選項(貨幣種類選項)由 API 回傳
+  const currencyTypes = currenciesData?.currencyTypes ?? [];
+  const typeOptions = [typeOptionDefault, ...currencyTypes];
+
+  // Info: (20240308 - Liz) 當搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
+  useEffect(() => {
+    setActivePage(1);
+  }, [search, filteredType, sorting]);
+
+  // Info: (20240308 - Liz) Call API to get currencies data
   useEffect(() => {
     const fetchCurrencies = async () => {
       try {
-        const data = await getCurrencies();
+        const data = await getCurrencies(apiQueryStr);
         setCurrenciesData(data);
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -31,19 +63,32 @@ const AllCurrenciesPageBody = () => {
     };
 
     fetchCurrencies();
-  }, [getCurrencies]);
+    // Info: (20240308 - Liz) 當 API 查詢參數改變時，重新取得資料
+  }, [apiQueryStr, getCurrencies]);
 
-  // Info: (20240226) 貨幣種類選項
-  const currencyTypes = currenciesData.map(currency => currency.currencyName);
-  const typeOptions = ['SORTING.ALL', ...currencyTypes];
+  // Info: (20240305 - Liz) 設定 API 查詢參數
+  useEffect(() => {
+    const pageQuery = `page=${activePage}`;
+    const sortQuery = `&sort=${sortingReq}`;
+    const searchQuery = `&search=${search}`;
+    const typeQuery = filteredType === typeOptionDefault ? `&type=${''}` : `&type=${filteredType}`;
 
-  const sortingOptions = ['A to Z', 'Z to A']; // Info: (20240125 - Julian) 暫時以字母排序
+    setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${typeQuery}`);
+  }, [activePage, filteredType, search, sortingReq]);
 
-  const [search, setSearch, searchRef] = useStateRef('');
+  // Info: (20240308 - Liz) 顯示貨幣列表
+  const displayCurrenciesList =
+    currenciesData?.currencies?.map((currency, index) => (
+      <CurrencyItem
+        key={index}
+        currencyId={currency.currencyId}
+        currencyName={currency.currencyName}
+        rank={index + 1} // Info: (20240126 - Julian) DB 並沒有 rank，所以暫時用 index + 1 代替
+        riskLevel={currency.riskLevel}
+      />
+    )) ?? [];
 
-  const [filteredType, setFilteredType] = useState(typeOptions[0]);
-  const [sorting, setSorting] = useState(sortingOptions[0]);
-
+  // Info: (20240308 - Liz) Breadcrumb
   const crumbs = [
     {
       label: t('HOME_PAGE.BREADCRUMB_TITLE'),
@@ -54,53 +99,6 @@ const AllCurrenciesPageBody = () => {
       path: BFAURL.CURRENCIES,
     },
   ];
-
-  const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(currenciesData.length / ITEM_PER_PAGE));
-
-  const endIdx = activePage * ITEM_PER_PAGE;
-  const startIdx = endIdx - ITEM_PER_PAGE;
-
-  useEffect(() => {
-    setActivePage(1);
-    setTotalPages(Math.ceil(currenciesData.length / ITEM_PER_PAGE));
-  }, [currenciesData]);
-
-  const searchResult = currenciesData
-    .filter(currency => {
-      const currencyId = currency.currencyId.toString().toLowerCase();
-      const currencyNameLc = currency.currencyName.toLowerCase();
-      const searchTerm = searchRef.current.toLowerCase();
-      const currencyName = currency.currencyName;
-
-      // Info: (20240226) 根據搜尋條件篩選
-      const matchesSearchTerm =
-        searchTerm === '' || currencyId.includes(searchTerm) || currencyNameLc.includes(searchTerm);
-
-      // Info: (20240226) 根據貨幣種類的選擇做篩選
-      const isAllCurrencies = filteredType === typeOptions[0];
-      const matchesCurrency = isAllCurrencies || currencyName === filteredType;
-
-      return matchesSearchTerm && matchesCurrency;
-    })
-    .sort((a, b) => {
-      // Info: (20240226) 按照字母排序
-      return sorting === sortingOptions[0]
-        ? a.currencyName.localeCompare(b.currencyName)
-        : b.currencyName.localeCompare(a.currencyName);
-    });
-
-  const displayCurrenciesList = searchResult
-    .map((currency, index) => (
-      <CurrencyItem
-        key={index}
-        currencyId={currency.currencyId}
-        currencyName={currency.currencyName}
-        rank={index + 1} // Info: (20240126 - Julian) DB 並沒有 rank，所以暫時用 index + 1 代替
-        riskLevel={currency.riskLevel}
-      />
-    ))
-    .slice(startIdx, endIdx); // Info: (20240226) 依照分頁切段
 
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
