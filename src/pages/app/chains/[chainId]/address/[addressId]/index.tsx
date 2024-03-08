@@ -76,7 +76,7 @@ const AddressDetailSectionSkeleton = () => {
           <p>{t('ADDRESS_DETAIL_PAGE.ADDRESS_ID')}</p>
           <Tooltip>{t('ADDRESS_DETAIL_PAGE.ADDRESS_TOOLTIP')}</Tooltip>
         </div>
-        <Skeleton width={400} height={20} />
+        <Skeleton width={300} height={20} />
       </div>
       {/* Info: (20231017 - Julian) Sign Up time */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
@@ -251,7 +251,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
   const {publicTag, score} = addressBriefData ?? ({} as IAddressBrief);
 
-  const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} ${addressId} - BAIFA`;
+  const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')} ${addressId} - BAIFA`;
 
   const chainIcon = getChainIcon(chainId);
 
@@ -287,14 +287,16 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const displayPublicTag = isAddressBriefLoading ? (
     <Skeleton width={150} height={40} />
   ) : publicTag ? (
-    publicTag.map((tag, index) => (
-      <div
-        key={index}
-        className="whitespace-nowrap rounded border border-hoverWhite px-4 py-2 text-sm font-bold"
-      >
-        {t(tag)}
-      </div>
-    ))
+    <div className="grid grid-cols-2 gap-2 lg:grid-cols-6">
+      {publicTag.map((tag, index) => (
+        <div
+          key={index}
+          className="whitespace-nowrap rounded border border-hoverWhite px-4 py-2 text-sm font-bold"
+        >
+          {t(tag)}
+        </div>
+      ))}
+    </div>
   ) : (
     <></>
   );
@@ -318,7 +320,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
           title={addressId}
           className="grow overflow-hidden text-ellipsis whitespace-nowrap text-2xl font-bold lg:text-32px"
         >
-          <span className="text-hoverWhite">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE')} </span>
+          <span className="text-hoverWhite">{t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')} </span>
           {addressId}
         </h1>
       </div>
@@ -398,13 +400,13 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     <>
       <div className="my-4 flex w-full flex-col items-center space-y-10">
         {/* Info: (20231018 - Julian) Public Tag */}
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center text-base font-bold text-lilac">
+        <div className="flex items-center justify-center space-x-4">
+          <div className="flex items-center whitespace-nowrap text-base font-bold text-lilac">
             {t('PUBLIC_TAG.TITLE')}&nbsp;
             <Tooltip>{t('ADDRESS_DETAIL_PAGE.PUBLIC_TAG_TOOLTIP')} </Tooltip>
             &nbsp;:
           </div>
-          <div className="">{displayPublicTag}</div>
+          {displayPublicTag}
         </div>
         <div className="flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-6 lg:space-y-0">
           {/* Info: (20231018 - Julian) Tracing Tool Button */}
@@ -445,12 +447,10 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       </div>
       {/* Info: (20231020 - Julian) Review Section */}
       <div className="mt-6 w-full">{displayedReviewSection}</div>
-      {/* Info: (20231103 - Julian) Transaction History & Block Produced History */}
-      <div className="my-10 flex w-full flex-col gap-14 lg:flex-row lg:items-start lg:gap-2">
-        {displayedTransactionHistory}
-        {displayedBlockProducedHistory}
-      </div>
-
+      {/* Info: (20240308 - Julian) Transaction History */}
+      <div className="mt-6 w-full">{displayedTransactionHistory}</div>
+      {/* Info: (20240308 - Julian) Block Produced History */}
+      <div className="mt-6 w-full">{displayedBlockProducedHistory}</div>
       {/* Info: (20231006 - Julian) Back button */}
       <div className="mt-10">
         <BoltButton
