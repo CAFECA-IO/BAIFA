@@ -2,16 +2,24 @@ import {useEffect, useState} from 'react';
 import {timestampToString, roundToDecimal} from '../../lib/common';
 import {IExchangeRatesResponse} from '../../interfaces/exchange_rates_neo';
 
-const ReportExchageRateFormNeo = () => {
+interface IReportExchageRateFormNeoProps {
+  chainId: string;
+  evidenceId: string;
+}
+
+const ReportExchageRateFormNeo = ({chainId, evidenceId}: IReportExchageRateFormNeoProps) => {
   const colStyle = 'border-darkPurple3 border py-3px';
   const [exchangeRatesData, setExchangeRatesData] = useState<IExchangeRatesResponse>();
 
   const getExchangeRate = async () => {
     let reportData: IExchangeRatesResponse;
     try {
-      const response = await fetch(`/api/v1/app/chains/8017/evidence/000/exchange-rates`, {
-        method: 'GET',
-      });
+      const response = await fetch(
+        `/api/v1/app/chains/${chainId}/evidence/${evidenceId}/exchange-rates`,
+        {
+          method: 'GET',
+        }
+      );
       reportData = await response.json();
       setExchangeRatesData(reportData);
     } catch (error) {

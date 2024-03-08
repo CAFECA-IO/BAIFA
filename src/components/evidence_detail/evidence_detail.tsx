@@ -8,7 +8,7 @@ import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {timestampToString, truncateText} from '../../lib/common';
 import {IEvidenceDetail} from '../../interfaces/evidence';
 import {EvidenceState, DefaultEvidenceState} from '../../constants/state';
-import {BFA_EVIDENCE_CONTENT_URL, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 import Skeleton from '../skeleton/skeleton';
 
 interface IEvidenceDetailProps {
@@ -33,6 +33,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
   }, [evidenceData]);
 
   const addressLink = getDynamicUrl(chainId, `${creatorAddressId}`).ADDRESS;
+  const reportLink = `/app/chains/${chainId}/evidence/${evidenceData.id}/all-reports`;
 
   const displayHash = isShow ? (
     <p className="max-w-550px break-all text-sm lg:text-base">{evidenceAddress}</p>
@@ -91,7 +92,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
     state === 'public' ? (
       <div className="w-full">
         {/* Info: (20240202 - Julian) Reports */}
-        <iframe src={BFA_EVIDENCE_CONTENT_URL} className="h-200px w-full lg:h-600px" />
+        <iframe src={reportLink} className="h-200px w-full lg:h-600px" />
       </div>
     ) : (
       /* ToDo: (20230911 - Julian) log in button */

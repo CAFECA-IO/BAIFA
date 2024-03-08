@@ -10,9 +10,6 @@ export const BFA_API_VERSION = 'v1';
 export const DEFAULT_CHAIN_ICON = '/chains/default_chain.svg';
 export const DEFAULT_CURRENCY_ICON = '/currencies/default_currency.svg';
 
-// ToDo: (20240202 - Julian) Reports API
-export const BFA_EVIDENCE_CONTENT_URL = '/reports/BFA/all-reports';
-
 export const DEFAULT_TRUNCATE_LENGTH = 10;
 
 export const MONTH_LIST = [

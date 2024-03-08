@@ -43,7 +43,6 @@ import {
   convertStringToSortingType,
   getChainIcon,
   roundToDecimal,
-  truncateText,
 } from '../../../../../../lib/common';
 import {ITransaction, ITransactionHistorySection} from '../../../../../../interfaces/transaction';
 import {isAddress} from 'web3-validator';
