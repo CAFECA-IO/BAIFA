@@ -28,14 +28,12 @@ import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu'
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_REVIEWS_COUNT_IN_PAGE,
-  DEFAULT_TRUNCATE_LENGTH,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
 import {
   convertStringToSortingType,
   getChainIcon,
   roundToDecimal,
-  truncateText,
 } from '../../../../../../lib/common';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 import {isAddress} from 'web3-validator';

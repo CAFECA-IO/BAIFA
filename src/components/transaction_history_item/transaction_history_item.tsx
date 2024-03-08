@@ -2,10 +2,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {timestampToString, truncateText} from '../../lib/common';
+import {timestampToString} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
 import {DefaultTransactionStatus, TransactionStatus} from '../../constants/transaction_status';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 import {IDisplayTransaction} from '../../interfaces/transaction';
 
 interface ITransactionHistoryItemProps {

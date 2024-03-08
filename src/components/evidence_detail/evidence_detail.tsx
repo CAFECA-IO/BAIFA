@@ -33,7 +33,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
   }, [evidenceData]);
 
   const addressLink = getDynamicUrl(chainId, `${creatorAddressId}`).ADDRESS;
-  const reportLink = `/reports/${evidenceAddress}/all-reports`;
+  const reportLink = `/app/chains/${chainId}/evidence/${evidenceData.id}/all-reports`;
 
   const displayHash = isShow ? (
     <p className="max-w-550px break-all text-sm lg:text-base">{evidenceAddress}</p>

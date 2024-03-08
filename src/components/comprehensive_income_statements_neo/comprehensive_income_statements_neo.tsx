@@ -566,7 +566,7 @@ const ComprehensiveIncomeStatementsNeo = ({
               The table represents the exchange rates at 00:00 in the UTC+0 time zone. The exchange
               rates are used in revenue recognization.
             </p>
-            <ReportExchageRateFormNeo />
+            <ReportExchageRateFormNeo chainId={chainId} evidenceId={evidenceId} />
           </div>
         </ReportPageBody>
         <hr className="break-before-page" />
