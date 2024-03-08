@@ -27,7 +27,7 @@ const BlackListPage = () => {
   const [filteredTagName, setFilteredTagName] = useState<string>(tagNameOptionDefault);
 
   // Info: (20240305 - Liz) API 查詢參數
-  const [apiQueryStr, setApiQueryStr] = useState('');
+  const [apiQueryStr, setApiQueryStr] = useState('page=1&sort=SORTING.NEWEST&search=&tag=');
 
   // Info: (20240305 - Liz) UI
   const [blacklist, setBlacklist] = useState<IBlackListData>();
