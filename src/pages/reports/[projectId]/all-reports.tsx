@@ -1,9 +1,9 @@
 import Head from 'next/head';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import BalanceSheets from '../../../components/balance_sheets/balance_sheets';
+//import BalanceSheets from '../../../components/balance_sheets/balance_sheets';
+import BalanceSheetsNeo from '../../../components/balance_sheets_neo/balance_sheets_neo';
 import ComprehensiveIncomeStatements from '../../../components/comprehensive_income_statements/comprehensive_income_statements';
 import StatementsOfCashFlow from '../../../components/statements_of_cash_flow/statements_of_cash_flow';
-import {BaifaReports} from '../../../constants/baifa_reports';
 
 interface IAllReportsPageProps {
   projectId: string;
@@ -22,7 +22,8 @@ const AllReportsPage = ({projectId}: IAllReportsPageProps) => {
 
       <div>
         {/* Info: (20240202 - Julian) Balance Sheets */}
-        <BalanceSheets projectId={projectId} />
+        {/* <BalanceSheets projectId={projectId} /> */}
+        <BalanceSheetsNeo />
         {/* Info: (20240202 - Julian) Income Statements */}
         <ComprehensiveIncomeStatements projectId={projectId} />
         {/* Info: (20240202 - Julian) Statements of Cash Flow */}

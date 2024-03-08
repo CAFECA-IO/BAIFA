@@ -17,8 +17,8 @@ import {twMerge} from 'tailwind-merge';
 import {AddressType} from '../interfaces/address_info';
 import {IRiskLevel, RiskLevel} from '../constants/risk_level';
 
-export const timestampToString = (timestamp: number) => {
-  if (timestamp === 0)
+export const timestampToString = (timestamp: number | undefined) => {
+  if (timestamp === 0 || timestamp === undefined || timestamp === null)
     return {
       date: '-',
       dateOfLastYear: '-',
