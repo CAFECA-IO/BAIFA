@@ -1,52 +1,105 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect} from 'react';
-import useStateRef from 'react-usestateref';
+import {useState, useEffect, useContext} from 'react';
+// import useStateRef from 'react-usestateref';
 import SearchBar from '../search_bar/search_bar';
 import BoltButton from '../bolt_button/bolt_button';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 import {DEFAULT_CURRENCY_ICON, ITEM_PER_PAGE} from '../../constants/config';
 import {getCurrencyIcon} from '../../lib/common';
-import {ICurrencyDetailString, IHolder} from '../../interfaces/currency';
+import {ICurrencyDetailString, IHolder, ITop100Holders} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
+import {MarketContext} from '../../contexts/market_context';
 
 interface ITop100HolderSectionProps {
-  currencyData: ICurrencyDetailString;
+  chainId: string;
+  currencyId: string;
+  holderCount: number;
+  unit: string;
+  // decimal: number;
+  // totalAmountRaw: string;
+  // holders: IHolder[];
 }
 
-const Top100HolderSection = ({currencyData}: ITop100HolderSectionProps) => {
+const Top100HolderSection = ({
+  chainId,
+  currencyId,
+  holderCount,
+  // decimal,
+  // totalAmountRaw,
+  // holders,
+  unit,
+}: ITop100HolderSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {holders, holderCount, unit, chainId, currencyId} = currencyData;
 
+  const {getCurrencyTop100Holders} = useContext(MarketContext);
+
+  // Info: (今天 - Liz) 搜尋條件
+  const [search, setSearch] = useState('');
+
+  // Info: (今天 - Liz) API 查詢參數
+  const [apiQueryStr, setApiQueryStr] = useState('page=1&search=');
+
+  // Info: (今天 - Liz) UI
   const currencyIcon = getCurrencyIcon(currencyId);
-
+  const [top100HoldersData, setTop100HoldersData] = useState<ITop100Holders>({} as ITop100Holders);
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(holderCount / ITEM_PER_PAGE));
-  const [filteredHolderData, setFilteredHolderData] = useState<IHolder[]>(holders);
-  const [search, setSearch, searchRef] = useStateRef('');
+  const totalPages = top100HoldersData.totalPages ?? 0; // ToDo: (今天 - Liz) 從 API 取得總頁數
 
+  // ToDo: (今天 - Liz) Pagination 要改為從後端計算並直接回傳 10 筆資料 這裡會刪除----------------
+  // const [totalPages, setTotalPages] = useState(Math.ceil(holderCount / ITEM_PER_PAGE));
+  const [filteredHolderData, setFilteredHolderData] = useState<IHolder[]>([]);
+  // const [search, setSearch] = useState('');
   const endIdx = activePage * ITEM_PER_PAGE;
   const startIdx = endIdx - ITEM_PER_PAGE;
+  // ------------------------------------------------
 
+  // Info: (今天 - Liz) Call API to get Top 100 Holders data
   useEffect(() => {
-    const searchResult = holders.filter(holder => {
-      // Info: (20231101 - Julian) filter by search term
-      const searchTerm = searchRef.current.toLowerCase();
-      const addressId = holder.addressId.toString().toLowerCase();
-      const publicTag = holder.publicTag
-        ? holder.publicTag.map(tag => tag.toLowerCase()).join(',')
-        : '';
-      return searchTerm !== ''
-        ? addressId.includes(searchTerm) || publicTag.includes(searchTerm)
-        : true;
-    });
+    const fetchHolderData = async () => {
+      try {
+        const data = await getCurrencyTop100Holders(currencyId, apiQueryStr);
+        setTop100HoldersData(data);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('get Top 100 Holders data error', error);
+      }
+    };
+
+    fetchHolderData();
+  }, [apiQueryStr, currencyId, getCurrencyTop100Holders]);
+
+  // Info: (今天 - Liz) 設定 API 查詢參數
+  useEffect(() => {
+    const pageQuery = `page=${activePage}`;
+    const searchQuery = `&search=${search}`;
+
+    setApiQueryStr(`${pageQuery}${searchQuery}`);
+  }, [activePage, search]);
+
+  // ToDo: (今天 - Liz) Pagination 要改為從後端計算並直接回傳 10 筆資料 這裡會刪除----------
+  useEffect(() => {
+    const holdersData = top100HoldersData.holdersData ?? [];
+
+    const searchResult =
+      holdersData.filter(holder => {
+        // Info: (20231101 - Julian) filter by search term
+        const searchTerm = search.toLowerCase();
+        const addressId = holder.addressId.toString().toLowerCase();
+        const publicTag = holder.publicTag
+          ? holder.publicTag.map(tag => tag.toLowerCase()).join(',')
+          : '';
+        return searchTerm !== ''
+          ? addressId.includes(searchTerm) || publicTag.includes(searchTerm)
+          : true;
+      }) ?? [];
 
     setFilteredHolderData(searchResult);
-    setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search]);
+    // setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
+  }, [search, top100HoldersData.holdersData]);
+  // ------------------------------------------------
 
   const holderList = filteredHolderData
     // Info: (20231102 - Julian) Pagination

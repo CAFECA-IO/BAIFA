@@ -45,6 +45,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
       try {
         const data = await getCurrencyDetail(currencyId);
         setCurrencyData(data);
+        setIsLoading(false);
       } catch (error) {
         //console.log('getBlockDetail error', error);
       }
@@ -54,14 +55,15 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (currencyData.holders && currencyData.transactionHistoryData) {
-      setCurrencyData(currencyData);
-      setIsLoading(false);
-    } else {
-      setIsLoading(true);
-    }
-  }, [currencyData]);
+  // ToDo: (今天 - Liz) Loading
+  // useEffect(() => {
+  //   if (currencyData.holders && currencyData.transactionHistoryData) {
+  //     setCurrencyData(currencyData);
+  //     setIsLoading(false);
+  //   } else {
+  //     setIsLoading(true);
+  //   }
+  // }, [currencyData]);
 
   const {currencyName, transactionHistoryData} = currencyData;
   const headTitle = `${currencyName} - BAIFA`;
@@ -90,19 +92,53 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     </div>
   );
 
+  // const displayedCurrencyDetail = <CurrencyDetail currencyData={currencyData} />;
   const displayedCurrencyDetail = !isLoading ? (
     <CurrencyDetail currencyData={currencyData} />
   ) : (
     // ToDo: (20231103 - Julian) Add loading animation
     <h1>Loading...</h1>
   );
-  const displayedTop100Holder = !isLoading ? (
-    <Top100HolderSection currencyData={currencyData} />
-  ) : (
-    // ToDo: (20231103 - Julian) Add loading animation
-    <h1>Loading...</h1>
+
+  const holderCount = currencyData.holderCount;
+  const unit = currencyData.unit;
+  const chainId = currencyData.chainId;
+  // const holders = currencyData.holders;
+  // const decimal = currencyData.decimal;
+  // const totalAmountRaw = currencyData.totalAmount;
+  // ToDo: (今天 - Liz) Top100HolderSection 只要傳入需要用的參數就好 holders 要另外再打 API 拿
+  const displayedTop100Holder = (
+    <Top100HolderSection
+      chainId={chainId}
+      currencyId={currencyId}
+      holderCount={holderCount}
+      unit={unit}
+      // decimal={decimal}
+      // totalAmountRaw={totalAmountRaw}
+      // holders={holders}
+    />
   );
 
+  // const displayedTop100Holder = !isLoading ? (
+  //   <Top100HolderSection
+  //     // currencyData={currencyData}
+  //     chainId={chainId}
+  //     currencyId={currencyId}
+  //     holderCount={holderCount}
+  //     unit={unit}
+  //     decimal={decimal}
+  //     totalAmountRaw={totalAmountRaw}
+  //     holders={holders}
+  //   />
+  // ) : (
+  //   // ToDo: (20231103 - Julian) Add loading animation
+  //   <h1>Loading...</h1>
+  // );
+
+  // ToDo: (今天 - Liz) transactionHistoryData 只要傳入需要用的參數就好 transactionHistoryData 要另外再打 API 拿
+  // const displayedTransactionHistory = (
+  //   <TransactionHistorySection transactions={transactionHistoryData} />
+  // );
   const displayedTransactionHistory = !isLoading ? (
     <TransactionHistorySection transactions={transactionHistoryData} />
   ) : (

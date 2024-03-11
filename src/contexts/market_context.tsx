@@ -34,7 +34,13 @@ import {IRedFlag, IRedFlagDetail, IRedFlagOfCurrency, IRedFlagPage} from '../int
 import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContractDetail} from '../interfaces/contract';
 import {IEvidenceDetail} from '../interfaces/evidence';
-import {ICurrency, ICurrencyDetailString, ICurrencyListPage} from '../interfaces/currency';
+import {
+  ICurrency,
+  ICurrencyDetailString,
+  ICurrencyListPage,
+  IHolder,
+  ITop100Holders,
+} from '../interfaces/currency';
 import {IBlackList, IBlackListData} from '../interfaces/blacklist';
 
 export interface IMarketProvider {
@@ -105,6 +111,7 @@ export interface IMarketContext {
 
   getCurrencies: (queryStr?: string) => Promise<ICurrencyListPage>;
   getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetailString>;
+  getCurrencyTop100Holders: (currencyId: string, queryStr?: string) => Promise<ITop100Holders>;
   getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlagOfCurrency[]>;
   getAllRedFlags: (queryStr?: string) => Promise<IRedFlagPage>;
   getRedFlagDetail: (redFlagId: string) => Promise<IRedFlagDetail>;
@@ -143,6 +150,7 @@ export const MarketContext = createContext<IMarketContext>({
   getEvidenceTransactions: () => Promise.resolve({} as ITransactionHistorySection),
   getCurrencies: () => Promise.resolve({} as ICurrencyListPage),
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetailString),
+  getCurrencyTop100Holders: () => Promise.resolve({} as ITop100Holders),
   getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlagOfCurrency[]),
   getAllRedFlags: () => Promise.resolve({} as IRedFlagPage),
   getRedFlagDetail: () => Promise.resolve({} as IRedFlagDetail),
@@ -664,6 +672,24 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
+  const getCurrencyTop100Holders = useCallback(async (currencyId: string, queryStr?: string) => {
+    let data: ITop100Holders = {} as ITop100Holders;
+    try {
+      const response = queryStr
+        ? await fetch(`${APIURL.CURRENCIES}/${currencyId}/top100Holders?${queryStr}`, {
+            method: 'GET',
+          })
+        : await fetch(`${APIURL.CURRENCIES}/${currencyId}/top100Holders`, {
+            method: 'GET',
+          });
+      data = await response.json();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('getCurrencyTop100Holders error', error);
+    }
+    return data;
+  }, []);
+
   const getRedFlagsFromCurrency = useCallback(async (currencyId: string) => {
     let data: IRedFlagOfCurrency[] = [];
     try {
@@ -741,6 +767,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getEvidenceTransactions,
     getCurrencies,
     getCurrencyDetail,
+    getCurrencyTop100Holders,
     getRedFlagsFromCurrency,
     getAllRedFlags,
     getRedFlagDetail,
