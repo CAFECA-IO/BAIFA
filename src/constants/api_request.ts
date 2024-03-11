@@ -12,11 +12,15 @@ export type IAPIName =
   | 'CHAINS';
 
 export enum SortingType {
+  TIME = 'time',
+}
+
+export enum TimeSortingType {
   ASC = 'asc',
   DESC = 'desc',
 }
 export interface IPaginationOptions {
-  order: SortingType.ASC | SortingType.DESC;
+  sort: TimeSortingType.ASC | TimeSortingType.DESC;
   page: number;
   offset: number;
 }

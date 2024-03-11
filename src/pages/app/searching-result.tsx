@@ -143,7 +143,7 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
       search_input: searchTextRef.current,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
       end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
-      order: convertStringToSortingType(sorting),
+      sort: convertStringToSortingType(sorting),
       page: activePage,
       offset: ITEM_PER_PAGE,
       type: filterTabsToSearchType.get(activeTab) ?? SearchType.ALL,

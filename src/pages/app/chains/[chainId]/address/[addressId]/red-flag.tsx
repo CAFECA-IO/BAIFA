@@ -59,7 +59,7 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
       end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
-      order: convertStringToSortingType(sorting),
+      sort: convertStringToSortingType(sorting),
       page: activePage,
       offset: ITEM_PER_PAGE,
       type: filteredType === 'SORTING.ALL' ? '' : filteredType,

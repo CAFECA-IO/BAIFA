@@ -53,7 +53,6 @@ import {
 } from '../../../../../../contexts/address_details_context';
 import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
-import useAPIWorker from '../../../../../../lib/hooks/use_api_worker';
 import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
@@ -216,7 +215,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   } = useAPIResponse<IReviewDetail[]>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/review_list`,
     {method: HttpMethod.GET},
-    {order: convertStringToSortingType(reviewSorting)}
+    {sort: convertStringToSortingType(reviewSorting)}
   );
 
   const {
@@ -229,7 +228,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       method: HttpMethod.GET,
     },
     {
-      order: convertStringToSortingType(transactionSorting),
+      sort: convertStringToSortingType(transactionSorting),
       page: transactionActivePage,
       offset: ITEM_PER_PAGE,
       search: transactionSearch,
@@ -248,7 +247,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       method: HttpMethod.GET,
     },
     {
-      order: convertStringToSortingType(blocksSorting),
+      sort: convertStringToSortingType(blocksSorting),
       page: blocksActivePage,
       offset: ITEM_PER_PAGE,
       search: blocksSearch,

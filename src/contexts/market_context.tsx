@@ -4,7 +4,7 @@ import {
   IAddressHistoryQuery,
   IAddressTransactionQuery,
   IPaginationOptions,
-  SortingType,
+  TimeSortingType,
 } from '../constants/api_request';
 import {IChainDetail, IChain} from '../interfaces/chain';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
@@ -83,7 +83,7 @@ export interface IMarketContext {
     addressId: string,
     options?: IAddressHistoryQuery
   ) => Promise<IProducedBlock>;
-  getReviews: (chainId: string, addressId: string, order?: SortingType) => Promise<IReviews>;
+  getReviews: (chainId: string, addressId: string, order?: TimeSortingType) => Promise<IReviews>;
   getRedFlagsFromAddress: (chainId: string, addressId: string) => Promise<IRedFlag[]>;
   getInteractions: (
     chainId: string,
@@ -265,13 +265,9 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const getChainDetail = useCallback(async (chainId: string) => {
     let data: IChain = {} as IChain;
     try {
-      // eslint-disable-next-line no-console
-      console.log('getChainDetail called in marketCtx');
       const response = await fetch(`${APIURL.CHAINS}/${chainId}`, {
         method: 'GET',
       });
-      // eslint-disable-next-line no-console
-      console.log('getChainDetail in marketCtx, response', response);
       data = await response.json();
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -415,10 +411,10 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       let data: IReviewDetail[] = [];
       try {
         const queryParams = new URLSearchParams();
-        if (options?.order) {
-          queryParams.set('order', options.order);
+        if (options?.sort) {
+          queryParams.set('order', options.sort);
         } else {
-          queryParams.set('order', SortingType.DESC);
+          queryParams.set('order', TimeSortingType.DESC);
         }
         if (options?.page !== undefined) queryParams.set('page', options.page.toString());
         if (options?.offset !== undefined) queryParams.set('offset', options.offset.toString());
@@ -446,10 +442,10 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       try {
         // Build the query string from the options object
         const queryParams = new URLSearchParams();
-        if (options?.order) {
-          queryParams.set('order', options.order);
+        if (options?.sort) {
+          queryParams.set('order', options.sort);
         } else {
-          queryParams.set('order', SortingType.DESC);
+          queryParams.set('order', TimeSortingType.DESC);
         }
         if (options?.page !== undefined) queryParams.set('page', options.page.toString());
         if (options?.offset !== undefined) queryParams.set('offset', options.offset.toString());
@@ -489,10 +485,10 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     try {
       // Build the query string from the options object
       const queryParams = new URLSearchParams();
-      if (options?.order) {
-        queryParams.set('order', options.order);
+      if (options?.sort) {
+        queryParams.set('order', options.sort);
       } else {
-        queryParams.set('order', SortingType.DESC);
+        queryParams.set('order', TimeSortingType.DESC);
       }
       if (options?.page !== undefined) queryParams.set('page', options.page.toString());
       if (options?.offset !== undefined) queryParams.set('offset', options.offset.toString());
@@ -521,14 +517,14 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   };
 
   const getReviews = useCallback(
-    async (chainId: string, addressId: string, order?: SortingType) => {
+    async (chainId: string, addressId: string, order?: TimeSortingType) => {
       let data: IReviews = {} as IReviews;
       try {
         const queryParams = new URLSearchParams();
         if (order) {
           queryParams.set('order', order);
         } else {
-          queryParams.set('order', SortingType.DESC);
+          queryParams.set('order', TimeSortingType.DESC);
         }
 
         const response = await fetch(
