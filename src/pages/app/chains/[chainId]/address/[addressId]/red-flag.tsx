@@ -26,7 +26,7 @@ import {
 } from '../../../../../../constants/config';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
-import {APIURL} from '../../../../../../constants/api_request';
+import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 import {IDatePeriod} from '../../../../../../interfaces/date_period';
 
 interface IRedFlagOfAddressPageProps {
@@ -52,6 +52,8 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
 
   const {data, isLoading, error} = useAPIResponse<IRedFlagOfAddress>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/red_flags`,
+    HttpMethod.GET,
+    null,
     {
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,

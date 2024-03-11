@@ -1,5 +1,7 @@
+// Info: 與 `useAPIWorker` 做比較，有時候不要另開線程會比較快，管理 API 的調用，包含發起 request 跟取消 request 的功能，但目前只有 GET (20240227 - Shirley)
 import {useEffect, useCallback} from 'react';
 import useStateRef from 'react-usestateref';
+import {HttpMethod} from '../../constants/api_request';
 
 interface FetcherResponse<Data> {
   data: Data | undefined;
@@ -13,6 +15,8 @@ interface QueryParams {
 
 async function fetchData<Data>(
   api: string,
+  method: HttpMethod = HttpMethod.GET,
+  body: any = null,
   query: Record<string, string | number> = {},
   signal?: AbortSignal
 ): Promise<Data> {
@@ -21,6 +25,21 @@ async function fetchData<Data>(
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(String(query[key]))}`)
     .join('&');
 
+  const options: RequestInit = {
+    method,
+    // headers: {
+    //   'Content-Type': 'application/json',
+    // },
+    signal,
+  };
+
+  if (body) {
+    options.body = JSON.stringify(body);
+    options.headers = {
+      'Content-Type': 'application/json',
+    };
+  }
+
   if (queryString) {
     url = `${api}?${queryString}`;
   } else {
@@ -28,7 +47,8 @@ async function fetchData<Data>(
   }
 
   try {
-    const response = await fetch(url, {signal});
+    // const response = await fetch(url, {signal});
+    const response = await fetch(url, options);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -40,6 +60,8 @@ async function fetchData<Data>(
 
 function useAPIResponse<Data>(
   key: string,
+  method: HttpMethod = HttpMethod.GET,
+  body: any = null,
   queryParams?: QueryParams,
   cancel?: boolean
 ): FetcherResponse<Data> {
@@ -57,7 +79,7 @@ function useAPIResponse<Data>(
     if (cancel) {
       const controller = new AbortController();
       setIsLoading(true);
-      fetchData<Data>(key, queryParams || {}, controller.signal)
+      fetchData<Data>(key, method, body, queryParams || {}, controller.signal)
         .then(responseData => {
           setData(responseData);
           setError(null);
@@ -72,7 +94,7 @@ function useAPIResponse<Data>(
       cleanupFunction = () => controller.abort(); // Info: Cleanup function to abort fetch request (20240227 - Shirley)
     } else {
       setIsLoading(true);
-      fetchData<Data>(key, queryParams || {})
+      fetchData<Data>(key, method, body, queryParams || {})
         .then(responseData => {
           setData(responseData);
           setError(null);

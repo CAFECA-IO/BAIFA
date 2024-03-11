@@ -28,7 +28,7 @@ import {GetServerSideProps} from 'next';
 import {ParsedUrlQuery} from 'querystring';
 import Skeleton from '../../components/skeleton/skeleton';
 import useAPIWorker from '../../lib/hooks/use_api_worker';
-import {APIURL} from '../../constants/api_request';
+import {APIURL, HttpMethod} from '../../constants/api_request';
 import {convertStringToSortingType} from '../../lib/common';
 import {SearchType} from '../../constants/search_type';
 
@@ -138,6 +138,8 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     error: searchError,
   } = useAPIWorker<ISearchResultData>(
     `${APIURL.SEARCH_RESULT}`,
+    HttpMethod.GET,
+    null,
     {
       search_input: searchTextRef.current,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,

@@ -8,7 +8,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {ISuggestions} from '../../interfaces/suggestions';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import useStateRef from 'react-usestateref';
-import {APIURL} from '../../constants/api_request';
+import {APIURL, HttpMethod} from '../../constants/api_request';
 import useAPIResponse from '../../lib/hooks/use_api_response';
 
 interface IGlobalSearchProps {
@@ -39,6 +39,8 @@ const GlobalSearch = ({
 
   const {data, isLoading, error} = useAPIResponse<ISuggestions>(
     `${APIURL.SEARCH_SUGGESTIONS}`,
+    HttpMethod.GET,
+    null,
     {
       search_input: inputValueRef.current,
     },

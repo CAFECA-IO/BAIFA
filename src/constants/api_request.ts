@@ -80,3 +80,11 @@ export const APIURL = {
 
   WEBSITE_RESERVE: 'https://api.tidebit-defi.com/public/reserve',
 };
+
+export enum HttpMethod {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+  PATCH = 'PATCH',
+}
