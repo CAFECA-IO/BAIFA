@@ -5,8 +5,6 @@ import {HttpMethod, RequestOptions} from '../../constants/api_request';
 interface FetchRequestData {
   key: string;
   options: RequestOptions;
-  // method: HttpMethod;
-  // body: any;
   requestId: string;
   query?: Record<string, string | number>;
   action?: 'cancel';
@@ -18,8 +16,6 @@ let controller: AbortController | null = null;
 async function fetchData(
   api: string,
   options: RequestOptions,
-  // method: HttpMethod;
-  // body: any;
   query: Record<string, string | number> = {},
   signal: AbortSignal
 ): Promise<unknown> {
@@ -56,20 +52,6 @@ async function fetchData(
 
 self.onmessage = async (event: MessageEvent<FetchRequestData>) => {
   const {key, options, requestId, query, action} = event.data;
-
-  // eslint-disable-next-line no-console
-  console.log(
-    'key in onmessage in worker lib',
-    key,
-    'options',
-    options,
-    'requestId',
-    requestId,
-    'query',
-    query,
-    'action',
-    action
-  );
 
   if (action === 'cancel') {
     if (activeRequest === requestId) {

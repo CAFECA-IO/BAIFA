@@ -91,7 +91,7 @@ export enum HttpMethod {
 
 export interface RequestOptions {
   method: HttpMethod;
-  body?: any;
+  body?: any; // TODO: enumerate all parameters of API (20240311 - Shirley)
 }
 
 export interface FetcherResponse<Data> {

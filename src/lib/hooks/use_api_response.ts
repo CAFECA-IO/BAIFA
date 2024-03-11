@@ -11,8 +11,6 @@ import {
 async function fetchData<Data>(
   api: string,
   options: RequestOptions,
-  // method: HttpMethod = HttpMethod.GET,
-  // body: any = null,
   query: Record<string, string | number> = {},
   signal?: AbortSignal
 ): Promise<Data> {
@@ -40,7 +38,6 @@ async function fetchData<Data>(
   }
 
   try {
-    // const response = await fetch(url, {signal});
     const response = await fetch(url, fetchOptions);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

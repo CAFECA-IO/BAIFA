@@ -1,33 +1,11 @@
 // Info: 搭配 Web worker 寫出多線程管理 API 的調用，包含發起 request 跟取消 request 的功能，但目前只有 GET (20240227 - Shirley)
 import {useEffect, useRef, useCallback} from 'react';
 import useStateRef from 'react-usestateref';
-import {
-  FetcherResponse,
-  HttpMethod,
-  QueryParams,
-  RequestOptions,
-} from '../../constants/api_request';
-
-// interface RequestOptions {
-//   method: HttpMethod;
-//   body?: any;
-// }
-
-// interface FetcherResponse<Data> {
-//   data: Data | undefined;
-//   isLoading: boolean;
-//   error: Error | null;
-// }
-
-// interface QueryParams {
-//   [key: string]: string | number;
-// }
+import {FetcherResponse, QueryParams, RequestOptions} from '../../constants/api_request';
 
 function useAPIWorker<Data>(
   key: string,
   options: RequestOptions,
-  // method: HttpMethod = HttpMethod.GET,
-  // body: any = null,
   queryParams?: QueryParams,
   cancel?: boolean
 ): FetcherResponse<Data> {
