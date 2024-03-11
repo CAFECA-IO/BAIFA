@@ -1,7 +1,7 @@
 // 018 - GET /app/currencies/:currency_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../../prisma/client';
 import {ICurrencyDetailString, IHolder} from '../../../../../../interfaces/currency';
 import {IRedFlag} from '../../../../../../interfaces/red_flag';
 import {AddressType, IAddressInfo} from '../../../../../../interfaces/address_info';
@@ -10,7 +10,6 @@ import {ITransaction} from '../../../../../../interfaces/transaction';
 type ResponseData = ICurrencyDetailString | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
 
