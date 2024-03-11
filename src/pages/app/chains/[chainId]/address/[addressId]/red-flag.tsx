@@ -52,8 +52,9 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
 
   const {data, isLoading, error} = useAPIResponse<IRedFlagOfAddress>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/red_flags`,
-    HttpMethod.GET,
-    null,
+    {
+      method: HttpMethod.GET,
+    },
     {
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,

@@ -88,3 +88,18 @@ export enum HttpMethod {
   DELETE = 'DELETE',
   PATCH = 'PATCH',
 }
+
+export interface RequestOptions {
+  method: HttpMethod;
+  body?: any;
+}
+
+export interface FetcherResponse<Data> {
+  data: Data | undefined;
+  isLoading: boolean;
+  error: Error | null;
+}
+
+export interface QueryParams {
+  [key: string]: string | number;
+}

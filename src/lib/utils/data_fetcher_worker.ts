@@ -1,11 +1,12 @@
 /// <reference lib="webworker" />
 
-import {HttpMethod} from '../../constants/api_request';
+import {HttpMethod, RequestOptions} from '../../constants/api_request';
 
 interface FetchRequestData {
   key: string;
-  method: HttpMethod;
-  body: any;
+  options: RequestOptions;
+  // method: HttpMethod;
+  // body: any;
   requestId: string;
   query?: Record<string, string | number>;
   action?: 'cancel';
@@ -16,8 +17,9 @@ let controller: AbortController | null = null;
 
 async function fetchData(
   api: string,
-  method: HttpMethod = HttpMethod.GET,
-  body: any = null,
+  options: RequestOptions,
+  // method: HttpMethod;
+  // body: any;
   query: Record<string, string | number> = {},
   signal: AbortSignal
 ): Promise<unknown> {
@@ -26,17 +28,14 @@ async function fetchData(
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(String(query[key]))}`)
     .join('&');
 
-  const options: RequestInit = {
-    method,
-    // headers: {
-    //   'Content-Type': 'application/json',
-    // },
+  const fetchOptions: RequestInit = {
+    method: options.method,
     signal,
   };
 
-  if (body) {
-    options.body = JSON.stringify(body);
-    options.headers = {
+  if (options.method !== HttpMethod.GET && options.body) {
+    fetchOptions.body = JSON.stringify(options.body);
+    fetchOptions.headers = {
       'Content-Type': 'application/json',
     };
   }
@@ -47,7 +46,7 @@ async function fetchData(
     url = `${api}`;
   }
 
-  return fetch(url, options).then(response => {
+  return fetch(url, fetchOptions).then(response => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -56,7 +55,21 @@ async function fetchData(
 }
 
 self.onmessage = async (event: MessageEvent<FetchRequestData>) => {
-  const {key, method, body, requestId, query, action} = event.data;
+  const {key, options, requestId, query, action} = event.data;
+
+  // eslint-disable-next-line no-console
+  console.log(
+    'key in onmessage in worker lib',
+    key,
+    'options',
+    options,
+    'requestId',
+    requestId,
+    'query',
+    query,
+    'action',
+    action
+  );
 
   if (action === 'cancel') {
     if (activeRequest === requestId) {
@@ -79,7 +92,7 @@ self.onmessage = async (event: MessageEvent<FetchRequestData>) => {
   activeRequest = requestId;
 
   try {
-    const data = await fetchData(key, method, body, query || {}, controller.signal);
+    const data = await fetchData(key, options, query || {}, controller.signal);
     if (activeRequest !== requestId) {
       return;
     }

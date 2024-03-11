@@ -39,8 +39,9 @@ const GlobalSearch = ({
 
   const {data, isLoading, error} = useAPIResponse<ISuggestions>(
     `${APIURL.SEARCH_SUGGESTIONS}`,
-    HttpMethod.GET,
-    null,
+    {
+      method: HttpMethod.GET,
+    },
     {
       search_input: inputValueRef.current,
     },

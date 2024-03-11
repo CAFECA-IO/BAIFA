@@ -201,45 +201,122 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const [blocksPeriod, setBlocksPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [blocksSearch, setBlocksSearch] = useState<string>('');
 
+  // const {data, isLoading, error} = useAPIResponse<any>(
+  //   'https://jsonplaceholder.typicode.com/posts/1',
+  //   {
+  //     method: HttpMethod.GET,
+  //     body: {
+  //       id: 'hehehe 1552',
+  //     },
+  //   }
+  // );
+
+  // const {
+  //   data: data1,
+  //   isLoading: isData1Loading,
+  //   error: data1Error,
+  // } = useAPIResponse<any>('https://jsonplaceholder.typicode.com/posts/1', {
+  //   method: HttpMethod.PUT,
+  //   body: {
+  //     id: 1,
+  //     title: 'foo1420',
+  //     body: 'bar0311',
+  //     userId: 2024,
+  //   },
+  // });
+
+  // const {
+  //   data: data2,
+  //   isLoading: isData2Loading,
+  //   error: data2Error,
+  // } = useAPIResponse<any>('https://jsonplaceholder.typicode.com/posts/1', {
+  //   method: HttpMethod.PATCH,
+  //   body: {
+  //     title: 'foo1420',
+  //   },
+  // });
+
+  // const {
+  //   data: data3,
+  //   isLoading: isData3Loading,
+  //   error: data3Error,
+  // } = useAPIResponse<any>('https://jsonplaceholder.typicode.com/posts', {
+  //   method: HttpMethod.POST,
+  //   body: {
+  //     title: 'foo1420',
+  //     body: 'bar0311',
+  //     userId: 2024,
+  //   },
+  // });
+
+  // const {
+  //   data: data4,
+  //   isLoading: isData4Loading,
+  //   error: data4Error,
+  // } = useAPIResponse<any>('https://jsonplaceholder.typicode.com/posts/1', {
+  //   method: HttpMethod.DELETE,
+  // });
+
+  // // eslint-disable-next-line no-console
+  // console.log(
+  //   'for `https://jsonplaceholder.typicode.com/posts`, data',
+  //   data,
+  //   'isLoading',
+  //   isLoading,
+  //   'error',
+  //   error
+  // );
+
   const {data, isLoading, error} = useAPIWorker<any>(
     'https://jsonplaceholder.typicode.com/posts/1',
-    HttpMethod.GET
+    {method: HttpMethod.GET, body: {title: 'test'}}
   );
 
   const {
     data: data1,
     isLoading: isData1Loading,
     error: data1Error,
-  } = useAPIWorker<any>('https://jsonplaceholder.typicode.com/posts/1', HttpMethod.PUT, {
-    id: 1,
-    title: 'foo1420',
-    body: 'bar0311',
-    userId: 2024,
+  } = useAPIWorker<any>('https://jsonplaceholder.typicode.com/posts/1', {
+    method: HttpMethod.PUT,
+    body: {
+      id: 1,
+      title: 'foo1420',
+      body: 'bar0311',
+      userId: 2024,
+    },
   });
 
   const {
     data: data2,
     isLoading: isData2Loading,
     error: data2Error,
-  } = useAPIWorker<any>('https://jsonplaceholder.typicode.com/posts/1', HttpMethod.PATCH, {
-    title: 'foo1420',
+  } = useAPIWorker<any>('https://jsonplaceholder.typicode.com/posts/1', {
+    method: HttpMethod.PATCH,
+    body: {
+      title: 'foo1420',
+    },
   });
 
   const {
     data: data3,
     isLoading: isData3Loading,
     error: data3Error,
-  } = useAPIWorker<any>('https://jsonplaceholder.typicode.com/posts', HttpMethod.POST, {
-    title: 'foo1420',
-    body: 'bar0311',
-    userId: 2024,
+  } = useAPIWorker<any>('https://jsonplaceholder.typicode.com/posts', {
+    method: HttpMethod.POST,
+    body: {
+      title: 'foo1420',
+      body: 'bar0311',
+      userId: 2024,
+    },
   });
 
   const {
     data: data4,
     isLoading: isData4Loading,
     error: data4Error,
-  } = useAPIWorker<any>('https://jsonplaceholder.typicode.com/posts/1', HttpMethod.DELETE);
+  } = useAPIWorker<any>('https://jsonplaceholder.typicode.com/posts/1', {
+    method: HttpMethod.DELETE,
+  });
 
   // eslint-disable-next-line no-console
   console.log(
@@ -255,20 +332,17 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     data: addressBriefData,
     isLoading: isAddressBriefLoading,
     error: addressBriefError,
-  } = useAPIResponse<IAddressBrief>(
-    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}`,
-    HttpMethod.GET,
-    null
-  );
+  } = useAPIResponse<IAddressBrief>(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}`, {
+    method: HttpMethod.GET,
+  });
 
   const {
     data: reviews,
     isLoading: reviewLoading,
     error: reviewsError,
-  } = useAPIWorker<IReviewDetail[]>(
+  } = useAPIResponse<IReviewDetail[]>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/review_list`,
-    HttpMethod.GET,
-    null,
+    {method: HttpMethod.GET},
     {order: convertStringToSortingType(reviewSorting)}
   );
 
@@ -278,8 +352,9 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     error: transactionDataError,
   } = useAPIResponse<IAddressRelatedTransaction>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/transactions`,
-    HttpMethod.GET,
-    null,
+    {
+      method: HttpMethod.GET,
+    },
     {
       order: convertStringToSortingType(transactionSorting),
       page: transactionActivePage,
@@ -296,8 +371,9 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     error: blocksDataError,
   } = useAPIResponse<IAddressProducedBlock>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/produced_blocks`,
-    HttpMethod.GET,
-    null,
+    {
+      method: HttpMethod.GET,
+    },
     {
       order: convertStringToSortingType(blocksSorting),
       page: blocksActivePage,

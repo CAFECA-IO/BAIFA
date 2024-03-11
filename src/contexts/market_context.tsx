@@ -265,9 +265,13 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   const getChainDetail = useCallback(async (chainId: string) => {
     let data: IChain = {} as IChain;
     try {
+      // eslint-disable-next-line no-console
+      console.log('getChainDetail called in marketCtx');
       const response = await fetch(`${APIURL.CHAINS}/${chainId}`, {
         method: 'GET',
       });
+      // eslint-disable-next-line no-console
+      console.log('getChainDetail in marketCtx, response', response);
       data = await response.json();
     } catch (error) {
       // eslint-disable-next-line no-console

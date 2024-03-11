@@ -138,8 +138,7 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
     error: searchError,
   } = useAPIWorker<ISearchResultData>(
     `${APIURL.SEARCH_RESULT}`,
-    HttpMethod.GET,
-    null,
+    {method: HttpMethod.GET},
     {
       search_input: searchTextRef.current,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,

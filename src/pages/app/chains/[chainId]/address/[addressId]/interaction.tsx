@@ -27,7 +27,7 @@ import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
-import useAPIWorker from '../../../../../../lib/hooks/use_api_worker';
+import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 
 interface IInteractionPageProps {
   addressId: string;
@@ -153,10 +153,9 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
     data: interactedList,
     isLoading: isLoading,
     error: interactedListError,
-  } = useAPIWorker<IInteractionItem[]>(
+  } = useAPIResponse<IInteractionItem[]>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/interactions`,
-    HttpMethod.GET,
-    null
+    {method: HttpMethod.GET}
     // TODO: API query options (20240227 - Shirley)
     // {
     //   type:

@@ -1,22 +1,33 @@
 // Info: 搭配 Web worker 寫出多線程管理 API 的調用，包含發起 request 跟取消 request 的功能，但目前只有 GET (20240227 - Shirley)
 import {useEffect, useRef, useCallback} from 'react';
 import useStateRef from 'react-usestateref';
-import {HttpMethod} from '../../constants/api_request';
+import {
+  FetcherResponse,
+  HttpMethod,
+  QueryParams,
+  RequestOptions,
+} from '../../constants/api_request';
 
-interface FetcherResponse<Data> {
-  data: Data | undefined;
-  isLoading: boolean;
-  error: Error | null;
-}
+// interface RequestOptions {
+//   method: HttpMethod;
+//   body?: any;
+// }
 
-interface QueryParams {
-  [key: string]: string | number;
-}
+// interface FetcherResponse<Data> {
+//   data: Data | undefined;
+//   isLoading: boolean;
+//   error: Error | null;
+// }
+
+// interface QueryParams {
+//   [key: string]: string | number;
+// }
 
 function useAPIWorker<Data>(
   key: string,
-  method: HttpMethod = HttpMethod.GET,
-  body: any = null,
+  options: RequestOptions,
+  // method: HttpMethod = HttpMethod.GET,
+  // body: any = null,
   queryParams?: QueryParams,
   cancel?: boolean
 ): FetcherResponse<Data> {
@@ -43,8 +54,7 @@ function useAPIWorker<Data>(
 
     worker.postMessage({
       key,
-      method,
-      body,
+      options,
       requestId: requestIdRef.current,
       query: queryParamsRef.current,
     });
@@ -71,7 +81,7 @@ function useAPIWorker<Data>(
     return () => {
       worker.removeEventListener('message', handleMessage);
       if (cancel)
-        worker.postMessage({key, method, body, requestId: requestIdRef.current, action: 'cancel'});
+        worker.postMessage({key, options, requestId: requestIdRef.current, action: 'cancel'});
       // Info: Close worker in worker after receiving cancel message for 1 sec (20240227 - Shirley)
       // worker.terminate();
     };
