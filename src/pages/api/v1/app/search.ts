@@ -10,7 +10,7 @@ import {
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
   PUBLIC_TAGS_REFERENCE,
-  RED_FLAG_CODE_WHEN_NULL,
+  CODE_WHEN_NULL,
 } from '../../../../constants/config';
 import prisma from '../../../../../prisma/client';
 import {AddressType} from '../../../../interfaces/address_info';
@@ -318,9 +318,7 @@ async function searchByType(
             };
           });
 
-          const redFlagTypeCode = redFlag.red_flag_type
-            ? +redFlag.red_flag_type
-            : RED_FLAG_CODE_WHEN_NULL;
+          const redFlagTypeCode = redFlag.red_flag_type ? +redFlag.red_flag_type : CODE_WHEN_NULL;
 
           const redFlagType =
             redFlagCodes.find(code => code.value === redFlagTypeCode)?.meaning ?? '';
@@ -706,9 +704,7 @@ async function searchByType(
           };
         });
 
-        const redFlagTypeCode = redFlag.red_flag_type
-          ? +redFlag.red_flag_type
-          : RED_FLAG_CODE_WHEN_NULL;
+        const redFlagTypeCode = redFlag.red_flag_type ? +redFlag.red_flag_type : CODE_WHEN_NULL;
 
         const redFlagType =
           redFlagCodes.find(code => code.value === redFlagTypeCode)?.meaning ?? '';

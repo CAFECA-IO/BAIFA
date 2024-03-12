@@ -16,7 +16,7 @@ export interface ITransaction extends IDisplayTransaction {
 }
 
 export interface ITransactionData {
-  transactions: ITransaction[];
+  transactions: IDisplayTransaction[];
   transactionCount: number;
   totalPage: number;
 }

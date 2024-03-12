@@ -221,7 +221,7 @@ export const DEFAULT_INTERACTED_ACCOUNT_COUNT = 0;
 export const DEFAULT_REVIEWS_COUNT_IN_PAGE = 3;
 export const DEFAULT_RED_FLAG_COUNT_IN_PAGE = 3;
 
-export const RED_FLAG_CODE_WHEN_NULL = 9999999999;
+export const CODE_WHEN_NULL = 9999999999;
 
 export const sortMostAndLeastOptions = ['SORTING.MOST', 'SORTING.LEAST'];
 
