@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     const skip = page > 0 ? (page - 1) * offset : 0;
 
-    // Info: 透過 address_id 取得特定地址的評分 (20240130 - Shirley)
+    // Info: 從 addresses 表中取得特定地址的評分 (20240130 - Shirley)
     const addressData = await prisma.addresses.findUnique({
       where: {
         address: `${address_id}`,
