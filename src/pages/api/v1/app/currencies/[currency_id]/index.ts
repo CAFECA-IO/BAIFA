@@ -45,17 +45,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const unit = chainData?.symbol ?? '';
     const decimal = chainData?.decimals ?? 0;
 
-    // Info: (20240125 - Julian) 從 token_balances Table 中取得 holders
-    // const holderData = await prisma.token_balances.findMany({
-    //   where: {
-    //     currency_id: currency_id,
-    //   },
-    //   select: {
-    //     address: true,
-    //     value: true,
-    //   },
-    // });
-
     // Info: (20240125 - Julian) currency 的 24 小時交易量
     const volumeIn24hRaw = parseInt(`${currencyData?.volume_in_24h ?? 0}`);
     const volumeIn24h = volumeIn24hRaw / Math.pow(10, decimal);
@@ -78,50 +67,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // Info: (20240219 - Liz) 組合字串
     const totalAmount = `${firstPartWithComma}.${secondPart}`;
-
-    // // Info: (今天 - Liz) Top 100 holders 資料格式化
-    // const holders: IHolder[] = holderData.map(holder => {
-    //   // Info: (20240220 - Liz) 取得持有數
-    //   const rawHoldingValue = holder.value ?? '0';
-
-    //   // Info: (20240220 - Liz) 持有數小數後未滿18位數自動補零
-    //   const rawHoldingValueFilled = rawHoldingValue.padStart(19, '0');
-
-    //   // Info: (20240220 - Liz) 持有數格式化
-    //   const splitIndex = rawHoldingValueFilled.length - decimal; // decimal = 18
-    //   const firstPart = rawHoldingValueFilled.substring(0, splitIndex);
-    //   const secondPart = rawHoldingValueFilled.substring(splitIndex);
-    //   const firstPartWithComma = firstPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    //   const holdingAmount = `${firstPartWithComma}.${secondPart}`;
-
-    //   // Info: (20240130 - Julian) 計算持有比例
-    //   const rawHoldingValueBigInt = BigInt(rawHoldingValue);
-    //   const scale = BigInt(10000);
-    //   const scaleRawHoldingValueBigInt = rawHoldingValueBigInt * scale;
-    //   const holdingPercentageBigInt = scaleRawHoldingValueBigInt / BigInt(totalAmountRaw);
-    //   const holdingPercentageString = holdingPercentageBigInt.toString();
-
-    //   // Info: (20240220 - Liz) 將持有比例格式化為小數點後2位小數
-    //   const formatString = (str: string) => {
-    //     const paddedA = str.padStart(3, '0'); // 字串前面補零，直到長度為3
-    //     const integerPart = paddedA.slice(0, -2); // 整數部分
-    //     const decimalPart = paddedA.slice(-2); // 小數部分
-    //     return `${integerPart}.${decimalPart}`;
-    //   };
-
-    //   const holdingPercentage = formatString(holdingPercentageString);
-
-    //   // Info: (20240202 - Julian) 計算持有比例的 bar 寬度
-    //   const holdingBarWidth = Number(holdingPercentage);
-
-    //   return {
-    //     addressId: `${holder.address}`,
-    //     holdingAmount: holdingAmount,
-    //     holdingPercentage: holdingPercentage,
-    //     holdingBarWidth: holdingBarWidth,
-    //     publicTag: ['Unknown User'], // ToDo: (20240130 - Julian) 待補上
-    //   };
-    // });
 
     // Info: (20240125 - Julian) 從 red_flags Table 中取得資料
     const flaggingData = await prisma.red_flags.findMany({
@@ -280,7 +225,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           price: currencyData.price ?? 0,
           volumeIn24h: volumeIn24h,
           unit: unit,
-          decimal: decimal,
+
           totalAmount: totalAmount,
           // holders: holders,
           totalTransfers: currencyData.total_transfers ?? 0,
@@ -295,9 +240,51 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     prisma.$connect();
     res.status(200).json(result);
   } catch (error) {
-    // Info: (今天 - Liz) Request error
+    // Info: (20240312 - Liz) Request error
     // eslint-disable-next-line no-console
     console.error('Error fetching blacklist data:', error);
     res.status(500).json({} as ResponseData);
   }
 }
+
+/* ---------- Mock API ---------- */
+// export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+//   const result = {
+//     'currencyId': '0x0000000000000000000000000000000000000000',
+//     'currencyName': 'iSunCoin',
+//     'chainId': '8017',
+//     'rank': 0,
+//     'holderCount': 0,
+//     'price': 0,
+//     'volumeIn24h': 0,
+//     'unit': 'ISC',
+//     'totalAmount': '605,414.000000000000000000',
+//     'totalTransfers': 16,
+//     'flagging': [],
+//     'flaggingCount': 0,
+//     'riskLevel': 'Normal',
+//     'transactionHistoryData': [
+//       {
+//         'id': '0x4507de0220ac5aaba6502acaadfaf8eade04a7900188de50e75bd7e894d69596',
+//         'chainId': '8017',
+//         'createdTimestamp': 1702615885,
+//         'from': [
+//           {
+//             'type': 'address',
+//             'address': '0x048adee1b0e93b30f9f7b71f18b963ca9ba5de3b',
+//           },
+//         ],
+//         'to': [
+//           {
+//             'type': 'address',
+//             'address': '0x87b966e36cc1f3a2b855ffff904f6f6acaaec1db',
+//           },
+//         ],
+//         'type': 'Crypto Currency',
+//         'status': 'Success',
+//       },
+//       // ... other transactions
+//     ],
+//   };
+//   return res.status(200).json(result);
+// }

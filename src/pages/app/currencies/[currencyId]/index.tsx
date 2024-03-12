@@ -111,7 +111,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     <Top100HolderSection
       chainId={chainId}
       currencyId={currencyId}
-      holderCount={holderCount}
+      // holderCount={holderCount}
       unit={unit}
       // decimal={decimal}
       // totalAmountRaw={totalAmountRaw}

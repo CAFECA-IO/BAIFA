@@ -49,10 +49,9 @@ export interface ICurrencyDetailString extends ICurrency {
   price: number;
   volumeIn24h: number;
   unit: string;
-  decimal: number;
   totalAmount: string;
   holderCount: number;
-  // holders: IHolder[];
+  // holders: IHolder[]; // Deprecated: (今天丟棄 - Liz)
   totalTransfers: number;
   flagging: IRedFlag[];
   flaggingCount: number;

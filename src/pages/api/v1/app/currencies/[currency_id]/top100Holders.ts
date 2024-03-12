@@ -10,16 +10,21 @@ import {ITEM_PER_PAGE} from '../../../../../../constants/config';
 type ResponseData = ITop100Holders | string;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  // Info: (今天 - Liz) query string
+  // Info: (20240312 - Liz) query string
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
+  const search = typeof req.query.search === 'string' ? req.query.search : undefined;
 
-  // Info: (今天 - Liz) 計算分頁的 skip 與 take
+  // Deprecated: (今天 - Liz)
+  // eslint-disable-next-line no-console
+  console.log('req.query:', req.query);
+
+  // Info: (20240312 - Liz) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240306 - Liz) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // Info: (20240306 - Liz) 取幾筆
 
   try {
-    // Info: (今天 - Liz) 從 currencies Table 中取得 total_amount 和 chain_id
+    // Info: (20240312 - Liz) 從 currencies Table 中取得 total_amount 和 chain_id
     const currencyData = await prisma.currencies.findUnique({
       where: {
         id: currency_id,
@@ -30,10 +35,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    // Info: (今天 - Liz) currency 的總量
+    // Info: (20240312 - Liz) currency 的總量
     const totalAmountRaw = currencyData?.total_amount ?? '0';
 
-    // Info: (今天 - Liz) 從 chains Table 中取得 unit 和 decimal
+    // Info: (20240312 - Liz) 從 chains Table 中取得 unit 和 decimal
     const chainId = currencyData?.chain_id;
     const decimalsOfChain = await prisma.chains.findUnique({
       where: {
@@ -45,25 +50,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
     const decimal = decimalsOfChain?.decimals ?? 0;
 
-    // Info: (今天 - Liz) 從 token_balances Table 中取得 holders
+    // Info: (20240312 - Liz) 從 token_balances Table 中取得 holders，並做條件篩選以及分頁，總數量要小於等於 100
     const holderData = await prisma.token_balances.findMany({
       where: {
         currency_id: currency_id,
+        address: search ? {contains: search} : undefined, // Info: (20240312 - Liz) 搜尋條件
       },
       select: {
         address: true,
         value: true,
       },
+      // Info: (今天 - Liz) 分頁
+      take,
+      skip,
     });
 
-    const holders: IHolder[] = holderData.map(holder => {
-      // Info: (20240220 - Liz) 取得持有數
+    // ToDo: (20240312 - Liz) 取得 holders 總筆數
+    const totalHoldersAmount = await prisma.token_balances.count({
+      where: {
+        currency_id: currency_id,
+      },
+    });
+
+    // Info: (20240312 - Liz)  計算總頁數，並且限制總頁數不超過 10 頁
+    const totalPagesAll = Math.ceil(totalHoldersAmount / ITEM_PER_PAGE);
+    const totalPages = totalPagesAll > 10 ? 10 : totalPagesAll;
+
+    const holderDataFormat: IHolder[] = holderData.map(holder => {
+      // Info: (20240220 - Liz) 取得持有數量
       const rawHoldingValue = holder.value ?? '0';
 
-      // Info: (20240220 - Liz) 持有數小數後未滿18位數自動補零
-      const rawHoldingValueFilled = rawHoldingValue.padStart(19, '0');
+      // Info: (20240220 - Liz) 持有數量格式化: 小數部分未滿18位數自動補零(所以要補18+1)
+      const rawHoldingValueFilled = rawHoldingValue.padStart(decimal + 1, '0');
 
-      // Info: (20240220 - Liz) 持有數格式化
+      // Info: (20240220 - Liz) 持有數量格式化: 整數部分加上千分位
       const splitIndex = rawHoldingValueFilled.length - decimal; // decimal = 18
       const firstPart = rawHoldingValueFilled.substring(0, splitIndex);
       const secondPart = rawHoldingValueFilled.substring(splitIndex);
@@ -99,17 +119,146 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       };
     });
 
+    // Info: (20240312 - Liz) Pagination & Sort by holding amount
+
+    const endIdx = (page ?? 1) * ITEM_PER_PAGE;
+    const startIdx = endIdx - ITEM_PER_PAGE;
+    const holders = holderDataFormat.slice(startIdx, endIdx).sort((a, b) => {
+      // Info: (20240221 - Liz) 持有數字串先補零再以字串排序
+      const paddedHoldingAmountA = a.holdingAmount.padStart(64, '0');
+      const paddedHoldingAmountB = b.holdingAmount.padStart(64, '0');
+      if (paddedHoldingAmountA > paddedHoldingAmountB) return -1;
+      if (paddedHoldingAmountA < paddedHoldingAmountB) return 1;
+      return 0;
+    });
+
     const result = {
       holdersData: holders,
-      totalPages: 1,
+      totalPages: totalPages,
     };
 
     prisma.$connect();
     res.status(200).json(result);
   } catch (error) {
-    // Info: (今天 - Liz) Request error
+    // Info: (20240312 - Liz) Request error
     // eslint-disable-next-line no-console
     console.error('Error in holders:', error);
     res.status(500).json({} as ResponseData);
   }
 }
+
+/* ---------- Mock API ---------- */
+// export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+//   const result = {
+//     'holdersData': [
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       {
+//         'addressId': '0xd26b3236c4f4e6df16b41eecf18a1c573abdb75e',
+//         'holdingAmount': '19.999903801999551076',
+//         'holdingPercentage': '0.00',
+//         'holdingBarWidth': 0,
+//         'publicTag': ['Unknown User'],
+//       },
+//       // ... other top 100 holders
+//     ],
+//     'totalPages': 2,
+//   };
+//   return res.status(200).json(result);
+// }
