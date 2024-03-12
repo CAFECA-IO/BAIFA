@@ -83,7 +83,11 @@ export interface IMarketContext {
     addressId: string,
     options?: IAddressHistoryQuery
   ) => Promise<IProducedBlock>;
-  getReviews: (chainId: string, addressId: string, order?: SortingType) => Promise<IReviews>;
+  getReviews: (
+    chainId: string,
+    addressId: string,
+    options?: IPaginationOptions
+  ) => Promise<IReviews>;
   getRedFlagsFromAddress: (chainId: string, addressId: string) => Promise<IRedFlag[]>;
   getInteractions: (
     chainId: string,
@@ -517,15 +521,17 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   };
 
   const getReviews = useCallback(
-    async (chainId: string, addressId: string, order?: SortingType) => {
+    async (chainId: string, addressId: string, options?: IPaginationOptions) => {
       let data: IReviews = {} as IReviews;
       try {
         const queryParams = new URLSearchParams();
-        if (order) {
-          queryParams.set('order', order);
+        if (options?.order) {
+          queryParams.set('order', options?.order);
         } else {
           queryParams.set('order', SortingType.DESC);
         }
+        if (options?.page !== undefined) queryParams.set('page', options.page.toString());
+        if (options?.offset !== undefined) queryParams.set('offset', options.offset.toString());
 
         const response = await fetch(
           `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/reviews?${queryParams.toString()}`,

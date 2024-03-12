@@ -7,20 +7,20 @@ import Footer from '../../../../../../components/footer/footer';
 import ReviewSection from '../../../../../../components/review_section/review_section';
 import {IReviews} from '../../../../../../interfaces/review';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {convertStringToSortingType, getChainIcon, truncateText} from '../../../../../../lib/common';
+import {convertStringToSortingType, getChainIcon} from '../../../../../../lib/common';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {
   DEFAULT_CHAIN_ICON,
-  DEFAULT_TRUNCATE_LENGTH,
+  ITEM_PER_PAGE,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
-import {SortingType} from '../../../../../../constants/api_request';
+import {IPaginationOptions, SortingType} from '../../../../../../constants/api_request';
+import Pagination from '../../../../../../components/pagination/pagination';
 
 interface IReviewDetailsPageProps {
   addressId: string;
@@ -37,9 +37,11 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
   const [reviews, setReviews] = useState<IReviews>({} as IReviews);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
 
-  const getReviewData = async (chainId: string, blockId: string, order: SortingType) => {
+  const [activePage, setActivePage] = useState(1);
+
+  const getReviewData = async (chainId: string, blockId: string, option: IPaginationOptions) => {
     try {
-      const data = await getReviews(chainId, blockId, order);
+      const data = await getReviews(chainId, blockId, option);
       setReviews(data);
     } catch (error) {
       //console.log('getAddressData error', error);
@@ -51,8 +53,13 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
       appCtx.init();
     }
     (async () => {
+      const option = {
+        order: SortingType.DESC,
+        page: activePage,
+        offset: ITEM_PER_PAGE,
+      };
       setIsLoading(true);
-      await getReviewData(chainId, addressId, SortingType.DESC);
+      await getReviewData(chainId, addressId, option);
       setIsLoading(false);
     })();
 
@@ -61,12 +68,17 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
 
   useEffect(() => {
     (async () => {
+      const option = {
+        order: convertStringToSortingType(sorting),
+        page: activePage,
+        offset: ITEM_PER_PAGE,
+      };
       setIsLoading(true);
-      await getReviewData(chainId, addressId, convertStringToSortingType(sorting));
+      await getReviewData(chainId, addressId, option);
       setIsLoading(false);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sorting]);
+  }, [sorting, activePage]);
 
   const headTitle = `${t('REVIEWS_PAGE.TITLE')} ${t('COMMON.OF')} ${t(
     'ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS'
@@ -102,7 +114,7 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
                 <BsArrowLeftShort className="text-48px" />
               </button>
               {/* Info: (20231018 -Julian) Review Title */}
-              <div className="flex flex-1 flex-col items-center justify-center space-y-6">
+              <div className="flex w-full flex-1 flex-col items-center justify-center space-y-6">
                 <h1 className="text-2xl font-bold lg:text-48px">{t('REVIEWS_PAGE.TITLE')}</h1>
                 <div className="flex items-center space-x-2">
                   <Image
@@ -112,28 +124,25 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
                     height={30}
                     onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
                   />
-                  <p className="text-xl" title={addressId}>
-                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')}{' '}
-                    {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
+                  <p
+                    className="w-300px grow space-x-2 overflow-hidden text-ellipsis whitespace-nowrap text-xl lg:w-full"
+                    title={addressId}
+                  >
+                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')} {addressId}
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Info: (20231031 - Julian) Review List */}
-            <div className="mt-10 flex w-full flex-col lg:mt-20">{displayedReviews}</div>
+            <div className="my-10 flex w-full flex-col lg:my-20">{displayedReviews}</div>
 
             {/* Info: (20231006 - Julian) Back button */}
-            <div className="mt-10">
-              <BoltButton
-                onClick={backClickHandler}
-                className="px-12 py-4 font-bold"
-                color="blue"
-                style="hollow"
-              >
-                {t('COMMON.BACK')}
-              </BoltButton>
-            </div>
+            <Pagination
+              activePage={activePage}
+              setActivePage={setActivePage}
+              totalPages={reviews.totalPages}
+            />
           </div>
         </div>
       </main>
