@@ -7,15 +7,15 @@ import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
-import SearchBar from '../../../../../../components/search_bar/search_bar';
+import {SearchBarWithKeyDown} from '../../../../../../components/search_bar/search_bar';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import DatePicker from '../../../../../../components/date_picker/date_picker';
 import InteractionItem from '../../../../../../components/interaction_item/interaction_item';
 import Footer from '../../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {getChainIcon} from '../../../../../../lib/common';
+import {convertStringToSortingType, getChainIcon} from '../../../../../../lib/common';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {IInteractionItem} from '../../../../../../interfaces/interaction_item';
+import {IInteractionList} from '../../../../../../interfaces/interaction_item';
 import {
   DEFAULT_CHAIN_ICON,
   ITEM_PER_PAGE,
@@ -24,15 +24,14 @@ import {
 } from '../../../../../../constants/config';
 import Pagination from '../../../../../../components/pagination/pagination';
 import {AppContext} from '../../../../../../contexts/app_context';
-import {MarketContext} from '../../../../../../contexts/market_context';
 import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
+import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 
 interface IInteractionPageProps {
   addressId: string;
   chainId: string;
-  // type: string;
 }
 
 // Info: (20231108 - Julian) 將 type 整理成查詢用的字串(queryString)和顯示用的文字(text)
@@ -82,6 +81,7 @@ const InteractionPageSkeleton = () => {
       </div>{' '}
     </div>
   ));
+
   return (
     <>
       {/* Info: (20240227 - Shirley) Search Filter */}
@@ -123,22 +123,12 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   const router = useRouter();
   const {type} = router.query;
   const appCtx = useContext(AppContext);
-  const {getInteractions} = useContext(MarketContext);
 
   // Info: (20231108 - Julian) Type Url Query
-  // const {type} = router.query;
   const headTitle = `${t('INTERACTION_LIST_PAGE.MAIN_TITLE_HIGHLIGHT')}${t(
     'INTERACTION_LIST_PAGE.MAIN_TITLE'
   )} ${t('COMMON.OF')} ${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')} ${addressId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
-
-  // const selectedType = type
-  //   ? type.toString() === AddressType.ADDRESS
-  //     ? typeOptions[1]
-  //     : type.toString() === AddressType.CONTRACT
-  //     ? typeOptions[2]
-  //     : typeOptions[0]
-  //   : typeOptions[0];
 
   // Info: (20231214 - Julian) SortingMenu 選項的顯示文字
   const sortingOptions = typeOptions.map(typeOption => typeOption.text);
@@ -148,42 +138,35 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   const [filteredType, setFilteredType, filteredTypeRef] = useStateRef<string>(
     queryToTextOptionsMap[type as keyof typeof queryToTextOptionsMap] ?? 'all'
   );
+  // Info: (20231214 - Julian) Search Filter
+  const [search, setSearch] = useState('');
+  const [sorting, setSorting] = useState<string>(sortMostAndLeastOptions[0]);
+  const [period, setPeriod] = useState(default30DayPeriod);
+
+  // Info: (20231214 - Julian) Pagination
+  const [activePage, setActivePage] = useState<number>(1);
 
   const {
     data: interactedList,
-    isLoading: isLoading,
+    isLoading,
     error: interactedListError,
-  } = useAPIResponse<IInteractionItem[]>(
+  } = useAPIResponse<IInteractionList>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/interactions`,
-    {method: HttpMethod.GET}
+    {method: HttpMethod.GET},
     // TODO: API query options (20240227 - Shirley)
-    // {
-    //   type:
-    //     textToQueryOptionsMap[filteredTypeRef.current as keyof typeof textToQueryOptionsMap] ??
-    //     'all',
-    // }
-  );
+    {
+      type:
+        textToQueryOptionsMap[filteredTypeRef.current as keyof typeof textToQueryOptionsMap] ??
+        'all',
 
-  // Info: (20231108 - Julian) States
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
-  // const [interactedList, setInteractedList] = useState<IInteractionItem[]>([]);
-  // Info: (20231214 - Julian) Search Filter
-  const [search, setSearch, searchRef] = useStateRef('');
-  const [sorting, setSorting] = useState<string>(sortMostAndLeastOptions[0]);
-  const [period, setPeriod] = useState(default30DayPeriod);
-  const [filteredInteractedList, setFilteredInteractedList] = useState<IInteractionItem[]>(
-    interactedList ?? []
+      sort: convertStringToSortingType(sorting),
+      search: search,
+      start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
+      end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
+      page: activePage,
+      offset: ITEM_PER_PAGE,
+    }
   );
-  // Info: (20231214 - Julian) Pagination
-  const [activePage, setActivePage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(
-    Math.ceil((interactedList?.length ?? 0) / ITEM_PER_PAGE)
-  );
-
-  // Deprecated: (20240310 - Shirley) 用其他方式取代 binding URL and sorting menu
-  // Info: (20231214 - Julian) 取得 type 的查詢字串
-  // const queryType =
-  //   typeOptions.find(typeOption => typeOption.text === filteredType)?.queryString ?? '';
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -191,9 +174,6 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const endIdx = activePage * ITEM_PER_PAGE;
-  const startIdx = endIdx - ITEM_PER_PAGE;
 
   useEffect(() => {
     if (filteredType) {
@@ -208,57 +188,6 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
     setFilteredType(queryToTextOptionsMap[type as keyof typeof queryToTextOptionsMap] ?? 'all');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
-
-  useEffect(() => {
-    const searchResult = !!interactedList
-      ? interactedList
-          // Info: (20231108 - Julian) filter by search term
-          .filter((interactedData: IInteractionItem) => {
-            const searchTerm = searchRef.current.toLowerCase();
-            const type = interactedData.type.toLowerCase();
-            const id = interactedData.id.toLowerCase();
-            const publicTag = interactedData.publicTag
-              ? interactedData.publicTag.map(tag => tag.toLowerCase()).join(',')
-              : '';
-            return searchTerm !== ''
-              ? type.includes(searchTerm) ||
-                  id.includes(searchTerm) ||
-                  publicTag.includes(searchTerm)
-              : true;
-          })
-          // Info: (20231108 - Julian) filter by date range
-          // .filter((interactedData: IInteractionItem) => {
-          //   const createdTimestamp = interactedData.createdTimestamp;
-          //   const start = period.startTimeStamp;
-          //   const end = period.endTimeStamp;
-          //   // Info: (20231108 - Julian) if start and end are 0, it means that there is no period filter
-          //   const isCreatedTimestampInRange =
-          //     start === 0 && end === 0 ? true : createdTimestamp >= start && createdTimestamp <= end;
-          //   return isCreatedTimestampInRange;
-          // })
-          // Info: (20231108 - Julian) filter by type
-          .filter((interactedData: IInteractionItem) => {
-            const type = interactedData.type.toLowerCase();
-            return filteredTypeRef.current === typeOptions[0].text
-              ? // ? filteredType.toLowerCase().includes(type)
-
-                true
-              : filteredTypeRef.current.toLowerCase().includes(type);
-            // : interactedData.type.toLowerCase() === type;
-          })
-          // Info: (20231108 - Julian) sort by Newest or Oldest
-          .sort((a: IInteractionItem, b: IInteractionItem) => {
-            return sorting === sortMostAndLeastOptions[0]
-              ? b.transactionCount - a.transactionCount
-              : a.transactionCount - b.transactionCount;
-          })
-      : [];
-
-    setFilteredInteractedList(searchResult);
-    setActivePage(1);
-    setTotalPages(Math.ceil(searchResult.length / ITEM_PER_PAGE));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interactedList, filteredType, search, period, sorting]);
 
   const displayedHeader = (
     <div className="flex w-full items-center justify-start">
@@ -298,24 +227,22 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
     </div>
   );
 
-  const displayInteractedList = !isLoading ? (
-    filteredInteractedList
-      // Info: (20231109 - Julian) Pagination
-      .slice(startIdx, endIdx)
-      .map((interactedData, index) => (
-        <InteractionItem key={index} orignalAddressId={addressId} interactedData={interactedData} />
-      ))
-  ) : (
-    <></>
-  );
+  const {interactedData, totalPages} = interactedList ?? {interactedData: [], totalPages: 1};
 
-  const displayedUI = !isLoading ? (
+  const displayInteractedList = interactedData.map((interactedData, index) => (
+    <InteractionItem key={index} orignalAddressId={addressId} interactedData={interactedData} />
+  ));
+
+  const displayedUI = interactedListError ? (
+    // Info: (20240312 - Julian) If there is an error, display data not found
+    <DataNotFound />
+  ) : !isLoading ? (
     <>
       {/* Info: (20231108 - Julian) Search Filter */}
       <div className="flex w-full flex-col items-end space-y-10">
         {/* Info: (20231108 - Julian) Search Bar */}
         <div className="mx-auto w-full lg:w-7/10">
-          <SearchBar
+          <SearchBarWithKeyDown
             searchBarPlaceholder={t('INTERACTION_LIST_PAGE.SEARCH_PLACEHOLDER')}
             setSearch={setSearch}
           />
@@ -365,7 +292,6 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
 
       <NavBar />
       <main>
-        {' '}
         <div className="flex min-h-screen flex-col items-center overflow-hidden font-inter">
           <div className="flex w-full flex-1 flex-col items-center space-y-10 px-5 pb-10 pt-32 lg:px-40 lg:pt-40">
             {/* Info: (20231108 - Julian) Header */}

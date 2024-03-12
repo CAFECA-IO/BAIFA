@@ -102,9 +102,9 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
                 <BsArrowLeftShort className="text-48px" />
               </button>
               {/* Info: (20231018 -Julian) Review Title */}
-              <div className="flex flex-1 flex-col items-center justify-center space-y-6">
+              <div className="flex w-full flex-1 flex-col items-center justify-center space-y-6">
                 <h1 className="text-2xl font-bold lg:text-48px">{t('REVIEWS_PAGE.TITLE')}</h1>
-                <div className="flex items-center space-x-2">
+                <div className="flex w-full grow items-center justify-center space-x-2 text-xl">
                   <Image
                     src={chainIcon.src}
                     alt={chainIcon.alt}
@@ -112,9 +112,8 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
                     height={30}
                     onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
                   />
-                  <p className="text-xl" title={addressId}>
-                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')}{' '}
-                    {truncateText(addressId, DEFAULT_TRUNCATE_LENGTH)}
+                  <p className="overflow-hidden text-ellipsis whitespace-nowrap" title={addressId}>
+                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')} {addressId}
                   </p>
                 </div>
               </div>
