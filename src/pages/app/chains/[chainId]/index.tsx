@@ -18,6 +18,8 @@ import {DEFAULT_CHAIN_ICON, chainList} from '../../../../constants/config';
 import {getChainIcon} from '../../../../lib/common';
 import Skeleton from '../../../../components/skeleton/skeleton';
 import DataNotFound from '../../../../components/data_not_found/data_not_found';
+import useAPIResponse from '../../../../lib/hooks/use_api_response';
+import {APIURL, HttpMethod} from '../../../../constants/api_request';
 
 export interface IChainDetailPageProps {
   chainId: string;
@@ -34,49 +36,56 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const {getChainDetail} = useContext(MarketContext);
 
   const [activeTab, setActiveTab] = useState<ChainDetailTab>(ChainDetailTab.BLOCKS);
-  const [chainData, setChainData] = useState<IChain>({} as IChain);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isNoData, setIsNoData] = useState(false);
+  // const [chainData, setChainData] = useState<IChain>({} as IChain);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [isNoData, setIsNoData] = useState(false);
 
-  useEffect(() => {
-    if (!appCtx.isInit) {
-      appCtx.init();
-    }
+  const {
+    data: chainData,
+    isLoading,
+    error,
+  } = useAPIResponse<IChain>(`${APIURL.CHAINS}/${chainId}`, {
+    method: HttpMethod.GET,
+  });
 
-    const getChainData = async (chainId: string) => {
-      // Info: (20240220 - Julian) 顯示 Loading 畫面
-      setIsLoading(true);
-      try {
-        const data = await getChainDetail(chainId);
-        setChainData(data);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('getChainDetail error', error);
-      }
-      // Info: (20240220 - Julian) 拿到資料就將 isLoading 設為 false
-      setIsLoading(false);
-    };
+  // useEffect(() => {
+  //   if (!appCtx.isInit) {
+  //     appCtx.init();
+  //   }
 
-    getChainData(chainId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   const getChainData = async (chainId: string) => {
+  //     // Info: (20240220 - Julian) 顯示 Loading 畫面
+  //     setIsLoading(true);
+  //     try {
+  //       const data = await getChainDetail(chainId);
+  //       setChainData(data);
+  //     } catch (error) {
+  //       // eslint-disable-next-line no-console
+  //       console.error('getChainDetail error', error);
+  //     }
+  //     // Info: (20240220 - Julian) 拿到資料就將 isLoading 設為 false
+  //     setIsLoading(false);
+  //   };
 
-  useEffect(() => {
-    // Info: (20240217 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data，並且停止 Loading
-    const timer = setTimeout(() => {
-      if (!chainData.chainId) {
-        setIsNoData(true);
-        setIsLoading(false);
-      }
-    }, 3000);
+  //   getChainData(chainId);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
-    return () => clearTimeout(timer);
-  }, [chainData]);
+  // useEffect(() => {
+  //   // Info: (20240217 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data，並且停止 Loading
+  //   const timer = setTimeout(() => {
+  //     if (!chainData.chainId) {
+  //       setIsNoData(true);
+  //       setIsLoading(false);
+  //     }
+  //   }, 3000);
+
+  //   return () => clearTimeout(timer);
+  // }, [chainData]);
 
   // Info: (20240217 - Julian) 如果 isNoData 為 true，顯示預設值
-  const {chainId: chainIdFromData, chainName} = isNoData
-    ? {chainId: '--', chainName: '--'}
-    : chainData;
+  const {chainId: chainIdFromData, chainName} = chainData ?? {chainId: '--', chainName: '--'};
+
   const headTitle = isLoading ? 'Loading...' : `${chainName} - BAIFA`;
   const chainIcon = getChainIcon(chainIdFromData);
 
@@ -167,9 +176,9 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
       <TransactionTab chainDetailLoading={isLoading} />
     );
 
-  const displayBody = isNoData ? (
-    <DataNotFound />
-  ) : (
+  const displayBody = isLoading ? (
+    <></> // <Skeleton width={500} height={100} />
+  ) : !!chainData && Object.keys(chainData).length > 0 ? (
     <>
       {/* Info: (20230904 - Julian) Tabs */}
       <div className="flex items-center justify-center space-x-6 lg:py-7">
@@ -179,6 +188,8 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
       {/* Info: (20230904 - Julian) Tab Content */}
       {tabContent}
     </>
+  ) : (
+    <DataNotFound />
   );
 
   return (
