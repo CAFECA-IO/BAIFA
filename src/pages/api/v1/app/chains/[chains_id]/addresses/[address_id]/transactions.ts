@@ -5,6 +5,7 @@ import {AddressType, IAddressInfo} from '../../../../../../../../interfaces/addr
 import {IAddressRelatedTransaction} from '../../../../../../../../interfaces/address';
 import {ITransaction} from '../../../../../../../../interfaces/transaction';
 import prisma from '../../../../../../../../../prisma/client';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../../../constants/config';
 
 type ResponseData = IAddressRelatedTransaction | undefined;
 
@@ -13,9 +14,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
-  const order = (req.query.order as string)?.toLowerCase() === 'desc' ? 'desc' : 'asc';
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
-  const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
+
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
+  const offset =
+    typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
   const start_date =
     typeof req.query.start_date === 'string' && parseInt(req.query.start_date, 10) > 0
       ? parseInt(req.query.start_date, 10)
@@ -53,11 +56,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       orderBy: [
         {
           // Info: (20240301 - Shirley) 1. created_timestamp 由 sorting 決定
-          created_timestamp: order,
+          created_timestamp: sort,
         },
         {
           // Info: (20240301 - Shirley) 2. id 由小到大
-          id: order,
+          id: sort,
         },
       ],
       take: offset,

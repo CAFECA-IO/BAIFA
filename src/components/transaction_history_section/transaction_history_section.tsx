@@ -9,7 +9,7 @@ import Pagination from '../pagination/pagination';
 import {IDisplayTransaction} from '../../interfaces/transaction';
 import DatePicker from '../date_picker/date_picker';
 import {AddressDetailsContext} from '../../contexts/address_details_context';
-import {SortingType} from '../../constants/api_request';
+import {TimeSortingType} from '../../constants/api_request';
 import {SkeletonList} from '../skeleton/skeleton';
 import {IDatePeriod} from '../../interfaces/date_period';
 
@@ -125,14 +125,14 @@ const TransactionHistorySection = ({
       await addressDetailsCtx.clickTransactionPagination({
         page,
         offset,
-        order: addressDetailsCtx.transactionsOrder,
+        sort: addressDetailsCtx.transactionsOrder,
       });
     }
     // Info: (20240216 - Shirley) default case
     return Promise.resolve();
   };
 
-  const sortingClickHandler = async ({order}: {order: SortingType}) => {
+  const sortingClickHandler = async ({order}: {order: TimeSortingType}) => {
     if (dataType === TransactionDataType.ADDRESS_DETAILS) {
       await addressDetailsCtx.clickTransactionSortingMenu(order);
     }

@@ -1,4 +1,4 @@
-import {IPaginationOptions, SortingType} from '../constants/api_request';
+import {IPaginationOptions, SortingType, TimeSortingType} from '../constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_CURRENCY_ICON,
@@ -250,30 +250,30 @@ export const assessBlockStability = (targetBlockId: number, latestBlockId: numbe
   return stability;
 };
 
-export function convertStringToSortingType(sorting: string): IPaginationOptions['order'] {
-  let order: IPaginationOptions['order'] = SortingType.DESC;
+export function convertStringToSortingType(sorting: string): IPaginationOptions['sort'] {
+  let order: IPaginationOptions['sort'] = TimeSortingType.DESC;
   switch (sorting) {
     case sortOldAndNewOptions[0]:
-      order = SortingType.DESC;
+      order = TimeSortingType.DESC;
       break;
     case sortOldAndNewOptions[1]:
-      order = SortingType.ASC;
+      order = TimeSortingType.ASC;
       break;
     default:
-      order = SortingType.DESC;
+      order = TimeSortingType.DESC;
       break;
   }
 
   return order;
 }
 
-export function convertSortingTypeToString(sorting: IPaginationOptions['order']): string {
+export function convertSortingTypeToString(sorting: IPaginationOptions['sort']): string {
   let order = sortOldAndNewOptions[0];
   switch (sorting) {
-    case SortingType.DESC:
+    case TimeSortingType.DESC:
       order = sortOldAndNewOptions[0];
       break;
-    case SortingType.ASC:
+    case TimeSortingType.ASC:
       order = sortOldAndNewOptions[1];
     default:
       order = sortOldAndNewOptions[0];

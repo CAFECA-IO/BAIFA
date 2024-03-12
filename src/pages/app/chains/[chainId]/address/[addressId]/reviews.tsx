@@ -20,7 +20,7 @@ import {
   DEFAULT_TRUNCATE_LENGTH,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
-import {SortingType} from '../../../../../../constants/api_request';
+import {TimeSortingType} from '../../../../../../constants/api_request';
 
 interface IReviewDetailsPageProps {
   addressId: string;
@@ -37,7 +37,7 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
   const [reviews, setReviews] = useState<IReviews>({} as IReviews);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
 
-  const getReviewData = async (chainId: string, blockId: string, order: SortingType) => {
+  const getReviewData = async (chainId: string, blockId: string, order: TimeSortingType) => {
     try {
       const data = await getReviews(chainId, blockId, order);
       setReviews(data);
@@ -52,7 +52,7 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
     }
     (async () => {
       setIsLoading(true);
-      await getReviewData(chainId, addressId, SortingType.DESC);
+      await getReviewData(chainId, addressId, TimeSortingType.DESC);
       setIsLoading(false);
     })();
 

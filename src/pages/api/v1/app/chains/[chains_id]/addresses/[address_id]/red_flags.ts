@@ -1,7 +1,7 @@
 // 013 - GET /app/chains/:chain_id/addresses/:address_id/red_flags
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IRedFlag, IRedFlagOfAddress} from '../../../../../../../../interfaces/red_flag';
+import {IRedFlagOfAddress} from '../../../../../../../../interfaces/red_flag';
 import {
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id, 10) : undefined;
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
-  const order = (req.query.order as string)?.toLowerCase() === 'desc' ? 'desc' : 'asc';
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
   const offset =
     typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
@@ -96,7 +96,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       where: {
         ...whereClauseWithType,
       },
-      orderBy: [{created_timestamp: order}, {id: order}],
+      orderBy: [{created_timestamp: sort}, {id: sort}],
       take: offset,
       skip,
       select: {

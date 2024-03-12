@@ -10,10 +10,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
   const chains_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
-  const order = (req.query.order as string)?.toLowerCase() === 'desc' ? 'desc' : 'asc';
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   // Info: Review page 沒有頁數功能，所以暫時不需要寫 page 跟 offset (20240130 - Shirley)
-  // const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
-  // const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
+  // const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
+  // const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
 
   if (!chains_id || !address_id) {
     return res.status(400).json({} as ResponseData);
@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         target: `${address_id}`,
       },
       orderBy: {
-        created_timestamp: order,
+        created_timestamp: sort,
       },
       // Info: Review page 沒有頁數功能，所以暫時不需要寫 page 跟 offset (20240130 - Shirley)
       // take: offset,

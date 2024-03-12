@@ -1,7 +1,10 @@
 /// <reference lib="webworker" />
 
+import {HttpMethod, RequestOptions} from '../../constants/api_request';
+
 interface FetchRequestData {
   key: string;
+  options: RequestOptions;
   requestId: string;
   query?: Record<string, string | number>;
   action?: 'cancel';
@@ -12,6 +15,7 @@ let controller: AbortController | null = null;
 
 async function fetchData(
   api: string,
+  options: RequestOptions,
   query: Record<string, string | number> = {},
   signal: AbortSignal
 ): Promise<unknown> {
@@ -20,13 +24,25 @@ async function fetchData(
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(String(query[key]))}`)
     .join('&');
 
+  const fetchOptions: RequestInit = {
+    method: options.method,
+    signal,
+  };
+
+  if (options.method !== HttpMethod.GET && options.body) {
+    fetchOptions.body = JSON.stringify(options.body);
+    fetchOptions.headers = {
+      'Content-Type': 'application/json',
+    };
+  }
+
   if (queryString) {
     url = `${api}?${queryString}`;
   } else {
     url = `${api}`;
   }
 
-  return fetch(url, {signal}).then(response => {
+  return fetch(url, fetchOptions).then(response => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -35,7 +51,7 @@ async function fetchData(
 }
 
 self.onmessage = async (event: MessageEvent<FetchRequestData>) => {
-  const {key, requestId, query, action} = event.data;
+  const {key, options, requestId, query, action} = event.data;
 
   if (action === 'cancel') {
     if (activeRequest === requestId) {
@@ -58,7 +74,7 @@ self.onmessage = async (event: MessageEvent<FetchRequestData>) => {
   activeRequest = requestId;
 
   try {
-    const data = await fetchData(key, query || {}, controller.signal);
+    const data = await fetchData(key, options, query || {}, controller.signal);
     if (activeRequest !== requestId) {
       return;
     }
