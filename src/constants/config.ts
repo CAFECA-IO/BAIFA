@@ -202,7 +202,7 @@ export const chainIdToCurrencyName = [
   {id: 'isun', name: 'iSunCloud'},
 ];
 
-export const INPUT_SUGGESTION_LIMIT = 20;
+export const INPUT_SUGGESTION_LIMIT = 5;
 
 export const THRESHOLD_FOR_BLOCK_STABILITY = {
   HIGH: 20,
