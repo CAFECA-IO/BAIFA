@@ -64,7 +64,7 @@ const GlobalSearch = ({
     if (e.key === 'Enter') {
       // Info: (20231115 - Julian) 按下 Enter 後，導向搜尋結果頁面
       e.preventDefault();
-      if (data?.suggestions && typeof data.suggestions[selectedSuggestionIndex] === 'string') {
+      if (selectedSuggestionIndex !== -1 && data?.suggestions) {
         getInputValue && getInputValue(data.suggestions[selectedSuggestionIndex]);
         setSuggestionVisible(false);
         router.push(
