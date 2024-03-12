@@ -5,7 +5,7 @@ import {IRedFlagOfAddress} from '../../../../../../../../interfaces/red_flag';
 import {
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
-  RED_FLAG_CODE_WHEN_NULL,
+  CODE_WHEN_NULL,
 } from '../../../../../../../../constants/config';
 import prisma from '../../../../../../../../../prisma/client';
 
@@ -51,8 +51,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const typeMeaningToCodeMap = new Map<string, number>();
 
     redFlagCodes.forEach(code => {
-      typeCodeToMeaningMap.set(code.value ?? RED_FLAG_CODE_WHEN_NULL, code.meaning ?? '');
-      typeMeaningToCodeMap.set(code.meaning ?? '', code.value ?? RED_FLAG_CODE_WHEN_NULL);
+      typeCodeToMeaningMap.set(code.value ?? CODE_WHEN_NULL, code.meaning ?? '');
+      typeMeaningToCodeMap.set(code.meaning ?? '', code.value ?? CODE_WHEN_NULL);
     });
 
     const skip = page > 0 ? (page - 1) * offset : 0;
@@ -86,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     allPossibleRedFlagTypes.forEach(redFlag => {
       typesSet.add(
         typeCodeToMeaningMap.get(
-          !!redFlag.red_flag_type ? +redFlag.red_flag_type : RED_FLAG_CODE_WHEN_NULL
+          !!redFlag.red_flag_type ? +redFlag.red_flag_type : CODE_WHEN_NULL
         ) ?? ''
       );
     });
@@ -114,9 +114,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       .then(count => Math.ceil(count / offset));
 
     const redFlagData = redFlags.map(redFlag => {
-      const redFlagTypeCode = redFlag.red_flag_type
-        ? +redFlag.red_flag_type
-        : RED_FLAG_CODE_WHEN_NULL;
+      const redFlagTypeCode = redFlag.red_flag_type ? +redFlag.red_flag_type : CODE_WHEN_NULL;
       const redFlagType = typeCodeToMeaningMap.get(redFlagTypeCode) ?? '';
 
       return {
