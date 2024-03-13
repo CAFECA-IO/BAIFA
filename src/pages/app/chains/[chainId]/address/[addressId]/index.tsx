@@ -377,6 +377,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       period={transactionPeriod}
       setPeriod={setTransactionPeriod}
       setSearch={setTransactionSearch}
+      // TODO: (20240313 - Shirley) add suggestions
+      // suggestions={randomSuggestions}
     />
   );
 
