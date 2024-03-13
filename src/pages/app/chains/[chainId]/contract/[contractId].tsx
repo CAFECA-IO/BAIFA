@@ -42,6 +42,7 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
   const {getContractDetail, getContractTransactions} = useContext(MarketContext);
 
   const [contractData, setContractData] = useState<IContractDetail>({} as IContractDetail);
+  // ToDo: (20240313 - Julian) data not found
   const [isNoData, setIsNoData] = useState(false);
 
   // Info: (20240226 - Julian) Transaction History States
@@ -94,17 +95,6 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
     getTransactionHistoryData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Info: (20240219 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!contractData.chainId) {
-        setIsNoData(true);
-      }
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [contractData]);
 
   const displayPublicTag = publicTag ? (
     publicTag.map((tag, index) => (

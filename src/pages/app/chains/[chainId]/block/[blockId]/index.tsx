@@ -32,7 +32,7 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
   const router = useRouter();
 
   const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
-
+  // ToDo: (20240313 - Julian) data not found
   const [isNoData, setIsNoData] = useState(false);
   const [blockData, setBlockData] = useState<IBlockDetail>({} as IBlockDetail);
 
@@ -54,17 +54,6 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
     getBlockData(chainId, blockId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blockId, chainId]);
-
-  // Info: (20240217 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!blockData.chainId) {
-        setIsNoData(true);
-      }
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [blockData]);
 
   const {previousBlockId, nextBlockId} = blockData;
 
