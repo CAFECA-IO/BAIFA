@@ -28,6 +28,7 @@ interface ITransactionHistorySectionProps {
   sorting?: string;
   setSorting?: Dispatch<SetStateAction<string>>;
 
+  suggestions?: string[];
   setSearch?: Dispatch<SetStateAction<string>>;
   activePage?: number;
   setActivePage?: Dispatch<SetStateAction<number>>;
@@ -70,6 +71,7 @@ const TransactionHistorySection = ({
   sorting,
   setSorting,
 
+  suggestions,
   setSearch,
   activePage,
   setActivePage,
@@ -87,7 +89,7 @@ const TransactionHistorySection = ({
   const [activePageDefault, setActivePageDefault] = useState(1);
   const totalPagesDefault = totalPage ?? defaultPages;
 
-  const [search, setSearchDefault] = useState('');
+  const [searchDefault, setSearchDefault] = useState('');
   const [sortingDefault, setSortingDefault] = useState<string>(sortOldAndNewOptions[0]);
   const [periodDefault, setPeriodDefault] = useState(default30DayPeriod);
 
@@ -184,6 +186,7 @@ const TransactionHistorySection = ({
           {SearchBarWithKeyDown({
             searchBarPlaceholder: t('COMMON.TRANSACTION_HISTORY_PLACEHOLDER'),
             setSearch: setSearch ?? setSearchDefault,
+            suggestions: suggestions,
           })}
         </div>
         {/* Info: (20231113 - Julian) To Address List */}

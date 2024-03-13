@@ -154,7 +154,7 @@ const GlobalSearch = ({
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}
           onFocus={handleInputFocus}
-          className="block w-80vw rounded-full bg-purpleLinear p-3 pl-4 text-xs text-white focus:border-blue-500 focus:outline-none focus:ring-0 focus:ring-blue-500 lg:w-800px lg:text-sm"
+          className="block w-80vw rounded-full bg-purpleLinear p-3 pl-4 text-xs text-white focus:border-blue-500 focus:ring-blue-500 lg:w-800px lg:text-sm"
           placeholder={t('HOME_PAGE.SEARCH_PLACEHOLDER')}
         />
         <button onClick={handleSearchClick}>
