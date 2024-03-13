@@ -3,9 +3,13 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {AddressType, IAddressInfo} from '../../../../../../../../interfaces/address_info';
 import {IAddressRelatedTransaction} from '../../../../../../../../interfaces/address';
-import {ITransaction} from '../../../../../../../../interfaces/transaction';
+import {IDisplayTransaction, ITransaction} from '../../../../../../../../interfaces/transaction';
 import prisma from '../../../../../../../../../prisma/client';
-import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../../../constants/config';
+import {
+  CODE_WHEN_NULL,
+  DEFAULT_PAGE,
+  ITEM_PER_PAGE,
+} from '../../../../../../../../constants/config';
 
 type ResponseData = IAddressRelatedTransaction | undefined;
 
@@ -89,33 +93,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    const transactionHistoryData: ITransaction[] = transactionData.map(transaction => {
+    const typeList = transactionCodes.filter(code => code.table_column === 'type');
+
+    const transactionHistoryData: IDisplayTransaction[] = transactionData.map(transaction => {
       if (`${transaction.chain_id}` !== `${chain_id}`) {
         res.status(404).json(undefined);
       }
-      // Info: (20240130 - Julian) from address 轉換
-      const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
-      const from: IAddressInfo[] = fromAddresses
-        // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
-        .filter(address => address !== 'null')
-        .map(address => {
-          return {
-            type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
-            address: address,
-          };
-        });
+      /* Deprecated: use IDisplayTransaction instead of ITransaction (20240320 - Shirley)
+      // // Info: (20240130 - Julian) from address 轉換
+      // const fromAddresses = transaction.from_address ? transaction.from_address.split(',') : [];
+      // const from: IAddressInfo[] = fromAddresses
+      //   // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+      //   .filter(address => address !== 'null')
+      //   .map(address => {
+      //     return {
+      //       type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+      //       address: address,
+      //     };
+      //   });
 
-      // Info: (20240130 - Julian) to address 轉換
-      const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
-      const to: IAddressInfo[] = toAddresses
-        // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
-        .filter(address => address !== 'null')
-        .map(address => {
-          return {
-            type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
-            address: address,
-          };
-        });
+      // // Info: (20240130 - Julian) to address 轉換
+      // const toAddresses = transaction.to_address ? transaction.to_address.split(',') : [];
+      // const to: IAddressInfo[] = toAddresses
+      //   // Info: (20240130 - Julian) 如果 address 為 null 就過濾掉
+      //   .filter(address => address !== 'null')
+      //   .map(address => {
+      //     return {
+      //       type: AddressType.ADDRESS, // ToDo: (20240130 - Julian) 先寫死，等待後續補上 contract
+      //       address: address,
+      //     };
+      //   });
+      */
 
       const state =
         transactionCodes
@@ -124,29 +132,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           // Info: (20240207 - Shirley) 再找出對應的 meaning；由於 status 是數字，所以要先轉換成數字再比對
           .find(code => code.value === parseInt(transaction?.status ?? ''))?.meaning ?? '';
 
+      const type =
+        typeList.find(code => code.value === +(transaction.type ?? CODE_WHEN_NULL))?.meaning ?? '';
+
       return {
         id: `${transaction.hash}`,
         chainId: `${transaction.chain_id}`,
         createdTimestamp: transaction.created_timestamp ?? 0,
-        from: from,
-        to: to,
-        type: 'Cryptocurrency', // ToDo: (20240124 - Julian) 需要參考 codes Table 並補上 type 的轉換
+        type: type,
         status: state,
       };
     });
 
     const totalPage = Math.ceil(totalCount / offset);
-
-    /* TODO: dev (20240207 - Shirley)
-    // const relatedAddressesRaw = transactionData.flatMap(transaction => {
-    //   // Info: (20240131 - Julian) 過濾掉 null 和 address_id
-    //   return transaction.related_addresses.filter(
-    //     address => address !== address_id && address !== 'null'
-    //   );
-    // });
-    // // Info: (20240131 - Julian) 過濾重複的 address
-    // const relatedAddresses = Array.from(new Set(relatedAddressesRaw));
-    */
 
     const responseData: ResponseData = transactionData
       ? {

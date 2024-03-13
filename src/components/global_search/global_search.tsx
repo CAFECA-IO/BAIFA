@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import {useEffect, ChangeEvent, KeyboardEvent} from 'react';
+import {useEffect, ChangeEvent, KeyboardEvent, useState} from 'react';
 import {useRouter} from 'next/router';
 import {BFAURL} from '../../constants/url';
 import {FiSearch} from 'react-icons/fi';
@@ -30,6 +30,9 @@ const GlobalSearch = ({
     inputValueFromParent ? inputValueFromParent : ''
   );
 
+  // Info: Add this state to keep track of the currently selected suggestion (20240312 - Shirley)
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+
   // Info: (20231212 - Julian) 點擊搜尋欄位外的地方，隱藏搜尋建議
   const {
     targetRef: searchRef,
@@ -55,15 +58,42 @@ const GlobalSearch = ({
     setInputValue(e.target.value);
     setSuggestionVisible(true);
   };
-  // Info: (20231212 - Julian) 搜尋欄位的按鈕事件
+
+  // Info: 偵測用戶鍵盤事件，並執行相對應的動作 (20240312 - Shirley)
   const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       // Info: (20231115 - Julian) 按下 Enter 後，導向搜尋結果頁面
       e.preventDefault();
-      getInputValue && getInputValue(inputValueRef.current);
-      setSuggestionVisible(false);
-      router.push(`${BFAURL.SEARCHING_RESULT}?search=${inputValueRef.current}`);
+      if (selectedSuggestionIndex !== -1 && data?.suggestions) {
+        getInputValue && getInputValue(data.suggestions[selectedSuggestionIndex]);
+        setSuggestionVisible(false);
+        router.push(
+          `${BFAURL.SEARCHING_RESULT}?search=${data.suggestions[selectedSuggestionIndex]}`
+        );
+      } else {
+        getInputValue && getInputValue(inputValueRef.current);
+        setSuggestionVisible(false);
+        router.push(`${BFAURL.SEARCHING_RESULT}?search=${inputValueRef.current}`);
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (data?.suggestions) {
+        setSelectedSuggestionIndex(prevIndex => (prevIndex > 0 ? prevIndex - 1 : -1));
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (data?.suggestions) {
+        setSelectedSuggestionIndex(prevIndex =>
+          prevIndex < data.suggestions.length - 1 ? prevIndex + 1 : -1
+        );
+      }
     }
+  };
+
+  const handleSearchClick = () => {
+    getInputValue && getInputValue(inputValueRef.current);
+    setSuggestionVisible(false);
+    router.push(`${BFAURL.SEARCHING_RESULT}?search=${inputValueRef.current}`);
   };
 
   useEffect(() => {
@@ -74,22 +104,25 @@ const GlobalSearch = ({
   }, [inputValueFromParent]);
 
   // Info: (20231212 - Julian) 點擊搜尋建議後，導向搜尋結果頁面
-  const clickSuggestionHandler = (suggestion: string) => {
+  const clickSuggestionHandler = (suggestion: string, index: number) => {
     getInputValue && getInputValue(suggestion);
     setInputValue(suggestion);
     setSuggestionVisible(false);
+    setSelectedSuggestionIndex(index);
     router.push(`${BFAURL.SEARCHING_RESULT}?search=${suggestion}`);
   };
 
   const suggestionList =
-    !data || (!!data && data?.suggestions?.length === 0)
+    !data || !data.suggestions || data.suggestions.length === 0
       ? null
-      : !!data &&
-        data?.suggestions?.map((suggestion, i) => (
+      : data.suggestions.map((suggestion, i) => (
           <li
             key={i}
-            className="px-4 py-3 text-sm text-white hover:cursor-pointer hover:bg-purpleLinear"
-            onClick={() => clickSuggestionHandler(suggestion)}
+            className={`px-4 py-3 text-sm text-hoverWhite ${
+              i === selectedSuggestionIndex ? 'bg-purpleLinear' : ''
+            }`}
+            onClick={() => clickSuggestionHandler(suggestion, i)}
+            onMouseEnter={() => setSelectedSuggestionIndex(i)}
           >
             {suggestion}
           </li>
@@ -124,11 +157,13 @@ const GlobalSearch = ({
           className="block w-80vw rounded-full bg-purpleLinear p-3 pl-4 text-xs text-white focus:border-blue-500 focus:outline-none focus:ring-0 focus:ring-blue-500 lg:w-800px lg:text-sm"
           placeholder={t('HOME_PAGE.SEARCH_PLACEHOLDER')}
         />
-        <FiSearch className="absolute right-4 top-2 text-2xl text-hoverWhite" />
+        <button onClick={handleSearchClick}>
+          <FiSearch className="absolute right-4 top-2 text-2xl text-hoverWhite" />
+        </button>
         <ul
           className={`absolute top-12 w-95% flex-col rounded-sm bg-purpleLinear ${
             suggestionVisible ? 'flex' : 'hidden'
-          } hideScrollbar z-10 max-h-300px overflow-y-auto opacity-90 lg:max-h-500px`}
+          } hideScrollbar z-10 max-h-200px overflow-y-auto opacity-90 lg:max-h-500px`}
         >
           {suggestionList}
         </ul>
