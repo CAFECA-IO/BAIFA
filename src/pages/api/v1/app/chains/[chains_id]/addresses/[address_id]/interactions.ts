@@ -7,8 +7,7 @@ import {
 } from '../../../../../../../../interfaces/interaction_item';
 import {AddressType} from '../../../../../../../../interfaces/address_info';
 import prisma from '../../../../../../../../../prisma/client';
-import {ITEM_PER_PAGE} from '../../../../../../../../constants/config';
-import {TimeSortingType} from '../../../../../../../../constants/api_request';
+import {ITEM_PER_PAGE, sortMostAndLeastOptions} from '../../../../../../../../constants/config';
 
 type ResponseData = IInteractionList;
 
@@ -18,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
 
   const type = typeof req.query.type === 'string' ? req.query.type : 'all';
-  const sort = typeof req.query.sort === 'string' ? req.query.sort : 'most';
+  const sort = typeof req.query.sort === 'string' ? req.query.sort : sortMostAndLeastOptions[0];
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
   const start_date =
     typeof req.query.start_date === 'string' && parseInt(req.query.start_date, 10) > 0
@@ -163,12 +162,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         }
         return true;
       })
-      // Info: (20240312 - Julian) 依照排序方式排序
+      // Info: (20240312 - Julian) 依照交易數量排序
       .sort((a, b) => {
-        if (sort === TimeSortingType.ASC) {
-          return a.createdTimestamp - b.createdTimestamp;
+        if (sort === sortMostAndLeastOptions[0]) {
+          return a.transactionCount - b.transactionCount;
         }
-        return b.createdTimestamp - a.createdTimestamp;
+        return b.transactionCount - a.transactionCount;
       });
 
     const totalPages = Math.ceil(filterInteractedData.length / offset);

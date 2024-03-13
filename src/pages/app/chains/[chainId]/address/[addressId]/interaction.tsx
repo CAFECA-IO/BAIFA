@@ -13,7 +13,7 @@ import DatePicker from '../../../../../../components/date_picker/date_picker';
 import InteractionItem from '../../../../../../components/interaction_item/interaction_item';
 import Footer from '../../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {convertStringToSortingType, getChainIcon} from '../../../../../../lib/common';
+import {getChainIcon} from '../../../../../../lib/common';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {IInteractionList} from '../../../../../../interfaces/interaction_item';
 import {
@@ -159,7 +159,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
         textToQueryOptionsMap[filteredTypeRef.current as keyof typeof textToQueryOptionsMap] ??
         'all',
 
-      sort: convertStringToSortingType(sorting),
+      sort: sorting,
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
       end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
