@@ -383,7 +383,8 @@
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在區塊生成記錄中搜尋",
     "RED_FLAG_ITEM_TITLE": "警示記錄",
     "NO_DATA_FOUND": "找不到資料 :(",
-    "NO_DATA": "無資料"
+    "NO_DATA": "無資料",
+    "RED_FLAGS_OF": "筆警示記錄"
   },
   "PUBLIC_TAG": {
     "TITLE": "公開標籤",

@@ -1,13 +1,14 @@
 // 014 - GET /app/chains/:chain_id/addresses/:address_id/interactions?type=address
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {
-  IInteractionList,
-  IInteractionItem,
-} from '../../../../../../../../interfaces/interaction_item';
+import {IInteractionList, IInteraction} from '../../../../../../../../interfaces/interaction_item';
 import {AddressType} from '../../../../../../../../interfaces/address_info';
 import prisma from '../../../../../../../../../prisma/client';
-import {ITEM_PER_PAGE, sortMostAndLeastOptions} from '../../../../../../../../constants/config';
+import {
+  ITEM_PER_PAGE,
+  sortMostAndLeastOptions,
+  sortOldAndNewOptions,
+} from '../../../../../../../../constants/config';
 
 type ResponseData = IInteractionList;
 
@@ -36,6 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   try {
+    // Info: (20240313 - Julian) 撈出所有關聯的交易資料
     const transactions = await prisma.transactions.findMany({
       where: {
         related_addresses: {
@@ -43,10 +45,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
       },
       select: {
+        id: true,
+        hash: true,
         related_addresses: true,
+        created_timestamp: true,
       },
     });
 
+    // Info: (20240313 - Julian) 撈出所有包含關聯交易的警示記錄
+    const redFlagList = await prisma.red_flags.findMany({
+      where: {
+        related_transactions: {
+          hasSome: transactions.map(transaction => transaction.hash ?? ''),
+        },
+      },
+      select: {
+        related_transactions: true,
+      },
+    });
+
+    // Info: (20240312 - Julian) 整理對應 address/contract 的交易數量
     const addressTransactionCountMap = new Map<string, number>();
     transactions.forEach(transaction => {
       transaction.related_addresses.forEach(relatedAddress => {
@@ -55,6 +73,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             relatedAddress,
             (addressTransactionCountMap.get(relatedAddress) || 0) + 1
           );
+        }
+      });
+    });
+
+    // Info: (20240312 - Julian) 整理對應 address/contract 的交易數量、交易時間戳、警示數量
+    const addressTransactionDataMap = new Map<
+      string,
+      {transactionCount: number; transactionTimestamp: number; redFlagCount: number}
+    >();
+    transactions.forEach(transaction => {
+      transaction.related_addresses.forEach(relatedAddress => {
+        if (relatedAddress !== address_id && relatedAddress !== 'null') {
+          addressTransactionDataMap.set(relatedAddress, {
+            // Info: (20240313 - Julian) 交易數量
+            transactionCount:
+              (addressTransactionDataMap.get(relatedAddress)?.transactionCount || 0) + 1,
+            // Info: (20240313 - Julian) 交易時間戳
+            transactionTimestamp: transaction.created_timestamp ?? 0,
+            // Info: (20240313 - Julian) 警示數量
+            redFlagCount: redFlagList.filter(redFlag =>
+              redFlag.related_transactions.includes(transaction.hash ?? '')
+            ).length,
+          });
         }
       });
     });
@@ -74,7 +115,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       where: {
         address: {
           in: uniqueInteractedAddresses,
-          contains: search,
         },
         ...periodQueries,
       },
@@ -136,6 +176,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       publicTag: publicTagMap.get(interacted?.address ?? '') || ['Unknown User'], // Info: Assign a default value of ['Unknown User'] if publicTag is undefined (20240227 - Shirley)
       createdTimestamp: interacted.created_timestamp ?? 0,
       transactionCount: addressTransactionCountMap.get(interacted?.address ?? '') || 0,
+      redFlagCount: addressTransactionDataMap.get(interacted?.address ?? '')?.redFlagCount || 0,
+      transactionTimestamp:
+        addressTransactionDataMap.get(interacted?.address ?? '')?.transactionTimestamp || 0, // Info: (20240313 - Julian) 為了 filter 而加入的交易時間戳，之後會移除
     }));
 
     // Info: (20240312 - Julian) 將 interacted Contracts 整理成 IInteractionItem 的格式
@@ -146,10 +189,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       publicTag: publicTagMap.get(interacted?.contract_address ?? '') || ['Unknown User'], // Info: Assign a default value of ['Unknown Contract'] if publicTag is undefined (20240227 - Shirley)
       createdTimestamp: interacted.created_timestamp ?? 0,
       transactionCount: addressTransactionCountMap.get(interacted?.contract_address ?? '') || 0,
+      redFlagCount:
+        addressTransactionDataMap.get(interacted?.contract_address ?? '')?.redFlagCount || 0,
+      transactionTimestamp:
+        addressTransactionDataMap.get(interacted?.contract_address ?? '')?.transactionTimestamp ||
+        0, // Info: (20240313 - Julian) 為了 filter 而加入的交易時間戳，之後會移除
     }));
 
-    const allInteractedData: IInteractionItem[] =
-      interactedAddressesData.concat(interactedContractsData);
+    const allInteractedData = interactedAddressesData.concat(interactedContractsData);
 
     // Info: (20240312 - Julian) 依照分類取得資料
     const filterInteractedData = allInteractedData
@@ -161,20 +208,62 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           return item.type === AddressType.CONTRACT;
         }
         return true;
-      })
-      // Info: (20240312 - Julian) 依照交易數量排序
-      .sort((a, b) => {
-        if (sort === sortMostAndLeastOptions[0]) {
-          return a.transactionCount - b.transactionCount;
+      }) // Info: (20240313 - Julian) 依照搜尋字串過濾資料
+      .filter(item => {
+        if (search) {
+          return item.id.includes(search);
         }
-        return b.transactionCount - a.transactionCount;
+        return true;
+      }) // Info: (20240313 - Julian) 依照建立/交易時間過濾資料
+      .filter(item => {
+        if (start_date && end_date) {
+          const isInCreatedPeriod =
+            item.createdTimestamp >= start_date && item.createdTimestamp <= end_date;
+          const isInTransactionPeriod =
+            item.transactionTimestamp >= start_date && item.transactionTimestamp <= end_date;
+          return isInCreatedPeriod || isInTransactionPeriod;
+        }
+        return true;
+      })
+      // Info: (20240313 - Julian) 依照交易數量/建立時間排序資料
+      .sort((a, b) => {
+        switch (sort) {
+          // Info: (20240313 - Julian) Most to Least
+          case sortMostAndLeastOptions[0]:
+            return b.transactionCount - a.transactionCount;
+          // Info: (20240313 - Julian) Least to Most
+          case sortMostAndLeastOptions[1]:
+            return a.transactionCount - b.transactionCount;
+          // Info: (20240313 - Julian) Old to New
+          case sortOldAndNewOptions[0]:
+            return b.createdTimestamp - a.createdTimestamp;
+          // Info: (20240313 - Julian) New to Old
+          case sortOldAndNewOptions[1]:
+            return a.createdTimestamp - b.createdTimestamp;
+          default:
+            return 0;
+        }
       });
 
+    const paginatedInteractedData = filterInteractedData
+      // Info: (20240313 - Julian) 依照分頁取得資料
+      .slice((page - 1) * offset, page * offset)
+      // Info: (20240313 - Julian) 將資料轉換成 IInteractionItem 的格式
+      .map((item: IInteraction) => {
+        return {
+          id: item.id,
+          type: item.type,
+          chainId: item.chainId,
+          publicTag: item.publicTag,
+          createdTimestamp: item.createdTimestamp,
+          transactionCount: item.transactionCount,
+          redFlagCount: item.redFlagCount,
+        };
+      });
     const totalPages = Math.ceil(filterInteractedData.length / offset);
 
     const result: IInteractionList = {
-      // Info: (20240312 - Julian) 依照分頁取得資料
-      interactedData: filterInteractedData.slice((page - 1) * offset, page * offset),
+      interactedData: paginatedInteractedData,
       totalPages,
     };
 
