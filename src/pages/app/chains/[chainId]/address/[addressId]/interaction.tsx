@@ -21,6 +21,7 @@ import {
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortMostAndLeastOptions,
+  sortOldAndNewOptions,
 } from '../../../../../../constants/config';
 import Pagination from '../../../../../../components/pagination/pagination';
 import {AppContext} from '../../../../../../contexts/app_context';
@@ -132,6 +133,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
 
   // Info: (20231214 - Julian) SortingMenu 選項的顯示文字
   const sortingOptions = typeOptions.map(typeOption => typeOption.text);
+  const sortByOptions = [...sortMostAndLeastOptions, ...sortOldAndNewOptions];
 
   const backClickHandler = () => router.back();
 
@@ -140,7 +142,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   );
   // Info: (20231214 - Julian) Search Filter
   const [search, setSearch] = useState('');
-  const [sorting, setSorting] = useState<string>(sortMostAndLeastOptions[0]);
+  const [sorting, setSorting] = useState<string>(sortByOptions[0]);
   const [period, setPeriod] = useState(default30DayPeriod);
 
   // Info: (20231214 - Julian) Pagination
@@ -262,11 +264,11 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
             <DatePicker period={period} setFilteredPeriod={setPeriod} />
           </div>
-          {/* Info: (20231108 - Julian) Sorting Menu */}
+          {/* Info: (20231108 - Julian) Sort by Menu */}
           <div className="relative flex w-full items-center text-sm lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
             <SortingMenu
-              sortingOptions={sortMostAndLeastOptions}
+              sortingOptions={sortByOptions}
               sorting={sorting}
               setSorting={setSorting}
               bgColor="bg-darkPurple"
