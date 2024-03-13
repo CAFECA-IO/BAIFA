@@ -5,14 +5,14 @@ import useOuterClick from '../../lib/hooks/use_outer_click';
 import {FaChevronDown} from 'react-icons/fa';
 import {convertStringToSortingType, truncateText} from '../../lib/common';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
-import {SortingType} from '../../constants/api_request';
+import {TimeSortingType} from '../../constants/api_request';
 
 interface ISearchFilter {
   sortingOptions: string[];
   sorting: string;
   setSorting: Dispatch<SetStateAction<string>>;
   bgColor: string;
-  sortingHandler?: ({order}: {order: SortingType}) => Promise<void>;
+  sortingHandler?: ({order}: {order: TimeSortingType}) => Promise<void>;
   loading?: boolean;
   sortPrefix?: string;
 }

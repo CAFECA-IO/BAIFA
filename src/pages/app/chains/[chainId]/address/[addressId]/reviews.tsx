@@ -19,7 +19,7 @@ import {
   ITEM_PER_PAGE,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
-import {IPaginationOptions, SortingType} from '../../../../../../constants/api_request';
+import {IPaginationOptions, TimeSortingType} from '../../../../../../constants/api_request';
 import Pagination from '../../../../../../components/pagination/pagination';
 
 interface IReviewDetailsPageProps {
@@ -54,7 +54,7 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
     }
     (async () => {
       const option = {
-        order: SortingType.DESC,
+        sort: TimeSortingType.DESC,
         page: activePage,
         offset: ITEM_PER_PAGE,
       };
@@ -69,7 +69,7 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
   useEffect(() => {
     (async () => {
       const option = {
-        order: convertStringToSortingType(sorting),
+        sort: convertStringToSortingType(sorting),
         page: activePage,
         offset: ITEM_PER_PAGE,
       };

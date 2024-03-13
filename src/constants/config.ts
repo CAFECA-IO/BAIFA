@@ -46,7 +46,7 @@ export const default30DayPeriod = {
 export const ITEM_PER_PAGE = 10;
 export const DEFAULT_PAGE = 1;
 
-export const copyright = 'BAIFA @ 2023. All rights reserved.';
+export const copyright = 'BAIFA @ 2024. All rights reserved.';
 
 /* Info: (20230711 - Julian) ----- Landing Page ----- */
 export const SCROLL_END = 530;
@@ -202,7 +202,7 @@ export const chainIdToCurrencyName = [
   {id: 'isun', name: 'iSunCloud'},
 ];
 
-export const INPUT_SUGGESTION_LIMIT = 20;
+export const INPUT_SUGGESTION_LIMIT = 10;
 
 export const THRESHOLD_FOR_BLOCK_STABILITY = {
   HIGH: 20,
@@ -221,7 +221,7 @@ export const DEFAULT_INTERACTED_ACCOUNT_COUNT = 0;
 export const DEFAULT_REVIEWS_COUNT_IN_PAGE = 3;
 export const DEFAULT_RED_FLAG_COUNT_IN_PAGE = 3;
 
-export const RED_FLAG_CODE_WHEN_NULL = 9999999999;
+export const CODE_WHEN_NULL = 9999999999;
 
 export const sortMostAndLeastOptions = ['SORTING.MOST', 'SORTING.LEAST'];
 
