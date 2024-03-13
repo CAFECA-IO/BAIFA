@@ -40,6 +40,7 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
   const {getEvidenceDetail, getEvidenceTransactions} = useContext(MarketContext);
 
   const [evidenceData, setEvidenceData] = useState<IEvidenceDetail>({} as IEvidenceDetail);
+  // ToDo: (20240313 - Julian) data not found
   const [isNoData, setIsNoData] = useState(false);
 
   // Info: (20240227 - Julian) Transaction History States
@@ -93,17 +94,6 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
     getTransactionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Info: (20240219 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!evidenceData.chainId) {
-        setIsNoData(true);
-      }
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [evidenceData]);
 
   useEffect(() => {
     const pageStr = `page=${activePage}`;

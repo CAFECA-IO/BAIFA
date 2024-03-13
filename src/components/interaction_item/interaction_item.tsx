@@ -79,7 +79,7 @@ const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemPro
       {/* Info: (20231108 - Julian) Address/Contract ID */}
       {displayIds}
       <div className="hidden items-center lg:inline-flex">
-        <p className="w-60px whitespace-nowrap text-right text-sm">
+        <p className="w-120px whitespace-nowrap text-right text-sm">
           <Link href={transactionLink} className="text-primaryBlue underline underline-offset-2">
             {transactionCount}
           </Link>{' '}

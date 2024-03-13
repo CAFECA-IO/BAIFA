@@ -116,7 +116,7 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
               {/* Info: (20231018 -Julian) Review Title */}
               <div className="flex w-full flex-1 flex-col items-center justify-center space-y-6">
                 <h1 className="text-2xl font-bold lg:text-48px">{t('REVIEWS_PAGE.TITLE')}</h1>
-                <div className="flex items-center space-x-2">
+                <div className="flex w-full grow items-center justify-center space-x-2 text-xl">
                   <Image
                     src={chainIcon.src}
                     alt={chainIcon.alt}

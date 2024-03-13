@@ -33,7 +33,7 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
   const {getTransactionDetail} = useContext(MarketContext);
 
   const headTitle = `${t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')} ${transactionId} - BAIFA`;
-
+  // ToDo: (20240313 - Julian) data not found
   const [isNoData, setIsNoData] = useState(false);
   const [transactionData, setTransactionData] = useState<ITransactionDetail>(
     {} as ITransactionDetail
@@ -60,17 +60,6 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
     getTransactionData(chainId, transactionId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Info: (20240217 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!transactionData.chainId) {
-        setIsNoData(true);
-      }
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [transactionData]);
 
   // Info: (20231017 - Julian) 有 flagging 的話，就顯示 Add in Tracing Tool 按鈕
   const isAddInTracingTool =

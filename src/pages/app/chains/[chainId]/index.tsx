@@ -36,6 +36,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const [activeTab, setActiveTab] = useState<ChainDetailTab>(ChainDetailTab.BLOCKS);
   const [chainData, setChainData] = useState<IChain>({} as IChain);
   const [isLoading, setIsLoading] = useState(true);
+  // ToDo: (20240313 - Julian) data not found
   const [isNoData, setIsNoData] = useState(false);
 
   useEffect(() => {
@@ -60,18 +61,6 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     getChainData(chainId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    // Info: (20240217 - Julian) 如果沒有 3 秒內沒有資料，就顯示 No Data，並且停止 Loading
-    const timer = setTimeout(() => {
-      if (!chainData.chainId) {
-        setIsNoData(true);
-        setIsLoading(false);
-      }
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [chainData]);
 
   // Info: (20240217 - Julian) 如果 isNoData 為 true，顯示預設值
   const {chainId: chainIdFromData, chainName} = isNoData
