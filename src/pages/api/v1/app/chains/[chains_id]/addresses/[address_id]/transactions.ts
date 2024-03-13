@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         gte: start_date,
         lte: end_date,
       },
-      hash: search ? {contains: search} : undefined,
+      hash: search ? {startsWith: search} : undefined,
     };
     const totalCount = await prisma.transactions.count({
       where: {
