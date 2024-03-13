@@ -237,6 +237,21 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     }
   );
 
+  const {data, isLoading, error} = useAPIResponse<string>(
+    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/transactions/suggestions`,
+    {
+      method: HttpMethod.GET,
+    }
+  );
+
+  // eslint-disable-next-line no-console
+  console.log(
+    'in DetailedAddressPage: transactionData',
+    transactionData,
+    'transaction suggestions',
+    data
+  );
+
   const {
     data: blocksData,
     isLoading: isBlocksDataLoading,
