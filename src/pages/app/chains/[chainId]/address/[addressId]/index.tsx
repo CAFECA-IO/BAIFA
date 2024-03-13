@@ -241,11 +241,14 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/transactions/suggestions`,
     {
       method: HttpMethod.GET,
-    }
+    },
+    {search_input: transactionSearch}
   );
 
   // eslint-disable-next-line no-console
   console.log(
+    'transactionSearch',
+    transactionSearch,
     'in DetailedAddressPage: transactionData',
     transactionData,
     'transaction suggestions',
@@ -276,6 +279,10 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')} ${addressId} - BAIFA`;
 
   const chainIcon = getChainIcon(chainId);
+
+  const getSearchSuggestions = (searchInput: string) => {
+    setTransactionSearch(searchInput);
+  };
 
   useEffect(() => {
     if (!appCtx.isInit) {
