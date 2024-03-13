@@ -177,8 +177,6 @@ const ReviewSectionSkeleton = () => {
   );
 };
 
-const randomSuggestions = ['asdfg', 'qwer', '2m2ml', '6ktrni', 'mwntsb'];
-
 const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
@@ -357,7 +355,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       period={transactionPeriod}
       setPeriod={setTransactionPeriod}
       setSearch={setTransactionSearch}
-      suggestions={randomSuggestions}
+      // TODO: (20240313 - Shirley) add suggestions
+      // suggestions={randomSuggestions}
     />
   );
 
