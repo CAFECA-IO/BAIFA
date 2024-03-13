@@ -46,7 +46,7 @@ const TransactionHistoryItem = ({transaction}: ITransactionHistoryItemProps) => 
           </p>
           <h2
             title={transaction.id}
-            className="w-100px grow space-x-2 overflow-hidden text-ellipsis whitespace-nowrap lg:w-500px"
+            className="w-80px grow space-x-2 overflow-hidden text-ellipsis whitespace-nowrap lg:w-250px xl:w-500px"
           >
             {transaction.id}
           </h2>
