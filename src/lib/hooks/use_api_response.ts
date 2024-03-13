@@ -1,4 +1,4 @@
-// Info: 與 `useAPIWorker` 做比較，有時候不要另開線程會比較快，管理 API 的調用，包含發起 request 跟取消 request 的功能，但目前只有 GET (20240227 - Shirley)
+// Info: 與 `useAPIWorker` 做比較，有時候不要另開線程會比較快，管理 API 的調用，包含發起 request 跟取消 request 的功能 (20240227 - Shirley)
 import {useEffect, useCallback} from 'react';
 import useStateRef from 'react-usestateref';
 import {
@@ -48,11 +48,18 @@ async function fetchData<Data>(
   }
 }
 
+/**Info: A custom hook to manage API calls (20240313 - Shirley)
+ *
+ * @param {string} key - The API endpoint.
+ * @param {RequestOptions} options - The options for the API request.
+ * @param {QueryParams} [queryParams] - The query parameters for the API request.
+ * @param {boolean} [cancel] - A flag to indicate whether the API request should be cancellable when it's duplicate.
+ *
+ * @returns {FetcherResponse<Data>} - The response from the API call.
+ */
 function useAPIResponse<Data>(
   key: string,
   options: RequestOptions,
-  // method: HttpMethod = HttpMethod.GET,
-  // body: any = null,
   queryParams?: QueryParams,
   cancel?: boolean
 ): FetcherResponse<Data> {
