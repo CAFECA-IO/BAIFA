@@ -11,7 +11,14 @@ export interface IInteractionItem extends ICommonData {
   publicTag: string[];
 }
 
+export interface IInteraction extends ICommonData {
+  type: AddressType.ADDRESS | AddressType.CONTRACT;
+  transactionCount: number;
+  redFlagCount: number;
+  publicTag: string[];
+}
+
 export interface IInteractionList {
-  interactedData: IInteractionItem[];
+  interactedData: IInteraction[];
   totalPages: number;
 }
