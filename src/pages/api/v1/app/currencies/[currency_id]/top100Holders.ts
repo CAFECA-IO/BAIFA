@@ -44,23 +44,63 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
     const decimal = decimalsOfChain?.decimals ?? 0;
 
-    // Info: (20240312 - Liz) 從 token_balances Table 中取得 holders，並做條件篩選以及分頁
-    const holderData = await prisma.token_balances.findMany({
-      where: {
-        currency_id: currency_id,
-        address: search ? {contains: search} : undefined, // Info: (20240312 - Liz) 搜尋條件
-      },
-      select: {
-        address: true,
-        value: true,
-      },
-      orderBy: {
-        value: 'desc', // Info: (20240313 - Liz) 依照持有價值由大到小排序
-      },
-      // Info: (20240313 - Liz) 分頁
-      take,
-      skip,
-    });
+    // Info: (20240314 - Liz) 取得 holders 資料 (依照搜尋判斷)
+    const getHolders = async (currency_id: string | undefined, search: string | undefined) => {
+      if (search) {
+        return await holderDataWithSearch(currency_id, search);
+      } else {
+        return await holderDataWithoutSearch(currency_id);
+      }
+    };
+
+    // Info: (20240314 - Liz) 有搜尋條件的 holders 資料
+    const holderDataWithSearch = async (
+      currency_id: string | undefined,
+      search: string | undefined
+    ) => {
+      // Info: (20240314 - Liz) 先從資料庫取前 100 筆依照持有價值由大到小排序的資料
+      const holderData100Top = await prisma.token_balances.findMany({
+        where: {
+          currency_id: currency_id,
+        },
+        select: {
+          address: true,
+          value: true,
+        },
+        orderBy: {
+          value: 'desc', // Info: (20240314 - Liz) 依照持有價值由大到小排序
+        },
+        take: 100,
+      });
+
+      // Info: (20240314 - Liz) 再從這 100 筆資料中找出地址符合搜尋條件的資料
+      const searchResult = holderData100Top.filter(holder => holder.address === search);
+
+      return searchResult;
+    };
+
+    // Info: (20240314 - Liz) 無搜尋條件的 holders 資料(並且分頁)
+    const holderDataWithoutSearch = async (currency_id: string | undefined) => {
+      const holderData100TopPaged = await prisma.token_balances.findMany({
+        where: {
+          currency_id: currency_id,
+        },
+        select: {
+          address: true,
+          value: true,
+        },
+        orderBy: {
+          value: 'desc', // Info: (20240313 - Liz) 依照持有價值由大到小排序
+        },
+        // Info: (20240313 - Liz) 分頁
+        take,
+        skip,
+      });
+
+      return holderData100TopPaged;
+    };
+
+    const holderData = await getHolders(currency_id, search);
 
     // Info: (20240312 - Liz) 取得 holders 總筆數
     const totalHoldersAmount = await prisma.token_balances.count({
@@ -119,7 +159,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const result = {
       holdersData: holderDataFormat,
-      totalPages: totalPages,
+      totalPages: search ? 1 : totalPages, // Info: (20240314 - Liz) 搜尋存在的話，這裡會只找到一筆資料，所以總頁數設定 1
     };
 
     prisma.$connect();

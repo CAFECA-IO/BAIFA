@@ -135,7 +135,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     res.status(200).json(result);
   } catch (error) {
-    // Info: (今天 - Liz) Request error
+    // Info: (20240314 - Liz) Request error
     // eslint-disable-next-line no-console
     console.error('Error fetching red flag detail data (022):', error);
     res.status(500).json({} as ResponseData);

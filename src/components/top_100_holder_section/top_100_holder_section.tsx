@@ -35,6 +35,11 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
   const [activePage, setActivePage] = useState(1);
   const totalPages = top100HoldersData.totalPages ?? 0;
 
+  // Info: (20240314 - Liz) 當搜尋條件改變時，將 activePage 設為 1
+  useEffect(() => {
+    setActivePage(1);
+  }, [search]);
+
   // Info: (20240312 - Liz) Call API to get Top 100 Holders data
   useEffect(() => {
     const fetchHolderData = async () => {
