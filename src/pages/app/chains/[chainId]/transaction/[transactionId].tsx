@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect} from 'react';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
@@ -16,10 +16,11 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {BFAURL} from '../../../../../constants/url';
 import {AppContext} from '../../../../../contexts/app_context';
-import {MarketContext} from '../../../../../contexts/market_context';
+import useAPIResponse from '../../../../../lib/hooks/use_api_response';
 import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../../../../constants/config';
 import DataNotFound from '../../../../../components/data_not_found/data_not_found';
+import {APIURL, HttpMethod} from '../../../../../constants/api_request';
 
 interface ITransactionDetailPageProps {
   transactionId: string;
@@ -30,40 +31,32 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getTransactionDetail} = useContext(MarketContext);
 
   const headTitle = `${t('TRANSACTION_DETAIL_PAGE.MAIN_TITLE')} ${transactionId} - BAIFA`;
-  // ToDo: (20240313 - Julian) data not found
-  const [isNoData, setIsNoData] = useState(false);
-  const [transactionData, setTransactionData] = useState<ITransactionDetail>(
-    {} as ITransactionDetail
+
+  const {
+    data: transactionData,
+    isLoading: isTransactionLoading,
+    error: transactionError,
+  } = useAPIResponse<ITransactionDetail>(
+    `${APIURL.CHAINS}/${chainId}/transactions/${transactionId}`,
+    {method: HttpMethod.GET}
   );
 
   const chainIcon = getChainIcon(chainId);
   const backClickHandler = () => router.back();
+  const isData = !!transactionData && !transactionError;
 
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
-
-    const getTransactionData = async (chainId: string, blockId: string) => {
-      try {
-        const data = await getTransactionDetail(chainId, blockId);
-        setTransactionData(data);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('getBlockDetail error', error);
-      }
-    };
-
-    getTransactionData(chainId, transactionId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Info: (20231017 - Julian) 有 flagging 的話，就顯示 Add in Tracing Tool 按鈕
   const isAddInTracingTool =
-    !!transactionData.flaggingRecords && transactionData.flaggingRecords.length !== 0
+    !!transactionData?.flaggingRecords && transactionData.flaggingRecords.length !== 0
       ? 'block'
       : 'hidden';
 
@@ -113,13 +106,13 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
   );
 
   // Info: (20240217 - Julian) 如果沒有資料，就顯示 DataNotFound
-  const isTransactionData = isNoData ? (
-    <DataNotFound />
+  const isTransactionData = isData ? (
+    <TransactionDetail isLoading={isTransactionLoading} transactionData={transactionData} />
   ) : (
-    <TransactionDetail transactionData={transactionData} />
+    <DataNotFound />
   );
 
-  const isPrivateNoteSection = isNoData ? null : <PrivateNoteSection />;
+  const isPrivateNoteSection = isData ? <PrivateNoteSection /> : null;
 
   return (
     <>

@@ -10,13 +10,13 @@ import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {TransactionStatus, DefaultTransactionStatus} from '../../constants/transaction_status';
 import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
 import Skeleton from '../skeleton/skeleton';
-import {useState, useEffect} from 'react';
 
 interface ITransactionDetailProps {
   transactionData: ITransactionDetail;
+  isLoading: boolean;
 }
 
-const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
+const TransactionDetail = ({transactionData, isLoading}: ITransactionDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     hash,
@@ -32,22 +32,9 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     unit,
   } = transactionData;
 
-  const [isShow, setIsShow] = useState(false);
-
-  useEffect(() => {
-    // Info: (20240217 - Julian) 如果沒有拿到資料就持續 Loading
-    if (!transactionData.id) return;
-    // Info: (20240217 - Julian) 1 秒後顯示資料
-    const timer = setTimeout(() => {
-      setIsShow(true);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [transactionData]);
-
   const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
 
-  const displayHash = isShow ? (
+  const displayHash = !isLoading ? (
     <p className="break-all">{hash}</p>
   ) : (
     // Info: (20240206 - Julian) Loading Animation
@@ -56,7 +43,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
 
   // Info: (20240205 - Julian) 根據 status 取得對應的圖示、文字內容和顏色；沒有 status 對應的內容時就使用預設值
   const statusContent = TransactionStatus[status] ?? DefaultTransactionStatus;
-  const displayStatus = isShow ? (
+  const displayStatus = !isLoading ? (
     <div className="flex items-center">
       <Image src={statusContent.icon} width={20} height={20} alt={t(statusContent.text)} />
       <p className={`ml-2 text-sm lg:text-base ${statusContent.color}`}>{t(statusContent.text)}</p>
@@ -69,7 +56,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     </div>
   );
 
-  const displayBlock = isShow ? (
+  const displayBlock = !isLoading ? (
     <Link href={blockLink}>
       <BoltButton className="w-fit px-3 py-1" color="blue" style="solid">
         {t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} {blockId}
@@ -80,7 +67,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     <Skeleton height={24} width={80} />
   );
 
-  const displayTime = isShow ? (
+  const displayTime = !isLoading ? (
     <div className="flex flex-wrap items-center space-x-2">
       <p>{timestampToString(createdTimestamp).date}</p>
       <p>{timestampToString(createdTimestamp).time}</p>
@@ -117,7 +104,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     ) : (
       <p>{t('COMMON.NONE')}</p>
     );
-  const displayFrom = isShow ? fromList : <Skeleton height={24} width={80} />;
+  const displayFrom = !isLoading ? fromList : <Skeleton height={24} width={80} />;
 
   const toList =
     // Info: (20240205 - Julian) 如果 to 不為 null 且長度不是 0，則印出 to 的內容；否則顯示 NONE
@@ -143,7 +130,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     ) : (
       <p>{t('COMMON.NONE')}</p>
     );
-  const displayTo = isShow ? toList : <Skeleton height={24} width={80} />;
+  const displayTo = !isLoading ? toList : <Skeleton height={24} width={80} />;
 
   const evidence = !!evidenceId ? (
     <Link title={evidenceId} href={getDynamicUrl(`${chainId}`, `${evidenceId}`).EVIDENCE}>
@@ -154,9 +141,9 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
   ) : (
     <p>{t('COMMON.NONE')}</p>
   );
-  const displayContent = isShow ? evidence : <Skeleton height={24} width={80} />;
+  const displayContent = !isLoading ? evidence : <Skeleton height={24} width={80} />;
 
-  const displayFee = isShow ? (
+  const displayFee = !isLoading ? (
     <p>
       {fee} {unit}
     </p>
@@ -165,7 +152,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     <Skeleton height={24} width={80} />
   );
 
-  const displayValue = isShow ? (
+  const displayValue = !isLoading ? (
     <Link href={BFAURL.COMING_SOON}>
       <p className="text-primaryBlue underline underline-offset-2">{t('COMMON.LOG_IN_ONLY')}</p>
     </Link>
@@ -190,7 +177,7 @@ const TransactionDetail = ({transactionData}: ITransactionDetailProps) => {
     ) : (
       <p>{t('COMMON.NONE')}</p>
     );
-  const displayFlagging = isShow ? Flagging : <Skeleton height={24} width={80} />;
+  const displayFlagging = !isLoading ? Flagging : <Skeleton height={24} width={80} />;
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">

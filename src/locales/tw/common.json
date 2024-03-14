@@ -384,7 +384,8 @@
     "RED_FLAG_ITEM_TITLE": "警示記錄",
     "NO_DATA_FOUND": "找不到資料 :(",
     "NO_DATA": "無資料",
-    "RED_FLAGS_OF": "筆警示記錄"
+    "RED_FLAGS_OF": "筆警示記錄",
+    "LOADING": "載入中..."
   },
   "PUBLIC_TAG": {
     "TITLE": "公開標籤",
