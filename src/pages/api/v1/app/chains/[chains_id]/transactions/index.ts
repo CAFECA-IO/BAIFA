@@ -13,7 +13,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
   // Info: (20240222 - Julian) query string
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
-  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  // const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
+
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
   const start_date =
     typeof req.query.start_date === 'string' ? parseInt(req.query.start_date) : undefined;
@@ -22,6 +24,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   // Info: (20240119 - Julian) 判斷是否有 addressId
   const addressId = typeof req.query.addressId === 'object' ? req.query.addressId : undefined;
+
+  // eslint-disable-next-line no-console
+  console.log('sort in transactions/index.ts:', sort);
 
   try {
     // Info: (20240119 - Julian) 計算分頁的 skip 與 take
@@ -46,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const typeList = codes.filter(code => code.table_column === 'type');
 
     // Info: (20240222 - Julian) 排序
-    const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
+    // const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
     if (!addressId) {
       // Info: (20240117 - Julian) ========= Transactions of a chain =========
@@ -78,11 +83,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         orderBy: [
           {
             // Info: (20240222 - Julian) 1. created_timestamp 由 sorting 決定
-            created_timestamp: sorting,
+            created_timestamp: sort,
           },
           {
             // Info: (20240222 - Julian) 2. id 由小到大
-            id: 'asc',
+            id: sort,
           },
         ],
         // Info: (20240119 - Julian) 分頁
@@ -151,11 +156,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         orderBy: [
           {
             // Info: (20240222 - Julian) 1. created_timestamp 由 sorting 決定
-            created_timestamp: sorting,
+            created_timestamp: sort,
           },
           {
             // Info: (20240222 - Julian) 2. id 由小到大
-            id: 'asc',
+            id: sort,
           },
         ],
         // Info: (20240119 - Julian) 分頁

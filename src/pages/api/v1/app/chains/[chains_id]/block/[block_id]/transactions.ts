@@ -16,12 +16,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     typeof req.query.block_id === 'string' ? parseInt(req.query.block_id) : undefined;
   // Info: (20240221 - Julian) query string
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
-  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  // const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
+
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
   const start_date =
     typeof req.query.start_date === 'string' ? parseInt(req.query.start_date) : undefined;
   const end_date =
     typeof req.query.end_date === 'string' ? parseInt(req.query.end_date) : undefined;
+
+  // eslint-disable-next-line no-console
+  console.log('sort in transactions/index.ts:', sort);
 
   try {
     // Info: (20240125 - Julian) 計算分頁的 skip 與 take
@@ -29,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const take = ITEM_PER_PAGE; // (20240119 - Julian) 取幾筆
 
     // Info: (20240222 - Julian) 排序
-    const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
+    // const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
     // Info: (20240119 - Julian) 從 blocks Table 撈出 block_id 對應的 blockhash
     const blockHash = await prisma.blocks.findUnique({
@@ -69,11 +74,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           orderBy: [
             {
               // Info: (20240222 - Julian) 1. created_timestamp 由 sorting 決定
-              created_timestamp: sorting,
+              created_timestamp: sort,
             },
             {
-              // Info: (20240222 - Julian) 2. id 由小到大
-              id: 'asc',
+              // Info: (20240314 - Shirley) 2. id 跟 created_timestamp 同方向
+              id: sort,
             },
           ],
           // Info: (20240125 - Julian) 分頁
