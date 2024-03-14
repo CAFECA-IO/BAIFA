@@ -4,6 +4,8 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../../prisma/client';
 import {ITEM_PER_PAGE} from '../../../../../../../constants/config';
 import {IBlock, IBlockList} from '../../../../../../../interfaces/block';
+import {StabilityLevel} from '../../../../../../../constants/stability_level';
+import {assessBlockStability} from '../../../../../../../lib/common';
 
 type ResponseData = IBlockList;
 
@@ -21,6 +23,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     typeof req.query.end_date === 'string' ? parseInt(req.query.end_date) : undefined;
 
   try {
+    let stability = StabilityLevel.LOW;
+
     // Info: (20240119 - Julian) 計算分頁的 skip 與 take
     const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // (20240119 - Julian) 跳過前面幾筆
     const take = ITEM_PER_PAGE; // (20240119 - Julian) 取幾筆
@@ -38,6 +42,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     };
     // Info: (20240221 - Julian) 排序
     const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
+
+    const latestBlock = await prisma.blocks.findFirst({
+      orderBy: {
+        created_timestamp: 'desc',
+      },
+      select: {
+        number: true,
+      },
+    });
 
     // Info: (20240216 - Julian) 取得 blocks 筆數
     const totalBlocks = await prisma.blocks.count({where});
@@ -67,12 +80,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const blockList: IBlock[] = blocks.map(block => {
+      if (latestBlock && latestBlock.number) {
+        const targetBlockId = block.number ? +block.number : 0;
+        stability = assessBlockStability(targetBlockId, latestBlock.number);
+      }
       return {
         id: `${block.number}`,
         chainId: `${block.chain_id}`,
         createdTimestamp: block.created_timestamp ?? 0,
-        // ToDo: (20240118 - Julian) 參考 codes Table，補上這個欄位
-        stability: 'HIGH',
+        stability: stability,
       };
     });
 
