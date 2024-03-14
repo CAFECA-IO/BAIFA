@@ -1,29 +1,47 @@
-// create a Hello World API
 import type {NextApiRequest, NextApiResponse} from 'next';
+import prisma from '../../../../../../../../../../prisma/client';
+import {INPUT_SUGGESTION_LIMIT} from '../../../../../../../../../constants/config';
 
 type ResponseData = {
   suggestions: string[];
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
+  const chain_id =
+    typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
   const searchInput = req.query.search_input as string;
 
-  if (!searchInput) {
+  if (!address_id || !chain_id) {
+    return res.status(400).json({suggestions: []});
+  } else if (!searchInput) {
     return res.status(200).json({suggestions: []});
   }
 
   try {
-    // generate randome suggestions
     const suggestions = new Set();
-    suggestions.add(searchInput);
-    suggestions.add('Hello');
-    suggestions.add('World');
-    suggestions.add('API');
+
+    const transactions = await prisma.transactions.findMany({
+      where: {
+        AND: [
+          {hash: {startsWith: searchInput}},
+          {related_addresses: {hasSome: [address_id]}},
+          {chain_id: chain_id},
+        ],
+      },
+      take: INPUT_SUGGESTION_LIMIT,
+      select: {
+        hash: true,
+      },
+    });
+
+    transactions.forEach(item => {
+      if (item.hash && item.hash.startsWith(searchInput)) {
+        suggestions.add(item.hash);
+      }
+    });
 
     const limitedSuggestions = Array.from(suggestions).slice(0, 5) as string[];
-
-    // eslint-disable-next-line no-console
-    console.log('limitedSuggestions', limitedSuggestions);
 
     return res.status(200).json({suggestions: limitedSuggestions});
   } catch (error) {

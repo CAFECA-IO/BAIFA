@@ -57,6 +57,8 @@ import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import {IDatePeriod} from '../../../../../../interfaces/date_period';
+import useStateRef from 'react-usestateref';
+import {ISuggestions} from '../../../../../../interfaces/suggestions';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;
@@ -177,6 +179,8 @@ const ReviewSectionSkeleton = () => {
   );
 };
 
+const randomSuggestions = ['123', '456', '789'];
+
 const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
@@ -191,7 +195,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   );
   const [transactionPeriod, setTransactionPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [transactionSorting, setTransactionSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [transactionSearch, setTransactionSearch] = useState<string>('');
+  const [transactionSearch, setTransactionSearch, transactionSearchRef] = useStateRef<string>('');
+  const [transactionInputForSuggestions, setTransactionInputForSuggestions] = useState<string>('');
 
   const [blocksActivePage, setBlocksActivePage] = useState<number>(
     blocks_page ? +blocks_page : DEFAULT_PAGE
@@ -237,24 +242,6 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     }
   );
 
-  const {data, isLoading, error} = useAPIResponse<string>(
-    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/transactions/suggestions`,
-    {
-      method: HttpMethod.GET,
-    },
-    {search_input: transactionSearch}
-  );
-
-  // eslint-disable-next-line no-console
-  console.log(
-    'transactionSearch',
-    transactionSearch,
-    'in DetailedAddressPage: transactionData',
-    transactionData,
-    'transaction suggestions',
-    data
-  );
-
   const {
     data: blocksData,
     isLoading: isBlocksDataLoading,
@@ -274,14 +261,33 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     }
   );
 
+  const searchInput: {[key: string]: string} = {};
+  if (!!transactionSearchRef.current) {
+    searchInput['search_input'] = transactionSearchRef.current;
+  }
+
+  const {
+    data: suggestions,
+    isLoading,
+    error,
+  } = useAPIResponse<ISuggestions>(
+    `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/transactions/suggestions`,
+    {
+      method: HttpMethod.GET,
+    },
+    // searchInput,
+    {search_input: transactionInputForSuggestions},
+    true
+  );
+
   const {publicTag, score} = addressBriefData ?? ({} as IAddressBrief);
 
   const headTitle = `${t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')} ${addressId} - BAIFA`;
 
   const chainIcon = getChainIcon(chainId);
 
-  const getSearchSuggestions = (searchInput: string) => {
-    setTransactionSearch(searchInput);
+  const getSearchSuggestions = (input: string) => {
+    setTransactionInputForSuggestions(input);
   };
 
   useEffect(() => {
@@ -378,7 +384,15 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       setPeriod={setTransactionPeriod}
       setSearch={setTransactionSearch}
       // TODO: (20240313 - Shirley) add suggestions
-      // suggestions={randomSuggestions}
+      // suggestions={!!suggestions && suggestions?.length > 0 ? suggestions : randomSuggestions}
+      // suggestions={transactionSuggestion}
+      suggestions={
+        !!suggestions?.suggestions && suggestions?.suggestions.length > 0
+          ? suggestions.suggestions
+          : []
+      }
+      // suggestions={suggestions ?? ['123']}
+      getSearch={getSearchSuggestions}
     />
   );
 
