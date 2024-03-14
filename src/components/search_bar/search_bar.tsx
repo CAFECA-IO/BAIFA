@@ -188,7 +188,7 @@ export const SearchBarWithSuggestions = ({
       </div>
       <ul
         className={`absolute left-2 top-14 w-95% flex-col rounded-sm bg-purpleLinear lg:left-6 ${
-          suggestionVisible ? 'flex' : 'flex'
+          suggestionVisible ? 'flex' : 'hidden'
         } hideScrollbar z-10 max-h-200px overflow-y-auto opacity-90 lg:max-h-300px`}
       >
         {suggestionList}
