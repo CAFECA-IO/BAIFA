@@ -12,7 +12,7 @@ import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import BlockDetail from '../../../../../../components/block_detail/block_detail';
 import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {IBlockDetail} from '../../../../../../interfaces/block';
+import {IBlockDetail, dummyBlockDetail} from '../../../../../../interfaces/block';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {getDynamicUrl} from '../../../../../../constants/url';
@@ -80,12 +80,11 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
     </div>
   );
 
-  const isBlockData =
-    !!blockData && !blockError ? (
-      <BlockDetail isLoading={isBlockLoading} blockData={blockData} />
-    ) : (
-      <DataNotFound />
-    );
+  const isBlockData = !blockError ? (
+    <BlockDetail isLoading={isBlockLoading} blockData={blockData ?? dummyBlockDetail} />
+  ) : (
+    <DataNotFound />
+  );
 
   return (
     <>

@@ -153,14 +153,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
         // Info: (20240222 - Julian) 排序方式：
         orderBy: [
-          {
-            // Info: (20240222 - Julian) 1. created_timestamp 由 sorting 決定
-            created_timestamp: sorting,
-          },
-          {
-            // Info: (20240222 - Julian) 2. id 由小到大
-            id: 'asc',
-          },
+          // Info: (20240222 - Julian) 1. created_timestamp 由 sorting 決定
+          {created_timestamp: sorting},
+          // Info: (20240222 - Julian) 2. id 排序和 created_timestamp 一致
+          {id: sorting},
         ],
         // Info: (20240119 - Julian) 分頁
         skip: skip,

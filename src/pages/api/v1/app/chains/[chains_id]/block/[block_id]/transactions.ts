@@ -15,17 +15,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const block_id =
     typeof req.query.block_id === 'string' ? parseInt(req.query.block_id) : undefined;
   // Info: (20240221 - Julian) query string
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : 1;
   const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
   const start_date =
-    typeof req.query.start_date === 'string' ? parseInt(req.query.start_date) : undefined;
+    typeof req.query.start_date === 'string' && parseInt(req.query.start_date, 10) > 0
+      ? parseInt(req.query.start_date, 10)
+      : undefined;
   const end_date =
-    typeof req.query.end_date === 'string' ? parseInt(req.query.end_date) : undefined;
+    typeof req.query.end_date === 'string' && parseInt(req.query.end_date, 10) > 0
+      ? parseInt(req.query.end_date, 10)
+      : undefined;
 
   try {
     // Info: (20240125 - Julian) 計算分頁的 skip 與 take
-    const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // (20240119 - Julian) 跳過前面幾筆
+    const skip = (page - 1) * ITEM_PER_PAGE; // (20240119 - Julian) 跳過前面幾筆
     const take = ITEM_PER_PAGE; // (20240119 - Julian) 取幾筆
 
     // Info: (20240222 - Julian) 排序
@@ -67,14 +71,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           },
           // Info: (20240222 - Julian) 排序方式：
           orderBy: [
-            {
-              // Info: (20240222 - Julian) 1. created_timestamp 由 sorting 決定
-              created_timestamp: sorting,
-            },
-            {
-              // Info: (20240222 - Julian) 2. id 由小到大
-              id: 'asc',
-            },
+            // Info: (20240222 - Julian) 1. created_timestamp 由 sorting 決定
+            {created_timestamp: sorting},
+            // Info: (20240222 - Julian) 2. id 排序和 created_timestamp 一致
+            {id: sorting},
           ],
           // Info: (20240125 - Julian) 分頁
           skip: skip,

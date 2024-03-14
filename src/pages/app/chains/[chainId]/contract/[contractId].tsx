@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import useAPIResponse from '../../../../../lib/hooks/use_api_response';
 import {useRouter} from 'next/router';
 import {useContext, useState, useEffect} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
@@ -14,12 +15,11 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
-import {IContractDetail} from '../../../../../interfaces/contract';
+import {IContractDetail, dummyContractDetail} from '../../../../../interfaces/contract';
 import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
 import TransactionHistorySection from '../../../../../components/transaction_history_section/transaction_history_section';
 import Tooltip from '../../../../../components/tooltip/tooltip';
 import {AppContext} from '../../../../../contexts/app_context';
-import {MarketContext} from '../../../../../contexts/market_context';
 import {ITransactionHistorySection} from '../../../../../interfaces/transaction';
 import {
   DEFAULT_CHAIN_ICON,
@@ -29,6 +29,7 @@ import {
 } from '../../../../../constants/config';
 import DataNotFound from '../../../../../components/data_not_found/data_not_found';
 import {IDatePeriod} from '../../../../../interfaces/date_period';
+import {APIURL, HttpMethod} from '../../../../../constants/api_request';
 
 interface IContractDetailDetailPageProps {
   chainId: string;
@@ -38,66 +39,52 @@ interface IContractDetailDetailPageProps {
 const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
+  const backClickHandler = () => router.back();
+
   const appCtx = useContext(AppContext);
-  const {getContractDetail, getContractTransactions} = useContext(MarketContext);
+  const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
 
-  const [contractData, setContractData] = useState<IContractDetail>({} as IContractDetail);
-  // ToDo: (20240313 - Julian) data not found
-  const [isNoData, setIsNoData] = useState(false);
-
-  // Info: (20240226 - Julian) Transaction History States
-  const [transactionHistoryData, setTransactionHistoryData] =
-    useState<ITransactionHistorySection>();
+  // Info: (20240226 - Julian) Transaction History query states
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState(sortOldAndNewOptions[0]);
   const [search, setSearch] = useState('');
   const [activePage, setActivePage] = useState(1);
 
-  const [apiQueryStr, setApiQueryStr] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  // Info: (20240314 - Julian) Contract Detail API
+  const {
+    data: contractData,
+    isLoading: isContractDataLoading,
+    error: contractError,
+  } = useAPIResponse<IContractDetail>(`${APIURL.CHAINS}/${chainId}/contracts/${contractId}`, {
+    method: HttpMethod.GET,
+  });
 
-  const headTitle = `${t('CONTRACT_DETAIL_PAGE.MAIN_TITLE')} ${contractId} - BAIFA`;
-  const {publicTag} = contractData;
-
-  const backClickHandler = () => router.back();
-
-  const getContractData = async () => {
-    try {
-      const contractData = await getContractDetail(chainId, contractId);
-      setContractData(contractData);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('getContractData error: ', error);
+  // Info: (20240314 - Julian) Transaction History API
+  const {
+    data: transactionHistoryData,
+    isLoading: isTransactionHistoryDataLoading,
+    error: transactionHistoryError,
+  } = useAPIResponse<ITransactionHistorySection>(
+    `${APIURL.CHAINS}/${chainId}/contracts/${contractId}/transactions`,
+    {method: HttpMethod.GET},
+    {
+      page: activePage,
+      sort: sorting,
+      search: search,
+      start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
+      end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
     }
-  };
-  const getTransactionHistoryData = async () => {
-    setIsLoading(true);
-    try {
-      const transactionHistoryData = await getContractTransactions(
-        chainId,
-        contractId,
-        apiQueryStr
-      );
-      setTransactionHistoryData(transactionHistoryData);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('getTransactionHistoryData error: ', error);
-    }
-    setIsLoading(false);
-  };
+  );
 
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
-
-    getContractData();
-    getTransactionHistoryData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const displayPublicTag = publicTag ? (
-    publicTag.map((tag, index) => (
+  const displayPublicTag = contractData?.publicTag ? (
+    contractData?.publicTag.map((tag, index) => (
       <div
         key={index}
         className="whitespace-nowrap rounded border border-hoverWhite px-4 py-2 text-sm font-bold"
@@ -109,24 +96,7 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
     <></>
   );
 
-  useEffect(() => {
-    const pageStr = `page=${activePage}`;
-    const sortStr = `&sort=${sorting}`;
-    const searchStr = search ? `&search=${search}` : '';
-    const isPeriodValid = period.startTimeStamp && period.endTimeStamp;
-    const timeStampStr = isPeriodValid
-      ? `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`
-      : '';
-
-    setApiQueryStr(`${pageStr}${sortStr}${searchStr}${timeStampStr}`);
-  }, [activePage, search, sorting, period]);
-
-  useEffect(() => {
-    getTransactionHistoryData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiQueryStr]);
-
-  const isPlatformLink = isNoData ? null : (
+  const isPlatformLink = !contractError ? (
     <Link href={BFAURL.COMING_SOON}>
       <BoltButton
         className="group flex w-full items-center justify-center space-x-4 px-6 py-3"
@@ -143,15 +113,18 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
         <p>{t('CONTRACT_DETAIL_PAGE.PLATFORM')}</p>
       </BoltButton>
     </Link>
-  );
+  ) : null;
 
-  const isContractData = isNoData ? (
-    <DataNotFound />
+  const isContractData = !contractError ? (
+    <ContractDetail
+      contractData={contractData ?? dummyContractDetail}
+      isLoading={isContractDataLoading}
+    />
   ) : (
-    <ContractDetail contractData={contractData} />
+    <DataNotFound />
   );
 
-  const isPrivateNoteSection = isNoData ? null : <PrivateNoteSection />;
+  const isPrivateNoteSection = !contractError ? <PrivateNoteSection /> : null;
 
   const {transactions, totalPages, transactionCount} = transactionHistoryData ?? {
     transactions: [],
@@ -159,7 +132,7 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
     transactionCount: 0,
   };
 
-  const isTransactionHistoryData = isNoData ? null : (
+  const isTransactionHistoryData = !transactionHistoryError ? (
     <TransactionHistorySection
       transactions={transactions}
       period={period}
@@ -169,11 +142,11 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
       setSearch={setSearch}
       activePage={activePage}
       setActivePage={setActivePage}
-      isLoading={isLoading}
+      isLoading={isTransactionHistoryDataLoading}
       totalPage={totalPages}
       transactionCount={transactionCount}
     />
-  );
+  ) : null;
 
   return (
     <>

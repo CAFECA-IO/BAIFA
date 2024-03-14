@@ -11,7 +11,7 @@ import PrivateNoteSection from '../../../../../components/private_note_section/p
 import Footer from '../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {ITransactionDetail} from '../../../../../interfaces/transaction';
+import {ITransactionDetail, dummyTransactionDetail} from '../../../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
 import {BFAURL} from '../../../../../constants/url';
@@ -45,7 +45,6 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
 
   const chainIcon = getChainIcon(chainId);
   const backClickHandler = () => router.back();
-  const isData = !!transactionData && !transactionError;
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -106,13 +105,16 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
   );
 
   // Info: (20240217 - Julian) 如果沒有資料，就顯示 DataNotFound
-  const isTransactionData = isData ? (
-    <TransactionDetail isLoading={isTransactionLoading} transactionData={transactionData} />
+  const isTransactionData = !transactionError ? (
+    <TransactionDetail
+      isLoading={isTransactionLoading}
+      transactionData={transactionData ?? dummyTransactionDetail}
+    />
   ) : (
     <DataNotFound />
   );
 
-  const isPrivateNoteSection = isData ? <PrivateNoteSection /> : null;
+  const isPrivateNoteSection = !transactionError ? <PrivateNoteSection /> : null;
 
   return (
     <>
