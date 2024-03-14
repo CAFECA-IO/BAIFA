@@ -12,10 +12,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240129 - Julian) 解構 URL 參數
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
 
-  if (!currency_id) {
-    return res.status(400).json([]);
-  }
-
   try {
     // Info: (20240129 - Julian) 取得 currency 資料
     const currencyData = await prisma.currencies.findUnique({
@@ -83,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     res.status(200).json(result);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.log('Error in /app/currencies/:currency_id/red_flags', error);
+    console.log('Error fetching red flags data from a currency (019):', error);
     res.status(500).json([] as ResponseData);
   }
 }

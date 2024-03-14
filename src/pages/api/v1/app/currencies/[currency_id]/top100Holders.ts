@@ -5,10 +5,10 @@ import prisma from '../../../../../../../prisma/client';
 import {IHolder, ITop100Holders} from '../../../../../../interfaces/currency';
 import {ITEM_PER_PAGE, TOP_100_HOLDER_MAX_TOTAL_PAGES} from '../../../../../../constants/config';
 
-type ResponseData = ITop100Holders | string;
+type ResponseData = ITop100Holders;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  // Info: (20240312 - Liz) query string
+  // Info: (20240312 - Liz) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
@@ -127,7 +127,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   } catch (error) {
     // Info: (20240312 - Liz) Request error
     // eslint-disable-next-line no-console
-    console.error('Error in holders:', error);
+    console.error('Error in fetching top 100 holders data (028):', error);
     res.status(500).json({} as ResponseData);
   }
 }

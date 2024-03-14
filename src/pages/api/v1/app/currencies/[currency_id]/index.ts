@@ -2,15 +2,15 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../prisma/client';
-import {ICurrencyDetailString, IHolder} from '../../../../../../interfaces/currency';
+import {ICurrencyDetailString} from '../../../../../../interfaces/currency';
 import {IRedFlag} from '../../../../../../interfaces/red_flag';
 import {AddressType, IAddressInfo} from '../../../../../../interfaces/address_info';
 import {ITransaction} from '../../../../../../interfaces/transaction';
 
-type ResponseData = ICurrencyDetailString | undefined;
+type ResponseData = ICurrencyDetailString;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  // Info: (20240112 - Julian) 解構 URL 參數
+  // Info: (20240112 - Julian) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
 
   try {
@@ -215,34 +215,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     // Info: (20240221 - Liz) 組合回傳資料並轉換成 API 要的格式
-    const result: ResponseData = currencyData
-      ? {
-          currencyId: currencyData.id,
-          currencyName: `${currencyData.name}`,
-          chainId: `${chainId}`,
-          rank: 0, // ToDo: (20240125 - Julian) 討論去留
-          holderCount: currencyData.holder_count ?? 0,
-          price: currencyData.price ?? 0,
-          volumeIn24h: volumeIn24h,
-          unit: unit,
-
-          totalAmount: totalAmount,
-          // holders: holders,
-          totalTransfers: currencyData.total_transfers ?? 0,
-          flagging: flagging,
-          flaggingCount: flagging.length,
-          riskLevel: riskLevel,
-          transactionHistoryData: transactionHistoryData,
-        }
-      : // Info: (20240130 - Julian) 如果沒有找到資料，回傳 undefined
-        undefined;
+    const result: ResponseData = {
+      currencyId: `${currencyData?.id}`,
+      currencyName: `${currencyData?.name}`,
+      chainId: `${chainId}`,
+      rank: 0, // ToDo: (20240125 - Julian) 討論去留
+      holderCount: currencyData?.holder_count ?? 0,
+      price: currencyData?.price ?? 0,
+      volumeIn24h: volumeIn24h,
+      unit: unit,
+      totalAmount: totalAmount,
+      totalTransfers: currencyData?.total_transfers ?? 0,
+      flagging: flagging,
+      flaggingCount: flagging.length,
+      riskLevel: riskLevel,
+      transactionHistoryData: transactionHistoryData,
+    };
 
     prisma.$connect();
     res.status(200).json(result);
   } catch (error) {
     // Info: (20240312 - Liz) Request error
     // eslint-disable-next-line no-console
-    console.error('Error fetching blacklist data:', error);
+    console.error('Error fetching blacklist data (018):', error);
     res.status(500).json({} as ResponseData);
   }
 }

@@ -5,11 +5,11 @@ import {IBlackListData} from '../../../../interfaces/blacklist';
 import prisma from '../../../../../prisma/client';
 import {ITEM_PER_PAGE, PUBLIC_TAGS_REFERENCE} from '../../../../constants/config';
 
-type ResponseData = IBlackListData | string;
+type ResponseData = IBlackListData;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  // Info: (20240305 - Liz) query string
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
+  // Info: (20240305 - Liz) query string parameter
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
   const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
   const tag = typeof req.query.tag === 'string' ? req.query.tag : undefined;
@@ -74,12 +74,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         name: tagName, // Info: (20240306 - Liz) 篩選 tag name
       },
     });
-
-    // Info: (20240216 - Liz) 若查無黑名單資料，回傳 404
-    if (blacklist.length === 0) {
-      res.status(404).send('404 - redFlagData Not Found');
-      return;
-    }
 
     // Info: (20240301 - Liz) 從 blacklist 中 target_type 為 0 的 target 值(target 值為地址)
     const contractTargets = blacklist
@@ -226,7 +220,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   } catch (error) {
     // Info: (20240216 - Shirley) Request error
     // eslint-disable-next-line no-console
-    console.error('Error fetching blacklist data:', error);
+    console.error('Error fetching blacklist data (020):', error);
     res.status(500).json({} as ResponseData);
   }
 }
