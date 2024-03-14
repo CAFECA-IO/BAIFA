@@ -3,7 +3,7 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {IBlackListData} from '../../../../interfaces/blacklist';
 import prisma from '../../../../../prisma/client';
-import {ITEM_PER_PAGE} from '../../../../constants/config';
+import {ITEM_PER_PAGE, PUBLIC_TAGS_REFERENCE} from '../../../../constants/config';
 
 type ResponseData = IBlackListData | string;
 
@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240216 - Liz) 從 public_tags table 中取得 tag_type = 9 (黑名單標籤) 的資料為 blacklist，並做條件篩選以及分頁
     const blacklist = await prisma.public_tags.findMany({
       where: {
-        tag_type: '9', // Info: (20240216 - Liz) 9:黑名單標籤
+        tag_type: PUBLIC_TAGS_REFERENCE.TAG_TYPE.BLACKLIST, // Info: (20240216 - Liz) 9:黑名單標籤
         target: search ? {contains: search} : undefined, // Info: (20240305 - Liz) 搜尋條件
         name: tagName, // Info: (20240306 - Liz) 篩選 tag name
       },
