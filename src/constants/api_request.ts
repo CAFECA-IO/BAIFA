@@ -12,11 +12,15 @@ export type IAPIName =
   | 'CHAINS';
 
 export enum SortingType {
+  TIME = 'time',
+}
+
+export enum TimeSortingType {
   ASC = 'asc',
   DESC = 'desc',
 }
 export interface IPaginationOptions {
-  order: SortingType.ASC | SortingType.DESC;
+  sort: TimeSortingType.ASC | TimeSortingType.DESC;
   page: number;
   offset: number;
 }
@@ -80,3 +84,26 @@ export const APIURL = {
 
   WEBSITE_RESERVE: 'https://api.tidebit-defi.com/public/reserve',
 };
+
+export enum HttpMethod {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+  PATCH = 'PATCH',
+}
+
+export interface RequestOptions {
+  method: HttpMethod;
+  body?: any; // TODO: enumerate all parameters of API (20240311 - Shirley)
+}
+
+export interface FetcherResponse<Data> {
+  data: Data | undefined;
+  isLoading: boolean;
+  error: Error | null;
+}
+
+export interface QueryParams {
+  [key: string]: string | number;
+}

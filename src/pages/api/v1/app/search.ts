@@ -10,7 +10,7 @@ import {
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
   PUBLIC_TAGS_REFERENCE,
-  RED_FLAG_CODE_WHEN_NULL,
+  CODE_WHEN_NULL,
 } from '../../../../constants/config';
 import prisma from '../../../../../prisma/client';
 import {AddressType} from '../../../../interfaces/address_info';
@@ -31,7 +31,7 @@ type CodesTargetType = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const searchInput = req.query.search_input as string;
-  const order = (req.query.order as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
   const offset =
     typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
@@ -64,7 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       searchInput,
       take,
       skip,
-      order,
+      sort,
       start_date,
       end_date,
       searchId
@@ -97,7 +97,7 @@ async function searchByType(
   searchInput: string,
   take: number,
   skip: number,
-  order: 'asc' | 'desc',
+  sort: 'asc' | 'desc',
   start_date?: number,
   end_date?: number,
   searchId?: number
@@ -134,7 +134,7 @@ async function searchByType(
         if (!!searchId) {
           const blocks = await prisma.blocks.findMany({
             orderBy: {
-              created_timestamp: order,
+              created_timestamp: sort,
             },
             where: {
               ...whereClause,
@@ -182,7 +182,7 @@ async function searchByType(
           take,
           skip,
           orderBy: {
-            created_timestamp: order,
+            created_timestamp: sort,
           },
           select: {
             id: true,
@@ -216,7 +216,7 @@ async function searchByType(
           take,
           skip,
           orderBy: {
-            created_timestamp: order,
+            created_timestamp: sort,
           },
           select: {
             id: true,
@@ -252,7 +252,7 @@ async function searchByType(
           take,
           skip,
           orderBy: {
-            created_timestamp: order,
+            created_timestamp: sort,
           },
           select: {
             id: true,
@@ -288,7 +288,7 @@ async function searchByType(
           take,
           skip,
           orderBy: {
-            created_timestamp: order,
+            created_timestamp: sort,
           },
           select: {
             id: true,
@@ -318,9 +318,7 @@ async function searchByType(
             };
           });
 
-          const redFlagTypeCode = redFlag.red_flag_type
-            ? +redFlag.red_flag_type
-            : RED_FLAG_CODE_WHEN_NULL;
+          const redFlagTypeCode = redFlag.red_flag_type ? +redFlag.red_flag_type : CODE_WHEN_NULL;
 
           const redFlagType =
             redFlagCodes.find(code => code.value === redFlagTypeCode)?.meaning ?? '';
@@ -361,7 +359,7 @@ async function searchByType(
           take,
           skip,
           orderBy: {
-            created_timestamp: order,
+            created_timestamp: sort,
           },
           select: {
             id: true,
@@ -431,7 +429,7 @@ async function searchByType(
           take,
           skip,
           orderBy: {
-            created_timestamp: order,
+            created_timestamp: sort,
           },
           select: {
             id: true,
@@ -529,7 +527,7 @@ async function searchByType(
     if (!!searchId && resultData.length < take) {
       const blocks = await prisma.blocks.findMany({
         orderBy: {
-          created_timestamp: order,
+          created_timestamp: sort,
         },
         where: {
           ...whereClause,
@@ -576,7 +574,7 @@ async function searchByType(
         },
         take,
         skip,
-        orderBy: [{created_timestamp: order}, {id: order}],
+        orderBy: [{created_timestamp: sort}, {id: sort}],
         select: {
           id: true,
           chain_id: true,
@@ -609,7 +607,7 @@ async function searchByType(
         },
         take,
         skip,
-        orderBy: [{created_timestamp: order}],
+        orderBy: [{created_timestamp: sort}],
         select: {
           id: true,
           chain_id: true,
@@ -643,8 +641,7 @@ async function searchByType(
         },
         take,
         skip,
-        orderBy: [{created_timestamp: order}],
-
+        orderBy: [{created_timestamp: sort}],
         select: {
           id: true,
           chain_id: true,
@@ -678,8 +675,7 @@ async function searchByType(
         },
         take,
         skip,
-        orderBy: [{created_timestamp: order}],
-
+        orderBy: [{created_timestamp: sort}],
         select: {
           id: true,
           chain_id: true,
@@ -708,9 +704,7 @@ async function searchByType(
           };
         });
 
-        const redFlagTypeCode = redFlag.red_flag_type
-          ? +redFlag.red_flag_type
-          : RED_FLAG_CODE_WHEN_NULL;
+        const redFlagTypeCode = redFlag.red_flag_type ? +redFlag.red_flag_type : CODE_WHEN_NULL;
 
         const redFlagType =
           redFlagCodes.find(code => code.value === redFlagTypeCode)?.meaning ?? '';
@@ -750,7 +744,7 @@ async function searchByType(
           },
           take,
           skip,
-          orderBy: [{created_timestamp: order}],
+          orderBy: [{created_timestamp: sort}],
           select: {
             id: true,
             chain_id: true,
@@ -815,8 +809,7 @@ async function searchByType(
           },
           take,
           skip,
-          orderBy: [{created_timestamp: order}],
-
+          orderBy: [{created_timestamp: sort}],
           select: {
             id: true,
             name: true,

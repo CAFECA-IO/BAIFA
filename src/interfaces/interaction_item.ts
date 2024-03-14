@@ -10,3 +10,15 @@ export interface IInteractionItem extends ICommonData {
   transactionCount: number;
   publicTag: string[];
 }
+
+export interface IInteraction extends ICommonData {
+  type: AddressType.ADDRESS | AddressType.CONTRACT;
+  transactionCount: number;
+  redFlagCount: number;
+  publicTag: string[];
+}
+
+export interface IInteractionList {
+  interactedData: IInteraction[];
+  totalPages: number;
+}

@@ -7,7 +7,7 @@ import {
   IAddressHistoryQuery,
   IAddressTransactionQuery,
   IPaginationOptions,
-  SortingType,
+  TimeSortingType,
 } from '../constants/api_request';
 import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../constants/config';
 import {useRouter} from 'next/router';
@@ -27,15 +27,15 @@ export interface IAddressDetailsContext {
     addressId?: string
   ) => Promise<void>;
   blocksLoading: boolean;
-  clickBlockSortingMenu: (order: SortingType) => Promise<void>;
-  blocksOrder: SortingType;
+  clickBlockSortingMenu: (order: TimeSortingType) => Promise<void>;
+  blocksOrder: TimeSortingType;
   blocksPage: number;
   blocksOffset: number;
   blocksStart: number;
   blocksEnd: number;
   clickBlockDatePicker: (start: number, end: number) => Promise<void>;
   transactionsLoading: boolean;
-  transactionsOrder: SortingType;
+  transactionsOrder: TimeSortingType;
   transactionsPage: number;
   transactionsOffset: number;
   transactionsStart: number;
@@ -45,7 +45,7 @@ export interface IAddressDetailsContext {
     chainId?: string,
     addressId?: string
   ) => Promise<void>;
-  clickTransactionSortingMenu: (order: SortingType) => Promise<void>;
+  clickTransactionSortingMenu: (order: TimeSortingType) => Promise<void>;
   clickTransactionDatePicker: (start: number, end: number) => Promise<void>;
   transactionInit: (
     chainId?: string,
@@ -77,14 +77,14 @@ export const AddressDetailsContext = createContext<IAddressDetailsContext>({
   clickBlockPagination: () => Promise.resolve(),
   blocksLoading: false,
   clickBlockSortingMenu: () => Promise.resolve(),
-  blocksOrder: SortingType.DESC,
+  blocksOrder: TimeSortingType.DESC,
   blocksPage: DEFAULT_PAGE,
   blocksOffset: ITEM_PER_PAGE,
   blocksStart: 0,
   blocksEnd: Date.now(),
   clickBlockDatePicker: () => Promise.resolve(),
   transactionsLoading: false,
-  transactionsOrder: SortingType.DESC,
+  transactionsOrder: TimeSortingType.DESC,
   transactionsPage: DEFAULT_PAGE,
   transactionsOffset: ITEM_PER_PAGE,
   transactionsStart: 0,
@@ -125,7 +125,9 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   const [blocksLoading, setBlocksLoading, blocksLoadingRef] = useStateRef(false);
   // Info: for the use of useStateRef (20240216 - Shirley)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [blocksOrder, setBlocksOrder, blocksOrderRef] = useStateRef<SortingType>(SortingType.DESC);
+  const [blocksOrder, setBlocksOrder, blocksOrderRef] = useStateRef<TimeSortingType>(
+    TimeSortingType.DESC
+  );
   // Info: for the use of useStateRef (20240216 - Shirley)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [blocksPage, setBlocksPage, blocksPageRef] = useStateRef(DEFAULT_PAGE);
@@ -143,9 +145,8 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   const [transactionsLoading, setTransactionsLoading, transactionsLoadingRef] = useStateRef(false);
   // Info: for the use of useStateRef (20240216 - Shirley)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [transactionsOrder, setTransactionsOrder, transactionsOrderRef] = useStateRef<SortingType>(
-    SortingType.DESC
-  );
+  const [transactionsOrder, setTransactionsOrder, transactionsOrderRef] =
+    useStateRef<TimeSortingType>(TimeSortingType.DESC);
   // Info: for the use of useStateRef (20240216 - Shirley)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionsPage, setTransactionsPage, transactionsPageRef] = useStateRef(DEFAULT_PAGE);
@@ -186,7 +187,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     setTransactionsPage(options.page);
     setTransactionsOffset(options.offset);
 
-    const {page, offset, order} = options;
+    const {page, offset, sort: order} = options;
     const chainIdForTransaction = chainId || (query.chainId?.toString() ?? '');
     const addressIdForTransaction = addressId || (query.addressId?.toString() ?? '');
 
@@ -201,7 +202,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     setTransactionsLoading(false);
   };
 
-  const clickTransactionSortingMenu = async (order: SortingType) => {
+  const clickTransactionSortingMenu = async (order: TimeSortingType) => {
     setTransactionsOrder(order);
     setTransactionsLoading(true);
     const transactionData = await marketCtx.getAddressRelatedTransactions(
@@ -210,7 +211,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
       {
         page: transactionsPageRef.current,
         offset: transactionsOffsetRef.current,
-        order: order,
+        sort: order,
       }
     );
     setTransactions(transactionData);
@@ -227,7 +228,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
       {
         page: transactionsPageRef.current,
         offset: transactionsOffsetRef.current,
-        order: transactionsOrderRef.current,
+        sort: transactionsOrderRef.current,
         start_date: startSeconds,
         end_date: endSeconds,
       }
@@ -239,7 +240,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   const setBlockParameters = (options: IAddressHistoryQuery) => {
     setBlocksPage(options.page);
     setBlocksOffset(options.offset);
-    setBlocksOrder(options.order);
+    setBlocksOrder(options.sort);
     setBlocksStart(options.start_date || 0);
     setBlocksEnd(options.end_date || Date.now());
     return true;
@@ -248,7 +249,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
   const setTransactionParameters = (options: IAddressTransactionQuery) => {
     setTransactionsPage(options.page);
     setTransactionsOffset(options.offset);
-    setTransactionsOrder(options.order);
+    setTransactionsOrder(options.sort);
     setTransactionsStart(options.start_date || 0);
     setTransactionsEnd(options.end_date || Date.now());
     return true;
@@ -264,7 +265,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
       {
         page: blocksPageRef.current,
         offset: blocksOffsetRef.current,
-        order: blocksOrderRef.current,
+        sort: blocksOrderRef.current,
         start_date: startSeconds,
         end_date: endSeconds,
       }
@@ -299,7 +300,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     setBlocksLoading(false);
   };
 
-  const clickBlockSortingMenu = async (order: SortingType) => {
+  const clickBlockSortingMenu = async (order: TimeSortingType) => {
     setBlocksOrder(order);
     setBlocksLoading(true);
     const blockData = await marketCtx.getAddressProducedBlocks(
@@ -308,7 +309,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
       {
         page: blocksPageRef.current,
         offset: blocksOffsetRef.current,
-        order: order,
+        sort: order,
       }
     );
     setProducedBlocks(blockData);
@@ -348,7 +349,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
         options || {
           page: DEFAULT_PAGE,
           offset: ITEM_PER_PAGE,
-          order: SortingType.DESC,
+          sort: TimeSortingType.DESC,
         }
       );
       setProducedBlocks(blockData);
@@ -376,7 +377,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
         options || {
           page: DEFAULT_PAGE,
           offset: ITEM_PER_PAGE,
-          order: SortingType.DESC,
+          sort: TimeSortingType.DESC,
         }
       );
       setTransactions(transactionData);

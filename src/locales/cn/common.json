@@ -383,7 +383,8 @@
     "BLOCK_PRODUCED_HISTORY_PLACEHOLDER": "在区块生成记录中搜寻",
     "RED_FLAG_ITEM_TITLE": "警示记录",
     "NO_DATA_FOUND": "找不到资料 :(",
-    "NO_DATA": "无资料"
+    "NO_DATA": "无资料",
+    "RED_FLAGS_OF": "笔警示记录"
   },
   "PUBLIC_TAG": {
     "TITLE": "公开标签",

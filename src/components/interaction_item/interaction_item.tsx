@@ -1,20 +1,20 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import {getDynamicUrl} from '../../constants/url';
+import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IInteractionItem} from '../../interfaces/interaction_item';
+import {IInteraction} from '../../interfaces/interaction_item';
 import {getChainIcon} from '../../lib/common';
 import {DEFAULT_CHAIN_ICON} from '../../constants/config';
 
 interface IInteractionItemProps {
   orignalAddressId: string;
-  interactedData: IInteractionItem;
+  interactedData: IInteraction;
 }
 
 const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {id, type, chainId, transactionCount, publicTag} = interactedData;
+  const {id, type, chainId, transactionCount, redFlagCount, publicTag} = interactedData;
 
   const chainIcon = getChainIcon(chainId);
   const itemLink = getDynamicUrl(`${chainId}`, `${id}`);
@@ -72,14 +72,25 @@ const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemPro
       </Link>
     );
 
+  const redFlagCountText =
+    redFlagCount > 0 ? (
+      <p>
+        <Link href={BFAURL.RED_FLAG} className="text-primaryBlue underline underline-offset-2">
+          {redFlagCount}
+        </Link>{' '}
+        {t('COMMON.RED_FLAGS_OF')}
+      </p>
+    ) : null;
+
   return (
     <div className="flex h-60px w-full items-center space-x-2 border-b border-darkPurple4 p-2 lg:space-x-4">
       {/* Info: (20231108 - Julian) Public Tag */}
       {displayPublicTag}
       {/* Info: (20231108 - Julian) Address/Contract ID */}
       {displayIds}
-      <div className="hidden items-center lg:inline-flex">
-        <p className="w-60px whitespace-nowrap text-right text-sm">
+      <div className="hidden w-240px items-center justify-end space-x-2 whitespace-nowrap text-right text-sm lg:inline-flex">
+        {redFlagCountText}
+        <p>
           <Link href={transactionLink} className="text-primaryBlue underline underline-offset-2">
             {transactionCount}
           </Link>{' '}

@@ -53,8 +53,7 @@ import {
 } from '../../../../../../contexts/address_details_context';
 import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
-import useAPIWorker from '../../../../../../lib/hooks/use_api_worker';
-import {APIURL} from '../../../../../../constants/api_request';
+import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import {IDatePeriod} from '../../../../../../interfaces/date_period';
@@ -205,15 +204,18 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     data: addressBriefData,
     isLoading: isAddressBriefLoading,
     error: addressBriefError,
-  } = useAPIResponse<IAddressBrief>(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}`);
+  } = useAPIResponse<IAddressBrief>(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}`, {
+    method: HttpMethod.GET,
+  });
 
   const {
     data: reviews,
     isLoading: reviewLoading,
     error: reviewsError,
-  } = useAPIWorker<IReviewDetail[]>(
+  } = useAPIResponse<IReviewDetail[]>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/review_list`,
-    {order: convertStringToSortingType(reviewSorting)}
+    {method: HttpMethod.GET},
+    {sort: convertStringToSortingType(reviewSorting)}
   );
 
   const {
@@ -223,7 +225,10 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   } = useAPIResponse<IAddressRelatedTransaction>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/transactions`,
     {
-      order: convertStringToSortingType(transactionSorting),
+      method: HttpMethod.GET,
+    },
+    {
+      sort: convertStringToSortingType(transactionSorting),
       page: transactionActivePage,
       offset: ITEM_PER_PAGE,
       search: transactionSearch,
@@ -239,7 +244,10 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   } = useAPIResponse<IAddressProducedBlock>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/produced_blocks`,
     {
-      order: convertStringToSortingType(blocksSorting),
+      method: HttpMethod.GET,
+    },
+    {
+      sort: convertStringToSortingType(blocksSorting),
       page: blocksActivePage,
       offset: ITEM_PER_PAGE,
       search: blocksSearch,
@@ -347,6 +355,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       period={transactionPeriod}
       setPeriod={setTransactionPeriod}
       setSearch={setTransactionSearch}
+      // TODO: (20240313 - Shirley) add suggestions
+      // suggestions={randomSuggestions}
     />
   );
 
