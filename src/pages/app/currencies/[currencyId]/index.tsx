@@ -18,7 +18,7 @@ import {AppContext} from '../../../../contexts/app_context';
 import {MarketContext} from '../../../../contexts/market_context';
 import {getCurrencyIcon} from '../../../../lib/common';
 import {DEFAULT_CURRENCY_ICON} from '../../../../constants/config';
-
+import {ITransactionList} from '../../../../interfaces/transaction';
 interface ICurrencyDetailPageProps {
   currencyId: string;
 }
@@ -27,12 +27,13 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getCurrencyDetail} = useContext(MarketContext);
+  const {getCurrencyDetail, getTransactionListOfCurrency} = useContext(MarketContext);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currencyData, setCurrencyData] = useState<ICurrencyDetailString>(
     {} as ICurrencyDetailString
   );
+  const [transactions, setTransactions] = useState<ITransactionList>();
 
   const currencyIcon = getCurrencyIcon(currencyId);
 
@@ -55,7 +56,21 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const {currencyName, transactionHistoryData} = currencyData;
+  // Info: (20240314 - Liz) Get Transaction History Data from API
+  useEffect(() => {
+    const getTransactions = async (currencyId: string) => {
+      try {
+        const data = await getTransactionListOfCurrency(currencyId);
+        setTransactions(data);
+        setIsLoading(false);
+      } catch (error) {
+        //console.log('getBlockDetail error', error);
+      }
+    };
+    getTransactions(currencyId);
+  }, [currencyId, getTransactionListOfCurrency]);
+
+  const {currencyName} = currencyData;
   const headTitle = `${currencyName} - BAIFA`;
 
   const backClickHandler = () => router.back();
@@ -101,7 +116,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   // ToDo: (20240313 - Liz) transactionHistoryData 只要傳入需要用的參數就好 transactionHistoryData 要另外再打 API 拿
   // ToDo: (20240313 - Liz) Loading 方式要修改
   const displayedTransactionHistory = !isLoading ? (
-    <TransactionHistorySection transactions={transactionHistoryData} />
+    <TransactionHistorySection transactions={transactions?.transactions ?? []} />
   ) : (
     <h1>Loading...</h1>
   );

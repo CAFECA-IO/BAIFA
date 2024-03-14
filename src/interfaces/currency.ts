@@ -54,10 +54,4 @@ export interface ICurrencyDetailString extends ICurrency {
   totalTransfers: number;
   flagging: IRedFlag[];
   flaggingCount: number;
-  transactionHistoryData: IDisplayTransaction[]; // Deprecated: (今天丟棄 - Liz)
-}
-
-export interface ITransactionsOfCurrency {
-  transactionHistoryData: IDisplayTransaction[];
-  totalPages: number;
 }

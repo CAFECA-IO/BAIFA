@@ -72,6 +72,10 @@ export interface IMarketContext {
     blockId: string,
     queryStr?: string
   ) => Promise<ITransactionList>;
+  getTransactionListOfCurrency: (
+    currencyId: string,
+    queryStr?: string
+  ) => Promise<ITransactionList>;
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
   getAddressBrief: (chainId: string, addressId: string) => Promise<IAddressBrief>;
   getAddressReviewList: (
@@ -140,6 +144,7 @@ export const MarketContext = createContext<IMarketContext>({
   getInteractionTransaction: () => Promise.resolve({} as ITransactionList),
   getTransactionList: () => Promise.resolve({} as ITransactionList),
   getTransactionListOfBlock: () => Promise.resolve({} as ITransactionList),
+  getTransactionListOfCurrency: () => Promise.resolve({} as ITransactionList),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressBrief: () => Promise.resolve({} as IAddressBrief),
   getAddressReviewList: () => Promise.resolve([] as IReviewDetail[]),
@@ -384,6 +389,27 @@ export const MarketProvider = ({children}: IMarketProvider) => {
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('getTransactionListOfBlock error', error);
+      }
+      return data;
+    },
+    []
+  );
+
+  const getTransactionListOfCurrency = useCallback(
+    async (currencyId: string, queryStr?: string) => {
+      let data: ITransactionList = {} as ITransactionList;
+      try {
+        const response = queryStr
+          ? await fetch(`${APIURL.CURRENCIES}/${currencyId}/transactions?${queryStr}`, {
+              method: 'GET',
+            })
+          : await fetch(`${APIURL.CURRENCIES}/${currencyId}/transactions`, {
+              method: 'GET',
+            });
+        data = await response.json();
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('getTransactionListOfCurrency error', error);
       }
       return data;
     },
@@ -759,6 +785,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getInteractionTransaction,
     getTransactionList,
     getTransactionListOfBlock,
+    getTransactionListOfCurrency,
     getTransactionDetail,
     getAddressBrief,
     getAddressReviewList,

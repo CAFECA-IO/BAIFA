@@ -1,13 +1,14 @@
 // 030 - GET /app/currencies/:currency_id/transactions
 
 import {NextApiRequest, NextApiResponse} from 'next';
-import {ITransactionsOfCurrency} from '../../../../../../interfaces/currency';
+import {ITransactionList} from '../../../../../../interfaces/transaction';
 
-type ResponseData = ITransactionsOfCurrency;
+type ResponseData = ITransactionList;
 
+/* ---------- Mock API ---------- */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const result = {
-    'transactionHistoryData': [
+    'transactions': [
       {
         'id': '0x4507de0220ac5aaba6502acaadfaf8eade04a7900188de50e75bd7e894d69596',
         'chainId': '8017',
