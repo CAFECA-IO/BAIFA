@@ -45,6 +45,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
       try {
         const data = await getCurrencyDetail(currencyId);
         setCurrencyData(data);
+        setIsLoading(false);
       } catch (error) {
         //console.log('getBlockDetail error', error);
       }
@@ -53,15 +54,6 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     getCurrencyData(currencyId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (currencyData.holders && currencyData.transactionHistoryData) {
-      setCurrencyData(currencyData);
-      setIsLoading(false);
-    } else {
-      setIsLoading(true);
-    }
-  }, [currencyData]);
 
   const {currencyName, transactionHistoryData} = currencyData;
   const headTitle = `${currencyName} - BAIFA`;
@@ -90,23 +82,27 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     </div>
   );
 
+  // ToDo: (20240313 - Liz) Loading 方式要修改
   const displayedCurrencyDetail = !isLoading ? (
     <CurrencyDetail currencyData={currencyData} />
   ) : (
-    // ToDo: (20231103 - Julian) Add loading animation
-    <h1>Loading...</h1>
-  );
-  const displayedTop100Holder = !isLoading ? (
-    <Top100HolderSection currencyData={currencyData} />
-  ) : (
-    // ToDo: (20231103 - Julian) Add loading animation
     <h1>Loading...</h1>
   );
 
+  const unit = currencyData.unit;
+  const chainId = currencyData.chainId;
+  // ToDo: (20240313 - Liz) Loading 方式要修改
+  const displayedTop100Holder = !isLoading ? (
+    <Top100HolderSection chainId={chainId} currencyId={currencyId} unit={unit} />
+  ) : (
+    <h1>Loading...</h1>
+  );
+
+  // ToDo: (20240313 - Liz) transactionHistoryData 只要傳入需要用的參數就好 transactionHistoryData 要另外再打 API 拿
+  // ToDo: (20240313 - Liz) Loading 方式要修改
   const displayedTransactionHistory = !isLoading ? (
     <TransactionHistorySection transactions={transactionHistoryData} />
   ) : (
-    // ToDo: (20231103 - Julian) Add loading animation
     <h1>Loading...</h1>
   );
 
