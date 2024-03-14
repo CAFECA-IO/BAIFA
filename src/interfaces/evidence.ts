@@ -16,3 +16,13 @@ export interface IEvidenceBrief extends ICommonData {
   creatorAddressId: string;
   content: string;
 }
+
+export const dummyEvidenceDetail: IEvidenceDetail = {
+  id: '',
+  chainId: '',
+  evidenceAddress: '',
+  state: '',
+  creatorAddressId: '',
+  createdTimestamp: 0,
+  transactionHistoryData: [],
+};

@@ -12,7 +12,7 @@ import {useTranslation} from 'next-i18next';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {getChainIcon} from '../../../../../../lib/common';
+import {convertStringToSortingType, getChainIcon} from '../../../../../../lib/common';
 import {ITransactionList} from '../../../../../../interfaces/transaction';
 import DatePicker from '../../../../../../components/date_picker/date_picker';
 import Pagination from '../../../../../../components/pagination/pagination';
@@ -51,7 +51,7 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
       {method: HttpMethod.GET},
       {
         page: activePage,
-        sort: sorting,
+        sort: convertStringToSortingType(sorting),
         search: search,
         start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
         end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,

@@ -13,7 +13,7 @@ import ContractDetail from '../../../../../components/contract_detail/contract_d
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../interfaces/locale';
-import {getChainIcon, truncateText} from '../../../../../lib/common';
+import {convertStringToSortingType, getChainIcon, truncateText} from '../../../../../lib/common';
 import {BFAURL} from '../../../../../constants/url';
 import {IContractDetail, dummyContractDetail} from '../../../../../interfaces/contract';
 import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
@@ -69,7 +69,7 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
     {method: HttpMethod.GET},
     {
       page: activePage,
-      sort: sorting,
+      sort: convertStringToSortingType(sorting),
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
       end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,

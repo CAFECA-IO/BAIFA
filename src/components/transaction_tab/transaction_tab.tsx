@@ -13,6 +13,7 @@ import Skeleton from '../skeleton/skeleton';
 import useAPIResponse from '../../lib/hooks/use_api_response';
 import {APIURL, HttpMethod} from '../../constants/api_request';
 import {ChainDetailTab} from '../../interfaces/chain';
+import {convertStringToSortingType} from '../../lib/common';
 
 interface ITransactionTabProps {
   chainDetailLoading: boolean;
@@ -37,7 +38,7 @@ const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
       end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
-      sort: sorting,
+      sort: convertStringToSortingType(sorting),
       page: activePage,
     }
   );

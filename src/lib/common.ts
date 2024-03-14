@@ -1,4 +1,4 @@
-import {IPaginationOptions, SortingType, TimeSortingType} from '../constants/api_request';
+import {IPaginationOptions, TimeSortingType} from '../constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_CURRENCY_ICON,

@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240216 - Julian) 解構 URL 參數，同時進行類型轉換
   const contractId = typeof req.query.contract_id === 'string' ? req.query.contract_id : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : 1;
-  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
   const start_date =
     typeof req.query.start_date === 'string' && parseInt(req.query.start_date, 10) > 0
@@ -27,9 +27,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240216 - Julian) 計算分頁的 skip 與 take
     const skip = (page - 1) * ITEM_PER_PAGE; // (20240216 - Julian) 跳過前面幾筆
     const take = ITEM_PER_PAGE; // (20240216 - Julian) 取幾筆
-
-    // Info: (20240222 - Julian) 排序
-    const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
     // Info: (20240226 - Julian) 查詢和 contract 相關的 transaction
     const queryConditon = {
@@ -72,10 +69,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           },
           // Info: (20240226 - Julian) 排序方式：
           orderBy: [
-            // Info: (20240226 - Julian) 1. created_timestamp 由 sorting 決定
-            {created_timestamp: sorting},
-            // Info: (20240226 - Julian) 2. id 排序和 created_timestamp 一致
-            {id: sorting},
+            // Info: (20240314 - Julian) 1. created_timestamp 由 sort 決定
+            {created_timestamp: sort},
+            // Info: (20240314 - Julian) 2. id 排序和 created_timestamp 一致
+            {id: sort},
           ],
           // Info: (20240125 - Julian) 分頁
           skip: skip,
