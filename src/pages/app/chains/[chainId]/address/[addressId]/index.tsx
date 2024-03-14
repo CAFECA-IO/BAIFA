@@ -179,8 +179,6 @@ const ReviewSectionSkeleton = () => {
   );
 };
 
-const randomSuggestions = ['123', '456', '789'];
-
 const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
@@ -261,11 +259,6 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     }
   );
 
-  const searchInput: {[key: string]: string} = {};
-  if (!!transactionSearchRef.current) {
-    searchInput['search_input'] = transactionSearchRef.current;
-  }
-
   const {
     data: suggestions,
     isLoading,
@@ -275,7 +268,6 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
     {
       method: HttpMethod.GET,
     },
-    // searchInput,
     {search_input: transactionInputForSuggestions},
     true
   );
@@ -383,15 +375,11 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
       period={transactionPeriod}
       setPeriod={setTransactionPeriod}
       setSearch={setTransactionSearch}
-      // TODO: (20240313 - Shirley) add suggestions
-      // suggestions={!!suggestions && suggestions?.length > 0 ? suggestions : randomSuggestions}
-      // suggestions={transactionSuggestion}
       suggestions={
         !!suggestions?.suggestions && suggestions?.suggestions.length > 0
           ? suggestions.suggestions
           : []
       }
-      // suggestions={suggestions ?? ['123']}
       getSearch={getSearchSuggestions}
     />
   );
