@@ -11,7 +11,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240305 - Liz) query string parameter
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
   const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
-  const search = typeof req.query.search === 'string' ? req.query.search : undefined;
+  const search =
+    typeof req.query.search === 'string' ? req.query.search.toLowerCase().trim() : undefined;
   const tag = typeof req.query.tag === 'string' ? req.query.tag : undefined;
 
   // Info: (20240305 - Liz) 計算分頁的 skip 與 take
@@ -29,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const blacklist = await prisma.public_tags.findMany({
       where: {
         tag_type: PUBLIC_TAGS_REFERENCE.TAG_TYPE.BLACKLIST, // Info: (20240216 - Liz) 9:黑名單標籤
-        target: search ? {contains: search} : undefined, // Info: (20240305 - Liz) 搜尋條件
+        target: {contains: search}, // Info: (20240305 - Liz) 搜尋條件
         name: tagName, // Info: (20240306 - Liz) 篩選 tag name
       },
       select: {

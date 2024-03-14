@@ -9,9 +9,8 @@ type ResponseData = ICurrencyListPage;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240308 - Liz) query string parameter
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
   const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
-
   const search = typeof req.query.search === 'string' ? req.query.search.toLowerCase() : undefined;
   const type = typeof req.query.type === 'string' ? req.query.type : undefined; // Info: (20240308 - Liz) type is categorized by currency name
 

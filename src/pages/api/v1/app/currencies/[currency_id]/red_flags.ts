@@ -1,15 +1,13 @@
 // 019 - GET /app/currencies/:currency_id/red_flags
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../../prisma/client';
 import {IRedFlagOfCurrency} from '../../../../../../interfaces/red_flag';
 
 type ResponseData = IRedFlagOfCurrency[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
-  // Info: (20240129 - Julian) 解構 URL 參數
+  // Info: (20240129 - Julian) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
 
   try {

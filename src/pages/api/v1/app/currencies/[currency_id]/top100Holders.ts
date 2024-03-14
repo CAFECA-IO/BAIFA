@@ -10,8 +10,8 @@ type ResponseData = ITop100Holders;
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240312 - Liz) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
-  const search = typeof req.query.search === 'string' ? req.query.search : undefined;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
+  const search = typeof req.query.search === 'string' ? req.query.search.toLowerCase() : undefined;
 
   // Info: (20240312 - Liz) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240306 - Liz) 跳過前面幾筆

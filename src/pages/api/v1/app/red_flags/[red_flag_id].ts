@@ -1,14 +1,13 @@
 // 022 - GET /app/red_flags/:red_flag_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../prisma/client';
 import {IRedFlagDetail} from '../../../../../interfaces/red_flag';
 import {AddressType} from '../../../../../interfaces/address_info';
 
 type ResponseData = IRedFlagDetail;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
   // Info: (20240131 - Liz) query string parameter
   const red_flag_id =
     typeof req.query.red_flag_id === 'string' ? parseInt(req.query.red_flag_id, 10) : undefined;
