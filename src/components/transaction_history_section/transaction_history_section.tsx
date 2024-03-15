@@ -1,5 +1,5 @@
 import {useState, useContext, Dispatch, SetStateAction} from 'react';
-import {SearchBarWithKeyDown} from '../search_bar/search_bar';
+import {SearchBarWithKeyDown, SearchBarWithSuggestions} from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
@@ -27,7 +27,6 @@ interface ITransactionHistorySectionProps {
   sorting?: string;
   setSorting?: Dispatch<SetStateAction<string>>;
 
-  suggestions?: string[];
   setSearch?: Dispatch<SetStateAction<string>>;
   activePage?: number;
   setActivePage?: Dispatch<SetStateAction<number>>;
@@ -35,6 +34,9 @@ interface ITransactionHistorySectionProps {
 
   totalPage?: number;
   transactionCount?: number;
+
+  suggestions?: string[];
+  getSearch?: (input: string) => void;
 }
 
 const TransactionHistorySection = ({
@@ -45,13 +47,15 @@ const TransactionHistorySection = ({
   sorting,
   setSorting,
 
-  suggestions,
   setSearch,
   activePage,
   setActivePage,
   isLoading,
   totalPage,
   transactionCount,
+
+  suggestions,
+  getSearch,
 }: ITransactionHistorySectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const addressDetailsCtx = useContext(AddressDetailsContext);
@@ -87,6 +91,20 @@ const TransactionHistorySection = ({
     transactionList
   );
 
+  // Info: 需要 suggestions 的話，顯示 SearchBarWithSuggestions，否則顯示 SearchBarWithKeyDown (20240314 - Shirley)
+  const displayedSearchBar =
+    !!suggestions && !!getSearch
+      ? SearchBarWithSuggestions({
+          searchBarPlaceholder: t('COMMON.TRANSACTION_HISTORY_PLACEHOLDER'),
+          setSearch: setSearch ?? setSearchDefault,
+          suggestions: suggestions,
+          getSearch: getSearch,
+        })
+      : SearchBarWithKeyDown({
+          searchBarPlaceholder: t('COMMON.TRANSACTION_HISTORY_PLACEHOLDER'),
+          setSearch: setSearch ?? setSearchDefault,
+        });
+
   return (
     <div className="flex w-full flex-col space-y-4">
       {/* Info: (20231113 - Julian) Title */}
@@ -119,11 +137,7 @@ const TransactionHistorySection = ({
             </div>
           </div>
           {/* Info: (20231113 - Julian) Search Bar */}
-          {SearchBarWithKeyDown({
-            searchBarPlaceholder: t('COMMON.TRANSACTION_HISTORY_PLACEHOLDER'),
-            setSearch: setSearch ?? setSearchDefault,
-            suggestions: suggestions,
-          })}
+          {displayedSearchBar}
         </div>
         {/* Info: (20231113 - Julian) To Address List */}
         <div className="my-10 flex w-full flex-1 flex-col">{displayedTransactionList}</div>

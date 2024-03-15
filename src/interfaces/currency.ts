@@ -11,6 +11,11 @@ export interface IHolder {
   publicTag: string[];
 }
 
+export interface ITop100Holders {
+  holdersData: IHolder[];
+  totalPages: number;
+}
+
 export interface ICurrency {
   currencyId: string;
   currencyName: string;
@@ -46,7 +51,7 @@ export interface ICurrencyDetailString extends ICurrency {
   unit: string;
   totalAmount: string;
   holderCount: number;
-  holders: IHolder[];
+  // holders: IHolder[]; // Deprecated: (今天丟棄 - Liz)
   totalTransfers: number;
   flagging: IRedFlag[];
   flaggingCount: number;
