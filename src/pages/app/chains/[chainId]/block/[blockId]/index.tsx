@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, useEffect, useContext} from 'react';
+import {useEffect, useContext} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
-import {MarketContext} from '../../../../../../contexts/market_context';
+import UseAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
@@ -12,13 +12,14 @@ import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import BlockDetail from '../../../../../../components/block_detail/block_detail';
 import Footer from '../../../../../../components/footer/footer';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {IBlockDetail} from '../../../../../../interfaces/block';
+import {IBlockDetail, dummyBlockDetail} from '../../../../../../interfaces/block';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {getDynamicUrl} from '../../../../../../constants/url';
 import {getChainIcon} from '../../../../../../lib/common';
 import {DEFAULT_CHAIN_ICON} from '../../../../../../constants/config';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
+import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 
 interface IBlockDetailPageProps {
   blockId: string;
@@ -28,37 +29,27 @@ interface IBlockDetailPageProps {
 const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
-  const {getBlockDetail} = useContext(MarketContext);
   const router = useRouter();
 
   const headTitle = `${t('BLOCK_DETAIL_PAGE.MAIN_TITLE')} ${blockId} - BAIFA`;
-  // ToDo: (20240313 - Julian) data not found
-  const [isNoData, setIsNoData] = useState(false);
-  const [blockData, setBlockData] = useState<IBlockDetail>({} as IBlockDetail);
+
+  const {
+    data: blockData,
+    isLoading: isBlockLoading,
+    error: blockError,
+  } = UseAPIResponse<IBlockDetail>(`${APIURL.CHAINS}/${chainId}/block/${blockId}`, {
+    method: HttpMethod.GET,
+  });
 
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
-
-    const getBlockData = async (chainId: string, blockId: string) => {
-      try {
-        const data = await getBlockDetail(chainId, blockId);
-        setBlockData(data);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('getBlockDetail error', error);
-      }
-    };
-
-    getBlockData(chainId, blockId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blockId, chainId]);
+  }, []);
 
-  const {previousBlockId, nextBlockId} = blockData;
-
-  const previousLink = getDynamicUrl(chainId, `${previousBlockId}`).BLOCK;
-  const nextLink = getDynamicUrl(chainId, `${nextBlockId}`).BLOCK;
+  const previousLink = getDynamicUrl(chainId, `${blockData?.previousBlockId}`).BLOCK;
+  const nextLink = getDynamicUrl(chainId, `${blockData?.nextBlockId}`).BLOCK;
 
   const backClickHandler = () => router.back();
   const previousHandler = () => router.push(previousLink);
@@ -68,8 +59,8 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
     'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
 
   // Info: (20231213 - Julian) To check if the previousBlock or nextBlock exist
-  const previousId = previousBlockId ? previousBlockId : undefined;
-  const nextId = nextBlockId ? nextBlockId : undefined;
+  const previousId = blockData?.previousBlockId ? blockData?.previousBlockId : undefined;
+  const nextId = blockData?.nextBlockId ? blockData?.nextBlockId : undefined;
 
   const chainIcon = getChainIcon(chainId);
 
@@ -89,7 +80,11 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
     </div>
   );
 
-  const isBlockData = isNoData ? <DataNotFound /> : <BlockDetail blockData={blockData} />;
+  const isBlockData = !blockError ? (
+    <BlockDetail isLoading={isBlockLoading} blockData={blockData ?? dummyBlockDetail} />
+  ) : (
+    <DataNotFound />
+  );
 
   return (
     <>

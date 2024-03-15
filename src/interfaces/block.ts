@@ -1,5 +1,5 @@
 import {ICommonData} from './common_data';
-import {IStabilityLevel} from '../constants/stability_level';
+import {IStabilityLevel, StabilityLevel} from '../constants/stability_level';
 
 export interface IBlock extends ICommonData {
   stability: IStabilityLevel;
@@ -31,3 +31,18 @@ export interface IBlockList {
   blocks: IBlock[];
   totalPages: number;
 }
+
+export const dummyBlockDetail: IBlockDetail = {
+  id: '',
+  chainId: '',
+  createdTimestamp: 0,
+  stability: StabilityLevel.LOW,
+  extraData: '',
+  transactionCount: 0,
+  miner: '',
+  reward: 0,
+  unit: '',
+  size: 0,
+  previousBlockId: '',
+  nextBlockId: '',
+};

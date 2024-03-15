@@ -384,7 +384,8 @@
     "RED_FLAG_ITEM_TITLE": "Red Flag",
     "NO_DATA_FOUND": "No Data is found :(",
     "NO_DATA": "No Data",
-    "RED_FLAGS_OF": "Red Flags of"
+    "RED_FLAGS_OF": "Red Flags of",
+    "LOADING": "Loading..."
   },
   "PUBLIC_TAG": {
     "TITLE": "Public tag",

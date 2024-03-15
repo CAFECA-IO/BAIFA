@@ -1,9 +1,9 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import {useState, useEffect, useContext} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
-import {MarketContext} from '../../../../../../contexts/market_context';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
@@ -16,9 +16,9 @@ import {BsArrowLeftShort} from 'react-icons/bs';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {getChainIcon, truncateText} from '../../../../../../lib/common';
+import {convertStringToSortingType, getChainIcon, truncateText} from '../../../../../../lib/common';
 import {BFAURL} from '../../../../../../constants/url';
-import {IEvidenceDetail} from '../../../../../../interfaces/evidence';
+import {IEvidenceDetail, dummyEvidenceDetail} from '../../../../../../interfaces/evidence';
 import {ITransactionHistorySection} from '../../../../../../interfaces/transaction';
 import {
   DEFAULT_CHAIN_ICON,
@@ -27,6 +27,7 @@ import {
 } from '../../../../../../constants/config';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 import {IDatePeriod} from '../../../../../../interfaces/date_period';
+import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 
 interface IEvidenceDetailDetailPageProps {
   chainId: string;
@@ -36,83 +37,52 @@ interface IEvidenceDetailDetailPageProps {
 const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
+  const backClickHandler = () => router.back();
   const appCtx = useContext(AppContext);
-  const {getEvidenceDetail, getEvidenceTransactions} = useContext(MarketContext);
 
-  const [evidenceData, setEvidenceData] = useState<IEvidenceDetail>({} as IEvidenceDetail);
-  // ToDo: (20240313 - Julian) data not found
-  const [isNoData, setIsNoData] = useState(false);
-
-  // Info: (20240227 - Julian) Transaction History States
-  const [transactionHistoryData, setTransactionHistoryData] =
-    useState<ITransactionHistorySection>();
+  // Info: (20240227 - Julian) Transaction History query
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState(sortOldAndNewOptions[0]);
   const [search, setSearch] = useState('');
   const [activePage, setActivePage] = useState(1);
 
-  const [apiQueryStr, setApiQueryStr] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  // Info: (20240314 - Julian) Evidence Detail API
+  const {
+    data: evidenceData,
+    isLoading: isEvidenceLoading,
+    error: evidenceError,
+  } = useAPIResponse<IEvidenceDetail>(`${APIURL.CHAINS}/${chainId}/evidence/${evidenceId}`, {
+    method: HttpMethod.GET,
+  });
+
+  // Info: (20240314 - Julian) Transaction History API
+  const {
+    data: transactionHistoryData,
+    isLoading: isTransactionHistoryLoading,
+    error: transactionHistoryError,
+  } = useAPIResponse<ITransactionHistorySection>(
+    `${APIURL.CHAINS}/${chainId}/contracts/${evidenceId}/transactions`,
+    {method: HttpMethod.GET},
+    {
+      page: activePage,
+      sort: convertStringToSortingType(sorting),
+      search: search,
+      start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
+      end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
+    }
+  );
 
   const headTitle = `${t('EVIDENCE_DETAIL_PAGE.MAIN_TITLE')} ${evidenceId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
-
-  const backClickHandler = () => router.back();
-
-  const getEvidenceData = async () => {
-    try {
-      const evidenceData = await getEvidenceDetail(chainId, evidenceId);
-      setEvidenceData(evidenceData);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('getEvidenceData error: ', error);
-    }
-  };
-
-  const getTransactionData = async () => {
-    setIsLoading(true);
-    try {
-      const transactionHistoryData = await getEvidenceTransactions(
-        chainId,
-        evidenceId,
-        apiQueryStr
-      );
-      setTransactionHistoryData(transactionHistoryData);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('getTransactionData error: ', error);
-    }
-    setIsLoading(false);
-  };
 
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
-
-    getEvidenceData();
-    getTransactionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    const pageStr = `page=${activePage}`;
-    const sortStr = `&sort=${sorting}`;
-    const searchStr = search ? `&search=${search}` : '';
-    const isPeriodValid = period.startTimeStamp && period.endTimeStamp;
-    const timeStampStr = isPeriodValid
-      ? `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`
-      : '';
-
-    setApiQueryStr(`${pageStr}${sortStr}${searchStr}${timeStampStr}`);
-  }, [activePage, search, sorting, period]);
-
-  useEffect(() => {
-    getTransactionData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiQueryStr]);
-
-  const isDownloadButton = isNoData ? null : (
+  const isDownloadButton = !evidenceError ? (
     <Link href={BFAURL.COMING_SOON}>
       <BoltButton
         className="group flex items-center space-x-4 px-6 py-4"
@@ -129,12 +99,15 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
         <p>{t('EVIDENCE_DETAIL_PAGE.DOWNLOAD_EVIDENCE_BUTTON')}</p>
       </BoltButton>
     </Link>
-  );
+  ) : null;
 
-  const isEvidenceDetail = isNoData ? (
-    <DataNotFound />
+  const isEvidenceDetail = !evidenceError ? (
+    <EvidenceDetail
+      evidenceData={evidenceData ?? dummyEvidenceDetail}
+      isLoading={isEvidenceLoading}
+    />
   ) : (
-    <EvidenceDetail evidenceData={evidenceData} />
+    <DataNotFound />
   );
 
   const {transactions, totalPages, transactionCount} = transactionHistoryData ?? {
@@ -143,8 +116,9 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
     transactionCount: 0,
   };
 
-  const isPrivateNoteSection = isNoData ? null : <PrivateNoteSection />;
-  const isTransactionHistorySection = isNoData ? null : (
+  const isPrivateNoteSection = !evidenceError ? <PrivateNoteSection /> : null;
+
+  const isTransactionHistorySection = !transactionHistoryError ? (
     <TransactionHistorySection
       transactions={transactions}
       period={period}
@@ -154,11 +128,11 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
       setSearch={setSearch}
       activePage={activePage}
       setActivePage={setActivePage}
-      isLoading={isLoading}
+      isLoading={isTransactionHistoryLoading}
       totalPage={totalPages}
       transactionCount={transactionCount}
     />
-  );
+  ) : null;
 
   return (
     <>

@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import {useEffect, useState, useContext} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
-import {MarketContext} from '../../../../../../contexts/market_context';
+import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../../../components/footer/footer';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
@@ -12,7 +12,7 @@ import {useTranslation} from 'next-i18next';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {getChainIcon} from '../../../../../../lib/common';
+import {convertStringToSortingType, getChainIcon} from '../../../../../../lib/common';
 import {ITransactionList} from '../../../../../../interfaces/transaction';
 import DatePicker from '../../../../../../components/date_picker/date_picker';
 import Pagination from '../../../../../../components/pagination/pagination';
@@ -26,6 +26,7 @@ import {
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
+import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 
 interface ITransitionsInBlockPageProps {
   chainId: string;
@@ -35,82 +36,39 @@ interface ITransitionsInBlockPageProps {
 const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
-  const {getTransactionListOfBlock} = useContext(MarketContext);
+
   const router = useRouter();
 
   // Info: (20240220 - Julian) 搜尋條件
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  // Info: (20240220 - Julian) API 查詢參數
-  const [apiQueryStr, setApiQueryStr] = useState('');
-  // Info: (20240220 - Julian) UI
-  const [transactionData, setTransitionData] = useState<ITransactionList>();
-  const [isLoading, setIsLoading] = useState(true);
   const [activePage, setActivePage] = useState(1);
+
+  const {data: transactionListData, isLoading: isTransactionListLoading} =
+    useAPIResponse<ITransactionList>(
+      `${APIURL.CHAINS}/${chainId}/block/${blockId}/transactions`,
+      {method: HttpMethod.GET},
+      {
+        page: activePage,
+        sort: convertStringToSortingType(sorting),
+        search: search,
+        start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
+        end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
+      }
+    );
 
   const headTitle = `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_BLOCK')} ${blockId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
   const backClickHandler = () => router.back();
 
-  const getTransactionData = async () => {
-    // Info: (20240220 - Julian) Loading 畫面
-    setIsLoading(true);
-
-    try {
-      const data = await getTransactionListOfBlock(chainId, blockId, apiQueryStr);
-      setTransitionData(data);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('getTransactionListOfBlock error', error);
-    }
-    // Info: (20240220 - Julian) 如果拿到資料，就將 isLoading 設為 false
-    setIsLoading(false);
-  };
-
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
-    getTransactionData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    // Info: (20240219 - Julian) 如果 3 秒後還沒拿到資料，也將 isLoading 設為 false
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transactionData]);
-
-  useEffect(() => {
-    // Info: (20240220 - Julian) 當日期、search 改變時，將 activePage 設為 1
-    setActivePage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, search]);
-
-  useEffect(() => {
-    // Info: (20240220 - Julian) 當 activePage 改變時，重新取得資料
-    getTransactionData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiQueryStr]);
-
-  useEffect(() => {
-    // Info: (20240220 - Julian) 設定 API 查詢參數
-    const pageQuery = `page=${activePage}`;
-    const sortQuery = `&sort=${sorting}`;
-    const searchQuery = search ? `&search=${search}` : '';
-    // Info: (20240222 - Julian) 檢查日期區間是否有效
-    const isPeriodValid = period.startTimeStamp && period.endTimeStamp;
-    const timeStampQuery = isPeriodValid
-      ? `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`
-      : '';
-    // Info: (20240222 - Julian) 當搜尋條件改變時，重新取得資料
-    setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${timeStampQuery}`);
-  }, [activePage, period, search, sorting]);
 
   // Info: (20240206 - Julian) Loading animation
   const skeletonTransactionList = (
@@ -130,10 +88,10 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
     </div>
   );
 
-  const transactionList = transactionData ?? {transactions: [], totalPages: 0};
+  const transactionList = transactionListData ?? {transactions: [], totalPages: 0};
   const {transactions, totalPages} = transactionList;
 
-  const displayTransactionList = isLoading ? (
+  const displayTransactionList = isTransactionListLoading ? (
     skeletonTransactionList
   ) : (
     <div className="flex w-full flex-col items-center">
