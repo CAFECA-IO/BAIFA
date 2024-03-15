@@ -12,11 +12,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (今天 - Liz) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
+  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
   const search = typeof req.query.search === 'string' ? req.query.search.toLowerCase() : undefined;
+
+  // Info: (20240307 - Liz) 將 req 傳來的日期字串轉換成數字或 undefined
+  const parseDate = (dateString: string | string[] | undefined) => {
+    if (typeof dateString === 'string') {
+      const parsedDate = parseInt(dateString, 10);
+      return !isNaN(parsedDate) && parsedDate > 0 ? parsedDate : undefined;
+    }
+    return undefined;
+  };
+  const startDate = parseDate(req.query.start_date);
+  const endDate = parseDate(req.query.end_date);
 
   // Info: (今天 - Liz) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240306 - Liz) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // Info: (20240306 - Liz) 取幾筆
+
+  // Info: (今天 - Liz) 排序
+  const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
   try {
     // Info: (今天 - Liz) 從 currencies Table 中取得 chainId
@@ -36,6 +51,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         chain_id: chainId,
         // Info: (今天 - Liz) 交易 hash 搜尋條件篩選, '' or undefined 代表忽略搜尋條件
         transaction_hash: search ? search : undefined,
+        created_timestamp: {
+          gte: startDate,
+          lte: endDate,
+        },
       },
       select: {
         id: true,
@@ -45,9 +64,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         to_address: true,
         transaction_hash: true,
       },
-      orderBy: {
-        created_timestamp: 'desc', // ToDo: (今天 - Liz) 怎排序?
-      },
+      orderBy: [
+        {
+          created_timestamp: sorting, // ToDo: (今天 - Liz) 1. created_timestamp 由 sorting 決定排序
+        },
+        {
+          id: sorting, // ToDo: (今天 - Liz) 2. id 由 sorting 決定排序
+        },
+      ],
       skip: search ? 0 : skip, // Info: (今天 - Liz) search 有值時最多只會搜尋到一筆，故不需要分頁
       take,
     });
