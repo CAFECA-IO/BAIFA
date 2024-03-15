@@ -1,4 +1,5 @@
-import {useEffect, useState, useRef} from 'react';
+import {useEffect, useRef} from 'react';
+import useAPIResponse from '../../lib/hooks/use_api_response';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {A4_SIZE} from '../../constants/config';
 import {timestampToString} from '../../lib/common';
@@ -16,6 +17,7 @@ import ReportPageBody from '../report_page_body/report_page_body';
 import ReportRiskPages from '../report_risk_pages/report_risk_pages';
 import ReportTable from '../report_table/report_table';
 import {IComprehensiveIncomeResponse} from '../../interfaces/conprehensive_income_neo';
+import {APIURL, HttpMethod} from '../../constants/api_request';
 
 interface IComprehensiveIncomeStatementsNeoProps {
   chainId: string;
@@ -29,8 +31,17 @@ const ComprehensiveIncomeStatementsNeo = ({
   const reportTitle = BaifaReports.COMPREHENSIVE_INCOME_STATEMENTS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
 
-  const [comprehensiveIncomeResponse, setComprehensiveIncomeResponse] =
-    useState<IComprehensiveIncomeResponse>();
+  const {
+    data: comprehensiveIncomeResponse,
+    isLoading: isReportLoading,
+    error: reportError,
+  } = useAPIResponse<IComprehensiveIncomeResponse>(
+    `${APIURL.CHAINS}/${chainId}/evidence/${evidenceId}/comprehensive_income`,
+    {
+      method: HttpMethod.GET,
+    }
+  );
+
   const previousIncomeData = comprehensiveIncomeResponse?.previousReport;
   const currentIncomeData = comprehensiveIncomeResponse?.currentReport;
   const historicalIncomeData = comprehensiveIncomeResponse?.lastYearReport;
@@ -49,29 +60,6 @@ const ComprehensiveIncomeStatementsNeo = ({
       pageRef.current.style.transform = `scale(1)`;
     }
   }, [windowWidth]);
-
-  // Info: (20230923 - Julian) Get data from API
-  const getComprehensiveIncomeStatements = async () => {
-    let reportData: IComprehensiveIncomeResponse;
-    try {
-      const response = await fetch(
-        `/api/v1/app/chains/${chainId}/evidence/${evidenceId}/comprehensive_income`,
-        {
-          method: 'GET',
-        }
-      );
-      reportData = await response.json();
-      setComprehensiveIncomeResponse(reportData);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Get comprehensive income statements error');
-    }
-  };
-
-  useEffect(() => {
-    getComprehensiveIncomeStatements();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // Info: (20230922 - Julian) ------------ Comprehensive Income Statements Data ------------
   const mainTableThead = [
@@ -244,7 +232,9 @@ const ComprehensiveIncomeStatementsNeo = ({
     historicalIncomeData
   );
 
-  return (
+  const report = isReportLoading ? ( // Info: (202340315 - Julian) Loading...
+    <h1 className="p-4 text-center">Loading...</h1>
+  ) : (
     <div className="flex h-1000px flex-col items-center a4:h-auto">
       <div ref={pageRef} className="flex w-full origin-top flex-col items-center font-inter">
         {/* Info: (20230807 - Julian) Cover */}
@@ -308,10 +298,10 @@ const ComprehensiveIncomeStatementsNeo = ({
             <p className="font-bold">Foundation for Presentation and Consolidation Principles </p>
             <p>
               {`The attached financial statements of the Company are not audited. These non-audited financial statements are prepared following the United States Generally Accepted Accounting Principles ("GAAP") in the same manner as the audited financial statements. In the management's view, they include all necessary adjustments, which are only regular, recurring adjustments, for a fair representation of the Company's financial statements for the periods shown. The non-audited operational results for
-                the 30 days ending `}
+            the 30 days ending `}
               <span className="font-bold text-violet">{endIncomeDate.dateFormatInUS}</span>
               {`, may not
-                necessarily predict the results for the full year or any other period.`}
+            necessarily predict the results for the full year or any other period.`}
             </p>
             <p className="font-bold">Use of estimates</p>
             <p>
@@ -597,6 +587,15 @@ const ComprehensiveIncomeStatementsNeo = ({
       </div>
     </div>
   );
+
+  const displayReport = reportError ? (
+    // Info: (202340315 - Julian) No comprehensive income statements data
+    <h1 className="p-4 text-center">No comprehensive income statements data</h1>
+  ) : (
+    report
+  );
+
+  return <>{displayReport}</>;
 };
 
 export default ComprehensiveIncomeStatementsNeo;

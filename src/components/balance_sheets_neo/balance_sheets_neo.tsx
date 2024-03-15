@@ -146,7 +146,7 @@ const BalanceSheetsNeo = ({chainId, evidenceId}: IBalanceSheetsNeoProps) => {
 
   const report = isBalanceSheetsLoading ? (
     // Info: (202340315 - Julian) Loading...
-    <h1>Loading...</h1>
+    <h1 className="p-4 text-center">Loading...</h1>
   ) : (
     <div className="flex h-1000px flex-col items-center a4:h-auto">
       <div ref={pageRef} className="flex w-full origin-top flex-col items-center font-inter">
@@ -418,8 +418,8 @@ const BalanceSheetsNeo = ({chainId, evidenceId}: IBalanceSheetsNeoProps) => {
   );
 
   const displayReport = balanceSheetsError ? (
-    // Info: (202340315 - Julian) There was an error loading balance sheets
-    <h1 className="p-4 text-center">There was an error loading balance sheets</h1>
+    // Info: (202340315 - Julian) No balance sheets data
+    <h1 className="p-4 text-center">No balance sheets data</h1>
   ) : (
     report
   );
