@@ -1,4 +1,9 @@
-import {ICashFlowNeo, INonCashDetail, ICashDetail} from '../../interfaces/cash_flow_neo';
+import {
+  ICashFlowNeo,
+  INonCashDetail,
+  ICashDetail,
+  dummyCashBreakdown,
+} from '../../interfaces/cash_flow_neo';
 import {defaultBreakdown} from '../../interfaces/report_currency_detail';
 import {roundToDecimal} from '../common';
 import {ITable} from '../../interfaces/report_table';
@@ -816,14 +821,14 @@ export const createCashActivities = (
   };
   if (!dataA || !dataB) return defaultTable;
 
-  const usdA = dataA.breakdown.USD ?? defaultBreakdown;
-  const usdB = dataB.breakdown.USD ?? defaultBreakdown;
+  const usdA = dataA.breakdown ?? dummyCashBreakdown;
+  const usdB = dataB.breakdown ?? dummyCashBreakdown;
 
   const totalCostA = +dataA.weightedAverageCost;
   const totalCostB = +dataB.weightedAverageCost;
 
-  const usdPerA = (+usdA.weightedAverageCost / totalCostA) * 100;
-  const usdPerB = (+usdB.weightedAverageCost / totalCostB) * 100;
+  const usdPerA = (+usdA.USD.weightedAverageCost / totalCostA) * 100;
+  const usdPerB = (+usdB.USD.weightedAverageCost / totalCostB) * 100;
   const totalPerA = usdPerA;
   const totalPerB = usdPerB;
 
@@ -846,11 +851,11 @@ export const createCashActivities = (
         rowType: RowType.bookkeeping,
         rowData: [
           `USD (${numero[1]})`,
-          `${roundToDecimal(+usdA.amount, 2)}`,
-          `$ ${roundToDecimal(+usdA.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+usdA.USD.amount, 2)}`,
+          `$ ${roundToDecimal(+usdA.USD.weightedAverageCost, 2)}`,
           `${roundToDecimal(usdPerA, 1)} %`,
-          `${roundToDecimal(+usdB.amount, 2)}`,
-          `$ ${roundToDecimal(+usdB.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+usdB.USD.amount, 2)}`,
+          `$ ${roundToDecimal(+usdB.USD.weightedAverageCost, 2)}`,
           `${roundToDecimal(usdPerB, 1)} %`,
         ],
       },

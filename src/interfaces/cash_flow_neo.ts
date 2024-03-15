@@ -1,6 +1,6 @@
 export interface ICashDetail {
   weightedAverageCost: string;
-  breakdown: {
+  breakdown?: {
     USD: {
       amount: string;
       weightedAverageCost: string;
@@ -112,3 +112,10 @@ export interface ICashFlowResponse {
   previousReport: ICashFlowNeo;
   lastYearReport: ICashFlowNeo;
 }
+
+export const dummyCashBreakdown = {
+  USD: {
+    amount: '0',
+    weightedAverageCost: '0',
+  },
+};

@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import useAPIResponse from '../../../../lib/hooks/use_api_response';
 import {useState, useEffect, useContext} from 'react';
 import {AppContext} from '../../../../contexts/app_context';
-import {MarketContext} from '../../../../contexts/market_context';
 import {useRouter} from 'next/router';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../components/bolt_button/bolt_button';
@@ -12,7 +12,7 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ITransactionList} from '../../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
-import {getChainIcon, truncateText} from '../../../../lib/common';
+import {convertStringToSortingType, getChainIcon, truncateText} from '../../../../lib/common';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import TransactionList from '../../../../components/transaction_list/transaction_list';
 import {SearchBarWithKeyDown} from '../../../../components/search_bar/search_bar';
@@ -27,6 +27,7 @@ import {
   sortOldAndNewOptions,
 } from '../../../../constants/config';
 import Skeleton from '../../../../components/skeleton/skeleton';
+import {APIURL, HttpMethod} from '../../../../constants/api_request';
 
 interface ITransactionsPageProps {
   chainId: string;
@@ -38,90 +39,50 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   const {addressId} = router.query;
 
   const appCtx = useContext(AppContext);
-  const {getInteractionTransaction} = useContext(MarketContext);
-  // Info: (20240223 - Julian) 搜尋條件
-  const [period, setPeriod] = useState(default30DayPeriod);
-  const [search, setSearch] = useState('');
-  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  // Info: (20240223 - Julian) API 查詢參數
-  const [apiQueryStr, setApiQueryStr] = useState('');
-  // Info: (20240223 - Julian) UI
-  const [transactionData, setTransactionData] = useState<ITransactionList>();
-  const [isLoading, setIsLoading] = useState(true);
-  const [activePage, setActivePage] = useState(1);
+
+  const headTitle = `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_ADDRESS_1')} - BAIFA`;
+  const chainIcon = getChainIcon(chainId);
+
+  const backClickHandler = () => router.back();
 
   //  Info: (20231114 - Julian) 如果有取得 addressId，且 addressId 是陣列，則顯示資料
   const isAddressIds = !!addressId && typeof addressId === 'object';
 
-  // Info: (20240129 - Julian) call API 並將資料存入 transactionData
-  const getTransactionData = async () => {
-    // Info: (20240223 - Julian) Loading 畫面
-    setIsLoading(true);
+  const addressIdA = isAddressIds ? addressId[0] : '';
+  const addressIdB = isAddressIds ? addressId[1] : '';
 
-    try {
-      // Info: (20240129 - Julian) 如果有取得 addressId，則轉換成 query string
-      const addressA = typeof addressId === 'object' ? `addressId=${addressId[0]}` : undefined;
-      const addressB = typeof addressId === 'object' ? `&addressId=${addressId[1]}` : undefined;
-      const data = await getInteractionTransaction(chainId, addressA, addressB, apiQueryStr);
-      setTransactionData(data);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('getInteractionTransaction error', error);
+  // Info: (20240223 - Julian) 搜尋條件
+  const [period, setPeriod] = useState(default30DayPeriod);
+  const [search, setSearch] = useState('');
+  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+  const [activePage, setActivePage] = useState(1);
+
+  const {
+    data: transactionData,
+    isLoading: isTransactionLoading,
+    error: transactionError,
+  } = useAPIResponse<ITransactionList>(
+    `${APIURL.CHAINS}/${chainId}/transactions`,
+    {
+      method: HttpMethod.GET,
+    },
+    {
+      addressIdA: addressIdA,
+      addressIdB: addressIdB,
+      page: activePage,
+      sort: convertStringToSortingType(sorting),
+      search: search,
+      start_date: period.startTimeStamp > 0 ? period.startTimeStamp : '',
+      end_date: period.endTimeStamp > 0 ? period.endTimeStamp : '',
     }
-    // Info: (20240223 - Julian) 如果拿到資料，就將 isLoading 設為 false
-    setIsLoading(false);
-  };
+  );
 
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
-
-    if (isAddressIds && addressId) {
-      getTransactionData();
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addressId]);
-
-  useEffect(() => {
-    // Info: (20240223 - Julian) 如果 3 秒後還沒拿到資料，也將 isLoading 設為 false
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, transactionData]);
-
-  useEffect(() => {
-    // Info: (20240223 - Julian) 當 period 或 search 改變時，將 activePage 設為 1
-    setActivePage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, search]);
-
-  useEffect(() => {
-    // Info: (20240223 - Julian) 當 activePage 改變時，重新取得資料
-    getTransactionData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiQueryStr]);
-
-  useEffect(() => {
-    // Info: (20240223 - Julian) 設定 API 查詢參數
-    const pageQuery = `page=${activePage}`;
-    const sortQuery = `&sort=${sorting}`;
-    const searchQuery = search ? `&search=${search}` : '';
-    // Info: (20240223 - Julian) 檢查日期區間是否有效
-    const isPeriodValid = period.startTimeStamp && period.endTimeStamp;
-    const timeStampQuery = isPeriodValid
-      ? `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`
-      : '';
-    // Info: (20240223 - Julian) 當搜尋條件改變時，重新取得資料
-    setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${timeStampQuery}`);
-  }, [activePage, period, search, sorting]);
-
-  const headTitle = `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_ADDRESS_1')} - BAIFA`;
-
-  const chainIcon = getChainIcon(chainId);
-  const backClickHandler = () => router.back();
+  }, []);
 
   const mainTitle = (
     <h1 className="text-2xl font-bold lg:text-48px">
@@ -190,7 +151,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
 
   const {transactions, totalPages} = transactionData ?? {transactions: [], totalPages: 0};
 
-  const isShoeTransactionList = isLoading ? (
+  const isShoeTransactionList = isTransactionLoading ? (
     skeletonTransactionList
   ) : (
     <TransactionList transactions={transactions} />

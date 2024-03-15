@@ -1,4 +1,5 @@
-import {useEffect, useState, useRef} from 'react';
+import {useEffect, useRef} from 'react';
+import useAPIResponse from '../../lib/hooks/use_api_response';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {A4_SIZE} from '../../constants/config';
 import {timestampToString} from '../../lib/common';
@@ -15,6 +16,7 @@ import ReportPageBody from '../report_page_body/report_page_body';
 import ReportRiskPages from '../report_risk_pages/report_risk_pages';
 import ReportTable from '../report_table/report_table';
 import {IBalanceSheetsResponse} from '../../interfaces/balance_sheets_neo';
+import {APIURL, HttpMethod} from '../../constants/api_request';
 
 interface IBalanceSheetsNeoProps {
   chainId: string;
@@ -25,7 +27,15 @@ const BalanceSheetsNeo = ({chainId, evidenceId}: IBalanceSheetsNeoProps) => {
   const reportTitle = BaifaReports.BALANCE_SHEETS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
 
-  const [balanceSheetsResponse, setBalanceSheetsResponse] = useState<IBalanceSheetsResponse>();
+  const {
+    data: balanceSheetsResponse,
+    isLoading: isBalanceSheetsLoading,
+    error: balanceSheetsError,
+  } = useAPIResponse<IBalanceSheetsResponse>(
+    `${APIURL.CHAINS}/${chainId}/evidence/${evidenceId}/balance_sheet`,
+    {method: HttpMethod.GET}
+  );
+
   const previousBalanceData = balanceSheetsResponse?.previousReport;
   const currentBalanceData = balanceSheetsResponse?.currentReport;
 
@@ -43,30 +53,6 @@ const BalanceSheetsNeo = ({chainId, evidenceId}: IBalanceSheetsNeoProps) => {
       pageRef.current.style.transform = `scale(1)`;
     }
   }, [windowWidth]);
-
-  // Info: (20240306 - Julian) Get data from API
-  const getBalanceSheet = async () => {
-    let reportData: IBalanceSheetsResponse = {} as IBalanceSheetsResponse;
-    try {
-      const response = await fetch(
-        `/api/v1/app/chains/${chainId}/evidence/${evidenceId}/balance_sheet`,
-        {
-          method: 'GET',
-        }
-      );
-      reportData = await response.json();
-      setBalanceSheetsResponse(reportData);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Get balance sheet error');
-    }
-    return reportData;
-  };
-
-  useEffect(() => {
-    getBalanceSheet();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const theadDate = [endDateStr.dateFormatForForm, startDateStr.dateFormatForForm];
 
@@ -158,7 +144,10 @@ const BalanceSheetsNeo = ({chainId, evidenceId}: IBalanceSheetsNeoProps) => {
     previousBalanceData
   );
 
-  return (
+  const report = isBalanceSheetsLoading ? (
+    // Info: (202340315 - Julian) Loading...
+    <h1 className="p-4 text-center">Loading...</h1>
+  ) : (
     <div className="flex h-1000px flex-col items-center a4:h-auto">
       <div ref={pageRef} className="flex w-full origin-top flex-col items-center font-inter">
         {/* Info: (20230801 - Julian) Cover */}
@@ -427,6 +416,15 @@ const BalanceSheetsNeo = ({chainId, evidenceId}: IBalanceSheetsNeoProps) => {
       </div>
     </div>
   );
+
+  const displayReport = balanceSheetsError ? (
+    // Info: (202340315 - Julian) No balance sheets data
+    <h1 className="p-4 text-center">No balance sheets data</h1>
+  ) : (
+    report
+  );
+
+  return <>{displayReport}</>;
 };
 
 export default BalanceSheetsNeo;

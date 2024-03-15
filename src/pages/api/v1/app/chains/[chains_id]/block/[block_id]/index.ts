@@ -3,6 +3,8 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {IBlockDetail} from '../../../../../../../../interfaces/block';
 import prisma from '../../../../../../../../../prisma/client';
+import {StabilityLevel} from '../../../../../../../../constants/stability_level';
+import {assessBlockStability} from '../../../../../../../../lib/common';
 
 type ResponseData = IBlockDetail | undefined;
 
@@ -12,6 +14,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     typeof req.query.block_id === 'string' ? parseInt(req.query.block_id) : undefined;
 
   try {
+    let stability = StabilityLevel.LOW;
+    const latestBlock = await prisma.blocks.findFirst({
+      orderBy: {
+        created_timestamp: 'desc',
+      },
+      select: {
+        number: true,
+      },
+    });
+
     const blockData = await prisma.blocks.findUnique({
       // Info: (20240119 - Julian) 前端傳過來的 block_id 是 number，所以要轉換
       where: {
@@ -28,6 +40,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         number: true,
       },
     });
+
+    if (latestBlock && latestBlock.number) {
+      const targetBlockId = !!blockData && !!blockData.number ? +blockData.number : 0;
+      stability = assessBlockStability(targetBlockId, latestBlock.number);
+    }
 
     // Info: (20240119 - Julian) 從 chains Table 撈出 chain_icon 與 decimals
     const chain_id = blockData?.chain_id ?? 0;
@@ -82,7 +99,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       ? {
           id: `${blockData.number}`,
           chainId: `${blockData.chain_id}`,
-          stability: 'HIGH', // ToDo: (20240118 - Julian) 補上這個欄位
+          stability: stability,
           createdTimestamp: blockData.created_timestamp ?? 0,
           extraData: '', // ToDo: (20240118 - Julian) 補上這個欄位
           transactionCount: blockData.transaction_count ?? 0,

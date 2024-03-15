@@ -1,5 +1,8 @@
 import {IDisplayTransaction} from './transaction';
 import {ICommonData} from './common_data';
+import {IBalanceSheetsNeo} from './balance_sheets_neo';
+import {IComprehensiveIncomeNeo} from './conprehensive_income_neo';
+import {ICashFlowNeo} from './cash_flow_neo';
 
 export interface IEvidence extends ICommonData {
   evidenceAddress: string;
@@ -14,5 +17,21 @@ export interface IEvidenceBrief extends ICommonData {
   evidenceAddress: string;
   state: string;
   creatorAddressId: string;
-  content: string;
+  //content: string;
 }
+
+export interface IEvidenceContent {
+  balanceSheet: IBalanceSheetsNeo;
+  comprehensiveIncome: IComprehensiveIncomeNeo;
+  cashFlow: ICashFlowNeo;
+}
+
+export const dummyEvidenceDetail: IEvidenceDetail = {
+  id: '',
+  chainId: '',
+  evidenceAddress: '',
+  state: '',
+  creatorAddressId: '',
+  createdTimestamp: 0,
+  transactionHistoryData: [],
+};

@@ -7,8 +7,24 @@ interface ISearchBarProps {
   searchBarPlaceholder: string;
   setSearch: Dispatch<SetStateAction<string>>;
   suggestions?: string[];
+  getSearch?: (input: string) => void;
 }
 
+interface ISearchBarWithSuggestionsProps extends ISearchBarProps {
+  suggestions: string[];
+  getSearch: (input: string) => void;
+}
+
+/**
+ * Info: Basic Search Bar component without suggestions (20240314 - Shirley)
+ *
+ * This component renders a simple search input field. It updates the search state on change.
+ * Ideal for scenarios where suggestions are not required or when a simpler UI is preferred.
+ *
+ * @param {ISearchBarProps} props - The props object containing the search bar configuration.
+ * @param {string} props.searchBarPlaceholder - The placeholder text for the search input.
+ * @param {Dispatch<SetStateAction<string>>} props.setSearch - The function to update the search state.
+ */
 const SearchBar = ({searchBarPlaceholder, setSearch}: ISearchBarProps) => {
   const searchChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
@@ -30,11 +46,56 @@ const SearchBar = ({searchBarPlaceholder, setSearch}: ISearchBarProps) => {
   );
 };
 
-export const SearchBarWithKeyDown = ({
+/**
+ * Info: Search Bar with 'Enter' key detection (20240314 - Shirley)
+ *
+ * Enhances the basic search bar by triggering the search action when the 'Enter' key is pressed.
+ * Useful for users who prefer to initiate searches using the keyboard.
+ *
+ * @param {ISearchBarProps} props - The props object containing the search bar configuration.
+ * @param {string} props.searchBarPlaceholder - The placeholder text for the search input.
+ * @param {Dispatch<SetStateAction<string>>} props.setSearch - The function to update the search state.
+ */
+export const SearchBarWithKeyDown = ({searchBarPlaceholder, setSearch}: ISearchBarProps) => {
+  // Info: (20240222 - Julian) 按下 Enter 鍵時，修改 search state 並觸發搜尋
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setSearch(e.currentTarget.value);
+    }
+  };
+
+  return (
+    <div className="relative w-full drop-shadow-xl">
+      <input
+        type="search"
+        className="w-full items-center rounded-full bg-purpleLinear px-6 py-3 text-base placeholder:text-sm placeholder:lg:text-base"
+        placeholder={searchBarPlaceholder}
+        onKeyDown={handleKeyDown}
+      />
+      <div className="absolute right-5 top-3 text-2xl">
+        <RiSearchLine />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Info: Search Bar with suggestions and keyboard navigation (20240314 - Shirley)
+ *
+ * This component extends the basic search bar with a suggestions dropdown. It supports keyboard navigation
+ * (Arrow Up/Down) to browse through suggestions, and 'Enter' to select. It provides a dynamic user experience
+ * by filtering and displaying suggestions based on the user's input.
+ *
+ * @param {ISearchBarWithSuggestionsProps} props - The props object containing the search bar and suggestions configuration.
+ * @param {string[]} props.suggestions - The list of suggestions to display.
+ * @param {(input: string) => void} props.getSearch - The function to call when a search is triggered.
+ */
+export const SearchBarWithSuggestions = ({
   searchBarPlaceholder,
   setSearch,
   suggestions = [],
-}: ISearchBarProps) => {
+  getSearch,
+}: ISearchBarWithSuggestionsProps) => {
   const [inputValue, setInputValue, inputValueRef] = useStateRef<string>('');
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
 
@@ -44,12 +105,16 @@ export const SearchBarWithKeyDown = ({
     setComponentVisible: setSuggestionVisible,
   } = useOuterClick<HTMLInputElement>(false);
 
-  const handleInputFocus = () => setSuggestionVisible(true);
+  const handleInputFocus = () => {
+    suggestions.length > 0 && setSuggestionVisible(true);
+  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
     setSuggestionVisible(true);
     setSelectedSuggestionIndex(-1);
+    setInputValue(e.target.value);
+
+    getSearch && getSearch(e.target.value);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -88,16 +153,21 @@ export const SearchBarWithKeyDown = ({
     setSelectedSuggestionIndex(index);
   };
 
-  const suggestionList = suggestions.map((suggestion, i) => (
-    <li
-      key={i}
-      className={`px-4 py-3 text-sm ${i === selectedSuggestionIndex ? 'bg-purpleLinear' : ''}`}
-      onClick={() => clickSuggestionHandler(suggestion, i)}
-      onMouseEnter={() => setSelectedSuggestionIndex(i)}
-    >
-      {suggestion}
-    </li>
-  ));
+  const suggestionList =
+    suggestionVisible && suggestions.length > 0 ? (
+      suggestions.map((suggestion, i) => (
+        <li
+          key={i}
+          className={`px-4 py-3 text-sm ${i === selectedSuggestionIndex ? 'bg-purpleLinear' : ''}`}
+          onMouseEnter={() => setSelectedSuggestionIndex(i)}
+          onMouseDown={() => clickSuggestionHandler(suggestion, i)}
+        >
+          {suggestion}
+        </li>
+      ))
+    ) : (
+      <></>
+    );
 
   return (
     <div className="relative w-full drop-shadow-xl">

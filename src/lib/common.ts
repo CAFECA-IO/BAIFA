@@ -1,4 +1,4 @@
-import {IPaginationOptions, SortingType, TimeSortingType} from '../constants/api_request';
+import {IPaginationOptions, TimeSortingType} from '../constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_CURRENCY_ICON,
@@ -234,7 +234,15 @@ export function isValid64BitInteger(input: string | number | bigint) {
   return num >= MIN_64BIT_INT && num <= MAX_64BIT_INT;
 }
 
-// Info: 藉由 targetBlockId 跟 latestBlockId 計算區塊的穩定度，越新的 block ，穩定性越低 (20240201 - Shirley)
+/**Info: 藉由 targetBlockId 跟 latestBlockId 計算區塊的穩定度，越新的 block ，穩定性越低 (20240201 - Shirley)
+ * @dev 20 < diff : HIGH
+ * @dev 10 < diff <= 20 : MEDIUM
+ * @dev diff <= 10 : LOW
+ *
+ * @param targetBlockId : block number of the target block
+ * @param latestBlockId : block number of the latest block
+ * @returns
+ */
 export const assessBlockStability = (targetBlockId: number, latestBlockId: number) => {
   let stability = StabilityLevel.LOW;
   if (isNaN(+targetBlockId) || isNaN(+latestBlockId)) return stability;
@@ -243,7 +251,7 @@ export const assessBlockStability = (targetBlockId: number, latestBlockId: numbe
     stability = StabilityLevel.HIGH;
   } else if (THRESHOLD_FOR_BLOCK_STABILITY.MEDIUM < Math.abs(latestBlockId - targetBlockId)) {
     stability = StabilityLevel.MEDIUM;
-  } else if (Math.abs(latestBlockId - latestBlockId) < THRESHOLD_FOR_BLOCK_STABILITY.MEDIUM) {
+  } else if (Math.abs(latestBlockId - targetBlockId) <= THRESHOLD_FOR_BLOCK_STABILITY.LOW) {
     stability = StabilityLevel.LOW;
   }
 

@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext} from 'react';
+import {useState} from 'react';
 import {useRouter} from 'next/router';
 import TransactionList from '../transaction_list/transaction_list';
 import {useTranslation} from 'next-i18next';
@@ -8,9 +8,12 @@ import {SearchBarWithKeyDown} from '../search_bar/search_bar';
 import DatePicker from '../date_picker/date_picker';
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
-import {MarketContext} from '../../contexts/market_context';
 import Pagination from '../pagination/pagination';
 import Skeleton from '../skeleton/skeleton';
+import useAPIResponse from '../../lib/hooks/use_api_response';
+import {APIURL, HttpMethod} from '../../constants/api_request';
+import {ChainDetailTab} from '../../interfaces/chain';
+import {convertStringToSortingType} from '../../lib/common';
 
 interface ITransactionTabProps {
   chainDetailLoading: boolean;
@@ -19,7 +22,6 @@ interface ITransactionTabProps {
 const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
-  const {getTransactionList} = useContext(MarketContext);
 
   // Info: (20240119 - Julian) get chainId from URL
   const chainId = router.query.chainId as string;
@@ -27,63 +29,19 @@ const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  // Info: (20240220 - Julian) API 查詢參數
-  const [apiQueryStr, setApiQueryStr] = useState('');
-  // Info: (20240220 - Julian) UI
-  const [transactionData, setTransactionData] = useState<ITransactionList>();
-  const [isLoading, setIsLoading] = useState(true);
   const [activePage, setActivePage] = useState(1);
 
-  // Info: (20240119 - Julian) Call API to get block and transaction data
-  const getTransactionData = async () => {
-    // Info: (20240220 - Julian) Loading 畫面
-    setIsLoading(true);
-
-    try {
-      const data = await getTransactionList(chainId, apiQueryStr);
-      setTransactionData(data);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('getTransactionList error', error);
+  const {data: transactionData, isLoading: isTransactionLoading} = useAPIResponse<ITransactionList>(
+    `${APIURL.CHAINS}/${chainId}/transactions`,
+    {method: HttpMethod.GET},
+    {
+      search: search,
+      start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
+      end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
+      sort: convertStringToSortingType(sorting),
+      page: activePage,
     }
-    // Info: (20240220 - Julian) 如果拿到資料，就將 isLoading 設為 false
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    // Info: (20240217 - Julian) 如果 3 秒後還沒拿到資料，也將 isLoading 設為 false
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, transactionData]);
-
-  useEffect(() => {
-    // Info: (20240222 - Julian) 當 period 或 search 改變時，將 activePage 設為 1
-    setActivePage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, search]);
-
-  useEffect(() => {
-    // Info: (20240220 - Julian) 當 activePage 改變時，重新取得資料
-    getTransactionData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiQueryStr]);
-
-  useEffect(() => {
-    // Info: (20240119 - Julian) 設定 API 查詢參數
-    const pageQuery = `page=${activePage}`;
-    const sortQuery = `&sort=${sorting}`;
-    const searchQuery = search ? `&search=${search}` : '';
-    // Info: (20240222 - Julian) 檢查日期區間是否有效
-    const isPeriodValid = period.startTimeStamp && period.endTimeStamp;
-    const timeStampQuery = isPeriodValid
-      ? `&start_date=${period.startTimeStamp}&end_date=${period.endTimeStamp}`
-      : '';
-    // Info: (20240222 - Julian) 當搜尋條件改變時，重新取得資料
-    setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${timeStampQuery}`);
-  }, [activePage, period, search, sorting]);
+  );
 
   const {transactions, totalPages} = transactionData ?? {transactions: [], totalPages: 0};
 
@@ -107,7 +65,7 @@ const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
 
   const isShowTransactionList =
     // Info: (20240220 - Julian) TransactionTab 和 ChainDetailPage 都完成 Loading 後才顯示 TransactionList
-    isLoading || chainDetailLoading ? (
+    isTransactionLoading || chainDetailLoading ? (
       skeletonTransactionList
     ) : (
       <TransactionList transactions={transactions} />
@@ -148,7 +106,12 @@ const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
       <div className="flex w-full flex-col items-center">
         {isShowTransactionList}
 
-        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
+        <Pagination
+          pagePrefix={ChainDetailTab.TRANSACTIONS}
+          activePage={activePage}
+          setActivePage={setActivePage}
+          totalPages={totalPages}
+        />
       </div>
     </div>
   );

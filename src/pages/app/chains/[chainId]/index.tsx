@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import {AppContext} from '../../../../contexts/app_context';
-import {MarketContext} from '../../../../contexts/market_context';
 import {useState, useEffect, useContext} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../components/nav_bar/nav_bar';
@@ -10,7 +9,7 @@ import Breadcrumb from '../../../../components/breadcrumb/breadcrumb';
 import BlockTab from '../../../../components/block_tab/block_tab';
 import TransactionTab from '../../../../components/transaction_tab/transaction_tab';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {IChain} from '../../../../interfaces/chain';
+import {ChainDetailTab, IChain} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
@@ -18,55 +17,38 @@ import {DEFAULT_CHAIN_ICON, chainList} from '../../../../constants/config';
 import {getChainIcon} from '../../../../lib/common';
 import Skeleton from '../../../../components/skeleton/skeleton';
 import DataNotFound from '../../../../components/data_not_found/data_not_found';
+import useAPIResponse from '../../../../lib/hooks/use_api_response';
+import {APIURL, HttpMethod} from '../../../../constants/api_request';
 
 export interface IChainDetailPageProps {
   chainId: string;
 }
 
-enum ChainDetailTab {
-  BLOCKS = 'blocks',
-  TRANSACTIONS = 'transactions',
-}
-
 const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
-  const {getChainDetail} = useContext(MarketContext);
 
   const [activeTab, setActiveTab] = useState<ChainDetailTab>(ChainDetailTab.BLOCKS);
-  const [chainData, setChainData] = useState<IChain>({} as IChain);
-  const [isLoading, setIsLoading] = useState(true);
-  // ToDo: (20240313 - Julian) data not found
-  const [isNoData, setIsNoData] = useState(false);
+
+  const {
+    data: chainData,
+    isLoading: isChainLoading,
+    error: chainError,
+  } = useAPIResponse<IChain>(`${APIURL.CHAINS}/${chainId}`, {method: HttpMethod.GET});
 
   useEffect(() => {
     if (!appCtx.isInit) {
       appCtx.init();
     }
 
-    const getChainData = async (chainId: string) => {
-      // Info: (20240220 - Julian) 顯示 Loading 畫面
-      setIsLoading(true);
-      try {
-        const data = await getChainDetail(chainId);
-        setChainData(data);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('getChainDetail error', error);
-      }
-      // Info: (20240220 - Julian) 拿到資料就將 isLoading 設為 false
-      setIsLoading(false);
-    };
-
-    getChainData(chainId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Info: (20240217 - Julian) 如果 isNoData 為 true，顯示預設值
-  const {chainId: chainIdFromData, chainName} = isNoData
-    ? {chainId: '--', chainName: '--'}
-    : chainData;
-  const headTitle = isLoading ? 'Loading...' : `${chainName} - BAIFA`;
+  const {chainId: chainIdFromData, chainName} = chainData
+    ? chainData
+    : {chainId: '--', chainName: '--'};
+  const headTitle = isChainLoading ? t('COMMON.LOADING') : `${chainName} - BAIFA`;
   const chainIcon = getChainIcon(chainIdFromData);
 
   const crumbs = [
@@ -84,7 +66,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     },
   ];
 
-  const displayedTitle = isLoading ? (
+  const displayedTitle = isChainLoading ? (
     // Info: (20240206 - Julian) Loading animation
     <>
       <div className="hidden items-center justify-center space-x-4 p-5 lg:flex">
@@ -151,12 +133,12 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
 
   const tabContent =
     activeTab === ChainDetailTab.BLOCKS ? (
-      <BlockTab chainDetailLoading={isLoading} />
+      <BlockTab chainDetailLoading={isChainLoading} />
     ) : (
-      <TransactionTab chainDetailLoading={isLoading} />
+      <TransactionTab chainDetailLoading={isChainLoading} />
     );
 
-  const displayBody = isNoData ? (
+  const displayBody = chainError ? (
     <DataNotFound />
   ) : (
     <>
