@@ -2,11 +2,11 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../prisma/client';
-import {ITransaction, ITransactionList} from '../../../../../../interfaces/transaction';
+import {ITransaction, ITransactionHistorySection} from '../../../../../../interfaces/transaction';
 import {AddressType, IAddressInfo} from '../../../../../../interfaces/address_info';
 import {ITEM_PER_PAGE} from '../../../../../../constants/config';
 
-type ResponseData = ITransactionList;
+type ResponseData = ITransactionHistorySection;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240315 - Liz) query string parameter
@@ -176,6 +176,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const result = {
       'transactions': transactionHistoryData,
       'totalPages': totalPages,
+      'transactionCount': transactionCount,
     };
 
     return res.status(200).json(result);
@@ -213,6 +214,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 //       // ... other transactions
 //     ],
 //     'totalPages': 10,
+//     'transactionCount': 100,
 //   };
 //   return res.status(200).json(result);
 // }
