@@ -17,8 +17,8 @@ import ReportPageBody from '../report_page_body/report_page_body';
 import ReportRiskPages from '../report_risk_pages/report_risk_pages';
 import ReportTable from '../report_table/report_table';
 import {ICashFlowResponse} from '../../interfaces/cash_flow_neo';
-import ReportExchageRateFormNeo from '../report_exchage_rate_form_neo/report_exchage_rate_form_neo';
 import {APIURL, HttpMethod} from '../../constants/api_request';
+import ReportExchageRateFormNeo from '../report_exchage_rate_form_neo/report_exchage_rate_form_neo';
 
 interface IStatementsOfCashFlowProps {
   chainId: string;
@@ -39,11 +39,17 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   );
 
   const previousCashFlowData = cashFlowResponse?.previousReport;
-  const endCashFlowData = cashFlowResponse?.currentReport;
+  const currentCashFlowData = cashFlowResponse?.currentReport;
   const lastYearCashFlowData = cashFlowResponse?.lastYearReport;
 
   const startDateStr = timestampToString(previousCashFlowData?.reportEndTime);
-  const endDateStr = timestampToString(endCashFlowData?.reportEndTime);
+  const endDateStr = timestampToString(currentCashFlowData?.reportEndTime);
+
+  // Info: (20240315 - Julian) 匯率表區間
+  const exchangeRatePeriod = {
+    startTimestamp: currentCashFlowData?.reportStartTime ?? 0,
+    endTimestamp: (currentCashFlowData?.reportEndTime ?? 0) + 86400 * 30,
+  };
 
   // Info: (20231002 - Julian) Set scale for mobile view
   const pageRef = useRef<HTMLDivElement>(null);
@@ -63,10 +69,10 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p3_1 = createCashFlowFirstPart(
     endDateStr.monthAndDay,
     cashFlowDates,
-    endCashFlowData,
+    currentCashFlowData,
     previousCashFlowData
   );
-  const cash_flow_p4_1 = createCashFlowSecondPart(endCashFlowData, previousCashFlowData);
+  const cash_flow_p4_1 = createCashFlowSecondPart(currentCashFlowData, previousCashFlowData);
 
   // Info: (20230922 - Julian) ------------- Cash Flow table(this year vs last year) -------------
   const historicalCashFlowDates = [endDateStr.year, endDateStr.lastYear];
@@ -74,7 +80,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p8_1 = createHistoricalCashFlowTable(
     endDateStr.monthAndDay,
     historicalCashFlowDates,
-    endCashFlowData,
+    currentCashFlowData,
     lastYearCashFlowData
   );
 
@@ -83,7 +89,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p9_1 = createCashActivities(
     'Cash deposited by customers',
     cashFlowDates,
-    endCashFlowData?.operatingActivities.details.cashDepositedByCustomers,
+    currentCashFlowData?.operatingActivities.details.cashDepositedByCustomers,
     previousCashFlowData?.operatingActivities.details.cashDepositedByCustomers,
     numeroOfCashDeposited
   );
@@ -93,7 +99,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p9_2 = createCashActivities(
     'Cash received from customers as transaction fees',
     cashFlowDates,
-    endCashFlowData?.operatingActivities.details.cashReceivedFromCustomersAsTransactionFee,
+    currentCashFlowData?.operatingActivities.details.cashReceivedFromCustomersAsTransactionFee,
     previousCashFlowData?.operatingActivities.details.cashReceivedFromCustomersAsTransactionFee,
     numeroOfCashFee
   );
@@ -103,7 +109,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p10_1 = createCashActivities(
     'Cash paid to suppliers for expenses',
     cashFlowDates,
-    endCashFlowData?.operatingActivities.details.cashPaidToSuppliersForExpenses,
+    currentCashFlowData?.operatingActivities.details.cashPaidToSuppliersForExpenses,
     previousCashFlowData?.operatingActivities.details.cashPaidToSuppliersForExpenses,
     numeroOfCashExpenses
   );
@@ -113,7 +119,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p10_2 = createCashActivities(
     'Cash withdrawn by customers',
     cashFlowDates,
-    endCashFlowData?.operatingActivities.details.cashReceivedFromCustomersAsTransactionFee,
+    currentCashFlowData?.operatingActivities.details.cashReceivedFromCustomersAsTransactionFee,
     previousCashFlowData?.operatingActivities.details.cashReceivedFromCustomersAsTransactionFee,
     numeroOfCashWithdrawn
   );
@@ -123,7 +129,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p11_1 = createCashActivities(
     'Purchase of cryptocurrencies',
     cashFlowDates,
-    endCashFlowData?.operatingActivities.details.purchaseOfCryptocurrencies,
+    currentCashFlowData?.operatingActivities.details.purchaseOfCryptocurrencies,
     previousCashFlowData?.operatingActivities.details.purchaseOfCryptocurrencies,
     numeroOfPurchaseCrypto
   );
@@ -133,7 +139,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p11_2 = createCashActivities(
     'Disposal of cryptocurrencies',
     cashFlowDates,
-    endCashFlowData?.operatingActivities.details.disposalOfCryptocurrencies,
+    currentCashFlowData?.operatingActivities.details.disposalOfCryptocurrencies,
     previousCashFlowData?.operatingActivities.details.disposalOfCryptocurrencies,
     numeroOfDisposalCrypto
   );
@@ -143,7 +149,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p12_1 = createNonCashActivities(
     'Cryptocurrencies deposited by customers',
     cashFlowDates,
-    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+    currentCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesDepositedByCustomers,
     previousCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesDepositedByCustomers,
@@ -155,7 +161,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p13_1 = createNonCashActivities(
     'Cryptocurrencies withdrawn by customers',
     cashFlowDates,
-    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+    currentCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesWithdrawnByCustomers,
     previousCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesWithdrawnByCustomers,
@@ -167,7 +173,8 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p14_1 = createNonCashActivities(
     'Cryptocurrency inflow',
     cashFlowDates,
-    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details.cryptocurrencyInflows,
+    currentCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+      .cryptocurrencyInflows,
     previousCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrencyInflows,
     numeroOfInflow
@@ -178,7 +185,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p14_2 = createNonCashActivities(
     'Cryptocurrency outflow',
     cashFlowDates,
-    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+    currentCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrencyOutflows,
     previousCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrencyOutflows,
@@ -190,7 +197,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p15_1 = createNonCashActivities(
     'Cryptocurrencies received from customers as transaction fees',
     cashFlowDates,
-    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+    currentCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersAsTransactionFees,
     previousCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesReceivedFromCustomersAsTransactionFees,
@@ -202,7 +209,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p16_1 = createNonCashActivities(
     'Purchase of cryptocurrencies with non-cash consideration',
     cashFlowDates,
-    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+    currentCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .purchaseOfCryptocurrenciesWithNonCashConsideration,
     previousCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .purchaseOfCryptocurrenciesWithNonCashConsideration,
@@ -214,7 +221,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p17_1 = createNonCashActivities(
     'Disposal of cryptocurrencies for non-cash consideration',
     cashFlowDates,
-    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+    currentCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .disposalOfCryptocurrenciesForNonCashConsideration,
     previousCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .disposalOfCryptocurrenciesForNonCashConsideration,
@@ -226,7 +233,7 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const cash_flow_p18_1 = createNonCashActivities(
     'Cryptocurrencies paid to suppliers for expenses',
     cashFlowDates,
-    endCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
+    currentCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesPaidToSuppliersForExpenses,
     previousCashFlowData?.supplementalScheduleOfNonCashOperatingActivities.details
       .cryptocurrenciesPaidToSuppliersForExpenses,
@@ -721,7 +728,10 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
               The table represents the exchange rates at 00:00 in the UTC+0 time zone. The exchange
               rates are used in revenue recognization.
             </p>
-            <ReportExchageRateFormNeo chainId={chainId} evidenceId={evidenceId} />
+            <ReportExchageRateFormNeo
+              startTimestamp={exchangeRatePeriod.startTimestamp}
+              endTimestamp={exchangeRatePeriod.endTimestamp}
+            />
           </div>
         </ReportPageBody>
         <hr className="break-before-page" />

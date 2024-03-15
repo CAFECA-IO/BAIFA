@@ -12,12 +12,12 @@ import {
 } from '../../lib/reports/comprehensive_income_neo';
 import ReportContent from '../report_content/report_content';
 import ReportCover from '../report_cover/report_cover';
-import ReportExchageRateFormNeo from '../report_exchage_rate_form_neo/report_exchage_rate_form_neo';
 import ReportPageBody from '../report_page_body/report_page_body';
 import ReportRiskPages from '../report_risk_pages/report_risk_pages';
 import ReportTable from '../report_table/report_table';
 import {IComprehensiveIncomeResponse} from '../../interfaces/conprehensive_income_neo';
 import {APIURL, HttpMethod} from '../../constants/api_request';
+import ReportExchageRateFormNeo from '../report_exchage_rate_form_neo/report_exchage_rate_form_neo';
 
 interface IComprehensiveIncomeStatementsNeoProps {
   chainId: string;
@@ -46,6 +46,12 @@ const ComprehensiveIncomeStatementsNeo = ({
 
   const startIncomeDate = timestampToString(previousIncomeData?.reportEndTime);
   const endIncomeDate = timestampToString(currentIncomeData?.reportEndTime);
+
+  // Info: (20240315 - Julian) 匯率表區間
+  const exchangeRatePeriod = {
+    startTimestamp: currentIncomeData?.reportStartTime ?? 0,
+    endTimestamp: (currentIncomeData?.reportEndTime ?? 0) + 86400 * 30,
+  };
 
   // Info: (20231002 - Julian) Set scale for mobile view
   const pageRef = useRef<HTMLDivElement>(null);
@@ -554,7 +560,10 @@ const ComprehensiveIncomeStatementsNeo = ({
               The table represents the exchange rates at 00:00 in the UTC+0 time zone. The exchange
               rates are used in revenue recognization.
             </p>
-            <ReportExchageRateFormNeo chainId={chainId} evidenceId={evidenceId} />
+            <ReportExchageRateFormNeo
+              startTimestamp={exchangeRatePeriod.startTimestamp}
+              endTimestamp={exchangeRatePeriod.endTimestamp}
+            />
           </div>
         </ReportPageBody>
         <hr className="break-before-page" />
