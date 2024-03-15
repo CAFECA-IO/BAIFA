@@ -14,6 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const search = typeof req.query.search === 'string' ? parseInt(req.query.search, 10) : undefined;
   const flag = typeof req.query.flag === 'string' ? req.query.flag : undefined;
 
+  // Info: (20240307 - Liz) 將 req 傳來的日期字串轉換成數字或 undefined
   const parseDate = (dateString: string | string[] | undefined) => {
     if (typeof dateString === 'string') {
       const parsedDate = parseInt(dateString, 10);
@@ -21,7 +22,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
     return undefined;
   };
-  // Info: (20240307 - Liz) 將 req 傳來的日期字串轉換成數字或 undefined
   const startDate = parseDate(req.query.start_date);
   const endDate = parseDate(req.query.end_date);
 
@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           created_timestamp: sorting, // Info: (20240307 - Liz) 1. created_timestamp 由 sorting 決定排序
         },
         {
-          id: 'asc', // Info: (20240307 - Liz) 2. id 由小到大排序
+          id: sorting, // Info: (今天 - Liz) 2. id 由 sorting 決定排序
         },
       ],
       // Info: (20240307 - Liz) 分頁
