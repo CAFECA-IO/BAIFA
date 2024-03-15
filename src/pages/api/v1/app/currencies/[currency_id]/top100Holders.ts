@@ -5,13 +5,13 @@ import prisma from '../../../../../../../prisma/client';
 import {IHolder, ITop100Holders} from '../../../../../../interfaces/currency';
 import {ITEM_PER_PAGE, TOP_100_HOLDER_MAX_TOTAL_PAGES} from '../../../../../../constants/config';
 
-type ResponseData = ITop100Holders | string;
+type ResponseData = ITop100Holders;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  // Info: (20240312 - Liz) query string
+  // Info: (20240312 - Liz) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
-  const search = typeof req.query.search === 'string' ? req.query.search : undefined;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
+  const search = typeof req.query.search === 'string' ? req.query.search.toLowerCase() : undefined;
 
   // Info: (20240312 - Liz) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240306 - Liz) 跳過前面幾筆
@@ -44,23 +44,63 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
     const decimal = decimalsOfChain?.decimals ?? 0;
 
-    // Info: (20240312 - Liz) 從 token_balances Table 中取得 holders，並做條件篩選以及分頁
-    const holderData = await prisma.token_balances.findMany({
-      where: {
-        currency_id: currency_id,
-        address: search ? {contains: search} : undefined, // Info: (20240312 - Liz) 搜尋條件
-      },
-      select: {
-        address: true,
-        value: true,
-      },
-      orderBy: {
-        value: 'desc', // Info: (20240313 - Liz) 依照持有價值由大到小排序
-      },
-      // Info: (20240313 - Liz) 分頁
-      take,
-      skip,
-    });
+    // Info: (20240314 - Liz) 取得 holders 資料 (依照搜尋判斷)
+    const getHolders = async (currency_id: string | undefined, search: string | undefined) => {
+      if (search) {
+        return await holderDataWithSearch(currency_id, search);
+      } else {
+        return await holderDataWithoutSearch(currency_id);
+      }
+    };
+
+    // Info: (20240314 - Liz) 有搜尋條件的 holders 資料
+    const holderDataWithSearch = async (
+      currency_id: string | undefined,
+      search: string | undefined
+    ) => {
+      // Info: (20240314 - Liz) 先從資料庫取前 100 筆依照持有價值由大到小排序的資料
+      const holderData100Top = await prisma.token_balances.findMany({
+        where: {
+          currency_id: currency_id,
+        },
+        select: {
+          address: true,
+          value: true,
+        },
+        orderBy: {
+          value: 'desc', // Info: (20240314 - Liz) 依照持有價值由大到小排序
+        },
+        take: 100,
+      });
+
+      // Info: (20240314 - Liz) 再從這 100 筆資料中找出地址符合搜尋條件的資料
+      const searchResult = holderData100Top.filter(holder => holder.address === search);
+
+      return searchResult;
+    };
+
+    // Info: (20240314 - Liz) 無搜尋條件的 holders 資料(並且分頁)
+    const holderDataWithoutSearch = async (currency_id: string | undefined) => {
+      const holderData100TopPaged = await prisma.token_balances.findMany({
+        where: {
+          currency_id: currency_id,
+        },
+        select: {
+          address: true,
+          value: true,
+        },
+        orderBy: {
+          value: 'desc', // Info: (20240313 - Liz) 依照持有價值由大到小排序
+        },
+        // Info: (20240313 - Liz) 分頁
+        take,
+        skip,
+      });
+
+      return holderData100TopPaged;
+    };
+
+    const holderData = await getHolders(currency_id, search);
 
     // Info: (20240312 - Liz) 取得 holders 總筆數
     const totalHoldersAmount = await prisma.token_balances.count({
@@ -119,7 +159,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const result = {
       holdersData: holderDataFormat,
-      totalPages: totalPages,
+      totalPages: search ? 1 : totalPages, // Info: (20240314 - Liz) 搜尋存在的話，這裡會只找到一筆資料，所以總頁數設定 1
     };
 
     prisma.$connect();
@@ -127,7 +167,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   } catch (error) {
     // Info: (20240312 - Liz) Request error
     // eslint-disable-next-line no-console
-    console.error('Error in holders:', error);
+    console.error('Error in fetching top 100 holders data (028):', error);
     res.status(500).json({} as ResponseData);
   }
 }

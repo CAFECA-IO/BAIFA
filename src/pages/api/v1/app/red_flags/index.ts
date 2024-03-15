@@ -5,15 +5,16 @@ import prisma from '../../../../../../prisma/client';
 import {IRedFlagPage} from '../../../../../interfaces/red_flag';
 import {ITEM_PER_PAGE} from '../../../../../constants/config';
 
-type ResponseData = IRedFlagPage | string;
+type ResponseData = IRedFlagPage;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  // Info: (20240307 - Liz) query string
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
+  // Info: (20240307 - Liz) query string parameter
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
   const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
-  const search = typeof req.query.search === 'string' ? parseInt(req.query.search) : undefined;
+  const search = typeof req.query.search === 'string' ? parseInt(req.query.search, 10) : undefined;
   const flag = typeof req.query.flag === 'string' ? req.query.flag : undefined;
 
+  // Info: (20240307 - Liz) 將 req 傳來的日期字串轉換成數字或 undefined
   const parseDate = (dateString: string | string[] | undefined) => {
     if (typeof dateString === 'string') {
       const parsedDate = parseInt(dateString, 10);
@@ -21,7 +22,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
     return undefined;
   };
-  // Info: (20240307 - Liz) 將 req 傳來的日期字串轉換成數字或 undefined
   const startDate = parseDate(req.query.start_date);
   const endDate = parseDate(req.query.end_date);
 
@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           created_timestamp: sorting, // Info: (20240307 - Liz) 1. created_timestamp 由 sorting 決定排序
         },
         {
-          id: 'asc', // Info: (20240307 - Liz) 2. id 由小到大排序
+          id: sorting, // Info: (20240315 - Liz) 2. id 由 sorting 決定排序
         },
       ],
       // Info: (20240307 - Liz) 分頁
@@ -81,12 +81,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
       },
     });
-
-    // Info: (20240205 - Liz) 若查無 redFlags 資料，回傳 404
-    if (redFlags === null) {
-      res.status(404).send('404 - redFlagData Not Found');
-      return;
-    }
 
     // Info: (20240205 - Liz) 從 codes Table 撈出 red_flag_type 的 value 和 meaning 的對照表為一個物件陣列
     const redFlagTypeCodeMeaning = await prisma.codes.findMany({
@@ -154,7 +148,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   } catch (error) {
     // Info: (20240307 - Liz) Request error
     // eslint-disable-next-line no-console
-    console.error('Error fetching red flag data:', error);
-    res.status(500).json('500 - Internal Server Error');
+    console.error('Error fetching red flags data (021):', error);
+    res.status(500).json({} as ResponseData);
   }
 }

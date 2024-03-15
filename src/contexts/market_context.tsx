@@ -72,6 +72,10 @@ export interface IMarketContext {
     blockId: string,
     queryStr?: string
   ) => Promise<ITransactionList>;
+  getCurrencyTransactions: (
+    currencyId: string,
+    queryStr?: string
+  ) => Promise<ITransactionHistorySection>;
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
   getAddressBrief: (chainId: string, addressId: string) => Promise<IAddressBrief>;
   getAddressReviewList: (
@@ -140,6 +144,7 @@ export const MarketContext = createContext<IMarketContext>({
   getInteractionTransaction: () => Promise.resolve({} as ITransactionList),
   getTransactionList: () => Promise.resolve({} as ITransactionList),
   getTransactionListOfBlock: () => Promise.resolve({} as ITransactionList),
+  getCurrencyTransactions: () => Promise.resolve({} as ITransactionHistorySection),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressBrief: () => Promise.resolve({} as IAddressBrief),
   getAddressReviewList: () => Promise.resolve([] as IReviewDetail[]),
@@ -389,6 +394,24 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     },
     []
   );
+
+  const getCurrencyTransactions = useCallback(async (currencyId: string, queryStr?: string) => {
+    let data: ITransactionHistorySection = {} as ITransactionHistorySection;
+    try {
+      const response = queryStr
+        ? await fetch(`${APIURL.CURRENCIES}/${currencyId}/transactions?${queryStr}`, {
+            method: 'GET',
+          })
+        : await fetch(`${APIURL.CURRENCIES}/${currencyId}/transactions`, {
+            method: 'GET',
+          });
+      data = await response.json();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('getCurrencyTransactions error', error);
+    }
+    return data;
+  }, []);
 
   const getTransactionDetail = useCallback(async (chainId: string, transactionId: string) => {
     let data: ITransactionDetail = {} as ITransactionDetail;
@@ -759,6 +782,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getInteractionTransaction,
     getTransactionList,
     getTransactionListOfBlock,
+    getCurrencyTransactions,
     getTransactionDetail,
     getAddressBrief,
     getAddressReviewList,

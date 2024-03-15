@@ -8,10 +8,9 @@ import {ITEM_PER_PAGE} from '../../../../../constants/config';
 type ResponseData = ICurrencyListPage;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  // Info: (20240308 - Liz) query string
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : undefined;
+  // Info: (20240308 - Liz) query string parameter
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
   const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
-
   const search = typeof req.query.search === 'string' ? req.query.search.toLowerCase() : undefined;
   const type = typeof req.query.type === 'string' ? req.query.type : undefined; // Info: (20240308 - Liz) type is categorized by currency name
 
@@ -118,7 +117,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   } catch (error) {
     // Info: (20240308 - Liz) Request error
     // eslint-disable-next-line no-console
-    console.error('Error fetching blacklist data:', error);
+    console.error('Error fetching currencies data (017):', error);
     res.status(500).json({} as ResponseData);
   }
 }

@@ -1,20 +1,14 @@
 // 019 - GET /app/currencies/:currency_id/red_flags
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {getPrismaInstance} from '../../../../../../lib/utils/prismaUtils';
+import prisma from '../../../../../../../prisma/client';
 import {IRedFlagOfCurrency} from '../../../../../../interfaces/red_flag';
 
 type ResponseData = IRedFlagOfCurrency[];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const prisma = getPrismaInstance();
-
-  // Info: (20240129 - Julian) 解構 URL 參數
+  // Info: (20240129 - Julian) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
-
-  if (!currency_id) {
-    return res.status(400).json([]);
-  }
 
   try {
     // Info: (20240129 - Julian) 取得 currency 資料
@@ -83,7 +77,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     res.status(200).json(result);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.log('Error in /app/currencies/:currency_id/red_flags', error);
+    console.log('Error fetching red flags data from a currency (019):', error);
     res.status(500).json([] as ResponseData);
   }
 }

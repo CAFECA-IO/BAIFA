@@ -51,9 +51,7 @@ export interface ICurrencyDetailString extends ICurrency {
   unit: string;
   totalAmount: string;
   holderCount: number;
-  // holders: IHolder[]; // Deprecated: (今天丟棄 - Liz)
   totalTransfers: number;
   flagging: IRedFlag[];
   flaggingCount: number;
-  transactionHistoryData: IDisplayTransaction[];
 }
