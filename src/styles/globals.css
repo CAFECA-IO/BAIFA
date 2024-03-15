@@ -6,8 +6,55 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: -apple-system, Roboto, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell,
+    Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  scroll-behavior: smooth;
+}
+
+div {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+div::-webkit-scrollbar {
+  display: none;
+}
+
+ul {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+ul::-webkit-scrollbar {
+  display: none;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='search']::-webkit-search-decoration,
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-results-button,
+input[type='search']::-webkit-search-results-decoration {
+  display: none;
+}
+
+/* Hide horizontal scrollbar */
+/* For Webkit browser */
+.hideScrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* For Firefox */
+.hideScrollbar {
+  scrollbar-width: none;
+}
+
+h6 {
+  -webkit-text-stroke: 1px white;
+  color: transparent;
 }
 
 a {
@@ -17,6 +64,16 @@ a {
 
 * {
   box-sizing: border-box;
+  -webkit-print-color-adjust: exact !important;
+}
+
+.noPrint {
+  display: none;
+}
+
+@page {
+  size: 595px 842px;
+  margin: 0cm;
 }
 
 @media (prefers-color-scheme: dark) {
