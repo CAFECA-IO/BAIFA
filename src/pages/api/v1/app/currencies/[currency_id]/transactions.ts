@@ -80,6 +80,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const transactionCount = await prisma.token_transfers.count({
       where: {
         chain_id: chainId,
+        // Info: (20240315 - Liz) 交易 hash 搜尋條件篩選, '' or undefined 代表忽略搜尋條件
+        transaction_hash: search ? search : undefined,
+        created_timestamp: {
+          gte: startDate,
+          lte: endDate,
+        },
       },
     });
 
