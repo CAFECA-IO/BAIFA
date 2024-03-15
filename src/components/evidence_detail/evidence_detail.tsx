@@ -20,7 +20,7 @@ const EvidenceDetail = ({evidenceData, isLoading}: IEvidenceDetailProps) => {
   const {evidenceAddress, chainId, state, creatorAddressId, createdTimestamp} = evidenceData;
 
   const addressLink = getDynamicUrl(chainId, `${creatorAddressId}`).ADDRESS;
-  const reportLink = `/app/chains/${chainId}/evidence/${evidenceData.id}/all-reports`;
+  const reportLink = `/app/chains/${chainId}/evidence/${evidenceData.evidenceAddress}/all-reports`;
 
   const displayHash = !isLoading ? (
     <p className="max-w-550px break-all text-sm lg:text-base">{evidenceAddress}</p>

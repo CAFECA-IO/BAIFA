@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         state: true,
         creator_address: true,
         created_timestamp: true,
-        content: true,
+        //content: true,
       },
     });
 
@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           creatorAddressId: `${evidenceData.creator_address}`,
           createdTimestamp: evidenceData.created_timestamp ?? 0,
           // ToDo: (20240219 - Julian) content 應該是 json 格式，後續要再處理
-          content: `${evidenceData.content}`,
+          //content: `${evidenceData.content}`,
         }
       : // Info: (20240130 - Julian) 如果沒有找到資料，就回傳 undefined
         undefined;

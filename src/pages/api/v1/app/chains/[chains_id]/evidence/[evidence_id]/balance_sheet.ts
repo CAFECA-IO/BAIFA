@@ -1,168 +1,57 @@
+// 031 - GET /app/chains/:chain_id/evidence/:evidence_id/balance_sheet
+
 import type {NextApiRequest, NextApiResponse} from 'next';
+import prisma from '../../../../../../../../../prisma/client';
 import {IBalanceSheetsResponse} from '../../../../../../../../interfaces/balance_sheets_neo';
+import {IEvidenceContent} from '../../../../../../../../interfaces/evidence';
 
 type ResponseData = IBalanceSheetsResponse | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const reports = {
-    'reportID': '1',
-    'reportName': 'first_report',
-    'reportStartTime': 1708581426,
-    'reportEndTime': 1708581428,
-    'reportType': 'balance sheet',
-    'totalAssetsFairValue': '9910.99',
-    'totalLiabilitiesAndEquityFairValue': '9900.99',
-    'assets': {
-      'fairValue': '9900.99',
-      'details': {
-        'cryptocurrency': {
-          'fairValue': '9900.99', // 補
-          'breakdown': {
-            'USDT': {
-              'amount': '10001.0',
-              'fairValue': '9900.99',
-            },
-            'ETH': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-            'BTC': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-          },
-        },
-        'cashAndCashEquivalent': {
-          'fairValue': '0.0',
-          'breakdown': {
-            'USD': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-          },
-        },
-        'accountsReceivable': {
-          'fairValue': '0.0',
-          'breakdown': {
-            'USDT': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-            'BTC': {
-              'amount': '0.0',
-              'fairValue': '0.0', // 補
-            },
-            'ETH': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-          },
-        },
-      },
-    },
-    'nonAssets': {
-      'fairValue': '0.0', // 補
-    },
-    'liabilities': {
-      'fairValue': '9890.1',
-      'details': {
-        'userDeposit': {
-          'fairValue': '9890.1',
-          'breakdown': {
-            'USDT': {
-              'amount': '9990.0',
-              'fairValue': '9890.1',
-            },
-            'USD': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-            'ETH': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-            'BTC': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-          },
-        },
-        'accountsPayable': {
-          'fairValue': '0.0',
-          'breakdown': {
-            'USDT': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-            'USD': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-            'BTC': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-            'ETH': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-          },
-        },
-      },
-    },
-    'equity': {
-      'fairValue': '10.89',
-      'details': {
-        'retainedEarning': {
-          'fairValue': '10.89',
-          'breakdown': {
-            'USDT': {
-              'amount': '11.0',
-              'fairValue': '10.89',
-            },
-            'ETH': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-            'BTC': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-            'USD': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-          },
-        },
-        'otherCapitalReserve': {
-          'fairValue': '0.0', // 確認欄位是否可以改名 'fairValue': '0.0',
-          'breakdown': {
-            'USD': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-            'USDT': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-            'ETH': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-            'BTC': {
-              'amount': '0.0',
-              'fairValue': '0.0',
-            },
-          },
-        },
-      },
-    },
-  };
+  const evidenceId = typeof req.query.evidence_id === 'string' ? req.query.evidence_id : undefined;
 
-  const result: IBalanceSheetsResponse = {
-    currentReport: reports,
-    previousReport: reports,
-  };
+  // ToDo: (20240315 - Julian) 找出 30 天前的 evidenceId
+  const previousEvidenceId = evidenceId;
 
-  return res.status(200).json(result);
+  try {
+    // Info: (20240315 - Julian) 從 evidences 撈出 current reports
+    const currentReports = await prisma.evidences.findFirst({
+      where: {
+        evidence_id: evidenceId,
+      },
+      select: {
+        content: true,
+      },
+    });
+    // Info: (20240315 - Julian) 轉換成 object
+    const currentReportsObj: IEvidenceContent = JSON.parse(currentReports?.content ?? '');
+    // Info: (20240315 - Julian) 撈出 balanceSheet
+    const currentBalance = currentReportsObj.balanceSheet;
+
+    // Info: (20240315 - Julian) 從 evidences 撈出 previous reports
+    const previousReports = await prisma.evidences.findFirst({
+      where: {
+        evidence_id: previousEvidenceId,
+      },
+      select: {
+        content: true,
+      },
+    });
+
+    // Info: (20240315 - Julian) 轉換成 object
+    const previousReportsObj: IEvidenceContent = JSON.parse(previousReports?.content ?? '');
+    // Info: (20240315 - Julian) 撈出 balanceSheet
+    const previousBalance = previousReportsObj.balanceSheet;
+
+    const result: IBalanceSheetsResponse = {
+      currentReport: currentBalance,
+      previousReport: previousBalance,
+    };
+
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json(undefined);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
