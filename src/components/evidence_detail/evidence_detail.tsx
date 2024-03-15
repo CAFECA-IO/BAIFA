@@ -1,4 +1,3 @@
-import {useState, useEffect} from 'react';
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
@@ -13,29 +12,17 @@ import Skeleton from '../skeleton/skeleton';
 
 interface IEvidenceDetailProps {
   evidenceData: IEvidenceDetail;
+  isLoading: boolean;
 }
 
-const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
+const EvidenceDetail = ({evidenceData, isLoading}: IEvidenceDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {evidenceAddress, chainId, state, creatorAddressId, createdTimestamp} = evidenceData;
-
-  const [isShow, setIsShow] = useState(false);
-
-  useEffect(() => {
-    // Info: (20240219 - Julian) 如果沒有拿到資料就持續 Loading
-    if (!evidenceData.id) return;
-    // Info: (20240219 - Julian) 1 秒後顯示資料
-    const timer = setTimeout(() => {
-      setIsShow(true);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [evidenceData]);
 
   const addressLink = getDynamicUrl(chainId, `${creatorAddressId}`).ADDRESS;
   const reportLink = `/app/chains/${chainId}/evidence/${evidenceData.evidenceAddress}/all-reports`;
 
-  const displayHash = isShow ? (
+  const displayHash = !isLoading ? (
     <p className="max-w-550px break-all text-sm lg:text-base">{evidenceAddress}</p>
   ) : (
     // Info: (20240215 - Julian) Loading Animation
@@ -44,7 +31,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
 
   // Info: (20230205 - Julian) 取得 Evidence State 的文字內容，若無對應的文字內容，則使用預設值
   const stateContent = EvidenceState[state] ?? DefaultEvidenceState;
-  const displayState = isShow ? (
+  const displayState = !isLoading ? (
     <div className="flex items-center text-hoverWhite">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +52,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
     </div>
   );
 
-  const displayCreator = isShow ? (
+  const displayCreator = !isLoading ? (
     <Link href={addressLink} title={creatorAddressId}>
       <BoltButton className="px-3 py-1" color="blue" style="solid">
         {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')}{' '}
@@ -76,7 +63,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
     <Skeleton width={100} height={24} />
   );
 
-  const displayTime = isShow ? (
+  const displayTime = !isLoading ? (
     <div className="flex flex-wrap items-center">
       <p className="mr-2">{timestampToString(createdTimestamp).date}</p>
       <p className="mr-2">{timestampToString(createdTimestamp).time}</p>
@@ -88,7 +75,7 @@ const EvidenceDetail = ({evidenceData}: IEvidenceDetailProps) => {
     </div>
   );
 
-  const displayContent = isShow ? (
+  const displayContent = !isLoading ? (
     state === 'public' ? (
       <div className="w-full">
         {/* Info: (20240202 - Julian) Reports */}

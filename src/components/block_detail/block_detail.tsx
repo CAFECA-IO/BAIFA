@@ -14,9 +14,10 @@ import Skeleton from '../skeleton/skeleton';
 
 interface IBlockDetailProps {
   blockData: IBlockDetail;
+  isLoading: boolean;
 }
 
-const BlockDetail = ({blockData}: IBlockDetailProps) => {
+const BlockDetail = ({blockData, isLoading}: IBlockDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     id: blockId,
@@ -32,18 +33,6 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
   } = blockData;
 
   const [sinceTime, setSinceTime] = useState(0);
-  const [isShow, setIsShow] = useState(false);
-
-  useEffect(() => {
-    // Info: (20240217 - Julian) 如果沒有拿到資料就持續 Loading
-    if (!blockData.id) return;
-    // Info: (20240217 - Julian) 1 秒後顯示資料
-    const timer = setTimeout(() => {
-      setIsShow(true);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [blockData]);
 
   let timer: NodeJS.Timeout;
   useEffect(() => {
@@ -102,7 +91,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
       </div>
     );
 
-  const displayStability = isShow ? (
+  const displayStability = !isLoading ? (
     stabilityLayout
   ) : (
     // Info: (20240206 - Julian) Loading Animation
@@ -112,7 +101,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     </div>
   );
 
-  const displayTime = isShow ? (
+  const displayTime = !isLoading ? (
     <div className="flex flex-wrap items-center">
       <p className="mr-2">{timestampToString(createdTimestamp).date}</p>
       <p className="mr-2">{timestampToString(createdTimestamp).time}</p>
@@ -128,7 +117,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     </div>
   );
 
-  const displayContent = isShow ? (
+  const displayContent = !isLoading ? (
     typeof transactionCount === 'number' ? (
       <Link href={transactionsLink}>
         <BoltButton className="px-3 py-1" color="blue" style="solid">
@@ -141,7 +130,7 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     <Skeleton height={24} width={150} />
   );
 
-  const displayMinerAndReward = isShow ? (
+  const displayMinerAndReward = !isLoading ? (
     <div className="flex flex-wrap items-center gap-3">
       {/* Info: (20230912 - Julian) Miner */}
       <Link href={minerLink} title={miner}>
@@ -179,9 +168,9 @@ const BlockDetail = ({blockData}: IBlockDetailProps) => {
     // Info: (20231213 - Julian) If there is no management team
     <p>{t('COMMON.NONE')}</p>
   );
-  const displayExtraData = isShow ? extraDataText : <Skeleton height={24} width={80} />;
+  const displayExtraData = !isLoading ? extraDataText : <Skeleton height={24} width={80} />;
 
-  const displaySize = isShow ? (
+  const displaySize = !isLoading ? (
     <p>
       {size}
       <span> bytes</span>

@@ -25,3 +25,13 @@ export interface IEvidenceContent {
   comprehensiveIncome: IComprehensiveIncomeNeo;
   cashFlow: ICashFlowNeo;
 }
+
+export const dummyEvidenceDetail: IEvidenceDetail = {
+  id: '',
+  chainId: '',
+  evidenceAddress: '',
+  state: '',
+  creatorAddressId: '',
+  createdTimestamp: 0,
+  transactionHistoryData: [],
+};

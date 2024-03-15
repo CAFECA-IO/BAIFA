@@ -44,3 +44,20 @@ export interface ITransactionHistorySection {
   totalPages: number;
   transactionCount: number;
 }
+
+export const dummyTransactionDetail: ITransactionDetail = {
+  id: '',
+  chainId: '',
+  createdTimestamp: 0,
+  status: '',
+  type: '',
+  from: [],
+  to: [],
+  hash: '',
+  blockId: '',
+  evidenceId: '',
+  value: 0,
+  fee: 0,
+  flaggingRecords: [],
+  unit: '',
+};
