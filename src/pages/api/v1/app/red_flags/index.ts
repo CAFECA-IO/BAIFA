@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           created_timestamp: sorting, // Info: (20240307 - Liz) 1. created_timestamp 由 sorting 決定排序
         },
         {
-          id: sorting, // Info: (今天 - Liz) 2. id 由 sorting 決定排序
+          id: sorting, // Info: (20240315 - Liz) 2. id 由 sorting 決定排序
         },
       ],
       // Info: (20240307 - Liz) 分頁

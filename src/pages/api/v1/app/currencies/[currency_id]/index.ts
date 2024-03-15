@@ -83,9 +83,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         createdTimestamp: flag.created_timestamp ?? 0,
       };
     });
-    // Deprecated: (今天 - Liz)
-    // eslint-disable-next-line no-console
-    console.log('flagging:', flagging);
 
     // Info: (20240222 - Liz) 從 codes Table 撈出 risk_level 的 value 和 meaning 的對照表為一個物件陣列
     const riskLevelCodes = await prisma.codes.findMany({

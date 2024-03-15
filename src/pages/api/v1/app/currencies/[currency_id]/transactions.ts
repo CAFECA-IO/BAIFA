@@ -9,7 +9,7 @@ import {ITEM_PER_PAGE} from '../../../../../../constants/config';
 type ResponseData = ITransactionList;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  // Info: (今天 - Liz) query string parameter
+  // Info: (20240315 - Liz) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
   const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
@@ -26,15 +26,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const startDate = parseDate(req.query.start_date);
   const endDate = parseDate(req.query.end_date);
 
-  // Info: (今天 - Liz) 計算分頁的 skip 與 take
+  // Info: (20240315 - Liz) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240306 - Liz) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // Info: (20240306 - Liz) 取幾筆
 
-  // Info: (今天 - Liz) 排序
+  // Info: (20240315 - Liz) 排序
   const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
   try {
-    // Info: (今天 - Liz) 從 currencies Table 中取得 chainId
+    // Info: (20240315 - Liz) 從 currencies Table 中取得 chainId
     const currencyData = await prisma.currencies.findUnique({
       where: {
         id: currency_id,
@@ -45,11 +45,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
     const chainId = currencyData?.chain_id;
 
-    // Info: (今天 - Liz) 從 token_transfers Table 中取得 transactionHistoryData
+    // Info: (20240315 - Liz) 從 token_transfers Table 中取得 transactionHistoryData
     const transactionData = await prisma.token_transfers.findMany({
       where: {
         chain_id: chainId,
-        // Info: (今天 - Liz) 交易 hash 搜尋條件篩選, '' or undefined 代表忽略搜尋條件
+        // Info: (20240315 - Liz) 交易 hash 搜尋條件篩選, '' or undefined 代表忽略搜尋條件
         transaction_hash: search ? search : undefined,
         created_timestamp: {
           gte: startDate,
@@ -66,24 +66,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
       orderBy: [
         {
-          created_timestamp: sorting, // ToDo: (今天 - Liz) 1. created_timestamp 由 sorting 決定排序
+          created_timestamp: sorting, // ToDo: (20240315 - Liz) 1. created_timestamp 由 sorting 決定排序
         },
         {
-          id: sorting, // ToDo: (今天 - Liz) 2. id 由 sorting 決定排序
+          id: sorting, // ToDo: (20240315 - Liz) 2. id 由 sorting 決定排序
         },
       ],
-      skip: search ? 0 : skip, // Info: (今天 - Liz) search 有值時最多只會搜尋到一筆，故不需要分頁
+      skip: search ? 0 : skip, // Info: (20240315 - Liz) search 有值時最多只會搜尋到一筆，故不需要分頁
       take,
     });
 
-    // Info: (今天 - Liz) 取得 交易 總筆數
+    // Info: (20240315 - Liz) 取得 交易 總筆數
     const transactionCount = await prisma.token_transfers.count({
       where: {
         chain_id: chainId,
       },
     });
 
-    // Info: (今天 - Liz) 計算總頁數
+    // Info: (20240315 - Liz) 計算總頁數
     const totalPages = Math.ceil(transactionCount / ITEM_PER_PAGE);
 
     // Info: (20240221 - Liz) 從 transactions Table 撈出 transaction_hash 和 status 組合成一個物件陣列
@@ -172,7 +172,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       };
     });
 
-    // Info: (今天 - Liz)
+    // Info: (20240315 - Liz)
     const result = {
       'transactions': transactionHistoryData,
       'totalPages': totalPages,
