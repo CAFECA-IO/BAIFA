@@ -1,4 +1,5 @@
-import {useEffect, useState, useRef} from 'react';
+import {useEffect, useRef} from 'react';
+import useAPIResponse from '../../lib/hooks/use_api_response';
 import {BaifaReports} from '../../constants/baifa_reports';
 import {A4_SIZE} from '../../constants/config';
 import {timestampToString} from '../../lib/common';
@@ -17,6 +18,7 @@ import ReportRiskPages from '../report_risk_pages/report_risk_pages';
 import ReportTable from '../report_table/report_table';
 import {ICashFlowResponse} from '../../interfaces/cash_flow_neo';
 import ReportExchageRateFormNeo from '../report_exchage_rate_form_neo/report_exchage_rate_form_neo';
+import {APIURL, HttpMethod} from '../../constants/api_request';
 
 interface IStatementsOfCashFlowProps {
   chainId: string;
@@ -27,7 +29,15 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
   const reportTitle = BaifaReports.STATEMENTS_OF_CASH_FLOWS;
   const contentList = [reportTitle, `Note To ${reportTitle}`];
 
-  const [cashFlowResponse, setCashFlowResponse] = useState<ICashFlowResponse>();
+  const {
+    data: cashFlowResponse,
+    isLoading: isCashFlowLoading,
+    error: cashFlowError,
+  } = useAPIResponse<ICashFlowResponse>(
+    `${APIURL.CHAINS}/${chainId}/evidence/${evidenceId}/cash_flow`,
+    {method: HttpMethod.GET}
+  );
+
   const previousCashFlowData = cashFlowResponse?.previousReport;
   const endCashFlowData = cashFlowResponse?.currentReport;
   const lastYearCashFlowData = cashFlowResponse?.lastYearReport;
@@ -46,29 +56,6 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
       pageRef.current.style.transform = `scale(1)`;
     }
   }, [windowWidth]);
-
-  // Info: (20230923 - Julian) Get data from API
-  const getStatementsOfCashFlow = async () => {
-    let reportData: ICashFlowResponse;
-    try {
-      const response = await fetch(
-        `/api/v1/app/chains/${chainId}/evidence/${evidenceId}/cash_flow`,
-        {
-          method: 'GET',
-        }
-      );
-      reportData = await response.json();
-      setCashFlowResponse(reportData);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Get statements of cash Flow error');
-    }
-  };
-
-  useEffect(() => {
-    getStatementsOfCashFlow();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // Info: (20230922 - Julian) ------------- Cash Flow table -------------
   const cashFlowDates = [endDateStr.dateFormatForForm, startDateStr.dateFormatForForm];
@@ -246,7 +233,9 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
     numeroOfExpenses
   );
 
-  return (
+  const report = isCashFlowLoading ? (
+    <h1 className="p-4 text-center">Loading...</h1>
+  ) : (
     <div className="flex h-1000px flex-col items-center a4:h-auto">
       <div ref={pageRef} className="flex w-full origin-top flex-col items-center font-inter">
         {/* Info: (20230808 - Julian) Cover */}
@@ -774,6 +763,15 @@ const StatementsOfCashFlowNeo = ({chainId, evidenceId}: IStatementsOfCashFlowPro
       </div>
     </div>
   );
+
+  const displayReport = cashFlowError ? (
+    // Info: (202340315 - Julian) No statement of cash flow data
+    <h1 className="p-4 text-center">No statement of cash flow data</h1>
+  ) : (
+    report
+  );
+
+  return <>{displayReport}</>;
 };
 
 export default StatementsOfCashFlowNeo;

@@ -37,9 +37,7 @@ const ComprehensiveIncomeStatementsNeo = ({
     error: reportError,
   } = useAPIResponse<IComprehensiveIncomeResponse>(
     `${APIURL.CHAINS}/${chainId}/evidence/${evidenceId}/comprehensive_income`,
-    {
-      method: HttpMethod.GET,
-    }
+    {method: HttpMethod.GET}
   );
 
   const previousIncomeData = comprehensiveIncomeResponse?.previousReport;
