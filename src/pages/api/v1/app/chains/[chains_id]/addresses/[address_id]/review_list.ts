@@ -6,7 +6,6 @@ import prisma from '../../../../../../../../../prisma/client';
 import {
   DEFAULT_PAGE,
   DEFAULT_REVIEWS_COUNT_IN_PAGE,
-  ITEM_PER_PAGE,
 } from '../../../../../../../../constants/config';
 
 type ResponseData = IReviewDetail[];

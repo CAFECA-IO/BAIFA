@@ -3,7 +3,7 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../../prisma/client';
 import {ITEM_PER_PAGE} from '../../../../../../../constants/config';
-import {IBlock, IBlockList} from '../../../../../../../interfaces/block';
+import {IBlockBrief, IBlockList} from '../../../../../../../interfaces/block';
 import {StabilityLevel} from '../../../../../../../constants/stability_level';
 import {assessBlockStability} from '../../../../../../../lib/common';
 
@@ -64,6 +64,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         chain_id: true,
         created_timestamp: true,
         number: true,
+        miner: true,
+        reward: true,
       },
       // Info: (20240222 - Julian) 排序方式：
       orderBy: [
@@ -77,16 +79,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       take: take,
     });
 
-    const blockList: IBlock[] = blocks.map(block => {
+    // Info: (20240318 - Julian) 從 chains Table 撈出 chain_icon 與 decimals
+    const chainData = await prisma.chains.findUnique({
+      where: {
+        id: chain_id,
+      },
+      select: {
+        symbol: true,
+        decimals: true,
+      },
+    });
+
+    const unit = chainData?.symbol ?? '';
+    const decimals = chainData?.decimals ?? 0;
+
+    const blockList: IBlockBrief[] = blocks.map(block => {
       if (latestBlock && latestBlock.number) {
         const targetBlockId = block.number ? +block.number : 0;
         stability = assessBlockStability(targetBlockId, latestBlock.number);
       }
+
+      // Info: (20240318 - Julian) 計算 reward
+      const rewardRaw = block?.reward ? parseInt(block?.reward) : 0;
+      const reward = rewardRaw / Math.pow(10, decimals);
       return {
         id: `${block.number}`,
         chainId: `${block.chain_id}`,
         createdTimestamp: block.created_timestamp ?? 0,
         stability: stability,
+        miner: `${block.miner}`,
+        reward: reward,
+        unit: unit,
       };
     });
 

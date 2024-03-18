@@ -57,11 +57,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [activePage, setActivePage] = useState(1);
 
-  const {
-    data: transactionData,
-    isLoading: isTransactionLoading,
-    error: transactionError,
-  } = useAPIResponse<ITransactionList>(
+  const {data: transactionData, isLoading: isTransactionLoading} = useAPIResponse<ITransactionList>(
     `${APIURL.CHAINS}/${chainId}/transactions`,
     {
       method: HttpMethod.GET,
