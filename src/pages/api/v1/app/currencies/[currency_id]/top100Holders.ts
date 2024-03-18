@@ -117,15 +117,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         : totalPagesOfAllHolders;
 
     const holderDataFormat: IHolder[] = holderData.map(holder => {
-      // Info: (20240220 - Liz) 取得持有價值(資料庫會處理將此欄位64位數不足字串開頭補零)
-      const holdingValue = holder.value ?? '0';
+      // Info: (20240220 - Liz) 取得持有價值(資料庫欄位值設定為64位數字串前方補零)並將負數直接歸零
+      const holdingValue = holder.value && !holder.value.startsWith('-') ? holder.value : '0';
 
       // Info: (20240220 - Liz) 持有數量格式化(把價值轉換成數量): 切成兩部分，小數部分有(decimal) 18 位數、整數部分加上千分位逗號
       const splitIndex = holdingValue.length - decimal;
       const firstPart = holdingValue.substring(0, splitIndex);
       const secondPart = holdingValue.substring(splitIndex);
-      // Info: (20240313 - Liz) 去除整數部分前面的所有 '0' 並且加上千分位逗號
-      const firstPartFormat = firstPart.replace(/^0+/, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      // Info: (20240313 - Liz) 去除整數部分前面的所有 '0'(判斷整數部分是否為空字串，是就補一個'0')，每三位數加上千分位逗號
+      const firstPartFormat = firstPart
+        .replace(/^0*/, match => (match === '' ? '0' : ''))
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
       const holdingAmount = `${firstPartFormat}.${secondPart}`;
 
