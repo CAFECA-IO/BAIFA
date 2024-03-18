@@ -5,6 +5,12 @@ export interface IBlock extends ICommonData {
   stability: IStabilityLevel;
 }
 
+export interface IBlockBrief extends IBlock {
+  miner: string;
+  reward: number;
+  unit: string;
+}
+
 export interface IProductionBlock extends IBlock {
   reward: number;
   unit: string;
@@ -28,7 +34,7 @@ export interface IBlockDetail extends IBlock {
 }
 
 export interface IBlockList {
-  blocks: IBlock[];
+  blocks: IBlockBrief[];
   totalPages: number;
 }
 

@@ -101,8 +101,7 @@ const BlockProducedHistorySection = ({
                     onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
                   />
                   <p className="text-sm">
-                    +{roundToDecimal(reward, 2)}
-                    {unit}
+                    +{roundToDecimal(reward, 2)} {unit}
                   </p>
                 </div>
               </div>
