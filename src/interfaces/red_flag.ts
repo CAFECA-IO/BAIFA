@@ -36,3 +36,8 @@ export interface IRedFlagPage {
   allRedFlagTypes: string[];
   redFlagTypeCodeMeaningObj: {[key: string]: string};
 }
+
+export interface IMenuOptions {
+  options: string[];
+  redFlagTypeMeaning: {[key: string]: string};
+}

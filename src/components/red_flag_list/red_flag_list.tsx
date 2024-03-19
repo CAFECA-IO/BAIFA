@@ -89,12 +89,17 @@ const RedFlagList = ({
 
   const isLoadingDefault = isLoading ?? false;
 
+  const redFlagList =
+    redFlagData.length > 0 ? (
+      redFlagData.map((redFlagData, index) => <RedFlagItem key={index} redFlagData={redFlagData} />)
+    ) : (
+      <div className="flex w-full flex-col items-center">
+        <p>{t('COMMON.NO_DATA')}</p>
+      </div>
+    );
+
   // Info: (20231109 - Julian) Display Red Flag List Items based on Pagination
-  const displayRedFlagList = !isLoadingDefault ? (
-    redFlagData.map((redFlagData, index) => <RedFlagItem key={index} redFlagData={redFlagData} />)
-  ) : (
-    <RedFlagListSkeleton />
-  );
+  const displayRedFlagList = !isLoadingDefault ? redFlagList : <RedFlagListSkeleton />;
 
   return (
     <>
