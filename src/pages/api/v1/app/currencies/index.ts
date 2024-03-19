@@ -55,6 +55,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
+    // Info: (20240319 - Liz) 從 chains Table 撈出 chain_id 和 chain_name, 並做成物件 {id: name} 方便查找
+    const chainIdNameArr = await prisma.chains.findMany({
+      select: {
+        id: true,
+        chain_name: true,
+      },
+    });
+
+    const chainIdNameObj: {
+      [key: string]: string;
+    } = {};
+    chainIdNameArr.forEach(chain => {
+      chainIdNameObj[`${chain.id}`] = chain.chain_name ?? 'Unknown Chain Name';
+    });
+
     // Info: (20240319 - Liz) 取得所有的 chain id 並去除重複
     const uniqueChainIdTypes = await prisma.currencies.findMany({
       select: {
@@ -63,10 +78,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       distinct: ['chain_id'],
     });
 
-    // Info: (20240319 - Liz) 用不重複的 chain id 做成下拉式選單的選項
-    const chainIdTypes = uniqueChainIdTypes
+    // Info: (20240319 - Liz) 用不重複的 chain id 做成下拉式選單的選項(去除null/轉換成 chain name/排序)
+    const chainNameTypes = uniqueChainIdTypes
       .filter(currency => currency.chain_id !== null)
-      .map(currency => `${currency.chain_id}` ?? 'Unknown Chain ID')
+      .map(currency => chainIdNameObj[`${currency.chain_id}`] ?? 'Unknown Chain ID')
       .sort((a, b) => (sorting === 'asc' ? a.localeCompare(b) : b.localeCompare(a)));
 
     // Info: (20240223 - Liz) 從 codes Table 撈出 risk_level 的 value 和 meaning 的對照表為一個物件陣列
@@ -109,7 +124,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const result = {
       currencies: currenciesData,
       totalPages,
-      chainIdTypes, // Info: (20240308 - Liz) 下拉式選單選項
+      chainNameTypes, // Info: (20240319 - Liz) 下拉式選單選項
+      chainIdNameObj, // Info: (20240319 - Liz) chain id 轉換成 chain name 的物件
     };
 
     prisma.$connect();

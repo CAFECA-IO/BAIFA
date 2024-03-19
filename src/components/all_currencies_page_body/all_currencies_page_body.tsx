@@ -42,8 +42,8 @@ const AllCurrenciesPageBody = () => {
   const totalPages = currenciesData?.totalPages ?? 0;
 
   // Info: (20240308 - Liz) 下拉式選單選項(chain id)由 API 回傳
-  const chainIdTypes = currenciesData?.chainIdTypes ?? [];
-  const typeOptions = [typeOptionDefault, ...chainIdTypes];
+  const chainNameTypes = currenciesData?.chainNameTypes ?? [];
+  const typeOptions = [typeOptionDefault, ...chainNameTypes];
 
   // Info: (20240308 - Liz) 當搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
   useEffect(() => {
@@ -66,15 +66,23 @@ const AllCurrenciesPageBody = () => {
     // Info: (20240308 - Liz) 當 API 查詢參數改變時，重新取得資料
   }, [apiQueryStr, getCurrencies]);
 
+  // Info: (20240319 - Liz) chain id 和 chain name 的對應物件
+  const chainIdNameObj = currenciesData?.chainIdNameObj ?? {};
+  const filteredTypeByChainId = Object.keys(chainIdNameObj).find(
+    key => chainIdNameObj[key] === filteredType
+  );
+
   // Info: (20240305 - Liz) 設定 API 查詢參數
   useEffect(() => {
     const pageQuery = `page=${activePage}`;
     const sortQuery = `&sort=${sortingReq}`;
     const searchQuery = `&search=${search}`;
-    const typeQuery = filteredType === typeOptionDefault ? `&type=${''}` : `&type=${filteredType}`;
+
+    const typeQuery =
+      filteredType === typeOptionDefault ? `&type=${''}` : `&type=${filteredTypeByChainId}`;
 
     setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${typeQuery}`);
-  }, [activePage, filteredType, search, sortingReq]);
+  }, [activePage, filteredType, filteredTypeByChainId, search, sortingReq]);
 
   // Info: (20240308 - Liz) 顯示貨幣列表
   const displayCurrenciesList =
