@@ -56,33 +56,46 @@ const PopulateDates = ({
     </p>
   ));
 
+  // Info: (20240318 - Liz) 將時間戳記還原為當天日期且時間設置為 00:00:00 的時間戳記
+  const resetTimestampToMidnight = (timestamp: number) => {
+    const date = new Date(timestamp); // Info: (20240318 - Liz) 將時間戳記轉換為日期物件
+
+    date.setHours(0, 0, 0); // Info: (20240318 - Liz) 將時間設置為當天的 00:00:00
+
+    return date.getTime(); // Info: (20240318 - Liz) 獲取更新後的時間戳記並回傳
+  };
+
   // Info: (20230830 - Julian) 顯示月份中的每一天
   const formatDaysInMonth = daysInMonth.map((el: Dates, index) => {
     const date = el ? new Date(`${selectedYear}/${selectedMonth}/${el.date} 00:00:00`) : null;
 
+    // Info: (20240318 - Liz) 因為 selectTimeTwo 是 23:59:59，所以還原時間設置為 00:00:00
+    const selectTimeTwoReset = resetTimestampToMidnight(selectTimeTwo);
+
     // Info: (20230831 - Julian) 已選擇區間的樣式
     const isSelectedPeriodStyle =
       selectTimeOne &&
-      selectTimeTwo &&
+      selectTimeTwoReset &&
       date?.getTime() &&
       date?.getTime() >= selectTimeOne &&
-      date?.getTime() <= selectTimeTwo &&
-      selectTimeOne !== selectTimeTwo
+      date?.getTime() <= selectTimeTwoReset &&
+      selectTimeOne !== selectTimeTwoReset
         ? 'bg-primaryBlue-500'
         : '';
+
     // Info: (20230831 - Julian) DateOne 和 DateTwo 的樣式
     const isSelectedDateStyle = date?.getTime()
-      ? !selectTimeTwo && date.getTime() === selectTimeOne
+      ? !selectTimeTwoReset && date.getTime() === selectTimeOne
         ? 'rounded-full bg-primaryBlue text-darkPurple3'
-        : selectTimeOne && selectTimeTwo
-        ? date.getTime() === selectTimeOne && date.getTime() === selectTimeTwo
-          ? `rounded-full text-darkPurple3 bg-primaryBlue`
-          : date.getTime() === selectTimeOne
-          ? `rounded-l-full text-darkPurple3 before:left-px ${beforeStyle}`
-          : date.getTime() === selectTimeTwo
-          ? `rounded-r-full text-darkPurple3 before:right-px ${beforeStyle}`
+        : selectTimeOne && selectTimeTwoReset
+          ? date.getTime() === selectTimeOne && date.getTime() === selectTimeTwoReset
+            ? `rounded-full text-darkPurple3 bg-primaryBlue`
+            : date.getTime() === selectTimeOne
+              ? `rounded-l-full text-darkPurple3 before:left-px ${beforeStyle}`
+              : date.getTime() === selectTimeTwoReset
+                ? `rounded-r-full text-darkPurple3 before:right-px ${beforeStyle}`
+                : ''
           : ''
-        : ''
       : '';
 
     /* Info: (20230830 - Julian) 只有可選擇的日期才能點擊 */
@@ -245,14 +258,16 @@ const DatePicker = ({
   const selectDateOne = useCallback((el: Dates | null) => {
     if (!el) return setDateOne(null);
     const newDate = new Date(el.time);
-    newDate.setHours(0, 0, 0, 0); // Info: (20240205 - Liz) 設定時間為當天的開始（00:00:00）
+    // Info: (20240205 - Liz) 設定時間為當天的開始（00:00:00）
+    newDate.setHours(0, 0, 0);
     setDateOne(newDate);
   }, []);
 
   const selectDateTwo = useCallback((el: Dates | null) => {
     if (!el) return setDateTwo(null);
     const newDate = new Date(el.time);
-    newDate.setHours(23, 59, 59, 999); // Info: (20240205 - Liz) 設定時間為當天的最後一秒（23:59:59.999）
+    // Info: (20240205 - Liz) 設定時間為當天的最後一秒（23:59:59）
+    newDate.setHours(23, 59, 59);
     setDateTwo(newDate);
   }, []);
 
