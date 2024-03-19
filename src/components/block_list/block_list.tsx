@@ -1,10 +1,10 @@
 import BlockItem from '../block_item/block_item';
-import {IBlock} from '../../interfaces/block';
+import {IBlockBrief} from '../../interfaces/block';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 
 export interface IBlockListProps {
-  blockData: IBlock[];
+  blockData: IBlockBrief[];
 }
 
 const BlockList = ({blockData}: IBlockListProps) => {

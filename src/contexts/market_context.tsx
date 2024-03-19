@@ -10,15 +10,8 @@ import {IChainDetail, IChain} from '../interfaces/chain';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
+import {IBlockDetail, IProducedBlock, IBlockList} from '../interfaces/block';
 import {
-  IBlock,
-  IBlockDetail,
-  IProducedBlock,
-  IProductionBlock,
-  IBlockList,
-} from '../interfaces/block';
-import {
-  ITransaction,
   ITransactionData,
   ITransactionDetail,
   ITransactionList,
@@ -34,14 +27,8 @@ import {IRedFlag, IRedFlagDetail, IRedFlagOfCurrency, IRedFlagPage} from '../int
 import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContractDetail} from '../interfaces/contract';
 import {IEvidenceDetail} from '../interfaces/evidence';
-import {
-  ICurrency,
-  ICurrencyDetailString,
-  ICurrencyListPage,
-  IHolder,
-  ITop100Holders,
-} from '../interfaces/currency';
-import {IBlackList, IBlackListData} from '../interfaces/blacklist';
+import {ICurrencyDetailString, ICurrencyListPage, ITop100Holders} from '../interfaces/currency';
+import {IBlackListData} from '../interfaces/blacklist';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -174,7 +161,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   //const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
   //const [blacklist, setBlacklist] = useState<IBlackList[]>([]);
 
-  const [chainLoading, setChainLoading] = useState<boolean>(true);
+  //const [chainLoading, setChainLoading] = useState<boolean>(true);
 
   const getPromotion = useCallback(async () => {
     let data: IPromotion = defaultPromotion;
@@ -191,7 +178,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
 
   const getChains = useCallback(async () => {
     let data: IChainDetail[] = [];
-    setChainLoading(true);
+    //setChainLoading(true);
     try {
       const response = await fetch(`${APIURL.CHAINS}`, {
         method: 'GET',
