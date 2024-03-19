@@ -8,7 +8,7 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../components/bolt_button/bolt_button';
 import Footer from '../../../../components/footer/footer';
-import {AppContext} from '../../../../contexts/app_context';
+// import {AppContext} from '../../../../contexts/app_context';
 import {MarketContext} from '../../../../contexts/market_context';
 import {
   DEFAULT_CHAIN_ICON,
@@ -86,7 +86,7 @@ const RedFlagListSkeleton = () => {
 
 const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const appCtx = useContext(AppContext);
+  // const appCtx = useContext(AppContext);
   const {getRedFlagsOfCurrency} = useContext(MarketContext);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -100,7 +100,7 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
 
   // Info: (20240319 - Liz) API 查詢參數
   const [apiQueryStr, setApiQueryStr] = useState(
-    `page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0`
+    `page=1&sort=SORTING.NEWEST&search=&flag=&start_date=0&end_date=0`
   );
 
   // Info: (20240319 - Liz) UI
@@ -112,16 +112,16 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
   const redFlagTypes = redFlagListData?.redFlagTypes ?? [];
   const redFlagTypeOptions = [typeOptionDefault, ...redFlagTypes];
 
-  // Info: (20240307 - Liz) 當日期、搜尋、排序的條件改變時，將 activePage 設為 1。
+  // Info: (20240307 - Liz) 當日期、搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
   useEffect(() => {
     setActivePage(1);
-  }, [search, period, sorting]);
+  }, [search, filteredType, period, sorting]);
 
   // Info: (20240319 - Liz) Call API to get red flag list data
   useEffect(() => {
-    if (!appCtx.isInit) {
-      appCtx.init();
-    }
+    // if (!appCtx.isInit) {
+    //   appCtx.init();
+    // }
 
     const fetchRedFlagListData = async () => {
       try {
@@ -134,8 +134,7 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
     };
 
     fetchRedFlagListData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [apiQueryStr, currencyId, getRedFlagsOfCurrency]);
 
   // Info: (20240319 - Liz) filteredType 轉換成代碼格式再送出
   const redFlagTypeCodesObj = redFlagListData?.redFlagTypeCodeMeaningObj ?? {};
@@ -167,7 +166,7 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
   }, [activePage, filteredTypeCode, period.endTimeStamp, period.startTimeStamp, search, sorting]);
 
   // Info: (20240319 - Liz) head title & currency icon & back button
-  const currencyName = redFlagListData?.redFlagData[0].chainName ?? '';
+  const currencyName = redFlagListData?.chainName ?? '';
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} ${t(
     'COMMON.OF'
   )} ${currencyName} - BAIFA`;

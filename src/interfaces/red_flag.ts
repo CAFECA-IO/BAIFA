@@ -6,12 +6,9 @@ export interface IRedFlag extends ICommonData {
   redFlagType: string;
 }
 
-export interface IRedFlagOfCurrency extends IRedFlag {
-  chainName: string;
-}
-
 export interface IRedFlagListForCurrency {
-  redFlagData: IRedFlagOfCurrency[];
+  redFlagData: IRedFlag[];
+  chainName: string;
   totalPages: number;
   redFlagTypes: string[];
   redFlagTypeCodeMeaningObj: {[key: string]: string};
