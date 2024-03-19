@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
   const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
   const search = typeof req.query.search === 'string' ? req.query.search.toLowerCase() : undefined;
-  const type = typeof req.query.type === 'string' ? req.query.type : undefined; // Info: (20240308 - Liz) type is categorized by currency name
+  const type = typeof req.query.type === 'string' ? parseInt(req.query.type, 10) : undefined; // Info: (20240308 - Liz) type is categorized by currency name
 
   // Info: (20240307 - Liz) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240307 - Liz) 跳過前面幾筆
@@ -26,10 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const currencies = await prisma.currencies.findMany({
       where: {
         name: {
-          startsWith: type,
           contains: search,
           mode: 'insensitive', // Info: (20240308 - Liz) 不分大小寫
         },
+        chain_id: type ? type : undefined, // Info: (20240319 - Liz) 篩選條件(空字串或 undefined 會被忽略)
       },
       select: {
         id: true,
@@ -48,25 +48,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const totalCurrencies = await prisma.currencies.count({
       where: {
         name: {
-          startsWith: type,
           contains: search,
           mode: 'insensitive', // Info: (20240308 - Liz) 不分大小寫
         },
+        chain_id: type ? type : undefined, // Info: (20240319 - Liz) 篩選條件(空字串或 undefined 會被忽略)
       },
     });
 
-    // Info: (20240308 - Liz) 取得所有的 currency name 並去除重複
-    const uniqueCurrencyTypes = await prisma.currencies.findMany({
+    // Info: (20240319 - Liz) 取得所有的 chain id 並去除重複
+    const uniqueChainIdTypes = await prisma.currencies.findMany({
       select: {
-        name: true,
+        chain_id: true,
       },
-      distinct: ['name'],
+      distinct: ['chain_id'],
     });
 
-    // Info: (20240308 - Liz) 用不重複的 currency name 做成下拉式選單的選項
-    const currencyTypes = uniqueCurrencyTypes
-      .map(currency => currency.name ?? '')
-      .filter(currencyName => currencyName !== '')
+    // Info: (20240319 - Liz) 用不重複的 chain id 做成下拉式選單的選項
+    const chainIdTypes = uniqueChainIdTypes
+      .filter(currency => currency.chain_id !== null)
+      .map(currency => `${currency.chain_id}` ?? 'Unknown Chain ID')
       .sort((a, b) => (sorting === 'asc' ? a.localeCompare(b) : b.localeCompare(a)));
 
     // Info: (20240223 - Liz) 從 codes Table 撈出 risk_level 的 value 和 meaning 的對照表為一個物件陣列
@@ -109,7 +109,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const result = {
       currencies: currenciesData,
       totalPages,
-      currencyTypes, // Info: (20240308 - Liz) 下拉式選單選項
+      chainIdTypes, // Info: (20240308 - Liz) 下拉式選單選項
     };
 
     prisma.$connect();

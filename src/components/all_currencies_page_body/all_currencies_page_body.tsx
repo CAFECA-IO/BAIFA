@@ -41,9 +41,9 @@ const AllCurrenciesPageBody = () => {
   // Info: (20240308 - Liz) 從 API 取得總頁數
   const totalPages = currenciesData?.totalPages ?? 0;
 
-  // Info: (20240308 - Liz) 下拉式選單選項(貨幣種類選項)由 API 回傳
-  const currencyTypes = currenciesData?.currencyTypes ?? [];
-  const typeOptions = [typeOptionDefault, ...currencyTypes];
+  // Info: (20240308 - Liz) 下拉式選單選項(chain id)由 API 回傳
+  const chainIdTypes = currenciesData?.chainIdTypes ?? [];
+  const typeOptions = [typeOptionDefault, ...chainIdTypes];
 
   // Info: (20240308 - Liz) 當搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
   useEffect(() => {

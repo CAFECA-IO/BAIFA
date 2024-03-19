@@ -26,8 +26,7 @@ export interface ICurrency {
 export interface ICurrencyListPage {
   currencies: ICurrency[];
   totalPages: number;
-  currencyTypes: string[];
-  // currencyTypeCodeMeaningObj: {[key: string]: string};
+  chainIdTypes: string[];
 }
 
 export interface ICurrencyDetail extends ICurrency {
