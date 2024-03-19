@@ -135,17 +135,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       };
     });
 
-    // Info: (20240319 - Liz) 由 currency id 找到 chain name
-    const chainNameRaw = await prisma.currencies.findUnique({
+    // Info: (20240319 - Liz) 由 currency id 找到 chain id，再由 chain id 找到 chain name
+    const chainIdRaw = await prisma.currencies.findUnique({
       where: {
         id: currency_id,
       },
       select: {
-        name: true,
+        chain_id: true,
       },
     });
+    const chainId = chainIdRaw?.chain_id ?? undefined;
 
-    const chainName = chainNameRaw?.name ?? 'Unknown Chain Name';
+    const chainNameRaw = await prisma.chains.findUnique({
+      where: {
+        id: chainId,
+      },
+      select: {
+        chain_name: true,
+      },
+    });
+    const chainName = chainNameRaw?.chain_name ?? 'Unknown Chain Name';
 
     // Info: (20240307 - Liz) 計算總頁數
     const totalPages = Math.ceil(totalRedFlagCount / ITEM_PER_PAGE);
