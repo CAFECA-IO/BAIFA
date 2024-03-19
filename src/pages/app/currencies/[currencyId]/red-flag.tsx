@@ -17,6 +17,7 @@ import {TranslateFunction} from '../../../../interfaces/locale';
 import {IRedFlagOfCurrency} from '../../../../interfaces/red_flag';
 import RedFlagList from '../../../../components/red_flag_list/red_flag_list';
 import Skeleton from '../../../../components/skeleton/skeleton';
+import {BFAURL} from '../../../../constants/url';
 
 interface IRedFlagOfCurrencyPageProps {
   currencyId: string;
@@ -95,7 +96,7 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
   const currencyIcon = getCurrencyIcon(currencyId);
 
   const router = useRouter();
-  const backClickHandler = () => router.back();
+  const backClickHandler = () => router.push(`${BFAURL.CURRENCIES}/${currencyId}`);
 
   useEffect(() => {
     if (!appCtx.isInit) {

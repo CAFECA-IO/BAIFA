@@ -37,7 +37,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const {getRedFlagDetail} = useContext(MarketContext);
 
   const router = useRouter();
-  const backClickHandler = () => router.back();
+  const backClickHandler = () => router.push(`${BFAURL.RED_FLAG}`);
 
   const [redFlagData, setRedFlagData] = useState<IRedFlagDetail>({} as IRedFlagDetail);
   // Info: (20240102 - Julian) Transaction history
