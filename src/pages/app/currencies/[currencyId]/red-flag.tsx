@@ -137,7 +137,7 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Info: (20240319 - Liz) filteredFlagName 轉換成代碼格式再送出
+  // Info: (20240319 - Liz) filteredType 轉換成代碼格式再送出
   const redFlagTypeCodesObj = redFlagListData?.redFlagTypeCodeMeaningObj ?? {};
 
   const getKeyByValue = (

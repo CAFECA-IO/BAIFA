@@ -82,6 +82,7 @@ type ResponseData = IRedFlagListForCurrency;
 //   }
 // }
 
+/* Mock API */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const result = {
     'redFlagData': [
