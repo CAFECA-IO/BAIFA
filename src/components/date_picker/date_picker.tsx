@@ -149,8 +149,8 @@ const DatePicker = ({
   setFilteredPeriod,
   isLinearBg,
   loading,
-  datePickerHandler,
-}: IDatePickerProps) => {
+}: //datePickerHandler,
+IDatePickerProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const {targetRef, componentVisible, setComponentVisible} = useOuterClick<HTMLDivElement>(false);
