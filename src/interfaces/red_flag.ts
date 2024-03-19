@@ -10,6 +10,13 @@ export interface IRedFlagOfCurrency extends IRedFlag {
   chainName: string;
 }
 
+export interface IRedFlagListForCurrency {
+  redFlagData: IRedFlagOfCurrency[];
+  totalPages: number;
+  redFlagTypes: string[];
+  redFlagTypeCodeMeaningObj: {[key: string]: string};
+}
+
 export interface IRedFlagSearchResult extends IRedFlag {
   interactedAddresses: {
     id: string;
