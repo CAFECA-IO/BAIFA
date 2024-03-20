@@ -1,9 +1,9 @@
 // 022 - GET /app/red_flags/:red_flag_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../prisma/client';
-import {IRedFlagDetail} from '../../../../../interfaces/red_flag';
-import {AddressType} from '../../../../../interfaces/address_info';
+import prisma from '../../../../../../../prisma/client';
+import {IRedFlagDetail} from '../../../../../../interfaces/red_flag';
+// import {AddressType} from '../../../../../../interfaces/address_info';
 
 type ResponseData = IRedFlagDetail;
 
@@ -52,26 +52,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    const relatedTransactions = redFlagData?.related_transactions ?? [];
-
-    // Info: (20240131 - Liz) 透過 redFlagData.related_transactions 從 transactions 表格讀取相關交易資料
-    const transactions = await prisma.transactions.findMany({
-      where: {
-        hash: {
-          in: relatedTransactions,
-        },
-      },
-      select: {
-        id: true,
-        chain_id: true,
-        created_timestamp: true,
-        from_address: true,
-        to_address: true,
-        status: true,
-        type: true,
-        hash: true, // transaction hash
-      },
-    });
+    // Deprecated: (今天丟棄 - Liz)
+    // const relatedTransactions = redFlagData?.related_transactions ?? [];
+    // // Info: (20240131 - Liz) 透過 redFlagData.related_transactions 從 transactions 表格讀取相關交易資料
+    // const transactions = await prisma.transactions.findMany({
+    //   where: {
+    //     hash: {
+    //       in: relatedTransactions,
+    //     },
+    //   },
+    //   select: {
+    //     id: true,
+    //     chain_id: true,
+    //     created_timestamp: true,
+    //     from_address: true,
+    //     to_address: true,
+    //     status: true,
+    //     type: true,
+    //     hash: true, // transaction hash
+    //   },
+    // });
 
     // Info: (20240131 - Liz) 組合回傳資料
     const id = `${redFlagData?.id}`;
@@ -94,33 +94,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const unit = redFlagData?.symbol ?? '';
 
     // Info: (20240131 - Liz) 透過 transactions 資料組合 transactionHistoryData
-    const transactionHistoryData = transactions.map(transaction => {
-      const from = [
-        {
-          address: `${transaction.from_address}`,
-          type: AddressType.ADDRESS,
-        },
-      ];
-      const to = [
-        {
-          address: `${transaction.to_address}`,
-          type: AddressType.ADDRESS,
-        },
-      ];
+    // const transactionHistoryData = transactions.map(transaction => {
+    //   const from = [
+    //     {
+    //       address: `${transaction.from_address}`,
+    //       type: AddressType.ADDRESS,
+    //     },
+    //   ];
+    //   const to = [
+    //     {
+    //       address: `${transaction.to_address}`,
+    //       type: AddressType.ADDRESS,
+    //     },
+    //   ];
 
-      const status = findCodeMeaning('transactions', 'status', `${transaction.status}`);
-      const type = findCodeMeaning('transactions', 'type', `${transaction.type}`);
+    //   const status = findCodeMeaning('transactions', 'status', `${transaction.status}`);
+    //   const type = findCodeMeaning('transactions', 'type', `${transaction.type}`);
 
-      return {
-        id: `${transaction.hash}`,
-        chainId: `${transaction.chain_id}`,
-        createdTimestamp: transaction.created_timestamp ?? 0,
-        from,
-        to,
-        status,
-        type,
-      };
-    });
+    //   return {
+    //     id: `${transaction.hash}`,
+    //     chainId: `${transaction.chain_id}`,
+    //     createdTimestamp: transaction.created_timestamp ?? 0,
+    //     from,
+    //     to,
+    //     status,
+    //     type,
+    //   };
+    // });
 
     const result: ResponseData = {
       id,
@@ -130,7 +130,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       interactedAddresses,
       totalAmount,
       unit,
-      transactionHistoryData,
+      // transactionHistoryData,
     };
 
     res.status(200).json(result);
@@ -141,3 +141,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     res.status(500).json({} as ResponseData);
   }
 }
+
+/* Mock API */
+// export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+//   const result: ResponseData = {
+//     'id': '1',
+//     'chainId': '8017',
+//     'redFlagType': 'Multiple Transfer',
+//     'createdTimestamp': 1702615885,
+//     'interactedAddresses': [
+//       {
+//         'id': '0x048adee1b0e93b30f9f7b71f18b963ca9ba5de3b',
+//         'chainId': '8017',
+//       },
+//     ],
+//     'totalAmount': '1000',
+//     'unit': 'LIZ',
+//   };
+//   res.status(200).json(result);
+// }
