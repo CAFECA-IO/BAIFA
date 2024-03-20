@@ -175,9 +175,6 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
     'COMMON.OF'
   )} ${currencyName} - BAIFA`;
   const currencyIcon = getCurrencyIcon(currencyId);
-  const router = useRouter();
-  const backClickHandler = () => router.back();
-
   const displayRedFlagList = !isLoading ? (
     <RedFlagList
       redFlagData={redFlagListData?.redFlagData ?? []}
