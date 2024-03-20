@@ -47,7 +47,7 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
   const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
   const [filteredType, setFilteredType] = useState<string>('SORTING.ALL');
 
-  const {data, isLoading, error} = useAPIResponse<IRedFlagOfAddress>(
+  const {data, isLoading} = useAPIResponse<IRedFlagOfAddress>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/red_flags`,
     {
       method: HttpMethod.GET,

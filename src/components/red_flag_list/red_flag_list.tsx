@@ -1,6 +1,5 @@
-import {useState, Dispatch, SetStateAction} from 'react';
-import useStateRef from 'react-usestateref';
-import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
+import {Dispatch, SetStateAction} from 'react';
+import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
 import Pagination from '../../components/pagination/pagination';
 import {SearchBarWithKeyDown} from '../../components/search_bar/search_bar';
 import SortingMenu from '../../components/sorting_menu/sorting_menu';
@@ -15,20 +14,20 @@ import Skeleton from '../skeleton/skeleton';
 interface IRedFlagListProps {
   redFlagData: IRedFlag[];
 
-  period?: IDatePeriod;
-  setPeriod?: Dispatch<SetStateAction<IDatePeriod>>;
-  sorting?: string;
-  setSorting?: Dispatch<SetStateAction<string>>;
+  period: IDatePeriod;
+  setPeriod: Dispatch<SetStateAction<IDatePeriod>>;
+  sorting: string;
+  setSorting: Dispatch<SetStateAction<string>>;
 
-  setSearch?: Dispatch<SetStateAction<string>>;
-  activePage?: number;
-  setActivePage?: Dispatch<SetStateAction<number>>;
+  setSearch: Dispatch<SetStateAction<string>>;
+  activePage: number;
+  setActivePage: Dispatch<SetStateAction<number>>;
   isLoading?: boolean;
-  totalPages?: number;
+  totalPages: number;
 
-  typeOptions?: string[];
-  filteredType?: string;
-  setFilteredType?: Dispatch<SetStateAction<string>>;
+  filteredType: string;
+  setFilteredType: Dispatch<SetStateAction<string>>;
+  typeOptions: string[];
 }
 
 const RedFlagListSkeleton = () => {
@@ -52,7 +51,7 @@ const RedFlagListSkeleton = () => {
   return (
     <>
       {/* Info: (20240227 - Shirley) Red Flag List */}
-      <div className="mb-10 mt-16 flex w-full flex-col items-center space-y-0 lg:mt-10">
+      <div className="my-16 flex w-full flex-col items-center space-y-0 lg:mt-10">
         {listSkeletons}
       </div>
     </>
@@ -70,22 +69,11 @@ const RedFlagList = ({
   setActivePage,
   isLoading,
   totalPages,
-  typeOptions,
   filteredType,
   setFilteredType,
+  typeOptions,
 }: IRedFlagListProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-
-  // Info: (20231109 - Julian) Type Options
-  const typeOptionsDefault = ['SORTING.ALL'];
-
-  // Info: (20231109 - Julian) States
-  const [activePageDefault, setActivePageDefault] = useStateRef(1);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [searchDefault, setSearchDefault] = useStateRef('');
-  const [sortingDefault, setSortingDefault] = useState<string>(sortOldAndNewOptions[0]);
-  const [periodDefault, setPeriodDefault] = useState(default30DayPeriod);
-  const [filteredTypeDefault, setFilteredTypeDefault] = useState<string>(typeOptionsDefault[0]);
 
   const isLoadingDefault = isLoading ?? false;
 
@@ -94,7 +82,7 @@ const RedFlagList = ({
       redFlagData.map((redFlagData, index) => <RedFlagItem key={index} redFlagData={redFlagData} />)
     ) : (
       <div className="flex w-full flex-col items-center">
-        <p>{t('COMMON.NO_DATA')}</p>
+        <h2 className="text-center">{t('COMMON.NO_DATA')}</h2>
       </div>
     );
 
@@ -109,34 +97,31 @@ const RedFlagList = ({
         <div className="mx-auto my-5 w-full lg:w-7/10">
           {SearchBarWithKeyDown({
             searchBarPlaceholder: t('RED_FLAG_DETAIL_PAGE.SEARCH_PLACEHOLDER'),
-            setSearch: setSearch ?? setSearchDefault,
+            setSearch: setSearch,
           })}
         </div>
         <div className="flex w-full flex-col items-center gap-2 lg:h-72px lg:flex-row lg:justify-between">
           {/* Info: (20231109 - Julian) Type Select Menu */}
           <div className="relative flex w-full items-center space-y-2 text-base lg:w-fit">
             <SortingMenu
-              sortingOptions={typeOptions ?? typeOptionsDefault}
-              sorting={filteredType ?? filteredTypeDefault}
-              setSorting={setFilteredType ?? setFilteredTypeDefault}
+              sortingOptions={typeOptions}
+              sorting={filteredType}
+              setSorting={setFilteredType}
               bgColor="bg-darkPurple"
             />
           </div>
           {/* Info: (20231109 - Julian) Date Picker */}
           <div className="flex w-full items-center text-sm lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-            <DatePicker
-              period={period ?? periodDefault}
-              setFilteredPeriod={setPeriod ?? setPeriodDefault}
-            />
+            <DatePicker period={period} setFilteredPeriod={setPeriod} />
           </div>
           {/* Info: (20231109 - Julian) Sorting Menu */}
           <div className="relative flex w-full items-center text-sm lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('SORTING.SORT_BY')} :</p>
             <SortingMenu
               sortingOptions={sortOldAndNewOptions}
-              sorting={sorting ?? sortingDefault}
-              setSorting={setSorting ?? setSortingDefault}
+              sorting={sorting}
+              setSorting={setSorting}
               bgColor="bg-darkPurple"
             />
           </div>
@@ -145,12 +130,8 @@ const RedFlagList = ({
 
       {/* Info: (20231109 - Julian) Red Flag List */}
       <div className="mt-10 flex w-full flex-col items-center space-y-10">
-        <div className="flex w-full flex-col">{displayRedFlagList}</div>
-        <Pagination
-          activePage={activePage ?? activePageDefault}
-          setActivePage={setActivePage ?? setActivePageDefault}
-          totalPages={totalPages ?? 0}
-        />
+        <div className="flex min-h-320px w-full flex-col">{displayRedFlagList}</div>
+        <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
       </div>
     </>
   );

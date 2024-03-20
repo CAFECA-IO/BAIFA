@@ -192,6 +192,22 @@ export const pluginReportsList = [
   },
 ];
 
+/* Info: (20240320 - Julian) ----- Red flag ----- */
+export const defaultOption = 'SORTING.ALL';
+
+export const redFlagTypeI18nObj: {[key: string]: string} = {
+  'Multiple Transfer': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_TRANSFER',
+  'Multiple Receives': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
+  'Large Deposit': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_DEPOSIT',
+  'With Mixing Service': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MIXING_SERVICE',
+  'Multiple Withdraw': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_WITHDRAW',
+  'With Gambling Site': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_GAMBLING_SITE',
+  'Large Withdraw': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_WITHDRAW',
+  'With Black List': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_BLACK_LIST',
+  'With Darknet': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_DARKNET',
+  'Large Transfer': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_TRANSFER',
+};
+
 /* Info: (20230814 - Julian) ----- Chains ----- */
 export const chainList = ['eth', 'bit', 'usdt', 'bnb', 'isun'];
 

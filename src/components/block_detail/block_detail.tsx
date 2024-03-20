@@ -33,17 +33,16 @@ const BlockDetail = ({blockData, isLoading}: IBlockDetailProps) => {
   } = blockData;
 
   const [sinceTime, setSinceTime] = useState(0);
+  const now = Math.ceil(Date.now() / 1000);
 
   let timer: NodeJS.Timeout;
   useEffect(() => {
     // Info: (20230912 - Julian) 算出 createdTimestamp 距離現在過了多少時間
-    const now = Math.ceil(Date.now() / 1000);
     const timeSpan = now - createdTimestamp;
     setSinceTime(timeSpan);
-
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sinceTime]);
+  }, [now]);
 
   const chainIcon = getChainIcon(chainId);
   const transactionsLink = `${getDynamicUrl(chainId, blockId).TRANSACTIONS_IN_BLOCK}`;
