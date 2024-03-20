@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, useEffect, useContext, useRef} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
@@ -8,15 +8,22 @@ import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../components/bolt_button/bolt_button';
 import Footer from '../../../../components/footer/footer';
-import {AppContext} from '../../../../contexts/app_context';
+// import {AppContext} from '../../../../contexts/app_context';
 import {MarketContext} from '../../../../contexts/market_context';
-import {DEFAULT_CHAIN_ICON, DEFAULT_RED_FLAG_COUNT_IN_PAGE} from '../../../../constants/config';
+import {
+  DEFAULT_CHAIN_ICON,
+  DEFAULT_RED_FLAG_COUNT_IN_PAGE,
+  default30DayPeriod,
+  sortOldAndNewOptions,
+} from '../../../../constants/config';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {getCurrencyIcon} from '../../../../lib/common';
 import {TranslateFunction} from '../../../../interfaces/locale';
-import {IRedFlagOfCurrency} from '../../../../interfaces/red_flag';
+import {IRedFlagListForCurrency} from '../../../../interfaces/red_flag';
 import RedFlagList from '../../../../components/red_flag_list/red_flag_list';
 import Skeleton from '../../../../components/skeleton/skeleton';
+import {BFAURL} from '../../../../constants/url';
+import {IDatePeriod} from '../../../../interfaces/date_period';
 
 interface IRedFlagOfCurrencyPageProps {
   currencyId: string;
@@ -80,62 +87,114 @@ const RedFlagListSkeleton = () => {
 
 const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const appCtx = useContext(AppContext);
-  const {getRedFlagsFromCurrency} = useContext(MarketContext);
+  // const appCtx = useContext(AppContext);
+  const {getRedFlagsOfCurrency} = useContext(MarketContext);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [redFlagData, setRedFlagData] = useState<IRedFlagOfCurrency[]>([]);
 
-  // Info: (20240227 - Liz) 用第一筆 redFlagData 的 chainName 來當作 currencyName 呈現在標題
-  const currencyName = redFlagData[0]?.chainName ?? '';
+  // Info: (20240319 - Liz) 搜尋條件
+  const [search, setSearch] = useState('');
+  const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
+  const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+  const typeOptionDefault = 'SORTING.ALL';
+  const [filteredType, setFilteredType] = useState<string>(typeOptionDefault);
 
+  // Info: (20240319 - Liz) API 查詢參數
+  const [apiQueryStr, setApiQueryStr] = useState(
+    `page=1&sort=SORTING.NEWEST&search=&flag=&start_date=0&end_date=0`
+  );
+
+  const router = useRouter();
+  const backClickHandler = () => router.push(`${BFAURL.CURRENCIES}/${currencyId}`);
+
+  // Info: (20240319 - Liz) UI
+  const [redFlagListData, setRedFlagListData] = useState<IRedFlagListForCurrency>();
+  const [activePage, setActivePage] = useState<number>(1);
+  const totalPages = redFlagListData?.totalPages ?? 0;
+
+  // Info: (20240319 - Liz) 下拉式選單選項由 API 取得
+  const redFlagTypes = redFlagListData?.redFlagTypes ?? [];
+  const redFlagTypeOptions = [typeOptionDefault, ...redFlagTypes];
+
+  // Info: (20240307 - Liz) 當日期、搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
+  useEffect(() => {
+    setActivePage(1);
+  }, [search, filteredType, period, sorting]);
+
+  // Info: (20240319 - Liz) Call API to get red flag list data
+  useEffect(() => {
+    // if (!appCtx.isInit) {
+    //   appCtx.init();
+    // }
+
+    const fetchRedFlagListData = async () => {
+      try {
+        const data = await getRedFlagsOfCurrency(currencyId, apiQueryStr);
+        setRedFlagListData(data);
+        setIsLoading(false);
+      } catch (error) {
+        //console.log('getRedFlagsOfCurrency error', error);
+      }
+    };
+
+    fetchRedFlagListData();
+  }, [apiQueryStr, currencyId, getRedFlagsOfCurrency]);
+
+  // Info: (20240319 - Liz) filteredType 轉換成代碼格式再送出
+  const redFlagTypeCodesObj = redFlagListData?.redFlagTypeCodeMeaningObj ?? {};
+
+  const getKeyByValue = (
+    object: {
+      [key: string]: string;
+    },
+    value: string
+  ) => {
+    return Object.keys(object).find(key => object[key] === value);
+  };
+
+  const filteredTypeCode = getKeyByValue(redFlagTypeCodesObj, filteredType) ?? '';
+
+  // Info: (20240319 - Liz) 設定 API 查詢參數
+
+  useEffect(() => {
+    const pageQuery = `page=${activePage}`;
+    const sortQuery = `&sort=${sorting}`;
+    const searchQuery = `&search=${search}`;
+    const startDateQuery = `&start_date=${period.startTimeStamp}`;
+    const endDateQuery = `&end_date=${period.endTimeStamp}`;
+    const flagQuery = `&flag=${filteredTypeCode}`;
+
+    setApiQueryStr(
+      `${pageQuery}${sortQuery}${searchQuery}${flagQuery}${startDateQuery}${endDateQuery}`
+    );
+  }, [activePage, filteredTypeCode, period.endTimeStamp, period.startTimeStamp, search, sorting]);
+
+  // Info: (20240319 - Liz) head title & currency icon & back button
+  const currencyName = redFlagListData?.chainName ?? '';
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} ${t(
     'COMMON.OF'
   )} ${currencyName} - BAIFA`;
   const currencyIcon = getCurrencyIcon(currencyId);
-
-  const router = useRouter();
-  const backClickHandler = () => router.back();
-
-  useEffect(() => {
-    if (!appCtx.isInit) {
-      appCtx.init();
-    }
-
-    const getRedFlagData = async (currencyId: string) => {
-      try {
-        const data = await getRedFlagsFromCurrency(currencyId);
-        setRedFlagData(data);
-      } catch (error) {
-        //console.log('getRedFlagsFromCurrency error', error);
-      }
-    };
-
-    getRedFlagData(currencyId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (redFlagData) {
-      setRedFlagData(redFlagData);
-    }
-    timerRef.current = setTimeout(() => setIsLoading(false), 500);
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [redFlagData]);
-
   const displayRedFlagList = !isLoading ? (
-    <RedFlagList redFlagData={redFlagData} />
+    <RedFlagList
+      redFlagData={redFlagListData?.redFlagData ?? []}
+      period={period}
+      setPeriod={setPeriod}
+      sorting={sorting}
+      setSorting={setSorting}
+      setSearch={setSearch}
+      activePage={activePage}
+      setActivePage={setActivePage}
+      isLoading={isLoading}
+      totalPages={totalPages}
+      typeOptions={redFlagTypeOptions}
+      filteredType={filteredType}
+      setFilteredType={setFilteredType}
+    />
   ) : (
     // ToDo: (20231215 - Julian) Add loading animation
     <RedFlagListSkeleton />
   );
-
   return (
     <>
       <Head>

@@ -9,10 +9,11 @@ type ResponseData = IRedFlagPage;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240307 - Liz) query string parameter
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
-  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? parseInt(req.query.search, 10) : undefined;
-  const flag = typeof req.query.flag === 'string' ? req.query.flag : undefined;
+  const flagNames =
+    (req.query.flagNames as string) === '' ? undefined : (req.query.flagNames as string);
 
   // Info: (20240307 - Liz) 將 req 傳來的日期字串轉換成數字或 undefined
   const parseDate = (dateString: string | string[] | undefined) => {
@@ -26,20 +27,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const endDate = parseDate(req.query.end_date);
 
   // Info: (20240307 - Liz) 計算分頁的 skip 與 take
-  const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240307 - Liz) 跳過前面幾筆
+  const skip = (page - 1) * ITEM_PER_PAGE; // Info: (20240307 - Liz) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // Info: (20240307 - Liz) 取幾筆
 
   // Info: (20240307 - Liz) 排序
-  const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
+  //const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
   // Info: (20240307 - Liz) flag name 篩選，如果是空字串就搜尋全部
-  const redFlagType = flag === '' ? undefined : flag;
+  //const redFlagType = flagNames === '' ? undefined : flagNames;
 
   try {
     // Info:(20240118 - Liz) 從 red_flags Table 中取得資料，並做條件篩選以及分頁
     const redFlags = await prisma.red_flags.findMany({
       where: {
-        red_flag_type: redFlagType, // Info: (20240307 - Liz) 篩選 red_flag_type
+        red_flag_type: flagNames, // Info: (20240307 - Liz) 篩選 red_flag_type
         id: search ? {equals: search} : undefined, // Info: (20240307 - Liz) 篩選 id
         created_timestamp: {
           gte: startDate,
@@ -59,10 +60,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
       orderBy: [
         {
-          created_timestamp: sorting, // Info: (20240307 - Liz) 1. created_timestamp 由 sorting 決定排序
+          created_timestamp: sort, // Info: (20240307 - Liz) 1. created_timestamp 由 sort 決定排序
         },
         {
-          id: sorting, // Info: (20240315 - Liz) 2. id 由 sorting 決定排序
+          id: sort, // Info: (20240315 - Liz) 2. id 由 sort 決定排序
         },
       ],
       // Info: (20240307 - Liz) 分頁
@@ -73,7 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240307 - Liz) 取得 red flag 總筆數
     const totalRedFlagCount = await prisma.red_flags.count({
       where: {
-        red_flag_type: redFlagType, // Info: (20240307 - Liz) 篩選 red_flag_type
+        red_flag_type: flagNames, // Info: (20240307 - Liz) 篩選 red_flag_type
         id: search ? {equals: search} : undefined, // Info: (20240307 - Liz) 篩選 id
         created_timestamp: {
           gte: startDate,

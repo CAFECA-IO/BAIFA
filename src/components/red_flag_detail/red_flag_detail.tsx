@@ -47,9 +47,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('RED_FLAG_ADDRESS_PAGE.RED_FLAG_TYPE')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('RED_FLAG_ADDRESS_PAGE.RED_FLAG_TYPE_TOOLTIP')}</Tooltip>
         </div>
         <div className="flex items-center gap-2">
           <Image src="/icons/red_flag.svg" alt="red_flag_icon" width={24} height={24} />
@@ -61,9 +59,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('RED_FLAG_ADDRESS_PAGE.FLAGGING_TIME')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('RED_FLAG_ADDRESS_PAGE.FLAGGING_TIME_TOOLTIP')}</Tooltip>
         </div>
 
         {/* Info: if the createdTimestamp is null, show the animation */}
@@ -74,7 +70,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
         ) : (
           <div
             role="status"
-            className="animate-pulse space-y-8 rtl:space-x-reverse md:flex md:items-center md:space-x-8 md:space-y-0"
+            className="animate-pulse space-y-8 md:flex md:items-center md:space-x-8 md:space-y-0 rtl:space-x-reverse"
           >
             <div className="w-full">
               <div className="my-2 h-5 w-20 rounded-full bg-gray-200 dark:bg-gray-700"></div>
@@ -86,15 +82,17 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
 
       {/* Info: (20231110 - Julian) Interacted with */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <div className="flex items-center text-sm font-bold text-lilac lg:min-w-200px lg:text-base">
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:min-w-200px lg:text-base">
           <p>{t('RED_FLAG_ADDRESS_PAGE.INTERACTED_WITH')}</p>
+          <Tooltip>{t('RED_FLAG_ADDRESS_PAGE.INTERACTED_WITH_TOOLTIP')}</Tooltip>
         </div>
         <div className="flex flex-wrap items-center gap-3">{displayInteractedAddresses}</div>
       </div>
       {/* Info: (20231110 - Julian) Total Amount */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <div className="flex items-center text-sm font-bold text-lilac lg:w-200px lg:text-base">
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('RED_FLAG_ADDRESS_PAGE.TOTAL_AMOUNT')}</p>
+          <Tooltip>{t('RED_FLAG_ADDRESS_PAGE.TOTAL_AMOUNT_TOOLTIP')}</Tooltip>
         </div>
         <div className="flex items-center space-x-2">
           <Image src={chainIcon.src} alt={chainIcon.alt} width={24} height={24} />

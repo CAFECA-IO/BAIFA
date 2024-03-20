@@ -15,7 +15,7 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {IBlockDetail, dummyBlockDetail} from '../../../../../../interfaces/block';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {getDynamicUrl} from '../../../../../../constants/url';
+import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {getChainIcon} from '../../../../../../lib/common';
 import {DEFAULT_CHAIN_ICON} from '../../../../../../constants/config';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
@@ -51,7 +51,7 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
   const previousLink = getDynamicUrl(chainId, `${blockData?.previousBlockId}`).BLOCK;
   const nextLink = getDynamicUrl(chainId, `${blockData?.nextBlockId}`).BLOCK;
 
-  const backClickHandler = () => router.back();
+  const backClickHandler = () => router.push(`${BFAURL.CHAINS}/${chainId}`);
   const previousHandler = () => router.push(previousLink);
   const nextHandler = () => router.push(nextLink);
 

@@ -6,8 +6,12 @@ export interface IRedFlag extends ICommonData {
   redFlagType: string;
 }
 
-export interface IRedFlagOfCurrency extends IRedFlag {
+export interface IRedFlagListForCurrency {
+  redFlagData: IRedFlag[];
   chainName: string;
+  totalPages: number;
+  redFlagTypes: string[];
+  redFlagTypeCodeMeaningObj: {[key: string]: string};
 }
 
 export interface IRedFlagSearchResult extends IRedFlag {
@@ -35,4 +39,9 @@ export interface IRedFlagPage {
   totalPages: number;
   allRedFlagTypes: string[];
   redFlagTypeCodeMeaningObj: {[key: string]: string};
+}
+
+export interface IMenuOptions {
+  options: string[];
+  redFlagTypeMeaning: {[key: string]: string};
 }
