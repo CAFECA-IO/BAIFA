@@ -1,4 +1,3 @@
-import {ITransaction} from './transaction';
 import {ICommonData} from './common_data';
 
 export interface IRedFlag extends ICommonData {
@@ -24,7 +23,6 @@ export interface IRedFlagSearchResult extends IRedFlag {
 export interface IRedFlagDetail extends IRedFlagSearchResult {
   unit: string;
   totalAmount: string; // Info:(20231228 - Julian) 交易總金額
-  // Deprecated: (今天丟棄 - Liz) // transactionHistoryData: ITransaction[]; // Info:(20231228 - Julian) 被警示的交易記錄
 }
 
 export interface IRedFlagOfAddress {

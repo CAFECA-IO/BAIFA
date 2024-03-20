@@ -52,27 +52,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    // Deprecated: (今天丟棄 - Liz)
-    // const relatedTransactions = redFlagData?.related_transactions ?? [];
-    // // Info: (20240131 - Liz) 透過 redFlagData.related_transactions 從 transactions 表格讀取相關交易資料
-    // const transactions = await prisma.transactions.findMany({
-    //   where: {
-    //     hash: {
-    //       in: relatedTransactions,
-    //     },
-    //   },
-    //   select: {
-    //     id: true,
-    //     chain_id: true,
-    //     created_timestamp: true,
-    //     from_address: true,
-    //     to_address: true,
-    //     status: true,
-    //     type: true,
-    //     hash: true, // transaction hash
-    //   },
-    // });
-
     // Info: (20240131 - Liz) 組合回傳資料
     const id = `${redFlagData?.id}`;
     const chainId = `${redFlagData?.chain_id}`;
@@ -86,41 +65,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const interactedAddresses =
       redFlagData?.related_addresses.map(address => ({
         id: address,
-        chainId: `${redFlagData.chain_id}`,
+        chainId: chainId,
       })) ?? [];
 
     const totalAmount = redFlagData?.total_amount ?? '0';
 
     const unit = redFlagData?.symbol ?? '';
-
-    // Info: (20240131 - Liz) 透過 transactions 資料組合 transactionHistoryData
-    // const transactionHistoryData = transactions.map(transaction => {
-    //   const from = [
-    //     {
-    //       address: `${transaction.from_address}`,
-    //       type: AddressType.ADDRESS,
-    //     },
-    //   ];
-    //   const to = [
-    //     {
-    //       address: `${transaction.to_address}`,
-    //       type: AddressType.ADDRESS,
-    //     },
-    //   ];
-
-    //   const status = findCodeMeaning('transactions', 'status', `${transaction.status}`);
-    //   const type = findCodeMeaning('transactions', 'type', `${transaction.type}`);
-
-    //   return {
-    //     id: `${transaction.hash}`,
-    //     chainId: `${transaction.chain_id}`,
-    //     createdTimestamp: transaction.created_timestamp ?? 0,
-    //     from,
-    //     to,
-    //     status,
-    //     type,
-    //   };
-    // });
 
     const result: ResponseData = {
       id,
@@ -130,7 +80,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       interactedAddresses,
       totalAmount,
       unit,
-      // transactionHistoryData,
     };
 
     res.status(200).json(result);
