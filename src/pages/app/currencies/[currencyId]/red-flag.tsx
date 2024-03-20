@@ -22,6 +22,7 @@ import {TranslateFunction} from '../../../../interfaces/locale';
 import {IRedFlagListForCurrency} from '../../../../interfaces/red_flag';
 import RedFlagList from '../../../../components/red_flag_list/red_flag_list';
 import Skeleton from '../../../../components/skeleton/skeleton';
+import {BFAURL} from '../../../../constants/url';
 import {IDatePeriod} from '../../../../interfaces/date_period';
 
 interface IRedFlagOfCurrencyPageProps {
@@ -103,6 +104,9 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
     `page=1&sort=SORTING.NEWEST&search=&flag=&start_date=0&end_date=0`
   );
 
+  const router = useRouter();
+  const backClickHandler = () => router.push(`${BFAURL.CURRENCIES}/${currencyId}`);
+
   // Info: (20240319 - Liz) UI
   const [redFlagListData, setRedFlagListData] = useState<IRedFlagListForCurrency>();
   const [activePage, setActivePage] = useState<number>(1);
@@ -171,9 +175,6 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
     'COMMON.OF'
   )} ${currencyName} - BAIFA`;
   const currencyIcon = getCurrencyIcon(currencyId);
-  const router = useRouter();
-  const backClickHandler = () => router.back();
-
   const displayRedFlagList = !isLoading ? (
     <RedFlagList
       redFlagData={redFlagListData?.redFlagData ?? []}

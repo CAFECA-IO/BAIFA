@@ -44,7 +44,7 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
   );
 
   const chainIcon = getChainIcon(chainId);
-  const backClickHandler = () => router.back();
+  const backClickHandler = () => router.push(`${BFAURL.CHAINS}/${chainId}`);
 
   useEffect(() => {
     if (!appCtx.isInit) {

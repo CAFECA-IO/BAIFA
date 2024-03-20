@@ -21,6 +21,7 @@ import {
 } from '../../../../../../constants/config';
 import {IPaginationOptions, TimeSortingType} from '../../../../../../constants/api_request';
 import Pagination from '../../../../../../components/pagination/pagination';
+import {getDynamicUrl} from '../../../../../../constants/url';
 
 interface IReviewDetailsPageProps {
   addressId: string;
@@ -85,7 +86,7 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
   )} ${addressId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
-  const backClickHandler = () => router.back();
+  const backClickHandler = () => router.push(`${getDynamicUrl(chainId, addressId).ADDRESS}`);
 
   const displayedReviews = (
     <ReviewSection
@@ -116,20 +117,22 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
               {/* Info: (20231018 -Julian) Review Title */}
               <div className="flex w-full flex-1 flex-col items-center justify-center space-y-6">
                 <h1 className="text-2xl font-bold lg:text-48px">{t('REVIEWS_PAGE.TITLE')}</h1>
-                <div className="flex w-full grow items-center justify-center space-x-2 text-xl">
-                  <Image
-                    src={chainIcon.src}
-                    alt={chainIcon.alt}
-                    width={30}
-                    height={30}
-                    onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
-                  />
-                  <p
-                    className="w-300px grow space-x-2 overflow-hidden text-ellipsis whitespace-nowrap text-xl lg:w-full"
-                    title={addressId}
-                  >
-                    {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')} {addressId}
-                  </p>
+                <div className="flex w-full items-center justify-center space-x-2 text-center text-xl">
+                  <div className="flex w-300px grow items-center justify-center space-x-2 lg:w-full">
+                    <Image
+                      src={chainIcon.src}
+                      alt={chainIcon.alt}
+                      width={30}
+                      height={30}
+                      onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
+                    />
+                    <p
+                      className="overflow-hidden text-ellipsis whitespace-nowrap"
+                      title={addressId}
+                    >
+                      {t('ADDRESS_DETAIL_PAGE.MAIN_TITLE_ADDRESS')} {addressId}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

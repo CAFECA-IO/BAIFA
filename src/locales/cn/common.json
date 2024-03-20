@@ -237,7 +237,7 @@
     "FLAG_TYPE_GAMBLING_SITE": "与赌博网站有关",
     "FLAG_TYPE_BLACK_LIST": "列入黑名单",
     "FLAG_TYPE_DARKNET": "与暗网有关",
-    "FLAG_TYPE_HIGH_RISK_LOCATION": "高风险地区",
+    "FLAG_TYPE_HIGH_RISK_LOCATION": "来自高风险地区",
     "FLAG_TYPE_PRIVACY_COINS": "使用隐私币交易"
   },
   "RED_FLAG_ADDRESS_PAGE": {
@@ -248,7 +248,11 @@
     "INTERACTED_WITH": "关联地址",
     "TOTAL_AMOUNT": "总金额",
     "DOWNLOAD_REPORT_BUTTON": "下载报告",
-    "OPEN_IN_TRACING_TOOL_BUTTON": "在追踪工具中开启"
+    "OPEN_IN_TRACING_TOOL_BUTTON": "在追踪工具中开启",
+    "RED_FLAG_TYPE_TOOLTIP": "此栏位显示了该交易的警示或风险类型。可能包括大额转帐、多次收款、来自高风险地区等。",
+    "FLAGGING_TIME_TOOLTIP": "被列入警示的时间。",
+    "INTERACTED_WITH_TOOLTIP": "涉及该交易的所有地址。",
+    "TOTAL_AMOUNT_TOOLTIP": "该交易的总金额。"
   },
   "REVIEWS_PAGE": {
     "TITLE": "评论",

@@ -25,16 +25,13 @@ import {
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {AiOutlinePlus} from 'react-icons/ai';
 import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
-import TransactionHistorySection, {
-  TransactionDataType,
-} from '../../../../../../components/transaction_history_section/transaction_history_section';
+import TransactionHistorySection from '../../../../../../components/transaction_history_section/transaction_history_section';
 import {AppContext} from '../../../../../../contexts/app_context';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
   DEFAULT_REVIEWS_COUNT_IN_PAGE,
-  DEFAULT_TRUNCATE_LENGTH,
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
@@ -44,20 +41,15 @@ import {
   getChainIcon,
   roundToDecimal,
 } from '../../../../../../lib/common';
-import {ITransaction, ITransactionHistorySection} from '../../../../../../interfaces/transaction';
 import {isAddress} from 'web3-validator';
 import {IReviewDetail} from '../../../../../../interfaces/review';
-import {
-  AddressDetailsContext,
-  AddressDetailsProvider,
-} from '../../../../../../contexts/address_details_context';
+import {AddressDetailsProvider} from '../../../../../../contexts/address_details_context';
 import {validate} from 'bitcoin-address-validation';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import {IDatePeriod} from '../../../../../../interfaces/date_period';
-import useStateRef from 'react-usestateref';
 import {ISuggestions} from '../../../../../../interfaces/suggestions';
 
 interface IAddressDetailDetailPageProps {
@@ -193,7 +185,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   );
   const [transactionPeriod, setTransactionPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [transactionSorting, setTransactionSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [transactionSearch, setTransactionSearch, transactionSearchRef] = useStateRef<string>('');
+  const [transactionSearch, setTransactionSearch] = useState<string>('');
   const [transactionInputForSuggestions, setTransactionInputForSuggestions] = useState<string>('');
 
   const [blocksActivePage, setBlocksActivePage] = useState<number>(
@@ -206,7 +198,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const {
     data: addressBriefData,
     isLoading: isAddressBriefLoading,
-    error: addressBriefError,
+    //error: addressBriefError,
   } = useAPIResponse<IAddressBrief>(`${APIURL.CHAINS}/${chainId}/addresses/${addressId}`, {
     method: HttpMethod.GET,
   });
@@ -214,7 +206,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const {
     data: reviews,
     isLoading: reviewLoading,
-    error: reviewsError,
+    //error: reviewsError,
   } = useAPIResponse<IReviewDetail[]>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/review_list`,
     {method: HttpMethod.GET},
@@ -224,7 +216,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const {
     data: transactionData,
     isLoading: isTransactionDataLoading,
-    error: transactionDataError,
+    //error: transactionDataError,
   } = useAPIResponse<IAddressRelatedTransaction>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/transactions`,
     {
@@ -243,7 +235,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
   const {
     data: blocksData,
     isLoading: isBlocksDataLoading,
-    error: blocksDataError,
+    //error: blocksDataError,
   } = useAPIResponse<IAddressProducedBlock>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/produced_blocks`,
     {
@@ -261,8 +253,8 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
 
   const {
     data: suggestions,
-    isLoading,
-    error,
+    //isLoading,
+    //error,
   } = useAPIResponse<ISuggestions>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/transactions/suggestions`,
     {

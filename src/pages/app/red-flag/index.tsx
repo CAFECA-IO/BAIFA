@@ -1,7 +1,9 @@
 import Head from 'next/head';
-import {useEffect, useState, useContext} from 'react';
+import useAPIResponse from '../../../lib/hooks/use_api_response';
+//import {useEffect, useState, useContext} from 'react';
+import {useState} from 'react';
 // import {AppContext} from '../../../contexts/app_context';
-import {MarketContext} from '../../../contexts/market_context';
+//import {MarketContext} from '../../../contexts/market_context';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import NavBar from '../../../components/nav_bar/nav_bar';
@@ -10,14 +12,16 @@ import Footer from '../../../components/footer/footer';
 import {ILocale, TranslateFunction} from '../../../interfaces/locale';
 import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import {BFAURL} from '../../../constants/url';
-import {IRedFlagPage} from '../../../interfaces/red_flag';
+import {IMenuOptions, IRedFlagPage} from '../../../interfaces/red_flag';
 import {sortOldAndNewOptions, default30DayPeriod} from '../../../constants/config';
 import {IDatePeriod} from '../../../interfaces/date_period';
+import {APIURL, HttpMethod} from '../../../constants/api_request';
+import {convertStringToSortingType} from '../../../lib/common';
 
 const RedFlagListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   // const appCtx = useContext(AppContext);
-  const {getAllRedFlags} = useContext(MarketContext);
+  //const {getAllRedFlags} = useContext(MarketContext);
   // const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Info: (20240307 - Liz) 搜尋條件
@@ -26,54 +30,17 @@ const RedFlagListPage = () => {
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const flagNameOptionDefault = 'SORTING.ALL';
   const [filteredFlagName, setFilteredFlagName] = useState<string>(flagNameOptionDefault);
-
-  // Info: (20240307 - Liz) API 查詢參數
-  const [apiQueryStr, setApiQueryStr] = useState(
-    `page=1&sort=SORTING.NEWEST&search=&flag=&start_date=0&end_date=0`
-  );
-
   // Info: (20240307 - Liz) UI
-  const [redFlagData, setRedFlagData] = useState<IRedFlagPage>();
+  //const [redFlagData, setRedFlagData] = useState<IRedFlagPage>();
   const [activePage, setActivePage] = useState<number>(1);
-  // Info: (20240307 - Liz) 從 API 取得總頁數
-  const totalPages = redFlagData?.totalPages ?? 0;
 
-  // Info: (20240307 - Liz) 下拉式選單選項由 API 取得
-  const flagNames = redFlagData?.allRedFlagTypes ?? [];
-  const flagNameOptions = [flagNameOptionDefault, ...flagNames];
-
-  // Info: (20240307 - Liz) 當日期、搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
-  useEffect(() => {
-    setActivePage(1);
-  }, [search, filteredFlagName, period, sorting]);
-
-  /*
-  useEffect(() => {
-    if (!appCtx.isInit) {
-      appCtx.init();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  */
-
-  // Info: (20240307 - Liz) Call API to get red flags data
-  // ToDo: (20240307 - Liz) 之後看是否可以串成 Shirley 寫的 useAPIResponse
-  useEffect(() => {
-    const getRedFlagData = async () => {
-      try {
-        const data = await getAllRedFlags(apiQueryStr);
-        setRedFlagData(data);
-      } catch (error) {
-        //console.log('getAllRedFlags error', error);
-      }
-    };
-
-    getRedFlagData();
-    // Info: (20240307 - Liz) 當 API 查詢參數改變時，重新取得資料
-  }, [apiQueryStr, getAllRedFlags]);
+  // Info: (20240319 - Julian) Get menu options from API
+  const {data: menuOptions} = useAPIResponse<IMenuOptions>(`${APIURL.RED_FLAGS}/menu_options`, {
+    method: HttpMethod.GET,
+  });
 
   // Info: (20240307 - Liz) filteredFlagName 轉換成代碼格式再送出
-  const redFlagTypeCodesObj = redFlagData?.redFlagTypeCodeMeaningObj ?? {};
+  const redFlagTypeCodesObj = menuOptions?.redFlagTypeMeaning ?? {};
 
   const getKeyByValue = (
     object: {
@@ -86,8 +53,64 @@ const RedFlagListPage = () => {
 
   const filteredTagNameCode = getKeyByValue(redFlagTypeCodesObj, filteredFlagName) ?? '';
 
-  // Info: (20240307 - Liz) 設定 API 查詢參數
+  // Info: (20240307 - Liz) 下拉式選單選項由 API 取得
+  const flagNames = menuOptions?.options ?? [];
+  const flagNameOptions = [flagNameOptionDefault, ...flagNames];
+
+  // Info: (20240319 - Julian) Get red flag data from API
+  const {data: redFlagData, isLoading: isRedFlagLoading} = useAPIResponse<IRedFlagPage>(
+    `${APIURL.RED_FLAGS}`,
+    {method: HttpMethod.GET},
+    {
+      search: search,
+      start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
+      end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
+      sort: convertStringToSortingType(sorting),
+      page: activePage,
+      flagNames: filteredTagNameCode ?? '',
+    }
+  );
+
+  // Info: (20240307 - Liz) 從 API 取得總頁數
+  const totalPages = redFlagData?.totalPages ?? 0;
+
+  // Info: (20240307 - Liz) API 查詢參數
+  /*   const [apiQueryStr, setApiQueryStr] = useState(
+    `page=1&sort=SORTING.NEWEST&search=&flag=&start_date=0&end_date=0`
+  ); */
+
+  // Info: (20240307 - Liz) 當日期、搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
+  /*   useEffect(() => {
+    setActivePage(1);
+  }, [search, filteredFlagName, period, sorting]); */
+
+  /*
   useEffect(() => {
+    if (!appCtx.isInit) {
+      appCtx.init();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  */
+
+  // Info: (20240307 - Liz) Call API to get red flags data
+  // ToDo: (20240307 - Liz) 之後看是否可以串成 Shirley 寫的 useAPIResponse
+  /*   useEffect(() => {
+    const getRedFlagData = async () => {
+      try {
+        const data = await getAllRedFlags(apiQueryStr);
+        setRedFlagData(data);
+      } catch (error) {
+        //console.log('getAllRedFlags error', error);
+      }
+    };
+
+    getRedFlagData();
+    // Info: (20240307 - Liz) 當 API 查詢參數改變時，重新取得資料
+  }, [apiQueryStr, getAllRedFlags]); */
+
+  // Info: (20240307 - Liz) 設定 API 查詢參數
+  /*   useEffect(() => {
     const pageQuery = `page=${activePage}`;
     const sortQuery = `&sort=${sorting}`;
     const searchQuery = `&search=${search}`;
@@ -105,7 +128,7 @@ const RedFlagListPage = () => {
     period.startTimeStamp,
     search,
     sorting,
-  ]);
+  ]); */
 
   // Info: (20240307 - Liz) head title and breadcrumb
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
@@ -120,13 +143,6 @@ const RedFlagListPage = () => {
     },
   ];
 
-  // const displayedRedFlagList = !isLoading ? (
-  //   <RedFlagList redFlagData={redFlagData} />
-  // ) : (
-  //   // ToDo: (20231215 -Julian) Loading animation
-  //   <h1>Loading...</h1>
-  // );
-
   const displayedRedFlagList = (
     <RedFlagList
       redFlagData={redFlagData?.redFlagData ?? []}
@@ -138,7 +154,7 @@ const RedFlagListPage = () => {
       setActivePage={setActivePage}
       totalPages={totalPages}
       setSearch={setSearch}
-      // isLoading={isLoading} // ToDo: (20240307 - Liz) 再補上
+      isLoading={isRedFlagLoading} // ToDo: (20240307 - Liz) 再補上
       filteredType={filteredFlagName}
       setFilteredType={setFilteredFlagName}
       typeOptions={flagNameOptions}

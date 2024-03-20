@@ -248,7 +248,11 @@
     "INTERACTED_WITH": "Interacted With",
     "TOTAL_AMOUNT": "Total Amount",
     "DOWNLOAD_REPORT_BUTTON": "Download Report",
-    "OPEN_IN_TRACING_TOOL_BUTTON": "Open in Tracing Tool"
+    "OPEN_IN_TRACING_TOOL_BUTTON": "Open in Tracing Tool",
+    "RED_FLAG_TYPE_TOOLTIP": "This field shows the warning or risk type involved in the transaction. It may include large transfers, multiple receipts, and transactions from high risk location.",
+    "FLAGGING_TIME_TOOLTIP": "The time when the transaction was flagged.",
+    "INTERACTED_WITH_TOOLTIP": "All addresses involved in the transaction.",
+    "TOTAL_AMOUNT_TOOLTIP": "The total amount of the transaction."
   },
   "REVIEWS_PAGE": {
     "TITLE": "Reviews",

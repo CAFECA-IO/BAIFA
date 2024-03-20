@@ -27,6 +27,7 @@ import {
 } from '../../../../../../constants/config';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
+import {getDynamicUrl} from '../../../../../../constants/url';
 
 interface ITransitionsInBlockPageProps {
   chainId: string;
@@ -61,7 +62,7 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   const headTitle = `${t('TRANSACTION_LIST_PAGE.HEAD_TITLE_BLOCK')} ${blockId} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
 
-  const backClickHandler = () => router.back();
+  const backClickHandler = () => router.push(`${getDynamicUrl(chainId, blockId).BLOCK}`);
 
   useEffect(() => {
     if (!appCtx.isInit) {

@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, KeyboardEvent, useState, ChangeEvent, MouseEvent} from 'react';
+import {Dispatch, SetStateAction, KeyboardEvent, useState, ChangeEvent} from 'react';
 import {RiSearchLine} from 'react-icons/ri';
 import useStateRef from 'react-usestateref';
 import useOuterClick from '../../lib/hooks/use_outer_click';

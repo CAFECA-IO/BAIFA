@@ -24,6 +24,7 @@ import {
 } from '../../../../constants/config';
 import {ITransactionHistorySection} from '../../../../interfaces/transaction';
 import {IDatePeriod} from '../../../../interfaces/date_period';
+import {BFAURL} from '../../../../constants/url';
 
 interface ICurrencyDetailPageProps {
   currencyId: string;
@@ -115,7 +116,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const {currencyName} = currencyData;
   const headTitle = `${currencyName} - BAIFA`;
 
-  const backClickHandler = () => router.back();
+  const backClickHandler = () => router.push(`${BFAURL.CURRENCIES}`);
 
   const displayedHeader = (
     <div className="flex w-full items-center justify-start">
