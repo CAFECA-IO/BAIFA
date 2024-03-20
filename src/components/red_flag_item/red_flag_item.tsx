@@ -5,8 +5,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
 import {getChainIcon, timestampToString} from '../../lib/common';
 import {IRedFlag} from '../../interfaces/red_flag';
-import {DEFAULT_CHAIN_ICON} from '../../constants/config';
-import {redFlagTypeI18nObj} from '../../constants/config';
+import {DEFAULT_CHAIN_ICON, redFlagTypeI18nObj} from '../../constants/config';
 
 interface IRedFlagItemProps {
   redFlagData: IRedFlag;

@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useState, useEffect} from 'react';
+import {Dispatch, SetStateAction} from 'react';
 import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
 import Pagination from '../../components/pagination/pagination';
 import {SearchBarWithKeyDown} from '../../components/search_bar/search_bar';
