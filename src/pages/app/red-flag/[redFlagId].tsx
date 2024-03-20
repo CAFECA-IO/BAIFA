@@ -71,7 +71,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   }, []);
 
   // Info: (20240202 - Liz) Display red flag detail data
-  const {id, chainId, transactionHistoryData} = redFlagData;
+  const {id, chainId} = redFlagData;
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -79,9 +79,10 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     if (redFlagData) {
       setRedFlagData(redFlagData);
     }
-    if (transactionHistoryData) {
-      setTransactionData(transactionHistoryData);
-    }
+    // ToDo: (今天 - Liz) transactionHistoryData 另外 call api 取得
+    // if (transactionHistoryData) {
+    //   setTransactionData(transactionHistoryData);
+    // }
     timerRef.current = setTimeout(() => setIsLoading(false), 500);
 
     return () => {
@@ -89,7 +90,10 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
         clearTimeout(timerRef.current);
       }
     };
-  }, [redFlagData, transactionHistoryData]);
+  }, [
+    redFlagData,
+    // transactionHistoryData
+  ]);
 
   const headTitle = `${t('RED_FLAG_ADDRESS_PAGE.MAIN_TITLE')} - BAIFA`;
   const chainIcon = getChainIcon(chainId);
