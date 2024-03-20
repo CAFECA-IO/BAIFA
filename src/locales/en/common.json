@@ -235,7 +235,7 @@
     "FLAG_TYPE_LARGE_WITHDRAW": "Large Withdraw",
     "FLAG_TYPE_MIXING_SERVICE": "With Mixing Service",
     "FLAG_TYPE_GAMBLING_SITE": "With Gambling Site",
-    "FLAG_TYPE_BLACK_LIST": "With Blacklist",
+    "FLAG_TYPE_BLACK_LIST": "With Black List",
     "FLAG_TYPE_DARKNET": "With Darknet",
     "FLAG_TYPE_HIGH_RISK_LOCATION": "To High Risk Location",
     "FLAG_TYPE_PRIVACY_COINS": "Transactions with Privacy Coins"

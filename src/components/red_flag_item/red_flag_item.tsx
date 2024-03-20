@@ -6,6 +6,7 @@ import {BFAURL} from '../../constants/url';
 import {getChainIcon, timestampToString} from '../../lib/common';
 import {IRedFlag} from '../../interfaces/red_flag';
 import {DEFAULT_CHAIN_ICON} from '../../constants/config';
+import {redFlagTypeI18nObj} from '../../constants/config';
 
 interface IRedFlagItemProps {
   redFlagData: IRedFlag;
@@ -22,6 +23,8 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
     t(flaggingTime.month).length > 3
       ? `${t(flaggingTime.month).slice(0, 3)}.`
       : t(flaggingTime.month);
+
+  const flaggingStr = redFlagTypeI18nObj[redFlagType] ?? '';
 
   return (
     <div className="flex h-60px w-full items-center">
@@ -56,7 +59,7 @@ const RedFlagItem = ({redFlagData}: IRedFlagItemProps) => {
         {/* Info: (20231109 - Julian) Flag Type */}
         <div className="flex items-center space-x-2 px-2">
           <Image src="/icons/red_flag.svg" alt="red_flag_icon" width={24} height={24} />
-          <p className="hidden text-sm lg:block">{t(redFlagType)}</p>
+          <p className="hidden text-sm lg:block">{t(flaggingStr)}</p>
         </div>
       </div>
     </div>

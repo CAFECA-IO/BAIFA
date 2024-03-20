@@ -13,10 +13,15 @@ import {ILocale, TranslateFunction} from '../../../interfaces/locale';
 import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import {BFAURL} from '../../../constants/url';
 import {IMenuOptions, IRedFlagPage} from '../../../interfaces/red_flag';
-import {sortOldAndNewOptions, default30DayPeriod} from '../../../constants/config';
+import {
+  sortOldAndNewOptions,
+  default30DayPeriod,
+  defaultOption,
+  redFlagTypeI18nObj,
+} from '../../../constants/config';
 import {IDatePeriod} from '../../../interfaces/date_period';
 import {APIURL, HttpMethod} from '../../../constants/api_request';
-import {convertStringToSortingType} from '../../../lib/common';
+import {convertStringToSortingType, getKeyByValue} from '../../../lib/common';
 
 const RedFlagListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -28,8 +33,7 @@ const RedFlagListPage = () => {
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const flagNameOptionDefault = 'SORTING.ALL';
-  const [filteredFlagName, setFilteredFlagName] = useState<string>(flagNameOptionDefault);
+  const [filteredFlagName, setFilteredFlagName] = useState<string>(defaultOption);
   // Info: (20240307 - Liz) UI
   //const [redFlagData, setRedFlagData] = useState<IRedFlagPage>();
   const [activePage, setActivePage] = useState<number>(1);
@@ -41,21 +45,21 @@ const RedFlagListPage = () => {
 
   // Info: (20240307 - Liz) filteredFlagName 轉換成代碼格式再送出
   const redFlagTypeCodesObj = menuOptions?.redFlagTypeMeaning ?? {};
-
-  const getKeyByValue = (
-    object: {
-      [key: string]: string;
-    },
-    value: string
-  ) => {
-    return Object.keys(object).find(key => object[key] === value);
-  };
-
-  const filteredTagNameCode = getKeyByValue(redFlagTypeCodesObj, filteredFlagName) ?? '';
-
   // Info: (20240307 - Liz) 下拉式選單選項由 API 取得
   const flagNames = menuOptions?.options ?? [];
-  const flagNameOptions = [flagNameOptionDefault, ...flagNames];
+
+  // Info: (20240320 - Julian) 將 DB 字串轉換成 i18n 字串
+  const flagNameOptionWithI18n = flagNames.map(flagName => {
+    return redFlagTypeI18nObj[flagName];
+  });
+
+  // Info: (20240320 - Julian) 選單選項(包含 all & 串上翻譯)
+  const menuOption = [defaultOption, ...flagNameOptionWithI18n];
+
+  // Info: (20240320 - Julian) 將 i18n 字串轉換成 DB 字串
+  const i18nToStr = getKeyByValue(redFlagTypeI18nObj, filteredFlagName) ?? '';
+  // Info: (20240320 - Julian) 將 DB 字串轉換成代碼
+  const filteredTagNameCode = getKeyByValue(redFlagTypeCodesObj, i18nToStr) ?? '';
 
   // Info: (20240319 - Julian) Get red flag data from API
   const {data: redFlagData, isLoading: isRedFlagLoading} = useAPIResponse<IRedFlagPage>(
@@ -67,7 +71,7 @@ const RedFlagListPage = () => {
       end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
       sort: convertStringToSortingType(sorting),
       page: activePage,
-      flagNames: filteredTagNameCode ?? '',
+      flagNames: filteredTagNameCode,
     }
   );
 
@@ -157,7 +161,7 @@ const RedFlagListPage = () => {
       isLoading={isRedFlagLoading} // ToDo: (20240307 - Liz) 再補上
       filteredType={filteredFlagName}
       setFilteredType={setFilteredFlagName}
-      typeOptions={flagNameOptions}
+      typeOptions={menuOption}
     />
   );
 
