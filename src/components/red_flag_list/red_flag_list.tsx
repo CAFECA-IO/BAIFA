@@ -81,7 +81,7 @@ const RedFlagList = ({
     redFlagData.length > 0 ? (
       redFlagData.map((redFlagData, index) => <RedFlagItem key={index} redFlagData={redFlagData} />)
     ) : (
-      <div className="flex min-h-320px w-full flex-col items-center">
+      <div className="flex w-full flex-col items-center">
         <h2 className="text-center">{t('COMMON.NO_DATA')}</h2>
       </div>
     );
@@ -130,7 +130,7 @@ const RedFlagList = ({
 
       {/* Info: (20231109 - Julian) Red Flag List */}
       <div className="mt-10 flex w-full flex-col items-center space-y-10">
-        <div className="flex w-full flex-col">{displayRedFlagList}</div>
+        <div className="flex min-h-320px w-full flex-col">{displayRedFlagList}</div>
         <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
       </div>
     </>
