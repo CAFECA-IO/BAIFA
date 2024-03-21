@@ -1,9 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import {useState, useEffect, useContext} from 'react';
-import {AppContext} from '../../../contexts/app_context';
-import {MarketContext} from '../../../contexts/market_context';
+import {useState, useEffect} from 'react';
 import {useRouter} from 'next/router';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
@@ -25,6 +23,9 @@ import {
   sortOldAndNewOptions,
 } from '../../../constants/config';
 import {IDatePeriod} from '../../../interfaces/date_period';
+import useAPIResponse from '../../../lib/hooks/use_api_response';
+import {APIURL, HttpMethod} from '../../../constants/api_request';
+// import DataNotFound from '../../../components/data_not_found/data_not_found';
 
 interface IRedFlagDetailPageProps {
   redFlagId: string;
@@ -32,93 +33,80 @@ interface IRedFlagDetailPageProps {
 
 const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const appCtx = useContext(AppContext);
-  const {getRedFlagDetail, getRedFlagTransactions} = useContext(MarketContext);
 
   // Info: (20240320 - Liz) Back Arrow Button
   const router = useRouter();
   const backClickHandler = () => router.push(`${BFAURL.RED_FLAG}`);
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
   // Info: (20240315 - Liz) 搜尋條件
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-
-  // Info: (20240320 - Liz) API 查詢參數
-  const [apiQueryStr, setApiQueryStr] = useState(
-    `page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0`
-  );
-
-  // Info: (20240320 - Liz) UI
-  const [redFlagData, setRedFlagData] = useState<IRedFlagDetail>({} as IRedFlagDetail);
-  const [transactionsData, setTransactionsData] = useState<ITransactionHistorySection>();
   const [activePage, setActivePage] = useState<number>(1);
 
-  // Info: (20240320 - Liz) 從 API 取得 Transaction History Data 的總頁數
-  const transactionTotalPages = transactionsData?.totalPages ?? 0;
+  // Info: (20240321 - Liz) Call API to get red flag detail data
+  const {
+    data: redFlagDataRaw,
+    isLoading: isRedFlagDataLoading,
+    error: redFlagDataError,
+  } = useAPIResponse<IRedFlagDetail>(`${APIURL.RED_FLAGS}/${redFlagId}`, {
+    method: HttpMethod.GET,
+  });
+
+  // Info: (20240321 - Liz)  從 API 取得 red flag detail data (如果沒有的話，就給預設值)
+
+  const redFlagData = redFlagDataRaw ?? {
+    id: '--',
+    chainId: '',
+    createdTimestamp: 0,
+    redFlagType: '',
+    interactedAddresses: [],
+    unit: '',
+    totalAmount: '',
+  };
+
+  // Info: (20240321 - Liz) Call API to get transaction history data
+  const {
+    data: transactionHistoryData,
+    isLoading: isTransactionHistoryDataLoading,
+    error: transactionHistoryError,
+  } = useAPIResponse<ITransactionHistorySection>(
+    `${APIURL.RED_FLAGS}/${redFlagId}/transactions`,
+    // Info: (20240321 - Liz) 預設值 ?page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0
+    {method: HttpMethod.GET},
+    {
+      page: activePage,
+      sort: sorting,
+      search: search,
+      start_date: period.startTimeStamp,
+      end_date: period.endTimeStamp,
+    }
+  );
+
+  // Info: (20240321 - Liz) 從 API 取得 transaction history data (如果沒有的話，就給預設值)
+  const {transactions, totalPages, transactionCount} = transactionHistoryData ?? {
+    transactions: [],
+    totalPages: 0,
+    transactionCount: 0,
+  };
 
   // Info: (20240307 - Liz) 當日期、搜尋、排序的條件改變時，將 activePage 設為 1。
   useEffect(() => {
     setActivePage(1);
   }, [search, period, sorting]);
 
-  useEffect(() => {
-    // Info: (20240202 - Liz) Initialize app context
-    if (!appCtx.isInit) {
-      appCtx.init();
-    }
-    // Info: (20240202 - Liz) Get red flag detail data
-    const getRedFlagData = async (redFlagId: string) => {
-      try {
-        const data = await getRedFlagDetail(redFlagId);
-        setRedFlagData(data);
-        setIsLoading(false);
-      } catch (error) {
-        // console.log('getRedFlagDetail error', error);
-      }
-    };
-
-    getRedFlagData(redFlagId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Info: (20240320 - Liz) Call API to get transaction history data
-  useEffect(() => {
-    const getTransactionsData = async () => {
-      try {
-        const data = await getRedFlagTransactions(redFlagId, apiQueryStr);
-        setTransactionsData(data);
-        setIsLoading(false);
-      } catch (error) {
-        //console.log('getBlockDetail error', error);
-      }
-    };
-    getTransactionsData();
-    // Info: (20240320 - Liz) 當 API 查詢參數改變時，重新取得資料
-  }, [apiQueryStr, getRedFlagTransactions, redFlagId]);
-
-  // Info: (20240320 - Liz) 設定 API 查詢參數
-  useEffect(() => {
-    const pageQuery = `page=${activePage}`;
-    const sortQuery = `&sort=${sorting}`;
-    const searchQuery = `&search=${search}`;
-    const startDateQuery = `&start_date=${period.startTimeStamp}`;
-    const endDateQuery = `&end_date=${period.endTimeStamp}`;
-
-    setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${startDateQuery}${endDateQuery}`);
-  }, [activePage, period.endTimeStamp, period.startTimeStamp, search, sorting]);
-
   // Info: (20240320 - Liz) head title
   const {id, chainId} = redFlagData;
+  // const defaultRedFlagId = '--'; // ToDo: (20240321 - Liz) 偵測 red flag id 是否存在，沒有該筆資料就顯示預設值
   const headTitle = `${t('RED_FLAG_ADDRESS_PAGE.MAIN_TITLE')} - BAIFA`;
+
+  // Info: (20240321 - Liz) Get Chain Icon
   const chainIcon = getChainIcon(chainId);
 
-  // Info: (20240202 - Liz) Display transaction history data
-  const displayedTransactionHistory = !isLoading ? (
+  // Info: (20240321 - Liz) 畫面顯示元件
+  const displayedTransactionHistory = !transactionHistoryError ? (
     <TransactionHistorySection
-      transactions={transactionsData?.transactions ?? []}
+      transactions={transactions}
       period={period}
       setPeriod={setPeriod}
       sorting={sorting}
@@ -126,15 +114,13 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
       setSearch={setSearch}
       activePage={activePage}
       setActivePage={setActivePage}
-      isLoading={isLoading}
-      totalPage={transactionTotalPages}
-      transactionCount={transactionsData?.transactionCount ?? 0}
+      isLoading={isTransactionHistoryDataLoading}
+      totalPage={totalPages}
+      transactionCount={transactionCount}
       // ToDo: (20240320 - Liz) add suggestions
       // suggestions={randomSuggestions}
     />
-  ) : (
-    <h1>Loading...</h1> // ToDo: (20240320 - Liz) Loading 方式要修改
-  );
+  ) : null;
 
   return (
     <>
@@ -164,7 +150,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
                 />
                 <h1>
                   {t('RED_FLAG_ADDRESS_PAGE.RED_FLAG')}
-                  <span className="text-primaryBlue"> {id}</span>
+                  <span className="text-primaryBlue"> {id} </span>
                 </h1>
               </div>
             </div>
