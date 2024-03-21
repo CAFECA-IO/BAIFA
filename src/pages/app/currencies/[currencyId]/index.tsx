@@ -6,7 +6,7 @@ import CurrencyDetail from '../../../../components/currency_detail/currency_deta
 import {useContext, useEffect, useState} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {ICurrencyDetailString} from '../../../../interfaces/currency';
+import {ICurrencyDetailString, dummyCurrencyDetailString} from '../../../../interfaces/currency';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
 import Top100HolderSection from '../../../../components/top_100_holder_section/top_100_holder_section';
@@ -15,7 +15,7 @@ import BoltButton from '../../../../components/bolt_button/bolt_button';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 import {AppContext} from '../../../../contexts/app_context';
-import {MarketContext} from '../../../../contexts/market_context';
+//import {MarketContext} from '../../../../contexts/market_context';
 import {getCurrencyIcon} from '../../../../lib/common';
 import {
   DEFAULT_CURRENCY_ICON,
@@ -25,6 +25,10 @@ import {
 import {ITransactionHistorySection} from '../../../../interfaces/transaction';
 import {IDatePeriod} from '../../../../interfaces/date_period';
 import {BFAURL} from '../../../../constants/url';
+import useAPIResponse from '../../../../lib/hooks/use_api_response';
+import {APIURL, HttpMethod} from '../../../../constants/api_request';
+import DataNotFound from '../../../../components/data_not_found/data_not_found';
+import Skeleton from '../../../../components/skeleton/skeleton';
 
 interface ICurrencyDetailPageProps {
   currencyId: string;
@@ -34,26 +38,49 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
   const appCtx = useContext(AppContext);
-  const {getCurrencyDetail, getCurrencyTransactions} = useContext(MarketContext);
-
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  //const {getCurrencyDetail, getCurrencyTransactions} = useContext(MarketContext);
 
   // Info: (20240315 - Liz) 搜尋條件
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+  // Info: (20240315 - Liz) UI
+  /*   const [currencyData, setCurrencyData] = useState<ICurrencyDetailString>(
+    {} as ICurrencyDetailString
+  ); */
+  //const [transactionsData, setTransactionsData] = useState<ITransactionHistorySection>();
+  const [activePage, setActivePage] = useState<number>(1);
+
+  const {
+    data: currencyData,
+    isLoading: isCurrencyLoading,
+    error: currencyError,
+  } = useAPIResponse<ICurrencyDetailString>(`${APIURL.CURRENCIES}/${currencyId}`, {
+    method: HttpMethod.GET,
+  });
+
+  const {
+    data: transactionsData,
+    isLoading: isTransactionsLoading,
+    //error: transactionsError,
+  } = useAPIResponse<ITransactionHistorySection>(
+    `${APIURL.CURRENCIES}/${currencyId}/transactions`,
+    {method: HttpMethod.GET},
+    {
+      page: activePage,
+      sort: sorting,
+      search: search,
+      start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
+      end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
+    }
+  );
+
+  //const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Info: (20240315 - Liz) API 查詢參數
-  const [apiQueryStr, setApiQueryStr] = useState(
-    `page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0`
-  );
-
-  // Info: (20240315 - Liz) UI
-  const [currencyData, setCurrencyData] = useState<ICurrencyDetailString>(
-    {} as ICurrencyDetailString
-  );
-  const [transactionsData, setTransactionsData] = useState<ITransactionHistorySection>();
-  const [activePage, setActivePage] = useState<number>(1);
+  // const [apiQueryStr, setApiQueryStr] = useState(
+  //   `page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0`
+  // );
 
   // Info: (20240315 - Liz) 從 API 取得 Transaction History Data 的總頁數
   const transactionTotalPages = transactionsData?.totalPages ?? 0;
@@ -72,51 +99,68 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
       appCtx.init();
     }
 
-    const getCurrencyData = async (currencyId: string) => {
-      try {
-        const data = await getCurrencyDetail(currencyId);
-        setCurrencyData(data);
-        setIsLoading(false);
-      } catch (error) {
-        //console.log('getBlockDetail error', error);
-      }
-    };
+    // const getCurrencyData = async (currencyId: string) => {
+    //   try {
+    //     const data = await getCurrencyDetail(currencyId);
+    //     setCurrencyData(data);
+    //     setIsLoading(false);
+    //   } catch (error) {
+    //     //console.log('getBlockDetail error', error);
+    //   }
+    // };
 
-    getCurrencyData(currencyId);
+    // getCurrencyData(currencyId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Info: (20240314 - Liz) Call API to get transaction history data
-  useEffect(() => {
-    const getTransactionsData = async () => {
-      try {
-        const data = await getCurrencyTransactions(currencyId, apiQueryStr);
-        setTransactionsData(data);
-        setIsLoading(false);
-      } catch (error) {
-        //console.log('getBlockDetail error', error);
-      }
-    };
-    getTransactionsData();
-    // Info: (20240315 - Liz) 當 API 查詢參數改變時，重新取得資料
-  }, [apiQueryStr, currencyId, getCurrencyTransactions]);
+  // useEffect(() => {
+  //   const getTransactionsData = async () => {
+  //     try {
+  //       const data = await getCurrencyTransactions(currencyId, apiQueryStr);
+  //       setTransactionsData(data);
+  //       //setIsLoading(false);
+  //     } catch (error) {
+  //       //console.log('getBlockDetail error', error);
+  //     }
+  //   };
+  //   getTransactionsData();
+  //   // Info: (20240315 - Liz) 當 API 查詢參數改變時，重新取得資料
+  // }, [apiQueryStr, currencyId, getCurrencyTransactions]);
 
   // Info: (20240315 - Liz) 設定 API 查詢參數
-  useEffect(() => {
-    const pageQuery = `page=${activePage}`;
-    const sortQuery = `&sort=${sorting}`;
-    const searchQuery = `&search=${search}`;
-    const startDateQuery = `&start_date=${period.startTimeStamp}`;
-    const endDateQuery = `&end_date=${period.endTimeStamp}`;
+  // useEffect(() => {
+  //   const pageQuery = `page=${activePage}`;
+  //   const sortQuery = `&sort=${sorting}`;
+  //   const searchQuery = `&search=${search}`;
+  //   const startDateQuery = `&start_date=${period.startTimeStamp}`;
+  //   const endDateQuery = `&end_date=${period.endTimeStamp}`;
 
-    setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${startDateQuery}${endDateQuery}`);
-  }, [activePage, period.endTimeStamp, period.startTimeStamp, search, sorting]);
+  //   setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${startDateQuery}${endDateQuery}`);
+  // }, [activePage, period.endTimeStamp, period.startTimeStamp, search, sorting]);
 
   // Info: (20240315 - Liz) head title and back button
-  const {currencyName} = currencyData;
+  const {currencyName, unit, chainId} = currencyData ?? dummyCurrencyDetailString;
   const headTitle = `${currencyName} - BAIFA`;
 
   const backClickHandler = () => router.push(`${BFAURL.CURRENCIES}`);
+
+  const isShowHeader = !currencyError ? (
+    <div className="flex flex-1 items-center justify-center space-x-2">
+      <Image
+        src={currencyIcon.src}
+        alt={currencyIcon.alt}
+        width={40}
+        height={40} // Info: (20240206 - Julian) If the image fails to load, use the default currency icon
+        onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
+      />
+      <h1 className="text-2xl font-bold lg:text-32px">
+        <span className="ml-2"> {currencyName}</span>
+      </h1>
+    </div>
+  ) : (
+    <></>
+  );
 
   const displayedHeader = (
     <div className="flex w-full items-center justify-start">
@@ -125,39 +169,31 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
         <BsArrowLeftShort className="text-48px" />
       </button>
       {/* Info: (20231018 -Julian) Block Title */}
-      <div className="flex flex-1 items-center justify-center space-x-2">
-        <Image
-          src={currencyIcon.src}
-          alt={currencyIcon.alt}
-          width={40}
-          height={40} // Info: (20240206 - Julian) If the image fails to load, use the default currency icon
-          onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
-        />
-        <h1 className="text-2xl font-bold lg:text-32px">
-          <span className="ml-2"> {currencyName}</span>
-        </h1>
-      </div>
+      {!isCurrencyLoading ? (
+        isShowHeader
+      ) : (
+        <div className="flex flex-1 items-center justify-center space-x-2">
+          <Skeleton width={40} height={40} rounded />
+          <Skeleton width={200} height={40} />
+        </div>
+      )}
     </div>
   );
 
-  // ToDo: (20240313 - Liz) Loading 方式要修改
-  const displayedCurrencyDetail = !isLoading ? (
-    <CurrencyDetail currencyData={currencyData} />
+  const displayedCurrencyDetail = !currencyError ? (
+    <CurrencyDetail
+      currencyData={currencyData ?? dummyCurrencyDetailString}
+      isLoading={isCurrencyLoading}
+    />
   ) : (
-    <h1>Loading...</h1>
+    <DataNotFound />
   );
 
-  const unit = currencyData.unit;
-  const chainId = currencyData.chainId;
-  // ToDo: (20240313 - Liz) Loading 方式要修改
-  const displayedTop100Holder = !isLoading ? (
+  const displayedTop100Holder = !currencyError ? (
     <Top100HolderSection chainId={chainId} currencyId={currencyId} unit={unit} />
-  ) : (
-    <h1>Loading...</h1>
-  );
+  ) : null;
 
-  // ToDo: (20240313 - Liz) Loading 方式要修改
-  const displayedTransactionHistory = !isLoading ? (
+  const displayedTransactionHistory = !currencyError ? (
     <TransactionHistorySection
       transactions={transactionsData?.transactions ?? []}
       period={period}
@@ -167,15 +203,13 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
       setSearch={setSearch}
       activePage={activePage}
       setActivePage={setActivePage}
-      isLoading={isLoading}
+      isLoading={isTransactionsLoading}
       totalPage={transactionTotalPages}
       transactionCount={transactionsData?.transactionCount ?? 0}
       // ToDo: (20240315 - Liz) add suggestions
       // suggestions={randomSuggestions}
     />
-  ) : (
-    <h1>Loading...</h1>
-  );
+  ) : null;
 
   return (
     <>
