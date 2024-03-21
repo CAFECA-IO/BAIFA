@@ -57,7 +57,7 @@ const AllCurrenciesPageBody = () => {
 
     const filteredChainId = getKeyByValue(chainIdNameObj, filteredType) ?? '';
     setFilteredTypeByChainId(filteredChainId);
-  }, [filteredType]);
+  }, [filteredType, currenciesData]);
 
   // Info: (20240308 - Liz) 從 API 取得總頁數
   const totalPages = currenciesData?.totalPages ?? 0;
