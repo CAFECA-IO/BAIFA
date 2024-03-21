@@ -12,34 +12,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
 
   try {
-    const currencyData = await prisma.currencies.findUnique({
-      where: {
-        id: currency_id,
-      },
-      select: {
-        id: true,
-        name: true,
-        holder_count: true,
-        price: true,
-        volume_in_24h: true,
-        total_transfers: true,
-        total_amount: true,
-        risk_level: true,
-        chain_id: true,
-      },
-    });
+    const currencyData = currency_id
+      ? await prisma.currencies.findUnique({
+          where: {
+            id: currency_id,
+          },
+          select: {
+            id: true,
+            name: true,
+            holder_count: true,
+            price: true,
+            volume_in_24h: true,
+            total_transfers: true,
+            total_amount: true,
+            risk_level: true,
+            chain_id: true,
+          },
+        })
+      : null;
 
     // Info: (20240125 - Julian) 從 chains Table 中取得 unit 和 decimal
     const chainId = currencyData?.chain_id;
-    const chainData = await prisma.chains.findUnique({
-      where: {
-        id: chainId ?? undefined,
-      },
-      select: {
-        symbol: true,
-        decimals: true,
-      },
-    });
+    const chainData = chainId
+      ? await prisma.chains.findUnique({
+          where: {
+            id: chainId,
+          },
+          select: {
+            symbol: true,
+            decimals: true,
+          },
+        })
+      : null;
+
     const unit = chainData?.symbol ?? '';
     const decimal = chainData?.decimals ?? 0;
 
@@ -68,6 +73,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // Info: (20240125 - Julian) 從 red_flags Table 中取得資料
     const flaggingData = await prisma.red_flags.findMany({
+      where: {
+        currency_id: currency_id,
+      },
       select: {
         id: true,
         chain_id: true,
@@ -113,9 +121,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // Info: (20240221 - Liz) 組合回傳資料並轉換成 API 要的格式
     const result: ResponseData = {
-      currencyId: `${currencyData?.id}`,
-      currencyName: `${currencyData?.name}`,
-      chainId: `${chainId}`,
+      currencyId: currency_id ?? '',
+      currencyName: currencyData?.name ?? '',
+      chainId: chainId ? `${currencyData.chain_id}` : '',
       rank: 0, // ToDo: (20240125 - Julian) 討論去留
       holderCount: currencyData?.holder_count ?? 0,
       price: currencyData?.price ?? 0,
