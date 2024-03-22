@@ -24,8 +24,8 @@ const SortingMenu = ({
   bgColor,
   sortingHandler,
   loading,
-  sortPrefix = '', // TODO: URL query prefix (20240219 - Shirley)
-}: ISearchFilter) => {
+}: //sortPrefix = '', // TODO: URL query prefix (20240219 - Shirley)
+ISearchFilter) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   // Info: (20231101 - Julian) close sorting menu when click outer

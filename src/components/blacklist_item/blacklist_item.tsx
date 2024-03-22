@@ -8,6 +8,7 @@ import {IBlackList} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {DEFAULT_CHAIN_ICON} from '../../constants/config';
+import Skeleton from '../skeleton/skeleton';
 
 interface IBlackListItemProps {
   blacklistAddress: IBlackList;
@@ -46,6 +47,18 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
     };
   }, [latestActiveTime]);
 
+  const displayedLastedActiveTime = sinceTime ? (
+    <div className="flex w-full items-center justify-end space-x-1 text-sm">
+      <p>{t('BLACKLIST_PAGE.LASTED_ACTIVE_TIME')} :</p>
+      <div className="mr-2 flex items-center space-x-2">
+        <p>{getTimeString(sinceTime)}</p>
+        <p>{t('COMMON.AGO')}</p>
+      </div>
+    </div>
+  ) : (
+    <Skeleton width={80} height={20} />
+  );
+
   return (
     <div className="flex items-start border-b border-darkPurple4 px-4 py-2 lg:h-60px lg:items-center">
       {/* Info: (20231113 - Julian) Address */}
@@ -72,14 +85,8 @@ const BlacklistItem = ({blacklistAddress}: IBlackListItemProps) => {
         </div>
       </Link>
       {/* Info: (20231113 - Julian) Lasted Active Time */}
-      <div className="flex w-30px flex-col items-end space-y-1 text-sm lg:w-300px lg:space-y-0">
-        <div className="hidden w-full items-center justify-end space-x-1 text-sm lg:flex">
-          <p>{t('BLACKLIST_PAGE.LASTED_ACTIVE_TIME')} :</p>
-          <div className="mr-2 flex items-center space-x-2">
-            <p>{getTimeString(sinceTime)}</p>
-            <p>{t('COMMON.AGO')}</p>
-          </div>
-        </div>
+      <div className="hidden w-30px flex-col items-end space-y-1 text-sm lg:flex lg:w-300px lg:space-y-0">
+        {displayedLastedActiveTime}
       </div>
     </div>
   );
