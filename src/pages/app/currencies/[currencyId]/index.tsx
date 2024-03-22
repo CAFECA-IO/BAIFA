@@ -35,8 +35,11 @@ interface ICurrencyDetailPageProps {
 
 const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const router = useRouter();
   // const appCtx = useContext(AppContext);
+
+  // Info: (今天 - Liz) Back Arrow Button
+  const router = useRouter();
+  const backClickHandler = () => router.push(`${BFAURL.CURRENCIES}`);
 
   // Info: (20240315 - Liz) 搜尋條件
   const [search, setSearch] = useState('');
@@ -67,6 +70,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     error: transactionHistoryError,
   } = useAPIResponse<ITransactionHistorySection>(
     `${APIURL.CURRENCIES}/${currencyId}/transactions`,
+    // Info: (今天 - Liz) 預設值 ?page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0
     {method: HttpMethod.GET},
     // Info: (今天 - Liz) 預設值 ?page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0
     {
@@ -93,11 +97,11 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   // Info: (20240315 - Liz) Get Currency Icon
   const currencyIcon = getCurrencyIcon(currencyId);
 
-  // Info: (20240315 - Liz) head title and back button
+  // Info: (20240315 - Liz) head title
   const headTitle = isCurrencyIdExist ? `${currencyName} - BAIFA` : 'BAIFA';
-  const backClickHandler = () => router.push(`${BFAURL.CURRENCIES}`);
 
   // Info: (20240321 - Liz) Header
+  const displayedCurrencyName = isCurrencyIdExist ? currencyName : '--';
   const displayedHeader = (
     <div className="flex w-full items-center justify-start">
       {/* Info: (20231018 -Julian) Back Arrow Button */}
@@ -105,25 +109,27 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
         <BsArrowLeftShort className="text-48px" />
       </button>
       {!isCurrencyDataLoading ? (
-        <div className="flex flex-1 items-center justify-center space-x-2">
-          <Image
-            src={currencyIcon.src}
-            alt={currencyIcon.alt}
-            width={40}
-            height={40} // Info: (20240206 - Julian) If the image fails to load, use the default currency icon
-            onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
-          />
-          <h1 className="text-2xl font-bold lg:text-32px">
-            <span className="ml-2">{isCurrencyIdExist ? currencyName : ' -- '}</span>
-          </h1>
-        </div>
+        <>
+          {/* Info: (20231018 -Julian) Block Title */}
+          <div className="flex flex-1 items-center justify-center space-x-2">
+            <Image
+              src={currencyIcon.src}
+              alt={currencyIcon.alt}
+              width={40}
+              height={40} // Info: (20240206 - Julian) If the image fails to load, use the default currency icon
+              onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
+            />
+            <h1 className="text-2xl font-bold lg:text-32px">
+              <span className="ml-2"> {displayedCurrencyName}</span>
+            </h1>
+          </div>
+        </>
       ) : (
         <div className="flex flex-1 items-center justify-center space-x-2">
           <Skeleton width={40} height={40} rounded />
           <Skeleton width={200} height={40} />
         </div>
       )}
-      {/* Info: (20231018 -Julian) Block Title */}
     </div>
   );
 
