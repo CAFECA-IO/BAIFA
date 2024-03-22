@@ -6,10 +6,12 @@ import Tooltip from '../tooltip/tooltip';
 import BoltButton from '../bolt_button/bolt_button';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IRedFlagDetail} from '../../interfaces/red_flag';
+import {IMenuOptions, IRedFlagDetail} from '../../interfaces/red_flag';
 import {getChainIcon, timestampToString, truncateText} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {DEFAULT_TRUNCATE_LENGTH, redFlagTypeI18nObj} from '../../constants/config';
+import {APIURL, HttpMethod} from '../../constants/api_request';
+import useAPIResponse from '../../lib/hooks/use_api_response';
 
 interface IRedFlagDetailProps {
   redFlagData: IRedFlagDetail;
@@ -19,6 +21,15 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {chainId, unit, redFlagType, interactedAddresses, createdTimestamp, totalAmount} =
     redFlagData;
+
+  // Info: (20240322 - Julian) Get menu options from API
+  const {data: menuOptions} = useAPIResponse<IMenuOptions>(`${APIURL.RED_FLAGS}/menu_options`, {
+    method: HttpMethod.GET,
+  });
+  const flaggingMeaning = menuOptions?.redFlagTypeMeaning ?? {};
+
+  const redFlagTypeMeaning = flaggingMeaning[redFlagType] ?? redFlagType;
+  const redFlagI18n = redFlagTypeI18nObj[redFlagTypeMeaning] ?? redFlagTypeMeaning;
 
   const chainIcon = getChainIcon(chainId);
 
@@ -51,7 +62,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
         </div>
         <div className="flex items-center gap-2">
           <Image src="/icons/red_flag.svg" alt="red_flag_icon" width={24} height={24} />
-          <p>{t(redFlagType)}</p>
+          <p>{t(redFlagI18n)}</p>
         </div>
       </div>
 
