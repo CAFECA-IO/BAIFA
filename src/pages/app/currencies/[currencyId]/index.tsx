@@ -15,7 +15,6 @@ import BoltButton from '../../../../components/bolt_button/bolt_button';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 // import {AppContext} from '../../../../contexts/app_context';
-// import {MarketContext} from '../../../../contexts/market_context';
 import {getCurrencyIcon} from '../../../../lib/common';
 import {
   DEFAULT_CURRENCY_ICON,
@@ -69,6 +68,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   } = useAPIResponse<ITransactionHistorySection>(
     `${APIURL.CURRENCIES}/${currencyId}/transactions`,
     {method: HttpMethod.GET},
+    // Info: (今天 - Liz) 預設值 ?page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0
     {
       page: activePage,
       sort: sorting,
@@ -130,19 +130,19 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   // Info: (20240321 - Liz) 畫面顯示元件
 
   const displayedCurrencyDetail =
-    !isCurrencyIdExist || currencyDataError ? (
-      <DataNotFound />
-    ) : (
+    isCurrencyIdExist || !currencyDataError ? (
       <CurrencyDetail currencyData={currencyData} isLoading={isCurrencyDataLoading} />
+    ) : (
+      <DataNotFound />
     );
 
   const displayedTop100Holder =
-    !isCurrencyIdExist || currencyDataError ? (
+    isCurrencyIdExist || !currencyDataError ? (
       <Top100HolderSection chainId={chainId} currencyId={currencyId} unit={unit} />
     ) : null;
 
   const displayedTransactionHistory =
-    !isCurrencyIdExist || currencyDataError ? (
+    isCurrencyIdExist || !currencyDataError ? (
       !transactionHistoryError ? (
         <TransactionHistorySection
           transactions={transactions}
