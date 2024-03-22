@@ -30,6 +30,7 @@ const TransactionDetail = ({transactionData, isLoading}: ITransactionDetailProps
     from,
     to,
     evidenceId,
+    input,
     fee,
     flaggingRecords,
     unit,
@@ -148,7 +149,10 @@ const TransactionDetail = ({transactionData, isLoading}: ITransactionDetailProps
       </BoltButton>
     </Link>
   ) : (
-    <p>{t('COMMON.NONE')}</p>
+    // Info: (20240322 - Julian) 如果沒有 evidence，就顯示 input
+    <div className="max-h-200px flex-1 overflow-scroll break-all bg-darkPurple3 p-4 text-sm">
+      {input}
+    </div>
   );
   const displayContent = !isLoading ? evidence : <Skeleton height={24} width={80} />;
 
@@ -171,32 +175,30 @@ const TransactionDetail = ({transactionData, isLoading}: ITransactionDetailProps
   );
 
   const flagging =
-    // Info: (20240111 - Julian) If flaggingRecords is not null and length is not 0, then display flaggingRecords
     !!flaggingRecords && flaggingRecords.length !== 0 ? (
-      flaggingRecords.map((flaggingRecord, index) => {
-        const redFlagLink = getDynamicUrl(chainId, `${flaggingRecord.redFlagId}`).RED_FLAG;
-        // Info: (20240322 - Julian) 將代碼轉換成 DB 字串
-        const flaggingStr =
-          flaggingMeaning[flaggingRecord.redFlagType] ?? flaggingRecord.redFlagType;
-        // Info: (20240322 - Julian) 將 DB 字串轉換成 i18n 字串
-        const flaggingI18n = redFlagTypeI18nObj[flaggingStr] ?? flaggingStr;
+      // Info: (20240111 - Julian) If flaggingRecords is not null and length is not 0, then display flaggingRecords
+      <div className="flex flex-wrap items-center gap-2 px-4">
+        {flaggingRecords.map((flaggingRecord, index) => {
+          const redFlagLink = getDynamicUrl(chainId, `${flaggingRecord.redFlagId}`).RED_FLAG;
+          // Info: (20240322 - Julian) 將代碼轉換成 DB 字串
+          const flaggingStr =
+            flaggingMeaning[flaggingRecord.redFlagType] ?? flaggingRecord.redFlagType;
+          // Info: (20240322 - Julian) 將 DB 字串轉換成 i18n 字串
+          const flaggingI18n = redFlagTypeI18nObj[flaggingStr] ?? flaggingStr;
 
-        return (
-          <Link key={index} href={redFlagLink}>
-            <BoltButton className="w-fit px-3 py-1" color="red" style="solid">
-              {t(flaggingI18n)}
-            </BoltButton>
-          </Link>
-        );
-      })
+          return (
+            <Link key={index} href={redFlagLink}>
+              <BoltButton className="w-fit px-3 py-1" color="red" style="solid">
+                {t(flaggingI18n)}
+              </BoltButton>
+            </Link>
+          );
+        })}
+      </div>
     ) : (
       <p>{t('COMMON.NONE')}</p>
     );
-  const displayFlagging = !isLoading ? (
-    <div className="flex flex-wrap items-center gap-2 px-4">{flagging}</div>
-  ) : (
-    <Skeleton height={24} width={80} />
-  );
+  const displayFlagging = !isLoading ? flagging : <Skeleton height={24} width={80} />;
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">

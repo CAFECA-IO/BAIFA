@@ -25,6 +25,7 @@ export interface ITransactionDetail extends ITransaction {
   hash: string;
   blockId: string;
   evidenceId?: string;
+  input?: string;
   value: number;
   fee: number;
   flaggingRecords: {
