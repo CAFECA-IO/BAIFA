@@ -136,24 +136,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     // Info: (20240319 - Liz) 由 currency id 找到 chain id，再由 chain id 找到 chain name
-    const chainIdRaw = await prisma.currencies.findUnique({
-      where: {
-        id: currency_id,
-      },
-      select: {
-        chain_id: true,
-      },
-    });
+    const chainIdRaw = currency_id
+      ? await prisma.currencies.findUnique({
+          where: {
+            id: currency_id,
+          },
+          select: {
+            chain_id: true,
+          },
+        })
+      : null;
     const chainId = chainIdRaw?.chain_id ?? undefined;
 
-    const chainNameRaw = await prisma.chains.findUnique({
-      where: {
-        id: chainId,
-      },
-      select: {
-        chain_name: true,
-      },
-    });
+    const chainNameRaw = chainId
+      ? await prisma.chains.findUnique({
+          where: {
+            id: chainId,
+          },
+          select: {
+            chain_name: true,
+          },
+        })
+      : null;
     const chainName = chainNameRaw?.chain_name ?? 'Unknown Chain Name';
 
     // Info: (20240307 - Liz) 計算總頁數
