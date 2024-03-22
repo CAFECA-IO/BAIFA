@@ -19,29 +19,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   try {
     // Info: (20240312 - Liz) 從 currencies Table 中取得 total_amount 和 chain_id
-    const currencyData = await prisma.currencies.findUnique({
-      where: {
-        id: currency_id,
-      },
-      select: {
-        total_amount: true,
-        chain_id: true,
-      },
-    });
+    const currencyData = currency_id
+      ? await prisma.currencies.findUnique({
+          where: {
+            id: currency_id,
+          },
+          select: {
+            total_amount: true,
+            chain_id: true,
+          },
+        })
+      : null;
 
     // Info: (20240312 - Liz) currency 的總量
     const totalAmountOfCurrency = currencyData?.total_amount ?? '0';
 
-    // Info: (20240312 - Liz) 從 chains Table 中取得 unit 和 decimal
+    // Info: (20240312 - Liz) 從 chains Table 中取得 decimal
     const chainId = currencyData?.chain_id;
-    const decimalsOfChain = await prisma.chains.findUnique({
-      where: {
-        id: chainId ?? undefined,
-      },
-      select: {
-        decimals: true,
-      },
-    });
+    const decimalsOfChain = chainId
+      ? await prisma.chains.findUnique({
+          where: {
+            id: chainId,
+          },
+          select: {
+            decimals: true,
+          },
+        })
+      : null;
     const decimal = decimalsOfChain?.decimals ?? 0;
 
     // Info: (20240314 - Liz) 取得 holders 資料 (依照搜尋判斷)

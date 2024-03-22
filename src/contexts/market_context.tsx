@@ -68,6 +68,10 @@ export interface IMarketContext {
     currencyId: string,
     queryStr?: string
   ) => Promise<ITransactionHistorySection>;
+  getRedFlagTransactions: (
+    redFlagId: string,
+    queryStr?: string
+  ) => Promise<ITransactionHistorySection>;
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
   getAddressBrief: (chainId: string, addressId: string) => Promise<IAddressBrief>;
   getAddressReviewList: (
@@ -140,6 +144,7 @@ export const MarketContext = createContext<IMarketContext>({
   getTransactionList: () => Promise.resolve({} as ITransactionList),
   getTransactionListOfBlock: () => Promise.resolve({} as ITransactionList),
   getCurrencyTransactions: () => Promise.resolve({} as ITransactionHistorySection),
+  getRedFlagTransactions: () => Promise.resolve({} as ITransactionHistorySection),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressBrief: () => Promise.resolve({} as IAddressBrief),
   getAddressReviewList: () => Promise.resolve([] as IReviewDetail[]),
@@ -404,6 +409,24 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('getCurrencyTransactions error', error);
+    }
+    return data;
+  }, []);
+
+  const getRedFlagTransactions = useCallback(async (redFlagId: string, queryStr?: string) => {
+    let data: ITransactionHistorySection = {} as ITransactionHistorySection;
+    try {
+      const response = queryStr
+        ? await fetch(`${APIURL.RED_FLAGS}/${redFlagId}/transactions?${queryStr}`, {
+            method: 'GET',
+          })
+        : await fetch(`${APIURL.RED_FLAGS}/${redFlagId}/transactions`, {
+            method: 'GET',
+          });
+      data = await response.json();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('getRedFlagTransactions error', error);
     }
     return data;
   }, []);
@@ -782,6 +805,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getTransactionList,
     getTransactionListOfBlock,
     getCurrencyTransactions,
+    getRedFlagTransactions,
     getTransactionDetail,
     getAddressBrief,
     getAddressReviewList,

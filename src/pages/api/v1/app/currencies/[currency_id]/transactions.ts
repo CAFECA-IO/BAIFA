@@ -34,60 +34,53 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
   try {
-    // Info: (20240315 - Liz) 從 currencies Table 中取得 chainId
-    const currencyData = await prisma.currencies.findUnique({
-      where: {
-        id: currency_id,
-      },
-      select: {
-        chain_id: true,
-      },
-    });
-    const chainId = currencyData?.chain_id;
-
     // Info: (20240315 - Liz) 從 token_transfers Table 中取得 transactionHistoryData
-    const transactionData = await prisma.token_transfers.findMany({
-      where: {
-        chain_id: chainId,
-        // Info: (20240315 - Liz) 交易 hash 搜尋條件篩選, '' or undefined 代表忽略搜尋條件
-        transaction_hash: search ? search : undefined,
-        created_timestamp: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
-      select: {
-        id: true,
-        chain_id: true,
-        created_timestamp: true,
-        from_address: true,
-        to_address: true,
-        transaction_hash: true,
-      },
-      orderBy: [
-        {
-          created_timestamp: sorting, // ToDo: (20240315 - Liz) 1. created_timestamp 由 sorting 決定排序
-        },
-        {
-          id: sorting, // ToDo: (20240315 - Liz) 2. id 由 sorting 決定排序
-        },
-      ],
-      skip: search ? 0 : skip, // Info: (20240315 - Liz) search 有值時最多只會搜尋到一筆，故不需要分頁
-      take,
-    });
+    const transactionData = currency_id
+      ? await prisma.token_transfers.findMany({
+          where: {
+            currency_id: currency_id,
+            // Info: (20240315 - Liz) 交易 hash 搜尋條件篩選, '' or undefined 代表忽略搜尋條件
+            transaction_hash: search ? search : undefined,
+            created_timestamp: {
+              gte: startDate,
+              lte: endDate,
+            },
+          },
+          select: {
+            id: true,
+            chain_id: true,
+            created_timestamp: true,
+            from_address: true,
+            to_address: true,
+            transaction_hash: true,
+          },
+          orderBy: [
+            {
+              created_timestamp: sorting, // ToDo: (20240315 - Liz) 1. created_timestamp 由 sorting 決定排序
+            },
+            {
+              id: sorting, // ToDo: (20240315 - Liz) 2. id 由 sorting 決定排序
+            },
+          ],
+          skip: search ? 0 : skip, // Info: (20240315 - Liz) search 有值時最多只會搜尋到一筆，故不需要分頁
+          take,
+        })
+      : [];
 
     // Info: (20240315 - Liz) 取得 交易 總筆數
-    const transactionCount = await prisma.token_transfers.count({
-      where: {
-        chain_id: chainId,
-        // Info: (20240315 - Liz) 交易 hash 搜尋條件篩選, '' or undefined 代表忽略搜尋條件
-        transaction_hash: search ? search : undefined,
-        created_timestamp: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
-    });
+    const transactionCount = currency_id
+      ? await prisma.token_transfers.count({
+          where: {
+            currency_id: currency_id,
+            // Info: (20240315 - Liz) 交易 hash 搜尋條件篩選, '' or undefined 代表忽略搜尋條件
+            transaction_hash: search ? search : undefined,
+            created_timestamp: {
+              gte: startDate,
+              lte: endDate,
+            },
+          },
+        })
+      : 0;
 
     // Info: (20240315 - Liz) 計算總頁數
     const totalPages = Math.ceil(transactionCount / ITEM_PER_PAGE);
