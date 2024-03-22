@@ -72,6 +72,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
 
   // Info: (20240321 - Liz) 從 currencyData 取得 chainId, unit, currencyName
   const {unit, chainId, currencyName} = currencyData;
+  const isCurrencyIdExist = currencyId === currencyData.currencyId;
 
   // Info: (20240321 - Liz) Call API to get transaction history data
   const {
@@ -106,7 +107,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const currencyIcon = getCurrencyIcon(currencyId);
 
   // Info: (20240315 - Liz) head title and back button
-  const headTitle = currencyName ? `${currencyName} - BAIFA` : 'BAIFA';
+  const headTitle = isCurrencyIdExist ? `${currencyName} - BAIFA` : 'BAIFA';
   const backClickHandler = () => router.push(`${BFAURL.CURRENCIES}`);
 
   // Info: (20240321 - Liz) Header
@@ -126,7 +127,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
           onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
         />
         <h1 className="text-2xl font-bold lg:text-32px">
-          <span className="ml-2"> {currencyName}</span>
+          <span className="ml-2">{isCurrencyIdExist ? currencyName : ' -- '}</span>
         </h1>
       </div>
     </div>
@@ -134,36 +135,40 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
 
   // Info: (20240321 - Liz) 畫面顯示元件
   const displayedCurrencyDetail =
-    !isCurrencyDataLoading && (!currencyData.chainId || currencyDataError) ? (
+    !isCurrencyDataLoading && (!isCurrencyIdExist || currencyDataError) ? (
       <DataNotFound />
-    ) : !isCurrencyDataLoading && currencyData.chainId ? (
+    ) : !isCurrencyDataLoading && isCurrencyIdExist ? (
       <CurrencyDetail currencyData={currencyData} />
     ) : (
       <h1>Loading...</h1> // ToDo: (20240313 - Liz) Loading 方式要修改
     );
 
-  const displayedTop100Holder = !isCurrencyDataLoading ? (
-    <Top100HolderSection chainId={chainId} currencyId={currencyId} unit={unit} />
-  ) : (
-    <h1>Loading...</h1> // ToDo: (20240313 - Liz) Loading 方式要修改
-  );
+  const displayedTop100Holder = isCurrencyIdExist ? (
+    !isCurrencyDataLoading ? (
+      <Top100HolderSection chainId={chainId} currencyId={currencyId} unit={unit} />
+    ) : (
+      <h1>Loading...</h1>
+    ) // ToDo: (20240313 - Liz) Loading 方式要修改
+  ) : null;
 
-  const displayedTransactionHistory = !transactionHistoryError ? (
-    <TransactionHistorySection
-      transactions={transactions}
-      period={period}
-      setPeriod={setPeriod}
-      sorting={sorting}
-      setSorting={setSorting}
-      setSearch={setSearch}
-      activePage={activePage}
-      setActivePage={setActivePage}
-      isLoading={isTransactionHistoryDataLoading}
-      totalPage={totalPages}
-      transactionCount={transactionCount}
-      // ToDo: (20240315 - Liz) add suggestions
-      // suggestions={randomSuggestions}
-    />
+  const displayedTransactionHistory = isCurrencyIdExist ? (
+    !transactionHistoryError ? (
+      <TransactionHistorySection
+        transactions={transactions}
+        period={period}
+        setPeriod={setPeriod}
+        sorting={sorting}
+        setSorting={setSorting}
+        setSearch={setSearch}
+        activePage={activePage}
+        setActivePage={setActivePage}
+        isLoading={isTransactionHistoryDataLoading}
+        totalPage={totalPages}
+        transactionCount={transactionCount}
+        // ToDo: (20240315 - Liz) add suggestions
+        // suggestions={randomSuggestions}
+      />
+    ) : null
   ) : null;
 
   return (
