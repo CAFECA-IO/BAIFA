@@ -158,7 +158,7 @@ const RedFlagListPage = () => {
       setActivePage={setActivePage}
       totalPages={totalPages}
       setSearch={setSearch}
-      isLoading={isRedFlagLoading} // ToDo: (20240307 - Liz) 再補上
+      isLoading={isRedFlagLoading}
       filteredType={filteredFlagName}
       setFilteredType={setFilteredFlagName}
       typeOptions={menuOption}

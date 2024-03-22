@@ -11,10 +11,11 @@ import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ILocale, TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
-import {sortOldAndNewOptions} from '../../constants/config';
+import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
 import useAPIResponse from '../../lib/hooks/use_api_response';
 import {APIURL, HttpMethod} from '../../constants/api_request';
 import Skeleton from '../../components/skeleton/skeleton';
+import Footer from '../../components/footer/footer';
 
 const BlackListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -96,13 +97,29 @@ const BlackListPage = () => {
     },
   ];
 
-  const displayBlacklist = isLoading ? (
-    <Skeleton width={500} height={500} />
-  ) : (
-    blacklist?.blacklist?.map((blacklistItem, index) => {
-      return <BlacklistItem key={index} blacklistAddress={blacklistItem} />;
-    }) ?? []
+  const skeletonBlacklist = (
+    <div className="flex h-680px w-full flex-col">
+      {Array.from({length: ITEM_PER_PAGE}).map((_, index) => (
+        <div
+          key={index}
+          className="flex h-60px w-full items-center gap-4 border-b border-darkPurple4 px-4"
+        >
+          <Skeleton width={50} height={50} />
+          <Skeleton width={30} height={30} rounded />
+          <Skeleton width={100} height={20} />
+          <div className="ml-auto">
+            <Skeleton width={80} height={20} />
+          </div>
+        </div>
+      ))}
+    </div>
   );
+
+  const displayBlacklist = isLoading
+    ? skeletonBlacklist
+    : blacklist?.blacklist?.map((blacklistItem, index) => {
+        return <BlacklistItem key={index} blacklistAddress={blacklistItem} />;
+      }) ?? [];
 
   return (
     <>
@@ -178,6 +195,10 @@ const BlackListPage = () => {
           </div>
         </div>
       </main>
+
+      <div className="mt-12">
+        <Footer />
+      </div>
     </>
   );
 };

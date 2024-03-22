@@ -1,16 +1,19 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect} from 'react';
+import useAPIResponse from '../../lib/hooks/use_api_response';
 import SearchBar from '../search_bar/search_bar';
 import BoltButton from '../bolt_button/bolt_button';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {DEFAULT_CURRENCY_ICON} from '../../constants/config';
+import {DEFAULT_CURRENCY_ICON, ITEM_PER_PAGE} from '../../constants/config';
 import {getCurrencyIcon} from '../../lib/common';
 import {ITop100Holders} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
-import {MarketContext} from '../../contexts/market_context';
+import {APIURL, HttpMethod} from '../../constants/api_request';
+import {SkeletonList} from '../skeleton/skeleton';
+//import {MarketContext} from '../../contexts/market_context';
 
 interface ITop100HolderSectionProps {
   chainId: string;
@@ -21,19 +24,29 @@ interface ITop100HolderSectionProps {
 const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  const {getCurrencyTop100Holders} = useContext(MarketContext);
+  //const {getCurrencyTop100Holders} = useContext(MarketContext);
 
   // Info: (20240312 - Liz) 搜尋條件
   const [search, setSearch] = useState('');
+  // Info: (20240312 - Liz) UI
+  //const [top100HoldersData, setTop100HoldersData] = useState<ITop100Holders>({} as ITop100Holders);
+  const [activePage, setActivePage] = useState(1);
+
+  const {data: top100HoldersData, isLoading} = useAPIResponse<ITop100Holders>(
+    `${APIURL.CURRENCIES}/${currencyId}/top100Holders`,
+    {method: HttpMethod.GET},
+    {
+      page: activePage,
+      search: search,
+    }
+  );
+
+  const totalPages = top100HoldersData?.totalPages ?? 0;
 
   // Info: (20240312 - Liz) API 查詢參數
-  const [apiQueryStr, setApiQueryStr] = useState('page=1&search=');
+  //const [apiQueryStr, setApiQueryStr] = useState('page=1&search=');
 
-  // Info: (20240312 - Liz) UI
   const currencyIcon = getCurrencyIcon(currencyId);
-  const [top100HoldersData, setTop100HoldersData] = useState<ITop100Holders>({} as ITop100Holders);
-  const [activePage, setActivePage] = useState(1);
-  const totalPages = top100HoldersData.totalPages ?? 0;
 
   // Info: (20240314 - Liz) 當搜尋條件改變時，將 activePage 設為 1
   useEffect(() => {
@@ -41,30 +54,31 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
   }, [search]);
 
   // Info: (20240312 - Liz) Call API to get Top 100 Holders data
-  useEffect(() => {
-    const fetchHolderData = async () => {
-      try {
-        const data = await getCurrencyTop100Holders(currencyId, apiQueryStr);
-        setTop100HoldersData(data);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('get Top 100 Holders data error', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchHolderData = async () => {
+  //     try {
+  //       const data = await getCurrencyTop100Holders(currencyId, apiQueryStr);
+  //       setTop100HoldersData(data);
+  //     } catch (error) {
+  //       // eslint-disable-next-line no-console
+  //       console.error('get Top 100 Holders data error', error);
+  //     }
+  //   };
 
-    fetchHolderData();
-  }, [apiQueryStr, currencyId, getCurrencyTop100Holders]);
+  //   fetchHolderData();
+  // }, [apiQueryStr, currencyId, getCurrencyTop100Holders]);
 
   // Info: (20240312 - Liz) 設定 API 查詢參數
-  useEffect(() => {
-    const pageQuery = `page=${activePage}`;
-    const searchQuery = `&search=${search}`;
+  // useEffect(() => {
+  //   const pageQuery = `page=${activePage}`;
+  //   const searchQuery = `&search=${search}`;
 
-    setApiQueryStr(`${pageQuery}${searchQuery}`);
-  }, [activePage, search]);
+  //   setApiQueryStr(`${pageQuery}${searchQuery}`);
+  // }, [activePage, search]);
 
-  const holderList = top100HoldersData.holdersData
-    ? top100HoldersData.holdersData.map((holder, index) => {
+  const holderList =
+    top100HoldersData?.holdersData && top100HoldersData?.holdersData.length > 0 ? (
+      top100HoldersData.holdersData.map((holder, index) => {
         const holdingPercentage = holder.holdingPercentage;
         const addressLink = getDynamicUrl(chainId, holder.addressId).ADDRESS;
         // Info: (20240206 - Julian) 最多顯示 100% 的持有比例
@@ -143,7 +157,11 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
           </div>
         );
       })
-    : [];
+    ) : (
+      <h2>{t('COMMON.NO_DATA')}</h2>
+    );
+
+  const displayedHolders = !isLoading ? holderList : <SkeletonList count={ITEM_PER_PAGE} />;
 
   return (
     <div className="flex w-full flex-col space-y-4">
@@ -158,7 +176,7 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
           />
         </div>
         {/* Info: (20231102 - Julian) Address List */}
-        <div className="my-10 flex w-full flex-col space-y-2 lg:space-y-0">{holderList}</div>
+        <div className="my-10 flex w-full flex-col space-y-2 lg:space-y-0">{displayedHolders}</div>
         <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
       </div>
     </div>

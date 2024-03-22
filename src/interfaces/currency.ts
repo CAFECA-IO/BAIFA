@@ -55,3 +55,19 @@ export interface ICurrencyDetailString extends ICurrency {
   flagging: IRedFlag[];
   flaggingCount: number;
 }
+
+export const dummyCurrencyDetailString: ICurrencyDetailString = {
+  currencyId: '',
+  currencyName: '',
+  rank: 0,
+  riskLevel: '',
+  chainId: '',
+  price: 0,
+  volumeIn24h: 0,
+  unit: '',
+  totalAmount: '',
+  holderCount: 0,
+  totalTransfers: 0,
+  flagging: [],
+  flaggingCount: 0,
+};

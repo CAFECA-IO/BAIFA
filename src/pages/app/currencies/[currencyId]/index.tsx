@@ -6,7 +6,7 @@ import CurrencyDetail from '../../../../components/currency_detail/currency_deta
 import {useEffect, useState} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {ICurrencyDetailString} from '../../../../interfaces/currency';
+import {ICurrencyDetailString, dummyCurrencyDetailString} from '../../../../interfaces/currency';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
 import Top100HolderSection from '../../../../components/top_100_holder_section/top_100_holder_section';
@@ -28,6 +28,7 @@ import {BFAURL} from '../../../../constants/url';
 import useAPIResponse from '../../../../lib/hooks/use_api_response';
 import {APIURL, HttpMethod} from '../../../../constants/api_request';
 import DataNotFound from '../../../../components/data_not_found/data_not_found';
+import Skeleton from '../../../../components/skeleton/skeleton';
 
 interface ICurrencyDetailPageProps {
   currencyId: string;
@@ -54,21 +55,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   });
 
   // Info: (20240321 - Liz) 從 API 取得 currency data (如果沒有的話，就給預設值)
-  const currencyData = currencyDataRaw ?? {
-    currencyId: currencyId,
-    currencyName: '',
-    rank: 0,
-    riskLevel: '',
-    chainId: '',
-    price: 0,
-    volumeIn24h: 0,
-    unit: '',
-    totalAmount: '',
-    holderCount: 0,
-    totalTransfers: 0,
-    flagging: [],
-    flaggingCount: 0,
-  };
+  const currencyData = currencyDataRaw ?? dummyCurrencyDetailString;
 
   // Info: (20240321 - Liz) 從 currencyData 取得 chainId, unit, currencyName
   const {unit, chainId, currencyName} = currencyData;
@@ -117,59 +104,63 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
       <button onClick={backClickHandler} className="hidden lg:block">
         <BsArrowLeftShort className="text-48px" />
       </button>
+      {!isCurrencyDataLoading ? (
+        <div className="flex flex-1 items-center justify-center space-x-2">
+          <Image
+            src={currencyIcon.src}
+            alt={currencyIcon.alt}
+            width={40}
+            height={40} // Info: (20240206 - Julian) If the image fails to load, use the default currency icon
+            onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
+          />
+          <h1 className="text-2xl font-bold lg:text-32px">
+            <span className="ml-2">{isCurrencyIdExist ? currencyName : ' -- '}</span>
+          </h1>
+        </div>
+      ) : (
+        <div className="flex flex-1 items-center justify-center space-x-2">
+          <Skeleton width={40} height={40} rounded />
+          <Skeleton width={200} height={40} />
+        </div>
+      )}
       {/* Info: (20231018 -Julian) Block Title */}
-      <div className="flex flex-1 items-center justify-center space-x-2">
-        <Image
-          src={currencyIcon.src}
-          alt={currencyIcon.alt}
-          width={40}
-          height={40} // Info: (20240206 - Julian) If the image fails to load, use the default currency icon
-          onError={e => (e.currentTarget.src = DEFAULT_CURRENCY_ICON)}
-        />
-        <h1 className="text-2xl font-bold lg:text-32px">
-          <span className="ml-2">{isCurrencyIdExist ? currencyName : ' -- '}</span>
-        </h1>
-      </div>
     </div>
   );
 
   // Info: (20240321 - Liz) 畫面顯示元件
+
   const displayedCurrencyDetail =
-    !isCurrencyDataLoading && (!isCurrencyIdExist || currencyDataError) ? (
+    !isCurrencyIdExist || currencyDataError ? (
       <DataNotFound />
-    ) : !isCurrencyDataLoading && isCurrencyIdExist ? (
-      <CurrencyDetail currencyData={currencyData} />
     ) : (
-      <h1>Loading...</h1> // ToDo: (20240313 - Liz) Loading 方式要修改
+      <CurrencyDetail currencyData={currencyData} isLoading={isCurrencyDataLoading} />
     );
 
-  const displayedTop100Holder = isCurrencyIdExist ? (
-    !isCurrencyDataLoading ? (
+  const displayedTop100Holder =
+    !isCurrencyIdExist || currencyDataError ? (
       <Top100HolderSection chainId={chainId} currencyId={currencyId} unit={unit} />
-    ) : (
-      <h1>Loading...</h1>
-    ) // ToDo: (20240313 - Liz) Loading 方式要修改
-  ) : null;
+    ) : null;
 
-  const displayedTransactionHistory = isCurrencyIdExist ? (
-    !transactionHistoryError ? (
-      <TransactionHistorySection
-        transactions={transactions}
-        period={period}
-        setPeriod={setPeriod}
-        sorting={sorting}
-        setSorting={setSorting}
-        setSearch={setSearch}
-        activePage={activePage}
-        setActivePage={setActivePage}
-        isLoading={isTransactionHistoryDataLoading}
-        totalPage={totalPages}
-        transactionCount={transactionCount}
-        // ToDo: (20240315 - Liz) add suggestions
-        // suggestions={randomSuggestions}
-      />
-    ) : null
-  ) : null;
+  const displayedTransactionHistory =
+    !isCurrencyIdExist || currencyDataError ? (
+      !transactionHistoryError ? (
+        <TransactionHistorySection
+          transactions={transactions}
+          period={period}
+          setPeriod={setPeriod}
+          sorting={sorting}
+          setSorting={setSorting}
+          setSearch={setSearch}
+          activePage={activePage}
+          setActivePage={setActivePage}
+          isLoading={isTransactionHistoryDataLoading}
+          totalPage={totalPages}
+          transactionCount={transactionCount}
+          // ToDo: (20240315 - Liz) add suggestions
+          // suggestions={randomSuggestions}
+        />
+      ) : null
+    ) : null;
 
   return (
     <>

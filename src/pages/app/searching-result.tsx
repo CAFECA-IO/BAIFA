@@ -135,7 +135,7 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
   const {
     data: searchResults,
     isLoading: isSearchLoading,
-    error: searchError,
+    //error: searchError,
   } = useAPIWorker<ISearchResultData>(
     `${APIURL.SEARCH_RESULT}`,
     {method: HttpMethod.GET},
