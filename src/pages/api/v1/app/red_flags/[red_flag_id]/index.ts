@@ -3,7 +3,6 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../prisma/client';
 import {IRedFlagDetail} from '../../../../../../interfaces/red_flag';
-// import {AddressType} from '../../../../../../interfaces/address_info';
 
 type ResponseData = IRedFlagDetail;
 
@@ -53,8 +52,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     // Info: (20240131 - Liz) 組合回傳資料
-    const id = `${redFlagData?.id}`;
-    const chainId = `${redFlagData?.chain_id}`;
+    const id = redFlagData?.id ? `${redFlagData.id}` : '';
+    const chainId = redFlagData?.chain_id ? `${redFlagData?.chain_id}` : '';
     const redFlagType = findCodeMeaning(
       'red_flags',
       'red_flag_type',
