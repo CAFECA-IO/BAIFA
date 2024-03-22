@@ -25,7 +25,7 @@ import {
 import {IDatePeriod} from '../../../interfaces/date_period';
 import useAPIResponse from '../../../lib/hooks/use_api_response';
 import {APIURL, HttpMethod} from '../../../constants/api_request';
-// import DataNotFound from '../../../components/data_not_found/data_not_found';
+import DataNotFound from '../../../components/data_not_found/data_not_found';
 
 interface IRedFlagDetailPageProps {
   redFlagId: string;
@@ -56,7 +56,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   // Info: (20240321 - Liz)  從 API 取得 red flag detail data (如果沒有的話，就給預設值)
 
   const redFlagData = redFlagDataRaw ?? {
-    id: '--',
+    id: '',
     chainId: '',
     createdTimestamp: 0,
     redFlagType: '',
@@ -64,6 +64,10 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     unit: '',
     totalAmount: '',
   };
+
+  // Info: (今天 - Liz) 從 redFlagData 取得資料
+  const {id, chainId} = redFlagData;
+  const isRedFlagIdExist = redFlagId === id;
 
   // Info: (20240321 - Liz) Call API to get transaction history data
   const {
@@ -95,31 +99,80 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     setActivePage(1);
   }, [search, period, sorting]);
 
-  // Info: (20240320 - Liz) head title
-  const {id, chainId} = redFlagData;
-  // const defaultRedFlagId = '--'; // ToDo: (20240321 - Liz) 偵測 red flag id 是否存在，沒有該筆資料就顯示預設值
-  const headTitle = `${t('RED_FLAG_ADDRESS_PAGE.MAIN_TITLE')} - BAIFA`;
-
   // Info: (20240321 - Liz) Get Chain Icon
   const chainIcon = getChainIcon(chainId);
 
+  // Info: (20240320 - Liz) head title
+  const headTitle = `${t('RED_FLAG_ADDRESS_PAGE.MAIN_TITLE')} - BAIFA`;
+  const displayedId = isRedFlagIdExist ? id : '--';
+
   // Info: (20240321 - Liz) 畫面顯示元件
-  const displayedTransactionHistory = !transactionHistoryError ? (
-    <TransactionHistorySection
-      transactions={transactions}
-      period={period}
-      setPeriod={setPeriod}
-      sorting={sorting}
-      setSorting={setSorting}
-      setSearch={setSearch}
-      activePage={activePage}
-      setActivePage={setActivePage}
-      isLoading={isTransactionHistoryDataLoading}
-      totalPage={totalPages}
-      transactionCount={transactionCount}
-      // ToDo: (20240320 - Liz) add suggestions
-      // suggestions={randomSuggestions}
-    />
+  const displayedRedFlagDetail =
+    !isRedFlagDataLoading && (!isRedFlagIdExist || redFlagDataError) ? (
+      <DataNotFound />
+    ) : !isRedFlagDataLoading && isRedFlagIdExist ? (
+      <RedFlagDetail redFlagData={redFlagData} />
+    ) : (
+      <h1>Loading...</h1> // ToDo: (20240322 - Liz) Loading 方式要修改
+    );
+
+  const displayedTransactionHistory = isRedFlagIdExist ? (
+    !transactionHistoryError ? (
+      <TransactionHistorySection
+        transactions={transactions}
+        period={period}
+        setPeriod={setPeriod}
+        sorting={sorting}
+        setSorting={setSorting}
+        setSearch={setSearch}
+        activePage={activePage}
+        setActivePage={setActivePage}
+        isLoading={isTransactionHistoryDataLoading}
+        totalPage={totalPages}
+        transactionCount={transactionCount}
+        // ToDo: (20240320 - Liz) add suggestions
+        // suggestions={randomSuggestions}
+      />
+    ) : null
+  ) : null;
+
+  const displayedButtons = isRedFlagIdExist ? (
+    <>
+      {/* Info: (20231110 - Julian) Download Report Button */}
+      <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
+        <BoltButton
+          className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+          color="purple"
+          style="solid"
+        >
+          <Image
+            src="/icons/download.svg"
+            alt=""
+            width={24}
+            height={24}
+            className="invert group-hover:invert-0"
+          />
+          <p>{t('RED_FLAG_ADDRESS_PAGE.DOWNLOAD_REPORT_BUTTON')}</p>
+        </BoltButton>
+      </Link>
+      {/* Info: (20231110 - Julian) Open in Tracing Tool Button */}
+      <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
+        <BoltButton
+          className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
+          color="purple"
+          style="solid"
+        >
+          <Image
+            src="/icons/tracing.svg"
+            alt=""
+            width={24}
+            height={24}
+            className="invert group-hover:invert-0"
+          />
+          <p>{t('RED_FLAG_ADDRESS_PAGE.OPEN_IN_TRACING_TOOL_BUTTON')}</p>
+        </BoltButton>
+      </Link>
+    </>
   ) : null;
 
   return (
@@ -150,52 +203,18 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
                 />
                 <h1>
                   {t('RED_FLAG_ADDRESS_PAGE.RED_FLAG')}
-                  <span className="text-primaryBlue"> {id} </span>
+                  <span className="text-primaryBlue"> {displayedId} </span>
                 </h1>
               </div>
             </div>
 
+            {/* Info: (20231110 - Julian) Buttons for Download Report and Open in Tracing Tool */}
             <div className="flex w-full flex-col items-center justify-center gap-4 lg:flex-row">
-              {/* Info: (20231110 - Julian) Download Report Button */}
-              <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
-                <BoltButton
-                  className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
-                  color="purple"
-                  style="solid"
-                >
-                  <Image
-                    src="/icons/download.svg"
-                    alt=""
-                    width={24}
-                    height={24}
-                    className="invert group-hover:invert-0"
-                  />
-                  <p>{t('RED_FLAG_ADDRESS_PAGE.DOWNLOAD_REPORT_BUTTON')}</p>
-                </BoltButton>
-              </Link>
-              {/* Info: (20231110 - Julian) Open in Tracing Tool Button */}
-              <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
-                <BoltButton
-                  className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
-                  color="purple"
-                  style="solid"
-                >
-                  <Image
-                    src="/icons/tracing.svg"
-                    alt=""
-                    width={24}
-                    height={24}
-                    className="invert group-hover:invert-0"
-                  />
-                  <p>{t('RED_FLAG_ADDRESS_PAGE.OPEN_IN_TRACING_TOOL_BUTTON')}</p>
-                </BoltButton>
-              </Link>
+              {displayedButtons}
             </div>
 
             {/* Info: (20231110 - Julian)  Red Flag Detail */}
-            <div className="w-full">
-              <RedFlagDetail redFlagData={redFlagData} />
-            </div>
+            <div className="w-full">{displayedRedFlagDetail}</div>
 
             {/* Info: (20231110 - Julian)  Transaction List */}
             <div className="w-full">{displayedTransactionHistory}</div>
