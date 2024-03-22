@@ -121,7 +121,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // Info: (20240221 - Liz) 組合回傳資料並轉換成 API 要的格式
     const result: ResponseData = {
-      currencyId: currency_id ?? '',
+      currencyId: currencyData?.id ?? '',
       currencyName: currencyData?.name ?? '',
       chainId: chainId ? `${currencyData.chain_id}` : '',
       rank: 0, // ToDo: (20240125 - Julian) 討論去留
