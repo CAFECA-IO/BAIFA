@@ -135,7 +135,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   // Info: (20240321 - Liz) 畫面顯示元件
 
   const displayedCurrencyDetail =
-    isCurrencyIdExist && !currencyDataError ? (
+    isCurrencyDataLoading || (isCurrencyIdExist && !currencyDataError) ? (
       <CurrencyDetail currencyData={currencyData} isLoading={isCurrencyDataLoading} />
     ) : (
       <DataNotFound />
