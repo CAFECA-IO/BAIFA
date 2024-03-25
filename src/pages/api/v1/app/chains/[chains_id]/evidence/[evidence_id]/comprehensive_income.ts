@@ -2,7 +2,10 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../../../prisma/client';
-import {IComprehensiveIncomeResponse} from '../../../../../../../../interfaces/conprehensive_income_neo';
+import {
+  ComprehensiveIncomeNeoSchema,
+  IComprehensiveIncomeResponse,
+} from '../../../../../../../../interfaces/comprehensive_income_neo';
 import {IEvidenceContent} from '../../../../../../../../interfaces/evidence';
 
 type ResponseData = IComprehensiveIncomeResponse | undefined;
@@ -10,67 +13,78 @@ type ResponseData = IComprehensiveIncomeResponse | undefined;
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const evidenceId = typeof req.query.evidence_id === 'string' ? req.query.evidence_id : undefined;
 
-  // ToDo: (20240315 - Julian) 找出 30 天前的 evidenceId
-  const previousEvidenceId = evidenceId;
-
-  // ToDo: (20240315 - Julian) 找出去年的 evidenceId
-  const lastYearEvidenceId = evidenceId;
-
   try {
-    // Info: (20240315 - Julian) 從 evidences 撈出 current reports
     const currentReports = await prisma.evidences.findFirst({
-      where: {
-        evidence_id: evidenceId,
-      },
-      select: {
-        content: true,
-      },
+      where: {evidence_id: evidenceId},
+      select: {content: true},
     });
 
-    // Info: (20240315 - Julian) 轉換成 object
-    const currentReportsObj: IEvidenceContent = JSON.parse(currentReports?.content ?? '');
-    // Info: (20240315 - Julian) 撈出 comprehensiveIncome
-    const currentIncome = currentReportsObj.comprehensiveIncome;
+    const currentReportsObj: IEvidenceContent = JSON.parse(currentReports?.content ?? '{}');
+    const currentIncomeValidationResult = ComprehensiveIncomeNeoSchema.safeParse(
+      currentReportsObj.comprehensiveIncome
+    );
 
-    // Info: (20240315 - Julian) 從 evidences 撈出 previous reports
+    // eslint-disable-next-line no-console
+    console.log(
+      'currentReportsObj.comprehensiveIncome',
+      currentReportsObj.comprehensiveIncome,
+      'currentIncomeValidationResult',
+      currentIncomeValidationResult
+    );
+
+    if (!currentIncomeValidationResult.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation failed for currentIncome', currentIncomeValidationResult.error);
+      return res.status(400).json({} as IComprehensiveIncomeResponse);
+    }
+
     const previousReports = await prisma.evidences.findFirst({
-      where: {
-        evidence_id: previousEvidenceId,
-      },
-      select: {
-        content: true,
-      },
+      where: {evidence_id: evidenceId}, // Adjust the query to fetch previous reports
+      select: {content: true},
     });
 
-    // Info: (20240315 - Julian) 轉換成 object
-    const previousReportsObj: IEvidenceContent = JSON.parse(previousReports?.content ?? '');
-    // Info: (20240315 - Julian) 撈出 comprehensiveIncome
-    const previousIncome = previousReportsObj.comprehensiveIncome;
+    const previousReportsObj: IEvidenceContent = JSON.parse(previousReports?.content ?? '{}');
+    const previousIncomeValidationResult = ComprehensiveIncomeNeoSchema.safeParse(
+      previousReportsObj.comprehensiveIncome
+    );
 
-    // Info: (20240315 - Julian) 從 evidences 撈出 last year reports
+    if (!previousIncomeValidationResult.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation failed for previousIncome', previousIncomeValidationResult.error);
+      return res.status(400).json({} as IComprehensiveIncomeResponse);
+    }
+
     const lastYearReports = await prisma.evidences.findFirst({
-      where: {
-        evidence_id: lastYearEvidenceId,
-      },
-      select: {
-        content: true,
-      },
+      where: {evidence_id: evidenceId}, // Adjust the query to fetch last year reports
+      select: {content: true},
     });
 
-    // Info: (20240315 - Julian) 轉換成 object
-    const lastYearReportsObj: IEvidenceContent = JSON.parse(lastYearReports?.content ?? '');
-    // Info: (20240315 - Julian) 撈出 comprehensiveIncome
-    const lastYearIncome = lastYearReportsObj.comprehensiveIncome;
+    const lastYearReportsObj: IEvidenceContent = JSON.parse(lastYearReports?.content ?? '{}');
+    const lastYearIncomeValidationResult = ComprehensiveIncomeNeoSchema.safeParse(
+      lastYearReportsObj.comprehensiveIncome
+    );
 
+    if (!lastYearIncomeValidationResult.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation failed for lastYearIncome', lastYearIncomeValidationResult.error);
+      return res.status(400).json({} as IComprehensiveIncomeResponse);
+    }
+    // Repeat the process for previousIncome and lastYearIncome
+
+    // Assuming you have fetched `previousReports` and `lastYearReports` similarly
+
+    // If all validations pass, construct the response object
     const result: IComprehensiveIncomeResponse = {
-      currentReport: currentIncome,
-      previousReport: previousIncome,
-      lastYearReport: lastYearIncome,
+      currentReport: currentIncomeValidationResult.data,
+      previousReport: previousIncomeValidationResult.data, // Replace with validated data
+      lastYearReport: lastYearIncomeValidationResult.data, // Replace with validated data
     };
 
     res.status(200).json(result);
   } catch (error) {
-    res.status(500).json(undefined);
+    // eslint-disable-next-line no-console
+    console.error('Server error', error);
+    res.status(500).json({} as IComprehensiveIncomeResponse);
   } finally {
     await prisma.$disconnect();
   }
