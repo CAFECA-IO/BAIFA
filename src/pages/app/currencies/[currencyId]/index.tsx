@@ -47,7 +47,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [activePage, setActivePage] = useState<number>(1);
 
-  // Info: (20240321 - Liz) Call API to get currency data
+  // Info: (20240321 - Liz) Call API to get currency data (API-018)
   const {
     data: currencyDataRaw,
     isLoading: isCurrencyDataLoading,
@@ -63,7 +63,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const {unit, chainId, currencyName} = currencyData;
   const isCurrencyIdExist = currencyId === currencyData.currencyId;
 
-  // Info: (20240321 - Liz) Call API to get transaction history data
+  // Info: (20240321 - Liz) Call API to get transaction history data (API-030)
   const {
     data: transactionHistoryData,
     isLoading: isTransactionHistoryDataLoading,
@@ -72,7 +72,6 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     `${APIURL.CURRENCIES}/${currencyId}/transactions`,
     // Info: (今天 - Liz) 預設值 ?page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0
     {method: HttpMethod.GET},
-    // Info: (今天 - Liz) 預設值 ?page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0
     {
       page: activePage,
       sort: sorting,
@@ -136,19 +135,19 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   // Info: (20240321 - Liz) 畫面顯示元件
 
   const displayedCurrencyDetail =
-    isCurrencyIdExist || !currencyDataError ? (
+    isCurrencyIdExist && !currencyDataError ? (
       <CurrencyDetail currencyData={currencyData} isLoading={isCurrencyDataLoading} />
     ) : (
       <DataNotFound />
     );
 
   const displayedTop100Holder =
-    isCurrencyIdExist || !currencyDataError ? (
+    isCurrencyIdExist && !currencyDataError ? (
       <Top100HolderSection chainId={chainId} currencyId={currencyId} unit={unit} />
     ) : null;
 
   const displayedTransactionHistory =
-    isCurrencyIdExist || !currencyDataError ? (
+    isCurrencyIdExist && !currencyDataError ? (
       !transactionHistoryError ? (
         <TransactionHistorySection
           transactions={transactions}
