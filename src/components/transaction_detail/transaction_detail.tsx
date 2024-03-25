@@ -40,7 +40,7 @@ const TransactionDetail = ({transactionData, isLoading}: ITransactionDetailProps
   const {data: menuOptions} = useAPIResponse<IMenuOptions>(`${APIURL.RED_FLAGS}/menu_options`, {
     method: HttpMethod.GET,
   });
-  const flaggingMeaning = menuOptions?.redFlagTypeMeaning ?? {};
+  const flaggingMeaning = menuOptions?.redFlagTypeCodeMeaningObj ?? {};
 
   const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
 

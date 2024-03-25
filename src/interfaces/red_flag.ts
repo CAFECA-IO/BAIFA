@@ -9,8 +9,6 @@ export interface IRedFlagListForCurrency {
   redFlagData: IRedFlag[];
   chainName: string;
   totalPages: number;
-  redFlagTypes: string[];
-  redFlagTypeCodeMeaningObj: {[key: string]: string};
 }
 
 export interface IRedFlagSearchResult extends IRedFlag {
@@ -35,11 +33,9 @@ export interface IRedFlagOfAddress {
 export interface IRedFlagPage {
   redFlagData: IRedFlag[];
   totalPages: number;
-  allRedFlagTypes: string[];
-  redFlagTypeCodeMeaningObj: {[key: string]: string};
 }
 
 export interface IMenuOptions {
   options: string[];
-  redFlagTypeMeaning: {[key: string]: string};
+  redFlagTypeCodeMeaningObj: {[key: string]: string};
 }

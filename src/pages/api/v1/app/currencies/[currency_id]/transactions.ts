@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240315 - Liz) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
-  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? req.query.search.toLowerCase() : undefined;
 
   // Info: (20240307 - Liz) 將 req 傳來的日期字串轉換成數字或 undefined
@@ -31,7 +31,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const take = ITEM_PER_PAGE; // Info: (20240306 - Liz) 取幾筆
 
   // Info: (20240315 - Liz) 排序
-  const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
   try {
     // Info: (20240315 - Liz) 從 token_transfers Table 中取得 transactionHistoryData
@@ -56,10 +55,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           },
           orderBy: [
             {
-              created_timestamp: sorting, // ToDo: (20240315 - Liz) 1. created_timestamp 由 sorting 決定排序
+              created_timestamp: sort, // ToDo: (20240315 - Liz) 1. created_timestamp 由 sort 決定排序
             },
             {
-              id: sorting, // ToDo: (20240315 - Liz) 2. id 由 sorting 決定排序
+              id: sort, // ToDo: (20240315 - Liz) 2. id 由 sort 決定排序
             },
           ],
           skip: search ? 0 : skip, // Info: (20240315 - Liz) search 有值時最多只會搜尋到一筆，故不需要分頁

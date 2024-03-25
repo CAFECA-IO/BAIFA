@@ -40,7 +40,7 @@ const AllCurrenciesPageBody = () => {
     useAPIResponse<ICurrencyListPage>(
       `${APIURL.CURRENCIES}`,
       {method: HttpMethod.GET},
-      // Info: (今天 - Liz) 預設值 ?page=1&sort=asc&search=&type=
+      // Info: (20240325 - Liz) 預設值 ?page=1&sort=asc&search=&type=
       {
         page: activePage,
         sort: sortingReq,

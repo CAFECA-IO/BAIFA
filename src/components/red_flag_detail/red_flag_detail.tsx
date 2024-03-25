@@ -26,7 +26,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
   const {data: menuOptions} = useAPIResponse<IMenuOptions>(`${APIURL.RED_FLAGS}/menu_options`, {
     method: HttpMethod.GET,
   });
-  const flaggingMeaning = menuOptions?.redFlagTypeMeaning ?? {};
+  const flaggingMeaning = menuOptions?.redFlagTypeCodeMeaningObj ?? {};
 
   const redFlagTypeMeaning = flaggingMeaning[redFlagType] ?? redFlagType;
   const redFlagI18n = redFlagTypeI18nObj[redFlagTypeMeaning] ?? redFlagTypeMeaning;
@@ -81,7 +81,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
         ) : (
           <div
             role="status"
-            className="animate-pulse space-y-8 md:flex md:items-center md:space-x-8 md:space-y-0 rtl:space-x-reverse"
+            className="animate-pulse space-y-8 rtl:space-x-reverse md:flex md:items-center md:space-x-8 md:space-y-0"
           >
             <div className="w-full">
               <div className="my-2 h-5 w-20 rounded-full bg-gray-200 dark:bg-gray-700"></div>
