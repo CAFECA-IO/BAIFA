@@ -15,6 +15,7 @@ import {
   DEFAULT_RED_FLAG_COUNT_IN_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
+  defaultOption,
 } from '../../../../constants/config';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {getCurrencyIcon} from '../../../../lib/common';
@@ -96,8 +97,7 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const typeOptionDefault = 'SORTING.ALL';
-  const [filteredType, setFilteredType] = useState<string>(typeOptionDefault);
+  const [filteredType, setFilteredType] = useState<string>(defaultOption);
 
   // Info: (20240319 - Liz) API 查詢參數
   const [apiQueryStr, setApiQueryStr] = useState(
@@ -114,7 +114,7 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
 
   // Info: (20240319 - Liz) 下拉式選單選項由 API 取得
   const redFlagTypes = redFlagListData?.redFlagTypes ?? [];
-  const redFlagTypeOptions = [typeOptionDefault, ...redFlagTypes];
+  const redFlagTypeOptions = [defaultOption, ...redFlagTypes];
 
   // Info: (20240307 - Liz) 當日期、搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
   useEffect(() => {

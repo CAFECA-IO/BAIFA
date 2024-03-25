@@ -1,4 +1,4 @@
-// 034 - GET /app/red_flags menu options
+// 034 - GET /app/red_flags/menu_options
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../prisma/client';
@@ -42,12 +42,15 @@ export default async function handler(eq: NextApiRequest, res: NextApiResponse<R
 
     const result: ResponseData = {
       options: allRedFlagTypes,
-      redFlagTypeMeaning: redFlagTypeCodeMeaningObj,
+      redFlagTypeCodeMeaningObj: redFlagTypeCodeMeaningObj,
     };
 
     res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({options: [], redFlagTypeMeaning: {}});
+    // Info: (20240325 - Liz) Request error
+    // eslint-disable-next-line no-console
+    console.error('Error fetching red flags menu options (034):', error);
+    res.status(500).json({options: [], redFlagTypeCodeMeaningObj: {}});
   } finally {
     await prisma.$disconnect();
   }
