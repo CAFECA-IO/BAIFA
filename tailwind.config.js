@@ -328,6 +328,9 @@ module.exports = {
         '1/50': '2%',
         '50px': '50px',
       },
+      translate: {
+        85: '85%',
+      },
       boxShadow: {
         lg: '0 4px 10px rgba(0,0,0,0.7)',
         xl: '0 4px 24px rgba(0, 0, 0, 0.40)',
@@ -336,6 +339,7 @@ module.exports = {
         purple: '0px 0px 6px 0px #AB50FF',
         violet:
           '0px 0px 12px 0px rgba(175, 80, 255, 0.30), 0px 0px 24px 0px rgba(175, 80, 255, 0.30) inset',
+        inner3xl: 'inset 0 4px 24px 0 rgba(0, 0, 0, 0.8)',
       },
       dropShadow: {
         lg: '0 4px 10px rgba(0,0,0,0.7)',
@@ -388,9 +392,6 @@ module.exports = {
       },
       backgroundPosition: {
         'top-4': 'center top -2.5rem',
-      },
-      boxShadow: {
-        'inner3xl': 'inset 0 4px 24px 0 rgba(0, 0, 0, 0.8)',
       },
       // animation class
       animation: {

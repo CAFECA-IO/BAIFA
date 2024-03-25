@@ -1,9 +1,11 @@
+import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
 import {useState} from 'react';
 import {TranslateFunction} from '../../interfaces/locale';
 import {HiPlus, HiMinus} from 'react-icons/hi';
 import {FiDownload, FiUpload} from 'react-icons/fi';
 import {FaRegBookmark} from 'react-icons/fa';
+import {IoIosArrowUp} from 'react-icons/io';
 
 enum TrackingType {
   ADDRESS = 'address',
@@ -16,6 +18,8 @@ const TrackingToolPanel = () => {
   const [targetTrackingType, setTargetTrackingType] = useState(TrackingType.ADDRESS);
   // Info: (20240325 - Julian) 縮放比例
   const [zoomPercentage, setZoomPercentage] = useState(100);
+  // Info: (20240325 - Julian) 工具列展開
+  const [isToolbarExpanded, setIsToolbarExpanded] = useState(false);
 
   const handleSwitchToAddress = () => setTargetTrackingType(TrackingType.ADDRESS);
   const handleSwitchToTransaction = () => setTargetTrackingType(TrackingType.TRANSACTION);
@@ -35,6 +39,8 @@ const TrackingToolPanel = () => {
       }
       return prev - 10;
     });
+
+  const handleExpandToolbar = () => setIsToolbarExpanded(prev => !prev);
 
   const switchStyle = `before:absolute before:h-48px before:rounded-full ${
     targetTrackingType === TrackingType.ADDRESS
@@ -123,10 +129,117 @@ const TrackingToolPanel = () => {
     </>
   );
 
+  const toolbarList = (
+    <div className="grid grid-flow-row grid-cols-2 items-center gap-x-4 gap-y-6 p-2 text-sm lg:grid-flow-col lg:grid-rows-1">
+      {/* Info: (20240325 - Julian) Filter button */}
+      <button className="group flex w-120px flex-col items-center gap-2">
+        <Image
+          src="/tracking/filter.svg"
+          width={50}
+          height={50}
+          alt="filter_icon"
+          className="relative top-0 transition-all duration-300 ease-out group-hover:-top-4"
+        />
+        <p>{t('TRACKING_TOOL_PAGE.FILTER')}</p>
+      </button>
+
+      {/* Info: (20240325 - Julian) Add Address button */}
+      <button className="group flex w-120px flex-col items-center gap-2">
+        <Image
+          src="/tracking/add_address.svg"
+          width={50}
+          height={50}
+          alt="add_address_icon"
+          className="relative top-0 transition-all duration-300 ease-out group-hover:-top-4"
+        />
+        <p>{t('TRACKING_TOOL_PAGE.ADD_ADDRESS')}</p>
+      </button>
+
+      {/* Info: (20240325 - Julian) Find Connection button */}
+      <button className="group flex w-120px flex-col items-center gap-2">
+        <Image
+          src="/tracking/find_connection.svg"
+          width={50}
+          height={50}
+          alt="find_connection_icon"
+          className="relative top-0 transition-all duration-300 ease-out group-hover:-top-4"
+        />
+        <p>{t('TRACKING_TOOL_PAGE.FIND_CONNECTION')}</p>
+      </button>
+
+      {/* Info: (20240325 - Julian) Relation Analysis button */}
+      <button className="group flex w-120px flex-col items-center gap-2">
+        <Image
+          src="/tracking/relation_analysis.svg"
+          width={50}
+          height={50}
+          alt="relation_analysis_icon"
+          className="relative top-0 transition-all duration-300 ease-out group-hover:-top-4"
+        />
+        <p>{t('TRACKING_TOOL_PAGE.RELATION_ANALYSIS')}</p>
+      </button>
+
+      {/* Info: (20240325 - Julian) Add Note button */}
+      <button className="group flex w-120px flex-col items-center gap-2">
+        <Image
+          src="/tracking/add_note.svg"
+          width={50}
+          height={50}
+          alt="add_note_icon"
+          className="relative top-0 transition-all duration-300 ease-out group-hover:-top-4"
+        />
+        <p>{t('TRACKING_TOOL_PAGE.ADD_NOTE')}</p>
+      </button>
+
+      {/* Info: (20240325 - Julian) Reset button */}
+      <button className="group flex w-120px flex-col items-center gap-2">
+        <Image
+          src="/tracking/reset.svg"
+          width={50}
+          height={50}
+          alt="reset_icon"
+          className="relative top-0 transition-all duration-300 ease-out group-hover:-top-4"
+        />
+        <p>{t('TRACKING_TOOL_PAGE.RESET')}</p>
+      </button>
+
+      {/* Info: (20240325 - Julian) Export Report button */}
+      <button className="group flex w-120px flex-col items-center gap-2">
+        <Image
+          // ToDo: (20240325 - Julian) Add export report icon
+          src="/tracking/add_note.svg"
+          width={50}
+          height={50}
+          alt="export_report_icon"
+          className="relative top-0 transition-all duration-300 ease-out group-hover:-top-4"
+        />
+        <p>{t('TRACKING_TOOL_PAGE.EXPORT_REPORT')}</p>
+      </button>
+    </div>
+  );
+
   return (
-    <div className="relative flex h-full min-h-680px w-full flex-col items-center border border-darkPurple4 bg-darkPurple5 shadow-inner3xl">
+    <div className="relative flex h-full min-h-680px w-full flex-col items-center overflow-hidden border border-darkPurple4 bg-darkPurple5 shadow-inner3xl">
       {/* Info: (20240325 - Julian) Tracking Switch */}
       {trackingSwitch}
+
+      {/* Info: (20240325 - Julian) Tracking Toolbar */}
+      <div
+        className={`absolute bottom-0 w-fit rounded-t-xl bg-darkPurple px-3 py-1 ${
+          isToolbarExpanded ? 'translate-y-0' : 'translate-y-85'
+        } transition-all duration-300 ease-out lg:translate-y-0`}
+      >
+        {/* Info: (20240325 - Julian) Expand button */}
+        <button
+          onClick={handleExpandToolbar}
+          className={`mx-auto block p-4 lg:hidden ${
+            isToolbarExpanded ? 'rotate-180' : ''
+          } transition-all duration-300 ease-out`}
+        >
+          <IoIosArrowUp size={24} />
+        </button>
+        {toolbarList}
+      </div>
     </div>
   );
 };
