@@ -1,6 +1,6 @@
 {
   "NAV_BAR": {
-    "TRACING_TOOL": "追踪工具",
+    "TRACKING_TOOL": "追踪工具",
     "AUDITING_TOOL": "审计工具",
     "RED_FLAG": "警示帐户",
     "FAQ": "常见问题",
@@ -248,7 +248,7 @@
     "INTERACTED_WITH": "关联地址",
     "TOTAL_AMOUNT": "总金额",
     "DOWNLOAD_REPORT_BUTTON": "下载报告",
-    "OPEN_IN_TRACING_TOOL_BUTTON": "在追踪工具中开启",
+    "OPEN_IN_TRACKING_TOOL_BUTTON": "在追踪工具中开启",
     "RED_FLAG_TYPE_TOOLTIP": "此栏位显示了该交易的警示或风险类型。可能包括大额转帐、多次收款、来自高风险地区等。",
     "FLAGGING_TIME_TOOLTIP": "被列入警示的时间。",
     "INTERACTED_WITH_TOOLTIP": "涉及该交易的所有地址。",
@@ -366,7 +366,7 @@
     "AGO": "前",
     "PRIVATE_NOTE_TITLE": "私人笔记",
     "PRIVATE_NOTE_PLACEHOLDER": "在此输入笔记...",
-    "TRACING_TOOL_BUTTON": "加入追踪工具",
+    "TRACKING_TOOL_BUTTON": "加入追踪工具",
     "LOG_IN_ONLY": "请先登入",
     "RISK_HIGH": "高风险",
     "RISK_MEDIUM": "中等风险",

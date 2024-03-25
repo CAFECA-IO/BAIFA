@@ -155,7 +155,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
           <p>{t('RED_FLAG_ADDRESS_PAGE.DOWNLOAD_REPORT_BUTTON')}</p>
         </BoltButton>
       </Link>
-      {/* Info: (20231110 - Julian) Open in Tracing Tool Button */}
+      {/* Info: (20231110 - Julian) Open in Tracking Tool Button */}
       <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
         <BoltButton
           className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
@@ -163,13 +163,13 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
           style="solid"
         >
           <Image
-            src="/icons/tracing.svg"
+            src="/icons/tracking.svg"
             alt=""
             width={24}
             height={24}
             className="invert group-hover:invert-0"
           />
-          <p>{t('RED_FLAG_ADDRESS_PAGE.OPEN_IN_TRACING_TOOL_BUTTON')}</p>
+          <p>{t('RED_FLAG_ADDRESS_PAGE.OPEN_IN_TRACKING_TOOL_BUTTON')}</p>
         </BoltButton>
       </Link>
     </>
@@ -208,7 +208,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
               </div>
             </div>
 
-            {/* Info: (20231110 - Julian) Buttons for Download Report and Open in Tracing Tool */}
+            {/* Info: (20231110 - Julian) Buttons for Download Report and Open in Tracking Tool */}
             <div className="flex w-full flex-col items-center justify-center gap-4 lg:flex-row">
               {displayedButtons}
             </div>

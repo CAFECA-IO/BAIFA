@@ -84,9 +84,9 @@ export const toolsContent = [
   {
     title: 'LANDING_PAGE.TOOL_INTRO_1_TITLE',
     description: 'LANDING_PAGE.TOOL_INTRO_1_DESCRIPTION',
-    desktopImg: '/elements/tracing_tool_2.png',
-    mobileImg: '/elements/tracing_tool.png',
-    alt: 'tracing_tool',
+    desktopImg: '/elements/tracking_tool_2.png',
+    mobileImg: '/elements/tracking_tool.png',
+    alt: 'tracking_tool',
   },
   {
     title: 'LANDING_PAGE.TOOL_INTRO_2_TITLE',
@@ -106,8 +106,8 @@ export const toolsContent = [
 
 export const servicesContent = [
   {
-    image: '/elements/tracing.png',
-    alt: 'a screenshot of tracing tool',
+    image: '/elements/tracking.png',
+    alt: 'a screenshot of tracking tool',
     description: 'LANDING_PAGE.SERVICES_DESCRIPTION_1',
   },
   {
