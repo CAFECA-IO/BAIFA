@@ -13,7 +13,7 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../interfaces/locale';
 import {IRedFlagDetail} from '../../../interfaces/red_flag';
-import {getChainIcon} from '../../../lib/common';
+import {getChainIcon, convertStringToSortingType} from '../../../lib/common';
 import {BFAURL} from '../../../constants/url';
 import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
 import {ITransactionHistorySection} from '../../../interfaces/transaction';
@@ -44,7 +44,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [activePage, setActivePage] = useState<number>(1);
 
-  // Info: (20240321 - Liz) Call API to get red flag detail data
+  // Info: (20240321 - Liz) Call API to get red flag detail data (API-022)
   const {
     data: redFlagDataRaw,
     isLoading: isRedFlagDataLoading,
@@ -69,7 +69,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const {id, chainId} = redFlagData;
   const isRedFlagIdExist = redFlagId === id;
 
-  // Info: (20240321 - Liz) Call API to get transaction history data
+  // Info: (20240321 - Liz) Call API to get transaction history data (API-035)
   const {
     data: transactionHistoryData,
     isLoading: isTransactionHistoryDataLoading,
@@ -80,7 +80,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     {method: HttpMethod.GET},
     {
       page: activePage,
-      sort: sorting,
+      sort: convertStringToSortingType(sorting),
       search: search,
       start_date: period.startTimeStamp,
       end_date: period.endTimeStamp,

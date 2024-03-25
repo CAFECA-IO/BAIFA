@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const red_flag_id =
     typeof req.query.red_flag_id === 'string' ? parseInt(req.query.red_flag_id, 10) : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
-  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? req.query.search.toLowerCase() : undefined;
 
   // Info: (20240320 - Liz) 將 req 傳來的日期字串轉換成數字或 undefined
@@ -30,9 +30,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240320 - Liz) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240306 - Liz) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // Info: (20240306 - Liz) 取幾筆
-
-  // Info: (20240320 - Liz) 排序
-  const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
   try {
     // Info: (20240131 - Liz) 從 codes table 中取得所有 code 資料
@@ -94,10 +91,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
       orderBy: [
         {
-          created_timestamp: sorting,
+          created_timestamp: sort,
         },
         {
-          id: sorting,
+          id: sort,
         },
       ],
       // Info: (20240320 - Liz) 分頁
