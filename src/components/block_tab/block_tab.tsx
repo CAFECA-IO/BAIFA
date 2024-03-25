@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {Dispatch, SetStateAction, useState} from 'react';
 import {useRouter} from 'next/router';
 import BlockList from '../block_list/block_list';
 import {useTranslation} from 'next-i18next';
@@ -17,9 +17,11 @@ import {convertStringToSortingType} from '../../lib/common';
 
 interface IBlockTabProps {
   chainDetailLoading: boolean;
+  activePage: number;
+  setActivePage: Dispatch<SetStateAction<number>>;
 }
 
-const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
+const BlockTab = ({chainDetailLoading, activePage, setActivePage}: IBlockTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   // Info: (20240119 - Julian) get chainId from URL
@@ -30,7 +32,7 @@ const BlockTab = ({chainDetailLoading}: IBlockTabProps) => {
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [activePage, setActivePage] = useState(1);
+  // const [activePage, setActivePage] = useState(1);
 
   const {data: blockData, isLoading: isBlockLoading} = useAPIResponse<IBlockList>(
     `${APIURL.CHAINS}/${chainId}/block`,

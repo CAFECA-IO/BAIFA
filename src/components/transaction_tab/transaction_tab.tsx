@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {Dispatch, SetStateAction, useState} from 'react';
 import {useRouter} from 'next/router';
 import TransactionList from '../transaction_list/transaction_list';
 import {useTranslation} from 'next-i18next';
@@ -17,9 +17,11 @@ import {convertStringToSortingType} from '../../lib/common';
 
 interface ITransactionTabProps {
   chainDetailLoading: boolean;
+  activePage: number;
+  setActivePage: Dispatch<SetStateAction<number>>;
 }
 
-const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
+const TransactionTab = ({chainDetailLoading, activePage, setActivePage}: ITransactionTabProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
 
@@ -29,7 +31,7 @@ const TransactionTab = ({chainDetailLoading}: ITransactionTabProps) => {
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [activePage, setActivePage] = useState(1);
+  // const [activeDefaultPage, setActiveDefaultPage] = useState(1);
 
   const {data: transactionData, isLoading: isTransactionLoading} = useAPIResponse<ITransactionList>(
     `${APIURL.CHAINS}/${chainId}/transactions`,

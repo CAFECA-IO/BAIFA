@@ -5,7 +5,7 @@ import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import {useState, useEffect, useContext} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {useRouter} from 'next/router';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import EvidenceDetail from '../../../../../../components/evidence_detail/evidence_detail';
@@ -201,22 +201,7 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {chainId: 'isun', evidenceId: '1'},
-      locale: 'en',
-    },
-  ];
-
-  return {
-    paths: paths,
-    fallback: 'blocking',
-  };
-};
-
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+export const getServerSideProps: GetServerSideProps = async ({params, locale}) => {
   if (!params || !params.chainId || typeof params.chainId !== 'string') {
     return {
       notFound: true,

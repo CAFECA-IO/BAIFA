@@ -15,7 +15,7 @@ import ReportCover from '../report_cover/report_cover';
 import ReportPageBody from '../report_page_body/report_page_body';
 import ReportRiskPages from '../report_risk_pages/report_risk_pages';
 import ReportTable from '../report_table/report_table';
-import {IComprehensiveIncomeResponse} from '../../interfaces/conprehensive_income_neo';
+import {IComprehensiveIncomeResponse} from '../../interfaces/comprehensive_income_neo';
 import {APIURL, HttpMethod} from '../../constants/api_request';
 import ReportExchageRateFormNeo from '../report_exchage_rate_form_neo/report_exchage_rate_form_neo';
 
@@ -103,8 +103,8 @@ const ComprehensiveIncomeStatementsNeo = ({
   const income_statements_p8_1 = createRevenueTable(
     'Spread fee',
     revenueDate,
-    currentIncomeData?.income.details.spreadFee,
-    previousIncomeData?.income.details.spreadFee,
+    currentIncomeData?.income.spreadFee,
+    previousIncomeData?.income.spreadFee,
     numeroOfSpreadFee
   );
 
@@ -133,8 +133,8 @@ const ComprehensiveIncomeStatementsNeo = ({
   const income_statements_p11_1 = createRevenueTable(
     'Liquidation fee',
     revenueDate,
-    currentIncomeData?.income.details.liquidationFee,
-    previousIncomeData?.income.details.liquidationFee,
+    currentIncomeData?.income.liquidationFee,
+    previousIncomeData?.income.liquidationFee,
     numeroOfLiquidationFee
   );
 
@@ -149,8 +149,8 @@ const ComprehensiveIncomeStatementsNeo = ({
   const income_statements_p12_1 = createRevenueTable(
     'Guaranteed stop-loss fee',
     revenueDate,
-    currentIncomeData?.income.details.guaranteedStopLossFee,
-    previousIncomeData?.income.details.guaranteedStopLossFee,
+    currentIncomeData?.income.guaranteedStopLossFee,
+    previousIncomeData?.income.guaranteedStopLossFee,
     numeroOfGuaranteedStopLossFee
   );
 

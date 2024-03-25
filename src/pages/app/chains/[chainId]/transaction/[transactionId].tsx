@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useContext, useEffect} from 'react';
 import {useRouter} from 'next/router';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
 import TransactionDetail from '../../../../../components/transaction_detail/transaction_detail';
 import BoltButton from '../../../../../components/bolt_button/bolt_button';
@@ -157,19 +157,7 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {chainId: 'isun', transactionId: '1'},
-      locale: 'en',
-    },
-  ];
-
-  return {paths, fallback: 'blocking'};
-};
-
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+export const getServerSideProps: GetServerSideProps = async ({params, locale}) => {
   if (!params || !params.transactionId || typeof params.transactionId !== 'string') {
     return {
       notFound: true,

@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import {AppContext} from '../../../../contexts/app_context';
 import {useState, useEffect, useContext} from 'react';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../components/footer/footer';
 import Breadcrumb from '../../../../components/breadcrumb/breadcrumb';
@@ -13,12 +13,13 @@ import {ChainDetailTab, IChain} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
-import {DEFAULT_CHAIN_ICON, chainList} from '../../../../constants/config';
+import {DEFAULT_CHAIN_ICON, DEFAULT_PAGE, chainList} from '../../../../constants/config';
 import {getChainIcon} from '../../../../lib/common';
 import Skeleton from '../../../../components/skeleton/skeleton';
 import DataNotFound from '../../../../components/data_not_found/data_not_found';
 import useAPIResponse from '../../../../lib/hooks/use_api_response';
 import {APIURL, HttpMethod} from '../../../../constants/api_request';
+import {useRouter} from 'next/router';
 
 export interface IChainDetailPageProps {
   chainId: string;
@@ -27,8 +28,18 @@ export interface IChainDetailPageProps {
 const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const appCtx = useContext(AppContext);
+  const router = useRouter();
+
+  const {transactions_page, blocks_page} = router.query;
 
   const [activeTab, setActiveTab] = useState<ChainDetailTab>(ChainDetailTab.BLOCKS);
+  const [transactionActivePage, setTransactionActivePage] = useState<number>(
+    transactions_page ? +transactions_page : DEFAULT_PAGE
+  );
+
+  const [blocksActivePage, setBlocksActivePage] = useState<number>(
+    blocks_page ? +blocks_page : DEFAULT_PAGE
+  );
 
   const {
     data: chainData,
@@ -133,9 +144,17 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
 
   const tabContent =
     activeTab === ChainDetailTab.BLOCKS ? (
-      <BlockTab chainDetailLoading={isChainLoading} />
+      <BlockTab
+        chainDetailLoading={isChainLoading}
+        activePage={blocksActivePage}
+        setActivePage={setBlocksActivePage}
+      />
     ) : (
-      <TransactionTab chainDetailLoading={isChainLoading} />
+      <TransactionTab
+        chainDetailLoading={isChainLoading}
+        activePage={transactionActivePage}
+        setActivePage={setTransactionActivePage}
+      />
     );
 
   const displayBody = chainError ? (
@@ -182,20 +201,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = chainList
-    .flatMap(chain => {
-      return locales?.map(locale => ({params: {chainId: chain}, locale}));
-    })
-    .filter((path): path is {params: {chainId: string}; locale: string} => !!path);
-
-  return {
-    paths: paths,
-    fallback: 'blocking',
-  };
-};
-
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+export const getServerSideProps: GetServerSideProps = async ({params, locale}) => {
   if (!params || !params.chainId || typeof params.chainId !== 'string') {
     return {
       notFound: true,
