@@ -16,6 +16,7 @@ import useAPIResponse from '../../lib/hooks/use_api_response';
 import {APIURL, HttpMethod} from '../../constants/api_request';
 import Skeleton from '../../components/skeleton/skeleton';
 import Footer from '../../components/footer/footer';
+import {convertStringToSortingType} from '../../lib/common';
 
 const BlackListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -28,6 +29,7 @@ const BlackListPage = () => {
   const [filteredTagName, setFilteredTagName] = useState<string>(tagNameOptionDefault);
   const [activePage, setActivePage] = useState<number>(1);
 
+  // Info: (今天 - Liz) Call API to get blacklist data (API-020)
   const {
     data: blacklist,
     isLoading,
@@ -36,7 +38,7 @@ const BlackListPage = () => {
     `${APIURL.BLACKLIST}`,
     {method: HttpMethod.GET},
     {
-      sort: sorting,
+      sort: convertStringToSortingType(sorting),
       search: search,
       tag: filteredTagName === tagNameOptionDefault ? `` : `${filteredTagName}`,
       page: activePage,
