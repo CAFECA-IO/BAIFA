@@ -30,6 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const currentReportsObj: IEvidenceContent = JSON.parse(currentReports?.content ?? '');
     // Info: (20240315 - Julian) 撈出 balanceSheet
     const currentBalance = currentReportsObj.balanceSheet;
+    // Deprecated: 開發用，確認報表格式都跟文件以及 DB 一樣之後就可以移除 (20240410 - Shirley)
     // eslint-disable-next-line no-console
     console.log('currentBalance', currentBalance);
 
@@ -54,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const previousReportsObj: IEvidenceContent = JSON.parse(previousReports?.content ?? '');
     // Info: (20240315 - Julian) 撈出 balanceSheet
     const previousBalance = previousReportsObj.balanceSheet;
-
+    // Deprecated: 開發用，確認報表格式都跟文件以及 DB 一樣之後就可以移除 (20240410 - Shirley)
     // eslint-disable-next-line no-console
     console.log('previousBalance', previousBalance);
 

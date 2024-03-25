@@ -4,7 +4,7 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../../../prisma/client';
 import {ICashFlowResponse} from '../../../../../../../../interfaces/cash_flow_neo';
 import {IEvidenceContent} from '../../../../../../../../interfaces/evidence';
-import {CashFlowNeoSchema} from '../../../../../../../../interfaces/cash_flow_neo'; 
+import {CashFlowNeoSchema} from '../../../../../../../../interfaces/cash_flow_neo';
 
 type ResponseData = ICashFlowResponse | undefined;
 
@@ -75,12 +75,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return res.status(400).json(undefined);
     }
 
-    // Assuming similar steps for previous and last year reports
     const result: ICashFlowResponse = {
       currentReport: validateCurrentCash.data,
-      previousReport: validatePreviousCash.data, // Placeholder for actual validated data
-      lastYearReport: validateLastYearCash.data, // Placeholder for actual validated data
+      previousReport: validatePreviousCash.data,
+      lastYearReport: validateLastYearCash.data,
     };
+    // Deprecated: 開發用，確認報表格式都跟文件以及 DB 一樣之後就可以移除 (20240410 - Shirley)
     // eslint-disable-next-line no-console
     console.log('cash flow result', result);
 

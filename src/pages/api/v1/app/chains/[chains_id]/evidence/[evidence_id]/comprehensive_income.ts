@@ -24,6 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       currentReportsObj.comprehensiveIncome
     );
 
+    // Deprecated: 開發用，確認報表格式都跟文件以及 DB 一樣之後就可以移除 (20240410 - Shirley)
     // eslint-disable-next-line no-console
     console.log(
       'currentReportsObj.comprehensiveIncome',
