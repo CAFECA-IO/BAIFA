@@ -4,7 +4,7 @@ import {useEffect, useContext} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
 import UseAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import {useRouter} from 'next/router';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
@@ -144,33 +144,20 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {chainId: 'isun', blockId: '1'},
-      locale: 'en',
-    },
-  ];
-
-  return {paths, fallback: 'blocking'};
-};
-
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
-  if (!params || !params.blockId || typeof params.blockId !== 'string') {
+export const getServerSideProps: GetServerSideProps = async ({params, locale}) => {
+  if (
+    !params ||
+    !params.blockId ||
+    typeof params.blockId !== 'string' ||
+    !params.chainId ||
+    typeof params.chainId !== 'string'
+  ) {
     return {
       notFound: true,
     };
   }
 
-  const blockId = params.blockId;
-  const chainId = params.chainId;
-
-  if (!blockId || !chainId) {
-    return {
-      notFound: true,
-    };
-  }
+  const {blockId, chainId} = params;
 
   return {
     props: {

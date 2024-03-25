@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import {AppContext} from '../../../../contexts/app_context';
 import {useState, useEffect, useContext} from 'react';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../components/footer/footer';
 import Breadcrumb from '../../../../components/breadcrumb/breadcrumb';
@@ -182,20 +182,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({locales}) => {
-  const paths = chainList
-    .flatMap(chain => {
-      return locales?.map(locale => ({params: {chainId: chain}, locale}));
-    })
-    .filter((path): path is {params: {chainId: string}; locale: string} => !!path);
-
-  return {
-    paths: paths,
-    fallback: 'blocking',
-  };
-};
-
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+export const getServerSideProps: GetServerSideProps = async ({params, locale}) => {
   if (!params || !params.chainId || typeof params.chainId !== 'string') {
     return {
       notFound: true,

@@ -9,7 +9,7 @@ import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {convertStringToSortingType, getChainIcon} from '../../../../../../lib/common';
@@ -89,15 +89,19 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
     </div>
   );
 
-  const transactionList = transactionListData ?? {transactions: [], totalPages: 0};
-  const {transactions, totalPages} = transactionList;
+  // const transactionList = transactionListData ?? {transactions: [], totalPages: 0};
+  // const {transactions, totalPages} = transactionList;
 
   const displayTransactionList = isTransactionListLoading ? (
     skeletonTransactionList
   ) : (
     <div className="flex w-full flex-col items-center">
-      <TransactionList transactions={transactions} />
-      <Pagination activePage={activePage} setActivePage={setActivePage} totalPages={totalPages} />
+      <TransactionList transactions={transactionListData?.transactions ?? []} />
+      <Pagination
+        activePage={activePage}
+        setActivePage={setActivePage}
+        totalPages={transactionListData?.totalPages ?? 0}
+      />
     </div>
   );
 
@@ -200,33 +204,20 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {chainId: 'isun', blockId: '1'},
-      locale: 'en',
-    },
-  ];
-
-  return {paths, fallback: 'blocking'};
-};
-
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
-  if (!params || !params.blockId || typeof params.blockId !== 'string') {
+export const getServerSideProps: GetServerSideProps = async ({params, locale}) => {
+  if (
+    !params ||
+    !params.chainId ||
+    typeof params.chainId !== 'string' ||
+    !params.blockId ||
+    typeof params.blockId !== 'string'
+  ) {
     return {
       notFound: true,
     };
   }
 
-  const chainId = params.chainId;
-  const blockId = params.blockId;
-
-  if (!chainId || !blockId) {
-    return {
-      notFound: true,
-    };
-  }
+  const {chainId, blockId} = params;
 
   return {
     props: {
