@@ -11,9 +11,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240319 - Liz) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
-  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? parseInt(req.query.search, 10) : undefined;
-  const flag = typeof req.query.flag === 'string' ? req.query.flag : undefined;
+  const flag = (req.query.flag as string) === '' ? undefined : (req.query.flag as string);
 
   // Info: (20240319 - Liz) 將 req 傳來的日期字串轉換成數字或 undefined
   const parseDate = (dateString: string | string[] | undefined) => {
@@ -30,19 +30,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240319 - Liz) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // Info: (20240319 - Liz) 取幾筆
 
-  // Info: (20240319 - Liz) 排序
-  const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
-
-  // Info: (20240319 - Liz) flag name 篩選，如果是空字串就搜尋全部
-  const redFlagType = flag === '' ? undefined : flag;
-
   try {
     // Info: (20240227 - Liz) 從 red_flags Table 中取得資料，並做條件篩選以及分頁
     const redFlagData = await prisma.red_flags.findMany({
       where: {
         currency_id: currency_id,
+        red_flag_type: flag,
         id: search ? {equals: search} : undefined,
-        red_flag_type: redFlagType,
         created_timestamp: {
           gte: startDate,
           lte: endDate,
@@ -61,10 +55,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
       orderBy: [
         {
-          created_timestamp: sorting, // Info: (20240319 - Liz) 1. created_timestamp 由 sorting 決定排序
+          created_timestamp: sort, // Info: (20240319 - Liz) 1. created_timestamp 由 sort 決定排序
         },
         {
-          id: sorting, // Info: (20240319 - Liz) 2. id 由 sorting 決定排序
+          id: sort, // Info: (20240319 - Liz) 2. id 由 sort 決定排序
         },
       ],
       // Info: (20240319 - Liz) 分頁
@@ -76,8 +70,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const totalRedFlagCount = await prisma.red_flags.count({
       where: {
         currency_id: currency_id,
+        red_flag_type: flag,
         id: search ? {equals: search} : undefined,
-        red_flag_type: redFlagType,
         created_timestamp: {
           gte: startDate,
           lte: endDate,
@@ -97,26 +91,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    // Info: (20240227 - Liz) 遍歷物件陣列 轉換成物件
+    // Info: (20240227 - Liz) 遍歷物件陣列 轉換成物件 {value: meaning} 方便查找
     const redFlagTypeCodeMeaningObj: {[key: string]: string} = {};
     redFlagTypeCodeMeaning.forEach(code => {
       const codeValue = typeof code.value === 'number' ? `${code.value}` : '';
       redFlagTypeCodeMeaningObj[codeValue] = code.meaning ?? '';
     });
 
-    // Info: (20240319 - Liz) 取得所有的 red Flag Type 並去除重複
-    const uniqueRedFlagTypes = await prisma.red_flags.findMany({
-      select: {
-        red_flag_type: true,
-      },
-      distinct: ['red_flag_type'],
-    });
-
-    // Info: (20240307 - Liz) 用不重複的 red Flag Type 做成下拉式選單的選項
-    const allRedFlagTypes = uniqueRedFlagTypes.map(redFlagType => {
-      return redFlagTypeCodeMeaningObj[`${redFlagType.red_flag_type}`];
-    });
-
+    // Info: (20240325 - Liz) 組合 redFlagData 的回傳格式
     const redFlagDataFormat = redFlagData.map(redFlag => {
       const id = `${redFlag.id}`;
       const chainId = `${redFlag.chain_id}`;
@@ -168,8 +150,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       redFlagData: redFlagDataFormat,
       chainName,
       totalPages,
-      redFlagTypes: allRedFlagTypes,
-      redFlagTypeCodeMeaningObj,
     };
 
     prisma.$connect();

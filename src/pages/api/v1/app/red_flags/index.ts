@@ -95,7 +95,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       redFlagTypeCodeMeaningObj[codeValue] = code.meaning ?? '';
     });
 
-    // Info:(20240118 - Liz) 將撈出來的資料轉換成 API 要的格式
+    // Info:(20240118 - Liz) 組合回傳資料
     const redFlagsData = redFlags.map(redFlag => {
       const id = `${redFlag.id}`;
       const chainId = `${redFlag.chain_id}`;
