@@ -1,6 +1,6 @@
 {
   "NAV_BAR": {
-    "TRACING_TOOL": "Tracing Tool",
+    "TRACKING_TOOL": "Tracking Tool",
     "AUDITING_TOOL": "Auditing Tool",
     "RED_FLAG": "Red Flag",
     "FAQ": "FAQ",
@@ -49,7 +49,7 @@
     "WHY_BAIFA_DESCRIPTION_2": "When your company invests in virtual currency assets, how should you manage and account for them?",
     "WHY_BAIFA_DESCRIPTION_3": "How do fintech startups ensure compliance?",
     "WHY_BAIFA_DESCRIPTION_4": "Is your accountant fast enough to meet the Hong Kong SFC's requirement of shortening accounting cycles to one month?",
-    "TOOL_INTRO_1_TITLE": "Tracing Tool",
+    "TOOL_INTRO_1_TITLE": "Tracking Tool",
     "TOOL_INTRO_1_DESCRIPTION": "Simplify transaction tracking and analysis on the blockchain. Gain valuable insights, verify transactions, and follow the flow of digital assets effortlessly. Experience transparency and real-time auditing with ease.",
     "TOOL_INTRO_2_TITLE": "Auditing Tool",
     "TOOL_INTRO_2_DESCRIPTION": "Simplify and streamline the auditing process for financial transactions on the blockchain. With our user-friendly tool, you can ensure the accuracy and integrity of financial records while leveraging the transparency and security of blockchain technology. Gain confidence in your financial audits with efficiency.",
@@ -248,7 +248,7 @@
     "INTERACTED_WITH": "Interacted With",
     "TOTAL_AMOUNT": "Total Amount",
     "DOWNLOAD_REPORT_BUTTON": "Download Report",
-    "OPEN_IN_TRACING_TOOL_BUTTON": "Open in Tracing Tool",
+    "OPEN_IN_TRACKING_TOOL_BUTTON": "Open in Tracking Tool",
     "RED_FLAG_TYPE_TOOLTIP": "This field shows the warning or risk type involved in the transaction. It may include large transfers, multiple receipts, and transactions from high risk location.",
     "FLAGGING_TIME_TOOLTIP": "The time when the transaction was flagged.",
     "INTERACTED_WITH_TOOLTIP": "All addresses involved in the transaction.",
@@ -324,6 +324,19 @@
     "TOOL_TIP_1_RED_FLAG": "The type of red flag.",
     "TOOL_TIP_2_RED_FLAG": "The addresses that have interacted with this address."
   },
+  "TRACKING_TOOL_PAGE": {
+    "BREADCRUMB_TITLE": "Tracking Tool",
+    "VIEW": "View",
+    "ADDRESS": "Address",
+    "TRANSACTION": "Transaction",
+    "FILTER": "Filter",
+    "ADD_ADDRESS": "Add Address",
+    "FIND_CONNECTION": "Find Connection",
+    "RELATION_ANALYSIS": "Relation Analysis",
+    "ADD_NOTE": "Add Note",
+    "RESET": "Reset",
+    "EXPORT_REPORT": "Export Report"
+  },
   "DATE_PICKER": {
     "DATE": "Date",
     "SELECT_PERIOD": "Select Period",
@@ -366,7 +379,7 @@
     "AGO": "ago",
     "PRIVATE_NOTE_TITLE": "Private Note",
     "PRIVATE_NOTE_PLACEHOLDER": "Type your note here...",
-    "TRACING_TOOL_BUTTON": "Add in Tracing Tool",
+    "TRACKING_TOOL_BUTTON": "Add in Tracking Tool",
     "LOG_IN_ONLY": "LOG IN ONLY",
     "RISK_HIGH": "High Risk",
     "RISK_MEDIUM": "Medium Risk",

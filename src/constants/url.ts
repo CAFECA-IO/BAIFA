@@ -5,7 +5,7 @@ export const BFAURL = {
   APP: '/app',
   CHAINS: '/app/chains',
   CURRENCIES: '/app/currencies',
-  TRACING_TOOL: '/app/tracing-tool',
+  TRACKING_TOOL: '/app/tracking-tool',
   AUDITING_TOOL: '/app/auditing-tool',
   RED_FLAG: '/app/red-flag',
   FAQ: '/app/faq',

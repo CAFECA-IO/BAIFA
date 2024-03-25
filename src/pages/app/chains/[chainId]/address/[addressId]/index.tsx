@@ -434,7 +434,7 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
           {displayPublicTag}
         </div>
         <div className="flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-6 lg:space-y-0">
-          {/* Info: (20231018 - Julian) Tracing Tool Button */}
+          {/* Info: (20231018 - Julian) Tracking Tool Button */}
           <Link href={BFAURL.COMING_SOON} className="w-full lg:w-fit">
             <BoltButton
               className="group flex w-full items-center justify-center space-x-2 px-7 py-4 lg:w-fit"
@@ -442,13 +442,13 @@ const AddressDetailPage = ({addressId, chainId}: IAddressDetailDetailPageProps) 
               style="solid"
             >
               <Image
-                src="/icons/tracing.svg"
+                src="/icons/tracking.svg"
                 alt=""
                 width={24}
                 height={24}
                 className="invert group-hover:invert-0"
               />
-              <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
+              <p>{t('COMMON.TRACKING_TOOL_BUTTON')}</p>
             </BoltButton>
           </Link>
           {/* Info: (20231018 - Julian) Follow Button */}
