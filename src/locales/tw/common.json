@@ -324,6 +324,19 @@
     "TOOL_TIP_1_RED_FLAG": "警示記錄的唯一識別碼。",
     "TOOL_TIP_2_RED_FLAG": "警示記錄的詳細內容。"
   },
+  "TRACKING_TOOL_PAGE": {
+    "BREADCRUMB_TITLE": "追蹤工具",
+    "VIEW": "查看",
+    "ADDRESS": "地址",
+    "TRANSACTION": "交易",
+    "FILTER": "篩選",
+    "ADD_ADDRESS": "新增地址",
+    "FIND_CONNECTION": "查找關聯",
+    "RELATION_ANALYSIS": "關聯分析",
+    "ADD_NOTE": "新增筆記",
+    "RESET": "重置",
+    "EXPORT_REPORT": "匯出報告"
+  },
   "DATE_PICKER": {
     "DATE": "日期",
     "SELECT_PERIOD": "選擇日期範圍",

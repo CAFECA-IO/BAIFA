@@ -8,6 +8,7 @@ module.exports = {
         darkPurple2: '#2C315B',
         darkPurple3: '#1F2243',
         darkPurple4: '#3F497A',
+        darkPurple5: '#161830',
 
         lightWhite: '#F2F2F2',
 
@@ -170,9 +171,10 @@ module.exports = {
         '125px': '125px',
         '128px': '128px',
         '130px': '130px',
-        '134px': '134px',
+        '136px': '136px',
         '140px': '140px',
         '150px': '150px',
+        '156px': '156px',
         '160px': '160px',
         '170px': '170px',
         '180px': '180px',
@@ -352,6 +354,7 @@ module.exports = {
         '140px': '140px',
         '225px': '225px',
         '250px': '250px',
+        '300px': '300px',
         '550px': '550px',
       },
       minWidth: {
@@ -361,6 +364,7 @@ module.exports = {
         'fit': 'fit-content',
         '200px': '200px',
         '320px': '320px',
+        '680px': '680px',
       },
       zIndex: {
         60: 60,
@@ -384,6 +388,9 @@ module.exports = {
       },
       backgroundPosition: {
         'top-4': 'center top -2.5rem',
+      },
+      boxShadow: {
+        'inner3xl': 'inset 0 4px 24px 0 rgba(0, 0, 0, 0.8)',
       },
       // animation class
       animation: {

@@ -324,6 +324,19 @@
     "TOOL_TIP_1_RED_FLAG": "警示记录的唯一识别码。",
     "TOOL_TIP_2_RED_FLAG": "警示记录的详细内容。"
   },
+  "TRACKING_TOOL_PAGE": {
+    "BREADCRUMB_TITLE": "追踪工具",
+    "VIEW": "查看",
+    "ADDRESS": "地址",
+    "TRANSACTION": "交易",
+    "FILTER": "筛选",
+    "ADD_ADDRESS": "新增地址",
+    "FIND_CONNECTION": "查找关联",
+    "RELATION_ANALYSIS": "关联分析",
+    "ADD_NOTE": "新增笔记",
+    "RESET": "重置",
+    "EXPORT_REPORT": "汇出报告"
+  },
   "DATE_PICKER": {
     "DATE": "日期",
     "SELECT_PERIOD": "选择日期范围",

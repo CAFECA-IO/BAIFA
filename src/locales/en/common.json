@@ -324,6 +324,19 @@
     "TOOL_TIP_1_RED_FLAG": "The type of red flag.",
     "TOOL_TIP_2_RED_FLAG": "The addresses that have interacted with this address."
   },
+  "TRACKING_TOOL_PAGE": {
+    "BREADCRUMB_TITLE": "Tracking Tool",
+    "VIEW": "View",
+    "ADDRESS": "Address",
+    "TRANSACTION": "Transaction",
+    "FILTER": "Filter",
+    "ADD_ADDRESS": "Add Address",
+    "FIND_CONNECTION": "Find Connection",
+    "RELATION_ANALYSIS": "Relation Analysis",
+    "ADD_NOTE": "Add Note",
+    "RESET": "Reset",
+    "EXPORT_REPORT": "Export Report"
+  },
   "DATE_PICKER": {
     "DATE": "Date",
     "SELECT_PERIOD": "Select Period",

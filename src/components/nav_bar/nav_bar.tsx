@@ -18,7 +18,7 @@ const NavBar = () => {
   const navbarContent = [
     {
       name: 'NAV_BAR.TRACKING_TOOL',
-      link: BFAURL.COMING_SOON,
+      link: BFAURL.TRACKING_TOOL,
     },
     {
       name: 'NAV_BAR.AUDITING_TOOL',
