@@ -37,7 +37,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   // const appCtx = useContext(AppContext);
 
-  // Info: (今天 - Liz) Back Arrow Button
+  // Info: (20240325 - Liz) Back Arrow Button
   const router = useRouter();
   const backClickHandler = () => router.push(`${BFAURL.CURRENCIES}`);
 
@@ -70,7 +70,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     error: transactionHistoryError,
   } = useAPIResponse<ITransactionHistorySection>(
     `${APIURL.CURRENCIES}/${currencyId}/transactions`,
-    // Info: (今天 - Liz) 預設值 ?page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0
+    // Info: (20240325 - Liz) 預設值 ?page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0
     {method: HttpMethod.GET},
     {
       page: activePage,

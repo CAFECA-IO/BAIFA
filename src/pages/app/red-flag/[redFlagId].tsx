@@ -65,7 +65,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     totalAmount: '',
   };
 
-  // Info: (今天 - Liz) 從 redFlagData 取得資料
+  // Info: (20240325 - Liz) 從 redFlagData 取得資料
   const {id, chainId} = redFlagData;
   const isRedFlagIdExist = redFlagId === id;
 
