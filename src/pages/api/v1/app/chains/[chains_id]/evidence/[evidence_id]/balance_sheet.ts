@@ -33,12 +33,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // eslint-disable-next-line no-console
     console.log('currentBalance', currentBalance);
 
-    // const validateCurrentBalance = BalanceSheetsNeoSchema.safeParse(currentBalance);
-    // if (!validateCurrentBalance.success) {
-    //   // eslint-disable-next-line no-console
-    //   console.error('Validation failed for currentBalance', validateCurrentBalance.error);
-    //   return res.status(400).json({} as IBalanceSheetsResponse);
-    // }
+    const validateCurrentBalance = BalanceSheetsNeoSchema.safeParse(currentBalance);
+    if (!validateCurrentBalance.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation failed for currentBalance', validateCurrentBalance.error);
+      return res.status(400).json({} as IBalanceSheetsResponse);
+    }
 
     // Info: (20240315 - Julian) 從 evidences 撈出 previous reports
     const previousReports = await prisma.evidences.findFirst({
@@ -58,12 +58,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // eslint-disable-next-line no-console
     console.log('previousBalance', previousBalance);
 
-    // const validatePreviousBalance = BalanceSheetsNeoSchema.safeParse(previousBalance);
-    // if (!validatePreviousBalance.success) {
-    //   // eslint-disable-next-line no-console
-    //   console.error('Validation failed for previousBalance', validatePreviousBalance.error);
-    //   return res.status(400).json({} as IBalanceSheetsResponse);
-    // }
+    const validatePreviousBalance = BalanceSheetsNeoSchema.safeParse(previousBalance);
+    if (!validatePreviousBalance.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation failed for previousBalance', validatePreviousBalance.error);
+      return res.status(400).json({} as IBalanceSheetsResponse);
+    }
 
     const result: IBalanceSheetsResponse = {
       currentReport: currentBalance,
