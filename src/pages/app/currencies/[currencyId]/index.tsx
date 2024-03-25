@@ -15,7 +15,7 @@ import BoltButton from '../../../../components/bolt_button/bolt_button';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 // import {AppContext} from '../../../../contexts/app_context';
-import {getCurrencyIcon} from '../../../../lib/common';
+import {getCurrencyIcon, convertStringToSortingType} from '../../../../lib/common';
 import {
   DEFAULT_CURRENCY_ICON,
   default30DayPeriod,
@@ -74,7 +74,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     {method: HttpMethod.GET},
     {
       page: activePage,
-      sort: sorting,
+      sort: convertStringToSortingType(sorting),
       search: search,
       start_date: period.startTimeStamp,
       end_date: period.endTimeStamp,
