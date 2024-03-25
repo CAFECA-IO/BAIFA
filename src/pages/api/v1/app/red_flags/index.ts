@@ -12,8 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
   const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? parseInt(req.query.search, 10) : undefined;
-  const flagNames =
-    (req.query.flagNames as string) === '' ? undefined : (req.query.flagNames as string);
+  const flag = (req.query.flag as string) === '' ? undefined : (req.query.flag as string);
 
   // Info: (20240307 - Liz) 將 req 傳來的日期字串轉換成數字或 undefined
   const parseDate = (dateString: string | string[] | undefined) => {
@@ -30,17 +29,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const skip = (page - 1) * ITEM_PER_PAGE; // Info: (20240307 - Liz) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // Info: (20240307 - Liz) 取幾筆
 
-  // Info: (20240307 - Liz) 排序
-  //const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
-
-  // Info: (20240307 - Liz) flag name 篩選，如果是空字串就搜尋全部
-  //const redFlagType = flagNames === '' ? undefined : flagNames;
-
   try {
     // Info:(20240118 - Liz) 從 red_flags Table 中取得資料，並做條件篩選以及分頁
     const redFlags = await prisma.red_flags.findMany({
       where: {
-        red_flag_type: flagNames, // Info: (20240307 - Liz) 篩選 red_flag_type
+        red_flag_type: flag, // Info: (20240307 - Liz) 篩選 red_flag_type
         id: search ? {equals: search} : undefined, // Info: (20240307 - Liz) 篩選 id
         created_timestamp: {
           gte: startDate,
@@ -74,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240307 - Liz) 取得 red flag 總筆數
     const totalRedFlagCount = await prisma.red_flags.count({
       where: {
-        red_flag_type: flagNames, // Info: (20240307 - Liz) 篩選 red_flag_type
+        red_flag_type: flag, // Info: (20240307 - Liz) 篩選 red_flag_type
         id: search ? {equals: search} : undefined, // Info: (20240307 - Liz) 篩選 id
         created_timestamp: {
           gte: startDate,
@@ -102,19 +95,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       redFlagTypeCodeMeaningObj[codeValue] = code.meaning ?? '';
     });
 
-    // Info: (20240307 - Liz) 取得所有的 red Flag Type 並去除重複
-    const uniqueRedFlagTypes = await prisma.red_flags.findMany({
-      select: {
-        red_flag_type: true,
-      },
-      distinct: ['red_flag_type'],
-    });
-
-    // Info: (20240307 - Liz)  用不重複的 red Flag Type 做成下拉式選單的選項
-    const allRedFlagTypes = uniqueRedFlagTypes.map(redFlagType => {
-      return redFlagTypeCodeMeaningObj[`${redFlagType.red_flag_type}`];
-    });
-
     // Info:(20240118 - Liz) 將撈出來的資料轉換成 API 要的格式
     const redFlagsData = redFlags.map(redFlag => {
       const id = `${redFlag.id}`;
@@ -140,8 +120,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const result: ResponseData = {
       redFlagData: redFlagsData,
       totalPages,
-      allRedFlagTypes: allRedFlagTypes,
-      redFlagTypeCodeMeaningObj,
     };
 
     prisma.$disconnect();
