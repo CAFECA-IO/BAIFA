@@ -2,7 +2,10 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../../../prisma/client';
-import {IBalanceSheetsResponse} from '../../../../../../../../interfaces/balance_sheets_neo';
+import {
+  BalanceSheetsNeoSchema,
+  IBalanceSheetsResponse,
+} from '../../../../../../../../interfaces/balance_sheets_neo';
 import {IEvidenceContent} from '../../../../../../../../interfaces/evidence';
 
 type ResponseData = IBalanceSheetsResponse | undefined;
@@ -27,6 +30,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const currentReportsObj: IEvidenceContent = JSON.parse(currentReports?.content ?? '');
     // Info: (20240315 - Julian) 撈出 balanceSheet
     const currentBalance = currentReportsObj.balanceSheet;
+    // Deprecated: 開發用，確認報表格式都跟文件以及 DB 一樣之後就可以移除 (20240410 - Shirley)
+    // eslint-disable-next-line no-console
+    console.log('currentBalance', currentBalance);
+
+    const validateCurrentBalance = BalanceSheetsNeoSchema.safeParse(currentBalance);
+    if (!validateCurrentBalance.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation failed for currentBalance', validateCurrentBalance.error);
+      return res.status(400).json({} as IBalanceSheetsResponse);
+    }
 
     // Info: (20240315 - Julian) 從 evidences 撈出 previous reports
     const previousReports = await prisma.evidences.findFirst({
@@ -42,6 +55,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const previousReportsObj: IEvidenceContent = JSON.parse(previousReports?.content ?? '');
     // Info: (20240315 - Julian) 撈出 balanceSheet
     const previousBalance = previousReportsObj.balanceSheet;
+    // Deprecated: 開發用，確認報表格式都跟文件以及 DB 一樣之後就可以移除 (20240410 - Shirley)
+    // eslint-disable-next-line no-console
+    console.log('previousBalance', previousBalance);
+
+    const validatePreviousBalance = BalanceSheetsNeoSchema.safeParse(previousBalance);
+    if (!validatePreviousBalance.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation failed for previousBalance', validatePreviousBalance.error);
+      return res.status(400).json({} as IBalanceSheetsResponse);
+    }
 
     const result: IBalanceSheetsResponse = {
       currentReport: currentBalance,

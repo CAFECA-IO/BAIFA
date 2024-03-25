@@ -4,7 +4,7 @@ import Link from 'next/link';
 import useAPIResponse from '../../../../../lib/hooks/use_api_response';
 import {useRouter} from 'next/router';
 import {useContext, useState, useEffect} from 'react';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../components/bolt_button/bolt_button';
@@ -232,19 +232,7 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {chainId: 'isun', contractId: '1'},
-      locale: 'en',
-    },
-  ];
-
-  return {paths, fallback: 'blocking'};
-};
-
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+export const getServerSideProps: GetServerSideProps = async ({params, locale}) => {
   if (!params || !params.chainId || typeof params.chainId !== 'string') {
     return {
       notFound: true,

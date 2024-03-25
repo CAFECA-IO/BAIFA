@@ -1,7 +1,7 @@
 import {
   IComprehensiveIncomeNeo,
   IIncomeAccountingDetail,
-} from '../../interfaces/conprehensive_income_neo';
+} from '../../interfaces/comprehensive_income_neo';
 import {defaultBreakdown} from '../../interfaces/report_currency_detail';
 import {roundToDecimal, getChange} from '../common';
 import {ITable} from '../../interfaces/report_table';
@@ -130,8 +130,8 @@ export const createCISFirstPart = (
         rowType: RowType.bookkeeping,
         rowData: [
           'B012 Spread Fee',
-          `${roundToDecimal(+dataA.income.details.spreadFee.weightedAverageCost, 2)}`,
-          `${roundToDecimal(+dataB.income.details.spreadFee.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+dataA.income.spreadFee.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+dataB.income.spreadFee.weightedAverageCost, 2)}`,
         ],
       },
       {
@@ -154,16 +154,16 @@ export const createCISFirstPart = (
         rowType: RowType.bookkeeping,
         rowData: [
           'B013 Liquidation fee',
-          `${roundToDecimal(+dataA.income.details.liquidationFee.weightedAverageCost, 2)}`,
-          `${roundToDecimal(+dataB.income.details.liquidationFee.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+dataA.income.liquidationFee.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+dataB.income.liquidationFee.weightedAverageCost, 2)}`,
         ],
       },
       {
         rowType: RowType.bookkeeping,
         rowData: [
           'B014 Guaranteed stop-loss fee',
-          `${roundToDecimal(+dataA.income.details.guaranteedStopLossFee.weightedAverageCost, 2)}`,
-          `${roundToDecimal(+dataB.income.details.guaranteedStopLossFee.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+dataA.income.guaranteedStopLossFee.weightedAverageCost, 2)}`,
+          `${roundToDecimal(+dataB.income.guaranteedStopLossFee.weightedAverageCost, 2)}`,
         ],
       },
       {
@@ -666,8 +666,8 @@ export const createRevenueChangeTable = (
   const lastYearTradingFee = +lastYearData.income.details.tradingFee.weightedAverageCost;
   const tradingFeeChange = getChange(thisYearTradingFee, lastYearTradingFee) * 100;
 
-  const thisYearSpreadFee = +thisYearData.income.details.spreadFee.weightedAverageCost;
-  const lastYearSpreadFee = +lastYearData.income.details.spreadFee.weightedAverageCost;
+  const thisYearSpreadFee = +thisYearData.income.spreadFee.weightedAverageCost;
+  const lastYearSpreadFee = +lastYearData.income.spreadFee.weightedAverageCost;
   const spreadFeeChange = getChange(thisYearSpreadFee, lastYearSpreadFee) * 100;
 
   const thisYearWithdrawalFee = +thisYearData.income.details.withdrawalFee.weightedAverageCost;
@@ -678,14 +678,14 @@ export const createRevenueChangeTable = (
   const lastYearDepositFee = +lastYearData.income.details.depositFee.weightedAverageCost;
   const depositFeeChange = getChange(thisYearDepositFee, lastYearDepositFee) * 100;
 
-  const thisYearLiquidationFee = +thisYearData.income.details.liquidationFee.weightedAverageCost;
-  const lastYearLiquidationFee = +lastYearData.income.details.liquidationFee.weightedAverageCost;
+  const thisYearLiquidationFee = +thisYearData.income.liquidationFee.weightedAverageCost;
+  const lastYearLiquidationFee = +lastYearData.income.liquidationFee.weightedAverageCost;
   const liquidationFeeChange = getChange(thisYearLiquidationFee, lastYearLiquidationFee) * 100;
 
   const thisYearGuaranteedStopLossFee =
-    +thisYearData.income.details.guaranteedStopLossFee.weightedAverageCost;
+    +thisYearData.income.guaranteedStopLossFee.weightedAverageCost;
   const lastYearGuaranteedStopLossFee =
-    +lastYearData.income.details.guaranteedStopLossFee.weightedAverageCost;
+    +lastYearData.income.guaranteedStopLossFee.weightedAverageCost;
   const guaranteedStopLossFeeChange =
     getChange(thisYearGuaranteedStopLossFee, lastYearGuaranteedStopLossFee) * 100;
 

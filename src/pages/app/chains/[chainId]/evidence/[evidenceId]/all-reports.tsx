@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import BalanceSheetsNeo from '../../../../../../components/balance_sheets_neo/balance_sheets_neo';
 import ComprehensiveIncomeStatementsNeo from '../../../../../../components/comprehensive_income_statements_neo/comprehensive_income_statements_neo';
 import StatementsOfCashFlowNeo from '../../../../../../components/statements_of_cash_flow_neo/statements_of_cash_flow_neo';
@@ -31,18 +31,9 @@ const AllReportsPage = ({chainId, evidenceId}: IAllReportsPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [
-      {
-        params: {chainId: 'isun', evidenceId: '1'},
-      },
-    ],
-    fallback: 'blocking',
-  };
-};
+export const getServerSideProps: GetServerSideProps = async context => {
+  const {params} = context;
 
-export const getStaticProps: GetStaticProps = async ({params}) => {
   if (!params || !params.evidenceId || typeof params.evidenceId !== 'string') {
     return {
       notFound: true,
