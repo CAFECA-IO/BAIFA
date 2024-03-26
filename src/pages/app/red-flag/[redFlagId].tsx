@@ -70,7 +70,7 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
 
   // Info: (20240325 - Liz) 從 redFlagData 取得資料
   const {id, chainId} = redFlagData;
-  const isRedFlagIdExist = redFlagId === id;
+  const isRedFlagIdExist = redFlagId !== '' && redFlagId === id;
 
   // Info: (20240321 - Liz) Call API to get transaction history data (API-035)
   const {
