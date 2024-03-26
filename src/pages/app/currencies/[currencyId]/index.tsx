@@ -73,7 +73,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     error: transactionHistoryError,
   } = useAPIResponse<ITransactionHistorySection>(
     `${APIURL.CURRENCIES}/${currencyId}/transactions`,
-    // Info: (20240325 - Liz) 預設值 ?page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0
+    // Info: (20240325 - Liz) 預設值 ?page=1&sort=desc&search=&start_date=&end_date=
     {method: HttpMethod.GET},
     {
       page: activePage,
