@@ -1,21 +1,21 @@
 import {useState, useCallback, createContext} from 'react';
 import AddAddressPanel from '../components/add_address_panel/add_address_panel';
 
-export interface IGlobalProvider {
+export interface ITrackingProvider {
   children: React.ReactNode;
 }
 
-export interface IGlobalContext {
+export interface ITrackingContext {
   visibleAddAddressPanel: boolean;
   visibleAddAddressPanelHandler: () => void;
 }
 
-export const GlobalContext = createContext<IGlobalContext>({
+export const TrackingContext = createContext<ITrackingContext>({
   visibleAddAddressPanel: false,
   visibleAddAddressPanelHandler: () => null,
 });
 
-export const GlobalProvider = ({children}: IGlobalProvider) => {
+export const TrackingProvider = ({children}: ITrackingProvider) => {
   const [visibleAddAddressPanel, setVisibleAddAddressPanel] = useState<boolean>(false);
 
   const visibleAddAddressPanelHandler = useCallback(() => {
@@ -28,12 +28,12 @@ export const GlobalProvider = ({children}: IGlobalProvider) => {
   };
 
   return (
-    <GlobalContext.Provider value={defaultValue}>
+    <TrackingContext.Provider value={defaultValue}>
       <AddAddressPanel
         modalVisible={visibleAddAddressPanel}
         modalClickHandler={visibleAddAddressPanelHandler}
       />
       {children}
-    </GlobalContext.Provider>
+    </TrackingContext.Provider>
   );
 };

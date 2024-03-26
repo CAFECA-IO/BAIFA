@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
 import {useState, useContext} from 'react';
-import {GlobalContext} from '../../contexts/global_context';
+import {TrackingContext} from '../../contexts/tracking_context';
 import {TranslateFunction} from '../../interfaces/locale';
 import {HiPlus, HiMinus} from 'react-icons/hi';
 import {FiDownload, FiUpload} from 'react-icons/fi';
@@ -15,7 +15,7 @@ enum TrackingType {
 
 const TrackingToolPanel = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {visibleAddAddressPanelHandler} = useContext(GlobalContext);
+  const {visibleAddAddressPanelHandler} = useContext(TrackingContext);
   // Info: (20240325 - Julian) 顯示切換
   const [targetTrackingType, setTargetTrackingType] = useState(TrackingType.ADDRESS);
   // Info: (20240325 - Julian) 縮放比例
