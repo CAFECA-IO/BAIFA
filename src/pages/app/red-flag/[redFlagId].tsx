@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {useState, useEffect} from 'react';
 import {useRouter} from 'next/router';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
 import RedFlagDetail from '../../../components/red_flag_detail/red_flag_detail';
 import BoltButton from '../../../components/bolt_button/bolt_button';
@@ -19,6 +19,7 @@ import TransactionHistorySection from '../../../components/transaction_history_s
 import {ITransactionHistorySection} from '../../../interfaces/transaction';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../constants/config';
@@ -34,15 +35,17 @@ interface IRedFlagDetailPageProps {
 const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  // Info: (20240320 - Liz) Back Arrow Button
   const router = useRouter();
+  const {page} = router.query;
+
+  // Info: (20240320 - Liz) Back Arrow Button
   const backClickHandler = () => router.push(`${BFAURL.RED_FLAG}`);
 
   // Info: (20240315 - Liz) 搜尋條件
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<string>('');
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [activePage, setActivePage] = useState<number>(1);
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
   // Info: (20240321 - Liz) Call API to get red flag detail data (API-022)
   const {
@@ -76,14 +79,14 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     error: transactionHistoryError,
   } = useAPIResponse<ITransactionHistorySection>(
     `${APIURL.RED_FLAGS}/${redFlagId}/transactions`,
-    // Info: (20240321 - Liz) 預設值 ?page=1&sort=SORTING.NEWEST&search=&start_date=0&end_date=0
+    // Info: (20240321 - Liz) 預設值 ?page=1&sort=desc&search=&start_date=&end_date=
     {method: HttpMethod.GET},
     {
       page: activePage,
       sort: convertStringToSortingType(sorting),
       search: search,
-      start_date: period.startTimeStamp,
-      end_date: period.endTimeStamp,
+      start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
+      end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
     }
   );
 
@@ -241,30 +244,40 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {redFlagId: '1'},
-      //locale: 'en',
-    },
-  ];
+export default RedFlagDetailPage;
 
-  return {paths, fallback: 'blocking'};
-};
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   // ToDo: (20231213 - Julian) Add dynamic paths
+//   const paths = [
+//     {
+//       params: {redFlagId: '1'},
+//       //locale: 'en',
+//     },
+//   ];
 
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
-  if (!params || !params.redFlagId || typeof params.redFlagId !== 'string') {
-    return {
-      notFound: true,
-    };
-  }
+//   return {paths, fallback: 'blocking'};
+// };
 
-  const redFlagId = params.redFlagId;
+// export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+//   if (!params || !params.redFlagId || typeof params.redFlagId !== 'string') {
+//     return {
+//       notFound: true,
+//     };
+//   }
 
+//   const redFlagId = params.redFlagId;
+
+//   return {
+//     props: {redFlagId, ...(await serverSideTranslations(locale as string, ['common']))},
+//   };
+// };
+
+export const getServerSideProps: GetServerSideProps = async ({query, locale}) => {
+  const {redFlagId = ''} = query;
   return {
-    props: {redFlagId, ...(await serverSideTranslations(locale as string, ['common']))},
+    props: {
+      redFlagId,
+      ...(await serverSideTranslations(locale as string, ['common'])),
+    },
   };
 };
-
-export default RedFlagDetailPage;
