@@ -38,10 +38,10 @@ const BlackListPage = () => {
     {method: HttpMethod.GET},
     // Info: (20240326 - Liz) 預設值 ?sort=desc&search=&tag=&page=1
     {
+      page: activePage,
       sort: convertStringToSortingType(sorting),
       search: search,
       tag: filteredTagName === tagNameOptionDefault ? `` : `${filteredTagName}`,
-      page: activePage,
     }
   );
 
