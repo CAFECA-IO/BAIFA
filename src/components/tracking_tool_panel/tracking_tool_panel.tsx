@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
-import {useState} from 'react';
+import {useState, useContext} from 'react';
+import {GlobalContext} from '../../contexts/global_context';
 import {TranslateFunction} from '../../interfaces/locale';
 import {HiPlus, HiMinus} from 'react-icons/hi';
 import {FiDownload, FiUpload} from 'react-icons/fi';
@@ -14,6 +15,7 @@ enum TrackingType {
 
 const TrackingToolPanel = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+  const {visibleAddAddressPanelHandler} = useContext(GlobalContext);
   // Info: (20240325 - Julian) 顯示切換
   const [targetTrackingType, setTargetTrackingType] = useState(TrackingType.ADDRESS);
   // Info: (20240325 - Julian) 縮放比例
@@ -144,7 +146,10 @@ const TrackingToolPanel = () => {
       </button>
 
       {/* Info: (20240325 - Julian) Add Address button */}
-      <button className="group flex w-120px flex-col items-center gap-2">
+      <button
+        onClick={visibleAddAddressPanelHandler}
+        className="group flex w-120px flex-col items-center gap-2"
+      >
         <Image
           src="/tracking/add_address.svg"
           width={50}

@@ -29,6 +29,7 @@ const TrackingToolPage = () => {
         <link rel="icon" href="/favicon.ico" />
         <title>{headTitle}</title>
       </Head>
+
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col overflow-hidden">
