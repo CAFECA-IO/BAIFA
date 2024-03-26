@@ -227,6 +227,9 @@ export const THRESHOLD_FOR_BLOCK_STABILITY = {
   LOW: 10,
 };
 
+export const buttonStyle =
+  'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
+
 export const MAX_64_BIT_INTEGER_PARAMETER = '9223372036854775807';
 export const MIN_64_BIT_INTEGER_PARAMETER = '-9223372036854775808';
 

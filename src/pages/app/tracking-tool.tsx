@@ -7,6 +7,7 @@ import Footer from '../../components/footer/footer';
 import Breadcrumb from '../../components/breadcrumb/breadcrumb';
 import NavBar from '../../components/nav_bar/nav_bar';
 import TrackingToolPanel from '../../components/tracking_tool_panel/tracking_tool_panel';
+import {TrackingProvider} from '../../contexts/tracking_context';
 
 const TrackingToolPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -24,11 +25,12 @@ const TrackingToolPage = () => {
   ];
 
   return (
-    <>
+    <TrackingProvider>
       <Head>
         <link rel="icon" href="/favicon.ico" />
         <title>{headTitle}</title>
       </Head>
+
       <NavBar />
       <main>
         <div className="flex min-h-screen flex-col overflow-hidden">
@@ -48,7 +50,7 @@ const TrackingToolPage = () => {
       <div className="mt-12">
         <Footer />
       </div>
-    </>
+    </TrackingProvider>
   );
 };
 

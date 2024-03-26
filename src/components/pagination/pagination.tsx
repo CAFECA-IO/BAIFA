@@ -1,6 +1,6 @@
 import {Dispatch, SetStateAction, useEffect} from 'react';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
-import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE, buttonStyle} from '../../constants/config';
 import useStateRef from 'react-usestateref';
 import {useRouter} from 'next/router';
 import {IAddressHistoryQuery} from '../../constants/api_request';
@@ -36,8 +36,6 @@ const Pagination = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [targetPage, setTargetPage, targetPageRef] = useStateRef<number>(activePage);
 
-  const buttonStyle =
-    'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
   const router = useRouter();
   const {query} = router;
 

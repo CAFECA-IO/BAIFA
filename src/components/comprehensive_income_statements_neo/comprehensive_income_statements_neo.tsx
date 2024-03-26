@@ -103,8 +103,8 @@ const ComprehensiveIncomeStatementsNeo = ({
   const income_statements_p8_1 = createRevenueTable(
     'Spread fee',
     revenueDate,
-    currentIncomeData?.income.spreadFee,
-    previousIncomeData?.income.spreadFee,
+    currentIncomeData?.income.details.spreadFee,
+    previousIncomeData?.income.details.spreadFee,
     numeroOfSpreadFee
   );
 
@@ -133,8 +133,8 @@ const ComprehensiveIncomeStatementsNeo = ({
   const income_statements_p11_1 = createRevenueTable(
     'Liquidation fee',
     revenueDate,
-    currentIncomeData?.income.liquidationFee,
-    previousIncomeData?.income.liquidationFee,
+    currentIncomeData?.income.details.liquidationFee,
+    previousIncomeData?.income.details.liquidationFee,
     numeroOfLiquidationFee
   );
 
@@ -149,8 +149,8 @@ const ComprehensiveIncomeStatementsNeo = ({
   const income_statements_p12_1 = createRevenueTable(
     'Guaranteed stop-loss fee',
     revenueDate,
-    currentIncomeData?.income.guaranteedStopLossFee,
-    previousIncomeData?.income.guaranteedStopLossFee,
+    currentIncomeData?.income.details.guaranteedStopLossFee,
+    previousIncomeData?.income.details.guaranteedStopLossFee,
     numeroOfGuaranteedStopLossFee
   );
 
