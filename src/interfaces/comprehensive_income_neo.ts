@@ -29,10 +29,9 @@ const DetailsSchema = z.object({
   depositFee: IncomeAccountingDetailSchema,
   withdrawalFee: IncomeAccountingDetailSchema,
   tradingFee: IncomeAccountingDetailSchema,
-  // TODO: 討論文件->修改文件->修改 type (20240325 - Shirley)
-  // spreadFee: IncomeAccountingDetailSchema,
-  // liquidationFee: IncomeAccountingDetailSchema,
-  // guaranteedStopLossFee: IncomeAccountingDetailSchema,
+  spreadFee: IncomeAccountingDetailSchema,
+  liquidationFee: IncomeAccountingDetailSchema,
+  guaranteedStopLossFee: IncomeAccountingDetailSchema,
 });
 
 export const ComprehensiveIncomeNeoSchema = z.object({
@@ -46,9 +45,6 @@ export const ComprehensiveIncomeNeoSchema = z.object({
   income: z.object({
     weightedAverageCost: z.string(),
     details: DetailsSchema,
-    spreadFee: IncomeAccountingDetailSchema,
-    liquidationFee: IncomeAccountingDetailSchema,
-    guaranteedStopLossFee: IncomeAccountingDetailSchema,
   }),
 
   costs: z.object({
@@ -105,3 +101,98 @@ export interface IComprehensiveIncomeResponse {
   previousReport: IComprehensiveIncomeNeo;
   lastYearReport: IComprehensiveIncomeNeo;
 }
+
+const dummyBreakdown = {
+  USDT: {
+    amount: "1000",
+    weightedAverageCost: "0.99",
+  },
+  ETH: {
+    amount: "5",
+    weightedAverageCost: "2000",
+  },
+  BTC: {
+    amount: "1",
+    weightedAverageCost: "30000",
+  },
+  USD: {
+    amount: "500",
+    weightedAverageCost: "1",
+  },
+};
+
+const dummyIncomeAccountingDetail = {
+  weightedAverageCost: "1.00",
+  breakdown: dummyBreakdown,
+};
+
+const dummyDetails = {
+  depositFee: dummyIncomeAccountingDetail,
+  withdrawalFee: dummyIncomeAccountingDetail,
+  tradingFee: dummyIncomeAccountingDetail,
+  spreadFee: dummyIncomeAccountingDetail,
+  liquidationFee: dummyIncomeAccountingDetail,
+  guaranteedStopLossFee: dummyIncomeAccountingDetail,
+  
+};
+
+export const dummyComprehensiveIncomeNeo: IComprehensiveIncomeNeo = {
+  reportType: "comprehensive income",
+  reportID: "RPT123456",
+  reportName: "Comprehensive Income Report - March 2023",
+  reportStartTime: 1677628800, // March 1, 2023
+  reportEndTime: 1679887999, // March 31, 2023
+  netProfit: "15000",
+
+  income: {
+    weightedAverageCost: "0.95",
+    details: dummyDetails,
+
+  },
+
+  costs: {
+    weightedAverageCost: "0.90",
+    details: {
+      technicalProviderFee: dummyIncomeAccountingDetail,
+      marketDataProviderFee: {
+        weightedAverageCost: "0.85",
+      },
+      newCoinListingCost: {
+        weightedAverageCost: "0.80",
+      },
+    },
+  },
+  operatingExpenses: {
+    weightedAverageCost: "0.75",
+    details: {
+      salaries: "20000",
+      rent: "5000",
+      marketing: "3000",
+      rebateExpenses: dummyIncomeAccountingDetail,
+    },
+  },
+  financialCosts: {
+    weightedAverageCost: "0.70",
+    details: {
+      interestExpense: "1000",
+      fiatToCryptocurrencyConversionLosses: "500",
+      cryptocurrencyToFiatConversionLosses: "300",
+      fiatToFiatConversionLosses: "200",
+      cryptocurrencyForexLosses: dummyIncomeAccountingDetail,
+    },
+  },
+  otherGainLosses: {
+    weightedAverageCost: "0.65",
+    details: {
+      investmentGains: "800",
+      forexGains: "600",
+      cryptocurrencyGains: dummyIncomeAccountingDetail,
+    },
+  },
+};
+
+export const dummyComprehensiveIncomeResponse: IComprehensiveIncomeResponse = {
+  currentReport: dummyComprehensiveIncomeNeo,
+  previousReport: dummyComprehensiveIncomeNeo, 
+  lastYearReport: dummyComprehensiveIncomeNeo, 
+};
