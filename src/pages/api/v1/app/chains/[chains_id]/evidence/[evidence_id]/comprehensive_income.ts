@@ -24,21 +24,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const currentIncomeValidationResult = ComprehensiveIncomeNeoSchema.safeParse(
       currentReportsObj.comprehensiveIncome
     );
-    // Deprecated: 開發用，確認報表格式都跟文件以及 DB 一樣之後就可以移除 (20240410 - Shirley)
-    // eslint-disable-next-line no-console
-    console.log('currentReportsObj stringify', JSON.stringify(currentReportsObj.comprehensiveIncome));
-    // Deprecated: 開發用，確認報表格式都跟文件以及 DB 一樣之後就可以移除 (20240410 - Shirley)
-    // eslint-disable-next-line no-console
-    console.log('dummyComprehensiveIncomeNeo stringify', JSON.stringify(dummyComprehensiveIncomeNeo));
-
-    // Deprecated: 開發用，確認報表格式都跟文件以及 DB 一樣之後就可以移除 (20240410 - Shirley)
-    // eslint-disable-next-line no-console
-    // console.log(
-    //   'currentReportsObj.comprehensiveIncome',
-    //   currentReportsObj.comprehensiveIncome,
-    //   'currentIncomeValidationResult',
-    //   currentIncomeValidationResult
-    // );
 
     if (!currentIncomeValidationResult.success) {
       // eslint-disable-next-line no-console
