@@ -4,7 +4,7 @@ import NavBar from '../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../components/footer/footer';
 import CurrencyDetail from '../../../../components/currency_detail/currency_detail';
 import {useEffect, useState} from 'react';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ICurrencyDetailString, dummyCurrencyDetailString} from '../../../../interfaces/currency';
 import {BsArrowLeftShort} from 'react-icons/bs';
@@ -18,6 +18,7 @@ import {useTranslation} from 'next-i18next';
 import {getCurrencyIcon, convertStringToSortingType} from '../../../../lib/common';
 import {
   DEFAULT_CURRENCY_ICON,
+  DEFAULT_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../../constants/config';
@@ -37,15 +38,17 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   // const appCtx = useContext(AppContext);
 
-  // Info: (20240325 - Liz) Back Arrow Button
   const router = useRouter();
+  const {page} = router.query;
+
+  // Info: (20240325 - Liz) Back Arrow Button
   const backClickHandler = () => router.push(`${BFAURL.CURRENCIES}`);
 
   // Info: (20240315 - Liz) 搜尋條件
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<string>('');
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [activePage, setActivePage] = useState<number>(1);
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
   // Info: (20240321 - Liz) Call API to get currency data (API-018)
   const {
@@ -76,8 +79,8 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
       page: activePage,
       sort: convertStringToSortingType(sorting),
       search: search,
-      start_date: period.startTimeStamp,
-      end_date: period.endTimeStamp,
+      start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
+      end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
     }
   );
 
@@ -212,30 +215,40 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {currencyId: 'isun'},
-      locale: 'en',
-    },
-  ];
+export default CurrencyDetailPage;
 
-  return {paths, fallback: 'blocking'};
-};
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   // ToDo: (20231213 - Julian) Add dynamic paths
+//   const paths = [
+//     {
+//       params: {currencyId: 'isun'},
+//       locale: 'en',
+//     },
+//   ];
 
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
-  if (!params || !params.currencyId || typeof params.currencyId !== 'string') {
-    return {
-      notFound: true,
-    };
-  }
+//   return {paths, fallback: 'blocking'};
+// };
 
-  const currencyId = params.currencyId;
+// export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+//   if (!params || !params.currencyId || typeof params.currencyId !== 'string') {
+//     return {
+//       notFound: true,
+//     };
+//   }
 
+//   const currencyId = params.currencyId;
+
+//   return {
+//     props: {currencyId, ...(await serverSideTranslations(locale as string, ['common']))},
+//   };
+// };
+
+export const getServerSideProps: GetServerSideProps = async ({query, locale}) => {
+  const {currencyId = ''} = query;
   return {
-    props: {currencyId, ...(await serverSideTranslations(locale as string, ['common']))},
+    props: {
+      currencyId,
+      ...(await serverSideTranslations(locale as string, ['common'])),
+    },
   };
 };
-
-export default CurrencyDetailPage;
