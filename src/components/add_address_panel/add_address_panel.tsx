@@ -21,7 +21,8 @@ const AddAddressPanel = ({
   // Info: (20240326 - Julian) 是否顯示 Following List
   const [visibleFollowingList, setVisibleFollowingList] = useState(false);
   // Info: (20240326 - Julian) address 清單
-  const [preAddAddressList, setPreAddAddressList] = useState<string[]>([]);
+  // ToDo: (20240326 - Julian) 之後應該要改成 <string[]>
+  const [preAddAddressList, setPreAddAddressList] = useState<string>('');
 
   const {data: followingList, isLoading: isFollowingList} = useAPIResponse<string[]>(
     '/api/v1/app/tracking_tool/add_address_list',
@@ -32,42 +33,34 @@ const AddAddressPanel = ({
 
   // Info: (20240326 - Julian) 點擊 Add 按鈕後的處理
   const addAddressButtonHandler = () => {
-    // ToDo: (20240326 - Julian) 暫時只取第一筆
-    addAddressHandler(preAddAddressList[1]);
+    addAddressHandler(preAddAddressList);
     modalClickHandler();
   };
   // Info: (20240326 - Julian) 如果清單為空，就不能點擊 Add 按鈕
-  const addAddressButtonDisabled = preAddAddressList.length <= 0;
+  const addAddressButtonDisabled = preAddAddressList === '';
 
-  const displayPreAddAddressList = preAddAddressList.map((address, index) => {
-    const deleteButtonHandler = () => {
-      setPreAddAddressList(prev => prev.filter((_, i) => i !== index));
-    };
-    return (
-      <div key={index} className="flex w-full items-center border-b border-darkPurple4 px-4 py-2">
+  //
+  const displayPreAddAddressList =
+    preAddAddressList !== '' ? (
+      <div className="flex w-full items-center border-b border-darkPurple4 px-4 py-2">
         <p className="w-100px grow overflow-hidden text-ellipsis whitespace-nowrap text-left text-xl font-semibold text-primaryBlue lg:w-300px">
           <span className="text-hoverWhite">Address </span>
-          {address}
+          {preAddAddressList}
         </p>
 
         {/* Info: (20240326 - Julian) Delete button */}
-        <button onClick={deleteButtonHandler} className={`${buttonStyle} ml-4`}>
+        <button onClick={() => setPreAddAddressList('')} className={`${buttonStyle} ml-4`}>
           <FiTrash2 size={24} />
         </button>
       </div>
-    );
-  });
+    ) : null;
 
   const displayFollowingList =
     !isFollowingList && followingList ? (
       followingList.map((address, index) => {
         // Info: (20240326 - Julian) 將地址加入清單並關閉 Following List
         const addButtonHandler = () => {
-          setPreAddAddressList(prev => {
-            // Info: (20240326 - Julian) 避免重複加入
-            if (prev.includes(address)) return prev;
-            return [...prev, address];
-          });
+          setPreAddAddressList(address);
           visibleFollowingListHandler();
         };
         return (

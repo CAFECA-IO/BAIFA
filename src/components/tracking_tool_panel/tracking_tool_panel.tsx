@@ -1,14 +1,14 @@
 import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
 import {useState, useContext} from 'react';
-import {TrackingContext} from '../../contexts/tracking_context';
+import {TrackingContext, TrackingType} from '../../contexts/tracking_context';
 import {TranslateFunction} from '../../interfaces/locale';
 import {HiPlus, HiMinus} from 'react-icons/hi';
 import {FiDownload, FiUpload} from 'react-icons/fi';
 import {FaRegBookmark} from 'react-icons/fa';
 import {IoIosArrowUp} from 'react-icons/io';
-import {TrackingType} from '../../contexts/tracking_context';
 import {buttonStyle} from '../../constants/config';
+import {truncateText} from '../../lib/common';
 
 const TrackingToolPanel = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -209,6 +209,13 @@ const TrackingToolPanel = () => {
     </div>
   );
 
+  const showAddressMap = addAddress ? (
+    <div className="flex h-100px w-100px flex-col items-center justify-center gap-2 rounded-full border-4 border-primaryBlue">
+      <Image src="/icons/address_icon.svg" width={24} height={24} alt="address_icon" />
+      <p className="text-xs">{truncateText(addAddress, 10)}</p>
+    </div>
+  ) : null;
+
   return (
     <div className="relative flex h-full min-h-680px w-full flex-col items-center overflow-hidden border border-darkPurple4 bg-darkPurple5 shadow-inner3xl">
       {/* Info: (20240325 - Julian) Tracking Switch */}
@@ -233,12 +240,7 @@ const TrackingToolPanel = () => {
       </div>
 
       {/* Info: (20240325 - Julian) Tracking View */}
-      <div className="mx-auto my-auto">
-        <div className="flex h-100px w-100px flex-col items-center justify-center gap-4 rounded-full border-4 border-primaryBlue">
-          <Image src="/icons/address_icon.svg" width={24} height={24} alt="address_icon" />
-          <p className="text-xs">{addAddress}</p>
-        </div>
-      </div>
+      <div className="mx-auto my-auto">{showAddressMap}</div>
     </div>
   );
 };
