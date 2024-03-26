@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../components/bolt_button/bolt_button';
 import Footer from '../../../../components/footer/footer';
@@ -14,6 +14,8 @@ import {
   sortOldAndNewOptions,
   defaultOption,
   redFlagTypeI18nObj,
+  DEFAULT_PAGE,
+  ITEM_PER_PAGE,
 } from '../../../../constants/config';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {TranslateFunction} from '../../../../interfaces/locale';
@@ -33,16 +35,18 @@ interface IRedFlagOfCurrencyPageProps {
 const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  // Info: (20240325 - Liz) Back Arrow Button
   const router = useRouter();
+  const {page} = router.query;
+
+  // Info: (20240325 - Liz) Back Arrow Button
   const backClickHandler = () => router.push(`${BFAURL.CURRENCIES}/${currencyId}`);
 
   // Info: (20240319 - Liz) 搜尋條件
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<string>('');
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
   const [filteredType, setFilteredType] = useState<string>(defaultOption);
-  const [activePage, setActivePage] = useState<number>(1);
 
   // Info: (20240325 - Liz) Call API to get menu options (API-034)
   const {data: menuOptions} = useAPIResponse<IMenuOptions>(`${APIURL.RED_FLAGS}/menu_options`, {
@@ -75,9 +79,10 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
   } = useAPIResponse<IRedFlagListForCurrency>(
     `${APIURL.CURRENCIES}/${currencyId}/red_flags`,
     {method: HttpMethod.GET},
-    // Info: (20240325 - Liz) 預設值 page=1&sort=SORTING.NEWEST&search=&flag=&start_date=0&end_date=0
+    // Info: (20240325 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&flag=&start_date=&end_date=
     {
       page: activePage,
+      offset: ITEM_PER_PAGE,
       sort: convertStringToSortingType(sorting),
       search: search,
       flag: filteredTypeCode, // Info: (20240325 - Liz) filteredType 轉換成代碼格式再送出
@@ -102,7 +107,7 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
   const currencyIcon = getCurrencyIcon(currencyId);
 
   // Info: (20240325 - Liz) 畫面顯示元件
-  const displayRedFlagList = !redFlagDataError ? (
+  const displayedRedFlagList = !redFlagDataError ? (
     <RedFlagList
       redFlagData={redFlagData?.redFlagData ?? []}
       period={period}
@@ -161,7 +166,7 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
             </div>
 
             {/* Info: (20231109 - Julian) Red Flag List */}
-            <div className="w-full">{displayRedFlagList}</div>
+            <div className="w-full">{displayedRedFlagList}</div>
 
             {/* Info: (20231109 - Julian) Back button */}
             <div className="">
@@ -187,30 +192,40 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
 
 export default RedFlagOfCurrencyPage;
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {currencyId: 'isun'},
-      locale: 'en',
-    },
-  ];
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   // ToDo: (20231213 - Julian) Add dynamic paths
+//   const paths = [
+//     {
+//       params: {currencyId: 'isun'},
+//       locale: 'en',
+//     },
+//   ];
 
-  return {paths, fallback: 'blocking'};
-};
+//   return {paths, fallback: 'blocking'};
+// };
 
-export const getStaticProps: GetStaticProps<IRedFlagOfCurrencyPageProps> = async ({
-  params,
-  locale,
-}) => {
-  if (!params || !params.currencyId || typeof params.currencyId !== 'string') {
-    return {
-      notFound: true,
-    };
-  }
+// export const getStaticProps: GetStaticProps<IRedFlagOfCurrencyPageProps> = async ({
+//   params,
+//   locale,
+// }) => {
+//   if (!params || !params.currencyId || typeof params.currencyId !== 'string') {
+//     return {
+//       notFound: true,
+//     };
+//   }
 
-  const currencyId = params.currencyId;
+//   const currencyId = params.currencyId;
 
+//   return {
+//     props: {
+//       currencyId,
+//       ...(await serverSideTranslations(locale as string, ['common'])),
+//     },
+//   };
+// };
+
+export const getServerSideProps: GetServerSideProps = async ({query, locale}) => {
+  const {currencyId = ''} = query;
   return {
     props: {
       currencyId,

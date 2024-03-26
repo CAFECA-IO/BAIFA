@@ -3,14 +3,16 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../prisma/client';
 import {IRedFlagListForCurrency} from '../../../../../../interfaces/red_flag';
-import {ITEM_PER_PAGE} from '../../../../../../constants/config';
+import {ITEM_PER_PAGE, DEFAULT_PAGE} from '../../../../../../constants/config';
 
 type ResponseData = IRedFlagListForCurrency;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240319 - Liz) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
+  const offset =
+    typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
   const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? parseInt(req.query.search, 10) : undefined;
   const flag = (req.query.flag as string) === '' ? undefined : (req.query.flag as string);
@@ -27,8 +29,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const endDate = parseDate(req.query.end_date);
 
   // Info: (20240319 - Liz) 計算分頁的 skip 與 take
-  const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240319 - Liz) 跳過前面幾筆
-  const take = ITEM_PER_PAGE; // Info: (20240319 - Liz) 取幾筆
+  const skip = page > 0 ? (page - 1) * offset : 0; // Info: (20240319 - Liz) 跳過前面幾筆
+  const take = offset; // Info: (20240319 - Liz) 取幾筆
+
+  if (!currency_id) {
+    return res.status(400).json({} as ResponseData);
+  }
 
   try {
     // Info: (20240227 - Liz) 從 red_flags Table 中取得資料，並做條件篩選以及分頁
@@ -143,7 +149,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const chainName = chainNameRaw?.chain_name ?? 'Unknown Chain Name';
 
     // Info: (20240307 - Liz) 計算總頁數
-    const totalPages = Math.ceil(totalRedFlagCount / ITEM_PER_PAGE);
+    const totalPages = Math.ceil(totalRedFlagCount / offset);
 
     // Info: (20240227 - Liz) 組合回傳資料
     const result: ResponseData = {
