@@ -2,9 +2,11 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../../../prisma/client';
-import {ICashFlowResponse} from '../../../../../../../../interfaces/cash_flow_neo';
+import {
+  ICashFlowResponse,
+  CashFlowNeoSchema,
+} from '../../../../../../../../interfaces/cash_flow_neo';
 import {IEvidenceContent} from '../../../../../../../../interfaces/evidence';
-import {CashFlowNeoSchema} from '../../../../../../../../interfaces/cash_flow_neo';
 
 type ResponseData = ICashFlowResponse | undefined;
 
