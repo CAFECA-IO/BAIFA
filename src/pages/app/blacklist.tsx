@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import NavBar from '../../components/nav_bar/nav_bar';
 import Breadcrumb from '../../components/breadcrumb/breadcrumb';
 import SortingMenu from '../../components/sorting_menu/sorting_menu';
@@ -20,7 +20,6 @@ import {convertStringToSortingType} from '../../lib/common';
 
 const BlackListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  // Deprecated: (20240320 - Liz) // const {getAllBlackList} = useContext(MarketContext);
 
   // Info: (20240305 - Liz) 搜尋條件
   const [search, setSearch] = useState('');
@@ -29,7 +28,7 @@ const BlackListPage = () => {
   const [filteredTagName, setFilteredTagName] = useState<string>(tagNameOptionDefault);
   const [activePage, setActivePage] = useState<number>(1);
 
-  // Info: (今天 - Liz) Call API to get blacklist data (API-020)
+  // Info: (20240325 - Liz) Call API to get blacklist data (API-020)
   const {
     data: blacklist,
     isLoading,
@@ -37,11 +36,12 @@ const BlackListPage = () => {
   } = useAPIResponse<IBlackListData>(
     `${APIURL.BLACKLIST}`,
     {method: HttpMethod.GET},
+    // Info: (20240326 - Liz) 預設值 ?page=1&sort=desc&search=&tag=
     {
+      page: activePage,
       sort: convertStringToSortingType(sorting),
       search: search,
       tag: filteredTagName === tagNameOptionDefault ? `` : `${filteredTagName}`,
-      page: activePage,
     }
   );
 
@@ -52,39 +52,10 @@ const BlackListPage = () => {
   const tagNames = blacklist?.tagNameOptions ?? [];
   const tagNameOptions = [tagNameOptionDefault, ...tagNames];
 
-  // Deprecated: (20240320 - Liz) 原先的 Call API to get blacklist data 方式對照:
-  // Info: (20240305 - Liz) API 查詢參數
-  // const [apiQueryStr, setApiQueryStr] = useState('page=1&sort=SORTING.NEWEST&search=&tag=');
-  // Info: (20240305 - Liz) UI
-  // const [blacklist, setBlacklist] = useState<IBlackListData>();
-  // Info: (20240305 - Liz) 當搜尋或篩選的條件改變時，將 activePage 設為 1。
-  // Info: (20240306 - Liz) 雖然搜尋、篩選、排序都是重新打 API 拿新資料，但是搜尋、篩選的條件改變可能導致資料筆數改變，而 sorting 只是就該頁面的 10 筆資料做排序，所以不需要重設 activePage。
-  // useEffect(() => {
-  //   setActivePage(1);
-  // }, [search, filteredTagName]);
-
-  // // Info: (20240305 - Liz) Call API to get blacklist data
-  // useEffect(() => {
-  //   const fetchBlacklist = async () => {
-  //     try {
-  //       const data = await getAllBlackList(apiQueryStr);
-  //       setBlacklist(data);
-  //     } catch (error) {
-  //       //console.log('getAllBlackList error', error);
-  //     }
-  //   };
-  //   fetchBlacklist();
-  //   // Info: (20240305 - Liz) 當 API 查詢參數改變時，重新取得資料
-  // }, [apiQueryStr, getAllBlackList]);
-
-  // useEffect(() => {
-  //   // Info: (20240305 - Liz) 設定 API 查詢參數
-  //   const pageQuery = `page=${activePage}`;
-  //   const sortQuery = `&sort=${sorting}`;
-  //   const searchQuery = `&search=${search}`;
-  //   const tagQuery = filteredTagName === tagNameOptionDefault ? `&tag=${''}` : `&tag=${filteredTagName}`;
-  //   setApiQueryStr(`${pageQuery}${sortQuery}${searchQuery}${tagQuery}`);
-  // }, [activePage, filteredTagName, search, sorting]);
+  // Info: (20240305 - Liz) 當搜尋或篩選的條件改變時，將 activePage 設為 1。雖然搜尋、篩選、排序都是重新打 API 拿新資料，但是搜尋、篩選的條件改變可能導致資料筆數改變，而 sorting 只是就該頁面的 10 筆資料做排序，所以不需要重設 activePage。
+  useEffect(() => {
+    setActivePage(1);
+  }, [search, filteredTagName]);
 
   // Info: (20240306 - Liz) head title and breadcrumb
   const headTitle = `${t('BLACKLIST_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
