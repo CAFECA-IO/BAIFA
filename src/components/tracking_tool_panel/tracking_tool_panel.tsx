@@ -7,24 +7,18 @@ import {HiPlus, HiMinus} from 'react-icons/hi';
 import {FiDownload, FiUpload} from 'react-icons/fi';
 import {FaRegBookmark} from 'react-icons/fa';
 import {IoIosArrowUp} from 'react-icons/io';
-
-enum TrackingType {
-  ADDRESS = 'address',
-  TRANSACTION = 'transaction',
-}
+import {TrackingType} from '../../contexts/tracking_context';
+import {buttonStyle} from '../../constants/config';
 
 const TrackingToolPanel = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {visibleAddAddressPanelHandler} = useContext(TrackingContext);
-  // Info: (20240325 - Julian) 顯示切換
-  const [targetTrackingType, setTargetTrackingType] = useState(TrackingType.ADDRESS);
+  const {targetTrackingType, targetTrackingTypeHandler, visibleAddAddressPanelHandler, addAddress} =
+    useContext(TrackingContext);
+
   // Info: (20240325 - Julian) 縮放比例
   const [zoomPercentage, setZoomPercentage] = useState(100);
   // Info: (20240325 - Julian) 工具列展開
   const [isToolbarExpanded, setIsToolbarExpanded] = useState(false);
-
-  const handleSwitchToAddress = () => setTargetTrackingType(TrackingType.ADDRESS);
-  const handleSwitchToTransaction = () => setTargetTrackingType(TrackingType.TRANSACTION);
 
   const handleZoomIn = () =>
     setZoomPercentage(prev => {
@@ -55,15 +49,15 @@ const TrackingToolPanel = () => {
     <div className="flex flex-col items-center gap-4 lg:flex-row">
       <p>{t('TRACKING_TOOL_PAGE.VIEW')}</p>
       {/* Info: (20240325 - Julian) Input button */}
-      <button className="flex h-48px w-48px items-center justify-center rounded bg-purpleLinear hover:opacity-75">
+      <button className={buttonStyle}>
         <FiDownload size={24} />
       </button>
       {/* Info: (20240325 - Julian) Output button */}
-      <button className="flex h-48px w-48px items-center justify-center rounded bg-purpleLinear hover:opacity-75">
+      <button className={buttonStyle}>
         <FiUpload size={24} />
       </button>
       {/* Info: (20240325 - Julian) Notes button */}
-      <button className="flex h-48px w-48px items-center justify-center rounded bg-purpleLinear hover:opacity-75">
+      <button className={buttonStyle}>
         <FaRegBookmark size={24} />
       </button>
     </div>
@@ -75,7 +69,7 @@ const TrackingToolPanel = () => {
       className={`relative flex w-300px items-center justify-center rounded-full bg-darkPurple px-1 py-1 text-base font-bold ${switchStyle}`}
     >
       <button
-        onClick={handleSwitchToAddress}
+        onClick={targetTrackingTypeHandler}
         className={`z-10 rounded-full px-8 py-3 ${
           targetTrackingType === TrackingType.ADDRESS ? 'text-hoverWhite' : 'text-lilac'
         } transition duration-300 ease-in-out`}
@@ -83,7 +77,7 @@ const TrackingToolPanel = () => {
         {t('TRACKING_TOOL_PAGE.ADDRESS')}
       </button>
       <button
-        onClick={handleSwitchToTransaction}
+        onClick={targetTrackingTypeHandler}
         className={`z-10 rounded-full px-8 py-3 ${
           targetTrackingType === TrackingType.TRANSACTION ? 'text-hoverWhite' : 'text-lilac'
         } transition duration-300 ease-in-out`}
@@ -97,21 +91,13 @@ const TrackingToolPanel = () => {
   const viewZoom = (
     <div className="flex items-center space-x-4">
       {/* Info: (20240325 - Julian) Plus button */}
-      <button
-        onClick={handleZoomIn}
-        disabled={zoomPercentage >= 200}
-        className="flex h-48px w-48px items-center justify-center rounded bg-purpleLinear hover:opacity-75 disabled:opacity-50"
-      >
+      <button onClick={handleZoomIn} disabled={zoomPercentage >= 200} className={buttonStyle}>
         <HiPlus size={24} />
       </button>
       {/* Info: (20240325 - Julian) Zoom percentage */}
       <p className="w-50px text-center text-base">{zoomPercentage} %</p>
       {/* Info: (20240325 - Julian) Minus button */}
-      <button
-        onClick={handleZoomOut}
-        disabled={zoomPercentage <= 100}
-        className="flex h-48px w-48px items-center justify-center rounded bg-purpleLinear hover:opacity-75 disabled:opacity-50"
-      >
+      <button onClick={handleZoomOut} disabled={zoomPercentage <= 100} className={buttonStyle}>
         <HiMinus size={24} />
       </button>
     </div>
@@ -244,6 +230,14 @@ const TrackingToolPanel = () => {
           <IoIosArrowUp size={24} />
         </button>
         {toolbarList}
+      </div>
+
+      {/* Info: (20240325 - Julian) Tracking View */}
+      <div className="mx-auto my-auto">
+        <div className="flex h-100px w-100px flex-col items-center justify-center gap-4 rounded-full border-4 border-primaryBlue">
+          <Image src="/icons/address_icon.svg" width={24} height={24} alt="address_icon" />
+          <p className="text-xs">{addAddress}</p>
+        </div>
       </div>
     </div>
   );

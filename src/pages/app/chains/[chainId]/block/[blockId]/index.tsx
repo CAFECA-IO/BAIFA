@@ -17,7 +17,7 @@ import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {getChainIcon} from '../../../../../../lib/common';
-import {DEFAULT_CHAIN_ICON} from '../../../../../../constants/config';
+import {DEFAULT_CHAIN_ICON, buttonStyle} from '../../../../../../constants/config';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 
@@ -54,9 +54,6 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
   const backClickHandler = () => router.push(`${BFAURL.CHAINS}/${chainId}`);
   const previousHandler = () => router.push(previousLink);
   const nextHandler = () => router.push(nextLink);
-
-  const buttonStyle =
-    'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
 
   // Info: (20231213 - Julian) To check if the previousBlock or nextBlock exist
   const previousId = blockData?.previousBlockId ? blockData?.previousBlockId : undefined;
