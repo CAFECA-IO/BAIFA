@@ -12,7 +12,7 @@ export interface ITrackingContext {
   visibleAddAddressPanel: boolean;
   visibleAddAddressPanelHandler: () => void;
 
-  addAddress: string;
+  targetAddress: string;
   addAddressHandler: (address: string) => void;
 }
 
@@ -28,7 +28,7 @@ export const TrackingContext = createContext<ITrackingContext>({
   visibleAddAddressPanel: false,
   visibleAddAddressPanelHandler: () => null,
 
-  addAddress: '',
+  targetAddress: '',
   addAddressHandler: () => null,
 });
 
@@ -47,9 +47,10 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     setVisibleAddAddressPanel(prev => !prev);
   }, []);
 
-  const [addAddress, setAddAddress] = useState<string>('');
+  // Info: (20240327 - Julian) 選定的目標地址
+  const [targetAddress, setTargetAddress] = useState<string>('');
   const addAddressHandler = useCallback((address: string) => {
-    setAddAddress(address);
+    setTargetAddress(address);
   }, []);
 
   const defaultValue = {
@@ -59,7 +60,7 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     visibleAddAddressPanel,
     visibleAddAddressPanelHandler,
 
-    addAddress,
+    targetAddress,
     addAddressHandler,
   };
 
