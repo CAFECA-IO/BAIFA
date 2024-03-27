@@ -94,10 +94,18 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
   // Info: (20240325 - Liz) 從 API 取得總頁數
   const totalPages = redFlagData?.totalPages ?? 0;
 
-  // Info: (20240307 - Liz) 當日期、搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
+  // Info: (20240327 - Liz) 當日期、搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
   useEffect(() => {
-    setActivePage(1);
-  }, [search, filteredType, period, sorting]);
+    if (
+      search !== '' ||
+      filteredType !== defaultOption ||
+      sorting !== sortOldAndNewOptions[0] ||
+      (period.startTimeStamp !== default30DayPeriod.startTimeStamp &&
+        period.endTimeStamp !== default30DayPeriod.endTimeStamp)
+    ) {
+      setActivePage(1);
+    }
+  }, [search, filteredType, sorting, period.startTimeStamp, period.endTimeStamp]);
 
   // Info: (20240319 - Liz) head title and currency icon
   const currencyName = redFlagData?.chainName ?? '';
