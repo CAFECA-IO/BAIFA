@@ -41,7 +41,7 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     );
   }, []);
 
-  // Info: (20240326 - Julian) 新增地址面板
+  // Info: (20240326 - Julian) 新增地址面板是否顯示
   const [visibleAddAddressPanel, setVisibleAddAddressPanel] = useState<boolean>(false);
   const visibleAddAddressPanelHandler = useCallback(() => {
     setVisibleAddAddressPanel(prev => !prev);

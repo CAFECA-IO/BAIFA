@@ -215,7 +215,9 @@ const TrackingToolPanel = () => {
       {trackingSwitch}
 
       {/* Info: (20240325 - Julian) Tracking View */}
-      <TrackingView />
+      <div className="relative flex h-full w-full items-center justify-center">
+        <TrackingView />
+      </div>
 
       {/* Info: (20240325 - Julian) Tracking Toolbar */}
       <div
