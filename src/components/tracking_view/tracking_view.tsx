@@ -17,8 +17,20 @@ const TrackingView = () => {
 
   const interactions = interactionAddresses ?? [];
 
+  interface INode {
+    id: string;
+    group: string;
+  }
+  interface ILink {
+    source: string;
+    target: string;
+  }
+
   // Info: (20240327 - Julian) Dummy data
-  const data = {
+  const data: {
+    nodes: INode[];
+    links: ILink[];
+  } = {
     nodes: [
       {id: targetAddress, group: 'target'},
       ...interactions.map(address => {
@@ -33,6 +45,7 @@ const TrackingView = () => {
     ],
   };
 
+  const mapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   /* 
   function runForceGraph(container: HTMLDivElement) {
@@ -172,17 +185,143 @@ const TrackingView = () => {
     return destroyFn;
   }, [data]); */
 
-  const width = 1000;
-  const height = 600;
-
-  //const links = data.links.map(Object.create);
+  const links = data.links.map(Object.create);
   const nodes = data.nodes.map(Object.create);
 
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
+  // Info: (20240329 - Julian) 點之間的引力
+  const forceStrength = nodes.length * -1000;
 
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    // 清除舊的 SVG 元素
+    d3.select(mapRef.current).selectAll('svg').remove();
+
+    const containerRect = mapRef.current.getBoundingClientRect();
+    const height = containerRect.height;
+    const width = containerRect.width;
+
+    const svg = d3
+      .select(mapRef.current)
+      .append('svg')
+      .attr('viewBox', [-width / 2, -height / 2, width, height]);
+
+    // Info: (20240328 - Julian) 定義漸變色
+    const linear1 = svg
+      .append('defs')
+      .append('linearGradient')
+      .attr('id', 'bluePurpleLinear') // Info: (20240328 - Julian) 藍紫漸變色
+      .attr('x1', '0%')
+      .attr('x2', '0%')
+      .attr('y1', '0%')
+      .attr('y2', '100%'); // Info: (20240328 - Julian) 0% 100% 0% 0% 代表從上到下漸變
+    linear1
+      .append('stop')
+      .attr('offset', '0%')
+      .style('stop-color', '#7B70FF')
+      .style('stop-opacity', 1); // Info: (20240328 - Julian) 起始色
+    linear1
+      .append('stop')
+      .attr('offset', '100%')
+      .style('stop-color', '#61BDFF') // Info: (20240328 - Julian) 結束色
+      .style('stop-opacity', 1);
+
+    const linear2 = svg
+      .append('defs')
+      .append('linearGradient')
+      .attr('id', 'redOrangeLinear') // Info: (20240328 - Julian) 紅橙漸變色
+      .attr('x1', '0%')
+      .attr('x2', '0%')
+      .attr('y1', '0%')
+      .attr('y2', '100%'); // Info: (20240328 - Julian) 0% 100% 0% 0% 代表從上到下漸變
+    linear2
+      .append('stop')
+      .attr('offset', '0%')
+      .style('stop-color', '#FF0F7B')
+      .style('stop-opacity', 1); // Info: (20240328 - Julian) 起始色
+    linear2
+      .append('stop')
+      .attr('offset', '100%')
+      .style('stop-color', '#F89B29') // Info: (20240328 - Julian) 結束色
+      .style('stop-opacity', 1);
+
+    // Info: (20240328 - Julian) 連線
+    const link = svg
+      .append('g')
+      .attr('stroke', '#F0F0F0')
+      .selectAll('line')
+      .data(links)
+      .join('line')
+      .attr('stroke-width', 3)
+      .style('stop-opacity', 1);
+
+    // Info: (20240328 - Julian) 點
+    const node = svg
+      .append('g')
+      .selectAll('circle')
+      .data(nodes)
+      .join('circle')
+      .attr('class', (d: any) => (d.group === 'target' ? 'target' : 'interactions'))
+      .attr('stroke-width', 10)
+      .attr('r', 50)
+      .attr('fill', '#161830')
+      .attr('stroke', 'url(#bluePurpleLinear)');
+
+    //node.selectAll('.target').attr('stroke', 'url(#bluePurpleLinear)');
+
+    //node.selectAll('.interactions').attr('stroke', 'url(#redOrangeLinear)');
+
+    // Info: (20240328 - Julian) 文字
+    const text = svg
+      .append('g')
+      .attr('class', 'labels')
+      .selectAll('text')
+      .data(nodes)
+      .enter()
+      .append('text')
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'central')
+      .attr('fill', '#F0F0F0')
+      .text(d => truncateText(d.id, 10));
+
+    const simulation = d3
+      .forceSimulation(nodes)
+      // Info: (20240329 - Julian) 連結的引力
+      .force(
+        'link',
+        d3.forceLink(data.links).id((d: any) => d.id)
+      )
+      // Info: (20240329 - Julian) alphaTarget 代表模擬的 alpha 值，alpha 值越高，模擬的速度越快
+      .alphaTarget(0.3)
+      // Info: (20240329 - Julian) 點之間的引力
+      .force('charge', d3.forceManyBody().strength(forceStrength))
+      .force('x', d3.forceX())
+      .force('y', d3.forceY())
+      .on('tick', () => {
+        link
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y);
+
+        node.attr('cx', d => d.x).attr('cy', d => d.y);
+
+        text.attr('x', d => d.x).attr('y', d => d.y);
+      });
+
+    return () => {
+      simulation.stop();
+    };
+  }, [targetAddress, isLoading]);
+
+  /* 
   useEffect(() => {
     if (!canvasRef.current) return;
     const context = canvasRef.current.getContext('2d');
+
+    const containerRect = canvasRef.current.getBoundingClientRect();
+    const height = containerRect.height;
+    const width = containerRect.width;
 
     if (!context) return;
 
@@ -218,12 +357,13 @@ const TrackingView = () => {
       .force('collide', d3.forceCollide().radius(5).iterations(2))
       .force('charge', d3.forceManyBody().strength(-80))
       .on('tick', ticked);
-  }, [isLoading, targetAddress]);
+  }, [isLoading, targetAddress]); */
 
   const isShowGraph =
     targetAddress && !isLoading ? (
-      <canvas id="container" ref={canvasRef} width={width} height={height}></canvas>
-    ) : /* <div ref={contentRef} className="h-full min-h-600px w-full"></div>*/
+      <div id="container" ref={mapRef} className="h-700px w-full"></div>
+    ) : /* <canvas id="container" ref={canvasRef} width={1000} height={600}></canvas> */
+    /* <div ref={contentRef} className="h-full min-h-600px w-full"></div>*/
     null;
 
   return <>{isShowGraph}</>;
