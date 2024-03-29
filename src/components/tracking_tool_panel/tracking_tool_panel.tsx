@@ -12,31 +12,31 @@ import TrackingView from '../tracking_view/tracking_view';
 
 const TrackingToolPanel = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {targetTrackingType, targetTrackingTypeHandler, visibleAddAddressPanelHandler} =
-    useContext(TrackingContext);
+  const {
+    targetTrackingType,
+    targetTrackingTypeHandler,
+    visibleAddAddressPanelHandler,
+    zoomScale,
+    zoomScaleHandler,
+  } = useContext(TrackingContext);
 
-  // Info: (20240325 - Julian) 縮放比例
-  const [zoomPercentage, setZoomPercentage] = useState(100);
   // Info: (20240325 - Julian) 工具列展開
   const [isToolbarExpanded, setIsToolbarExpanded] = useState(false);
 
-  const handleZoomIn = () =>
-    setZoomPercentage(prev => {
-      if (prev >= 200) {
-        return 200;
-      }
-      return prev + 10;
-    });
-
-  const handleZoomOut = () =>
-    setZoomPercentage(prev => {
-      if (prev <= 100) {
-        return 100;
-      }
-      return prev - 10;
-    });
+  const handleZoomIn = () => {
+    if (zoomScale >= 2) return;
+    zoomScaleHandler(zoomScale + 0.1);
+  };
+  const handleZoomOut = () => {
+    if (zoomScale <= 1) return;
+    zoomScaleHandler(zoomScale - 0.1);
+  };
 
   const handleExpandToolbar = () => setIsToolbarExpanded(prev => !prev);
+
+  const displayZoomScale = Math.round(zoomScale * 100);
+  const disabledZoomIn = zoomScale >= 2;
+  const disabledZoomOut = zoomScale <= 1;
 
   const switchStyle = `before:absolute before:h-48px before:rounded-full ${
     targetTrackingType === TrackingType.ADDRESS
@@ -91,13 +91,13 @@ const TrackingToolPanel = () => {
   const viewZoom = (
     <div className="flex items-center space-x-4">
       {/* Info: (20240325 - Julian) Plus button */}
-      <button onClick={handleZoomIn} disabled={zoomPercentage >= 200} className={buttonStyle}>
+      <button onClick={handleZoomIn} disabled={disabledZoomIn} className={buttonStyle}>
         <HiPlus size={24} />
       </button>
-      {/* Info: (20240325 - Julian) Zoom percentage */}
-      <p className="w-50px text-center text-base">{zoomPercentage} %</p>
+      {/* Info: (20240325 - Julian) Zoom scale */}
+      <p className="w-50px text-center text-base">{displayZoomScale} %</p>
       {/* Info: (20240325 - Julian) Minus button */}
-      <button onClick={handleZoomOut} disabled={zoomPercentage <= 100} className={buttonStyle}>
+      <button onClick={handleZoomOut} disabled={disabledZoomOut} className={buttonStyle}>
         <HiMinus size={24} />
       </button>
     </div>

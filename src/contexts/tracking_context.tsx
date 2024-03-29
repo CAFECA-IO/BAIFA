@@ -14,6 +14,9 @@ export interface ITrackingContext {
 
   targetAddress: string;
   addAddressHandler: (address: string) => void;
+
+  zoomScale: number;
+  zoomScaleHandler: (scale: number) => void;
 }
 
 export enum TrackingType {
@@ -30,6 +33,9 @@ export const TrackingContext = createContext<ITrackingContext>({
 
   targetAddress: '',
   addAddressHandler: () => null,
+
+  zoomScale: 1,
+  zoomScaleHandler: () => null,
 });
 
 export const TrackingProvider = ({children}: ITrackingProvider) => {
@@ -53,6 +59,12 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     setTargetAddress(address);
   }, []);
 
+  // Info: (20240329 - Julian) 縮放比例
+  const [zoomScale, setZoomScale] = useState<number>(1);
+  const zoomScaleHandler = useCallback((scale: number) => {
+    setZoomScale(scale);
+  }, []);
+
   const defaultValue = {
     targetTrackingType,
     targetTrackingTypeHandler,
@@ -62,6 +74,9 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
 
     targetAddress,
     addAddressHandler,
+
+    zoomScale,
+    zoomScaleHandler,
   };
 
   return (
