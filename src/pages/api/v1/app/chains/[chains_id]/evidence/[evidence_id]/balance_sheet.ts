@@ -2,18 +2,22 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../../../prisma/client';
-import {IBalanceSheetsResponse} from '../../../../../../../../interfaces/balance_sheets_neo';
+import {
+  BalanceSheetsNeoSchema,
+  IBalanceSheetsResponse,
+  balanceSheetsNeoExample,
+} from '../../../../../../../../interfaces/balance_sheets_neo';
 import {IEvidenceContent} from '../../../../../../../../interfaces/evidence';
 
 type ResponseData = IBalanceSheetsResponse | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const evidenceId = typeof req.query.evidence_id === 'string' ? req.query.evidence_id : undefined;
-
   // ToDo: (20240315 - Julian) 找出 30 天前的 evidenceId
   const previousEvidenceId = evidenceId;
 
   try {
+       
     // Info: (20240315 - Julian) 從 evidences 撈出 current reports
     const currentReports = await prisma.evidences.findFirst({
       where: {
@@ -27,6 +31,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const currentReportsObj: IEvidenceContent = JSON.parse(currentReports?.content ?? '');
     // Info: (20240315 - Julian) 撈出 balanceSheet
     const currentBalance = currentReportsObj.balanceSheet;
+
+    const validateCurrentBalance = BalanceSheetsNeoSchema.safeParse(currentBalance);
+    if (!validateCurrentBalance.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation failed for currentBalance', validateCurrentBalance.error);
+      return res.status(400).json({} as IBalanceSheetsResponse);
+    }
 
     // Info: (20240315 - Julian) 從 evidences 撈出 previous reports
     const previousReports = await prisma.evidences.findFirst({
@@ -42,6 +53,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const previousReportsObj: IEvidenceContent = JSON.parse(previousReports?.content ?? '');
     // Info: (20240315 - Julian) 撈出 balanceSheet
     const previousBalance = previousReportsObj.balanceSheet;
+
+    const validatePreviousBalance = BalanceSheetsNeoSchema.safeParse(previousBalance);
+    if (!validatePreviousBalance.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation failed for previousBalance', validatePreviousBalance.error);
+      return res.status(400).json({} as IBalanceSheetsResponse);
+    }
 
     const result: IBalanceSheetsResponse = {
       currentReport: currentBalance,

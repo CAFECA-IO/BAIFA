@@ -13,7 +13,7 @@ import {ITransactionList} from '../../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {convertStringToSortingType, getChainIcon, truncateText} from '../../../../lib/common';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import TransactionList from '../../../../components/transaction_list/transaction_list';
 import {SearchBarWithKeyDown} from '../../../../components/search_bar/search_bar';
 import DatePicker from '../../../../components/date_picker/date_picker';
@@ -57,11 +57,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [activePage, setActivePage] = useState(1);
 
-  const {
-    data: transactionData,
-    isLoading: isTransactionLoading,
-    error: transactionError,
-  } = useAPIResponse<ITransactionList>(
+  const {data: transactionData, isLoading: isTransactionLoading} = useAPIResponse<ITransactionList>(
     `${APIURL.CHAINS}/${chainId}/transactions`,
     {
       method: HttpMethod.GET,
@@ -245,19 +241,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {chainId: 'isun', blockId: '1'},
-      locale: 'en',
-    },
-  ];
-
-  return {paths, fallback: 'blocking'};
-};
-
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+export const getServerSideProps: GetServerSideProps = async ({params, locale}) => {
   if (!params || !params.chainId || typeof params.chainId !== 'string') {
     return {
       notFound: true,

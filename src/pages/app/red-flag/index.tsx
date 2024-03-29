@@ -1,7 +1,6 @@
 import Head from 'next/head';
-import {useEffect, useState, useContext} from 'react';
-// import {AppContext} from '../../../contexts/app_context';
-import {MarketContext} from '../../../contexts/market_context';
+import useAPIResponse from '../../../lib/hooks/use_api_response';
+import {useEffect, useState} from 'react';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import NavBar from '../../../components/nav_bar/nav_bar';
@@ -10,102 +9,72 @@ import Footer from '../../../components/footer/footer';
 import {ILocale, TranslateFunction} from '../../../interfaces/locale';
 import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import {BFAURL} from '../../../constants/url';
-import {IRedFlagPage} from '../../../interfaces/red_flag';
-import {sortOldAndNewOptions, default30DayPeriod} from '../../../constants/config';
+import {IMenuOptions, IRedFlagPage} from '../../../interfaces/red_flag';
+import {
+  sortOldAndNewOptions,
+  default30DayPeriod,
+  defaultOption,
+  redFlagTypeI18nObj,
+} from '../../../constants/config';
 import {IDatePeriod} from '../../../interfaces/date_period';
+import {APIURL, HttpMethod} from '../../../constants/api_request';
+import {convertStringToSortingType, getKeyByValue} from '../../../lib/common';
 
 const RedFlagListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  // const appCtx = useContext(AppContext);
-  const {getAllRedFlags} = useContext(MarketContext);
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Info: (20240307 - Liz) 搜尋條件
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const flagNameOptionDefault = 'SORTING.ALL';
-  const [filteredFlagName, setFilteredFlagName] = useState<string>(flagNameOptionDefault);
+  const [filteredType, setFilteredType] = useState<string>(defaultOption);
+  const [activePage, setActivePage] = useState<number>(1);
 
-  // Info: (20240307 - Liz) API 查詢參數
-  const [apiQueryStr, setApiQueryStr] = useState(
-    `page=1&sort=SORTING.NEWEST&search=&flag=&start_date=0&end_date=0`
+  // Info: (20240319 - Julian) Call API to get menu options (API-034)
+  const {data: menuOptions} = useAPIResponse<IMenuOptions>(`${APIURL.RED_FLAGS}/menu_options`, {
+    method: HttpMethod.GET,
+  });
+
+  // Info: (20240307 - Liz) 取得代碼意義對照表
+  const redFlagTypeCodeMeaningObj = menuOptions?.redFlagTypeCodeMeaningObj ?? {};
+
+  // Info: (20240307 - Liz) 下拉式選單選項由 API 取得(選項是一般字串，格式像是: Large Deposit，而非 DB 原代碼: 0-9)
+  const redFlagTypes = menuOptions?.options ?? [];
+
+  // Info: (20240320 - Julian) 將下拉式選單選項的一般字串轉換成 i18n 字串
+  const redFlagTypeOptionWithI18n = redFlagTypes.map(redFlagType => {
+    return redFlagTypeI18nObj[redFlagType];
+  });
+
+  // Info: (20240320 - Julian) 選單選項(包含 all & 串上翻譯)
+  const redFlagTypeOptions = [defaultOption, ...redFlagTypeOptionWithI18n];
+
+  // Info: (20240320 - Julian) 將已被選擇選項轉成 DB 代碼 : 先將 i18n 字串轉換成一般字串，再將一般字串轉換成 DB 代碼
+  const i18nToStr = getKeyByValue(redFlagTypeI18nObj, filteredType) ?? '';
+  const filteredTypeCode = getKeyByValue(redFlagTypeCodeMeaningObj, i18nToStr) ?? '';
+
+  // Info: (20240325 - Liz) Call API to get red flag data (API-021)
+  const {data: redFlagData, isLoading: isRedFlagLoading} = useAPIResponse<IRedFlagPage>(
+    `${APIURL.RED_FLAGS}`,
+    {method: HttpMethod.GET},
+    // Info: (20240325 - Liz) 預設值 page=1&sort=desc&search=&flag=0&start_date=&end_date=
+    {
+      page: activePage,
+      sort: convertStringToSortingType(sorting),
+      search: search,
+      flag: filteredTypeCode, // Info: (20240307 - Liz) filteredType 轉換成代碼格式再送出
+      start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
+      end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
+    }
   );
 
-  // Info: (20240307 - Liz) UI
-  const [redFlagData, setRedFlagData] = useState<IRedFlagPage>();
-  const [activePage, setActivePage] = useState<number>(1);
   // Info: (20240307 - Liz) 從 API 取得總頁數
   const totalPages = redFlagData?.totalPages ?? 0;
-
-  // Info: (20240307 - Liz) 下拉式選單選項由 API 取得
-  const flagNames = redFlagData?.allRedFlagTypes ?? [];
-  const flagNameOptions = [flagNameOptionDefault, ...flagNames];
 
   // Info: (20240307 - Liz) 當日期、搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
   useEffect(() => {
     setActivePage(1);
-  }, [search, filteredFlagName, period, sorting]);
-
-  /*
-  useEffect(() => {
-    if (!appCtx.isInit) {
-      appCtx.init();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  */
-
-  // Info: (20240307 - Liz) Call API to get red flags data
-  // ToDo: (20240307 - Liz) 之後看是否可以串成 Shirley 寫的 useAPIResponse
-  useEffect(() => {
-    const getRedFlagData = async () => {
-      try {
-        const data = await getAllRedFlags(apiQueryStr);
-        setRedFlagData(data);
-      } catch (error) {
-        //console.log('getAllRedFlags error', error);
-      }
-    };
-
-    getRedFlagData();
-    // Info: (20240307 - Liz) 當 API 查詢參數改變時，重新取得資料
-  }, [apiQueryStr, getAllRedFlags]);
-
-  // Info: (20240307 - Liz) filteredFlagName 轉換成代碼格式再送出
-  const redFlagTypeCodesObj = redFlagData?.redFlagTypeCodeMeaningObj ?? {};
-
-  const getKeyByValue = (
-    object: {
-      [key: string]: string;
-    },
-    value: string
-  ) => {
-    return Object.keys(object).find(key => object[key] === value);
-  };
-
-  const filteredTagNameCode = getKeyByValue(redFlagTypeCodesObj, filteredFlagName) ?? '';
-
-  // Info: (20240307 - Liz) 設定 API 查詢參數
-  useEffect(() => {
-    const pageQuery = `page=${activePage}`;
-    const sortQuery = `&sort=${sorting}`;
-    const searchQuery = `&search=${search}`;
-    const startDateQuery = `&start_date=${period.startTimeStamp}`;
-    const endDateQuery = `&end_date=${period.endTimeStamp}`;
-    const flagQuery = `&flag=${filteredTagNameCode}`;
-
-    setApiQueryStr(
-      `${pageQuery}${sortQuery}${searchQuery}${flagQuery}${startDateQuery}${endDateQuery}`
-    );
-  }, [
-    activePage,
-    filteredTagNameCode,
-    period.endTimeStamp,
-    period.startTimeStamp,
-    search,
-    sorting,
-  ]);
+  }, [search, filteredType, period, sorting]);
 
   // Info: (20240307 - Liz) head title and breadcrumb
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
@@ -120,13 +89,7 @@ const RedFlagListPage = () => {
     },
   ];
 
-  // const displayedRedFlagList = !isLoading ? (
-  //   <RedFlagList redFlagData={redFlagData} />
-  // ) : (
-  //   // ToDo: (20231215 -Julian) Loading animation
-  //   <h1>Loading...</h1>
-  // );
-
+  // Info: (20240325 - Liz) 畫面顯示元件
   const displayedRedFlagList = (
     <RedFlagList
       redFlagData={redFlagData?.redFlagData ?? []}
@@ -138,10 +101,10 @@ const RedFlagListPage = () => {
       setActivePage={setActivePage}
       totalPages={totalPages}
       setSearch={setSearch}
-      // isLoading={isLoading} // ToDo: (20240307 - Liz) 再補上
-      filteredType={filteredFlagName}
-      setFilteredType={setFilteredFlagName}
-      typeOptions={flagNameOptions}
+      isLoading={isRedFlagLoading}
+      filteredType={filteredType}
+      setFilteredType={setFilteredType}
+      typeOptions={redFlagTypeOptions}
     />
   );
 

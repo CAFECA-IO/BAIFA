@@ -3,23 +3,19 @@ import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import Footer from '../../../../../../components/footer/footer';
 import {BsArrowLeftShort} from 'react-icons/bs';
-import {convertStringToSortingType, getChainIcon, truncateText} from '../../../../../../lib/common';
+import {convertStringToSortingType, getChainIcon} from '../../../../../../lib/common';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {IRedFlag, IRedFlagOfAddress} from '../../../../../../interfaces/red_flag';
+import {IRedFlagOfAddress} from '../../../../../../interfaces/red_flag';
 import RedFlagList from '../../../../../../components/red_flag_list/red_flag_list';
-import {useContext, useEffect, useState} from 'react';
-import {AppContext} from '../../../../../../contexts/app_context';
-import {MarketContext} from '../../../../../../contexts/market_context';
+import {useState} from 'react';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
-  DEFAULT_RED_FLAG_COUNT_IN_PAGE,
-  DEFAULT_TRUNCATE_LENGTH,
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
@@ -28,6 +24,7 @@ import Skeleton from '../../../../../../components/skeleton/skeleton';
 import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 import {IDatePeriod} from '../../../../../../interfaces/date_period';
+import {getDynamicUrl} from '../../../../../../constants/url';
 
 interface IRedFlagOfAddressPageProps {
   chainId: string;
@@ -50,7 +47,7 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
   const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
   const [filteredType, setFilteredType] = useState<string>('SORTING.ALL');
 
-  const {data, isLoading, error} = useAPIResponse<IRedFlagOfAddress>(
+  const {data, isLoading} = useAPIResponse<IRedFlagOfAddress>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/red_flags`,
     {
       method: HttpMethod.GET,
@@ -68,7 +65,7 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
 
   const typeOptions = ['SORTING.ALL', ...(data?.allRedFlagTypes ?? [])];
 
-  const backClickHandler = () => router.back();
+  const backClickHandler = () => router.push(`${getDynamicUrl(chainId, addressId).ADDRESS}`);
 
   const displayedRedFlagList = (
     <RedFlagList

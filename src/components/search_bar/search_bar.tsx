@@ -57,11 +57,22 @@ const SearchBar = ({searchBarPlaceholder, setSearch}: ISearchBarProps) => {
  * @param {Dispatch<SetStateAction<string>>} props.setSearch - The function to update the search state.
  */
 export const SearchBarWithKeyDown = ({searchBarPlaceholder, setSearch}: ISearchBarProps) => {
+  // Info: (20240318 - Julian) 定義一個通用函數，用於修改 search state
+  const handleSetSearch = (value: string) => setSearch(value);
+
   // Info: (20240222 - Julian) 按下 Enter 鍵時，修改 search state 並觸發搜尋
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      setSearch(e.currentTarget.value);
+      e.preventDefault();
+      handleSetSearch(e.currentTarget.value);
     }
+  };
+
+  // Info: (20240318 - Julian) 點擊搜尋按鈕時，修改 search state 並觸發搜尋
+  const handleSearchClick = () => {
+    // Info: (20240318 - Julian) 取得 input 內容
+    const input = document.querySelector('input[type="search"]') as HTMLInputElement;
+    handleSetSearch(input.value);
   };
 
   return (
@@ -72,9 +83,12 @@ export const SearchBarWithKeyDown = ({searchBarPlaceholder, setSearch}: ISearchB
         placeholder={searchBarPlaceholder}
         onKeyDown={handleKeyDown}
       />
-      <div className="absolute right-5 top-3 text-2xl">
+      <button
+        onClick={handleSearchClick}
+        className="absolute right-3 top-3 z-10 bg-purpleLinear px-2 text-2xl"
+      >
         <RiSearchLine />
-      </div>
+      </button>
     </div>
   );
 };

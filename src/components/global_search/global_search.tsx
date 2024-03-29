@@ -40,7 +40,7 @@ const GlobalSearch = ({
     setComponentVisible: setSuggestionVisible,
   } = useOuterClick<HTMLInputElement>(false);
 
-  const {data, isLoading, error} = useAPIResponse<ISuggestions>(
+  const {data /* isLoading, error */} = useAPIResponse<ISuggestions>(
     `${APIURL.SEARCH_SUGGESTIONS}`,
     {
       method: HttpMethod.GET,

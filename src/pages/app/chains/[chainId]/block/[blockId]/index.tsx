@@ -4,7 +4,7 @@ import {useEffect, useContext} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
 import UseAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import {useRouter} from 'next/router';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
@@ -15,9 +15,9 @@ import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {IBlockDetail, dummyBlockDetail} from '../../../../../../interfaces/block';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {getDynamicUrl} from '../../../../../../constants/url';
+import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
 import {getChainIcon} from '../../../../../../lib/common';
-import {DEFAULT_CHAIN_ICON} from '../../../../../../constants/config';
+import {DEFAULT_CHAIN_ICON, buttonStyle} from '../../../../../../constants/config';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
 import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 
@@ -51,12 +51,9 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
   const previousLink = getDynamicUrl(chainId, `${blockData?.previousBlockId}`).BLOCK;
   const nextLink = getDynamicUrl(chainId, `${blockData?.nextBlockId}`).BLOCK;
 
-  const backClickHandler = () => router.back();
+  const backClickHandler = () => router.push(`${BFAURL.CHAINS}/${chainId}`);
   const previousHandler = () => router.push(previousLink);
   const nextHandler = () => router.push(nextLink);
-
-  const buttonStyle =
-    'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
 
   // Info: (20231213 - Julian) To check if the previousBlock or nextBlock exist
   const previousId = blockData?.previousBlockId ? blockData?.previousBlockId : undefined;
@@ -144,33 +141,20 @@ const BlockDetailPage = ({blockId, chainId}: IBlockDetailPageProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {chainId: 'isun', blockId: '1'},
-      locale: 'en',
-    },
-  ];
-
-  return {paths, fallback: 'blocking'};
-};
-
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
-  if (!params || !params.blockId || typeof params.blockId !== 'string') {
+export const getServerSideProps: GetServerSideProps = async ({params, locale}) => {
+  if (
+    !params ||
+    !params.blockId ||
+    typeof params.blockId !== 'string' ||
+    !params.chainId ||
+    typeof params.chainId !== 'string'
+  ) {
     return {
       notFound: true,
     };
   }
 
-  const blockId = params.blockId;
-  const chainId = params.chainId;
-
-  if (!blockId || !chainId) {
-    return {
-      notFound: true,
-    };
-  }
+  const {blockId, chainId} = params;
 
   return {
     props: {

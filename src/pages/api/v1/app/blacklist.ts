@@ -10,7 +10,7 @@ type ResponseData = IBlackListData;
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240305 - Liz) query string parameter
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
-  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search =
     typeof req.query.search === 'string' ? req.query.search.toLowerCase().trim() : undefined;
   const tag = typeof req.query.tag === 'string' ? req.query.tag : undefined;
@@ -18,9 +18,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240305 - Liz) 計算分頁的 skip 與 take
   const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240306 - Liz) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // Info: (20240306 - Liz) 取幾筆
-
-  // Info: (20240305 - Liz) 排序
-  const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
   // Info: (20240306 - Liz) tag name 篩選，如果是空字串就搜尋全部
   const tagName = tag === '' ? undefined : tag;
@@ -167,7 +164,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       }
     });
 
-    // Info: (20240216 - Liz) 將取得的 blacklist 資料轉換成 API 要的格式，並且依照 sorting 排序
+    // Info: (20240216 - Liz) 將取得的 blacklist 資料轉換成 API 要的格式，並且依照 sort 排序
     const blacklistData = blacklist
       .filter(item => item.target !== null && item.target !== undefined) // Info: (20240301 - Liz) 過濾掉 item.target 為 null 或 undefined 的資料
       .map(item => {
@@ -201,7 +198,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         };
       })
       .sort((a, b) => {
-        if (sorting === 'asc') {
+        if (sort === 'asc') {
           return a.latestActiveTime - b.latestActiveTime;
         }
         return b.latestActiveTime - a.latestActiveTime;

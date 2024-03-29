@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect, Dispatch, SetStateAction} from 'react';
+import {useState, Dispatch, SetStateAction} from 'react';
 import useStateRef from 'react-usestateref';
 import {SearchBarWithKeyDown} from '../search_bar/search_bar';
 import SortingMenu from '../sorting_menu/sorting_menu';
@@ -101,8 +101,7 @@ const BlockProducedHistorySection = ({
                     onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
                   />
                   <p className="text-sm">
-                    +{roundToDecimal(reward, 2)}
-                    {unit}
+                    +{roundToDecimal(reward, 2)} {unit}
                   </p>
                 </div>
               </div>

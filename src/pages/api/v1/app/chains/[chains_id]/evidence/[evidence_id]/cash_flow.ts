@@ -2,7 +2,10 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../../../prisma/client';
-import {ICashFlowResponse} from '../../../../../../../../interfaces/cash_flow_neo';
+import {
+  ICashFlowResponse,
+  CashFlowNeoSchema,
+} from '../../../../../../../../interfaces/cash_flow_neo';
 import {IEvidenceContent} from '../../../../../../../../interfaces/evidence';
 
 type ResponseData = ICashFlowResponse | undefined;
@@ -17,19 +20,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const lastYearEvidenceId = evidenceId;
 
   try {
-    // Info: (20240315 - Julian) 從 evidences 撈出 current reports
     const currentReports = await prisma.evidences.findFirst({
-      where: {
-        evidence_id: evidenceId,
-      },
-      select: {
-        content: true,
-      },
+      where: {evidence_id: evidenceId},
+      select: {content: true},
     });
-    // Info: (20240315 - Julian) 轉換成 object
-    const currentReportsObj: IEvidenceContent = JSON.parse(currentReports?.content ?? '');
-    // Info: (20240315 - Julian) 撈出 cashFlow
-    const currentCash = currentReportsObj.cashFlow;
+
+    if (!currentReports || !currentReports.content) {
+      return res.status(404).json(undefined);
+    }
+
+    const currentReportsObj: IEvidenceContent = JSON.parse(currentReports.content);
+    const validateCurrentCash = CashFlowNeoSchema.safeParse(currentReportsObj.cashFlow);
+
+    if (!validateCurrentCash.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation failed', validateCurrentCash.error);
+      return res.status(400).json(undefined);
+    }
 
     // Info: (20240315 - Julian) 從 evidences 撈出 previous reports
     const previousReports = await prisma.evidences.findFirst({
@@ -43,7 +50,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240315 - Julian) 轉換成 object
     const previousReportsObj: IEvidenceContent = JSON.parse(previousReports?.content ?? '');
     // Info: (20240315 - Julian) 撈出 cashFlow
-    const previousCash = previousReportsObj.cashFlow;
+    const validatePreviousCash = CashFlowNeoSchema.safeParse(previousReportsObj.cashFlow);
+    if (!validatePreviousCash.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation failed', validatePreviousCash.error);
+      return res.status(400).json(undefined);
+    }
 
     // Info: (20240315 - Julian) 從 evidences 撈出 last year reports
     const lastYearReports = await prisma.evidences.findFirst({
@@ -57,17 +69,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240315 - Julian) 轉換成 object
     const lastYearReportsObj: IEvidenceContent = JSON.parse(lastYearReports?.content ?? '');
     // Info: (20240315 - Julian) 撈出 cashFlow
-    const lastYearCash = lastYearReportsObj.cashFlow;
+    const validateLastYearCash = CashFlowNeoSchema.safeParse(lastYearReportsObj.cashFlow);
+
+    if (!validateLastYearCash.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation failed', validateLastYearCash.error);
+      return res.status(400).json(undefined);
+    }
 
     const result: ICashFlowResponse = {
-      currentReport: currentCash,
-      previousReport: previousCash,
-      lastYearReport: lastYearCash,
+      currentReport: validateCurrentCash.data,
+      previousReport: validatePreviousCash.data,
+      lastYearReport: validateLastYearCash.data,
     };
 
     return res.status(200).json(result);
   } catch (error) {
-    res.status(500).json(undefined);
+    // eslint-disable-next-line no-console
+    console.error('Server error', error);
+    return res.status(500).json(undefined);
   } finally {
     await prisma.$disconnect();
   }

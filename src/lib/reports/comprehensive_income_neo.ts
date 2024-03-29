@@ -1,7 +1,7 @@
 import {
   IComprehensiveIncomeNeo,
   IIncomeAccountingDetail,
-} from '../../interfaces/conprehensive_income_neo';
+} from '../../interfaces/comprehensive_income_neo';
 import {defaultBreakdown} from '../../interfaces/report_currency_detail';
 import {roundToDecimal, getChange} from '../common';
 import {ITable} from '../../interfaces/report_table';

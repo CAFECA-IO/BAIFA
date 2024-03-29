@@ -9,10 +9,10 @@ type ResponseData = IRedFlagPage;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240307 - Liz) query string parameter
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
-  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? parseInt(req.query.search, 10) : undefined;
-  const flag = typeof req.query.flag === 'string' ? req.query.flag : undefined;
+  const flag = (req.query.flag as string) === '' ? undefined : (req.query.flag as string);
 
   // Info: (20240307 - Liz) 將 req 傳來的日期字串轉換成數字或 undefined
   const parseDate = (dateString: string | string[] | undefined) => {
@@ -26,20 +26,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const endDate = parseDate(req.query.end_date);
 
   // Info: (20240307 - Liz) 計算分頁的 skip 與 take
-  const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240307 - Liz) 跳過前面幾筆
+  const skip = (page - 1) * ITEM_PER_PAGE; // Info: (20240307 - Liz) 跳過前面幾筆
   const take = ITEM_PER_PAGE; // Info: (20240307 - Liz) 取幾筆
-
-  // Info: (20240307 - Liz) 排序
-  const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
-
-  // Info: (20240307 - Liz) flag name 篩選，如果是空字串就搜尋全部
-  const redFlagType = flag === '' ? undefined : flag;
 
   try {
     // Info:(20240118 - Liz) 從 red_flags Table 中取得資料，並做條件篩選以及分頁
     const redFlags = await prisma.red_flags.findMany({
       where: {
-        red_flag_type: redFlagType, // Info: (20240307 - Liz) 篩選 red_flag_type
+        red_flag_type: flag, // Info: (20240307 - Liz) 篩選 red_flag_type
         id: search ? {equals: search} : undefined, // Info: (20240307 - Liz) 篩選 id
         created_timestamp: {
           gte: startDate,
@@ -59,10 +53,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
       orderBy: [
         {
-          created_timestamp: sorting, // Info: (20240307 - Liz) 1. created_timestamp 由 sorting 決定排序
+          created_timestamp: sort, // Info: (20240307 - Liz) 1. created_timestamp 由 sort 決定排序
         },
         {
-          id: sorting, // Info: (20240315 - Liz) 2. id 由 sorting 決定排序
+          id: sort, // Info: (20240315 - Liz) 2. id 由 sort 決定排序
         },
       ],
       // Info: (20240307 - Liz) 分頁
@@ -73,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // Info: (20240307 - Liz) 取得 red flag 總筆數
     const totalRedFlagCount = await prisma.red_flags.count({
       where: {
-        red_flag_type: redFlagType, // Info: (20240307 - Liz) 篩選 red_flag_type
+        red_flag_type: flag, // Info: (20240307 - Liz) 篩選 red_flag_type
         id: search ? {equals: search} : undefined, // Info: (20240307 - Liz) 篩選 id
         created_timestamp: {
           gte: startDate,
@@ -101,20 +95,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       redFlagTypeCodeMeaningObj[codeValue] = code.meaning ?? '';
     });
 
-    // Info: (20240307 - Liz) 取得所有的 red Flag Type 並去除重複
-    const uniqueRedFlagTypes = await prisma.red_flags.findMany({
-      select: {
-        red_flag_type: true,
-      },
-      distinct: ['red_flag_type'],
-    });
-
-    // Info: (20240307 - Liz)  用不重複的 red Flag Type 做成下拉式選單的選項
-    const allRedFlagTypes = uniqueRedFlagTypes.map(redFlagType => {
-      return redFlagTypeCodeMeaningObj[`${redFlagType.red_flag_type}`];
-    });
-
-    // Info:(20240118 - Liz) 將撈出來的資料轉換成 API 要的格式
+    // Info:(20240118 - Liz) 組合回傳資料
     const redFlagsData = redFlags.map(redFlag => {
       const id = `${redFlag.id}`;
       const chainId = `${redFlag.chain_id}`;
@@ -139,8 +120,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const result: ResponseData = {
       redFlagData: redFlagsData,
       totalPages,
-      allRedFlagTypes: allRedFlagTypes,
-      redFlagTypeCodeMeaningObj,
     };
 
     prisma.$disconnect();

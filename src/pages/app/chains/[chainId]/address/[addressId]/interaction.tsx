@@ -29,6 +29,7 @@ import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
+import {getDynamicUrl} from '../../../../../../constants/url';
 
 interface IInteractionPageProps {
   addressId: string;
@@ -135,7 +136,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   const sortingOptions = typeOptions.map(typeOption => typeOption.text);
   const sortByOptions = [...sortMostAndLeastOptions, ...sortOldAndNewOptions];
 
-  const backClickHandler = () => router.back();
+  const backClickHandler = () => router.push(`${getDynamicUrl(chainId, addressId).ADDRESS}`);
 
   const [filteredType, setFilteredType, filteredTypeRef] = useStateRef<string>(
     queryToTextOptionsMap[type as keyof typeof queryToTextOptionsMap] ?? 'all'

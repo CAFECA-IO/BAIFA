@@ -8,8 +8,11 @@ import {TranslateFunction} from '../../interfaces/locale';
 import {ITransactionDetail} from '../../interfaces/transaction';
 import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {TransactionStatus, DefaultTransactionStatus} from '../../constants/transaction_status';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {DEFAULT_TRUNCATE_LENGTH, redFlagTypeI18nObj} from '../../constants/config';
 import Skeleton from '../skeleton/skeleton';
+import {APIURL, HttpMethod} from '../../constants/api_request';
+import {IMenuOptions} from '../../interfaces/red_flag';
+import useAPIResponse from '../../lib/hooks/use_api_response';
 
 interface ITransactionDetailProps {
   transactionData: ITransactionDetail;
@@ -27,10 +30,17 @@ const TransactionDetail = ({transactionData, isLoading}: ITransactionDetailProps
     from,
     to,
     evidenceId,
+    input,
     fee,
     flaggingRecords,
     unit,
   } = transactionData;
+
+  // Info: (20240322 - Julian) Get menu options from API
+  const {data: menuOptions} = useAPIResponse<IMenuOptions>(`${APIURL.RED_FLAGS}/menu_options`, {
+    method: HttpMethod.GET,
+  });
+  const flaggingMeaning = menuOptions?.redFlagTypeCodeMeaningObj ?? {};
 
   const blockLink = getDynamicUrl(chainId, `${blockId}`).BLOCK;
 
@@ -139,7 +149,10 @@ const TransactionDetail = ({transactionData, isLoading}: ITransactionDetailProps
       </BoltButton>
     </Link>
   ) : (
-    <p>{t('COMMON.NONE')}</p>
+    // Info: (20240322 - Julian) 如果沒有 evidence，就顯示 input
+    <div className="max-h-200px flex-1 overflow-scroll break-all bg-darkPurple3 p-4 text-sm">
+      {input}
+    </div>
   );
   const displayContent = !isLoading ? evidence : <Skeleton height={24} width={80} />;
 
@@ -161,23 +174,31 @@ const TransactionDetail = ({transactionData, isLoading}: ITransactionDetailProps
     <Skeleton height={24} width={80} />
   );
 
-  const Flagging =
-    // Info: (20240111 - Julian) If flaggingRecords is not null and length is not 0, then display flaggingRecords
+  const flagging =
     !!flaggingRecords && flaggingRecords.length !== 0 ? (
-      flaggingRecords.map((flaggingRecord, index) => {
-        const redFlagLink = getDynamicUrl(chainId, `${flaggingRecord.redFlagId}`).RED_FLAG;
-        return (
-          <Link key={index} href={redFlagLink}>
-            <BoltButton className="w-fit px-3 py-1" color="red" style="solid">
-              {t(flaggingRecord.redFlagType)}
-            </BoltButton>
-          </Link>
-        );
-      })
+      // Info: (20240111 - Julian) If flaggingRecords is not null and length is not 0, then display flaggingRecords
+      <div className="flex flex-wrap items-center gap-2 px-4">
+        {flaggingRecords.map((flaggingRecord, index) => {
+          const redFlagLink = getDynamicUrl(chainId, `${flaggingRecord.redFlagId}`).RED_FLAG;
+          // Info: (20240322 - Julian) 將代碼轉換成 DB 字串
+          const flaggingStr =
+            flaggingMeaning[flaggingRecord.redFlagType] ?? flaggingRecord.redFlagType;
+          // Info: (20240322 - Julian) 將 DB 字串轉換成 i18n 字串
+          const flaggingI18n = redFlagTypeI18nObj[flaggingStr] ?? flaggingStr;
+
+          return (
+            <Link key={index} href={redFlagLink}>
+              <BoltButton className="w-fit px-3 py-1" color="red" style="solid">
+                {t(flaggingI18n)}
+              </BoltButton>
+            </Link>
+          );
+        })}
+      </div>
     ) : (
       <p>{t('COMMON.NONE')}</p>
     );
-  const displayFlagging = !isLoading ? Flagging : <Skeleton height={24} width={80} />;
+  const displayFlagging = !isLoading ? flagging : <Skeleton height={24} width={80} />;
 
   return (
     <div className="flex w-full flex-col divide-y divide-darkPurple4 rounded-lg bg-darkPurple p-3 text-base shadow-xl">

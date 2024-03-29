@@ -6,10 +6,12 @@ import Tooltip from '../tooltip/tooltip';
 import BoltButton from '../bolt_button/bolt_button';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
-import {IRedFlagDetail} from '../../interfaces/red_flag';
+import {IMenuOptions, IRedFlagDetail} from '../../interfaces/red_flag';
 import {getChainIcon, timestampToString, truncateText} from '../../lib/common';
 import {getDynamicUrl} from '../../constants/url';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {DEFAULT_TRUNCATE_LENGTH, redFlagTypeI18nObj} from '../../constants/config';
+import {APIURL, HttpMethod} from '../../constants/api_request';
+import useAPIResponse from '../../lib/hooks/use_api_response';
 
 interface IRedFlagDetailProps {
   redFlagData: IRedFlagDetail;
@@ -19,6 +21,15 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {chainId, unit, redFlagType, interactedAddresses, createdTimestamp, totalAmount} =
     redFlagData;
+
+  // Info: (20240322 - Julian) Get menu options from API
+  const {data: menuOptions} = useAPIResponse<IMenuOptions>(`${APIURL.RED_FLAGS}/menu_options`, {
+    method: HttpMethod.GET,
+  });
+  const flaggingMeaning = menuOptions?.redFlagTypeCodeMeaningObj ?? {};
+
+  const redFlagTypeMeaning = flaggingMeaning[redFlagType] ?? redFlagType;
+  const redFlagI18n = redFlagTypeI18nObj[redFlagTypeMeaning] ?? redFlagTypeMeaning;
 
   const chainIcon = getChainIcon(chainId);
 
@@ -47,13 +58,11 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('RED_FLAG_ADDRESS_PAGE.RED_FLAG_TYPE')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('RED_FLAG_ADDRESS_PAGE.RED_FLAG_TYPE_TOOLTIP')}</Tooltip>
         </div>
         <div className="flex items-center gap-2">
           <Image src="/icons/red_flag.svg" alt="red_flag_icon" width={24} height={24} />
-          <p>{t(redFlagType)}</p>
+          <p>{t(redFlagI18n)}</p>
         </div>
       </div>
 
@@ -61,9 +70,7 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
         <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('RED_FLAG_ADDRESS_PAGE.FLAGGING_TIME')}</p>
-          <Tooltip>
-            This is tooltip Sample Text. So if I type in more content, it would be like this.
-          </Tooltip>
+          <Tooltip>{t('RED_FLAG_ADDRESS_PAGE.FLAGGING_TIME_TOOLTIP')}</Tooltip>
         </div>
 
         {/* Info: if the createdTimestamp is null, show the animation */}
@@ -86,15 +93,17 @@ const RedFlagDetail = ({redFlagData}: IRedFlagDetailProps) => {
 
       {/* Info: (20231110 - Julian) Interacted with */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <div className="flex items-center text-sm font-bold text-lilac lg:min-w-200px lg:text-base">
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:min-w-200px lg:text-base">
           <p>{t('RED_FLAG_ADDRESS_PAGE.INTERACTED_WITH')}</p>
+          <Tooltip>{t('RED_FLAG_ADDRESS_PAGE.INTERACTED_WITH_TOOLTIP')}</Tooltip>
         </div>
         <div className="flex flex-wrap items-center gap-3">{displayInteractedAddresses}</div>
       </div>
       {/* Info: (20231110 - Julian) Total Amount */}
       <div className="flex flex-col space-y-2 px-3 py-4 lg:flex-row lg:items-center lg:space-y-0">
-        <div className="flex items-center text-sm font-bold text-lilac lg:w-200px lg:text-base">
+        <div className="flex items-center space-x-2 text-sm font-bold text-lilac lg:w-200px lg:text-base">
           <p>{t('RED_FLAG_ADDRESS_PAGE.TOTAL_AMOUNT')}</p>
+          <Tooltip>{t('RED_FLAG_ADDRESS_PAGE.TOTAL_AMOUNT_TOOLTIP')}</Tooltip>
         </div>
         <div className="flex items-center space-x-2">
           <Image src={chainIcon.src} alt={chainIcon.alt} width={24} height={24} />

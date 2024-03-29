@@ -10,15 +10,8 @@ import {IChainDetail, IChain} from '../interfaces/chain';
 import {IPromotion, defaultPromotion} from '../interfaces/promotion';
 import {ISearchResult} from '../interfaces/search_result';
 import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
+import {IBlockDetail, IProducedBlock, IBlockList} from '../interfaces/block';
 import {
-  IBlock,
-  IBlockDetail,
-  IProducedBlock,
-  IProductionBlock,
-  IBlockList,
-} from '../interfaces/block';
-import {
-  ITransaction,
   ITransactionData,
   ITransactionDetail,
   ITransactionList,
@@ -30,18 +23,17 @@ import {
   IAddressRelatedTransaction,
 } from '../interfaces/address';
 import {IReviewDetail, IReviews} from '../interfaces/review';
-import {IRedFlag, IRedFlagDetail, IRedFlagOfCurrency, IRedFlagPage} from '../interfaces/red_flag';
+import {
+  IRedFlag,
+  IRedFlagDetail,
+  IRedFlagListForCurrency,
+  IRedFlagPage,
+} from '../interfaces/red_flag';
 import {IInteractionItem} from '../interfaces/interaction_item';
 import {IContractDetail} from '../interfaces/contract';
 import {IEvidenceDetail} from '../interfaces/evidence';
-import {
-  ICurrency,
-  ICurrencyDetailString,
-  ICurrencyListPage,
-  IHolder,
-  ITop100Holders,
-} from '../interfaces/currency';
-import {IBlackList, IBlackListData} from '../interfaces/blacklist';
+import {ICurrencyDetailString, ICurrencyListPage, ITop100Holders} from '../interfaces/currency';
+import {IBlackListData} from '../interfaces/blacklist';
 
 export interface IMarketProvider {
   children: React.ReactNode;
@@ -74,6 +66,10 @@ export interface IMarketContext {
   ) => Promise<ITransactionList>;
   getCurrencyTransactions: (
     currencyId: string,
+    queryStr?: string
+  ) => Promise<ITransactionHistorySection>;
+  getRedFlagTransactions: (
+    redFlagId: string,
     queryStr?: string
   ) => Promise<ITransactionHistorySection>;
   getTransactionDetail: (chainId: string, transactionId: string) => Promise<ITransactionDetail>;
@@ -120,7 +116,10 @@ export interface IMarketContext {
   getCurrencies: (queryStr?: string) => Promise<ICurrencyListPage>;
   getCurrencyDetail: (currencyId: string) => Promise<ICurrencyDetailString>;
   getCurrencyTop100Holders: (currencyId: string, queryStr?: string) => Promise<ITop100Holders>;
-  getRedFlagsFromCurrency: (currencyId: string) => Promise<IRedFlagOfCurrency[]>;
+  getRedFlagsOfCurrency: (
+    currencyId: string,
+    queryStr?: string
+  ) => Promise<IRedFlagListForCurrency>;
   getAllRedFlags: (queryStr?: string) => Promise<IRedFlagPage>;
   getRedFlagDetail: (redFlagId: string) => Promise<IRedFlagDetail>;
   getSearchResult: (searchInput: string) => Promise<ISearchResult[]>;
@@ -145,6 +144,7 @@ export const MarketContext = createContext<IMarketContext>({
   getTransactionList: () => Promise.resolve({} as ITransactionList),
   getTransactionListOfBlock: () => Promise.resolve({} as ITransactionList),
   getCurrencyTransactions: () => Promise.resolve({} as ITransactionHistorySection),
+  getRedFlagTransactions: () => Promise.resolve({} as ITransactionHistorySection),
   getTransactionDetail: () => Promise.resolve({} as ITransactionDetail),
   getAddressBrief: () => Promise.resolve({} as IAddressBrief),
   getAddressReviewList: () => Promise.resolve([] as IReviewDetail[]),
@@ -160,7 +160,7 @@ export const MarketContext = createContext<IMarketContext>({
   getCurrencies: () => Promise.resolve({} as ICurrencyListPage),
   getCurrencyDetail: () => Promise.resolve({} as ICurrencyDetailString),
   getCurrencyTop100Holders: () => Promise.resolve({} as ITop100Holders),
-  getRedFlagsFromCurrency: () => Promise.resolve([] as IRedFlagOfCurrency[]),
+  getRedFlagsOfCurrency: () => Promise.resolve({} as IRedFlagListForCurrency),
   getAllRedFlags: () => Promise.resolve({} as IRedFlagPage),
   getRedFlagDetail: () => Promise.resolve({} as IRedFlagDetail),
   getSearchResult: () => Promise.resolve([] as ISearchResult[]),
@@ -174,7 +174,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
   //const [currencyList, setCurrencyList] = useState<ICurrency[]>([]);
   //const [blacklist, setBlacklist] = useState<IBlackList[]>([]);
 
-  const [chainLoading, setChainLoading] = useState<boolean>(true);
+  //const [chainLoading, setChainLoading] = useState<boolean>(true);
 
   const getPromotion = useCallback(async () => {
     let data: IPromotion = defaultPromotion;
@@ -191,7 +191,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
 
   const getChains = useCallback(async () => {
     let data: IChainDetail[] = [];
-    setChainLoading(true);
+    //setChainLoading(true);
     try {
       const response = await fetch(`${APIURL.CHAINS}`, {
         method: 'GET',
@@ -409,6 +409,24 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('getCurrencyTransactions error', error);
+    }
+    return data;
+  }, []);
+
+  const getRedFlagTransactions = useCallback(async (redFlagId: string, queryStr?: string) => {
+    let data: ITransactionHistorySection = {} as ITransactionHistorySection;
+    try {
+      const response = queryStr
+        ? await fetch(`${APIURL.RED_FLAGS}/${redFlagId}/transactions?${queryStr}`, {
+            method: 'GET',
+          })
+        : await fetch(`${APIURL.RED_FLAGS}/${redFlagId}/transactions`, {
+            method: 'GET',
+          });
+      data = await response.json();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('getRedFlagTransactions error', error);
     }
     return data;
   }, []);
@@ -719,16 +737,20 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     return data;
   }, []);
 
-  const getRedFlagsFromCurrency = useCallback(async (currencyId: string) => {
-    let data: IRedFlagOfCurrency[] = [];
+  const getRedFlagsOfCurrency = useCallback(async (currencyId: string, queryStr?: string) => {
+    let data: IRedFlagListForCurrency = {} as IRedFlagListForCurrency;
     try {
-      const response = await fetch(`${APIURL.CURRENCIES}/${currencyId}/red_flags`, {
-        method: 'GET',
-      });
+      const response = queryStr
+        ? await fetch(`${APIURL.CURRENCIES}/${currencyId}/red_flags?${queryStr}`, {
+            method: 'GET',
+          })
+        : await fetch(`${APIURL.CURRENCIES}/${currencyId}/red_flags`, {
+            method: 'GET',
+          });
       data = await response.json();
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('getRedFlagsFromCurrency error', error);
+      console.error('getRedFlagsOfCurrency error', error);
     }
     return data;
   }, []);
@@ -783,6 +805,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getTransactionList,
     getTransactionListOfBlock,
     getCurrencyTransactions,
+    getRedFlagTransactions,
     getTransactionDetail,
     getAddressBrief,
     getAddressReviewList,
@@ -798,7 +821,7 @@ export const MarketProvider = ({children}: IMarketProvider) => {
     getCurrencies,
     getCurrencyDetail,
     getCurrencyTop100Holders,
-    getRedFlagsFromCurrency,
+    getRedFlagsOfCurrency,
     getAllRedFlags,
     getRedFlagDetail,
     getSearchResult,

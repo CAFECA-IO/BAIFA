@@ -15,7 +15,7 @@ import ReportCover from '../report_cover/report_cover';
 import ReportPageBody from '../report_page_body/report_page_body';
 import ReportRiskPages from '../report_risk_pages/report_risk_pages';
 import ReportTable from '../report_table/report_table';
-import {IComprehensiveIncomeResponse} from '../../interfaces/conprehensive_income_neo';
+import {IComprehensiveIncomeResponse} from '../../interfaces/comprehensive_income_neo';
 import {APIURL, HttpMethod} from '../../constants/api_request';
 import ReportExchageRateFormNeo from '../report_exchage_rate_form_neo/report_exchage_rate_form_neo';
 

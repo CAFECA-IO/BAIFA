@@ -159,6 +159,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const evidenceId =
       transactionData?.evidence_id !== null ? transactionData?.evidence_id : undefined;
 
+    // Info: (20240322 - Julian) 如果沒有 evidence_id，就到 transaction_raw 裡撈 input
+    const transactionRaw = await prisma.transaction_raw.findFirst({
+      where: {
+        hash: `${transaction_id}`,
+      },
+      select: {
+        input: true,
+      },
+    });
+    const input = transactionRaw?.input ?? undefined;
+
     // Info: (20240119 - Julian) 轉換成 API 要的格式
     const result: ResponseData = transactionData
       ? {
@@ -172,6 +183,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           from: from,
           to: to,
           evidenceId: evidenceId,
+          input: input,
           value: value,
           fee: feeDecimal,
           unit: unit,

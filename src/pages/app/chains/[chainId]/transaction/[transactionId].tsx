@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useContext, useEffect} from 'react';
 import {useRouter} from 'next/router';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
 import TransactionDetail from '../../../../../components/transaction_detail/transaction_detail';
 import BoltButton from '../../../../../components/bolt_button/bolt_button';
@@ -44,7 +44,7 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
   );
 
   const chainIcon = getChainIcon(chainId);
-  const backClickHandler = () => router.back();
+  const backClickHandler = () => router.push(`${BFAURL.CHAINS}/${chainId}`);
 
   useEffect(() => {
     if (!appCtx.isInit) {
@@ -53,8 +53,8 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Info: (20231017 - Julian) 有 flagging 的話，就顯示 Add in Tracing Tool 按鈕
-  const isAddInTracingTool =
+  // Info: (20231017 - Julian) 有 flagging 的話，就顯示 Add in Tracking Tool 按鈕
+  const isAddInTrackingTool =
     !!transactionData?.flaggingRecords && transactionData.flaggingRecords.length !== 0
       ? 'block'
       : 'hidden';
@@ -82,8 +82,8 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
         </div>
       </div>
 
-      {/* Info: (20231017 - Julian) Tracing Tool Button */}
-      <div className={`relative right-0 mt-6 lg:mt-0 xl:absolute ${isAddInTracingTool}`}>
+      {/* Info: (20231017 - Julian) Tracking Tool Button */}
+      <div className={`relative right-0 mt-6 lg:mt-0 xl:absolute ${isAddInTrackingTool}`}>
         <Link href={BFAURL.COMING_SOON}>
           <BoltButton
             className="group flex items-center space-x-4 px-6 py-4"
@@ -91,13 +91,13 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
             style="solid"
           >
             <Image
-              src="/icons/tracing.svg"
+              src="/icons/tracking.svg"
               alt=""
               width={24}
               height={24}
               className="invert group-hover:invert-0"
             />
-            <p>{t('COMMON.TRACING_TOOL_BUTTON')}</p>
+            <p>{t('COMMON.TRACKING_TOOL_BUTTON')}</p>
           </BoltButton>
         </Link>
       </div>
@@ -157,19 +157,7 @@ const TransactionDetailPage = ({transactionId, chainId}: ITransactionDetailPageP
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {chainId: 'isun', transactionId: '1'},
-      locale: 'en',
-    },
-  ];
-
-  return {paths, fallback: 'blocking'};
-};
-
-export const getStaticProps: GetStaticProps = async ({params, locale}) => {
+export const getServerSideProps: GetServerSideProps = async ({params, locale}) => {
   if (!params || !params.transactionId || typeof params.transactionId !== 'string') {
     return {
       notFound: true,

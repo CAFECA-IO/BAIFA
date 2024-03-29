@@ -84,9 +84,9 @@ export const toolsContent = [
   {
     title: 'LANDING_PAGE.TOOL_INTRO_1_TITLE',
     description: 'LANDING_PAGE.TOOL_INTRO_1_DESCRIPTION',
-    desktopImg: '/elements/tracing_tool_2.png',
-    mobileImg: '/elements/tracing_tool.png',
-    alt: 'tracing_tool',
+    desktopImg: '/elements/tracking_tool_2.png',
+    mobileImg: '/elements/tracking_tool.png',
+    alt: 'tracking_tool',
   },
   {
     title: 'LANDING_PAGE.TOOL_INTRO_2_TITLE',
@@ -106,8 +106,8 @@ export const toolsContent = [
 
 export const servicesContent = [
   {
-    image: '/elements/tracing.png',
-    alt: 'a screenshot of tracing tool',
+    image: '/elements/tracking.png',
+    alt: 'a screenshot of tracking tool',
     description: 'LANDING_PAGE.SERVICES_DESCRIPTION_1',
   },
   {
@@ -192,6 +192,22 @@ export const pluginReportsList = [
   },
 ];
 
+/* Info: (20240320 - Julian) ----- Red flag ----- */
+export const defaultOption = 'SORTING.ALL';
+
+export const redFlagTypeI18nObj: {[key: string]: string} = {
+  'Multiple Transfer': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_TRANSFER',
+  'Multiple Receives': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_RECEIVES',
+  'Large Deposit': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_DEPOSIT',
+  'With Mixing Service': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MIXING_SERVICE',
+  'Multiple Withdraw': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_MULTIPLE_WITHDRAW',
+  'With Gambling Site': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_GAMBLING_SITE',
+  'Large Withdraw': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_WITHDRAW',
+  'With Black List': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_BLACK_LIST',
+  'With Darknet': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_DARKNET',
+  'Large Transfer': 'RED_FLAG_DETAIL_PAGE.FLAG_TYPE_LARGE_TRANSFER',
+};
+
 /* Info: (20230814 - Julian) ----- Chains ----- */
 export const chainList = ['eth', 'bit', 'usdt', 'bnb', 'isun'];
 
@@ -210,6 +226,9 @@ export const THRESHOLD_FOR_BLOCK_STABILITY = {
   MEDIUM: 10,
   LOW: 10,
 };
+
+export const buttonStyle =
+  'flex h-48px w-48px items-center justify-center rounded border border-transparent bg-purpleLinear p-3 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
 
 export const MAX_64_BIT_INTEGER_PARAMETER = '9223372036854775807';
 export const MIN_64_BIT_INTEGER_PARAMETER = '-9223372036854775808';

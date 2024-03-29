@@ -26,8 +26,8 @@ export interface ICurrency {
 export interface ICurrencyListPage {
   currencies: ICurrency[];
   totalPages: number;
-  currencyTypes: string[];
-  // currencyTypeCodeMeaningObj: {[key: string]: string};
+  chainNameTypes: string[];
+  chainIdNameObj: {[key: string]: string};
 }
 
 export interface ICurrencyDetail extends ICurrency {
@@ -55,3 +55,19 @@ export interface ICurrencyDetailString extends ICurrency {
   flagging: IRedFlag[];
   flaggingCount: number;
 }
+
+export const dummyCurrencyDetailString: ICurrencyDetailString = {
+  currencyId: '',
+  currencyName: '',
+  rank: 0,
+  riskLevel: '',
+  chainId: '',
+  price: 0,
+  volumeIn24h: 0,
+  unit: '',
+  totalAmount: '',
+  holderCount: 0,
+  totalTransfers: 0,
+  flagging: [],
+  flaggingCount: 0,
+};

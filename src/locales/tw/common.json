@@ -1,6 +1,6 @@
 {
   "NAV_BAR": {
-    "TRACING_TOOL": "追蹤工具",
+    "TRACKING_TOOL": "追蹤工具",
     "AUDITING_TOOL": "審計工具",
     "RED_FLAG": "警示帳戶",
     "FAQ": "常見問題",
@@ -237,7 +237,7 @@
     "FLAG_TYPE_GAMBLING_SITE": "與賭博網站有關",
     "FLAG_TYPE_BLACK_LIST": "列入黑名單",
     "FLAG_TYPE_DARKNET": "與暗網有關",
-    "FLAG_TYPE_HIGH_RISK_LOCATION": "高風險地區",
+    "FLAG_TYPE_HIGH_RISK_LOCATION": "來自高風險地區",
     "FLAG_TYPE_PRIVACY_COINS": "使用隱私幣交易"
   },
   "RED_FLAG_ADDRESS_PAGE": {
@@ -248,7 +248,11 @@
     "INTERACTED_WITH": "關聯地址",
     "TOTAL_AMOUNT": "總金額",
     "DOWNLOAD_REPORT_BUTTON": "下載報告",
-    "OPEN_IN_TRACING_TOOL_BUTTON": "在追蹤工具中開啟"
+    "OPEN_IN_TRACKING_TOOL_BUTTON": "在追蹤工具中開啟",
+    "RED_FLAG_TYPE_TOOLTIP": "此欄位顯示了該交易的警示或風險類型。可能包括大額轉帳、多次收款、來自高風險地區等。",
+    "FLAGGING_TIME_TOOLTIP": "被列入警示的時間。",
+    "INTERACTED_WITH_TOOLTIP": "涉及該交易的所有地址。",
+    "TOTAL_AMOUNT_TOOLTIP": "該交易的總金額。"
   },
   "REVIEWS_PAGE": {
     "TITLE": "評論",
@@ -320,6 +324,19 @@
     "TOOL_TIP_1_RED_FLAG": "警示記錄的唯一識別碼。",
     "TOOL_TIP_2_RED_FLAG": "警示記錄的詳細內容。"
   },
+  "TRACKING_TOOL_PAGE": {
+    "BREADCRUMB_TITLE": "追蹤工具",
+    "VIEW": "查看",
+    "ADDRESS": "地址",
+    "TRANSACTION": "交易",
+    "FILTER": "篩選",
+    "ADD_ADDRESS": "新增地址",
+    "FIND_CONNECTION": "查找關聯",
+    "RELATION_ANALYSIS": "關聯分析",
+    "ADD_NOTE": "新增筆記",
+    "RESET": "重置",
+    "EXPORT_REPORT": "匯出報告"
+  },
   "DATE_PICKER": {
     "DATE": "日期",
     "SELECT_PERIOD": "選擇日期範圍",
@@ -362,7 +379,7 @@
     "AGO": "前",
     "PRIVATE_NOTE_TITLE": "私人筆記",
     "PRIVATE_NOTE_PLACEHOLDER": "在此輸入筆記...",
-    "TRACING_TOOL_BUTTON": "加入追蹤工具",
+    "TRACKING_TOOL_BUTTON": "加入追蹤工具",
     "LOG_IN_ONLY": "請先登入",
     "RISK_HIGH": "高風險",
     "RISK_MEDIUM": "中等風險",

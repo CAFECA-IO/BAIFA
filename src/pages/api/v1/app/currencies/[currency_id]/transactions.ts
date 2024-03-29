@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240315 - Liz) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
-  const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? req.query.search.toLowerCase() : undefined;
 
   // Info: (20240307 - Liz) 將 req 傳來的日期字串轉換成數字或 undefined
@@ -31,63 +31,55 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const take = ITEM_PER_PAGE; // Info: (20240306 - Liz) 取幾筆
 
   // Info: (20240315 - Liz) 排序
-  const sorting = sort === 'SORTING.OLDEST' ? 'asc' : 'desc';
 
   try {
-    // Info: (20240315 - Liz) 從 currencies Table 中取得 chainId
-    const currencyData = await prisma.currencies.findUnique({
-      where: {
-        id: currency_id,
-      },
-      select: {
-        chain_id: true,
-      },
-    });
-    const chainId = currencyData?.chain_id;
-
     // Info: (20240315 - Liz) 從 token_transfers Table 中取得 transactionHistoryData
-    const transactionData = await prisma.token_transfers.findMany({
-      where: {
-        chain_id: chainId,
-        // Info: (20240315 - Liz) 交易 hash 搜尋條件篩選, '' or undefined 代表忽略搜尋條件
-        transaction_hash: search ? search : undefined,
-        created_timestamp: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
-      select: {
-        id: true,
-        chain_id: true,
-        created_timestamp: true,
-        from_address: true,
-        to_address: true,
-        transaction_hash: true,
-      },
-      orderBy: [
-        {
-          created_timestamp: sorting, // ToDo: (20240315 - Liz) 1. created_timestamp 由 sorting 決定排序
-        },
-        {
-          id: sorting, // ToDo: (20240315 - Liz) 2. id 由 sorting 決定排序
-        },
-      ],
-      skip: search ? 0 : skip, // Info: (20240315 - Liz) search 有值時最多只會搜尋到一筆，故不需要分頁
-      take,
-    });
+    const transactionData = currency_id
+      ? await prisma.token_transfers.findMany({
+          where: {
+            currency_id: currency_id,
+            // Info: (20240315 - Liz) 交易 hash 搜尋條件篩選, '' or undefined 代表忽略搜尋條件
+            transaction_hash: search ? search : undefined,
+            created_timestamp: {
+              gte: startDate,
+              lte: endDate,
+            },
+          },
+          select: {
+            id: true,
+            chain_id: true,
+            created_timestamp: true,
+            from_address: true,
+            to_address: true,
+            transaction_hash: true,
+          },
+          orderBy: [
+            {
+              created_timestamp: sort, // ToDo: (20240315 - Liz) 1. created_timestamp 由 sort 決定排序
+            },
+            {
+              id: sort, // ToDo: (20240315 - Liz) 2. id 由 sort 決定排序
+            },
+          ],
+          skip: search ? 0 : skip, // Info: (20240315 - Liz) search 有值時最多只會搜尋到一筆，故不需要分頁
+          take,
+        })
+      : [];
 
     // Info: (20240315 - Liz) 取得 交易 總筆數
-    const transactionCount = await prisma.token_transfers.count({
-      where: {
-        chain_id: chainId,
-        // Info: (20240315 - Liz) 交易 hash 搜尋條件篩選, '' or undefined 代表忽略搜尋條件
-        transaction_hash: search ? search : undefined,
-        created_timestamp: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
-    });
+    const transactionCount = currency_id
+      ? await prisma.token_transfers.count({
+          where: {
+            currency_id: currency_id,
+            // Info: (20240315 - Liz) 交易 hash 搜尋條件篩選, '' or undefined 代表忽略搜尋條件
+            transaction_hash: search ? search : undefined,
+            created_timestamp: {
+              gte: startDate,
+              lte: endDate,
+            },
+          },
+        })
+      : 0;
 
     // Info: (20240315 - Liz) 計算總頁數
     const totalPages = Math.ceil(transactionCount / ITEM_PER_PAGE);
