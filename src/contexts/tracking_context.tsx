@@ -12,8 +12,11 @@ export interface ITrackingContext {
   visibleAddAddressPanel: boolean;
   visibleAddAddressPanelHandler: () => void;
 
-  addAddress: string;
+  targetAddress: string;
   addAddressHandler: (address: string) => void;
+
+  zoomScale: number;
+  zoomScaleHandler: (scale: number) => void;
 }
 
 export enum TrackingType {
@@ -28,8 +31,11 @@ export const TrackingContext = createContext<ITrackingContext>({
   visibleAddAddressPanel: false,
   visibleAddAddressPanelHandler: () => null,
 
-  addAddress: '',
+  targetAddress: '',
   addAddressHandler: () => null,
+
+  zoomScale: 1,
+  zoomScaleHandler: () => null,
 });
 
 export const TrackingProvider = ({children}: ITrackingProvider) => {
@@ -41,15 +47,22 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     );
   }, []);
 
-  // Info: (20240326 - Julian) 新增地址面板
+  // Info: (20240326 - Julian) 新增地址面板是否顯示
   const [visibleAddAddressPanel, setVisibleAddAddressPanel] = useState<boolean>(false);
   const visibleAddAddressPanelHandler = useCallback(() => {
     setVisibleAddAddressPanel(prev => !prev);
   }, []);
 
-  const [addAddress, setAddAddress] = useState<string>('');
+  // Info: (20240327 - Julian) 選定的目標地址
+  const [targetAddress, setTargetAddress] = useState<string>('');
   const addAddressHandler = useCallback((address: string) => {
-    setAddAddress(address);
+    setTargetAddress(address);
+  }, []);
+
+  // Info: (20240329 - Julian) 縮放比例
+  const [zoomScale, setZoomScale] = useState<number>(1);
+  const zoomScaleHandler = useCallback((scale: number) => {
+    setZoomScale(scale);
   }, []);
 
   const defaultValue = {
@@ -59,8 +72,11 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     visibleAddAddressPanel,
     visibleAddAddressPanelHandler,
 
-    addAddress,
+    targetAddress,
     addAddressHandler,
+
+    zoomScale,
+    zoomScaleHandler,
   };
 
   return (
