@@ -15,6 +15,7 @@ const TrackingToolPanel = () => {
   const {
     targetTrackingType,
     targetTrackingTypeHandler,
+    visibleFilterPanelHandler,
     visibleAddAddressPanelHandler,
     zoomScale,
     zoomScaleHandler,
@@ -120,7 +121,10 @@ const TrackingToolPanel = () => {
   const toolbarList = (
     <div className="grid grid-flow-row grid-cols-2 items-center gap-x-4 gap-y-6 p-2 text-sm lg:grid-flow-col lg:grid-rows-1">
       {/* Info: (20240325 - Julian) Filter button */}
-      <button className="group flex w-120px flex-col items-center gap-2">
+      <button
+        onClick={visibleFilterPanelHandler}
+        className="group flex w-120px flex-col items-center gap-2"
+      >
         <Image
           src="/tracking/filter.svg"
           width={50}

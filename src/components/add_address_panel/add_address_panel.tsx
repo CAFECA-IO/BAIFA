@@ -99,7 +99,7 @@ const AddAddressPanel = ({
 
       <h2 className="text-xl font-semibold">Following List</h2>
       {/* Info: (20240326 - Julian) Address list */}
-      <div className="mt-10 flex h-400px w-full flex-col items-center overflow-y-auto bg-darkPurple3">
+      <div className="mt-10 flex h-fit w-full flex-col items-center overflow-y-auto bg-darkPurple3">
         {displayFollowingList}
       </div>
     </div>
@@ -109,13 +109,13 @@ const AddAddressPanel = ({
     <div className="fixed z-60 flex h-screen w-screen items-center justify-center overflow-hidden bg-black/25 backdrop-blur-sm">
       <div
         id="add-address-panel"
-        className="relative z-70 flex h-400px w-9/10 flex-col items-center gap-4 rounded bg-darkPurple p-10 lg:w-700px"
+        className="relative z-70 flex h-400px w-9/10 flex-col items-center gap-4 rounded-lg bg-darkPurple p-10 lg:w-700px"
       >
         {/* Info: (20240326 - Julian) Close button */}
         <button onClick={modalClickHandler} className="absolute right-6 top-6 hover:opacity-75">
           <IoIosCloseCircleOutline size={30} />
         </button>
-
+        {/* Info: (20240401 - Julian) Title */}
         <h2 className="text-xl font-semibold">Add address</h2>
         {/* Info: (20240326 - Julian) Input address */}
         <div className="relative flex w-full items-center">

@@ -1,5 +1,8 @@
 import {useState, useCallback, createContext} from 'react';
 import AddAddressPanel from '../components/add_address_panel/add_address_panel';
+import FilterPanel from '../components/filter_panel/filter_panel';
+import {IDatePeriod} from '../interfaces/date_period';
+import {default30DayPeriod} from '../constants/config';
 
 export interface ITrackingProvider {
   children: React.ReactNode;
@@ -8,6 +11,18 @@ export interface ITrackingProvider {
 export interface ITrackingContext {
   targetTrackingType: TrackingType;
   targetTrackingTypeHandler: () => void;
+
+  visibleFilterPanel: boolean;
+  visibleFilterPanelHandler: () => void;
+
+  filterDatePeriod: IDatePeriod;
+  setFilterDatePeriod: (period: IDatePeriod) => void;
+
+  filterBlockchains: string[];
+  filterBlockchainsHandler: (blockchains: string[]) => void;
+
+  filterCurrency: string[];
+  filterCurrencyHandler: (currencies: string[]) => void;
 
   visibleAddAddressPanel: boolean;
   visibleAddAddressPanelHandler: () => void;
@@ -28,6 +43,18 @@ export const TrackingContext = createContext<ITrackingContext>({
   targetTrackingType: TrackingType.ADDRESS,
   targetTrackingTypeHandler: () => null,
 
+  visibleFilterPanel: false,
+  visibleFilterPanelHandler: () => null,
+
+  filterDatePeriod: default30DayPeriod,
+  setFilterDatePeriod: () => null,
+
+  filterBlockchains: [],
+  filterBlockchainsHandler: () => null,
+
+  filterCurrency: [],
+  filterCurrencyHandler: () => null,
+
   visibleAddAddressPanel: false,
   visibleAddAddressPanelHandler: () => null,
 
@@ -45,6 +72,25 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     setTargetTrackingType(prev =>
       prev === TrackingType.ADDRESS ? TrackingType.TRANSACTION : TrackingType.ADDRESS
     );
+  }, []);
+
+  // Info: (20240401 - Julian) 篩選面板是否顯示
+  const [visibleFilterPanel, setVisibleFilterPanel] = useState<boolean>(false);
+  const visibleFilterPanelHandler = useCallback(() => {
+    setVisibleFilterPanel(prev => !prev);
+  }, []);
+
+  // Info: (20240401 - Julian) 篩選的日期區間
+  const [filterDatePeriod, setFilterDatePeriod] = useState<IDatePeriod>(default30DayPeriod);
+  // Info: (20240401 - Julian) 篩選的區塊鏈
+  const [filterBlockchains, setFilterBlockchains] = useState<string[]>([]);
+  const filterBlockchainsHandler = useCallback((blockchains: string[]) => {
+    setFilterBlockchains(blockchains);
+  }, []);
+  // Info: (20240401 - Julian) 篩選的幣種
+  const [filterCurrency, setFilterCurrency] = useState<string[]>([]);
+  const filterCurrencyHandler = useCallback((currencies: string[]) => {
+    setFilterCurrency(currencies);
   }, []);
 
   // Info: (20240326 - Julian) 新增地址面板是否顯示
@@ -69,6 +115,18 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     targetTrackingType,
     targetTrackingTypeHandler,
 
+    visibleFilterPanel,
+    visibleFilterPanelHandler,
+
+    filterDatePeriod,
+    setFilterDatePeriod,
+
+    filterBlockchains,
+    filterBlockchainsHandler,
+
+    filterCurrency,
+    filterCurrencyHandler,
+
     visibleAddAddressPanel,
     visibleAddAddressPanelHandler,
 
@@ -81,6 +139,17 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
 
   return (
     <TrackingContext.Provider value={defaultValue}>
+      <FilterPanel
+        modalVisible={visibleFilterPanel}
+        modalClickHandler={visibleFilterPanelHandler}
+        filterDatePeriod={filterDatePeriod}
+        setFilterDatePeriod={setFilterDatePeriod}
+        filterBlockchains={filterBlockchains}
+        filterBlockchainsHandler={filterBlockchainsHandler}
+        filterCurrency={filterCurrency}
+        filterCurrencyHandler={filterCurrencyHandler}
+      />
+
       <AddAddressPanel
         modalVisible={visibleAddAddressPanel}
         modalClickHandler={visibleAddAddressPanelHandler}
