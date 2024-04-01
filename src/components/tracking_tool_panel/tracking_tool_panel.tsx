@@ -8,35 +8,35 @@ import {FiDownload, FiUpload} from 'react-icons/fi';
 import {FaRegBookmark} from 'react-icons/fa';
 import {IoIosArrowUp} from 'react-icons/io';
 import {buttonStyle} from '../../constants/config';
-import {truncateText} from '../../lib/common';
+import TrackingView from '../tracking_view/tracking_view';
 
 const TrackingToolPanel = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const {targetTrackingType, targetTrackingTypeHandler, visibleAddAddressPanelHandler, addAddress} =
-    useContext(TrackingContext);
+  const {
+    targetTrackingType,
+    targetTrackingTypeHandler,
+    visibleAddAddressPanelHandler,
+    zoomScale,
+    zoomScaleHandler,
+  } = useContext(TrackingContext);
 
-  // Info: (20240325 - Julian) 縮放比例
-  const [zoomPercentage, setZoomPercentage] = useState(100);
   // Info: (20240325 - Julian) 工具列展開
   const [isToolbarExpanded, setIsToolbarExpanded] = useState(false);
 
-  const handleZoomIn = () =>
-    setZoomPercentage(prev => {
-      if (prev >= 200) {
-        return 200;
-      }
-      return prev + 10;
-    });
-
-  const handleZoomOut = () =>
-    setZoomPercentage(prev => {
-      if (prev <= 100) {
-        return 100;
-      }
-      return prev - 10;
-    });
+  const handleZoomIn = () => {
+    if (zoomScale >= 2) return;
+    zoomScaleHandler(zoomScale + 0.1);
+  };
+  const handleZoomOut = () => {
+    if (zoomScale <= 1) return;
+    zoomScaleHandler(zoomScale - 0.1);
+  };
 
   const handleExpandToolbar = () => setIsToolbarExpanded(prev => !prev);
+
+  const displayZoomScale = Math.round(zoomScale * 100);
+  const disabledZoomIn = zoomScale >= 2;
+  const disabledZoomOut = zoomScale <= 1;
 
   const switchStyle = `before:absolute before:h-48px before:rounded-full ${
     targetTrackingType === TrackingType.ADDRESS
@@ -91,13 +91,13 @@ const TrackingToolPanel = () => {
   const viewZoom = (
     <div className="flex items-center space-x-4">
       {/* Info: (20240325 - Julian) Plus button */}
-      <button onClick={handleZoomIn} disabled={zoomPercentage >= 200} className={buttonStyle}>
+      <button onClick={handleZoomIn} disabled={disabledZoomIn} className={buttonStyle}>
         <HiPlus size={24} />
       </button>
-      {/* Info: (20240325 - Julian) Zoom percentage */}
-      <p className="w-50px text-center text-base">{zoomPercentage} %</p>
+      {/* Info: (20240325 - Julian) Zoom scale */}
+      <p className="w-50px text-center text-base">{displayZoomScale} %</p>
       {/* Info: (20240325 - Julian) Minus button */}
-      <button onClick={handleZoomOut} disabled={zoomPercentage <= 100} className={buttonStyle}>
+      <button onClick={handleZoomOut} disabled={disabledZoomOut} className={buttonStyle}>
         <HiMinus size={24} />
       </button>
     </div>
@@ -105,12 +105,12 @@ const TrackingToolPanel = () => {
 
   const trackingSwitch = (
     <>
-      <div className="absolute hidden w-full items-center justify-between px-10 py-6 lg:flex">
+      <div className="absolute z-10 hidden w-full items-center justify-between px-10 py-6 lg:flex">
         {viewTools}
         {viewSwitch}
         {viewZoom}
       </div>
-      <div className="absolute flex w-full flex-col items-start gap-10 px-4 py-6 lg:hidden">
+      <div className="absolute z-10 flex w-full flex-col items-start gap-10 px-4 py-6 lg:hidden">
         {viewSwitch}
         {viewTools}
       </div>
@@ -209,17 +209,15 @@ const TrackingToolPanel = () => {
     </div>
   );
 
-  const showAddressMap = addAddress ? (
-    <div className="flex h-100px w-100px flex-col items-center justify-center gap-2 rounded-full border-4 border-primaryBlue">
-      <Image src="/icons/address_icon.svg" width={24} height={24} alt="address_icon" />
-      <p className="text-xs">{truncateText(addAddress, 10)}</p>
-    </div>
-  ) : null;
-
   return (
     <div className="relative flex h-full min-h-680px w-full flex-col items-center overflow-hidden border border-darkPurple4 bg-darkPurple5 shadow-inner3xl">
       {/* Info: (20240325 - Julian) Tracking Switch */}
       {trackingSwitch}
+
+      {/* Info: (20240325 - Julian) Tracking View */}
+      <div className="relative flex h-full w-full items-center justify-center">
+        <TrackingView />
+      </div>
 
       {/* Info: (20240325 - Julian) Tracking Toolbar */}
       <div
@@ -238,9 +236,6 @@ const TrackingToolPanel = () => {
         </button>
         {toolbarList}
       </div>
-
-      {/* Info: (20240325 - Julian) Tracking View */}
-      <div className="mx-auto my-auto">{showAddressMap}</div>
     </div>
   );
 };
