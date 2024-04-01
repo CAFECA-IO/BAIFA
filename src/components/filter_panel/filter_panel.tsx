@@ -53,14 +53,14 @@ const FilterPanel = ({
   // Info: (20240401 - Julian) 選擇的 Blockchains
   const [selectChains, setSelectChains] = useState<string[]>([]);
   // Info: (20240401 - Julian) 輸入框的值
-  const [chainInputValue, setChainInputValue] = useState<string>('');
+  //const [chainInputValue, setChainInputValue] = useState<string>('');
 
   // Info: (20240401 - Julian) 顯示 Filter Currency
   const [visibleFilterCurrency, setVisibleFilterCurrency] = useState(false);
   // Info: (20240401 - Julian) 選擇的 Currencies
   const [selectCurrencies, setSelectCurrencies] = useState<string[]>([]);
   // Info: (20240401 - Julian) 輸入框的值
-  const [currencyInputValue, setCurrencyInputValue] = useState<string>('');
+  //const [currencyInputValue, setCurrencyInputValue] = useState<string>('');
 
   // Info: (20240401 - Julian) Filter Chain 開關
   const visibleFilterChainHandler = () => setVisibleFilterChain(prev => !prev);
@@ -72,19 +72,15 @@ const FilterPanel = ({
   // Info: (20240401 - Julian) 全選 Currencies
   const selectAllCurrencyHandler = () => setSelectCurrencies(currencyList);
 
-  // Info: (20240401 - Julian) 輸入框的值改變時，更新 inputValue
-  const handleChainInputChange = (e: ChangeEvent<HTMLInputElement>) =>
-    setChainInputValue(e.target.value);
-
   useEffect(() => {
     // Info: (20240401 - Julian) 如果 selectChains 改變，則更新 filterBlockchains
     filterBlockchainsHandler(selectChains);
-  }, [selectChains]);
+  }, [selectChains, filterBlockchainsHandler]);
 
   useEffect(() => {
     // Info: (20240401 - Julian) 如果 selectCurrencies 改變，則更新 filterCurrency
     filterCurrencyHandler(selectCurrencies);
-  }, [selectCurrencies]);
+  }, [selectCurrencies, filterCurrencyHandler]);
 
   const displayFilterBlockchains = filterBlockchains
     ? filterBlockchains.map(blockchain => blockchain).join(', ')
