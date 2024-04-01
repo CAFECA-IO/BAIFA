@@ -196,7 +196,7 @@ const FilterPanel = ({
 
   // Info: (20240401 - Julian) ----------- Blockchain Filter Panel -----------
   const isShowFilterChainPanel = visibleFilterChain ? (
-    <div className="absolute z-80 flex min-h-350px w-9/10 flex-col items-center gap-4 rounded-lg bg-darkPurple2 p-10 lg:w-400px">
+    <div className="absolute z-80 flex w-9/10 flex-col items-center gap-4 rounded-lg bg-darkPurple2 p-10 lg:w-400px">
       {/* Info: (20240401 - Julian) Back button */}
       <button
         onClick={visibleFilterChainHandler}
@@ -227,7 +227,7 @@ const FilterPanel = ({
           Select All
         </button>
         {/* Info: (20240401 - Julian) Blockchain List */}
-        <div className="flex flex-wrap gap-2 overflow-y-auto overflow-x-hidden bg-darkPurple p-2">
+        <div className="flex max-h-200px flex-wrap gap-2 overflow-y-auto overflow-x-hidden bg-darkPurple p-2">
           {displayBlockchainList}
         </div>
       </div>
@@ -236,7 +236,7 @@ const FilterPanel = ({
 
   // Info: (20240401 - Julian) ----------- Currency Filter Panel -----------
   const isShowFilterCurrencyPanel = visibleFilterCurrency ? (
-    <div className="absolute z-80 flex min-h-350px w-9/10 flex-col items-center gap-4 rounded-lg bg-darkPurple2 p-10 lg:w-400px">
+    <div className="absolute z-80 flex w-9/10 flex-col items-center gap-4 rounded-lg bg-darkPurple2 p-10 lg:w-400px">
       {/* Info: (20240401 - Julian) Back button */}
       <button
         onClick={visibleFilterCurrencyHandler}
@@ -267,7 +267,7 @@ const FilterPanel = ({
           Select All
         </button>
         {/* Info: (20240401 - Julian) Currency List */}
-        <div className="flex flex-wrap gap-2 overflow-y-auto overflow-x-hidden bg-darkPurple p-2">
+        <div className="flex max-h-200px flex-wrap gap-2 overflow-y-auto overflow-x-hidden bg-darkPurple p-2">
           {displayCurrencyList}
         </div>
       </div>
