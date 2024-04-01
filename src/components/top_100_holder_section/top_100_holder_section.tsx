@@ -25,15 +25,16 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   //const {getCurrencyTop100Holders} = useContext(MarketContext);
+  //const [top100HoldersData, setTop100HoldersData] = useState<ITop100Holders>({} as ITop100Holders);
 
   // Info: (20240312 - Liz) 搜尋條件
   const [search, setSearch] = useState('');
-  // Info: (20240312 - Liz) UI
-  //const [top100HoldersData, setTop100HoldersData] = useState<ITop100Holders>({} as ITop100Holders);
   const [activePage, setActivePage] = useState(1);
 
+  // Info: (今天 - Liz) Call API to get Top 100 Holders data (API - 028)
   const {data: top100HoldersData, isLoading} = useAPIResponse<ITop100Holders>(
     `${APIURL.CURRENCIES}/${currencyId}/top100Holders`,
+    // Info: (今天 - Liz) 預設值 ?page=1&search=
     {method: HttpMethod.GET},
     {
       page: activePage,
@@ -41,10 +42,8 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
     }
   );
 
+  // Info: (今天 - Liz) 從 API 取得總頁數
   const totalPages = top100HoldersData?.totalPages ?? 0;
-
-  // Info: (20240312 - Liz) API 查詢參數
-  //const [apiQueryStr, setApiQueryStr] = useState('page=1&search=');
 
   const currencyIcon = getCurrencyIcon(currencyId);
 
@@ -52,29 +51,6 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
   useEffect(() => {
     setActivePage(1);
   }, [search]);
-
-  // Info: (20240312 - Liz) Call API to get Top 100 Holders data
-  // useEffect(() => {
-  //   const fetchHolderData = async () => {
-  //     try {
-  //       const data = await getCurrencyTop100Holders(currencyId, apiQueryStr);
-  //       setTop100HoldersData(data);
-  //     } catch (error) {
-  //       // eslint-disable-next-line no-console
-  //       console.error('get Top 100 Holders data error', error);
-  //     }
-  //   };
-
-  //   fetchHolderData();
-  // }, [apiQueryStr, currencyId, getCurrencyTop100Holders]);
-
-  // Info: (20240312 - Liz) 設定 API 查詢參數
-  // useEffect(() => {
-  //   const pageQuery = `page=${activePage}`;
-  //   const searchQuery = `&search=${search}`;
-
-  //   setApiQueryStr(`${pageQuery}${searchQuery}`);
-  // }, [activePage, search]);
 
   const holderList =
     top100HoldersData?.holdersData && top100HoldersData?.holdersData.length > 0 ? (
@@ -93,7 +69,7 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
         );
 
         return (
-          // Info: (20231102 - Julian) Top 100 Holder Item
+          // Info: (20231102 - Julian) Top 100 Holders Item
           <div
             key={index}
             className="flex flex-col items-start border-b border-darkPurple4 px-1 lg:h-60px lg:flex-row lg:items-center lg:px-4"
