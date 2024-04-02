@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import useAPIResponse from '../../lib/hooks/use_api_response';
 import SearchBar from '../search_bar/search_bar';
 import BoltButton from '../bolt_button/bolt_button';
@@ -31,10 +31,10 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
   const [search, setSearch] = useState('');
   const [activePage, setActivePage] = useState(1);
 
-  // Info: (今天 - Liz) Call API to get Top 100 Holders data (API - 028)
+  // Info: (20240402 - Liz) Call API to get Top 100 Holders data (API - 028)
   const {data: top100HoldersData, isLoading} = useAPIResponse<ITop100Holders>(
     `${APIURL.CURRENCIES}/${currencyId}/top100Holders`,
-    // Info: (今天 - Liz) 預設值 ?page=1&search=
+    // Info: (20240402 - Liz) 預設值 ?page=1&search=
     {method: HttpMethod.GET},
     {
       page: activePage,
@@ -42,15 +42,10 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
     }
   );
 
-  // Info: (今天 - Liz) 從 API 取得總頁數
+  // Info: (20240402 - Liz) 從 API 取得總頁數
   const totalPages = top100HoldersData?.totalPages ?? 0;
 
   const currencyIcon = getCurrencyIcon(currencyId);
-
-  // Info: (20240314 - Liz) 當搜尋條件改變時，將 activePage 設為 1
-  useEffect(() => {
-    setActivePage(1);
-  }, [search]);
 
   const holderList =
     top100HoldersData?.holdersData && top100HoldersData?.holdersData.length > 0 ? (
@@ -149,6 +144,7 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
           <SearchBar
             searchBarPlaceholder={t('COMMON.TOP_100_HOLDER_PLACEHOLDER')}
             setSearch={setSearch}
+            setActivePage={setActivePage}
           />
         </div>
         {/* Info: (20231102 - Julian) Address List */}

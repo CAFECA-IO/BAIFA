@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import useAPIResponse from '../../../lib/hooks/use_api_response';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import NavBar from '../../../components/nav_bar/nav_bar';
@@ -70,11 +70,6 @@ const RedFlagListPage = () => {
 
   // Info: (20240307 - Liz) 從 API 取得總頁數
   const totalPages = redFlagData?.totalPages ?? 0;
-
-  // Info: (20240307 - Liz) 當日期、搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
-  useEffect(() => {
-    setActivePage(1);
-  }, [search, filteredType, period, sorting]);
 
   // Info: (20240307 - Liz) head title and breadcrumb
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} - BAIFA`;

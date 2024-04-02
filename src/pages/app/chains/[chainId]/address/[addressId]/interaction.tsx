@@ -233,7 +233,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   const {interactedData, totalPages} = interactedList ?? {interactedData: [], totalPages: 1};
 
   const displayInteractedList = interactedData.map((interactedData, index) => (
-    <InteractionItem key={index} orignalAddressId={addressId} interactedData={interactedData} />
+    <InteractionItem key={index} originalAddressId={addressId} interactedData={interactedData} />
   ));
 
   const displayedUI = interactedListError ? (
@@ -248,6 +248,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
           <SearchBarWithKeyDown
             searchBarPlaceholder={t('INTERACTION_LIST_PAGE.SEARCH_PLACEHOLDER')}
             setSearch={setSearch}
+            setActivePage={setActivePage}
           />
         </div>
         <div className="flex w-full flex-col items-center gap-2 lg:h-72px lg:flex-row lg:justify-between">
@@ -258,12 +259,17 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
               sorting={filteredType}
               setSorting={setFilteredType}
               bgColor="bg-darkPurple"
+              setActivePage={setActivePage}
             />
           </div>
           {/* Info: (20231108 - Julian) Date Picker */}
           <div className="flex w-full items-center text-sm lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-            <DatePicker period={period} setFilteredPeriod={setPeriod} />
+            <DatePicker
+              period={period}
+              setFilteredPeriod={setPeriod}
+              setActivePage={setActivePage}
+            />
           </div>
           {/* Info: (20231108 - Julian) Sort by Menu */}
           <div className="relative flex w-full items-center text-sm lg:w-fit lg:space-x-2">
@@ -273,6 +279,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
               sorting={sorting}
               setSorting={setSorting}
               bgColor="bg-darkPurple"
+              setActivePage={setActivePage}
             />
           </div>
         </div>
