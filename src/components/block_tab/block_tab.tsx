@@ -32,7 +32,6 @@ const BlockTab = ({chainDetailLoading, activePage, setActivePage}: IBlockTabProp
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  // const [activePage, setActivePage] = useState(1);
 
   const {data: blockData, isLoading: isBlockLoading} = useAPIResponse<IBlockList>(
     `${APIURL.CHAINS}/${chainId}/block`,
@@ -79,13 +78,18 @@ const BlockTab = ({chainDetailLoading, activePage, setActivePage}: IBlockTabProp
           {SearchBarWithKeyDown({
             searchBarPlaceholder: t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_BLOCKS'),
             setSearch: setSearch,
+            setActivePage: setActivePage,
           })}
         </div>
         <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
           {/* Info: (20231101 - Julian) Date Picker */}
           <div className="flex w-full items-center text-base lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-            <DatePicker period={period} setFilteredPeriod={setPeriod} />
+            <DatePicker
+              period={period}
+              setFilteredPeriod={setPeriod}
+              setActivePage={setActivePage}
+            />
           </div>
           {/* Info: (20230904 - Julian) Sorting Menu */}
           <div className="relative flex w-full items-center pb-2 text-base lg:w-fit lg:space-x-2 lg:pb-0">
@@ -95,6 +99,7 @@ const BlockTab = ({chainDetailLoading, activePage, setActivePage}: IBlockTabProp
               sorting={sorting}
               setSorting={setSorting}
               bgColor="bg-darkPurple"
+              setActivePage={setActivePage}
             />
           </div>
         </div>

@@ -3,7 +3,12 @@ import {SearchBarWithKeyDown, SearchBarWithSuggestions} from '../search_bar/sear
 import SortingMenu from '../sorting_menu/sorting_menu';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {ITEM_PER_PAGE, sortOldAndNewOptions, default30DayPeriod} from '../../constants/config';
+import {
+  ITEM_PER_PAGE,
+  sortOldAndNewOptions,
+  default30DayPeriod,
+  DEFAULT_PAGE,
+} from '../../constants/config';
 import TransactionHistoryItem from '../transaction_history_item/transaction_history_item';
 import Pagination from '../pagination/pagination';
 import {IDisplayTransaction} from '../../interfaces/transaction';
@@ -64,7 +69,7 @@ const TransactionHistorySection = ({
       ? addressDetailsCtx.transactions.totalPage
       : Math.ceil(1 / ITEM_PER_PAGE);
 
-  const [activePageDefault, setActivePageDefault] = useState(1);
+  const [activePageDefault, setActivePageDefault] = useState(DEFAULT_PAGE);
   const totalPagesDefault = totalPage ?? defaultPages;
 
   const [searchDefault, setSearchDefault] = useState('');
@@ -99,10 +104,12 @@ const TransactionHistorySection = ({
           setSearch: setSearch ?? setSearchDefault,
           suggestions: suggestions,
           getSearch: getSearch,
+          setActivePage: setActivePage ?? setActivePageDefault,
         })
       : SearchBarWithKeyDown({
           searchBarPlaceholder: t('COMMON.TRANSACTION_HISTORY_PLACEHOLDER'),
           setSearch: setSearch ?? setSearchDefault,
+          setActivePage: setActivePage ?? setActivePageDefault,
         });
 
   return (
@@ -122,6 +129,7 @@ const TransactionHistorySection = ({
                 period={period ?? periodDefault}
                 setFilteredPeriod={setPeriod ?? setPeriodDefault}
                 isLinearBg
+                setActivePage={setActivePage ?? setActivePageDefault}
               />
             </div>
             {/* Info: (20231113 - Julian) Sorting Menu */}
@@ -133,6 +141,7 @@ const TransactionHistorySection = ({
                 setSorting={setSorting ?? setSortingDefault}
                 bgColor="bg-purpleLinear"
                 sortPrefix={`transaction`}
+                setActivePage={setActivePage ?? setActivePageDefault}
               />
             </div>
           </div>

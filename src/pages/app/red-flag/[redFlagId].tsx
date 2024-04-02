@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import {useRouter} from 'next/router';
 import {GetServerSideProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
@@ -96,11 +96,6 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     totalPages: 0,
     transactionCount: 0,
   };
-
-  // Info: (20240307 - Liz) 當日期、搜尋、排序的條件改變時，將 activePage 設為 1。
-  useEffect(() => {
-    setActivePage(1);
-  }, [search, period, sorting]);
 
   // Info: (20240321 - Liz) Get Chain Icon
   const chainIcon = getChainIcon(chainId);

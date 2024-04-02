@@ -13,7 +13,7 @@ import {ITransactionList} from '../../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {convertStringToSortingType, getChainIcon, truncateText} from '../../../../lib/common';
-import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import TransactionList from '../../../../components/transaction_list/transaction_list';
 import {SearchBarWithKeyDown} from '../../../../components/search_bar/search_bar';
 import DatePicker from '../../../../components/date_picker/date_picker';
@@ -162,13 +162,18 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
           {SearchBarWithKeyDown({
             searchBarPlaceholder: t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_TRANSACTIONS'),
             setSearch: setSearch,
+            setActivePage: setActivePage,
           })}
         </div>
         <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
           {/* Info: (20231101 - Julian) Date Picker */}
           <div className="flex w-full items-center text-base lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-            <DatePicker period={period} setFilteredPeriod={setPeriod} />
+            <DatePicker
+              period={period}
+              setFilteredPeriod={setPeriod}
+              setActivePage={setActivePage}
+            />
           </div>
 
           {/* Info: (20230904 - Julian) Sorting Menu */}
@@ -179,6 +184,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
               sorting={sorting}
               setSorting={setSorting}
               bgColor="bg-darkPurple"
+              setActivePage={setActivePage}
             />
           </div>
         </div>

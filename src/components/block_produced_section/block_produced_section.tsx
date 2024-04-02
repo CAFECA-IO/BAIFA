@@ -131,6 +131,7 @@ const BlockProducedHistorySection = ({
                 period={period ?? periodDefault}
                 setFilteredPeriod={setPeriod ?? setPeriodDefault}
                 isLinearBg
+                setActivePage={setActivePage ?? setActivePageDefault}
                 // loading={addressDetailsCtx.blocksLoading}
                 // datePickerHandler={blockDateFilterHandler}
               />
@@ -146,6 +147,7 @@ const BlockProducedHistorySection = ({
                 sortingOptions={sortOldAndNewOptions}
                 // loading={addressDetailsCtx.blocksLoading}
                 sortPrefix={`blocks`}
+                setActivePage={setActivePage ?? setActivePageDefault}
               />
             </div>
           </div>
@@ -158,6 +160,7 @@ const BlockProducedHistorySection = ({
           {SearchBarWithKeyDown({
             searchBarPlaceholder: t('COMMON.BLOCK_PRODUCED_HISTORY_PLACEHOLDER'),
             setSearch: setSearch ?? setSearchDefault,
+            setActivePage: setActivePage ?? setActivePageDefault,
           })}
         </div>
         {/* Info: (20231103 - Julian) Address List */}

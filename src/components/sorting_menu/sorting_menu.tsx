@@ -4,7 +4,7 @@ import {TranslateFunction} from '../../interfaces/locale';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import {FaChevronDown} from 'react-icons/fa';
 import {convertStringToSortingType, truncateText} from '../../lib/common';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {DEFAULT_TRUNCATE_LENGTH, DEFAULT_PAGE} from '../../constants/config';
 import {TimeSortingType} from '../../constants/api_request';
 
 interface ISearchFilter {
@@ -15,6 +15,7 @@ interface ISearchFilter {
   sortingHandler?: ({order}: {order: TimeSortingType}) => Promise<void>;
   loading?: boolean;
   sortPrefix?: string;
+  setActivePage?: Dispatch<SetStateAction<number>>;
 }
 
 const SortingMenu = ({
@@ -24,6 +25,7 @@ const SortingMenu = ({
   bgColor,
   sortingHandler,
   loading,
+  setActivePage,
 }: //sortPrefix = '', // TODO: URL query prefix (20240219 - Shirley)
 ISearchFilter) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -45,6 +47,7 @@ ISearchFilter) => {
       if (sortingHandler) {
         await sortingHandler({order: convertStringToSortingType(option)});
       }
+      setActivePage && setActivePage(DEFAULT_PAGE);
     };
     return (
       <li

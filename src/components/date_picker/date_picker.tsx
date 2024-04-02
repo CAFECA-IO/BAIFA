@@ -2,7 +2,7 @@ import Image from 'next/image';
 import {useCallback, useState, useEffect, Dispatch, SetStateAction} from 'react';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai';
-import {MONTH_LIST, WEEK_LIST} from '../../constants/config';
+import {MONTH_LIST, WEEK_LIST, DEFAULT_PAGE} from '../../constants/config';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IDatePeriod} from '../../interfaces/date_period';
@@ -30,6 +30,7 @@ interface IDatePickerProps {
   isLinearBg?: boolean;
   loading?: boolean;
   datePickerHandler?: (start: number, end: number) => Promise<void>;
+  setActivePage?: Dispatch<SetStateAction<number>>;
 }
 
 // Info:(20230530 - Julian) Safari 只接受 YYYY/MM/DD 格式的日期
@@ -162,6 +163,7 @@ const DatePicker = ({
   setFilteredPeriod,
   isLinearBg,
   loading,
+  setActivePage,
 }: //datePickerHandler,
 IDatePickerProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -195,7 +197,9 @@ IDatePickerProps) => {
         startTimeStamp: dateOneStamp,
         endTimeStamp: isSameDate ? dateTwoStamp + SECONDS_IN_A_DAY : dateTwoStamp,
       });
+      setActivePage && setActivePage(DEFAULT_PAGE);
     } else {
+      // Info: (20240402 - Liz) 如果沒有選擇日期，則將日期區間設為 0
       setFilteredPeriod({
         startTimeStamp: 0,
         endTimeStamp: 0,

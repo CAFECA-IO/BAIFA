@@ -64,11 +64,6 @@ const AllCurrenciesPageBody = () => {
   const chainNameTypes = currenciesData?.chainNameTypes ?? [];
   const typeOptions = [typeOptionDefault, ...chainNameTypes];
 
-  // Info: (20240308 - Liz) 當搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
-  useEffect(() => {
-    setActivePage(1);
-  }, [search, filteredType, sorting]);
-
   // Info: (20240308 - Liz) 顯示貨幣列表
   const currenciesList =
     currenciesData?.currencies && currenciesData.currencies.length > 0 ? (
@@ -137,6 +132,7 @@ const AllCurrenciesPageBody = () => {
             {SearchBarWithKeyDown({
               searchBarPlaceholder: t('CURRENCIES_PAGE.SEARCH_PLACEHOLDER'),
               setSearch: setSearch,
+              setActivePage: setActivePage,
             })}
           </div>
           <div className="flex w-full flex-col items-center justify-between lg:flex-row">
@@ -146,6 +142,7 @@ const AllCurrenciesPageBody = () => {
                 sorting={filteredType}
                 setSorting={setFilteredType}
                 bgColor="bg-darkPurple"
+                setActivePage={setActivePage}
               />
             </div>
 
@@ -156,6 +153,7 @@ const AllCurrenciesPageBody = () => {
                 sorting={sorting}
                 setSorting={setSorting}
                 bgColor="bg-darkPurple"
+                setActivePage={setActivePage}
               />
             </div>
           </div>
