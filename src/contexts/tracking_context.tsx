@@ -21,8 +21,8 @@ export interface ITrackingContext {
   filterBlockchains: string[];
   filterBlockchainsHandler: (blockchains: string[]) => void;
 
-  filterCurrency: string[];
-  filterCurrencyHandler: (currencies: string[]) => void;
+  filterCurrencies: string[];
+  filterCurrenciesHandler: (currencies: string[]) => void;
 
   visibleAddAddressPanel: boolean;
   visibleAddAddressPanelHandler: () => void;
@@ -52,8 +52,8 @@ export const TrackingContext = createContext<ITrackingContext>({
   filterBlockchains: [],
   filterBlockchainsHandler: () => null,
 
-  filterCurrency: [],
-  filterCurrencyHandler: () => null,
+  filterCurrencies: [],
+  filterCurrenciesHandler: () => null,
 
   visibleAddAddressPanel: false,
   visibleAddAddressPanelHandler: () => null,
@@ -88,9 +88,9 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     setFilterBlockchains(blockchains);
   }, []);
   // Info: (20240401 - Julian) 篩選的幣種
-  const [filterCurrency, setFilterCurrency] = useState<string[]>([]);
-  const filterCurrencyHandler = useCallback((currencies: string[]) => {
-    setFilterCurrency(currencies);
+  const [filterCurrencies, setFilterCurrencies] = useState<string[]>([]);
+  const filterCurrenciesHandler = useCallback((currencies: string[]) => {
+    setFilterCurrencies(currencies);
   }, []);
 
   // Info: (20240326 - Julian) 新增地址面板是否顯示
@@ -124,8 +124,8 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     filterBlockchains,
     filterBlockchainsHandler,
 
-    filterCurrency,
-    filterCurrencyHandler,
+    filterCurrencies,
+    filterCurrenciesHandler,
 
     visibleAddAddressPanel,
     visibleAddAddressPanelHandler,
@@ -146,8 +146,8 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
         setFilterDatePeriod={setFilterDatePeriod}
         filterBlockchains={filterBlockchains}
         filterBlockchainsHandler={filterBlockchainsHandler}
-        filterCurrency={filterCurrency}
-        filterCurrencyHandler={filterCurrencyHandler}
+        filterCurrencies={filterCurrencies}
+        filterCurrenciesHandler={filterCurrenciesHandler}
       />
 
       <AddAddressPanel

@@ -17,8 +17,8 @@ interface IFilterPanelProps {
   setFilterDatePeriod: Dispatch<SetStateAction<IDatePeriod>>;
   filterBlockchains: string[];
   filterBlockchainsHandler: (blockchains: string[]) => void;
-  filterCurrency: string[];
-  filterCurrencyHandler: (currencies: string[]) => void;
+  filterCurrencies: string[];
+  filterCurrenciesHandler: (currencies: string[]) => void;
 }
 
 const FilterPanel = ({
@@ -28,26 +28,31 @@ const FilterPanel = ({
   setFilterDatePeriod,
   filterBlockchains,
   filterBlockchainsHandler,
-  filterCurrency,
-  filterCurrencyHandler,
+  filterCurrencies,
+  filterCurrenciesHandler,
 }: IFilterPanelProps) => {
   // Info: (20240401 - Julian) 是否顯示篩選區塊鏈
   const [visibleFilterChain, setVisibleFilterChain] = useState(false);
-  // Info: (20240401 - Julian) 選到的區塊鏈列表
-  const [selectChains, setSelectChains] = useState<string[]>(filterBlockchains);
   // Info: (20240401 - Julian) 搜尋區塊鏈輸入框的值
   const [chainInputValue, setChainInputValue] = useState<string>('');
+  // Info: (20240402 - Julian) 選到的區塊鏈列表
+  const [selectChains, setSelectChains] = useState<string[]>([]);
   // Info: (20240402 - Julian) 是否顯示區塊鏈的搜尋建議
   const [visibleChainSuggestion, setVisibleChainSuggestion] = useState(false);
 
   // Info: (20240401 - Julian) 是否顯示篩選幣種
   const [visibleFilterCurrency, setVisibleFilterCurrency] = useState(false);
-  // Info: (20240401 - Julian) 選到的幣種列表
-  const [selectCurrencies, setSelectCurrencies] = useState<string[]>([]);
   // Info: (20240401 - Julian) 搜尋幣種輸入框的值
   const [currencyInputValue, setCurrencyInputValue] = useState<string>('');
+  // Info: (20240402 - Julian) 選到的幣種列表
+  const [selectCurrencies, setSelectCurrencies] = useState<string[]>([]);
   // Info: (20240402 - Julian) 是否顯示幣種的搜尋建議
   const [visibleCurrencySuggestion, setVisibleCurrencySuggestion] = useState(false);
+
+  // Info: (20240402 - Julian) 送出 Filter 前的狀態
+  const [preDatePeriod, setPreDatePeriod] = useState<IDatePeriod>(filterDatePeriod);
+  const [preBlockchains, setPreBlockchains] = useState<string[]>(filterBlockchains);
+  const [preCurrencies, setPreCurrencies] = useState<string[]>(filterCurrencies);
 
   // Info: (20240401 - Julian) 從 API 取得的區塊鏈資料
   const {data: blockchainData} = useAPIResponse<IChainDetail[]>(`/api/v1/app/chains`, {
@@ -87,7 +92,7 @@ const FilterPanel = ({
   };
   // Info: (20240401 - Julian) 儲存 filterBlockchains，並關閉篩選區塊鏈
   const saveChainsHandler = () => {
-    filterBlockchainsHandler(selectChains);
+    setPreBlockchains(selectChains);
     setVisibleFilterChain(false);
   };
 
@@ -104,36 +109,46 @@ const FilterPanel = ({
   };
   // Info: (20240401 - Julian) 儲存 filterBlockchains，並關閉篩選區塊鏈
   const saveCurrenciesHandler = () => {
-    filterCurrencyHandler(selectCurrencies);
+    setPreCurrencies(selectCurrencies);
     setVisibleFilterCurrency(false);
   };
 
   // Info: (20240402 - Julian) 重置 Filter
   const resetFilterHandler = () => {
-    setFilterDatePeriod({startTimeStamp: 0, endTimeStamp: 0});
+    setPreDatePeriod({startTimeStamp: 0, endTimeStamp: 0});
     setSelectChains([]);
     setSelectCurrencies([]);
-    filterBlockchainsHandler([]);
-    filterCurrencyHandler([]);
+    setPreBlockchains([]);
+    setPreCurrencies([]);
+  };
+
+  // Info: (20240402 - Julian) 送出 Filter 設定到 TrackingCtx 中，並關閉 Panel
+  const saveFilterHandler = () => {
+    filterBlockchainsHandler(preBlockchains);
+    filterCurrenciesHandler(preCurrencies);
+    setFilterDatePeriod(preDatePeriod);
+    modalClickHandler();
   };
 
   useEffect(() => {
     // Info: (20240402 - Julian) 讓 Filter Chains 重開後，重置設定
-    setSelectChains(filterBlockchains);
-  }, [filterBlockchains, visibleFilterChain]);
+    if (!visibleFilterChain) setChainInputValue('');
+    setSelectChains(preBlockchains);
+  }, [preBlockchains, visibleFilterChain]);
 
   useEffect(() => {
     // Info: (20240402 - Julian) 讓 Filter Currencies 重開後，重置設定
-    setSelectCurrencies(filterCurrency);
-  }, [filterCurrency, visibleFilterCurrency]);
+    if (!visibleFilterCurrency) setCurrencyInputValue('');
+    setSelectCurrencies(preCurrencies);
+  }, [preCurrencies, visibleFilterCurrency]);
 
   // Info: (20240401 - Julian) 顯示已選擇的區塊鏈
-  const displayFilterBlockchains = filterBlockchains
-    ? filterBlockchains.map(blockchain => blockchain).join(', ')
+  const displayBlockchains = preBlockchains
+    ? preBlockchains.map(blockchain => blockchain).join(', ')
     : null;
 
-  const displayFilterCurrencies = filterCurrency
-    ? filterCurrency.map(blockchain => blockchain).join(', ')
+  const displayCurrencies = preCurrencies
+    ? preCurrencies.map(blockchain => blockchain).join(', ')
     : null;
 
   // Info: (20240402 - Julian) ----------- Blockchain Filter Panel -----------
@@ -358,7 +373,7 @@ const FilterPanel = ({
         <h2 className="text-xl font-semibold">Filter</h2>
         <div className="flex w-full flex-col items-center gap-8">
           {/* Info: (20240401 - Julian) Date picker */}
-          <DatePicker period={filterDatePeriod} setFilteredPeriod={setFilterDatePeriod} />
+          <DatePicker period={preDatePeriod} setFilteredPeriod={setPreDatePeriod} />
           {/* Info: (20240401 - Julian) Filter Blockchains */}
           <button
             onClick={visibleFilterChainHandler}
@@ -366,7 +381,7 @@ const FilterPanel = ({
           >
             <p>Blockchain</p>
             <div className="w-200px overflow-hidden text-ellipsis whitespace-nowrap text-lilac">
-              {displayFilterBlockchains}
+              {displayBlockchains}
             </div>
             <FaAngleRight />
           </button>
@@ -377,7 +392,7 @@ const FilterPanel = ({
           >
             <p>Currency</p>
             <div className="w-200px overflow-hidden text-ellipsis whitespace-nowrap text-lilac">
-              {displayFilterCurrencies}
+              {displayCurrencies}
             </div>
 
             <FaAngleRight />
@@ -395,12 +410,12 @@ const FilterPanel = ({
           </BoltButton>
           {/* Info: (20240402 - Julian) OK Button */}
           <BoltButton
-            onClick={modalClickHandler}
+            onClick={saveFilterHandler}
             style="solid"
             color="blue"
             className="grow px-4 py-2"
           >
-            OK
+            Save
           </BoltButton>
         </div>
       </div>

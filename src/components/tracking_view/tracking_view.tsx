@@ -6,12 +6,22 @@ import {HttpMethod} from '../../constants/api_request';
 import {truncateText} from '../../lib/common';
 
 const TrackingView = () => {
-  const {targetAddress} = useContext(TrackingContext);
+  const {targetAddress, filterBlockchains, filterCurrencies, filterDatePeriod} =
+    useContext(TrackingContext);
+
+  const blockchainQueryStr = filterBlockchains.length > 0 ? filterBlockchains.join(',') : '';
+  const currencyQueryStr = filterCurrencies.length > 0 ? filterCurrencies.join(',') : '';
 
   const {data: interactionAddresses, isLoading} = useAPIResponse<string[]>(
     `/api/v1/app/tracking_tool/interaction_list`,
     {method: HttpMethod.GET},
-    {address_id: targetAddress}
+    {
+      address_id: targetAddress,
+      blockchains: blockchainQueryStr,
+      currencies: currencyQueryStr,
+      start_date: filterDatePeriod.startTimeStamp === 0 ? '' : filterDatePeriod.startTimeStamp,
+      end_date: filterDatePeriod.endTimeStamp === 0 ? '' : filterDatePeriod.endTimeStamp,
+    }
   );
 
   const interactions = interactionAddresses ?? [];
