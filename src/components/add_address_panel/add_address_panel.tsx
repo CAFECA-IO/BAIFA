@@ -56,21 +56,15 @@ const AddAddressPanel = ({
     setVisibleAddressSuggestion(true);
   };
 
-  // Info: (20240326 - Julian) 點擊 Add 按鈕後，將輸入的地址加入清單，並清空 input
-  const addButtonClickHandler = () => {
-    setAddressList(inputValue);
-    setInputValue('');
-  };
-
   // Info: (20240326 - Julian) 如果清單為空，就不能點擊 Add 按鈕
   const addAddressButtonDisabled = addressList === '';
 
   // Info: (20240402 - Julian) 顯示建議
   const displayAddressSuggestion = visibleAddressSuggestion
     ? addressSuggestion?.map((suggestion, index) => {
-        // Info: (20240402 - Julian) 將地址寫入 input，並收起建議
+        // Info: (20240402 - Julian) 將地址加入 address list，並關閉建議
         const addAddressHandler = () => {
-          setInputValue(suggestion);
+          setAddressList(suggestion);
           setVisibleAddressSuggestion(false);
         };
         return (
@@ -133,7 +127,7 @@ const AddAddressPanel = ({
   const isShowFollowingList = visibleFollowingList ? (
     <div
       id="following-list"
-      className="absolute z-80 flex w-9/10 flex-col items-center rounded bg-darkPurple p-10 shadow-lg lg:w-700px"
+      className="absolute z-80 flex w-9/10 flex-col items-center rounded-lg bg-darkPurple p-10 shadow-lg lg:w-700px"
     >
       {/* Info: (20240326 - Julian) Close button */}
       <button
@@ -145,7 +139,7 @@ const AddAddressPanel = ({
 
       <h2 className="text-xl font-semibold">Following List</h2>
       {/* Info: (20240326 - Julian) Address list */}
-      <div className="mt-10 flex h-fit w-full flex-col items-center overflow-y-auto bg-darkPurple3">
+      <div className="mt-10 flex max-h-300px w-full flex-col items-center overflow-y-auto bg-darkPurple3">
         {displayFollowingList}
       </div>
     </div>
@@ -184,10 +178,6 @@ const AddAddressPanel = ({
             {displayAddressSuggestion}
           </div>
         </div>
-        {/* Info: (20240326 - Julian) Add button */}
-        <button onClick={addButtonClickHandler} className={`${buttonStyle} shadow-lg`}>
-          <HiPlus size={24} />
-        </button>
         {/* Info: (20240326 - Julian) Pre add address list */}
         <div className="flex w-full flex-1 flex-col overflow-y-auto">{displayAddressList}</div>
 
