@@ -226,7 +226,7 @@ const TrackingView = () => {
 
   const isShowGraph =
     targetAddress && !isLoading ? (
-      <div id="container" ref={mapRef} className="h-700px w-1000px"></div>
+      <div id="container" ref={mapRef} className="h-600px w-1000px"></div>
     ) : null;
 
   return <>{isShowGraph}</>;

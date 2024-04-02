@@ -56,35 +56,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const currencyIds = currencies ? currencyData.map(currency => currency.id) : undefined;
 
     // Info: (20240402 - Julian) 撈出所有相關的交易資料
-    const transactions = await prisma.transactions.findMany({
+    const transactions = await prisma.token_transfers.findMany({
       where: {
-        related_addresses: {
-          // Info: (20240402 - Julian) 交易資料中包含 address_id
-          has: address_id,
-        },
-        chain_id: {
-          // Info: (20240402 - Julian) 交易資料中的區塊鏈在 blockchains 中
-          in: chainIds,
-        },
-        created_timestamp: {
-          // Info: (20240402 - Julian) 交易資料的時間在 startTimeStamp 和 endTimeStamp 之間
-          gte: startTimeStamp,
-          lte: endTimeStamp,
-        },
+        // Info: (20240402 - Julian) 查找 from_address 或 to_address 為 address_id 的交易資料
+        OR: [{from_address: address_id}, {to_address: address_id}],
+        // Info: (20240402 - Julian) 如果有指定區塊鏈，則查找 chain_id 為指定區塊鏈的交易資料
+        chain_id: {in: chainIds},
+        // Info: (20240402 - Julian) 如果有指定幣種，則查找 currency_id 為指定幣種的交易資料
+        currency_id: {in: currencyIds},
+        // Info: (20240402 - Julian) 交易資料的時間在 startTimeStamp 和 endTimeStamp 之間
+        created_timestamp: {gte: startTimeStamp, lte: endTimeStamp},
       },
       select: {
-        related_addresses: true,
+        from_address: true,
+        to_address: true,
       },
     });
 
-    // Info: (20240328 - Julian) 將交易資料中的地址取出並去重
-    const interactedRaw = transactions?.flatMap(transaction => transaction.related_addresses) ?? [];
-    const interactedList = interactedRaw.filter(
-      address => address !== address_id && address !== 'null'
-    );
-    const interactedSet = Array.from(new Set(interactedList));
+    // Info: (20240402 - Julian) 將交易資料中的地址取出
+    const addresses =
+      transactions.flatMap(transaction => {
+        return [transaction.from_address ?? '', transaction.to_address ?? ''];
+      }) ?? [];
+    // Info: (20240402 - Julian) 去除 address_id & 空值
+    const uniqueAddresses = addresses.filter(address => address !== address_id && address !== '');
+    // Info: (20240402 - Julian) 去除重複的地址
+    const uniqueAddressSet = new Set(uniqueAddresses);
+    const uniqueAddressList = Array.from(uniqueAddressSet);
 
-    res.status(200).json(interactedSet);
+    res.status(200).json(uniqueAddressList);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error in GET /app/tracking-tool interaction list', error);
