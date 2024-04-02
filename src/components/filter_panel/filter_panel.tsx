@@ -1,16 +1,14 @@
 import {ChangeEvent, Dispatch, SetStateAction, useState, useEffect} from 'react';
-import Image from 'next/image';
 import {IoIosCloseCircleOutline} from 'react-icons/io';
 import {ImCross} from 'react-icons/im';
 import {FaAngleRight, FaArrowLeft} from 'react-icons/fa';
 import DatePicker from '../date_picker/date_picker';
 import {IDatePeriod} from '../../interfaces/date_period';
-import {DEFAULT_CHAIN_ICON} from '../../constants/config';
 import useAPIResponse from '../../lib/hooks/use_api_response';
 import {HttpMethod} from '../../constants/api_request';
 import {IChainDetail} from '../../interfaces/chain';
-import {getChainIcon, getCurrencyIcon} from '../../lib/common';
 import {ICurrencyListPage} from '../../interfaces/currency';
+import BoltButton from '../bolt_button/bolt_button';
 
 interface IFilterPanelProps {
   modalVisible: boolean;
@@ -33,90 +31,113 @@ const FilterPanel = ({
   filterCurrency,
   filterCurrencyHandler,
 }: IFilterPanelProps) => {
-  // Info: (20240401 - Julian) call API to get blockchain data
-  const {data: blockchainData, isLoading: isBlockchainData} = useAPIResponse<IChainDetail[]>(
-    `/api/v1/app/chains`,
-    {method: HttpMethod.GET}
+  // Info: (20240401 - Julian) 是否顯示篩選區塊鏈
+  const [visibleFilterChain, setVisibleFilterChain] = useState(false);
+  // Info: (20240401 - Julian) 選到的區塊鏈列表
+  const [selectChains, setSelectChains] = useState<string[]>(filterBlockchains);
+  // Info: (20240401 - Julian) 搜尋區塊鏈輸入框的值
+  const [chainInputValue, setChainInputValue] = useState<string>('');
+  // Info: (20240402 - Julian) 是否顯示區塊鏈的搜尋建議
+  const [visibleChainSuggestion, setVisibleChainSuggestion] = useState(false);
+
+  // Info: (20240401 - Julian) 是否顯示篩選幣種
+  const [visibleFilterCurrency, setVisibleFilterCurrency] = useState(false);
+  // Info: (20240401 - Julian) 選到的幣種列表
+  const [selectCurrencies, setSelectCurrencies] = useState<string[]>([]);
+  // Info: (20240401 - Julian) 搜尋幣種輸入框的值
+  const [currencyInputValue, setCurrencyInputValue] = useState<string>('');
+  // Info: (20240402 - Julian) 是否顯示幣種的搜尋建議
+  const [visibleCurrencySuggestion, setVisibleCurrencySuggestion] = useState(false);
+
+  // Info: (20240401 - Julian) 從 API 取得的區塊鏈資料
+  const {data: blockchainData} = useAPIResponse<IChainDetail[]>(`/api/v1/app/chains`, {
+    method: HttpMethod.GET,
+  });
+  // Info: (20240402 - Julian) 從 API 取得的區塊鏈的搜尋建議
+  const {data: chainSuggestion} = useAPIResponse<string[]>(
+    `/api/v1/app/tracking_tool/filter/chain_suggestion`,
+    {method: HttpMethod.GET},
+    {search_input: chainInputValue}
   );
 
-  // Info: (20240401 - Julian) call API to get currency data
-  const {data: currencyData, isLoading: isCurrencyData} = useAPIResponse<ICurrencyListPage>(
-    `/api/v1/app/currencies`,
-    {method: HttpMethod.GET}
+  // Info: (20240401 - Julian) 從 API 取得的幣種資料
+  const {data: currencyData} = useAPIResponse<ICurrencyListPage>(`/api/v1/app/currencies`, {
+    method: HttpMethod.GET,
+  });
+  // Info: (20240402 - Julian) 從 API 取得的幣種的搜尋建議
+  const {data: currencySuggestion} = useAPIResponse<string[]>(
+    `/api/v1/app/tracking_tool/filter/currency_suggestion`,
+    {method: HttpMethod.GET},
+    {search_input: currencyInputValue}
   );
 
   const blockchainList = blockchainData?.map(blockchain => blockchain.chainName) || [];
   const currencyList = currencyData?.currencies.map(currency => currency.currencyName) || [];
 
-  // Info: (20240401 - Julian) 是否顯示 Filter Chain
-  const [visibleFilterChain, setVisibleFilterChain] = useState(false);
-  // Info: (20240401 - Julian) 選擇的 Blockchains
-  const [selectChains, setSelectChains] = useState<string[]>([]);
-  // Info: (20240401 - Julian) 輸入框的值
-  //const [chainInputValue, setChainInputValue] = useState<string>('');
-
-  // Info: (20240401 - Julian) 顯示 Filter Currency
-  const [visibleFilterCurrency, setVisibleFilterCurrency] = useState(false);
-  // Info: (20240401 - Julian) 選擇的 Currencies
-  const [selectCurrencies, setSelectCurrencies] = useState<string[]>([]);
-  // Info: (20240401 - Julian) 輸入框的值
-  //const [currencyInputValue, setCurrencyInputValue] = useState<string>('');
-
-  // Info: (20240401 - Julian) Filter Chain 開關
+  // Info: (20240401 - Julian) 篩選鏈版面的開關
   const visibleFilterChainHandler = () => setVisibleFilterChain(prev => !prev);
-  // Info: (20240401 - Julian) Filter Currency 開關
-  const visibleFilterCurrencyHandler = () => setVisibleFilterCurrency(prev => !prev);
-
-  // Info: (20240401 - Julian) 全選 Blockchains
+  // Info: (20240401 - Julian) 全選區塊鏈
   const selectAllChainsHandler = () => setSelectChains(blockchainList);
-  // Info: (20240401 - Julian) 全選 Currencies
-  const selectAllCurrencyHandler = () => setSelectCurrencies(currencyList);
-
-  useEffect(() => {
-    // Info: (20240401 - Julian) 如果 selectChains 改變，則更新 filterBlockchains
+  // Info: (20240402 - Julian) focus 搜尋欄位時，顯示搜尋建議
+  const handleChainInputFocus = () => setVisibleChainSuggestion(true);
+  // Info: (20240402 - Julian) 改變搜尋欄位的值
+  const handleChainInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setChainInputValue(e.target.value);
+    setVisibleChainSuggestion(true);
+  };
+  // Info: (20240401 - Julian) 儲存 filterBlockchains，並關閉篩選區塊鏈
+  const saveChainsHandler = () => {
     filterBlockchainsHandler(selectChains);
-  }, [selectChains, filterBlockchainsHandler]);
+    setVisibleFilterChain(false);
+  };
+
+  // Info: (20240401 - Julian) 篩選幣版面的開關
+  const visibleFilterCurrencyHandler = () => setVisibleFilterCurrency(prev => !prev);
+  // Info: (20240401 - Julian) 全選幣種
+  const selectAllCurrencyHandler = () => setSelectCurrencies(currencyList);
+  // Info: (20240402 - Julian) focus 搜尋欄位時，顯示搜尋建議
+  const handleCurrencyInputFocus = () => setVisibleCurrencySuggestion(true);
+  // Info: (20240402 - Julian) 改變搜尋欄位的值
+  const handleCurrencyInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCurrencyInputValue(e.target.value);
+    setVisibleCurrencySuggestion(true);
+  };
+  // Info: (20240401 - Julian) 儲存 filterBlockchains，並關閉篩選區塊鏈
+  const saveCurrenciesHandler = () => {
+    filterCurrencyHandler(selectCurrencies);
+    setVisibleFilterCurrency(false);
+  };
+
+  // Info: (20240402 - Julian) 重置 Filter
+  const resetFilterHandler = () => {
+    setFilterDatePeriod({startTimeStamp: 0, endTimeStamp: 0});
+    setSelectChains([]);
+    setSelectCurrencies([]);
+    filterBlockchainsHandler([]);
+    filterCurrencyHandler([]);
+  };
 
   useEffect(() => {
-    // Info: (20240401 - Julian) 如果 selectCurrencies 改變，則更新 filterCurrency
-    filterCurrencyHandler(selectCurrencies);
-  }, [selectCurrencies, filterCurrencyHandler]);
+    // Info: (20240402 - Julian) 讓 Filter Chains 重開後，重置設定
+    setSelectChains(filterBlockchains);
+  }, [filterBlockchains, visibleFilterChain]);
 
+  useEffect(() => {
+    // Info: (20240402 - Julian) 讓 Filter Currencies 重開後，重置設定
+    setSelectCurrencies(filterCurrency);
+  }, [filterCurrency, visibleFilterCurrency]);
+
+  // Info: (20240401 - Julian) 顯示已選擇的區塊鏈
   const displayFilterBlockchains = filterBlockchains
     ? filterBlockchains.map(blockchain => blockchain).join(', ')
     : null;
 
-  const displayBlockchainList = !isBlockchainData ? (
-    blockchainData?.map((blockchain, index) => {
-      const addChainHandler = () => {
-        // Info: (20240401 - Julian) 如果已經在選擇的 Blockchains 中，則不再新增
-        if (selectChains.includes(blockchain.chainName)) return;
-        setSelectChains([...selectChains, blockchain.chainName]);
-      };
+  const displayFilterCurrencies = filterCurrency
+    ? filterCurrency.map(blockchain => blockchain).join(', ')
+    : null;
 
-      const chainIcon = getChainIcon(blockchain.chainId);
-
-      return (
-        <button
-          key={index}
-          onClick={addChainHandler}
-          className="flex items-center gap-2 rounded-full border border-hoverWhite bg-purpleLinear px-4 py-2 text-sm"
-        >
-          <Image
-            src={chainIcon.src}
-            width={20}
-            height={20}
-            alt={chainIcon.alt}
-            onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
-          />
-          <p>{blockchain.chainName}</p>
-        </button>
-      );
-    })
-  ) : (
-    <div>Loading...</div>
-  );
-
+  // Info: (20240402 - Julian) ----------- Blockchain Filter Panel -----------
+  // Info: (20240402 - Julian) 列出已選擇的區塊鏈
   const displaySelectChains =
     selectChains.length > 0 ? (
       <div className="flex flex-wrap items-center gap-2">
@@ -138,63 +159,31 @@ const FilterPanel = ({
       </div>
     ) : null;
 
-  const displayFilterCurrencies = filterCurrency
-    ? filterCurrency.map(blockchain => blockchain).join(', ')
+  // Info: (20240402 - Julian) 區塊鏈搜尋建議列表
+  const displayChainSuggestion = visibleChainSuggestion
+    ? chainSuggestion?.map((suggestion, index) => {
+        const addChainHandler = () => {
+          // Info: (20240402 - Julian) 清空搜尋欄位的值，並收起搜尋建議
+          setChainInputValue('');
+          setVisibleChainSuggestion(false);
+
+          // Info: (20240402 - Julian) 如果已經在選擇的 Chains 中，則不再新增
+          if (selectChains.includes(suggestion)) return;
+          setSelectChains([...selectChains, suggestion]);
+        };
+        return (
+          <div
+            key={index}
+            onClick={addChainHandler}
+            className="w-full cursor-pointer px-4 py-2 text-hoverWhite hover:bg-purpleLinear"
+          >
+            {suggestion}
+          </div>
+        );
+      })
     : null;
 
-  const displayCurrencyList = !isCurrencyData ? (
-    currencyData?.currencies?.map((currency, index) => {
-      const addChainHandler = () => {
-        // Info: (20240401 - Julian) 如果已經在選擇的 Currencies 中，則不再新增
-        if (selectCurrencies.includes(currency.currencyName)) return;
-        setSelectCurrencies([...selectCurrencies, currency.currencyName]);
-      };
-
-      const currencyIcon = getCurrencyIcon(currency.currencyId);
-
-      return (
-        <button
-          key={index}
-          onClick={addChainHandler}
-          className="flex items-center gap-2 rounded-full border border-hoverWhite bg-purpleLinear px-4 py-2 text-sm"
-        >
-          <Image
-            src={currencyIcon.src}
-            width={20}
-            height={20}
-            alt={currencyIcon.alt}
-            onError={e => (e.currentTarget.src = DEFAULT_CHAIN_ICON)}
-          />
-          <p>{currency.currencyName}</p>
-        </button>
-      );
-    })
-  ) : (
-    <div>Loading...</div>
-  );
-
-  const displaySelectCurrencies =
-    selectCurrencies.length > 0 ? (
-      <div className="flex flex-wrap items-center gap-2">
-        {selectCurrencies.map((chain, index) => {
-          // Info: (20240401 - Julian) 將選擇從 selectCurrencies 中刪除
-          const deleteCurrencyHandler = () =>
-            setSelectCurrencies(selectCurrencies.filter(item => item !== chain));
-          return (
-            <button
-              key={index}
-              className="flex items-center gap-1 rounded-full border border-hoverWhite bg-purpleLinear px-2 py-1 text-sm"
-              onClick={deleteCurrencyHandler}
-            >
-              <p>{chain}</p>
-              <ImCross size={8} />
-            </button>
-          );
-        })}
-      </div>
-    ) : null;
-
-  // Info: (20240401 - Julian) ----------- Blockchain Filter Panel -----------
+  // Info: (20240401 - Julian) Blockchain Filter Main Panel
   const isShowFilterChainPanel = visibleFilterChain ? (
     <div className="absolute z-80 flex w-9/10 flex-col items-center gap-4 rounded-lg bg-darkPurple2 p-10 lg:w-400px">
       {/* Info: (20240401 - Julian) Back button */}
@@ -207,34 +196,97 @@ const FilterPanel = ({
       {/* Info: (20240401 - Julian) Title */}
       <h2 className="text-xl font-semibold">Blockchain Filter</h2>
       {/* Info: (20240401 - Julian) Content */}
-      <div className="flex w-full flex-col gap-2">
+      <div className="flex w-full flex-col gap-4">
         {/* Info: (20240401 - Julian) Input */}
-        <div className="flex min-h-55px w-full flex-wrap items-center gap-2 bg-purpleLinear px-4 py-2">
-          {/* Info: (20240401 - Julian) Filter Blockchains */}
-          {displaySelectChains}
+        <div className="relative flex w-full items-center">
           <input
             type="text"
-            className="w-full bg-transparent text-hoverWhite placeholder:text-lilac"
+            className="h-40px w-full bg-purpleLinear px-4 py-2 text-hoverWhite placeholder:text-lilac focus:outline-none"
             placeholder="Search for chains"
+            value={chainInputValue}
+            onChange={handleChainInputChange}
+            onFocus={handleChainInputFocus}
           />
+          {/* Info: (20240401 - Julian) Search suggestion */}
+          <div className="absolute top-40px flex w-full flex-col items-start bg-darkPurple4 shadow-lg">
+            {displayChainSuggestion}
+          </div>
         </div>
-
+        {/* Info: (20240401 - Julian) Blockchain List */}
+        <div className="flex h-150px flex-wrap items-start gap-2 overflow-y-auto overflow-x-hidden bg-darkPurple p-2">
+          {displaySelectChains}
+        </div>
+      </div>
+      <div className="flex w-full items-center justify-between gap-2">
         {/* Info: (20240401 - Julian) Select All */}
-        <button
+        <BoltButton
           onClick={selectAllChainsHandler}
-          className="ml-auto text-primaryBlue underline underline-offset-2"
+          style="hollow"
+          color="blue"
+          className="px-4 py-2"
         >
           Select All
-        </button>
-        {/* Info: (20240401 - Julian) Blockchain List */}
-        <div className="flex max-h-200px flex-wrap gap-2 overflow-y-auto overflow-x-hidden bg-darkPurple p-2">
-          {displayBlockchainList}
-        </div>
+        </BoltButton>
+        {/* Info: (20240401 - Julian) Save Button */}
+        <BoltButton
+          onClick={saveChainsHandler}
+          style="solid"
+          color="blue"
+          className="grow px-4 py-2"
+        >
+          Save
+        </BoltButton>
       </div>
     </div>
   ) : null;
 
   // Info: (20240401 - Julian) ----------- Currency Filter Panel -----------
+  // Info: (20240401 - Julian) 列出已選擇的幣種
+  const displaySelectCurrencies =
+    selectCurrencies.length > 0 ? (
+      <div className="flex flex-wrap items-center gap-2">
+        {selectCurrencies.map((curr, index) => {
+          // Info: (20240401 - Julian) 將選擇從 selectCurrencies 中刪除
+          const deleteCurrencyHandler = () =>
+            setSelectCurrencies(selectCurrencies.filter(item => item !== curr));
+          return (
+            <button
+              key={index}
+              className="flex items-center gap-1 rounded-full border border-hoverWhite bg-purpleLinear px-2 py-1 text-sm"
+              onClick={deleteCurrencyHandler}
+            >
+              <p>{curr}</p>
+              <ImCross size={8} />
+            </button>
+          );
+        })}
+      </div>
+    ) : null;
+
+  const displayCurrencySuggestion = visibleCurrencySuggestion
+    ? currencySuggestion?.map((suggestion, index) => {
+        const addCurrencyHandler = () => {
+          // Info: (20240402 - Julian) 清空搜尋欄位的值，並收起搜尋建議
+          setChainInputValue('');
+          setVisibleCurrencySuggestion(false);
+
+          // Info: (20240402 - Julian) 如果已經在選擇的 Currencies 中，則不再新增
+          if (selectCurrencies.includes(suggestion)) return;
+          setSelectCurrencies([...selectCurrencies, suggestion]);
+        };
+        return (
+          <div
+            key={index}
+            onClick={addCurrencyHandler}
+            className="w-full cursor-pointer px-4 py-2 text-hoverWhite hover:bg-purpleLinear"
+          >
+            {suggestion}
+          </div>
+        );
+      })
+    : null;
+
+  // Info: (20240401 - Julian) Currency Filter Main Panel
   const isShowFilterCurrencyPanel = visibleFilterCurrency ? (
     <div className="absolute z-80 flex w-9/10 flex-col items-center gap-4 rounded-lg bg-darkPurple2 p-10 lg:w-400px">
       {/* Info: (20240401 - Julian) Back button */}
@@ -247,29 +299,46 @@ const FilterPanel = ({
       {/* Info: (20240401 - Julian) Title */}
       <h2 className="text-xl font-semibold">Currency Filter</h2>
       {/* Info: (20240401 - Julian) Content */}
-      <div className="flex w-full flex-col gap-2">
+      <div className="flex w-full flex-col gap-4">
         {/* Info: (20240401 - Julian) Input */}
-        <div className="flex min-h-55px w-full flex-wrap items-center gap-2 bg-purpleLinear px-4 py-2">
-          {/* Info: (20240401 - Julian) Filter Currencies */}
-          {displaySelectCurrencies}
+        <div className="relative flex w-full items-center">
           <input
             type="text"
-            className="w-full bg-transparent text-hoverWhite placeholder:text-lilac"
+            className="h-40px w-full bg-purpleLinear px-4 py-2 text-hoverWhite placeholder:text-lilac focus:outline-none"
             placeholder="Search for currencies"
+            value={currencyInputValue}
+            onChange={handleCurrencyInputChange}
+            onFocus={handleCurrencyInputFocus}
           />
+          {/* Info: (20240401 - Julian) Search suggestion */}
+          <div className="absolute top-40px flex w-full flex-col items-start bg-darkPurple4 shadow-lg">
+            {displayCurrencySuggestion}
+          </div>
         </div>
-
+        {/* Info: (20240401 - Julian) Blockchain List */}
+        <div className="flex h-150px flex-wrap items-start gap-2 overflow-y-auto overflow-x-hidden bg-darkPurple p-2">
+          {displaySelectCurrencies}
+        </div>
+      </div>
+      <div className="flex w-full items-center justify-between gap-2">
         {/* Info: (20240401 - Julian) Select All */}
-        <button
+        <BoltButton
           onClick={selectAllCurrencyHandler}
-          className="ml-auto text-primaryBlue underline underline-offset-2"
+          style="hollow"
+          color="blue"
+          className="px-4 py-2"
         >
           Select All
-        </button>
-        {/* Info: (20240401 - Julian) Currency List */}
-        <div className="flex max-h-200px flex-wrap gap-2 overflow-y-auto overflow-x-hidden bg-darkPurple p-2">
-          {displayCurrencyList}
-        </div>
+        </BoltButton>
+        {/* Info: (20240401 - Julian) Save Button */}
+        <BoltButton
+          onClick={saveCurrenciesHandler}
+          style="solid"
+          color="blue"
+          className="grow px-4 py-2"
+        >
+          Save
+        </BoltButton>
       </div>
     </div>
   ) : null;
@@ -313,6 +382,26 @@ const FilterPanel = ({
 
             <FaAngleRight />
           </button>
+        </div>
+        <div className="flex w-full items-center justify-between gap-2">
+          {/* Info: (20240402 - Julian) Reset Button */}
+          <BoltButton
+            onClick={resetFilterHandler}
+            style="hollow"
+            color="blue"
+            className="px-4 py-2"
+          >
+            Reset
+          </BoltButton>
+          {/* Info: (20240402 - Julian) OK Button */}
+          <BoltButton
+            onClick={modalClickHandler}
+            style="solid"
+            color="blue"
+            className="grow px-4 py-2"
+          >
+            OK
+          </BoltButton>
         </div>
       </div>
       {isShowFilterChainPanel}
