@@ -4,7 +4,7 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../prisma/client';
 import {ITransactionHistorySection} from '../../../../../../interfaces/transaction';
 import {AddressType} from '../../../../../../interfaces/address_info';
-import {ITEM_PER_PAGE} from '../../../../../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../constants/config';
 
 type ResponseData = ITransactionHistorySection;
 
@@ -12,7 +12,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240320 - Liz) query string parameter
   const red_flag_id =
     typeof req.query.red_flag_id === 'string' ? parseInt(req.query.red_flag_id, 10) : undefined;
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
+  const offset =
+    typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
   const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? req.query.search.toLowerCase() : undefined;
 
@@ -27,9 +29,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const startDate = parseDate(req.query.start_date);
   const endDate = parseDate(req.query.end_date);
 
-  // Info: (20240320 - Liz) 計算分頁的 skip 與 take
-  const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240306 - Liz) 跳過前面幾筆
-  const take = ITEM_PER_PAGE; // Info: (20240306 - Liz) 取幾筆
+  // Info: (20240319 - Liz) 計算分頁的 skip 與 take
+  const skip = page > 0 ? (page - 1) * offset : 0; // Info: (20240319 - Liz) 跳過前面幾筆
+  const take = offset; // Info: (20240319 - Liz) 取幾筆
 
   try {
     // Info: (20240131 - Liz) 從 codes table 中取得所有 code 資料
@@ -117,7 +119,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     // Info: (20240320 - Liz) 計算總頁數
-    const totalPages = Math.ceil(transactionCount / ITEM_PER_PAGE);
+    const totalPages = Math.ceil(transactionCount / offset);
 
     // Info: (20240131 - Liz) 透過 transactions 資料組合 transactionHistoryData
     const transactionHistoryData = transactions.map(transaction => {

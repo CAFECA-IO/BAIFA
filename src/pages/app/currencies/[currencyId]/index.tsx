@@ -18,6 +18,7 @@ import {getCurrencyIcon, convertStringToSortingType} from '../../../../lib/commo
 import {
   DEFAULT_CURRENCY_ICON,
   DEFAULT_PAGE,
+  ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../../constants/config';
@@ -71,10 +72,11 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     error: transactionHistoryError,
   } = useAPIResponse<ITransactionHistorySection>(
     `${APIURL.CURRENCIES}/${currencyId}/transactions`,
-    // Info: (20240325 - Liz) 預設值 ?page=1&sort=desc&search=&start_date=&end_date=
+    // Info: (20240325 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&start_date=&end_date=
     {method: HttpMethod.GET},
     {
       page: activePage,
+      offset: ITEM_PER_PAGE,
       sort: convertStringToSortingType(sorting),
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,

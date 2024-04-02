@@ -34,10 +34,11 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
   // Info: (20240402 - Liz) Call API to get Top 100 Holders data (API - 028)
   const {data: top100HoldersData, isLoading} = useAPIResponse<ITop100Holders>(
     `${APIURL.CURRENCIES}/${currencyId}/top100Holders`,
-    // Info: (20240402 - Liz) 預設值 ?page=1&search=
+    // Info: (20240402 - Liz) 預設值 ?page=1&offset=10&search=
     {method: HttpMethod.GET},
     {
       page: activePage,
+      offset: ITEM_PER_PAGE,
       search: search,
     }
   );

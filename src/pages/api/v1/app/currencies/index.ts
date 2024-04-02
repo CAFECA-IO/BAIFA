@@ -3,20 +3,22 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {ICurrencyListPage} from '../../../../../interfaces/currency';
 import prisma from '../../../../../../prisma/client';
-import {ITEM_PER_PAGE} from '../../../../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../constants/config';
 
 type ResponseData = ICurrencyListPage;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240308 - Liz) query string parameter
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
+  const offset =
+    typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
   const sort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
   const search = typeof req.query.search === 'string' ? req.query.search.toLowerCase() : undefined;
   const type = typeof req.query.type === 'string' ? parseInt(req.query.type, 10) : undefined; // Info: (20240308 - Liz) type is categorized by currency name
 
-  // Info: (20240307 - Liz) 計算分頁的 skip 與 take
-  const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240307 - Liz) 跳過前面幾筆
-  const take = ITEM_PER_PAGE; // Info: (20240307 - Liz) 取幾筆
+  // Info: (20240319 - Liz) 計算分頁的 skip 與 take
+  const skip = page > 0 ? (page - 1) * offset : 0; // Info: (20240319 - Liz) 跳過前面幾筆
+  const take = offset; // Info: (20240319 - Liz) 取幾筆
 
   // Info: (20240308 - Liz) 排序
   const sorting = sort === '' || sort === 'desc' ? 'desc' : 'asc';
@@ -119,7 +121,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     // Info: (20240308 - Liz) 計算總頁數
-    const totalPages = Math.ceil(totalCurrencies / ITEM_PER_PAGE);
+    const totalPages = Math.ceil(totalCurrencies / offset);
 
     const result = {
       currencies: currenciesData,

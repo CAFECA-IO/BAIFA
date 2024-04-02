@@ -45,7 +45,7 @@ export const default30DayPeriod = {
 
 export const ITEM_PER_PAGE = 10;
 export const DEFAULT_PAGE = 1;
-export const TOP_100_HOLDER_MAX_TOTAL_PAGES = 100 / ITEM_PER_PAGE;
+export const TOP_100_HOLDER_MAX_AMOUNT = 100;
 
 export const copyright = 'BAIFA @ 2024. All rights reserved.';
 

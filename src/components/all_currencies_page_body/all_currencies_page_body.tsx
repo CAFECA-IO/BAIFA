@@ -36,13 +36,15 @@ const AllCurrenciesPageBody = () => {
   };
   const sortingReq = sortingMap[sorting];
 
+  // Info: (20240402 - Liz) Call API to get currencies list (API-017)
   const {data: currenciesData, isLoading: isCurrenciesDataLoading} =
     useAPIResponse<ICurrencyListPage>(
       `${APIURL.CURRENCIES}`,
       {method: HttpMethod.GET},
-      // Info: (20240325 - Liz) 預設值 ?page=1&sort=asc&search=&type=
+      // Info: (20240325 - Liz) 預設值 ?page=1&offset=10&sort=asc&search=&type=
       {
         page: activePage,
+        offset: ITEM_PER_PAGE,
         sort: sortingReq,
         search: search,
         type: filteredTypeByChainId,
