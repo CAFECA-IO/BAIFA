@@ -30,7 +30,7 @@ interface IDatePickerProps {
   isLinearBg?: boolean;
   loading?: boolean;
   datePickerHandler?: (start: number, end: number) => Promise<void>;
-  setActivePage: Dispatch<SetStateAction<number>>;
+  setActivePage?: Dispatch<SetStateAction<number>>;
 }
 
 // Info:(20230530 - Julian) Safari 只接受 YYYY/MM/DD 格式的日期
@@ -195,8 +195,9 @@ IDatePickerProps) => {
         startTimeStamp: dateOneStamp,
         endTimeStamp: isSameDate ? dateTwoStamp + SECONDS_IN_A_DAY : dateTwoStamp,
       });
-      setActivePage(DEFAULT_PAGE);
+      setActivePage && setActivePage(DEFAULT_PAGE);
     } else {
+      // Info: (20240402 - Liz) 如果沒有選擇日期，則將日期區間設為 0
       setFilteredPeriod({
         startTimeStamp: 0,
         endTimeStamp: 0,

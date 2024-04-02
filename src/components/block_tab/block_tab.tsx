@@ -32,7 +32,6 @@ const BlockTab = ({chainDetailLoading, activePage, setActivePage}: IBlockTabProp
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  // const [activePage, setActivePage] = useState(1);
 
   const {data: blockData, isLoading: isBlockLoading} = useAPIResponse<IBlockList>(
     `${APIURL.CHAINS}/${chainId}/block`,
