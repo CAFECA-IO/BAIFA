@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import NavBar from '../../components/nav_bar/nav_bar';
 import Breadcrumb from '../../components/breadcrumb/breadcrumb';
 import SortingMenu from '../../components/sorting_menu/sorting_menu';
@@ -51,11 +51,6 @@ const BlackListPage = () => {
   // Info: (20240306 - Liz) 下拉式選單選項由 API 取得
   const tagNames = blacklist?.tagNameOptions ?? [];
   const tagNameOptions = [tagNameOptionDefault, ...tagNames];
-
-  // Info: (20240305 - Liz) 當搜尋或篩選的條件改變時，將 activePage 設為 1。雖然搜尋、篩選、排序都是重新打 API 拿新資料，但是搜尋、篩選的條件改變可能導致資料筆數改變，而 sorting 只是就該頁面的 10 筆資料做排序，所以不需要重設 activePage。
-  useEffect(() => {
-    setActivePage(1);
-  }, [search, filteredTagName]);
 
   // Info: (20240306 - Liz) head title and breadcrumb
   const headTitle = `${t('BLACKLIST_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
@@ -128,6 +123,7 @@ const BlackListPage = () => {
                   <SearchBar
                     searchBarPlaceholder={t('BLACKLIST_PAGE.SEARCH_PLACEHOLDER')}
                     setSearch={setSearch}
+                    setActivePage={setActivePage}
                   />
                 </div>
                 <div className="flex w-full flex-col items-center gap-2 lg:h-72px lg:flex-row lg:justify-between">
@@ -138,6 +134,7 @@ const BlackListPage = () => {
                       sorting={filteredTagName}
                       setSorting={setFilteredTagName}
                       bgColor="bg-darkPurple"
+                      setActivePage={setActivePage}
                     />
                   </div>
                   {/* Info: (20231113 - Julian) Sorting Menu */}

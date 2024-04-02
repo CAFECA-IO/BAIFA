@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
@@ -93,11 +93,6 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
 
   // Info: (20240325 - Liz) 從 API 取得總頁數
   const totalPages = redFlagData?.totalPages ?? 0;
-
-  // Info: (20240307 - Liz) 當日期、搜尋、篩選、排序的條件改變時，將 activePage 設為 1。
-  useEffect(() => {
-    setActivePage(1);
-  }, [search, filteredType, period, sorting]);
 
   // Info: (20240319 - Liz) head title and currency icon
   const currencyName = redFlagData?.chainName ?? '';

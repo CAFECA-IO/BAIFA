@@ -98,6 +98,7 @@ const RedFlagList = ({
           {SearchBarWithKeyDown({
             searchBarPlaceholder: t('RED_FLAG_DETAIL_PAGE.SEARCH_PLACEHOLDER'),
             setSearch: setSearch,
+            setActivePage: setActivePage,
           })}
         </div>
         <div className="flex w-full flex-col items-center gap-2 lg:h-72px lg:flex-row lg:justify-between">
@@ -108,12 +109,17 @@ const RedFlagList = ({
               sorting={filteredType}
               setSorting={setFilteredType}
               bgColor="bg-darkPurple"
+              setActivePage={setActivePage}
             />
           </div>
           {/* Info: (20231109 - Julian) Date Picker */}
           <div className="flex w-full items-center text-sm lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-            <DatePicker period={period} setFilteredPeriod={setPeriod} />
+            <DatePicker
+              period={period}
+              setFilteredPeriod={setPeriod}
+              setActivePage={setActivePage}
+            />
           </div>
           {/* Info: (20231109 - Julian) Sorting Menu */}
           <div className="relative flex w-full items-center text-sm lg:w-fit lg:space-x-2">
@@ -123,6 +129,7 @@ const RedFlagList = ({
               sorting={sorting}
               setSorting={setSorting}
               bgColor="bg-darkPurple"
+              setActivePage={setActivePage}
             />
           </div>
         </div>

@@ -2,12 +2,14 @@ import {Dispatch, SetStateAction, KeyboardEvent, useState, ChangeEvent} from 're
 import {RiSearchLine} from 'react-icons/ri';
 import useStateRef from 'react-usestateref';
 import useOuterClick from '../../lib/hooks/use_outer_click';
+import {DEFAULT_PAGE} from '../../constants/config';
 
 interface ISearchBarProps {
   searchBarPlaceholder: string;
   setSearch: Dispatch<SetStateAction<string>>;
   suggestions?: string[];
   getSearch?: (input: string) => void;
+  setActivePage: Dispatch<SetStateAction<number>>;
 }
 
 interface ISearchBarWithSuggestionsProps extends ISearchBarProps {
@@ -25,10 +27,11 @@ interface ISearchBarWithSuggestionsProps extends ISearchBarProps {
  * @param {string} props.searchBarPlaceholder - The placeholder text for the search input.
  * @param {Dispatch<SetStateAction<string>>} props.setSearch - The function to update the search state.
  */
-const SearchBar = ({searchBarPlaceholder, setSearch}: ISearchBarProps) => {
+const SearchBar = ({searchBarPlaceholder, setSearch, setActivePage}: ISearchBarProps) => {
   const searchChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
     setSearch(searchTerm);
+    setActivePage(DEFAULT_PAGE); // Info: (20240402 - Liz) 搜尋時，重設頁數
   };
 
   return (
@@ -56,7 +59,11 @@ const SearchBar = ({searchBarPlaceholder, setSearch}: ISearchBarProps) => {
  * @param {string} props.searchBarPlaceholder - The placeholder text for the search input.
  * @param {Dispatch<SetStateAction<string>>} props.setSearch - The function to update the search state.
  */
-export const SearchBarWithKeyDown = ({searchBarPlaceholder, setSearch}: ISearchBarProps) => {
+export const SearchBarWithKeyDown = ({
+  searchBarPlaceholder,
+  setSearch,
+  setActivePage,
+}: ISearchBarProps) => {
   // Info: (20240318 - Julian) 定義一個通用函數，用於修改 search state
   const handleSetSearch = (value: string) => setSearch(value);
 
@@ -65,6 +72,7 @@ export const SearchBarWithKeyDown = ({searchBarPlaceholder, setSearch}: ISearchB
     if (e.key === 'Enter') {
       e.preventDefault();
       handleSetSearch(e.currentTarget.value);
+      setActivePage(DEFAULT_PAGE); // Info: (20240402 - Liz) 搜尋時，重設頁數
     }
   };
 
@@ -73,6 +81,7 @@ export const SearchBarWithKeyDown = ({searchBarPlaceholder, setSearch}: ISearchB
     // Info: (20240318 - Julian) 取得 input 內容
     const input = document.querySelector('input[type="search"]') as HTMLInputElement;
     handleSetSearch(input.value);
+    setActivePage(DEFAULT_PAGE); // Info: (20240402 - Liz) 搜尋時，重設頁數
   };
 
   return (
@@ -109,6 +118,7 @@ export const SearchBarWithSuggestions = ({
   setSearch,
   suggestions = [],
   getSearch,
+  setActivePage,
 }: ISearchBarWithSuggestionsProps) => {
   const [inputValue, setInputValue, inputValueRef] = useStateRef<string>('');
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
@@ -137,10 +147,12 @@ export const SearchBarWithSuggestions = ({
       if (selectedSuggestionIndex !== -1) {
         setSearch(suggestions[selectedSuggestionIndex]);
         setInputValue(suggestions[selectedSuggestionIndex]);
+        setActivePage(DEFAULT_PAGE); // Info: (20240402 - Liz) 搜尋時，重設頁數
       } else {
         // Info: 按下 Enter 鍵時，修改 search state 並觸發搜尋 (20240313 - Shirley)
         setSearch(e.currentTarget.value);
         setInputValue(e.currentTarget.value);
+        setActivePage(DEFAULT_PAGE); // Info: (20240402 - Liz) 搜尋時，重設頁數
       }
       setSuggestionVisible(false);
       e.currentTarget.blur(); // Info: remove focus after enter (20240313 - Shirley)
@@ -158,6 +170,7 @@ export const SearchBarWithSuggestions = ({
   const handleSearchClick = () => {
     setSearch(inputValueRef.current);
     setSuggestionVisible(false);
+    setActivePage(DEFAULT_PAGE); // Info: (20240402 - Liz) 搜尋時，重設頁數
   };
 
   const clickSuggestionHandler = (suggestion: string, index: number) => {
@@ -165,6 +178,7 @@ export const SearchBarWithSuggestions = ({
     setInputValue(suggestion);
     setSuggestionVisible(false);
     setSelectedSuggestionIndex(index);
+    setActivePage(DEFAULT_PAGE); // Info: (20240402 - Liz) 搜尋時，重設頁數
   };
 
   const suggestionList =

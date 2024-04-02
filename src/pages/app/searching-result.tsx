@@ -219,7 +219,11 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
                 {/* Info: (20231114 - Julian) Date Picker */}
                 <div className="flex w-full items-center space-x-2 text-base lg:w-fit">
                   <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-                  <DatePicker period={period} setFilteredPeriod={setPeriod} />
+                  <DatePicker
+                    period={period}
+                    setFilteredPeriod={setPeriod}
+                    setActivePage={setActivePage}
+                  />
                 </div>
                 {/* Info: (20231114 - Julian) Sorting Menu */}
                 <div className="my-2 flex w-full items-center text-base lg:my-0 lg:w-fit lg:space-x-2">
@@ -229,6 +233,7 @@ const SearchingResultPage = ({searchQuery}: ISearchingResultPageProps) => {
                     sorting={sorting}
                     setSorting={setSorting}
                     bgColor="bg-darkPurple"
+                    setActivePage={setActivePage}
                   />
                 </div>
               </div>
