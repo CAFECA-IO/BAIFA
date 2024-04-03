@@ -34,6 +34,9 @@ export interface ITrackingContext {
   zoomScaleHandler: (scale: number) => void;
 
   resetTrackingTool: () => void;
+
+  selectedItems: string[];
+  selectedItemsHandler: (item: string) => void;
 }
 
 export enum TrackingType {
@@ -67,6 +70,9 @@ export const TrackingContext = createContext<ITrackingContext>({
   zoomScaleHandler: () => null,
 
   resetTrackingTool: () => null,
+
+  selectedItems: [],
+  selectedItemsHandler: () => null,
 });
 
 export const TrackingProvider = ({children}: ITrackingProvider) => {
@@ -103,16 +109,33 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     setVisibleAddAddressPanel(prev => !prev);
   }, []);
 
-  // Info: (20240327 - Julian) 選定的目標地址
-  const [targetAddress, setTargetAddress] = useState<string>('');
-  const addAddressHandler = useCallback((address: string) => {
-    setTargetAddress(address);
-  }, []);
-
   // Info: (20240329 - Julian) 縮放比例
   const [zoomScale, setZoomScale] = useState<number>(1);
   const zoomScaleHandler = useCallback((scale: number) => {
     setZoomScale(scale);
+  }, []);
+
+  // Info: (20240403 - Julian) 選取的地址/交易 --------------- 施工中 ---------------
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const selectedItemsHandler = useCallback(
+    (item: string) => {
+      const newSelectedItems = [...selectedItems]; // Info: (20240403 - Julian) 存取目前的項目
+      newSelectedItems.push(item); // Info: (20240403 - Julian) 將新項目加到最後
+      // Info: (20240403 - Julian) 如果超過兩個項目，則只取最後兩項
+      if (newSelectedItems.length >= 2) {
+        const result = newSelectedItems.slice(-2);
+        setSelectedItems(result);
+      }
+      setSelectedItems(newSelectedItems);
+    },
+    [selectedItems]
+  );
+
+  // Info: (20240327 - Julian) 追蹤的目標地址
+  const [targetAddress, setTargetAddress] = useState<string>('');
+  const addAddressHandler = useCallback((address: string) => {
+    setTargetAddress(address);
+    setSelectedItems([]);
   }, []);
 
   // Info: (20240403 - Julian) 重置所有設定
@@ -149,6 +172,9 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     zoomScaleHandler,
 
     resetTrackingTool,
+
+    selectedItems,
+    selectedItemsHandler,
   };
 
   return (
@@ -167,6 +193,7 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
       <AddAddressPanel
         modalVisible={visibleAddAddressPanel}
         modalClickHandler={visibleAddAddressPanelHandler}
+        targetAddress={targetAddress}
         addAddressHandler={addAddressHandler}
       />
       {children}

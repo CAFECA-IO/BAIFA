@@ -6,8 +6,14 @@ import {HttpMethod} from '../../constants/api_request';
 import {truncateText} from '../../lib/common';
 
 const TrackingView = () => {
-  const {targetAddress, filterBlockchains, filterCurrencies, filterDatePeriod} =
-    useContext(TrackingContext);
+  const {
+    targetAddress,
+    filterBlockchains,
+    filterCurrencies,
+    filterDatePeriod,
+    selectedItems,
+    selectedItemsHandler,
+  } = useContext(TrackingContext);
 
   const blockchainQueryStr = filterBlockchains.length > 0 ? filterBlockchains.join(',') : '';
   const currencyQueryStr = filterCurrencies.length > 0 ? filterCurrencies.join(',') : '';
@@ -56,34 +62,38 @@ const TrackingView = () => {
 
   const mapRef = useRef<HTMLDivElement>(null);
 
-  const links = data.links.map(Object.create);
-  const nodes = data.nodes.map(Object.create);
-
-  // Info: (20240327 - Julian) 圖表的直徑
-  const DIAMETER_OF_MAP = 200;
-
-  // Info: (20240329 - Julian) 點的半徑會隨著點的數量變動
-  const nodeRadius = 500 / nodes.length > 64 ? 64 : 500 / nodes.length; // Info: (20240329 - Julian) 點的半徑最大為 64
-  const strokeWidth = 100 / nodes.length > 10 ? 10 : 100 / nodes.length; // Info: (20240329 - Julian) 輪廓的寬度最大為 10
-
-  // Info: (20240329 - Julian) 計算圓心的 x 座標
-  const getCircleCenterX = (i: number) => {
-    // i = 0 代表 target address，也就是圓心，所以直接回傳 0
-    // 其他的 i 代表 interactions，以 360 度平均分配，順時針排列
-    return i === 0 ? 0 : DIAMETER_OF_MAP * Math.cos(((i - 1) * (2 * Math.PI)) / (nodes.length - 1));
-  };
-
-  // Info: (20240329 - Julian) 計算圓心的 y 座標
-  const getCircleCenterY = (i: number) => {
-    // i = 0 代表 target address，也就是圓心，所以直接回傳 0
-    // 其他的 i 代表 interactions，以 360 度平均分配，順時針排列
-    return i === 0 ? 0 : DIAMETER_OF_MAP * Math.sin(((i - 1) * (2 * Math.PI)) / (nodes.length - 1));
-  };
-
-  // Info: (20240329 - Julian) 點之間的引力
-  const forceStrength = nodes.length * -1000;
-
   useEffect(() => {
+    const links = data.links.map(Object.create);
+    const nodes = data.nodes.map(Object.create);
+
+    // Info: (20240327 - Julian) 圖表的直徑
+    const DIAMETER_OF_MAP = 200;
+
+    // Info: (20240329 - Julian) 點的半徑會隨著點的數量變動
+    const nodeRadius = 500 / nodes.length > 64 ? 64 : 500 / nodes.length; // Info: (20240329 - Julian) 點的半徑最大為 64
+    const strokeWidth = 100 / nodes.length > 10 ? 10 : 100 / nodes.length; // Info: (20240329 - Julian) 輪廓的寬度最大為 10
+
+    // Info: (20240329 - Julian) 計算圓心的 x 座標
+    const getCircleCenterX = (i: number) => {
+      // i = 0 代表 target address，也就是圓心，所以直接回傳 0
+      // 其他的 i 代表 interactions，以 360 度平均分配，順時針排列
+      return i === 0
+        ? 0
+        : DIAMETER_OF_MAP * Math.cos(((i - 1) * (2 * Math.PI)) / (nodes.length - 1));
+    };
+
+    // Info: (20240329 - Julian) 計算圓心的 y 座標
+    const getCircleCenterY = (i: number) => {
+      // i = 0 代表 target address，也就是圓心，所以直接回傳 0
+      // 其他的 i 代表 interactions，以 360 度平均分配，順時針排列
+      return i === 0
+        ? 0
+        : DIAMETER_OF_MAP * Math.sin(((i - 1) * (2 * Math.PI)) / (nodes.length - 1));
+    };
+
+    // Info: (20240329 - Julian) 點之間的引力
+    const forceStrength = nodes.length * -1000;
+
     if (!mapRef.current) return;
 
     // Info: (20240329 - Julian) 清除舊的 SVG 元素
@@ -154,15 +164,26 @@ const TrackingView = () => {
       .selectAll('circle')
       .data(nodes)
       .join('circle')
-      .attr('class', (d: any) => (d.group === 'target' ? 'target' : 'interactions')) // Info: (20240329 - Julian) 賦予 target address 和 interactions 不同的 class
+      .attr('class', d => (d.group === 'target' ? 'target' : 'interactions')) // Info: (20240329 - Julian) 賦予 target address 和 interactions 不同的 class
       .attr('stroke-width', strokeWidth)
       .attr('r', nodeRadius)
-      .attr('fill', '#161830')
+      .attr('fill', function (d) {
+        // Info: (20240403 - Julian) 如果沒有被選到，則顯示黑色
+        if (d.id !== selectedItems[0] && d.id !== selectedItems[1]) return '#161830';
+        // Info: (20240403 - Julian) 根據 class 來決定顏色
+        return d3.select(this).classed('target')
+          ? 'url(#bluePurpleLinear)'
+          : 'url(#redOrangeLinear)';
+      })
       .style('stroke', function () {
         // Info: (20240329 - Julian) 根據 class 來決定顏色
         return d3.select(this).classed('target')
           ? 'url(#bluePurpleLinear)'
           : 'url(#redOrangeLinear)';
+      })
+      // Info: (20240403 - Julian) 點擊時觸發事件
+      .on('click', function (_, d) {
+        selectedItemsHandler(d.id);
       })
       // Info: (20240329 - Julian) hover 時加上光暈
       .on('mouseenter', function () {
@@ -222,7 +243,7 @@ const TrackingView = () => {
     return () => {
       simulation.stop();
     };
-  }, [targetAddress, isLoading]);
+  }, [targetAddress, isLoading, selectedItems]);
 
   const isShowGraph =
     targetAddress && !isLoading ? (
