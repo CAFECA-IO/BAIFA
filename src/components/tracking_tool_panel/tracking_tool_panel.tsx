@@ -13,12 +13,14 @@ import TrackingView from '../tracking_view/tracking_view';
 const TrackingToolPanel = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
+    targetAddress,
     targetTrackingType,
     targetTrackingTypeHandler,
     visibleFilterPanelHandler,
     visibleAddAddressPanelHandler,
     zoomScale,
     zoomScaleHandler,
+    resetTrackingTool,
   } = useContext(TrackingContext);
 
   // Info: (20240325 - Julian) 工具列展開
@@ -118,6 +120,34 @@ const TrackingToolPanel = () => {
     </>
   );
 
+  const addButton =
+    targetTrackingType === TrackingType.ADDRESS ? (
+      <button
+        onClick={visibleAddAddressPanelHandler}
+        className="group flex w-120px flex-col items-center gap-2"
+      >
+        <Image
+          src="/tracking/add_address.svg"
+          width={50}
+          height={50}
+          alt="add_address_icon"
+          className="relative top-0 transition-all duration-300 ease-out group-hover:-top-4"
+        />
+        <p>{t('TRACKING_TOOL_PAGE.ADD_ADDRESS')}</p>
+      </button>
+    ) : (
+      <button className="group flex w-120px flex-col items-center gap-2">
+        <Image
+          src="/tracking/add_address.svg"
+          width={50}
+          height={50}
+          alt="add_transaction_icon"
+          className="relative top-0 transition-all duration-300 ease-out group-hover:-top-4"
+        />
+        <p>{t('TRACKING_TOOL_PAGE.ADD_TRANSACTION')}</p>
+      </button>
+    );
+
   const toolbarList = (
     <div className="grid grid-flow-row grid-cols-2 items-center gap-x-4 gap-y-6 p-2 text-sm lg:grid-flow-col lg:grid-rows-1">
       {/* Info: (20240325 - Julian) Filter button */}
@@ -135,20 +165,8 @@ const TrackingToolPanel = () => {
         <p>{t('TRACKING_TOOL_PAGE.FILTER')}</p>
       </button>
 
-      {/* Info: (20240325 - Julian) Add Address button */}
-      <button
-        onClick={visibleAddAddressPanelHandler}
-        className="group flex w-120px flex-col items-center gap-2"
-      >
-        <Image
-          src="/tracking/add_address.svg"
-          width={50}
-          height={50}
-          alt="add_address_icon"
-          className="relative top-0 transition-all duration-300 ease-out group-hover:-top-4"
-        />
-        <p>{t('TRACKING_TOOL_PAGE.ADD_ADDRESS')}</p>
-      </button>
+      {/* Info: (20240325 - Julian) Add Address/Transaction button */}
+      {addButton}
 
       {/* Info: (20240325 - Julian) Find Connection button */}
       <button className="group flex w-120px flex-col items-center gap-2">
@@ -187,7 +205,10 @@ const TrackingToolPanel = () => {
       </button>
 
       {/* Info: (20240325 - Julian) Reset button */}
-      <button className="group flex w-120px flex-col items-center gap-2">
+      <button
+        onClick={resetTrackingTool}
+        className="group flex w-120px flex-col items-center gap-2"
+      >
         <Image
           src="/tracking/reset.svg"
           width={50}
@@ -213,15 +234,15 @@ const TrackingToolPanel = () => {
     </div>
   );
 
+  const view = targetAddress ? <TrackingView /> : null;
+
   return (
     <div className="relative flex h-full min-h-680px w-full flex-col items-center overflow-hidden border border-darkPurple4 bg-darkPurple5 shadow-inner3xl">
       {/* Info: (20240325 - Julian) Tracking Switch */}
       {trackingSwitch}
 
       {/* Info: (20240325 - Julian) Tracking View */}
-      <div className="relative flex h-full w-full items-center justify-center">
-        <TrackingView />
-      </div>
+      <div className="relative flex h-full w-full items-center justify-center">{view}</div>
 
       {/* Info: (20240325 - Julian) Tracking Toolbar */}
       <div

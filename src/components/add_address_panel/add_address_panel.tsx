@@ -2,7 +2,7 @@ import {IoIosCloseCircleOutline} from 'react-icons/io';
 import {HiPlus} from 'react-icons/hi';
 import {FaHeart} from 'react-icons/fa';
 import {FiTrash2} from 'react-icons/fi';
-import {ChangeEvent, useState} from 'react';
+import {ChangeEvent, useState, useEffect} from 'react';
 import useAPIResponse from '../../lib/hooks/use_api_response';
 import {HttpMethod} from '../../constants/api_request';
 import {buttonStyle} from '../../constants/config';
@@ -10,19 +10,21 @@ import {buttonStyle} from '../../constants/config';
 interface IAddAddressPanelProps {
   modalVisible: boolean;
   modalClickHandler: () => void;
+  targetAddress: string;
   addAddressHandler: (address: string) => void;
 }
 
 const AddAddressPanel = ({
   modalVisible,
   modalClickHandler,
+  targetAddress,
   addAddressHandler,
 }: IAddAddressPanelProps) => {
   // Info: (20240326 - Julian) 是否顯示 Following List
   const [visibleFollowingList, setVisibleFollowingList] = useState(false);
   // Info: (20240326 - Julian) address 清單
   // ToDo: (20240326 - Julian) 之後應該要改成 <string[]>
-  const [addressList, setAddressList] = useState<string>('');
+  const [addressList, setAddressList] = useState<string>(targetAddress);
   // Info: (20240402 - Julian) 輸入的地址
   const [inputValue, setInputValue] = useState('');
   // Info: (20240402 - Julian) 是否顯示 address 建議清單
@@ -55,6 +57,12 @@ const AddAddressPanel = ({
     setInputValue(e.target.value);
     setVisibleAddressSuggestion(true);
   };
+
+  // Info: (20240402 - Julian) 如果 panel 重開，就清空輸入的值
+  useEffect(() => {
+    setAddressList(targetAddress);
+    setInputValue('');
+  }, [modalVisible, targetAddress]);
 
   // Info: (20240326 - Julian) 如果清單為空，就不能點擊 Add 按鈕
   const addAddressButtonDisabled = addressList === '';
