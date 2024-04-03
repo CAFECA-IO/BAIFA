@@ -9,24 +9,29 @@ import BlacklistItem from '../../components/blacklist_item/blacklist_item';
 import {IBlackListData} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {ILocale, TranslateFunction} from '../../interfaces/locale';
+import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
-import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
 import useAPIResponse from '../../lib/hooks/use_api_response';
 import {APIURL, HttpMethod} from '../../constants/api_request';
 import Skeleton from '../../components/skeleton/skeleton';
 import Footer from '../../components/footer/footer';
 import {convertStringToSortingType} from '../../lib/common';
+import {useRouter} from 'next/router';
+import {GetServerSideProps} from 'next';
 
 const BlackListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
+  const router = useRouter();
+  const {page} = router.query;
+
   // Info: (20240305 - Liz) 搜尋條件
   const [search, setSearch] = useState('');
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const tagNameOptionDefault = 'SORTING.ALL';
   const [filteredTagName, setFilteredTagName] = useState<string>(tagNameOptionDefault);
-  const [activePage, setActivePage] = useState<number>(1);
 
   // Info: (20240325 - Liz) Call API to get blacklist data (API-020)
   const {
@@ -173,12 +178,20 @@ const BlackListPage = () => {
   );
 };
 
-const getStaticPropsFunction = async ({locale}: ILocale) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['common'])),
-  },
-});
-
-export const getStaticProps = getStaticPropsFunction;
+// Deprecated: (今天丟棄 - Liz)
+// const getStaticPropsFunction = async ({locale}: ILocale) => ({
+//   props: {
+//     ...(await serverSideTranslations(locale, ['common'])),
+//   },
+// });
+// export const getStaticProps = getStaticPropsFunction;
 
 export default BlackListPage;
+
+export const getServerSideProps: GetServerSideProps = async ({locale}) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale as string, ['common'])),
+    },
+  };
+};
