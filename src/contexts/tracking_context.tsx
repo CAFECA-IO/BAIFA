@@ -32,6 +32,8 @@ export interface ITrackingContext {
 
   zoomScale: number;
   zoomScaleHandler: (scale: number) => void;
+
+  resetTrackingTool: () => void;
 }
 
 export enum TrackingType {
@@ -63,6 +65,8 @@ export const TrackingContext = createContext<ITrackingContext>({
 
   zoomScale: 1,
   zoomScaleHandler: () => null,
+
+  resetTrackingTool: () => null,
 });
 
 export const TrackingProvider = ({children}: ITrackingProvider) => {
@@ -111,6 +115,14 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     setZoomScale(scale);
   }, []);
 
+  // Info: (20240403 - Julian) 重置所有設定
+  const resetTrackingTool = () => {
+    setFilterBlockchains([]);
+    setFilterCurrencies([]);
+    setFilterDatePeriod(default30DayPeriod);
+    setTargetAddress('');
+  };
+
   const defaultValue = {
     targetTrackingType,
     targetTrackingTypeHandler,
@@ -135,6 +147,8 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
 
     zoomScale,
     zoomScaleHandler,
+
+    resetTrackingTool,
   };
 
   return (

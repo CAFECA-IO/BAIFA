@@ -331,6 +331,7 @@
     "TRANSACTION": "Transaction",
     "FILTER": "Filter",
     "ADD_ADDRESS": "Add Address",
+    "ADD_TRANSACTION": "Add Transaction",
     "FIND_CONNECTION": "Find Connection",
     "RELATION_ANALYSIS": "Relation Analysis",
     "ADD_NOTE": "Add Note",

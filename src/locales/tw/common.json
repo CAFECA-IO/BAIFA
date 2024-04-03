@@ -331,6 +331,7 @@
     "TRANSACTION": "交易",
     "FILTER": "篩選",
     "ADD_ADDRESS": "新增地址",
+    "ADD_TRANSACTION": "新增交易",
     "FIND_CONNECTION": "查找關聯",
     "RELATION_ANALYSIS": "關聯分析",
     "ADD_NOTE": "新增筆記",
