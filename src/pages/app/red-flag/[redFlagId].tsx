@@ -20,6 +20,7 @@ import {ITransactionHistorySection} from '../../../interfaces/transaction';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
+  ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../constants/config';
@@ -79,10 +80,11 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     error: transactionHistoryError,
   } = useAPIResponse<ITransactionHistorySection>(
     `${APIURL.RED_FLAGS}/${redFlagId}/transactions`,
-    // Info: (20240321 - Liz) 預設值 ?page=1&sort=desc&search=&start_date=&end_date=
+    // Info: (20240321 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&start_date=&end_date=
     {method: HttpMethod.GET},
     {
       page: activePage,
+      offset: ITEM_PER_PAGE,
       sort: convertStringToSortingType(sorting),
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,

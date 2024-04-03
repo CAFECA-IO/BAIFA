@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useEffect} from 'react';
+import {Dispatch, SetStateAction, useCallback, useEffect} from 'react';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
 import {DEFAULT_PAGE, ITEM_PER_PAGE, buttonStyle} from '../../constants/config';
 import useStateRef from 'react-usestateref';
@@ -39,6 +39,7 @@ const Pagination = ({
   const router = useRouter();
   const {query} = router;
 
+  // Info: (20240403 - Liz) 當 query 改變時，檢查是否有 page 參數，並將其轉換為整數，然後設置為當前頁碼
   useEffect(() => {
     const queryPage = query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`];
     if (query && queryPage) {
@@ -68,15 +69,20 @@ const Pagination = ({
     return () => window.removeEventListener('popstate', handleUrlChange);
   }, [activePage, setActivePage, pagePrefix]);
 
+  const updateUrl = useCallback(
+    (newPage: number) => {
+      const url = new URL(window.location.href);
+      url.searchParams.set(`${pagePrefix ? `${pagePrefix}_page` : 'page'}`, `${newPage}`);
+      window.history.pushState({}, '', url.toString());
+    },
+    [pagePrefix]
+  );
+
+  // Info: (20240403 - Liz) 當 activePage 改變時，更新目標頁碼和 URL
   useEffect(() => {
     setTargetPage(activePage);
-  }, [activePage, setTargetPage]);
-
-  const updateUrl = (newPage: number) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set(`${pagePrefix ? `${pagePrefix}_page` : 'page'}`, `${newPage}`);
-    window.history.pushState({}, '', url.toString());
-  };
+    updateUrl(activePage);
+  }, [activePage, setTargetPage, updateUrl]);
 
   const changePage = async (newPage: number) => {
     setActivePage(newPage);
@@ -112,98 +118,23 @@ const Pagination = ({
     changePage(newPage);
   };
 
+  // Info: (20240403 - Liz) pageChangeHandler 接收一個事件物件作為參數，預期的是 React 中 <input> 元素的變化事件 ChangeEvent。
   const pageChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Info: (20240403 - Liz) 從事件中獲取輸入框的值，並將其轉換為整數，Math.min 和 Math.max 函數用於確保頁碼的值在合法範圍內（1 到 totalPages 之間）
     const value = Math.min(Math.max(1, parseInt(event.target.value, 10)), totalPages);
+
+    // Info: (20240403 - Liz) 如果轉換後的值是有效數字，設為目標頁碼
     if (!isNaN(value)) {
       setTargetPage(value);
     }
   };
 
+  // Info: (20240403 - Liz) 按下 Enter 鍵時，將目標頁碼設置為當前頁碼
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' && targetPageRef.current !== activePage) {
       changePage(targetPageRef.current);
     }
   };
-
-  /* Deprecated: (20240223 - Shirley)
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined') {
-  //     const currentUrl = new URL(window.location.href);
-  //     setUrl(currentUrl);
-  //   }
-  // }, []);
-
-  // const previousHandler = async () => {
-  //   const present = activePage - 1;
-  //   getActivePage && getActivePage(present);
-  //   setTargetPage(present);
-  //   setActivePage(present);
-  //   // Info: (20240115 - Julian) change url query
-  //   if (url) {
-  //     paginationClickHandler &&
-  //       (await paginationClickHandler({
-  //         // order: SortingType.DESC,
-  //         page: present,
-  //         offset: ITEM_PER_PAGE,
-  //         // begin: url.searchParams.get('begin') || 0,
-  //         // end: url.searchParams.get('end') || 0,
-  //         // query: url.searchParams.get('query') || 0,
-  //       }));
-  //     url.searchParams.set(`${pagePrefix ? `${pagePrefix}_page` : `page`}`, `${present}`);
-  //     window.history.replaceState({}, '', url.toString());
-  //   }
-  // };
-
-  // const nextHandler = async () => {
-  //   const present = activePage + 1;
-  //   getActivePage && getActivePage(present);
-  //   setTargetPage(present);
-  //   setActivePage(present);
-  //   // Info: (20240115 - Julian) change url query
-  //   if (url) {
-  //     paginationClickHandler &&
-  //       (await paginationClickHandler({
-  //         page: present,
-  //         offset: ITEM_PER_PAGE,
-  //       }));
-  //     url.searchParams.set(`${pagePrefix ? `${pagePrefix}_page` : `page`}`, `${present}`);
-  //     window.history.replaceState({}, '', url.toString());
-  //   }
-  // };
-
-  // // Info: (20230907 - Julian) 將在 input 輸入的數字放入 targetPage
-  // const pageChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = +event.target.value;
-  //   if (value > totalPages) {
-  //     setTargetPage(totalPages);
-  //   } else if (value < 1) {
-  //     setTargetPage(1);
-  //   } else {
-  //     setTargetPage(value);
-  //   }
-  // };
-
-  // // Info: (20230907 - Julian) 按下 Enter 後，將 targetPage 設定給 activePage
-  // const handleKeyDown = (event: React.KeyboardEvent) => {
-  //   if (event.key === 'Enter') {
-  //     event.preventDefault();
-  //     setActivePage(targetPageRef.current);
-  //     // Info: (20240115 - Julian) change url query
-  //     if (url) {
-  //       paginationClickHandler &&
-  //         paginationClickHandler({
-  //           page: targetPageRef.current,
-  //           offset: ITEM_PER_PAGE,
-  //         });
-  //       url.searchParams.set(
-  //         `${pagePrefix ? `${pagePrefix}_page` : `page`}`,
-  //         `${targetPageRef.current}`
-  //       );
-  //       window.history.replaceState({}, '', url.toString());
-  //     }
-  //   }
-  // };
-  */
 
   const previousBtn = (
     <button

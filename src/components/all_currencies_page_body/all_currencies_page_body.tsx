@@ -12,17 +12,21 @@ import SortingMenu from '../sorting_menu/sorting_menu';
 import useAPIResponse from '../../lib/hooks/use_api_response';
 import {APIURL, HttpMethod} from '../../constants/api_request';
 import Skeleton from '../skeleton/skeleton';
-import {ITEM_PER_PAGE} from '../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../constants/config';
 import {getKeyByValue} from '../../lib/common';
+import {useRouter} from 'next/router';
 
 const AllCurrenciesPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
+  const router = useRouter();
+  const {page} = router.query;
+
   // Info: (20240308 - Liz) 搜尋條件
   const [search, setSearch] = useState('');
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
   const typeOptionDefault = 'SORTING.ALL';
   const [filteredType, setFilteredType] = useState(typeOptionDefault);
-  const [activePage, setActivePage] = useState<number>(1);
 
   const sortingOptions = ['A to Z', 'Z to A']; // Info: (20240125 - Julian) 暫時以字母排序
   const [sorting, setSorting] = useState(sortingOptions[0]);
@@ -36,13 +40,15 @@ const AllCurrenciesPageBody = () => {
   };
   const sortingReq = sortingMap[sorting];
 
+  // Info: (20240402 - Liz) Call API to get currencies list (API-017)
   const {data: currenciesData, isLoading: isCurrenciesDataLoading} =
     useAPIResponse<ICurrencyListPage>(
       `${APIURL.CURRENCIES}`,
       {method: HttpMethod.GET},
-      // Info: (20240325 - Liz) 預設值 ?page=1&sort=asc&search=&type=
+      // Info: (20240325 - Liz) 預設值 ?page=1&offset=10&sort=asc&search=&type=
       {
         page: activePage,
+        offset: ITEM_PER_PAGE,
         sort: sortingReq,
         search: search,
         type: filteredTypeByChainId,

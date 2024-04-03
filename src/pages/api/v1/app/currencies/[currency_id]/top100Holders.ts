@@ -3,19 +3,25 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../prisma/client';
 import {IHolder, ITop100Holders} from '../../../../../../interfaces/currency';
-import {ITEM_PER_PAGE, TOP_100_HOLDER_MAX_TOTAL_PAGES} from '../../../../../../constants/config';
+import {
+  DEFAULT_PAGE,
+  ITEM_PER_PAGE,
+  TOP_100_HOLDER_MAX_AMOUNT,
+} from '../../../../../../constants/config';
 
 type ResponseData = ITop100Holders;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240312 - Liz) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
+  const offset =
+    typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
   const search = typeof req.query.search === 'string' ? req.query.search.toLowerCase() : undefined;
 
-  // Info: (20240312 - Liz) 計算分頁的 skip 與 take
-  const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240306 - Liz) 跳過前面幾筆
-  const take = ITEM_PER_PAGE; // Info: (20240306 - Liz) 取幾筆
+  // Info: (20240319 - Liz) 計算分頁的 skip 與 take
+  const skip = page > 0 ? (page - 1) * offset : 0; // Info: (20240319 - Liz) 跳過前面幾筆
+  const take = offset; // Info: (20240319 - Liz) 取幾筆
 
   try {
     // Info: (20240312 - Liz) 從 currencies Table 中取得 total_amount 和 chain_id
@@ -123,12 +129,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    // Info: (20240312 - Liz)  計算總頁數，並且限制總頁數不超過 10 頁(超過10頁就會超過100筆)
-    const totalPagesOfAllHolders = Math.ceil(totalHoldersAmount / ITEM_PER_PAGE);
+    // Info: (20240312 - Liz) 計算總頁數，並且限制總頁數不超過 top100MaxPages 頁(超過 top100MaxPages 的頁數就會超過100筆資料)
+    const totalPagesOfAllHolders = Math.ceil(totalHoldersAmount / offset);
+    const top100MaxPages = Math.floor(TOP_100_HOLDER_MAX_AMOUNT / offset);
     const totalPages =
-      totalPagesOfAllHolders > TOP_100_HOLDER_MAX_TOTAL_PAGES
-        ? TOP_100_HOLDER_MAX_TOTAL_PAGES
-        : totalPagesOfAllHolders;
+      totalPagesOfAllHolders > top100MaxPages ? top100MaxPages : totalPagesOfAllHolders;
 
     const holderDataFormat: IHolder[] = holderData.map(holder => {
       // Info: (20240220 - Liz) 取得持有價值 (資料庫欄位值設定為64位數字串前方補零)

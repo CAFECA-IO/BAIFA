@@ -15,6 +15,7 @@ import {
   default30DayPeriod,
   defaultOption,
   redFlagTypeI18nObj,
+  ITEM_PER_PAGE,
 } from '../../../constants/config';
 import {IDatePeriod} from '../../../interfaces/date_period';
 import {APIURL, HttpMethod} from '../../../constants/api_request';
@@ -57,9 +58,10 @@ const RedFlagListPage = () => {
   const {data: redFlagData, isLoading: isRedFlagLoading} = useAPIResponse<IRedFlagPage>(
     `${APIURL.RED_FLAGS}`,
     {method: HttpMethod.GET},
-    // Info: (20240325 - Liz) 預設值 page=1&sort=desc&search=&flag=0&start_date=&end_date=
+    // Info: (20240325 - Liz) 預設值 page=1&offset=10&sort=desc&search=&flag=0&start_date=&end_date=
     {
       page: activePage,
+      offset: ITEM_PER_PAGE,
       sort: convertStringToSortingType(sorting),
       search: search,
       flag: filteredTypeCode, // Info: (20240307 - Liz) filteredType 轉換成代碼格式再送出
