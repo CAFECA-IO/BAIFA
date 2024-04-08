@@ -213,7 +213,7 @@ const TrackingView = () => {
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'central')
       .attr('fill', '#F0F0F0')
-      .text(d => truncateText(d.id, 10));
+      .text(d => truncateText(d.id, 7));
 
     const simulation = d3
       .forceSimulation(nodes)

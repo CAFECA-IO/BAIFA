@@ -18,6 +18,7 @@ const TrackingToolPanel = () => {
     targetTrackingTypeHandler,
     visibleFilterPanelHandler,
     visibleAddAddressPanelHandler,
+    visibleRelationAnalysisPanelHandler,
     zoomScale,
     zoomScaleHandler,
     resetTrackingTool,
@@ -181,7 +182,10 @@ const TrackingToolPanel = () => {
       </button>
 
       {/* Info: (20240325 - Julian) Relation Analysis button */}
-      <button className="group flex w-120px flex-col items-center gap-2">
+      <button
+        onClick={visibleRelationAnalysisPanelHandler}
+        className="group flex w-120px flex-col items-center gap-2"
+      >
         <Image
           src="/tracking/relation_analysis.svg"
           width={50}
