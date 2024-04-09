@@ -4,7 +4,7 @@ import Link from 'next/link';
 import useAPIResponse from '../../../../../lib/hooks/use_api_response';
 import {useRouter} from 'next/router';
 import {useContext, useState, useEffect} from 'react';
-import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../components/bolt_button/bolt_button';
@@ -23,6 +23,7 @@ import {AppContext} from '../../../../../contexts/app_context';
 import {ITransactionHistorySection} from '../../../../../interfaces/transaction';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
   DEFAULT_TRUNCATE_LENGTH,
   default30DayPeriod,
   sortOldAndNewOptions,
@@ -38,7 +39,9 @@ interface IContractDetailDetailPageProps {
 
 const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+
   const router = useRouter();
+  const {page} = router.query;
   const backClickHandler = () => router.back();
 
   const appCtx = useContext(AppContext);
@@ -48,7 +51,8 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState(sortOldAndNewOptions[0]);
   const [search, setSearch] = useState('');
-  const [activePage, setActivePage] = useState(1);
+
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
   // Info: (20240314 - Julian) Contract Detail API
   const {

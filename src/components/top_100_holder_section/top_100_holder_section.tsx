@@ -1,3 +1,4 @@
+import {useRouter} from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useState} from 'react';
@@ -6,14 +7,13 @@ import SearchBar from '../search_bar/search_bar';
 import BoltButton from '../bolt_button/bolt_button';
 import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {DEFAULT_CURRENCY_ICON, ITEM_PER_PAGE} from '../../constants/config';
+import {DEFAULT_CURRENCY_ICON, DEFAULT_PAGE, ITEM_PER_PAGE} from '../../constants/config';
 import {getCurrencyIcon} from '../../lib/common';
 import {ITop100Holders} from '../../interfaces/currency';
 import {getDynamicUrl} from '../../constants/url';
 import Pagination from '../pagination/pagination';
 import {APIURL, HttpMethod} from '../../constants/api_request';
 import {SkeletonList} from '../skeleton/skeleton';
-//import {MarketContext} from '../../contexts/market_context';
 
 interface ITop100HolderSectionProps {
   chainId: string;
@@ -24,12 +24,13 @@ interface ITop100HolderSectionProps {
 const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
-  //const {getCurrencyTop100Holders} = useContext(MarketContext);
-  //const [top100HoldersData, setTop100HoldersData] = useState<ITop100Holders>({} as ITop100Holders);
+  const router = useRouter();
+  const {page} = router.query;
 
   // Info: (20240312 - Liz) 搜尋條件
   const [search, setSearch] = useState('');
-  const [activePage, setActivePage] = useState(1);
+
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
   // Info: (20240402 - Liz) Call API to get Top 100 Holders data (API - 028)
   const {data: top100HoldersData, isLoading} = useAPIResponse<ITop100Holders>(
