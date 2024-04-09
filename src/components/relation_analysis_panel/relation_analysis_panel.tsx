@@ -18,9 +18,6 @@ const RelationAnalysisPanel = ({
   modalClickHandler,
   analysisItems,
 }: IRelationAnalysisPanelProps) => {
-  // Info: (20240409 - Julian) 版面沒有打開就直接回傳 null，避免一直呼叫 API
-  if (!modalVisible) return null;
-
   const {
     data: analysisData,
     isLoading,
@@ -29,8 +26,8 @@ const RelationAnalysisPanel = ({
     `/api/v1/app/tracking_tool/relation_analysis`,
     {method: HttpMethod.GET},
     {
-      addressIdA: analysisItems[0],
-      addressIdB: analysisItems[1],
+      addressIdA: analysisItems.length === 2 ? analysisItems[0] : '',
+      addressIdB: analysisItems.length === 2 ? analysisItems[1] : '',
     }
   );
 

@@ -41,7 +41,7 @@ const TrackingView = () => {
     target: string;
   }
 
-  // Info: (20240327 - Julian) Dummy data
+  // Info: (20240327 - Julian) graph data
   const data: {
     nodes: INode[];
     links: ILink[];
