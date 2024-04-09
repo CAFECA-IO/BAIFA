@@ -45,7 +45,7 @@ const RelationAnalysisPanel = ({
           <IoIosCloseCircleOutline size={30} />
         </button>
         {/* Info: (20240408 - Julian) Title */}
-        <h2 className="text-xl font-semibold">Relation Analysis Panel</h2>
+        <h2 className="text-xl font-semibold">Relation Analysis</h2>
         <div className="flex flex-col items-center gap-8">
           {/* Info: (20240408 - Julian) Subtitle */}
           <p>
@@ -139,7 +139,7 @@ const RelationAnalysisPanel = ({
           <IoIosCloseCircleOutline size={30} />
         </button>
         {/* Info: (20240408 - Julian) Title */}
-        <h2 className="text-xl font-semibold">Relation Analysis Panel</h2>
+        <h2 className="text-xl font-semibold">Relation Analysis</h2>
         <div className="flex flex-col items-center gap-8">
           {/* Info: (20240408 - Julian) Subtitle */}
           <p>
