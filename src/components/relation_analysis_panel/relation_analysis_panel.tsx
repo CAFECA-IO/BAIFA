@@ -88,16 +88,6 @@ const RelationAnalysisPanel = ({
               Transaction within 3 layers:
               <p className="ml-2 whitespace-nowrap">{analysisData.transactionWithinThreeLayers}</p>
             </div>
-            {/* Info: (20240408 - Julian) Transaction within 10 layers */}
-            <div className="flex items-center whitespace-nowrap">
-              Transaction within 10 layers:
-              <p className="ml-2 whitespace-nowrap">{analysisData.transactionWithinTenLayers}</p>
-            </div>
-            {/* Info: (20240408 - Julian) Transaction over 10 layers */}
-            <div className="flex items-center whitespace-nowrap">
-              Transaction over 10 layers:
-              <p className="ml-2 whitespace-nowrap">{analysisData.transactionOverTenLayers}</p>
-            </div>
             {/* Info: (20240408 - Julian) Common Counterpart */}
             <div className="flex items-center whitespace-nowrap">
               Common Counterpart:
@@ -175,14 +165,6 @@ const RelationAnalysisPanel = ({
             {/* Info: (20240408 - Julian) Transaction within 3 layers */}
             <div className="flex items-center whitespace-nowrap">
               Transaction within 3 layers: <Skeleton width={50} height={20} />
-            </div>
-            {/* Info: (20240408 - Julian) Transaction within 10 layers */}
-            <div className="flex items-center whitespace-nowrap">
-              Transaction within 10 layers: <Skeleton width={50} height={20} />
-            </div>
-            {/* Info: (20240408 - Julian) Transaction over 10 layers */}
-            <div className="flex items-center whitespace-nowrap">
-              Transaction over 10 layers: <Skeleton width={50} height={20} />
             </div>
             {/* Info: (20240408 - Julian) Common Counterpart */}
             <div className="flex items-center whitespace-nowrap">

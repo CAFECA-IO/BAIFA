@@ -5,8 +5,6 @@ export interface IRelationAnalysis {
   totalDirectTransactionsVolume: number;
   minimumConnectingLayer: number;
   transactionWithinThreeLayers: number;
-  transactionWithinTenLayers: number;
-  transactionOverTenLayers: number;
   commonAddressCount: number;
   commonContractCount: number;
   patternSimilarityLevel: string;

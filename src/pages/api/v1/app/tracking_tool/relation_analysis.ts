@@ -160,8 +160,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       totalDirectTransactionsVolume: totalTransactionsVolume,
       minimumConnectingLayer: minConnLayer,
       transactionWithinThreeLayers: withinThreeLayers,
-      transactionWithinTenLayers: 0, // Info: (20240409 - Julian) 難以計算，可能刪除
-      transactionOverTenLayers: 0, // Info: (20240409 - Julian) 難以計算，可能刪除
       commonAddressCount: commonAddressCount,
       commonContractCount: commonContractCount,
       patternSimilarityLevel: '',
