@@ -1,6 +1,8 @@
 import {useState, useCallback, createContext} from 'react';
+import useStateRef from 'react-usestateref';
 import AddAddressPanel from '../components/add_address_panel/add_address_panel';
 import FilterPanel from '../components/filter_panel/filter_panel';
+import RelationAnalysisPanel from '../components/relation_analysis_panel/relation_analysis_panel';
 import {IDatePeriod} from '../interfaces/date_period';
 import {default30DayPeriod} from '../constants/config';
 
@@ -26,6 +28,9 @@ export interface ITrackingContext {
 
   visibleAddAddressPanel: boolean;
   visibleAddAddressPanelHandler: () => void;
+
+  visibleRelationAnalysisPanel: boolean;
+  visibleRelationAnalysisPanelHandler: () => void;
 
   targetAddress: string;
   addAddressHandler: (address: string) => void;
@@ -62,6 +67,9 @@ export const TrackingContext = createContext<ITrackingContext>({
 
   visibleAddAddressPanel: false,
   visibleAddAddressPanelHandler: () => null,
+
+  visibleRelationAnalysisPanel: false,
+  visibleRelationAnalysisPanelHandler: () => null,
 
   targetAddress: '',
   addAddressHandler: () => null,
@@ -115,20 +123,27 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     setZoomScale(scale);
   }, []);
 
-  // Info: (20240403 - Julian) 選取的地址/交易 --------------- 施工中 ---------------
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  // Info: (20240403 - Julian) 選取的地址/交易
+  const [selectedItems, setSelectedItems, selectedItemsRef] = useStateRef<string[]>([]);
   const selectedItemsHandler = useCallback(
     (item: string) => {
-      const newSelectedItems = [...selectedItems]; // Info: (20240403 - Julian) 存取目前的項目
-      newSelectedItems.push(item); // Info: (20240403 - Julian) 將新項目加到最後
-      // Info: (20240403 - Julian) 如果超過兩個項目，則只取最後兩項
-      if (newSelectedItems.length >= 2) {
-        const result = newSelectedItems.slice(-2);
-        setSelectedItems(result);
+      const newSelectedItems = [...selectedItemsRef.current]; // Info: (20240403 - Julian) 存取目前的項目
+      const index = newSelectedItems.indexOf(item); // Info: (20240403 - Julian) 檢查是否已經選取
+
+      if (index === -1) {
+        // Info: (20240408 - Julian) 如果沒有選取，則新增
+        newSelectedItems.push(item);
+      } else {
+        // Info: (20240408 - Julian) 如果已經選取，則移除
+        newSelectedItems.splice(index, 1);
+      }
+      // Info: (20240408 - Julian) 取最後兩項
+      if (newSelectedItems.length > 2) {
+        newSelectedItems.splice(0, newSelectedItems.length - 2);
       }
       setSelectedItems(newSelectedItems);
     },
-    [selectedItems]
+    [selectedItemsRef.current]
   );
 
   // Info: (20240327 - Julian) 追蹤的目標地址
@@ -138,12 +153,22 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     setSelectedItems([]);
   }, []);
 
+  // Info: (20240408 - Julian) 關聯分析面板是否顯示
+  const [visibleRelationAnalysisPanel, setVisibleRelationAnalysisPanel] = useState<boolean>(false);
+  const visibleRelationAnalysisPanelHandler = useCallback(() => {
+    setVisibleRelationAnalysisPanel(prev => !prev);
+  }, []);
+
   // Info: (20240403 - Julian) 重置所有設定
   const resetTrackingTool = () => {
+    // Info: (20240408 - Julian) 篩選條件
     setFilterBlockchains([]);
     setFilterCurrencies([]);
     setFilterDatePeriod(default30DayPeriod);
+
     setTargetAddress('');
+
+    setSelectedItems([]);
   };
 
   const defaultValue = {
@@ -165,6 +190,9 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     visibleAddAddressPanel,
     visibleAddAddressPanelHandler,
 
+    visibleRelationAnalysisPanel,
+    visibleRelationAnalysisPanelHandler,
+
     targetAddress,
     addAddressHandler,
 
@@ -173,7 +201,7 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
 
     resetTrackingTool,
 
-    selectedItems,
+    selectedItems: selectedItemsRef.current,
     selectedItemsHandler,
   };
 
@@ -195,6 +223,12 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
         modalClickHandler={visibleAddAddressPanelHandler}
         targetAddress={targetAddress}
         addAddressHandler={addAddressHandler}
+      />
+
+      <RelationAnalysisPanel
+        modalVisible={visibleRelationAnalysisPanel}
+        modalClickHandler={visibleRelationAnalysisPanelHandler}
+        analysisItems={selectedItems}
       />
       {children}
     </TrackingContext.Provider>
