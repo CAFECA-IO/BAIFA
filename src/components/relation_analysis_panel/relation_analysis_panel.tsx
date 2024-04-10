@@ -1,5 +1,6 @@
 import {IoIosCloseCircleOutline} from 'react-icons/io';
 import {VscCircleSmall} from 'react-icons/vsc';
+import {useState, useEffect} from 'react';
 import BoltButton from '../bolt_button/bolt_button';
 import {truncateText} from '../../lib/common';
 import useAPIResponse from '../../lib/hooks/use_api_response';
@@ -18,6 +19,14 @@ const RelationAnalysisPanel = ({
   modalClickHandler,
   analysisItems,
 }: IRelationAnalysisPanelProps) => {
+  const [items, setItems] = useState<string[]>(['', '']);
+
+  useEffect(() => {
+    if (analysisItems.length === 2) {
+      setItems(analysisItems);
+    }
+  }, [analysisItems]);
+
   const {
     data: analysisData,
     isLoading,
@@ -26,8 +35,8 @@ const RelationAnalysisPanel = ({
     `/api/v1/app/tracking_tool/relation_analysis`,
     {method: HttpMethod.GET},
     {
-      addressIdA: analysisItems.length === 2 ? analysisItems[0] : '',
-      addressIdB: analysisItems.length === 2 ? analysisItems[1] : '',
+      addressIdA: items[0],
+      addressIdB: items[1],
     }
   );
 
@@ -48,11 +57,11 @@ const RelationAnalysisPanel = ({
           <p>
             Between{' '}
             <span className="whitespace-nowrap rounded bg-violet px-2 py-1">
-              Address {truncateText(analysisItems[0], 7)}
+              Address {truncateText(items[0], 7)}
             </span>{' '}
             and{' '}
             <span className="whitespace-nowrap rounded bg-violet px-2 py-1">
-              Address {truncateText(analysisItems[1], 7)}
+              Address {truncateText(items[1], 7)}
             </span>
           </p>
           {/* Info: (20240408 - Julian) Analysis */}
@@ -132,11 +141,11 @@ const RelationAnalysisPanel = ({
           <p>
             Between{' '}
             <span className="whitespace-nowrap rounded bg-violet px-2 py-1">
-              Address {truncateText(analysisItems[0], 7)}
+              Address {truncateText(items[0], 7)}
             </span>{' '}
             and{' '}
             <span className="whitespace-nowrap rounded bg-violet px-2 py-1">
-              Address {truncateText(analysisItems[1], 7)}
+              Address {truncateText(items[1], 7)}
             </span>
           </p>
           {/* Info: (20240408 - Julian) Analysis */}

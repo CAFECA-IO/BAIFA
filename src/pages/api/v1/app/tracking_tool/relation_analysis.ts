@@ -16,45 +16,46 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   try {
-    const transactionOptions = {
-      // Info: (20240409 - Julian) 查找 A -> B 或 B -> A 的交易
-      OR: [
-        {from_address: addressIdA, to_address: addressIdB},
-        {from_address: addressIdB, to_address: addressIdA},
-      ],
-    };
-
     // Info: (20240409 - Julian) 撈出所有相關的交易資料
-    const transactionCount = await prisma.token_transfers.count({
-      where: transactionOptions,
-    });
     const transactionData = await prisma.token_transfers.findMany({
-      where: transactionOptions,
+      where: {
+        // Info: (20240409 - Julian) 查找 A -> B 或 B -> A 的交易
+        OR: [
+          {from_address: addressIdA, to_address: addressIdB},
+          {from_address: addressIdB, to_address: addressIdA},
+        ],
+      },
       select: {
         value: true,
         currency_id: true,
       },
     });
+    const transactionCount = transactionData.length;
 
     // Info: (20240409 - Julian) 取得 symbol
     const currencyIds = transactionData.map(transaction => transaction?.currency_id ?? '');
     const uniqueCurrencyIds = Array.from(new Set(currencyIds));
     const currencyId = uniqueCurrencyIds.length === 1 ? uniqueCurrencyIds[0] : '';
 
-    const currencyData = await prisma.currencies.findFirst({
+    const currencyData = await prisma.currencies.findUnique({
       where: {
         id: currencyId,
       },
       select: {
         symbol: true,
+        chain_id: true,
       },
     });
     const symbol = currencyData?.symbol ?? '';
+    const chainId = currencyData?.chain_id ?? 0;
 
     // Info: (20240409 - Julian) 取得 decimals
-    const chain = await prisma.chains.findFirst({
+    const chain = await prisma.chains.findUnique({
       where: {
-        symbol: symbol,
+        id: chainId,
+      },
+      select: {
+        decimals: true,
       },
     });
     const decimals = chain?.decimals ?? 0;
@@ -164,6 +165,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       commonContractCount: commonContractCount,
       patternSimilarityLevel: '',
     };
+
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({} as ResponseData);
