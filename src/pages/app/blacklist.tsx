@@ -45,9 +45,10 @@ const BlackListPage = () => {
   } = useAPIResponse<IBlackListData>(
     `${APIURL.BLACKLIST}`,
     {method: HttpMethod.GET},
-    // Info: (20240326 - Liz) 預設值 ?page=1&sort=desc&search=&tag=
+    // Info: (20240326 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&tag=
     {
       page: activePage,
+      offset: ITEM_PER_PAGE,
       sort: convertStringToSortingType(sorting),
       search: search,
       tag: filteredTagName === defaultOption ? `` : `${filteredTagName}`,

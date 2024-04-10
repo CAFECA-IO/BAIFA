@@ -1,8 +1,8 @@
-// 006 - GET /app/chains/:chain_id/blocks?start_date=${startTimestamp}&end_date=${endTimestamp}
+// 006 - GET /app/chains/:chain_id/block
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../../prisma/client';
-import {ITEM_PER_PAGE} from '../../../../../../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../../constants/config';
 import {IBlockBrief, IBlockList} from '../../../../../../../interfaces/block';
 import {StabilityLevel} from '../../../../../../../constants/stability_level';
 import {assessBlockStability} from '../../../../../../../lib/common';
@@ -14,7 +14,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
   // Info: (20240221 - Julian) query string
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : 1;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
+  const offset =
+    typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
   const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
   const start_date =
@@ -30,8 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     let stability = StabilityLevel.LOW;
 
     // Info: (20240119 - Julian) 計算分頁的 skip 與 take
-    const skip = (page - 1) * ITEM_PER_PAGE; // (20240119 - Julian) 跳過前面幾筆
-    const take = ITEM_PER_PAGE; // (20240119 - Julian) 取幾筆
+    const skip = page > 0 ? (page - 1) * offset : 0; // Info: (20240319 - Liz) 跳過前面幾筆
+    const take = offset; // Info: (20240319 - Liz) 取幾筆
 
     // Info: (20240216 - Julian) 查詢條件
     const where = {
@@ -113,7 +115,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       };
     });
 
-    const totalPages = Math.ceil(totalBlocks / ITEM_PER_PAGE);
+    const totalPages = Math.ceil(totalBlocks / offset);
 
     // Info: (20240118 - Julian) 轉換成 API 要的格式
     const result = {

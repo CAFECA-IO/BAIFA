@@ -25,6 +25,7 @@ import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
   DEFAULT_TRUNCATE_LENGTH,
+  ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../../../constants/config';
@@ -54,7 +55,7 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
 
   const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
-  // Info: (20240314 - Julian) Contract Detail API
+  // Info: (20240314 - Julian) Call API to get contract data (API-015)
   const {
     data: contractData,
     isLoading: isContractDataLoading,
@@ -63,7 +64,7 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
     method: HttpMethod.GET,
   });
 
-  // Info: (20240314 - Julian) Transaction History API
+  // Info: (20240314 - Julian) Call API to get transaction history data （API-025)
   const {
     data: transactionHistoryData,
     isLoading: isTransactionHistoryDataLoading,
@@ -71,8 +72,10 @@ const ContractDetailPage = ({chainId, contractId}: IContractDetailDetailPageProp
   } = useAPIResponse<ITransactionHistorySection>(
     `${APIURL.CHAINS}/${chainId}/contracts/${contractId}/transactions`,
     {method: HttpMethod.GET},
+    // Info: (20240410 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&start_date=&end_date=
     {
       page: activePage,
+      offset: ITEM_PER_PAGE,
       sort: convertStringToSortingType(sorting),
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,

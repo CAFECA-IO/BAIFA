@@ -23,6 +23,7 @@ import {ITransactionHistorySection} from '../../../../../../interfaces/transacti
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
+  ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
@@ -50,7 +51,7 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
 
   const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
-  // Info: (20240314 - Julian) Evidence Detail API
+  // Info: (20240314 - Julian) Call API to get Evidence Detail Data (API-016)
   const {
     data: evidenceData,
     isLoading: isEvidenceLoading,
@@ -59,7 +60,7 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
     method: HttpMethod.GET,
   });
 
-  // Info: (20240314 - Julian) Transaction History API
+  // Info: (20240314 - Julian) Call API to get transaction history data (API-026)
   const {
     data: transactionHistoryData,
     isLoading: isTransactionHistoryLoading,
@@ -67,8 +68,10 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
   } = useAPIResponse<ITransactionHistorySection>(
     `${APIURL.CHAINS}/${chainId}/contracts/${evidenceId}/transactions`,
     {method: HttpMethod.GET},
+    // Info: (20240410 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&start_date=&end_date=
     {
       page: activePage,
+      offset: ITEM_PER_PAGE,
       sort: convertStringToSortingType(sorting),
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,

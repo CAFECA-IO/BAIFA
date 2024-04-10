@@ -1,8 +1,8 @@
-// 008 - GET /app/chains/:chain_id/blocks/:block_id/transactions
+// 008 - GET /app/chains/:chain_id/block/:block_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../../../prisma/client';
-import {ITEM_PER_PAGE} from '../../../../../../../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../../../constants/config';
 import {
   ITransactionList,
   IDisplayTransaction,
@@ -15,7 +15,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const block_id =
     typeof req.query.block_id === 'string' ? parseInt(req.query.block_id) : undefined;
   // Info: (20240221 - Julian) query string
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : 1;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
+  const offset =
+    typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
   const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
   const start_date =
@@ -29,10 +31,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   try {
     // Info: (20240125 - Julian) 計算分頁的 skip 與 take
-    const skip = (page - 1) * ITEM_PER_PAGE; // (20240119 - Julian) 跳過前面幾筆
-    const take = ITEM_PER_PAGE; // (20240119 - Julian) 取幾筆
+    const skip = page > 0 ? (page - 1) * offset : 0; // Info: (20240319 - Liz) 跳過前面幾筆
+    const take = offset; // Info: (20240319 - Liz) 取幾筆
 
-    // Info: (20240119 - Julian) 從 blocks Table 撈出 block_id 對應的 blockhash
+    // Info: (20240119 - Julian) 從 blocks Table 撈出 block_id 對應的 block hash
     const blockHash = await prisma.blocks.findUnique({
       where: {
         number: block_id,
@@ -117,7 +119,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     // Info: (20240222 - Julian) 計算 totalPages
-    const totalPages = Math.ceil(countOfTransaction / ITEM_PER_PAGE);
+    const totalPages = Math.ceil(countOfTransaction / offset);
 
     // Info: (20240222 - Julian) 組合回傳資料
     const result: ITransactionList = {

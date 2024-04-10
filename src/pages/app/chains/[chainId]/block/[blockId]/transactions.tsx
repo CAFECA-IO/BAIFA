@@ -49,12 +49,15 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
 
   const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
+  // Info: (20240410 - Liz) Call API to get transaction data (API-008)
   const {data: transactionListData, isLoading: isTransactionListLoading} =
     useAPIResponse<ITransactionList>(
       `${APIURL.CHAINS}/${chainId}/block/${blockId}/transactions`,
       {method: HttpMethod.GET},
+      // Info: (20240410 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&start_date=&end_date=
       {
         page: activePage,
+        offset: ITEM_PER_PAGE,
         sort: convertStringToSortingType(sorting),
         search: search,
         start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
