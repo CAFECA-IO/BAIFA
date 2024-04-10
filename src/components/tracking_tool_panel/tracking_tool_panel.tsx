@@ -18,6 +18,7 @@ const TrackingToolPanel = () => {
     targetTrackingTypeHandler,
     visibleFilterPanelHandler,
     visibleAddAddressPanelHandler,
+    visibleRelationAnalysisPanelHandler,
     zoomScale,
     zoomScaleHandler,
     resetTrackingTool,
@@ -113,10 +114,9 @@ const TrackingToolPanel = () => {
         {viewSwitch}
         {viewZoom}
       </div>
-      <div className="absolute z-10 flex w-full flex-col items-start gap-10 px-4 py-6 lg:hidden">
-        {viewSwitch}
-        {viewTools}
-      </div>
+      {/* Info: (20240409 - Julian) Mobile view */}
+      <div className="absolute left-4 top-4 z-10 block lg:hidden">{viewSwitch}</div>
+      <div className="absolute left-4 top-24 z-10 block lg:hidden">{viewTools}</div>
     </>
   );
 
@@ -181,7 +181,10 @@ const TrackingToolPanel = () => {
       </button>
 
       {/* Info: (20240325 - Julian) Relation Analysis button */}
-      <button className="group flex w-120px flex-col items-center gap-2">
+      <button
+        onClick={visibleRelationAnalysisPanelHandler}
+        className="group flex w-120px flex-col items-center gap-2"
+      >
         <Image
           src="/tracking/relation_analysis.svg"
           width={50}
@@ -246,7 +249,7 @@ const TrackingToolPanel = () => {
 
       {/* Info: (20240325 - Julian) Tracking Toolbar */}
       <div
-        className={`absolute bottom-0 w-fit rounded-t-xl bg-darkPurple px-3 py-1 ${
+        className={`absolute bottom-0 z-20 w-fit rounded-t-xl bg-darkPurple px-3 py-1 ${
           isToolbarExpanded ? 'translate-y-0' : 'translate-y-85'
         } transition-all duration-300 ease-out lg:translate-y-0`}
       >
