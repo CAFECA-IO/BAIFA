@@ -5,7 +5,7 @@ import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import {useState, useEffect, useContext} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
 import {useRouter} from 'next/router';
-import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import EvidenceDetail from '../../../../../../components/evidence_detail/evidence_detail';
@@ -22,6 +22,7 @@ import {IEvidenceDetail, dummyEvidenceDetail} from '../../../../../../interfaces
 import {ITransactionHistorySection} from '../../../../../../interfaces/transaction';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
@@ -36,7 +37,9 @@ interface IEvidenceDetailDetailPageProps {
 
 const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+
   const router = useRouter();
+  const {page} = router.query;
   const backClickHandler = () => router.back();
   const appCtx = useContext(AppContext);
 
@@ -44,7 +47,8 @@ const EvidenceDetailPage = ({chainId, evidenceId}: IEvidenceDetailDetailPageProp
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState(sortOldAndNewOptions[0]);
   const [search, setSearch] = useState('');
-  const [activePage, setActivePage] = useState(1);
+
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
   // Info: (20240314 - Julian) Evidence Detail API
   const {

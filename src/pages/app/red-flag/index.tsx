@@ -1,35 +1,41 @@
 import Head from 'next/head';
-import useAPIResponse from '../../../lib/hooks/use_api_response';
+import {GetServerSideProps} from 'next';
+import {useRouter} from 'next/router';
 import {useState} from 'react';
+import useAPIResponse from '../../../lib/hooks/use_api_response';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import NavBar from '../../../components/nav_bar/nav_bar';
 import RedFlagList from '../../../components/red_flag_list/red_flag_list';
 import Footer from '../../../components/footer/footer';
-import {ILocale, TranslateFunction} from '../../../interfaces/locale';
+import {TranslateFunction} from '../../../interfaces/locale';
 import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
 import {BFAURL} from '../../../constants/url';
 import {IMenuOptions, IRedFlagPage} from '../../../interfaces/red_flag';
+import {IDatePeriod} from '../../../interfaces/date_period';
 import {
   sortOldAndNewOptions,
   default30DayPeriod,
   defaultOption,
   redFlagTypeI18nObj,
   ITEM_PER_PAGE,
+  DEFAULT_PAGE,
 } from '../../../constants/config';
-import {IDatePeriod} from '../../../interfaces/date_period';
 import {APIURL, HttpMethod} from '../../../constants/api_request';
 import {convertStringToSortingType, getKeyByValue} from '../../../lib/common';
 
 const RedFlagListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
+  const router = useRouter();
+  const {page} = router.query;
+
   // Info: (20240307 - Liz) 搜尋條件
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [filteredType, setFilteredType] = useState<string>(defaultOption);
-  const [activePage, setActivePage] = useState<number>(1);
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
   // Info: (20240319 - Julian) Call API to get menu options (API-034)
   const {data: menuOptions} = useAPIResponse<IMenuOptions>(`${APIURL.RED_FLAGS}/menu_options`, {
@@ -146,10 +152,10 @@ const RedFlagListPage = () => {
 
 export default RedFlagListPage;
 
-const getStaticPropsFunction = async ({locale}: ILocale) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['common'])),
-  },
-});
-
-export const getStaticProps = getStaticPropsFunction;
+export const getServerSideProps: GetServerSideProps = async ({locale}) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale as string, ['common'])),
+    },
+  };
+};
