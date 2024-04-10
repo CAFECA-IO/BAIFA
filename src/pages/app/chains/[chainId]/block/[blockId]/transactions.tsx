@@ -21,6 +21,7 @@ import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu'
 import TransactionList from '../../../../../../components/transaction_list/transaction_list';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
@@ -39,12 +40,14 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   const appCtx = useContext(AppContext);
 
   const router = useRouter();
+  const {page} = router.query;
 
   // Info: (20240220 - Julian) 搜尋條件
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [activePage, setActivePage] = useState(1);
+
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
   const {data: transactionListData, isLoading: isTransactionListLoading} =
     useAPIResponse<ITransactionList>(

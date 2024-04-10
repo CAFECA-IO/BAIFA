@@ -1,4 +1,6 @@
 import Head from 'next/head';
+import {GetServerSideProps} from 'next';
+import {useRouter} from 'next/router';
 import {useState} from 'react';
 import NavBar from '../../components/nav_bar/nav_bar';
 import Breadcrumb from '../../components/breadcrumb/breadcrumb';
@@ -11,14 +13,17 @@ import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {TranslateFunction} from '../../interfaces/locale';
 import {BFAURL} from '../../constants/url';
-import {DEFAULT_PAGE, ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
-import useAPIResponse from '../../lib/hooks/use_api_response';
+import {
+  DEFAULT_PAGE,
+  ITEM_PER_PAGE,
+  sortOldAndNewOptions,
+  defaultOption,
+} from '../../constants/config';
 import {APIURL, HttpMethod} from '../../constants/api_request';
+import useAPIResponse from '../../lib/hooks/use_api_response';
+import {convertStringToSortingType} from '../../lib/common';
 import Skeleton from '../../components/skeleton/skeleton';
 import Footer from '../../components/footer/footer';
-import {convertStringToSortingType} from '../../lib/common';
-import {useRouter} from 'next/router';
-import {GetServerSideProps} from 'next';
 
 const BlackListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -30,8 +35,7 @@ const BlackListPage = () => {
   const [search, setSearch] = useState('');
   const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const tagNameOptionDefault = 'SORTING.ALL';
-  const [filteredTagName, setFilteredTagName] = useState<string>(tagNameOptionDefault);
+  const [filteredTagName, setFilteredTagName] = useState<string>(defaultOption);
 
   // Info: (20240325 - Liz) Call API to get blacklist data (API-020)
   const {
@@ -46,7 +50,7 @@ const BlackListPage = () => {
       page: activePage,
       sort: convertStringToSortingType(sorting),
       search: search,
-      tag: filteredTagName === tagNameOptionDefault ? `` : `${filteredTagName}`,
+      tag: filteredTagName === defaultOption ? `` : `${filteredTagName}`,
     }
   );
 
@@ -55,7 +59,7 @@ const BlackListPage = () => {
 
   // Info: (20240306 - Liz) 下拉式選單選項由 API 取得
   const tagNames = blacklist?.tagNameOptions ?? [];
-  const tagNameOptions = [tagNameOptionDefault, ...tagNames];
+  const tagNameOptions = [defaultOption, ...tagNames];
 
   // Info: (20240306 - Liz) head title and breadcrumb
   const headTitle = `${t('BLACKLIST_PAGE.BREADCRUMB_TITLE')} - BAIFA`;
@@ -177,14 +181,6 @@ const BlackListPage = () => {
     </>
   );
 };
-
-// Deprecated: (今天丟棄 - Liz)
-// const getStaticPropsFunction = async ({locale}: ILocale) => ({
-//   props: {
-//     ...(await serverSideTranslations(locale, ['common'])),
-//   },
-// });
-// export const getStaticProps = getStaticPropsFunction;
 
 export default BlackListPage;
 

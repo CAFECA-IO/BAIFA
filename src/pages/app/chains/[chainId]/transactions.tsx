@@ -21,6 +21,7 @@ import SortingMenu from '../../../../components/sorting_menu/sorting_menu';
 import Pagination from '../../../../components/pagination/pagination';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
   DEFAULT_TRUNCATE_LENGTH,
   ITEM_PER_PAGE,
   default30DayPeriod,
@@ -35,8 +36,10 @@ interface ITransactionsPageProps {
 
 const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+
   const router = useRouter();
   const {addressId} = router.query;
+  const {page} = router.query;
 
   const appCtx = useContext(AppContext);
 
@@ -55,7 +58,8 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [activePage, setActivePage] = useState(1);
+
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
   const {data: transactionData, isLoading: isTransactionLoading} = useAPIResponse<ITransactionList>(
     `${APIURL.CHAINS}/${chainId}/transactions`,

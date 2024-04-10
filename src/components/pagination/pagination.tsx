@@ -28,32 +28,11 @@ const Pagination = ({
   paginationClickHandler,
   loading,
   pagePrefix,
-  pageInit,
 }: IPagination) => {
-  /* Deprecated: 直接拿 window.location.href 來做 url，避免重複 (20240229 - Shirley)
-  // const [url, setUrl] = useState<URL | null>(null);
-  */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [targetPage, setTargetPage, targetPageRef] = useStateRef<number>(activePage);
 
   const router = useRouter();
-  const {query} = router;
-
-  // Info: (20240403 - Liz) 當 query 改變時，檢查是否有 page 參數，並將其轉換為整數，然後設置為當前頁碼
-  useEffect(() => {
-    const queryPage = query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`];
-    if (query && queryPage) {
-      if (!isNaN(parseInt(queryPage as string, 10))) {
-        const page = parseInt(query[`${pagePrefix ? `${pagePrefix}_page` : 'page'}`] as string, 10);
-        const abs = Math.abs(page);
-        changePage(abs);
-      }
-    } else {
-      pageInit && pageInit();
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
 
   useEffect(() => {
     const handleUrlChange = () => {
@@ -71,10 +50,14 @@ const Pagination = ({
 
   const updateUrl = useCallback(
     (newPage: number) => {
-      const url = new URL(window.location.href);
-      url.searchParams.set(`${pagePrefix ? `${pagePrefix}_page` : 'page'}`, `${newPage}`);
-      window.history.pushState({}, '', url.toString());
+      const queryKey = pagePrefix ? `${pagePrefix}_page` : 'page';
+      const newQuery = {...router.query, [queryKey]: newPage.toString()};
+      router.replace({
+        pathname: router.pathname,
+        query: newQuery,
+      });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [pagePrefix]
   );
 
