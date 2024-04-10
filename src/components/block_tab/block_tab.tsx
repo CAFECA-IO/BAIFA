@@ -33,15 +33,18 @@ const BlockTab = ({chainDetailLoading, activePage, setActivePage}: IBlockTabProp
   const [period, setPeriod] = useState(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
 
+  // Info: (20240410 - Liz) Call API to get block data (API-006)
   const {data: blockData, isLoading: isBlockLoading} = useAPIResponse<IBlockList>(
     `${APIURL.CHAINS}/${chainId}/block`,
     {method: HttpMethod.GET},
+    // Info: (20240410 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&start_date=&end_date=
     {
+      page: activePage,
+      offset: ITEM_PER_PAGE,
+      sort: convertStringToSortingType(sorting),
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
       end_date: period.endTimeStamp === 0 ? '' : period.endTimeStamp,
-      sort: convertStringToSortingType(sorting),
-      page: activePage,
     }
   );
 

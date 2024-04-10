@@ -61,19 +61,20 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
 
   const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
+  // Info: (20240410 - Liz) Call API to get transaction data (API-009)
   const {data: transactionData, isLoading: isTransactionLoading} = useAPIResponse<ITransactionList>(
     `${APIURL.CHAINS}/${chainId}/transactions`,
+    {method: HttpMethod.GET},
+    // Info: (20240410 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&start_date=&end_date=&addressIdA=&addressIdB=
     {
-      method: HttpMethod.GET,
-    },
-    {
-      addressIdA: addressIdA,
-      addressIdB: addressIdB,
       page: activePage,
+      offset: ITEM_PER_PAGE,
       sort: convertStringToSortingType(sorting),
       search: search,
       start_date: period.startTimeStamp > 0 ? period.startTimeStamp : '',
       end_date: period.endTimeStamp > 0 ? period.endTimeStamp : '',
+      addressIdA: addressIdA,
+      addressIdB: addressIdB,
     }
   );
 
