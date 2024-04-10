@@ -60,6 +60,7 @@ const TrackingView = () => {
       );
       interactions = await response.json();
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log(error);
     }
     return interactions;
@@ -380,7 +381,7 @@ const TrackingView = () => {
         text.attr('x', (_, i) => getCircleCenterX(i)).attr('y', (_, i) => getCircleCenterY(i) + 20);
         //text.attr('x', d => d.x).attr('y', d => d.y + 20);
       });
-    console.log('graphData', graphData);
+
     return () => {
       simulation.stop();
     };
