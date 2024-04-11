@@ -1,4 +1,4 @@
-import {useState, useCallback, createContext} from 'react';
+import {useState, useCallback, useRef, createContext} from 'react';
 import useStateRef from 'react-usestateref';
 import AddAddressPanel from '../components/add_address_panel/add_address_panel';
 import FilterPanel from '../components/filter_panel/filter_panel';
@@ -11,6 +11,8 @@ export interface ITrackingProvider {
 }
 
 export interface ITrackingContext {
+  graphRef: React.RefObject<HTMLDivElement>;
+
   targetTrackingType: TrackingType;
   targetTrackingTypeHandler: () => void;
 
@@ -50,6 +52,8 @@ export enum TrackingType {
 }
 
 export const TrackingContext = createContext<ITrackingContext>({
+  graphRef: {current: null},
+
   targetTrackingType: TrackingType.ADDRESS,
   targetTrackingTypeHandler: () => null,
 
@@ -84,6 +88,9 @@ export const TrackingContext = createContext<ITrackingContext>({
 });
 
 export const TrackingProvider = ({children}: ITrackingProvider) => {
+  // Info: (20240411 - Julian) 圖表
+  const graphRef = useRef(null);
+
   // Info: (20240401 - Julian) 篩選面板是否顯示
   const [visibleFilterPanel, setVisibleFilterPanel] = useState<boolean>(false);
   const visibleFilterPanelHandler = useCallback(() => {
@@ -135,15 +142,18 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
       }
       setSelectedItems(newSelectedItems);
     },
-    [selectedItemsRef.current]
+    [selectedItemsRef, setSelectedItems]
   );
 
   // Info: (20240327 - Julian) 追蹤的目標地址
   const [targetAddress, setTargetAddress] = useState<string>('');
-  const addAddressHandler = useCallback((address: string) => {
-    setTargetAddress(address);
-    setSelectedItems([]);
-  }, []);
+  const addAddressHandler = useCallback(
+    (address: string) => {
+      setTargetAddress(address);
+      setSelectedItems([]);
+    },
+    [setTargetAddress, setSelectedItems]
+  );
 
   // Info: (20240408 - Julian) 關聯分析面板是否顯示
   const [visibleRelationAnalysisPanel, setVisibleRelationAnalysisPanel] = useState<boolean>(false);
@@ -159,7 +169,7 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     );
     setTargetAddress('');
     setSelectedItems([]);
-  }, []);
+  }, [setTargetTrackingType, setTargetAddress, setSelectedItems]);
 
   // Info: (20240403 - Julian) 重置所有設定
   const resetTrackingTool = () => {
@@ -174,6 +184,8 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
   };
 
   const defaultValue = {
+    graphRef,
+
     targetTrackingType,
     targetTrackingTypeHandler,
 

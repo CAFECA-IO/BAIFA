@@ -1,7 +1,8 @@
-import {useContext, useEffect, useRef, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import * as d3 from 'd3';
 import {TrackingContext} from '../../contexts/tracking_context';
 import {truncateText} from '../../lib/common';
+import {DIAMETER_OF_MAP, DIAMETER_OF_SECOND_LAYER} from '../../constants/config';
 
 interface INode {
   id: string;
@@ -19,6 +20,7 @@ interface IGraphData {
 
 const TrackingView = () => {
   const {
+    graphRef,
     targetAddress,
     filterBlockchains,
     filterCurrencies,
@@ -93,11 +95,6 @@ const TrackingView = () => {
     // Info: (20240410 - Julian) graph data
     const graph = {
       nodes: [
-        // {id: '0000', group: 'target'},
-        // {id: '1001', group: 'firstLayerInteractions'},
-        // {id: '1002', group: 'firstLayerInteractions'},
-        // {id: '1003', group: 'firstLayerInteractions'},
-        // {id: '2009', group: 'secondLayerInteractions'},
         {id: targetAddress, group: 'target'},
         ...firstLayerInteractions.map(address => {
           return {id: address, group: 'firstLayerInteractions'};
@@ -110,10 +107,6 @@ const TrackingView = () => {
           }),
       ],
       links: [
-        // {source: '0000', target: '1001'},
-        // {source: '0000', target: '1002'},
-        // {source: '0000', target: '1003'},
-        // {source: '1001', target: '2009'},
         {source: targetAddress, target: targetAddress},
         ...firstLayerInteractions.map(address => {
           return {source: address, target: targetAddress};
@@ -130,14 +123,10 @@ const TrackingView = () => {
     setGraphData(graph);
   }, [firstLayerInteractions, secondLayerInteractions]);
 
-  const mapRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const links = graphData.links.map(Object.create);
     const nodes = graphData.nodes.map(Object.create);
 
-    // Info: (20240327 - Julian) 圖表的直徑
-    const DIAMETER_OF_MAP = 200;
     // Info: (20240410 - Julian) 第一層和第二層節點的數量
     const firstLayerLength = nodes.filter(node => node.group === 'firstLayerInteractions').length;
     const secondLayerLength = nodes.filter(node => node.group === 'secondLayerInteractions').length;
@@ -165,9 +154,10 @@ const TrackingView = () => {
       return i === 0
         ? 0
         : // Info: (20240410 - Julian) 如果 i > firstLayerLength，代表是 secondLayerInteractions
-        // 以 125為半徑，偏移量 = firstSelectedAddress 的 x 座標
+        // 偏移量 = firstSelectedAddress 的 x 座標
         i > firstLayerLength
-        ? 125 * Math.cos(((i - 1) * (2 * Math.PI)) / secondLayerLength) + firstAddressX
+        ? DIAMETER_OF_SECOND_LAYER * Math.cos(((i - 1) * (2 * Math.PI)) / secondLayerLength) +
+          firstAddressX
         : // Info: (20240410 - Julian) 其他的 i 代表 firstLayerInteractions，以 360 度平均分配，順時針排列
           DIAMETER_OF_MAP * Math.cos(((i - 1) * (2 * Math.PI)) / firstLayerLength);
     };
@@ -178,19 +168,20 @@ const TrackingView = () => {
       return i === 0
         ? 0
         : // Info: (20240410 - Julian) 如果 i > firstLayerLength，代表是 secondLayerInteractions
-        // 以 125為半徑，偏移量 = firstSelectedAddress 的 y 座標
+        // 偏移量 = firstSelectedAddress 的 y 座標
         i > firstLayerLength
-        ? 125 * Math.sin(((i - 1) * (2 * Math.PI)) / secondLayerLength) + firstAddressY
+        ? DIAMETER_OF_SECOND_LAYER * Math.sin(((i - 1) * (2 * Math.PI)) / secondLayerLength) +
+          firstAddressY
         : // Info: (20240410 - Julian) 其他的 i 代表 firstLayerInteractions，以 360 度平均分配，順時針排列
           DIAMETER_OF_MAP * Math.sin(((i - 1) * (2 * Math.PI)) / firstLayerLength);
     };
 
-    if (!mapRef.current) return;
+    if (!graphRef.current) return;
 
     // Info: (20240329 - Julian) 清除舊的 SVG 元素
-    d3.select(mapRef.current).selectAll('svg').remove();
+    d3.select(graphRef.current).selectAll('svg').remove();
 
-    const containerRect = mapRef.current.getBoundingClientRect();
+    const containerRect = graphRef.current.getBoundingClientRect();
     const height = containerRect.height;
     const width = containerRect.width;
 
@@ -198,7 +189,7 @@ const TrackingView = () => {
     const viewBoxScale = [-width / 2, -height / 2, width, height];
 
     // Info: (20240329 - Julian) SVG 初始化
-    const svg = d3.select(mapRef.current).append('svg').attr('viewBox', viewBoxScale);
+    const svg = d3.select(graphRef.current).append('svg').attr('viewBox', viewBoxScale);
 
     // Info: (20240328 - Julian) 定義漸變色
     const linear1 = svg
@@ -354,10 +345,10 @@ const TrackingView = () => {
     const simulation = d3
       .forceSimulation(nodes)
       // Info: (20240329 - Julian) 連結的引力
-      .force(
-        'link',
-        d3.forceLink(graphData.links).id((d: any) => d.id)
-      )
+      // .force(
+      //   'link',
+      //   d3.forceLink(graphData.links).id((d: any) => d.id)
+      // )
       // Info: (20240329 - Julian) alphaTarget 代表模擬的 alpha 值，alpha 值越高，模擬的速度越快
       .alphaTarget(0.1)
       // Info: (20240329 - Julian) 點之間的引力
@@ -388,7 +379,7 @@ const TrackingView = () => {
   }, [graphData, selectedItems]);
 
   const isShowGraph = targetAddress ? (
-    <div id="container" ref={mapRef} className="h-600px w-1000px"></div>
+    <div id="container" ref={graphRef} className="h-600px w-1000px"></div>
   ) : null;
 
   return <>{isShowGraph}</>;
