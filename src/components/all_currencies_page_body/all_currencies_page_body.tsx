@@ -12,7 +12,7 @@ import SortingMenu from '../sorting_menu/sorting_menu';
 import useAPIResponse from '../../lib/hooks/use_api_response';
 import {APIURL, HttpMethod} from '../../constants/api_request';
 import Skeleton from '../skeleton/skeleton';
-import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE, defaultOption} from '../../constants/config';
 import {getKeyByValue} from '../../lib/common';
 import {useRouter} from 'next/router';
 
@@ -25,8 +25,7 @@ const AllCurrenciesPageBody = () => {
   // Info: (20240308 - Liz) 搜尋條件
   const [search, setSearch] = useState('');
   const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
-  const typeOptionDefault = 'SORTING.ALL';
-  const [filteredType, setFilteredType] = useState(typeOptionDefault);
+  const [filteredType, setFilteredType] = useState(defaultOption);
 
   const sortingOptions = ['A to Z', 'Z to A']; // Info: (20240125 - Julian) 暫時以字母排序
   const [sorting, setSorting] = useState(sortingOptions[0]);
@@ -68,7 +67,7 @@ const AllCurrenciesPageBody = () => {
 
   // Info: (20240308 - Liz) 下拉式選單選項(chain id)由 API 回傳
   const chainNameTypes = currenciesData?.chainNameTypes ?? [];
-  const typeOptions = [typeOptionDefault, ...chainNameTypes];
+  const typeOptions = [defaultOption, ...chainNameTypes];
 
   // Info: (20240308 - Liz) 顯示貨幣列表
   const currenciesList =
