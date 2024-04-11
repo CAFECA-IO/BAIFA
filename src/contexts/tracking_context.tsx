@@ -142,7 +142,7 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
       }
       setSelectedItems(newSelectedItems);
     },
-    [selectedItemsRef.current, setSelectedItems]
+    [selectedItemsRef, setSelectedItems]
   );
 
   // Info: (20240327 - Julian) 追蹤的目標地址

@@ -6,7 +6,7 @@ import {timestampToString, truncateText} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {ITransactionDetail} from '../../interfaces/transaction';
-import {BFAURL, getDynamicUrl} from '../../constants/url';
+import {getDynamicUrl} from '../../constants/url';
 import {TransactionStatus, DefaultTransactionStatus} from '../../constants/transaction_status';
 import {DEFAULT_TRUNCATE_LENGTH, redFlagTypeI18nObj} from '../../constants/config';
 import Skeleton from '../skeleton/skeleton';

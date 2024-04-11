@@ -1,8 +1,8 @@
-import {useContext, useEffect, useRef, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import * as d3 from 'd3';
 import {TrackingContext} from '../../contexts/tracking_context';
 import {truncateText} from '../../lib/common';
-import {DIAMETER_OF_MAP, DIAMETER_OF_SECOND_LAYER, STICKY_NOTE_SIZE} from '../../constants/config';
+import {DIAMETER_OF_MAP, DIAMETER_OF_SECOND_LAYER} from '../../constants/config';
 
 interface INode {
   id: string;
@@ -345,10 +345,10 @@ const TrackingView = () => {
     const simulation = d3
       .forceSimulation(nodes)
       // Info: (20240329 - Julian) 連結的引力
-      .force(
-        'link',
-        d3.forceLink(graphData.links).id((d: any) => d.id)
-      )
+      // .force(
+      //   'link',
+      //   d3.forceLink(graphData.links).id((d: any) => d.id)
+      // )
       // Info: (20240329 - Julian) alphaTarget 代表模擬的 alpha 值，alpha 值越高，模擬的速度越快
       .alphaTarget(0.1)
       // Info: (20240329 - Julian) 點之間的引力
