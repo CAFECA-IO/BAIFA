@@ -257,3 +257,8 @@ export const PUBLIC_TAGS_REFERENCE = {
     BLACKLIST: '9',
   },
 };
+
+/* Info: (20240411 - Julian) ----- Tracking Tool ----- */
+export const STICKY_NOTE_SIZE = 150; // Info: (20240411 - Julian) 便條紙的大小
+export const DIAMETER_OF_MAP = 200; // Info: (20240327 - Julian) 圖表的半徑
+export const DIAMETER_OF_SECOND_LAYER = 125; // Info: (20240327 - Julian) 圖表第二層的半徑

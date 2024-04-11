@@ -1,18 +1,20 @@
 import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
 import {useState, useContext} from 'react';
+import * as d3 from 'd3';
 import {TrackingContext, TrackingType} from '../../contexts/tracking_context';
 import {TranslateFunction} from '../../interfaces/locale';
 import {HiPlus, HiMinus} from 'react-icons/hi';
 import {FiDownload, FiUpload} from 'react-icons/fi';
 import {FaRegBookmark} from 'react-icons/fa';
 import {IoIosArrowUp} from 'react-icons/io';
-import {buttonStyle} from '../../constants/config';
+import {STICKY_NOTE_SIZE, buttonStyle} from '../../constants/config';
 import TrackingView from '../tracking_view/tracking_view';
 
 const TrackingToolPanel = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
+    graphRef,
     targetAddress,
     targetTrackingType,
     targetTrackingTypeHandler,
@@ -23,10 +25,12 @@ const TrackingToolPanel = () => {
     zoomScaleHandler,
     resetTrackingTool,
   } = useContext(TrackingContext);
+  // Info: (20240411 - Julian) 取得圖表 svg
+  const svg = d3.select(graphRef.current).select('svg');
 
   // Info: (20240325 - Julian) 工具列展開
   const [isToolbarExpanded, setIsToolbarExpanded] = useState(false);
-
+  // Info: (20240411 - Julian) 縮放
   const handleZoomIn = () => {
     if (zoomScale >= 2) return;
     zoomScaleHandler(zoomScale + 0.1);
@@ -37,6 +41,75 @@ const TrackingToolPanel = () => {
   };
 
   const handleExpandToolbar = () => setIsToolbarExpanded(prev => !prev);
+
+  // Info: (20240411 - Julian) 新增便條紙
+  function addNote() {
+    // Info: (20240411 - Julian) 便條紙拖曳方法
+    const noteGroupDrag = d3.drag<SVGGElement, unknown>().on('drag', function (event) {
+      d3.select(this).attr(
+        'transform',
+        // Info: (20240411 - Julian) 讓滑鼠拖曳時的位置在便條紙的中心點
+        `translate(${event.x - STICKY_NOTE_SIZE / 2}, ${event.y - STICKY_NOTE_SIZE / 2})`
+      );
+    });
+
+    // Info: (20240411 - Julian) 創建群組元素，包含便條紙、文字輸入框、刪除按鈕
+    const noteGroup = svg
+      .append('g')
+      .classed('note', true)
+      // Info: (20240411 - Julian) 讓便條紙的初始中心點在 (0, 0)
+      .attr('transform', `translate(${-STICKY_NOTE_SIZE / 2}, ${-STICKY_NOTE_SIZE / 2})`)
+      .call(noteGroupDrag);
+
+    // Info: (20240411 - Julian) 創建便條紙
+    const note = noteGroup
+      .append('rect')
+      .attr('width', STICKY_NOTE_SIZE)
+      .attr('height', STICKY_NOTE_SIZE)
+      .attr('fill', '#FFE5A6')
+      .attr('filter', 'drop-shadow(0 0 24px #000000)'); // Info: (20240411 - Julian) 加上陰影
+
+    // Info: (20240411 - Julian) 創建輸入框
+    note.on('click', function () {
+      noteGroup
+        .append('foreignObject')
+        .attr('width', STICKY_NOTE_SIZE - 20)
+        .attr('height', 80)
+        .attr('x', 10)
+        .attr('y', STICKY_NOTE_SIZE / 2 - 40) // Info: (20240411 - Julian) 讓輸入框 y 座標在便條紙的中心點
+        .append('xhtml:textarea')
+        .style('resize', 'none') // Info: (20240411 - Julian) 禁止 textarea 的 resize
+        .style('width', '100%')
+        .style('height', '100%')
+        .style('border', 'none')
+        .style('padding', '5px')
+        .style('background-color', 'transparent')
+        .style('text-align', 'center')
+        .style('font-size', '14px')
+        .style('color', '#1F2243');
+    });
+
+    // Info: (20240411 - Julian) 創建刪除按鈕
+    noteGroup
+      .append('image')
+      .attr('xlink:href', '/tracking/trash.svg') // Info: (20240411 - Julian) 使用 svg 圖片
+      .attr('x', STICKY_NOTE_SIZE - 30) // Info: (20240411 - Julian) 相對於群組元素的位置
+      .attr('y', STICKY_NOTE_SIZE - 30)
+      .attr('cursor', 'pointer')
+      .attr('width', 24)
+      .attr('height', 24)
+      .on('click', function () {
+        noteGroup.remove();
+      });
+  }
+
+  // Info: (20240411 - Julian) 便條紙顯示開關
+  function visibleNoteHandler() {
+    // Info: (20240411 - Julian) 選擇所有的便條紙，並加上 hidden class；如果已經有 hidden class，則移除
+    svg.selectAll('.note').classed('hidden', function () {
+      return !d3.select(this).classed('hidden');
+    });
+  }
 
   const displayZoomScale = Math.round(zoomScale * 100);
   const disabledZoomIn = zoomScale >= 2;
@@ -61,7 +134,7 @@ const TrackingToolPanel = () => {
         <FiUpload size={24} />
       </button>
       {/* Info: (20240325 - Julian) Notes button */}
-      <button className={buttonStyle}>
+      <button className={buttonStyle} onClick={visibleNoteHandler}>
         <FaRegBookmark size={24} />
       </button>
     </div>
@@ -196,7 +269,7 @@ const TrackingToolPanel = () => {
       </button>
 
       {/* Info: (20240325 - Julian) Add Note button */}
-      <button className="group flex w-120px flex-col items-center gap-2">
+      <button onClick={addNote} className="group flex w-120px flex-col items-center gap-2">
         <Image
           src="/tracking/add_note.svg"
           width={50}
