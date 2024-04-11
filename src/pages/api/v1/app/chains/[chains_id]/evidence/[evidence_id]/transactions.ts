@@ -4,14 +4,16 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../../../prisma/client';
 import {AddressType, IAddressInfo} from '../../../../../../../../interfaces/address_info';
 import {ITransactionHistorySection} from '../../../../../../../../interfaces/transaction';
-import {ITEM_PER_PAGE} from '../../../../../../../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../../../constants/config';
 
 type ResponseData = ITransactionHistorySection;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240219 - Julian) 解構 URL 參數，同時進行類型轉換
   const evidenceId = typeof req.query.evidence_id === 'string' ? req.query.evidence_id : undefined;
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : 1;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
+  const offset =
+    typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
   const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
   const start_date =
@@ -25,11 +27,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   try {
     // Info: (20240219 - Julian) 計算分頁的 skip 與 take
-    const skip = (page - 1) * ITEM_PER_PAGE; // (20240219 - Julian) 跳過前面幾筆
-    const take = ITEM_PER_PAGE; // (20240219 - Julian) 取幾筆
+    const skip = page > 0 ? (page - 1) * offset : 0; // Info: (20240319 - Liz) 跳過前面幾筆
+    const take = offset; // Info: (20240319 - Liz) 取幾筆
 
     // Info: (20240227 - Julian) 查詢和 evidence 相關的 transaction
-    const queryConditon = {
+    const queryCondition = {
       evidence_id: evidenceId,
       // Info: (20240219 - Julian) 日期區間
       created_timestamp: {
@@ -48,12 +50,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     // Info: (20240314 - Julian) 用於計算總頁數
-    const filteredTransactionCount = await prisma.transactions.count({where: queryConditon});
+    const filteredTransactionCount = await prisma.transactions.count({where: queryCondition});
 
     // Info: (20240219 - Julian) 撈出 transaction data
     const transactionData = evidenceId
       ? await prisma.transactions.findMany({
-          where: queryConditon,
+          where: queryCondition,
           // Info:(20240226 - Julian) 排序方式：
           orderBy: [
             // Info: (20240226 - Julian) 1. created_timestamp 由 sort 決定
@@ -150,7 +152,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     // Info: (20240227 - Julian) 計算總頁數
-    const totalPage = Math.ceil(filteredTransactionCount / ITEM_PER_PAGE);
+    const totalPage = Math.ceil(filteredTransactionCount / offset);
 
     // Info: (20240227 - Julian) 組合回傳資料
     const result: ResponseData = {

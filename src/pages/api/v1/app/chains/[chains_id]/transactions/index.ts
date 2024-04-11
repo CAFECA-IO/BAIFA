@@ -2,7 +2,7 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import prisma from '../../../../../../../../prisma/client';
-import {ITEM_PER_PAGE} from '../../../../../../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../../constants/config';
 import {IDisplayTransaction, ITransactionList} from '../../../../../../../interfaces/transaction';
 
 type ResponseData = ITransactionList;
@@ -12,7 +12,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const chain_id =
     typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
   // Info: (20240222 - Julian) query string
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page) : 1;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
+  const offset =
+    typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
   const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search = typeof req.query.search === 'string' ? req.query.search : undefined;
   const start_date =
@@ -30,8 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   try {
     // Info: (20240119 - Julian) 計算分頁的 skip 與 take
-    const skip = (page - 1) * ITEM_PER_PAGE; // (20240119 - Julian) 跳過前面幾筆
-    const take = ITEM_PER_PAGE; // (20240119 - Julian) 取幾筆
+    const skip = page > 0 ? (page - 1) * offset : 0; // Info: (20240319 - Liz) 跳過前面幾筆
+    const take = offset; // Info: (20240319 - Liz) 取幾筆
 
     // Info: (20240205 - Julian) 從 codes Table 撈出 type 和 status
     const codes = await prisma.codes.findMany({
@@ -51,10 +53,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const typeList = codes.filter(code => code.table_column === 'type');
 
     if (addressIdA && addressIdB) {
-      // Info: (20240117 - Julian) ========= Transaction History bewteen two addresses =========
+      // Info: (20240117 - Julian) ========= Transaction History between two addresses =========
 
       // Info: (20240119 - Julian) 查詢條件
-      const queryConditon = {
+      const queryCondition = {
         chain_id: chain_id,
         // Info: (20240118 - Julian) 選出 from_address 或 to_address 有包含 addressId 的交易
         OR: [
@@ -70,10 +72,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         hash: search ? {contains: search} : undefined,
       };
       // Info: (20240216 - Julian) 拿出 transactions 筆數
-      const countBetweenAddresses = await prisma.transactions.count({where: queryConditon});
+      const countBetweenAddresses = await prisma.transactions.count({where: queryCondition});
       // Info: (20240216 - Julian) 拿出 transactions 資料
       const transactionListBetweenAddresses = await prisma.transactions.findMany({
-        where: queryConditon,
+        where: queryCondition,
         select: {
           chain_id: true,
           hash: true,
@@ -111,7 +113,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         });
 
       // Info: (20240216 - Julian) 計算 totalPages
-      const totalPagesBetweenAddresses = Math.ceil(countBetweenAddresses / ITEM_PER_PAGE);
+      const totalPagesBetweenAddresses = Math.ceil(countBetweenAddresses / offset);
 
       // Info: (20240216 - Julian) 組合回傳資料
       const resultBetweenAddresses: ITransactionList = {

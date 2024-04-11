@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, useEffect, useContext} from 'react';
 import {useRouter} from 'next/router';
+import {useState, useEffect, useContext} from 'react';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../../../components/footer/footer';
 import ReviewSection from '../../../../../../components/review_section/review_section';
@@ -16,6 +16,7 @@ import {AppContext} from '../../../../../../contexts/app_context';
 import {MarketContext} from '../../../../../../contexts/market_context';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
   ITEM_PER_PAGE,
   sortOldAndNewOptions,
 } from '../../../../../../constants/config';
@@ -31,6 +32,8 @@ interface IReviewDetailsPageProps {
 const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const router = useRouter();
+  const {page} = router.query;
+
   const appCtx = useContext(AppContext);
   const {getReviews} = useContext(MarketContext);
 
@@ -38,7 +41,7 @@ const ReviewsPage = ({addressId, chainId}: IReviewDetailsPageProps) => {
   const [reviews, setReviews] = useState<IReviews>({} as IReviews);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
 
-  const [activePage, setActivePage] = useState(1);
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
   const getReviewData = async (chainId: string, blockId: string, option: IPaginationOptions) => {
     try {

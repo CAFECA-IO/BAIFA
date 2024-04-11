@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import {AppContext} from '../../../../contexts/app_context';
 import {useState, useEffect, useContext} from 'react';
-import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../components/footer/footer';
 import Breadcrumb from '../../../../components/breadcrumb/breadcrumb';
@@ -13,7 +13,7 @@ import {ChainDetailTab, IChain} from '../../../../interfaces/chain';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {BFAURL} from '../../../../constants/url';
-import {DEFAULT_CHAIN_ICON, DEFAULT_PAGE, chainList} from '../../../../constants/config';
+import {DEFAULT_CHAIN_ICON, DEFAULT_PAGE} from '../../../../constants/config';
 import {getChainIcon} from '../../../../lib/common';
 import Skeleton from '../../../../components/skeleton/skeleton';
 import DataNotFound from '../../../../components/data_not_found/data_not_found';
@@ -41,6 +41,7 @@ const ChainDetailPage = ({chainId}: IChainDetailPageProps) => {
     blocks_page ? +blocks_page : DEFAULT_PAGE
   );
 
+  // Info: (20240410 - Liz) Call API to get chain data (API-005)
   const {
     data: chainData,
     isLoading: isChainLoading,
