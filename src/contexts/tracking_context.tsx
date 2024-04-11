@@ -84,14 +84,6 @@ export const TrackingContext = createContext<ITrackingContext>({
 });
 
 export const TrackingProvider = ({children}: ITrackingProvider) => {
-  // Info: (20240326 - Julian) 選擇追蹤的類型 (Address/Transaction)
-  const [targetTrackingType, setTargetTrackingType] = useState(TrackingType.ADDRESS);
-  const targetTrackingTypeHandler = useCallback(() => {
-    setTargetTrackingType(prev =>
-      prev === TrackingType.ADDRESS ? TrackingType.TRANSACTION : TrackingType.ADDRESS
-    );
-  }, []);
-
   // Info: (20240401 - Julian) 篩選面板是否顯示
   const [visibleFilterPanel, setVisibleFilterPanel] = useState<boolean>(false);
   const visibleFilterPanelHandler = useCallback(() => {
@@ -157,6 +149,16 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
   const [visibleRelationAnalysisPanel, setVisibleRelationAnalysisPanel] = useState<boolean>(false);
   const visibleRelationAnalysisPanelHandler = useCallback(() => {
     setVisibleRelationAnalysisPanel(prev => !prev);
+  }, []);
+
+  // Info: (20240326 - Julian) 選擇追蹤的類型 (Address/Transaction)
+  const [targetTrackingType, setTargetTrackingType] = useState(TrackingType.ADDRESS);
+  const targetTrackingTypeHandler = useCallback(() => {
+    setTargetTrackingType(prev =>
+      prev === TrackingType.ADDRESS ? TrackingType.TRANSACTION : TrackingType.ADDRESS
+    );
+    setTargetAddress('');
+    setSelectedItems([]);
   }, []);
 
   // Info: (20240403 - Julian) 重置所有設定

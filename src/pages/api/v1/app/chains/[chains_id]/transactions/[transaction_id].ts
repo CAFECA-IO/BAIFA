@@ -92,14 +92,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const feeDecimal = fee / Math.pow(10, decimals);
 
     const value = parseInt(`${transactionData?.value ?? 0}`);
+    const valueDecimal = value / Math.pow(10, decimals);
 
-    // Info: (20240130 - Julian) 撈出所有 address
-    const allAddress = await prisma.addresses.findMany({
+    // Info: (20240130 - Julian) 撈出所有 contract
+    const allContract = await prisma.contracts.findMany({
       select: {
-        address: true,
+        contract_address: true,
       },
     });
-    const allAddressArray = allAddress.map(address => address.address);
+    const allContractArray = allContract
+      .map(contract => `${contract.contract_address}`)
+      .filter(contract => contract !== 'null');
 
     // Info: (20240130 - Julian) from address 轉換
     const fromAddressesRaw = transactionData?.from_address
@@ -109,7 +112,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const fromAddresses = fromAddressesRaw.filter(address => address !== 'null');
     // Info: (20240206 - Julian) 掃描 fromAddresses，如果 `addresses` table 有對應的 address 資料，就輸出 'address'，否則輸出 'contract'
     const fromType = fromAddresses.map(address => {
-      return allAddressArray.includes(address) ? AddressType.ADDRESS : AddressType.CONTRACT;
+      return allContractArray.includes(address) ? AddressType.CONTRACT : AddressType.ADDRESS;
     });
     const from: IAddressInfo[] = fromAddresses.map((address, index) => {
       return {
@@ -126,7 +129,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const toAddresses = toAddressesRaw.filter(address => address !== 'null');
     // Info: (20240206 - Julian) 掃描 toAddresses，如果 `addresses` table 有對應的 address 資料，就輸出 'address'，否則輸出 'contract'
     const toType = toAddresses.map(address => {
-      return allAddressArray.includes(address) ? AddressType.ADDRESS : AddressType.CONTRACT;
+      return allContractArray.includes(address) ? AddressType.CONTRACT : AddressType.ADDRESS;
     });
     const to: IAddressInfo[] = toAddresses.map((address, index) => {
       return {
@@ -184,7 +187,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           to: to,
           evidenceId: evidenceId,
           input: input,
-          value: value,
+          value: valueDecimal,
           fee: feeDecimal,
           unit: unit,
           flaggingRecords: flaggingRecords,

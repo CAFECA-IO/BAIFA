@@ -32,6 +32,7 @@ const TransactionDetail = ({transactionData, isLoading}: ITransactionDetailProps
     evidenceId,
     input,
     fee,
+    value,
     flaggingRecords,
     unit,
   } = transactionData;
@@ -166,9 +167,9 @@ const TransactionDetail = ({transactionData, isLoading}: ITransactionDetailProps
   );
 
   const displayValue = !isLoading ? (
-    <Link href={BFAURL.COMING_SOON}>
-      <p className="text-primaryBlue underline underline-offset-2">{t('COMMON.LOG_IN_ONLY')}</p>
-    </Link>
+    <p>
+      {value} {unit}
+    </p>
   ) : (
     // Info: (20240206 - Julian) Loading Animation
     <Skeleton height={24} width={80} />
@@ -264,7 +265,6 @@ const TransactionDetail = ({transactionData, isLoading}: ITransactionDetailProps
           <p>{t('TRANSACTION_DETAIL_PAGE.VALUE')}</p>
           <Tooltip>{t('TRANSACTION_DETAIL_PAGE.VALUE_TOOLTIP')}</Tooltip>
         </div>
-        {/* ToDo: (20230911 - Julian) log in button */}
         {displayValue}
       </div>
       {/* Info: (20230911 - Julian) Fee */}
