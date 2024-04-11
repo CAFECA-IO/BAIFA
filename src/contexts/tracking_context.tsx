@@ -142,15 +142,18 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
       }
       setSelectedItems(newSelectedItems);
     },
-    [selectedItemsRef.current]
+    [selectedItemsRef.current, setSelectedItems]
   );
 
   // Info: (20240327 - Julian) 追蹤的目標地址
   const [targetAddress, setTargetAddress] = useState<string>('');
-  const addAddressHandler = useCallback((address: string) => {
-    setTargetAddress(address);
-    setSelectedItems([]);
-  }, []);
+  const addAddressHandler = useCallback(
+    (address: string) => {
+      setTargetAddress(address);
+      setSelectedItems([]);
+    },
+    [setTargetAddress, setSelectedItems]
+  );
 
   // Info: (20240408 - Julian) 關聯分析面板是否顯示
   const [visibleRelationAnalysisPanel, setVisibleRelationAnalysisPanel] = useState<boolean>(false);
@@ -166,7 +169,7 @@ export const TrackingProvider = ({children}: ITrackingProvider) => {
     );
     setTargetAddress('');
     setSelectedItems([]);
-  }, []);
+  }, [setTargetTrackingType, setTargetAddress, setSelectedItems]);
 
   // Info: (20240403 - Julian) 重置所有設定
   const resetTrackingTool = () => {
