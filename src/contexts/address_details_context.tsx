@@ -187,7 +187,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
     setTransactionsPage(options.page);
     setTransactionsOffset(options.offset);
 
-    const {page, offset, sort: order} = options;
+    //const {page, offset, sort: order} = options;
     const chainIdForTransaction = chainId || (query.chainId?.toString() ?? '');
     const addressIdForTransaction = addressId || (query.addressId?.toString() ?? '');
 
@@ -196,7 +196,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
       addressIdForTransaction,
       options
     );
-    setTransactions(prev => {
+    setTransactions(() => {
       return {...transactionsRef.current, ...transactionData};
     });
     setTransactionsLoading(false);
@@ -294,7 +294,7 @@ export const AddressDetailsProvider = ({children}: IAddressDetailsProvider) => {
       options
     );
 
-    setProducedBlocks(prev => {
+    setProducedBlocks(() => {
       return {...producedBlocksRef.current, ...blockData};
     });
     setBlocksLoading(false);

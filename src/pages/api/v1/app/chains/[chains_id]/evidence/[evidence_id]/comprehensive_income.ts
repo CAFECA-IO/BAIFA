@@ -5,7 +5,6 @@ import prisma from '../../../../../../../../../prisma/client';
 import {
   ComprehensiveIncomeNeoSchema,
   IComprehensiveIncomeResponse,
-  dummyComprehensiveIncomeNeo,
 } from '../../../../../../../../interfaces/comprehensive_income_neo';
 import {IEvidenceContent} from '../../../../../../../../interfaces/evidence';
 

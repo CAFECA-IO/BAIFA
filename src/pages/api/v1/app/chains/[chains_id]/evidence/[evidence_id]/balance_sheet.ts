@@ -5,7 +5,6 @@ import prisma from '../../../../../../../../../prisma/client';
 import {
   BalanceSheetsNeoSchema,
   IBalanceSheetsResponse,
-  balanceSheetsNeoExample,
 } from '../../../../../../../../interfaces/balance_sheets_neo';
 import {IEvidenceContent} from '../../../../../../../../interfaces/evidence';
 
@@ -17,7 +16,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const previousEvidenceId = evidenceId;
 
   try {
-       
     // Info: (20240315 - Julian) 從 evidences 撈出 current reports
     const currentReports = await prisma.evidences.findFirst({
       where: {
