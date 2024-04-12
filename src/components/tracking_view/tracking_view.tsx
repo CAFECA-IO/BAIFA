@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from 'react';
 import * as d3 from 'd3';
-import {TrackingContext} from '../../contexts/tracking_context';
+import {TrackingContext, TrackingType} from '../../contexts/tracking_context';
 import {truncateText} from '../../lib/common';
 import {DIAMETER_OF_MAP, DIAMETER_OF_SECOND_LAYER} from '../../constants/config';
 
@@ -21,6 +21,7 @@ interface IGraphData {
 const TrackingView = () => {
   const {
     graphRef,
+    targetTrackingType,
     targetAddress,
     filterBlockchains,
     filterCurrencies,
@@ -89,7 +90,14 @@ const TrackingView = () => {
     } else {
       setSecondLayerInteractions([]);
     }
-  }, [filterBlockchains, filterCurrencies, filterDatePeriod, isOpenFirstLayer, isOpenSecondLayer]);
+  }, [
+    filterBlockchains,
+    filterCurrencies,
+    filterDatePeriod,
+    isOpenFirstLayer,
+    isOpenSecondLayer,
+    targetAddress,
+  ]);
 
   useEffect(() => {
     // Info: (20240410 - Julian) graph data
@@ -306,7 +314,9 @@ const TrackingView = () => {
             // Info: (20240329 - Julian) 根據 class 來決定光暈的顏色
             return d3.select(this).classed('target')
               ? 'drop-shadow(0 0 24px #561AFF)'
-              : 'drop-shadow(0 0 24px #FF7278)';
+              : d3.select(this).classed('firstLayerInteractions')
+              ? 'drop-shadow(0 0 24px #FF7278)'
+              : 'drop-shadow(0 0 24px #31D3F5)';
           })
           // Info: (20240329 - Julian) 滑鼠移入時改變 cursor
           .attr('cursor', 'pointer');
@@ -327,7 +337,24 @@ const TrackingView = () => {
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'central')
       .attr('fill', '#F0F0F0')
-      .text(d => truncateText(d.id, 7));
+      .text(d => truncateText(d.id, 5));
+
+    // Info: (20240412 - Julian) wallet / transaction icon
+    const icon = svg
+      .append('g')
+      .attr('class', 'node-icon')
+      .selectAll('image')
+      .data(nodes)
+      .enter()
+      .append('image')
+      .attr(
+        'xlink:href',
+        targetTrackingType === TrackingType.ADDRESS
+          ? '/tracking/wallet.svg'
+          : 'tracking/transaction.svg'
+      )
+      .attr('width', 24)
+      .attr('height', 24);
 
     const getStartX = (i: number) => {
       // 第二層的起點為 firstSelectedAddress 的圓心
@@ -369,8 +396,12 @@ const TrackingView = () => {
         node.attr('cx', (_, i) => getCircleCenterX(i)).attr('cy', (_, i) => getCircleCenterY(i));
         //node.attr('cx', d => d.x).attr('cy', d => d.y);
 
-        text.attr('x', (_, i) => getCircleCenterX(i)).attr('y', (_, i) => getCircleCenterY(i) + 20);
+        text.attr('x', (_, i) => getCircleCenterX(i)).attr('y', (_, i) => getCircleCenterY(i) + 15);
         //text.attr('x', d => d.x).attr('y', d => d.y + 20);
+
+        icon
+          .attr('x', (_, i) => getCircleCenterX(i) - 12)
+          .attr('y', (_, i) => getCircleCenterY(i) - 23);
       });
 
     return () => {
