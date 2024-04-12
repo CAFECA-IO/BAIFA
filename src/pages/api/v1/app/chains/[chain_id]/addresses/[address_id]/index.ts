@@ -11,7 +11,7 @@ type ResponseData = IAddressBrief | undefined;
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240122 - Julian) 解構 URL 參數，同時進行類型轉換
   const chain_id =
-    typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id, 10) : undefined;
+    typeof req.query.chain_id === 'string' ? parseInt(req.query.chain_id, 10) : undefined;
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
 
   if (!address_id || !chain_id) {
