@@ -10,7 +10,7 @@ type ResponseData = ITransactionList;
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240112 - Julian) 解構 URL 參數，同時進行類型轉換
   const chain_id =
-    typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
+    typeof req.query.chain_id === 'string' ? parseInt(req.query.chain_id) : undefined;
   // Info: (20240222 - Julian) query string
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
   const offset =

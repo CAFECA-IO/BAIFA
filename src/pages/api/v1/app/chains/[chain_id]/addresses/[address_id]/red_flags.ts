@@ -13,7 +13,7 @@ type ResponseData = IRedFlagOfAddress;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const chain_id =
-    typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id, 10) : undefined;
+    typeof req.query.chain_id === 'string' ? parseInt(req.query.chain_id, 10) : undefined;
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
   const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
