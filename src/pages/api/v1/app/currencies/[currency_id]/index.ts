@@ -5,13 +5,14 @@ import prisma from '../../../../../../../prisma/client';
 import {ICurrencyDetailString} from '../../../../../../interfaces/currency';
 import {IRedFlag} from '../../../../../../interfaces/red_flag';
 
-type ResponseData = ICurrencyDetailString;
+type ResponseData = ICurrencyDetailString | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240112 - Julian) query string parameter
   const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
 
   try {
+    // Info: (20240412 - Liz) 從 currencies Table 中取得 currency 的資料
     const currencyData = currency_id
       ? await prisma.currencies.findUnique({
           where: {
@@ -27,11 +28,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             total_amount: true,
             risk_level: true,
             chain_id: true,
+            symbol: true,
           },
         })
       : null;
 
-    // Info: (20240125 - Julian) 從 chains Table 中取得 unit 和 decimal
+    // Info: (20240125 - Julian) 從 chains Table 中取得 decimal
     const chainId = currencyData?.chain_id;
     const chainData = chainId
       ? await prisma.chains.findUnique({
@@ -39,13 +41,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             id: chainId,
           },
           select: {
-            symbol: true,
             decimals: true,
           },
         })
       : null;
 
-    const unit = chainData?.symbol ?? '';
     const decimal = chainData?.decimals ?? 0;
 
     // Info: (20240125 - Julian) currency 的 24 小時交易量
@@ -120,29 +120,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       : 'Unknown Risk Level';
 
     // Info: (20240221 - Liz) 組合回傳資料並轉換成 API 要的格式
-    const result: ResponseData = {
-      currencyId: currencyData?.id ?? '',
-      currencyName: currencyData?.name ?? '',
-      chainId: chainId ? `${currencyData.chain_id}` : '',
-      rank: 0, // ToDo: (20240125 - Julian) 討論去留
-      holderCount: currencyData?.holder_count ?? 0,
-      price: currencyData?.price ?? 0,
-      volumeIn24h: volumeIn24h,
-      unit: unit,
-      totalAmount: totalAmount,
-      totalTransfers: currencyData?.total_transfers ?? 0,
-      flagging: flagging,
-      flaggingCount: flagging.length,
-      riskLevel: riskLevel,
-    };
+    const result: ResponseData = currencyData
+      ? {
+          currencyId: currencyData.id,
+          currencyName: currencyData.name ?? '',
+          chainId: `${chainId}`,
+          rank: 0, // ToDo: (20240125 - Julian) 討論去留
+          holderCount: currencyData.holder_count ?? 0,
+          price: currencyData.price ?? 0,
+          volumeIn24h,
+          unit: currencyData.symbol ?? '',
+          totalAmount,
+          totalTransfers: currencyData.total_transfers ?? 0,
+          flagging,
+          flaggingCount: flagging.length,
+          riskLevel,
+        }
+      : undefined;
 
-    prisma.$connect();
     res.status(200).json(result);
   } catch (error) {
     // Info: (20240312 - Liz) Request error
     // eslint-disable-next-line no-console
     console.error('Error fetching blacklist data (018):', error);
     res.status(500).json({} as ResponseData);
+  } finally {
+    await prisma.$disconnect();
   }
 }
 

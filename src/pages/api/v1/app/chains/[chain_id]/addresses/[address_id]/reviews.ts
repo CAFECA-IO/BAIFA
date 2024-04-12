@@ -8,13 +8,13 @@ type ResponseData = IReviews;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const address_id = typeof req.query.address_id === 'string' ? req.query.address_id : undefined;
-  const chains_id =
-    typeof req.query.chains_id === 'string' ? parseInt(req.query.chains_id) : undefined;
+  const chain_id =
+    typeof req.query.chain_id === 'string' ? parseInt(req.query.chain_id) : undefined;
   const sort = (req.query.sort as string)?.toLowerCase() === 'desc' ? 'desc' : 'asc';
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 0;
   const offset = typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : 10;
 
-  if (!chains_id || !address_id) {
+  if (!chain_id || !address_id) {
     return res.status(400).json({} as ResponseData);
   }
 
@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const reviewData = reviews.map(r => ({
       id: `${r.id ?? ''}`,
-      chainId: `${addressData?.chain_id ?? chains_id}`,
+      chainId: `${addressData?.chain_id ?? chain_id}`,
       createdTimestamp: r.created_timestamp ? r.created_timestamp : 0,
       authorAddress: r?.author_address ?? '',
       content: r?.content ?? '',
