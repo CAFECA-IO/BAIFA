@@ -5,13 +5,14 @@ import * as d3 from 'd3';
 import {TrackingContext, TrackingType} from '../../contexts/tracking_context';
 import {TranslateFunction} from '../../interfaces/locale';
 import {HiPlus, HiMinus} from 'react-icons/hi';
-import {FiDownload, FiUpload} from 'react-icons/fi';
-import {FaRegBookmark} from 'react-icons/fa';
+import {IoEyeOutline} from 'react-icons/io5';
 import {IoIosArrowUp} from 'react-icons/io';
 import {STICKY_NOTE_SIZE, buttonStyle} from '../../constants/config';
 import TrackingView from '../tracking_view/tracking_view';
 
 const TrackingToolPanel = () => {
+  const notes: string[] = []; // Info: (20240412 - Julian) 儲存版面上的便條紙
+
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {
     graphRef,
@@ -25,8 +26,12 @@ const TrackingToolPanel = () => {
     zoomScaleHandler,
     resetTrackingTool,
   } = useContext(TrackingContext);
+
   // Info: (20240325 - Julian) 工具列展開
   const [isToolbarExpanded, setIsToolbarExpanded] = useState(false);
+  // Info: (20240412 - Julian) 便條紙顯示
+  const [isNoteVisible, setIsNoteVisible] = useState(true);
+
   // Info: (20240411 - Julian) 縮放
   const handleZoomIn = () => {
     if (zoomScale >= 2) return;
@@ -41,108 +46,176 @@ const TrackingToolPanel = () => {
 
   // Info: (20240411 - Julian) 新增便條紙
   function addNote() {
-    // Info: (20240411 - Julian) 取得圖表 svg
-    const svg = d3.select(graphRef.current).select('svg');
-    // Info: (20240411 - Julian) 便條紙拖曳方法
-    const noteGroupDrag = d3.drag<SVGGElement, unknown>().on('drag', function (event) {
-      d3.select(this).attr(
-        'transform',
-        // Info: (20240411 - Julian) 讓滑鼠拖曳時的位置在便條紙的中心點
-        `translate(${event.x - STICKY_NOTE_SIZE / 2}, ${event.y - STICKY_NOTE_SIZE / 2})`
-      );
-    });
+    // Info: (20240411 - Julian) 檢查是否有圖表，若無則跳出警告
+    if (!graphRef.current) return window.alert('Please create a graph first.');
+    try {
+      // Info: (20240411 - Julian) 取得圖表 svg
+      const svg = d3.select(graphRef.current).select('svg');
 
-    // Info: (20240411 - Julian) 創建群組元素，包含便條紙、文字輸入框、刪除按鈕
-    const noteGroup = svg
-      .append('g')
-      .classed('note', true)
-      // Info: (20240411 - Julian) 讓便條紙的初始中心點在 (0, 0)
-      .attr('transform', `translate(${-STICKY_NOTE_SIZE / 2}, ${-STICKY_NOTE_SIZE / 2})`)
-      .call(noteGroupDrag);
-
-    // Info: (20240411 - Julian) 創建便條紙
-    const note = noteGroup
-      .append('rect')
-      .attr('width', STICKY_NOTE_SIZE)
-      .attr('height', STICKY_NOTE_SIZE)
-      .attr('fill', '#FFE5A6')
-      .attr('filter', 'drop-shadow(0 0 5px #000000)'); // Info: (20240411 - Julian) 加上陰影
-
-    // Info: (20240411 - Julian) 創建輸入框
-    note.on('click', function () {
-      noteGroup
-        .append('foreignObject')
-        .attr('width', STICKY_NOTE_SIZE - 20)
-        .attr('height', 80)
-        .attr('x', 10)
-        .attr('y', STICKY_NOTE_SIZE / 2 - 40) // Info: (20240411 - Julian) 讓輸入框 y 座標在便條紙的中心點
-        .append('xhtml:textarea')
-        .style('resize', 'none') // Info: (20240411 - Julian) 禁止 textarea 的 resize
-        .style('width', '100%')
-        .style('height', '100%')
-        .style('border', 'none')
-        .style('padding', '5px')
-        .style('background-color', 'transparent')
-        .style('text-align', 'center')
-        .style('font-size', '14px')
-        .style('color', '#1F2243');
-    });
-
-    // Info: (20240411 - Julian) 創建刪除按鈕
-    noteGroup
-      .append('image')
-      .classed('trash-button', true)
-      .attr('xlink:href', '/tracking/trash.svg') // Info: (20240411 - Julian) 使用 svg 圖片
-      .attr('x', STICKY_NOTE_SIZE - 30) // Info: (20240411 - Julian) 相對於群組元素的位置
-      .attr('y', STICKY_NOTE_SIZE - 30)
-      .attr('cursor', 'pointer')
-      .attr('width', 24)
-      .attr('height', 24)
-      .on('click', function () {
-        noteGroup.remove();
+      // Info: (20240411 - Julian) 便條紙拖曳方法
+      const noteGroupDrag = d3.drag<SVGGElement, unknown>().on('drag', function (event) {
+        d3.select(this).attr(
+          'transform',
+          // Info: (20240411 - Julian) 讓滑鼠拖曳時的位置在便條紙的中心點
+          `translate(${event.x - STICKY_NOTE_SIZE / 2}, ${event.y - STICKY_NOTE_SIZE / 2})`
+        );
       });
-  }
 
-  // Info: (20240411 - Julian) 輸出圖表 ------------ 施工中：便條紙文字失蹤 ------------
-  function exportSvg() {
-    // Info: (20240411 - Julian) 檢查是否有圖表
-    if (!graphRef.current) return window.alert('No graph found');
+      // Info: (20240412 - Julian) 用 timestamp 產生獨立的 id
+      const uniqueId = `note-${Date.now()}`;
 
-    // Info: (20240411 - Julian) 輸出圖檔之前，隱藏垃圾桶圖示
-    d3.selectAll('.trash-button').style('display', 'none');
-    // Info: (20240411 - Julian) 將 SVG 元素轉換為 SVG 字符串
-    const svg = d3.select(graphRef.current).select('svg').node() as Element;
-    const svgString = new XMLSerializer().serializeToString(svg);
+      // Info: (20240411 - Julian) 創建群組元素，包含便條紙、文字輸入框、刪除按鈕
+      const noteGroup = svg
+        .append('g')
+        .attr('id', uniqueId) // Info: (20240412 - Julian) 加上獨立的 id
+        .classed('note', true) // Info: (20240412 - Julian) 加上 note class
+        // Info: (20240411 - Julian) 讓便條紙的初始中心點在 (0, 0)
+        .attr('transform', `translate(${-STICKY_NOTE_SIZE / 2}, ${-STICKY_NOTE_SIZE / 2})`)
+        .call(noteGroupDrag);
 
-    // Info: (20240411 - Julian) 創建 Blob 對象
-    const blob = new Blob([svgString], {type: 'image/svg+xml'});
+      // Info: (20240411 - Julian) 創建便條紙
+      const note = noteGroup
+        .append('rect')
+        .attr('width', STICKY_NOTE_SIZE)
+        .attr('height', STICKY_NOTE_SIZE)
+        .attr('fill', '#FFE5A6')
+        .attr('filter', 'drop-shadow(0 0 5px #000000)'); // Info: (20240411 - Julian) 加上陰影
 
-    // Info: (20240411 - Julian) 創建 URL 對象
-    const url = URL.createObjectURL(blob);
+      // Info: (20240412 - Julian) 將便條紙 Id 存入 notes 陣列
+      notes.push(uniqueId);
 
-    // Info: (20240411 - Julian) 創建連結元素
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'reportSVG.svg'; // Info: (20240411 - Julian) 設置下載文件名
+      // Info: (20240411 - Julian) 創建輸入框
+      note.on('click', function () {
+        noteGroup
+          .append('foreignObject')
+          .attr('width', STICKY_NOTE_SIZE - 20)
+          .attr('height', 80)
+          .attr('x', 10)
+          .attr('y', STICKY_NOTE_SIZE / 2 - 40) // Info: (20240411 - Julian) 讓輸入框 y 座標在便條紙的中心點
+          .append('xhtml:textarea')
+          .style('resize', 'none') // Info: (20240411 - Julian) 禁止 textarea 的 resize
+          .style('width', '100%')
+          .style('height', '100%')
+          .style('border', 'none')
+          .style('padding', '5px')
+          .style('background-color', 'transparent')
+          .style('text-align', 'center')
+          .style('font-size', '14px')
+          .style('color', '#1F2243');
+      });
 
-    // Info: (20240411 - Julian) 模擬點擊連結元素，觸發下載動作
-    link.click();
-
-    // Info: (20240411 - Julian) 釋放 URL 對象
-    URL.revokeObjectURL(url);
-
-    // Info: (20240411 - Julian) 下載完成後，顯示垃圾桶圖示
-    d3.selectAll('.trash-button').style('display', 'block');
+      // Info: (20240411 - Julian) 創建刪除按鈕
+      noteGroup
+        .append('image')
+        .classed('trash-button', true)
+        .attr('xlink:href', '/tracking/trash.svg') // Info: (20240411 - Julian) 使用 svg 圖片
+        .attr('x', STICKY_NOTE_SIZE - 30) // Info: (20240411 - Julian) 相對於群組元素的位置
+        .attr('y', STICKY_NOTE_SIZE - 30)
+        .attr('cursor', 'pointer')
+        .attr('width', 24)
+        .attr('height', 24)
+        .on('click', function () {
+          noteGroup.remove();
+          // Info: (20240412 - Julian) 從 notes 陣列中移除該便條紙的 Id
+          const self = notes.find(note => note === uniqueId);
+          if (self) {
+            notes.splice(notes.indexOf(self), 1);
+          }
+        });
+    } catch (error) {
+      // Info: (20240412 - Julian) 錯誤處理
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
   }
 
   // Info: (20240411 - Julian) 便條紙顯示開關
   function visibleNoteHandler() {
-    // Info: (20240411 - Julian) 取得圖表 svg
-    const svg = d3.select(graphRef.current).select('svg');
-    // Info: (20240411 - Julian) 選擇所有的便條紙，並加上 hidden class；如果已經有 hidden class，則移除
-    svg.selectAll('.note').classed('hidden', function () {
-      return !d3.select(this).classed('hidden');
-    });
+    try {
+      setIsNoteVisible(prev => !prev); // Info: (20240411 - Julian) 切換顯示狀態
+      // Info: (20240412 - Julian) 取得所有便條紙群組元素
+      const noteGroups = d3.selectAll('.note').nodes();
+      // Info: (20240412 - Julian) 依據顯示狀態設定 display
+      noteGroups.forEach(noteGroup => {
+        const display = isNoteVisible ? 'block' : 'none';
+        d3.select(noteGroup).style('display', display);
+      });
+    } catch (error) {
+      // Info: (20240412 - Julian) 錯誤處理
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  }
+
+  // Info: (20240411 - Julian) 輸出圖表
+  function exportSvg() {
+    // Info: (20240411 - Julian) 檢查是否有圖表，若無則跳出警告
+    if (!graphRef.current) return window.alert('No graph found');
+
+    try {
+      // Info: (20240412 - Julian) 輸出圖檔之前，將背景色改為黑色
+      d3.select(graphRef.current).select('svg').style('background-color', '#161830');
+      // Info: (20240411 - Julian) 隱藏垃圾桶圖示
+      d3.selectAll('.trash-button').style('display', 'none');
+      // Info: (20240412 - Julian) 隱藏 node-icon
+      d3.selectAll('.node-icon').style('display', 'none');
+
+      // Info: (20240412 - Julian) 用 text 複製便條紙的文字
+      notes.forEach(note => {
+        // Info: (20240411 - Julian) 取得便條紙群組元素
+        const g = d3.select(`#${note}`);
+        // Info: (20240412 - Julian) 取得 textarea 的文字內容
+        const textarea = g.select('foreignObject').select('textarea');
+        // Info: (20240412 - Julian) textarea 可能沒有輸入文字，因此要檢查是否有 value
+        const text = textarea.property('value') ?? '';
+        // Info: (20240412 - Julian) 由 noteGroup 的 transform 推算出 x, y 座標
+        const x = +g.attr('transform').split('(')[1].split(',')[0] + 20;
+        const y = +g.attr('transform').split('(')[1].split(',')[1].split(')')[0] + 40;
+
+        // Info: (20240412 - Julian) 加上輸出用的文字
+        d3.select(graphRef.current)
+          .select('svg')
+          .append('text')
+          .classed('text-for-export', true)
+          .attr('x', x)
+          .attr('y', y)
+          .text(text);
+      });
+
+      // Info: (20240411 - Julian) 將 SVG 元素轉換為 SVG 字符串
+      const svg = d3.select(graphRef.current).select('svg').node() as Element;
+      const svgString = new XMLSerializer().serializeToString(svg);
+
+      // Info: (20240411 - Julian) 創建 Blob 對象
+      const blob = new Blob([svgString], {type: 'image/svg+xml'});
+
+      // Info: (20240411 - Julian) 創建 URL 對象
+      const url = URL.createObjectURL(blob);
+
+      // Info: (20240411 - Julian) 創建連結元素
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'reportSVG.svg'; // Info: (20240411 - Julian) 設置下載文件名
+
+      // Info: (20240411 - Julian) 模擬點擊連結元素，觸發下載動作
+      link.click();
+
+      // Info: (20240411 - Julian) 釋放 URL 對象
+      URL.revokeObjectURL(url);
+
+      // Info: (20240411 - Julian) 下載完成後，顯示垃圾桶圖示
+      d3.selectAll('.trash-button').style('display', 'block');
+      // Info: (20240412 - Julian) 顯示 node-icon
+      d3.selectAll('.node-icon').style('display', 'block');
+      // Info: (20240412 - Julian) 將背景色改回透明
+      d3.select(graphRef.current).select('svg').style('background-color', 'transparent');
+      // Info: (20240412 - Julian) 移除輸出用的文字
+      d3.selectAll('.text-for-export').remove();
+    } catch (error) {
+      // Info: (20240412 - Julian) 錯誤處理
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
   }
 
   const displayZoomScale = Math.round(zoomScale * 100);
@@ -155,21 +228,23 @@ const TrackingToolPanel = () => {
       : 'before:left-136px before:w-160px'
   } before:bg-purpleLinear before:transition-all before:duration-300 before:ease-out`;
 
+  const viewToolButtonStyle =
+    'rounded border border-transparent text-center bg-purpleLinear px-4 py-2 transition-all duration-300 ease-in-out hover:border-hoverWhite hover:cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:border-transparent';
+
   // Info: (20240325 - Julian) Input, Output & Notes
   const viewTools = (
-    <div className="flex flex-col items-center gap-4 lg:flex-row">
-      <p>{t('TRACKING_TOOL_PAGE.VIEW')}</p>
+    <div className="flex flex-col items-start gap-2 lg:flex-row lg:items-center">
+      <div className="flex items-center gap-2">
+        <IoEyeOutline size={24} />
+        <p>{t('TRACKING_TOOL_PAGE.VIEW')}: </p>
+      </div>
       {/* Info: (20240325 - Julian) Input button */}
-      <button className={buttonStyle}>
-        <FiDownload size={24} />
-      </button>
+      <button className={viewToolButtonStyle}>Input</button>
       {/* Info: (20240325 - Julian) Output button */}
-      <button className={buttonStyle}>
-        <FiUpload size={24} />
-      </button>
+      <button className={viewToolButtonStyle}>Output</button>
       {/* Info: (20240325 - Julian) Notes button */}
-      <button className={buttonStyle} onClick={visibleNoteHandler}>
-        <FaRegBookmark size={24} />
+      <button className={viewToolButtonStyle} onClick={visibleNoteHandler}>
+        Note
       </button>
     </div>
   );

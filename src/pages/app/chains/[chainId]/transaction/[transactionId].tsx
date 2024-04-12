@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useContext, useEffect} from 'react';
 import {useRouter} from 'next/router';
-import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import NavBar from '../../../../../components/nav_bar/nav_bar';
 import TransactionDetail from '../../../../../components/transaction_detail/transaction_detail';
 import BoltButton from '../../../../../components/bolt_button/bolt_button';

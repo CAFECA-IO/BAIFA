@@ -5,7 +5,6 @@ import prisma from '../../../../../../../../../prisma/client';
 import {
   BalanceSheetsNeoSchema,
   IBalanceSheetsResponse,
-  balanceSheetsNeoExample,
 } from '../../../../../../../../interfaces/balance_sheets_neo';
 import {IEvidenceContent} from '../../../../../../../../interfaces/evidence';
 
