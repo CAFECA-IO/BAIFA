@@ -9,7 +9,7 @@ import BoltButton from '../../../../../../components/bolt_button/bolt_button';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
-import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {convertStringToSortingType, getChainIcon} from '../../../../../../lib/common';
@@ -21,6 +21,7 @@ import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu'
 import TransactionList from '../../../../../../components/transaction_list/transaction_list';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
@@ -39,19 +40,24 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
   const appCtx = useContext(AppContext);
 
   const router = useRouter();
+  const {page} = router.query;
 
   // Info: (20240220 - Julian) 搜尋條件
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [activePage, setActivePage] = useState(1);
 
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
+
+  // Info: (20240410 - Liz) Call API to get transaction data (API-008)
   const {data: transactionListData, isLoading: isTransactionListLoading} =
     useAPIResponse<ITransactionList>(
       `${APIURL.CHAINS}/${chainId}/block/${blockId}/transactions`,
       {method: HttpMethod.GET},
+      // Info: (20240410 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&start_date=&end_date=
       {
         page: activePage,
+        offset: ITEM_PER_PAGE,
         sort: convertStringToSortingType(sorting),
         search: search,
         start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
@@ -114,13 +120,18 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
           {SearchBarWithKeyDown({
             searchBarPlaceholder: t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_TRANSACTIONS'),
             setSearch,
+            setActivePage: setActivePage,
           })}
         </div>
         <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
           {/* Info: (20240125 - Julian) Date Picker */}
           <div className="flex w-full items-center text-base lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-            <DatePicker period={period} setFilteredPeriod={setPeriod} />
+            <DatePicker
+              period={period}
+              setFilteredPeriod={setPeriod}
+              setActivePage={setActivePage}
+            />
           </div>
 
           {/* Info: (20230904 - Julian) Sorting Menu */}
@@ -131,6 +142,7 @@ const TransitionsInBlockPage = ({chainId, blockId}: ITransitionsInBlockPageProps
               sorting={sorting}
               setSorting={setSorting}
               bgColor="bg-darkPurple"
+              setActivePage={setActivePage}
             />
           </div>
         </div>

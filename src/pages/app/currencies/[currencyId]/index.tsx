@@ -3,7 +3,7 @@ import Image from 'next/image';
 import NavBar from '../../../../components/nav_bar/nav_bar';
 import Footer from '../../../../components/footer/footer';
 import CurrencyDetail from '../../../../components/currency_detail/currency_detail';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {GetServerSideProps} from 'next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {ICurrencyDetailString, dummyCurrencyDetailString} from '../../../../interfaces/currency';
@@ -14,11 +14,11 @@ import TransactionHistorySection from '../../../../components/transaction_histor
 import BoltButton from '../../../../components/bolt_button/bolt_button';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-// import {AppContext} from '../../../../contexts/app_context';
 import {getCurrencyIcon, convertStringToSortingType} from '../../../../lib/common';
 import {
   DEFAULT_CURRENCY_ICON,
   DEFAULT_PAGE,
+  ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../../constants/config';
@@ -36,7 +36,6 @@ interface ICurrencyDetailPageProps {
 
 const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  // const appCtx = useContext(AppContext);
 
   const router = useRouter();
   const {page} = router.query;
@@ -73,10 +72,11 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     error: transactionHistoryError,
   } = useAPIResponse<ITransactionHistorySection>(
     `${APIURL.CURRENCIES}/${currencyId}/transactions`,
-    // Info: (20240325 - Liz) 預設值 ?page=1&sort=desc&search=&start_date=&end_date=
+    // Info: (20240325 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&start_date=&end_date=
     {method: HttpMethod.GET},
     {
       page: activePage,
+      offset: ITEM_PER_PAGE,
       sort: convertStringToSortingType(sorting),
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
@@ -90,11 +90,6 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     totalPages: 0,
     transactionCount: 0,
   };
-
-  // Info: (20240307 - Liz) 當日期、搜尋、排序的條件改變時，將 activePage 設為 1。
-  useEffect(() => {
-    setActivePage(1);
-  }, [search, period, sorting]);
 
   // Info: (20240315 - Liz) Get Currency Icon
   const currencyIcon = getCurrencyIcon(currencyId);

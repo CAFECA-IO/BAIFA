@@ -8,19 +8,19 @@ import {getChainIcon} from '../../lib/common';
 import {DEFAULT_CHAIN_ICON} from '../../constants/config';
 
 interface IInteractionItemProps {
-  orignalAddressId: string;
+  originalAddressId: string;
   interactedData: IInteraction;
 }
 
-const InteractionItem = ({orignalAddressId, interactedData}: IInteractionItemProps) => {
+const InteractionItem = ({originalAddressId, interactedData}: IInteractionItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
   const {id, type, chainId, transactionCount, redFlagCount, publicTag} = interactedData;
 
   const chainIcon = getChainIcon(chainId);
   const itemLink = getDynamicUrl(`${chainId}`, `${id}`);
 
-  const transactionUrl = `${getDynamicUrl(`${chainId}`, `${orignalAddressId}`).TRANSACTION_LIST}`;
-  const transactionQuery = `?addressId=${orignalAddressId}&addressId=${id}`;
+  const transactionUrl = `${getDynamicUrl(`${chainId}`, `${originalAddressId}`).TRANSACTION_LIST}`;
+  const transactionQuery = `?addressId=${originalAddressId}&addressId=${id}`;
   const transactionLink = `${transactionUrl}${transactionQuery}`;
 
   const displayIcon = (

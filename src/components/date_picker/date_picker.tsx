@@ -2,7 +2,7 @@ import Image from 'next/image';
 import {useCallback, useState, useEffect, Dispatch, SetStateAction} from 'react';
 import useOuterClick from '../../lib/hooks/use_outer_click';
 import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai';
-import {MONTH_LIST, WEEK_LIST} from '../../constants/config';
+import {MONTH_LIST, WEEK_LIST, DEFAULT_PAGE} from '../../constants/config';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../interfaces/locale';
 import {IDatePeriod} from '../../interfaces/date_period';
@@ -30,6 +30,7 @@ interface IDatePickerProps {
   isLinearBg?: boolean;
   loading?: boolean;
   datePickerHandler?: (start: number, end: number) => Promise<void>;
+  setActivePage?: Dispatch<SetStateAction<number>>;
 }
 
 // Info:(20230530 - Julian) Safari 只接受 YYYY/MM/DD 格式的日期
@@ -88,14 +89,14 @@ const PopulateDates = ({
       ? !selectTimeTwoReset && date.getTime() === selectTimeOne
         ? 'rounded-full bg-primaryBlue text-darkPurple3'
         : selectTimeOne && selectTimeTwoReset
-          ? date.getTime() === selectTimeOne && date.getTime() === selectTimeTwoReset
-            ? `rounded-full text-darkPurple3 bg-primaryBlue`
-            : date.getTime() === selectTimeOne
-              ? `rounded-l-full text-darkPurple3 before:left-px ${beforeStyle}`
-              : date.getTime() === selectTimeTwoReset
-                ? `rounded-r-full text-darkPurple3 before:right-px ${beforeStyle}`
-                : ''
+        ? date.getTime() === selectTimeOne && date.getTime() === selectTimeTwoReset
+          ? `rounded-full text-darkPurple3 bg-primaryBlue`
+          : date.getTime() === selectTimeOne
+          ? `rounded-l-full text-darkPurple3 before:left-px ${beforeStyle}`
+          : date.getTime() === selectTimeTwoReset
+          ? `rounded-r-full text-darkPurple3 before:right-px ${beforeStyle}`
           : ''
+        : ''
       : '';
 
     /* Info: (20230830 - Julian) 只有可選擇的日期才能點擊 */
@@ -162,6 +163,7 @@ const DatePicker = ({
   setFilteredPeriod,
   isLinearBg,
   loading,
+  setActivePage,
 }: //datePickerHandler,
 IDatePickerProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
@@ -181,6 +183,8 @@ IDatePickerProps) => {
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1); // 0 (January) to 11 (December).
   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
 
+  const [displayPeriod, setDisplayPeriod] = useState<string>(t('DATE_PICKER.SELECT_PERIOD'));
+
   useEffect(() => {
     // Info: (20230831 - Julian) 如果已取得兩個日期，則將日期區間傳回父層
     // Info: (20230901 - Julian) 如果兩個日期相同，則將日期區間設為當天 00:00:00 ~ 23:59:59
@@ -193,7 +197,9 @@ IDatePickerProps) => {
         startTimeStamp: dateOneStamp,
         endTimeStamp: isSameDate ? dateTwoStamp + SECONDS_IN_A_DAY : dateTwoStamp,
       });
+      setActivePage && setActivePage(DEFAULT_PAGE);
     } else {
+      // Info: (20240402 - Liz) 如果沒有選擇日期，則將日期區間設為 0
       setFilteredPeriod({
         startTimeStamp: 0,
         endTimeStamp: 0,
@@ -288,14 +294,29 @@ IDatePickerProps) => {
   };
 
   // Info: (20230830 - Julian) 顯示時間區間
-  const displayPeriod =
-    dateOne && dateTwo
-      ? dateOne.getTime() !== 0 && dateTwo.getTime() !== 0
+  useEffect(() => {
+    // Info: (20230830 - Julian) 如果起始時間和結束時間都是 0，則顯示文字
+    if (period.startTimeStamp === 0 && period.endTimeStamp === 0) {
+      setDisplayPeriod(t('DATE_PICKER.SELECT_PERIOD'));
+      return;
+    }
+
+    const periodStr =
+      dateOne && dateTwo && dateOne.getTime() !== 0 && dateTwo.getTime() !== 0
         ? `${timestampToString(dateOne.getTime() / MILLISECONDS_IN_A_SECOND).date} ${t(
             'DATE_PICKER.TO'
           )} ${timestampToString(dateTwo.getTime() / MILLISECONDS_IN_A_SECOND).date}`
-        : t('DATE_PICKER.SELECT_PERIOD')
-      : t('DATE_PICKER.SELECT_PERIOD');
+        : t('DATE_PICKER.SELECT_PERIOD');
+    setDisplayPeriod(periodStr);
+  }, [period.endTimeStamp, period.startTimeStamp, t, dateOne, dateTwo]);
+
+  useEffect(() => {
+    // Info: (20240402 - Julian) 如果日期區間是 0，則清空日期
+    if (period.startTimeStamp === 0 && period.endTimeStamp === 0) {
+      setDateOne(null);
+      setDateTwo(null);
+    }
+  }, [period.startTimeStamp, period.endTimeStamp]);
 
   // Info: (20230830 - Julian) 顯示月份和年份
   const displayMonthAndYear = `${t(MONTH_LIST[selectedMonth - 1])} ${selectedYear}`;

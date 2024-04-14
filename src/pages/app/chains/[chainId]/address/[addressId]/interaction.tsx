@@ -5,7 +5,7 @@ import useStateRef from 'react-usestateref';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';
 import {SearchBarWithKeyDown} from '../../../../../../components/search_bar/search_bar';
 import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
@@ -18,6 +18,7 @@ import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {IInteractionList} from '../../../../../../interfaces/interaction_item';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortMostAndLeastOptions,
@@ -122,8 +123,12 @@ const InteractionPageSkeleton = () => {
 
 const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+
   const router = useRouter();
   const {type} = router.query;
+  const {page} = router.query;
+  const backClickHandler = () => router.push(`${getDynamicUrl(chainId, addressId).ADDRESS}`);
+
   const appCtx = useContext(AppContext);
 
   // Info: (20231108 - Julian) Type Url Query
@@ -136,18 +141,16 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   const sortingOptions = typeOptions.map(typeOption => typeOption.text);
   const sortByOptions = [...sortMostAndLeastOptions, ...sortOldAndNewOptions];
 
-  const backClickHandler = () => router.push(`${getDynamicUrl(chainId, addressId).ADDRESS}`);
-
   const [filteredType, setFilteredType, filteredTypeRef] = useStateRef<string>(
-    queryToTextOptionsMap[type as keyof typeof queryToTextOptionsMap] ?? 'all'
+    queryToTextOptionsMap[type as keyof typeof queryToTextOptionsMap] ??
+      queryToTextOptionsMap['all']
   );
+
   // Info: (20231214 - Julian) Search Filter
   const [search, setSearch] = useState('');
   const [sorting, setSorting] = useState<string>(sortByOptions[0]);
   const [period, setPeriod] = useState(default30DayPeriod);
-
-  // Info: (20231214 - Julian) Pagination
-  const [activePage, setActivePage] = useState<number>(1);
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
 
   const {
     data: interactedList,
@@ -180,15 +183,24 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
 
   useEffect(() => {
     if (filteredType) {
-      router.query.type =
-        textToQueryOptionsMap[filteredTypeRef.current as keyof typeof textToQueryOptionsMap]; // Update the query param
-      router.push(router); // Refresh the page with the new query param
+      const updatedQuery = {
+        ...router.query,
+        type: textToQueryOptionsMap[filteredTypeRef.current as keyof typeof textToQueryOptionsMap],
+      };
+
+      router.push({
+        pathname: router.pathname,
+        query: updatedQuery,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filteredTypeRef.current]);
+  }, [filteredType, filteredTypeRef]);
 
   useEffect(() => {
-    setFilteredType(queryToTextOptionsMap[type as keyof typeof queryToTextOptionsMap] ?? 'all');
+    setFilteredType(
+      queryToTextOptionsMap[type as keyof typeof queryToTextOptionsMap] ??
+        queryToTextOptionsMap['all']
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
 
@@ -233,7 +245,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
   const {interactedData, totalPages} = interactedList ?? {interactedData: [], totalPages: 1};
 
   const displayInteractedList = interactedData.map((interactedData, index) => (
-    <InteractionItem key={index} orignalAddressId={addressId} interactedData={interactedData} />
+    <InteractionItem key={index} originalAddressId={addressId} interactedData={interactedData} />
   ));
 
   const displayedUI = interactedListError ? (
@@ -248,6 +260,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
           <SearchBarWithKeyDown
             searchBarPlaceholder={t('INTERACTION_LIST_PAGE.SEARCH_PLACEHOLDER')}
             setSearch={setSearch}
+            setActivePage={setActivePage}
           />
         </div>
         <div className="flex w-full flex-col items-center gap-2 lg:h-72px lg:flex-row lg:justify-between">
@@ -258,12 +271,17 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
               sorting={filteredType}
               setSorting={setFilteredType}
               bgColor="bg-darkPurple"
+              setActivePage={setActivePage}
             />
           </div>
           {/* Info: (20231108 - Julian) Date Picker */}
           <div className="flex w-full items-center text-sm lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-            <DatePicker period={period} setFilteredPeriod={setPeriod} />
+            <DatePicker
+              period={period}
+              setFilteredPeriod={setPeriod}
+              setActivePage={setActivePage}
+            />
           </div>
           {/* Info: (20231108 - Julian) Sort by Menu */}
           <div className="relative flex w-full items-center text-sm lg:w-fit lg:space-x-2">
@@ -273,6 +291,7 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
               sorting={sorting}
               setSorting={setSorting}
               bgColor="bg-darkPurple"
+              setActivePage={setActivePage}
             />
           </div>
         </div>
@@ -314,71 +333,19 @@ const InteractionPage = ({addressId, chainId}: IInteractionPageProps) => {
 
 export default InteractionPage;
 
-// export const getServerSideProps: GetStaticProps<IInteractionPageProps> = async ({
-//   params,
-//   locale,
-// }) => {
-//   const {addressId = '', chainId = '', type = ''} = params ?? {};
+export const getServerSideProps: GetServerSideProps = async ({query, locale}) => {
+  const {addressId = '', chainId = '', type = ''} = query ?? {};
 
-//   if (typeof addressId !== 'string' || typeof chainId !== 'string' || typeof type !== 'string') {
-//     return {notFound: true};
-//   }
-
-//   return {
-//     props: {
-//       addressId,
-//       chainId,
-//       type,
-//       ...(await serverSideTranslations(locale as string, ['common'])),
-//     },
-//   };
-//   // if (!params || !params.addressId || typeof params.addressId !== 'string') {
-//   //   return {
-//   //     notFound: true,
-//   //   };
-//   // }
-//   // if (!params || !params.chainId || typeof params.chainId !== 'string') {
-//   //   return {
-//   //     notFound: true,
-//   //   };
-//   // }
-
-//   // const addressId = params.addressId;
-//   // const chainId = params.chainId;
-
-//   // return {
-//   //   props: {addressId, chainId, ...(await serverSideTranslations(locale as string, ['common']))},
-//   // };
-// };
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  // ToDo: (20231213 - Julian) Add dynamic paths
-  const paths = [
-    {
-      params: {chainId: 'isun', addressId: '1'},
-      locale: 'en',
-    },
-  ];
-
-  return {paths, fallback: 'blocking'};
-};
-
-export const getStaticProps: GetStaticProps<IInteractionPageProps> = async ({params, locale}) => {
-  if (!params || !params.addressId || typeof params.addressId !== 'string') {
-    return {
-      notFound: true,
-    };
+  if (typeof addressId !== 'string' || typeof chainId !== 'string' || typeof type !== 'string') {
+    return {notFound: true};
   }
-  if (!params || !params.chainId || typeof params.chainId !== 'string') {
-    return {
-      notFound: true,
-    };
-  }
-
-  const addressId = params.addressId;
-  const chainId = params.chainId;
 
   return {
-    props: {addressId, chainId, ...(await serverSideTranslations(locale as string, ['common']))},
+    props: {
+      addressId,
+      chainId,
+      type,
+      ...(await serverSideTranslations(locale as string, ['common'])),
+    },
   };
 };

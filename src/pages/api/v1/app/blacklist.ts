@@ -3,21 +3,23 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {IBlackListData} from '../../../../interfaces/blacklist';
 import prisma from '../../../../../prisma/client';
-import {ITEM_PER_PAGE, PUBLIC_TAGS_REFERENCE} from '../../../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE, PUBLIC_TAGS_REFERENCE} from '../../../../constants/config';
 
 type ResponseData = IBlackListData;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240305 - Liz) query string parameter
-  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : undefined;
+  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
+  const offset =
+    typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
   const sort = (req.query.sort as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
   const search =
     typeof req.query.search === 'string' ? req.query.search.toLowerCase().trim() : undefined;
   const tag = typeof req.query.tag === 'string' ? req.query.tag : undefined;
 
   // Info: (20240305 - Liz) 計算分頁的 skip 與 take
-  const skip = page ? (page - 1) * ITEM_PER_PAGE : undefined; // Info: (20240306 - Liz) 跳過前面幾筆
-  const take = ITEM_PER_PAGE; // Info: (20240306 - Liz) 取幾筆
+  const skip = page > 0 ? (page - 1) * offset : 0; // Info: (20240319 - Liz) 跳過前面幾筆
+  const take = offset; // Info: (20240319 - Liz) 取幾筆
 
   // Info: (20240306 - Liz) tag name 篩選，如果是空字串就搜尋全部
   const tagName = tag === '' ? undefined : tag;
@@ -205,7 +207,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
 
     // Info: (20240305 - Liz) 計算總頁數
-    const totalPages = Math.ceil(totalBlacklistAmount / ITEM_PER_PAGE);
+    const totalPages = Math.ceil(totalBlacklistAmount / offset);
 
     const result = {
       blacklist: blacklistData,

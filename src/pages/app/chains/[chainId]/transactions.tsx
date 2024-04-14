@@ -13,7 +13,7 @@ import {ITransactionList} from '../../../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
 import {TranslateFunction} from '../../../../interfaces/locale';
 import {convertStringToSortingType, getChainIcon, truncateText} from '../../../../lib/common';
-import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import TransactionList from '../../../../components/transaction_list/transaction_list';
 import {SearchBarWithKeyDown} from '../../../../components/search_bar/search_bar';
 import DatePicker from '../../../../components/date_picker/date_picker';
@@ -21,6 +21,7 @@ import SortingMenu from '../../../../components/sorting_menu/sorting_menu';
 import Pagination from '../../../../components/pagination/pagination';
 import {
   DEFAULT_CHAIN_ICON,
+  DEFAULT_PAGE,
   DEFAULT_TRUNCATE_LENGTH,
   ITEM_PER_PAGE,
   default30DayPeriod,
@@ -35,8 +36,10 @@ interface ITransactionsPageProps {
 
 const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
+
   const router = useRouter();
   const {addressId} = router.query;
+  const {page} = router.query;
 
   const appCtx = useContext(AppContext);
 
@@ -55,21 +58,23 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
   const [period, setPeriod] = useState(default30DayPeriod);
   const [search, setSearch] = useState('');
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
-  const [activePage, setActivePage] = useState(1);
 
+  const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
+
+  // Info: (20240410 - Liz) Call API to get transaction data (API-009)
   const {data: transactionData, isLoading: isTransactionLoading} = useAPIResponse<ITransactionList>(
     `${APIURL.CHAINS}/${chainId}/transactions`,
+    {method: HttpMethod.GET},
+    // Info: (20240410 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&start_date=&end_date=&addressIdA=&addressIdB=
     {
-      method: HttpMethod.GET,
-    },
-    {
-      addressIdA: addressIdA,
-      addressIdB: addressIdB,
       page: activePage,
+      offset: ITEM_PER_PAGE,
       sort: convertStringToSortingType(sorting),
       search: search,
       start_date: period.startTimeStamp > 0 ? period.startTimeStamp : '',
       end_date: period.endTimeStamp > 0 ? period.endTimeStamp : '',
+      addressIdA: addressIdA,
+      addressIdB: addressIdB,
     }
   );
 
@@ -162,13 +167,18 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
           {SearchBarWithKeyDown({
             searchBarPlaceholder: t('CHAIN_DETAIL_PAGE.SEARCH_PLACEHOLDER_TRANSACTIONS'),
             setSearch: setSearch,
+            setActivePage: setActivePage,
           })}
         </div>
         <div className="flex w-full flex-col items-center space-y-2 pt-16 lg:flex-row lg:justify-between lg:space-y-0">
           {/* Info: (20231101 - Julian) Date Picker */}
           <div className="flex w-full items-center text-base lg:w-fit lg:space-x-2">
             <p className="hidden text-lilac lg:block">{t('DATE_PICKER.DATE')} :</p>
-            <DatePicker period={period} setFilteredPeriod={setPeriod} />
+            <DatePicker
+              period={period}
+              setFilteredPeriod={setPeriod}
+              setActivePage={setActivePage}
+            />
           </div>
 
           {/* Info: (20230904 - Julian) Sorting Menu */}
@@ -179,6 +189,7 @@ const TransactionsPage = ({chainId}: ITransactionsPageProps) => {
               sorting={sorting}
               setSorting={setSorting}
               bgColor="bg-darkPurple"
+              setActivePage={setActivePage}
             />
           </div>
         </div>

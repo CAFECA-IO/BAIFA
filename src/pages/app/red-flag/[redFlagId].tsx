@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import {useRouter} from 'next/router';
 import {GetServerSideProps} from 'next';
 import NavBar from '../../../components/nav_bar/nav_bar';
@@ -20,6 +20,7 @@ import {ITransactionHistorySection} from '../../../interfaces/transaction';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
+  ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
 } from '../../../constants/config';
@@ -79,10 +80,11 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     error: transactionHistoryError,
   } = useAPIResponse<ITransactionHistorySection>(
     `${APIURL.RED_FLAGS}/${redFlagId}/transactions`,
-    // Info: (20240321 - Liz) 預設值 ?page=1&sort=desc&search=&start_date=&end_date=
+    // Info: (20240321 - Liz) 預設值 ?page=1&offset=10&sort=desc&search=&start_date=&end_date=
     {method: HttpMethod.GET},
     {
       page: activePage,
+      offset: ITEM_PER_PAGE,
       sort: convertStringToSortingType(sorting),
       search: search,
       start_date: period.startTimeStamp === 0 ? '' : period.startTimeStamp,
@@ -96,11 +98,6 @@ const RedFlagDetailPage = ({redFlagId}: IRedFlagDetailPageProps) => {
     totalPages: 0,
     transactionCount: 0,
   };
-
-  // Info: (20240307 - Liz) 當日期、搜尋、排序的條件改變時，將 activePage 設為 1。
-  useEffect(() => {
-    setActivePage(1);
-  }, [search, period, sorting]);
 
   // Info: (20240321 - Liz) Get Chain Icon
   const chainIcon = getChainIcon(chainId);

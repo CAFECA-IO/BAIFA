@@ -4,7 +4,7 @@ import {useEffect, useContext} from 'react';
 import {AppContext} from '../../../../../../contexts/app_context';
 import UseAPIResponse from '../../../../../../lib/hooks/use_api_response';
 import {useRouter} from 'next/router';
-import {GetServerSideProps, GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import {BsArrowLeftShort} from 'react-icons/bs';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
 import NavBar from '../../../../../../components/nav_bar/nav_bar';

@@ -19,6 +19,7 @@ import {
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
+  defaultOption,
 } from '../../../../../../constants/config';
 import Skeleton from '../../../../../../components/skeleton/skeleton';
 import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
@@ -45,7 +46,7 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
   const [period, setPeriod] = useState<IDatePeriod>(default30DayPeriod);
   const [sorting, setSorting] = useState<string>(sortOldAndNewOptions[0]);
   const [activePage, setActivePage] = useState<number>(page ? +page : DEFAULT_PAGE);
-  const [filteredType, setFilteredType] = useState<string>('SORTING.ALL');
+  const [filteredType, setFilteredType] = useState<string>(defaultOption);
 
   const {data, isLoading} = useAPIResponse<IRedFlagOfAddress>(
     `${APIURL.CHAINS}/${chainId}/addresses/${addressId}/red_flags`,
@@ -59,11 +60,11 @@ const RedFlagOfAddressPage = ({chainId, addressId}: IRedFlagOfAddressPageProps) 
       sort: convertStringToSortingType(sorting),
       page: activePage,
       offset: ITEM_PER_PAGE,
-      type: filteredType === 'SORTING.ALL' ? '' : filteredType,
+      type: filteredType === defaultOption ? '' : filteredType,
     }
   );
 
-  const typeOptions = ['SORTING.ALL', ...(data?.allRedFlagTypes ?? [])];
+  const typeOptions = [defaultOption, ...(data?.allRedFlagTypes ?? [])];
 
   const backClickHandler = () => router.push(`${getDynamicUrl(chainId, addressId).ADDRESS}`);
 

@@ -364,10 +364,16 @@ module.exports = {
       minWidth: {
         '200px': '200px',
       },
+      maxHeight: {
+        '200px': '200px',
+        '300px': '300px',
+      },
       minHeight: {
         'fit': 'fit-content',
+        '55px': '55px',
         '200px': '200px',
         '320px': '320px',
+        '350px': '350px',
         '680px': '680px',
       },
       zIndex: {
