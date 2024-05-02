@@ -13,21 +13,6 @@ const AllReportsPage = ({chainId, evidenceId}: IAllReportsPageProps) => {
   const reportTitle = 'All Reports';
   const headTitle = `${reportTitle} of ${evidenceId} - BAIFA`;
 
-  // const textRequest = async () => {
-  //   try {
-  //     const rs = await fetch(`/api/v1/app/report?chainId=${chainId}&evidenceId=${evidenceId}`, {
-  //       method: 'GET',
-  //     });
-  //     // eslint-disable-next-line no-console
-  //     console.log('rs in all-reports page:', rs);
-  //   } catch (error) {
-  //     // eslint-disable-next-line no-console
-  //     console.log('error in all-reports page:', error);
-  //   }
-  // };
-
-  // textRequest();
-
   return (
     <>
       <Head>
