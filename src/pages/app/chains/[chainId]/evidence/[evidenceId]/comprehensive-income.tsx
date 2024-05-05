@@ -18,7 +18,7 @@ const AllReportsPage = ({chainId, evidenceId}: IAllReportsPageProps) => {
       </Head>
 
       <div>
-        {/* Info: (20240202 - Julian) Income Statements */}
+        {/* Info: (20240505 - Shirley) Comprehensive Income Statement */}
         <ComprehensiveIncomeStatementsNeo chainId={chainId} evidenceId={evidenceId} />
       </div>
     </>
