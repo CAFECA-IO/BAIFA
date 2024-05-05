@@ -20,7 +20,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     // Info: 將頁面轉換為PDF (20240502 - Shirley)
-    const pdf = await page.pdf({format: 'A4'});
+    const pdf = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: {top: '0', right: '0', bottom: '0', left: '0'},
+    });
 
     // Info: 關閉瀏覽器 (20240502 - Shirley)
     await browser.close();
