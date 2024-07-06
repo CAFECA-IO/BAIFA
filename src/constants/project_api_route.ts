@@ -1,4 +1,4 @@
-import {TBD_API_URL, TBD_API_VERSION} from './config';
+import {TBD_API_URL, TBD_API_VERSION} from '@/constants/config';
 
 interface IProjectIdToApiRoute {
   [key: string]: {

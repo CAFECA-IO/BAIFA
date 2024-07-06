@@ -1,12 +1,12 @@
+import {useState, useEffect} from 'react';
 import {IoIosCloseCircleOutline} from 'react-icons/io';
 import {VscCircleSmall} from 'react-icons/vsc';
-import {useState, useEffect} from 'react';
-import BoltButton from '../bolt_button/bolt_button';
-import {truncateText} from '../../lib/common';
-import useAPIResponse from '../../lib/hooks/use_api_response';
-import {IRelationAnalysis} from '../../interfaces/relation_analysis';
-import {HttpMethod} from '../../constants/api_request';
-import Skeleton from '../skeleton/skeleton';
+import {HttpMethod} from '@/constants/api_request';
+import {IRelationAnalysis} from '@/interfaces/relation_analysis';
+import {truncateText} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface IRelationAnalysisPanelProps {
   modalVisible: boolean;

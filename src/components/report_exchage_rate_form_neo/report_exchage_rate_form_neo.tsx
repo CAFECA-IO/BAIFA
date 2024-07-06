@@ -1,8 +1,8 @@
-import useAPIResponse from '../../lib/hooks/use_api_response';
-import {timestampToString, roundToDecimal} from '../../lib/common';
-//import {IExchangeRatesResponse} from '../../interfaces/exchange_rates_neo';
-import {HttpMethod} from '../../constants/api_request';
-import {IExchangeRates} from '../../interfaces/exchange_rates';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import {timestampToString, roundToDecimal} from '@/lib/common';
+import {IExchangeRates} from '@/interfaces/exchange_rates';
+//import {IExchangeRatesResponse} from '@/interfaces/exchange_rates_neo';
+import {HttpMethod} from '@/constants/api_request';
 
 interface IReportExchageRateFormNeoProps {
   startTimestamp: number;

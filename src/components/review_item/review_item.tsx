@@ -1,13 +1,13 @@
+import {useEffect, useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import {IReviewDetail} from '../../interfaces/review';
-import {getDynamicUrl} from '../../constants/url';
-import {timestampToString, truncateText} from '../../lib/common';
-import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
-import {useEffect, useState} from 'react';
-import Skeleton from '../skeleton/skeleton';
+import {DEFAULT_TRUNCATE_LENGTH} from '@/constants/config';
+import {getDynamicUrl} from '@/constants/url';
+import {IReviewDetail} from '@/interfaces/review';
+import {TranslateFunction} from '@/interfaces/locale';
+import {timestampToString, truncateText} from '@/lib/common';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface ReviewItemProps {
   review: IReviewDetail;

@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import {BFAURL} from '../../constants/url';
-import BoltButton from '../bolt_button/bolt_button';
-import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
+import {BFAURL} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import BoltButton from '@/components/bolt_button/bolt_button';
 
 const LeaveReviewButton = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

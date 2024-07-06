@@ -1,10 +1,10 @@
+import React from 'react';
+import {BiLinkAlt} from 'react-icons/bi';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 import {useTranslation} from 'next-i18next';
-import {BiLinkAlt} from 'react-icons/bi';
-import {TranslateFunction} from '../../interfaces/locale';
-import BoltButton from '../bolt_button/bolt_button';
+import {TranslateFunction} from '@/interfaces/locale';
+import BoltButton from '@/components/bolt_button/bolt_button';
 
 interface IReserveCardProps {
   name: string;
