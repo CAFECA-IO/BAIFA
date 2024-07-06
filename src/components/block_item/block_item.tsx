@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import {getChainIcon, timestampToString} from '../../lib/common';
-import {IBlockBrief} from '../../interfaces/block';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {getDynamicUrl} from '../../constants/url';
-import {StabilityLevel} from '../../constants/stability_level';
-import BoltButton from '../bolt_button/bolt_button';
-import {DEFAULT_CHAIN_ICON} from '../../constants/config';
+import {getChainIcon, timestampToString} from '@/lib/common';
+import {getDynamicUrl} from '@/constants/url';
+import {StabilityLevel} from '@/constants/stability_level';
+import {IBlockBrief} from '@/interfaces/block';
+import {TranslateFunction} from '@/interfaces/locale';
+import {DEFAULT_CHAIN_ICON} from '@/constants/config';
+import BoltButton from '@/components/bolt_button/bolt_button';
 
 export interface IBlockItemProps {
   block: IBlockBrief;

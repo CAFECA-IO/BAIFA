@@ -1,6 +1,6 @@
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {copyright} from '../../constants/config';
+import {copyright} from '@/constants/config';
+import {TranslateFunction} from '@/interfaces/locale';
 
 const Footer = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

@@ -1,16 +1,16 @@
-import Head from 'next/head';
-import useWindowSize from '../../../lib/hooks/use_window_size';
 import {useRef, useEffect} from 'react';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import ReportCover from '../../../components/report_cover/report_cover';
-import ReportContent from '../../../components/report_content/report_content';
-import ReportPageBody from '../../../components/report_page_body/report_page_body';
-import ReportTableNew from '../../../components/report_table/report_table';
-import {ITable} from '../../../interfaces/report_table';
-import {RowType} from '../../../constants/table_row_type';
-import {BaifaReports} from '../../../constants/baifa_reports';
-import {timestampToString, getReportTimeSpan} from '../../../lib/common';
-import {A4_SIZE} from '../../../constants/config';
+import Head from 'next/head';
+import {BaifaReports} from '@/constants/baifa_reports';
+import {A4_SIZE} from '@/constants/config';
+import {RowType} from '@/constants/table_row_type';
+import {ITable} from '@/interfaces/report_table';
+import {timestampToString, getReportTimeSpan} from '@/lib/common';
+import useWindowSize from '@/lib/hooks/use_window_size';
+import ReportCover from '@/components/report_cover/report_cover';
+import ReportContent from '@/components/report_content/report_content';
+import ReportPageBody from '@/components/report_page_body/report_page_body';
+import ReportTableNew from '@/components/report_table/report_table';
 
 interface IStatementOfRedFlagsProps {
   projectId: string;

@@ -1,8 +1,8 @@
 // 012 - GET /app/chains/:chain_id/addresses/:address_id/reviews
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IReviews} from '../../../../../../../../interfaces/review';
-import prisma from '../../../../../../../../../prisma/client';
+import {IReviews} from '@/interfaces/review';
+import prisma from '@/client';
 
 type ResponseData = IReviews;
 
@@ -22,7 +22,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const skip = page > 0 ? (page - 1) * offset : 0;
 
     // Info: 從 addresses 表中取得特定地址的評分 (20240130 - Shirley)
-    const addressData = await prisma.addresses.findUnique({
+    // ToDo: Remove chain_id from addresses and set address as unique key (20240706 - Luphia)
+    const addressData = await prisma.addresses.findFirst({
       where: {
         address: `${address_id}`,
       },

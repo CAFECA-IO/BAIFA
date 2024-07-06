@@ -1,6 +1,6 @@
-import MainMenu from '../main_menu/main_menu';
-import GlobalSearch from '../global_search/global_search';
-import Footer from '../footer/footer';
+import MainMenu from '@/components/main_menu/main_menu';
+import GlobalSearch from '@/components/global_search/global_search';
+import Footer from '@/components/footer/footer';
 
 const HomePageBody = () => {
   return (

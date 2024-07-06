@@ -1,15 +1,15 @@
-import Image from 'next/image';
 import {useEffect, ChangeEvent, KeyboardEvent, useState} from 'react';
-import {useRouter} from 'next/router';
-import {BFAURL} from '../../constants/url';
 import {FiSearch} from 'react-icons/fi';
-import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {ISuggestions} from '../../interfaces/suggestions';
-import useOuterClick from '../../lib/hooks/use_outer_click';
 import useStateRef from 'react-usestateref';
-import {APIURL, HttpMethod} from '../../constants/api_request';
-import useAPIResponse from '../../lib/hooks/use_api_response';
+import Image from 'next/image';
+import {useRouter} from 'next/router';
+import {useTranslation} from 'next-i18next';
+import {APIURL, HttpMethod} from '@/constants/api_request';
+import {BFAURL} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import {ISuggestions} from '@/interfaces/suggestions';
+import useOuterClick from '@/lib/hooks/use_outer_click';
+import useAPIResponse from '@/lib/hooks/use_api_response';
 
 interface IGlobalSearchProps {
   coverShowed?: boolean;

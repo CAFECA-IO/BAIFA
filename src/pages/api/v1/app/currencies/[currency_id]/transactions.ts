@@ -1,16 +1,17 @@
 // 030 - GET /app/currencies/:currency_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../prisma/client';
-import {ITransaction, ITransactionHistorySection} from '../../../../../../interfaces/transaction';
-import {AddressType, IAddressInfo} from '../../../../../../interfaces/address_info';
-import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../constants/config';
+import prisma from '@/client';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
+import {ITransaction, ITransactionHistorySection} from '@/interfaces/transaction';
+import {AddressType, IAddressInfo} from '@/interfaces/address_info';
 
 type ResponseData = ITransactionHistorySection;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240315 - Liz) query string parameter
-  const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
+  const currency_id = 
+    typeof req.query.currency_id === 'string' ? parseInt(req.query.currency_id) : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
   const offset =
     typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;
@@ -187,34 +188,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     res.status(500).json({} as ResponseData);
   }
 }
-
-/* ---------- Mock API ---------- */
-// export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-//   const result = {
-//     'transactions': [
-//       {
-//         'id': '0x4507de0220ac5aaba6502acaadfaf8eade04a7900188de50e75bd7e894d69596',
-//         'chainId': '8017',
-//         'createdTimestamp': 1702615885,
-//         'from': [
-//           {
-//             'type': 'address',
-//             'address': '0x048adee1b0e93b30f9f7b71f18b963ca9ba5de3b',
-//           },
-//         ],
-//         'to': [
-//           {
-//             'type': 'address',
-//             'address': '0x87b966e36cc1f3a2b855ffff904f6f6acaaec1db',
-//           },
-//         ],
-//         'type': 'Crypto Currency',
-//         'status': 'Success',
-//       },
-//       // ... other transactions
-//     ],
-//     'totalPages': 10,
-//     'transactionCount': 100,
-//   };
-//   return res.status(200).json(result);
-// }

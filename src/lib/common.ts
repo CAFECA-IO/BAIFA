@@ -189,7 +189,7 @@ export const getChainIcon = (chainId: string) => {
   };
 };
 
-export const getCurrencyIcon = (currencyId: string) => {
+export const getCurrencyIcon = (currencyId: number) => {
   // Info: (20240206 - Julian) 如果沒有 currencyId，就顯示 default_currency.svg
   if (!currencyId) return {src: DEFAULT_CURRENCY_ICON, alt: 'currency_icon'};
   return {

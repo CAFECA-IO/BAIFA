@@ -1,15 +1,16 @@
 // 018 - GET /app/currencies/:currency_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../prisma/client';
-import {ICurrencyDetailString} from '../../../../../../interfaces/currency';
-import {IRedFlag} from '../../../../../../interfaces/red_flag';
+import prisma from '@/client';
+import {ICurrencyDetailString} from '@/interfaces/currency';
+import {IRedFlag} from '@/interfaces/red_flag';
 
 type ResponseData = ICurrencyDetailString | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240112 - Julian) query string parameter
-  const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
+  const currency_id = 
+    typeof req.query.currency_id === 'string' ? parseInt(req.query.currency_id) : undefined;
 
   try {
     // Info: (20240412 - Liz) 從 currencies Table 中取得 currency 的資料
@@ -118,11 +119,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const riskLevel = currencyData?.risk_level
       ? riskLevelCodesObj[currencyData.risk_level]
       : 'Unknown Risk Level';
+    
+    const currencyId = currencyData?.id as number;
 
     // Info: (20240221 - Liz) 組合回傳資料並轉換成 API 要的格式
     const result: ResponseData = currencyData
       ? {
-          currencyId: currencyData.id,
+          currencyId,
           currencyName: currencyData.name ?? '',
           chainId: `${chainId}`,
           rank: 0, // ToDo: (20240125 - Julian) 討論去留

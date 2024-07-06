@@ -17,7 +17,7 @@ import {SkeletonList} from '../skeleton/skeleton';
 
 interface ITop100HolderSectionProps {
   chainId: string;
-  currencyId: string;
+  currencyId: number;
   unit: string;
 }
 

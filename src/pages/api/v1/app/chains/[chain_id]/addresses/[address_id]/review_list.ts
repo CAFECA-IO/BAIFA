@@ -1,12 +1,12 @@
 // 027 - GET /app/chains/:chain_id/addresses/:address_id/review_list
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IReviewDetail} from '../../../../../../../../interfaces/review';
-import prisma from '../../../../../../../../../prisma/client';
+import {IReviewDetail} from '@/interfaces/review';
 import {
   DEFAULT_PAGE,
   DEFAULT_REVIEWS_COUNT_IN_PAGE,
-} from '../../../../../../../../constants/config';
+} from '@/constants/config';
+import prisma from '@/client';
 
 type ResponseData = IReviewDetail[];
 
@@ -28,7 +28,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     const skip = page > 0 ? (page - 1) * offset : 0;
 
-    const addressData = await prisma.addresses.findUnique({
+    // ToDo: Remove chain_id from addresses and set address as unique key (20240706 - Luphia)
+    const addressData = await prisma.addresses.findFirst({
       where: {
         address: `${address_id}`,
       },

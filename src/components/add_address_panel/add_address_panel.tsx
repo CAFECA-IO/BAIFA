@@ -3,9 +3,9 @@ import {HiPlus} from 'react-icons/hi';
 import {FaHeart} from 'react-icons/fa';
 import {FiTrash2} from 'react-icons/fi';
 import {ChangeEvent, useState, useEffect} from 'react';
-import useAPIResponse from '../../lib/hooks/use_api_response';
-import {HttpMethod} from '../../constants/api_request';
-import {buttonStyle} from '../../constants/config';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import {HttpMethod} from '@/constants/api_request';
+import {buttonStyle} from '@/constants/config';
 
 interface IAddAddressPanelProps {
   modalVisible: boolean;

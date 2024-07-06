@@ -1,10 +1,10 @@
 // 007 - GET /app/chains/:chain_id/blocks/:block_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IBlockDetail} from '../../../../../../../../interfaces/block';
-import prisma from '../../../../../../../../../prisma/client';
-import {StabilityLevel} from '../../../../../../../../constants/stability_level';
-import {assessBlockStability} from '../../../../../../../../lib/common';
+import {IBlockDetail} from '@/interfaces/block';
+import {StabilityLevel} from '@/constants/stability_level';
+import {assessBlockStability} from '@/lib/common';
+import prisma from '@/client';
 
 type ResponseData = IBlockDetail | undefined;
 
@@ -12,6 +12,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Info: (20240116 - Julian) 解構 URL 參數，同時進行類型轉換
   const block_id =
     typeof req.query.block_id === 'string' ? parseInt(req.query.block_id) : undefined;
+  const chainId = 
+    typeof req.query.chain_id === 'string' ? parseInt(req.query.chain_id) : undefined;
 
   try {
     let stability = StabilityLevel.LOW;
@@ -24,9 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    const blockData = await prisma.blocks.findUnique({
+    const blockData = await prisma.blocks.findFirst({
       // Info: (20240119 - Julian) 前端傳過來的 block_id 是 number，所以要轉換
       where: {
+        chain_id: chainId,
         number: block_id,
       },
       select: {

@@ -1,8 +1,8 @@
+import {FiChevronRight} from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image';
-import {FiChevronRight} from 'react-icons/fi';
-import {ICrumbItem} from '../../interfaces/crumb_item';
-import {BFAURL} from '../../constants/url';
+import {BFAURL} from '@/constants/url';
+import {ICrumbItem} from '@/interfaces/crumb_item';
 
 export interface IBreadcrumbProps {
   crumbs: ICrumbItem[];

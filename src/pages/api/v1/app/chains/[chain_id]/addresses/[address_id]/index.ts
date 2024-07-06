@@ -1,10 +1,10 @@
 // 011 - GET /app/chains/:chain_id/addresses/:address_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {AddressType} from '../../../../../../../../interfaces/address_info';
-import {IAddressBrief} from '../../../../../../../../interfaces/address';
-import {assessAddressRisk} from '../../../../../../../../lib/common';
-import prisma from '../../../../../../../../../prisma/client';
+import prisma from '@/client';
+import {AddressType} from '@/interfaces/address_info';
+import {IAddressBrief} from '@/interfaces/address';
+import {assessAddressRisk} from '@/lib/common';
 
 type ResponseData = IAddressBrief | undefined;
 
@@ -19,7 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   try {
-    const addressData = await prisma.addresses.findUnique({
+    // ToDo: Remove chain_id from addresses and set address as unique key (20240706 - Luphia)
+    const addressData = await prisma.addresses.findFirst({
       where: {address: address_id},
       select: {
         id: true,

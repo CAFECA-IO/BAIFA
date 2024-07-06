@@ -1,15 +1,16 @@
 // 019 - GET /app/currencies/:currency_id/red_flags
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../prisma/client';
-import {IRedFlagListForCurrency} from '../../../../../../interfaces/red_flag';
-import {ITEM_PER_PAGE, DEFAULT_PAGE} from '../../../../../../constants/config';
+import {ITEM_PER_PAGE, DEFAULT_PAGE} from '@/constants/config';
+import {IRedFlagListForCurrency} from '@/interfaces/red_flag';
+import prisma from '@/client';
 
 type ResponseData = IRedFlagListForCurrency;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240319 - Liz) query string parameter
-  const currency_id = typeof req.query.currency_id === 'string' ? req.query.currency_id : undefined;
+  const currency_id = 
+    typeof req.query.currency_id === 'string' ? parseInt(req.query.currency_id) : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
   const offset =
     typeof req.query.offset === 'string' ? parseInt(req.query.offset, 10) : ITEM_PER_PAGE;

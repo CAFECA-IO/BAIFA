@@ -1,7 +1,7 @@
-import {THRESHOLD_FOR_BLOCK_STABILITY} from '../constants/config';
-import {RiskLevel} from '../constants/risk_level';
-import {StabilityLevel} from '../constants/stability_level';
-import {assessAddressRisk, assessBlockStability} from '../lib/common';
+import {THRESHOLD_FOR_BLOCK_STABILITY} from '@/constants/config';
+import {RiskLevel} from '@/constants/risk_level';
+import {StabilityLevel} from '@/constants/stability_level';
+import {assessAddressRisk, assessBlockStability} from '@/lib/common';
 
 describe('assessAddressRisk function test', () => {
   test('returns LOW_RISK for values less than 10', () => {

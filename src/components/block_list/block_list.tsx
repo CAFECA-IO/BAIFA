@@ -1,7 +1,7 @@
-import BlockItem from '../block_item/block_item';
-import {IBlockBrief} from '../../interfaces/block';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
+import {IBlockBrief} from '@/interfaces/block';
+import {TranslateFunction} from '@/interfaces/locale';
+import BlockItem from '@/components/block_item/block_item';
 
 export interface IBlockListProps {
   blockData: IBlockBrief[];
