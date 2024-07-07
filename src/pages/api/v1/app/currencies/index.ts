@@ -1,9 +1,9 @@
 // 017 - GET /app/currencies
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {ICurrencyListPage} from '../../../../../interfaces/currency';
-import prisma from '../../../../../../prisma/client';
-import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
+import {ICurrencyListPage} from '@/interfaces/currency';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = ICurrencyListPage;
 

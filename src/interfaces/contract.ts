@@ -1,7 +1,7 @@
-import {IInteractionItem} from './interaction_item';
-import {ICommonData} from './common_data';
-import {IDisplayTransaction} from './transaction';
-import {AddressType} from './address_info';
+import {IInteractionItem} from '@/interfaces/interaction_item';
+import {ICommonData} from '@/interfaces/common_data';
+import {IDisplayTransaction} from '@/interfaces/transaction';
+import {AddressType} from '@/interfaces/address_info';
 
 export interface IContract extends ICommonData {
   contractAddress: string;

@@ -1,33 +1,16 @@
+import {useState, useContext, useEffect} from 'react';
+import {AiOutlinePlus} from 'react-icons/ai';
+import {BsArrowLeftShort} from 'react-icons/bs';
+import {GetServerSideProps} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
-import {useState, useContext, useEffect} from 'react';
-import {GetServerSideProps} from 'next';
-import {BsArrowLeftShort} from 'react-icons/bs';
-import NavBar from '../../../../../../components/nav_bar/nav_bar';
-import BoltButton from '../../../../../../components/bolt_button/bolt_button';
-import Tooltip from '../../../../../../components/tooltip/tooltip';
-import AddressDetail from '../../../../../../components/address_detail/address_detail';
-import PrivateNoteSection from '../../../../../../components/private_note_section/private_note_section';
-import ReviewItem from '../../../../../../components/review_item/review_item';
-import LeaveReviewButton from '../../../../../../components/leave_review_button/leave_review_button';
-import Footer from '../../../../../../components/footer/footer';
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {
-  IAddressBrief,
-  IAddressProducedBlock,
-  IAddressRelatedTransaction,
-  dummyAddressBrief,
-} from '../../../../../../interfaces/address';
-import {BFAURL, getDynamicUrl} from '../../../../../../constants/url';
-import {AiOutlinePlus} from 'react-icons/ai';
-import BlockProducedHistorySection from '../../../../../../components/block_produced_section/block_produced_section';
-import TransactionHistorySection from '../../../../../../components/transaction_history_section/transaction_history_section';
-import {AppContext} from '../../../../../../contexts/app_context';
-import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {validate} from 'bitcoin-address-validation';
+import {isAddress} from 'web3-validator';
+import {APIURL, HttpMethod} from '@/constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
@@ -35,22 +18,39 @@ import {
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
-} from '../../../../../../constants/config';
+} from '@/constants/config';
+import {
+  IAddressBrief,
+  IAddressProducedBlock,
+  IAddressRelatedTransaction,
+  dummyAddressBrief,
+} from '@/interfaces/address';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IReviewDetail} from '@/interfaces/review';
+import {ISuggestions} from '@/interfaces/suggestions';
 import {
   convertStringToSortingType,
   getChainIcon,
   roundToDecimal,
-} from '../../../../../../lib/common';
-import {isAddress} from 'web3-validator';
-import {IReviewDetail} from '../../../../../../interfaces/review';
-import {AddressDetailsProvider} from '../../../../../../contexts/address_details_context';
-import {validate} from 'bitcoin-address-validation';
-import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
-import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
-import Skeleton from '../../../../../../components/skeleton/skeleton';
-import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
-import {IDatePeriod} from '../../../../../../interfaces/date_period';
-import {ISuggestions} from '../../../../../../interfaces/suggestions';
+} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import {AppContext} from '@/contexts/app_context';
+import {AddressDetailsProvider} from '@/contexts/address_details_context';
+import NavBar from '@/components/nav_bar/nav_bar';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import Tooltip from '@/components/tooltip/tooltip';
+import AddressDetail from '@/components/address_detail/address_detail';
+import PrivateNoteSection from '@/components/private_note_section/private_note_section';
+import ReviewItem from '@/components/review_item/review_item';
+import LeaveReviewButton from '@/components/leave_review_button/leave_review_button';
+import Footer from '@/components/footer/footer';
+import {BFAURL, getDynamicUrl} from '@/constants/url';
+import BlockProducedHistorySection from '@/components/block_produced_section/block_produced_section';
+import TransactionHistorySection from '@/components/transaction_history_section/transaction_history_section';
+import SortingMenu from '@/components/sorting_menu/sorting_menu';
+import DataNotFound from '@/components/data_not_found/data_not_found';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface IAddressDetailDetailPageProps {
   addressId: string;

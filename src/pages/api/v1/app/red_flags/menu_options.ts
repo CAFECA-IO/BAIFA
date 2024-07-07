@@ -1,8 +1,8 @@
 // 034 - GET /app/red_flags/menu_options
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../prisma/client';
-import {IMenuOptions} from '../../../../../interfaces/red_flag';
+import {IMenuOptions} from '@/interfaces/red_flag';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IMenuOptions;
 

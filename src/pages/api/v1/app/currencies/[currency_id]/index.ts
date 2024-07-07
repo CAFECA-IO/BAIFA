@@ -1,9 +1,9 @@
 // 018 - GET /app/currencies/:currency_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '@/client';
 import {ICurrencyDetailString} from '@/interfaces/currency';
 import {IRedFlag} from '@/interfaces/red_flag';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = ICurrencyDetailString | undefined;
 

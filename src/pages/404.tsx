@@ -1,10 +1,10 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import LandingNavBar from '../components/landing_nav_bar/landing_nav_bar';
-import LandingFooter from '../components/landing_footer/landing_footer';
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
-import {ILocale, TranslateFunction} from '../interfaces/locale';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {ILocale, TranslateFunction} from '@/interfaces/locale';
+import LandingNavBar from '@/components/landing_nav_bar/landing_nav_bar';
+import LandingFooter from '@/components/landing_footer/landing_footer';
 
 const Custom404 = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

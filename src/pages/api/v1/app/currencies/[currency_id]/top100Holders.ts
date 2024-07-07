@@ -7,7 +7,7 @@ import {
   TOP_100_HOLDER_MAX_AMOUNT,
 } from '@/constants/config';
 import {IHolder, ITop100Holders} from '@/interfaces/currency';
-import prisma from '@/client';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = ITop100Holders;
 

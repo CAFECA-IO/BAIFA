@@ -1,12 +1,12 @@
 // 008 - GET /app/chains/:chain_id/block/:block_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '@/client';
 import {DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
 import {
   ITransactionList,
   IDisplayTransaction,
 } from '@/interfaces/transaction';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = ITransactionList;
 

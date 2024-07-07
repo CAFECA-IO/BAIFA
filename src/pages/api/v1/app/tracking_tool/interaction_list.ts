@@ -1,7 +1,7 @@
 // 105 - GET /app/tracking-tool interaction list
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../prisma/client';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = string[];
 

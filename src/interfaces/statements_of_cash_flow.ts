@@ -1,4 +1,4 @@
-import {ICurrencyDetail} from './report_currency_detail';
+import {ICurrencyDetail} from '@/interfaces/report_currency_detail';
 
 export interface ICashFlowAccountingDetail {
   totalAmountFairValue: number;

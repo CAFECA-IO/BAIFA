@@ -1,7 +1,7 @@
 // 011 - GET /app/chains/:chain_id/addresses/:address_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '@/client';
+import prisma from '@/lib/utils/prisma';
 import {AddressType} from '@/interfaces/address_info';
 import {IAddressBrief} from '@/interfaces/address';
 import {assessAddressRisk} from '@/lib/common';

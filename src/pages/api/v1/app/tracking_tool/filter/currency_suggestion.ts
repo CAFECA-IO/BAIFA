@@ -1,7 +1,7 @@
 // 104 - GET /app/tracking-tool filter currency suggestion
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {INPUT_SUGGESTION_LIMIT} from '@/constants/config';
-import prisma from '@/client';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = string[];
 

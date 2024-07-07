@@ -1,18 +1,18 @@
 import React, {createContext, useContext} from 'react';
-import {ITransactionData} from '../interfaces/transaction';
-import {IProducedBlock} from '../interfaces/block';
 import useStateRef from 'react-usestateref';
-import {MarketContext} from './market_context';
+import {useRouter} from 'next/router';
 import {
   IAddressHistoryQuery,
   IAddressTransactionQuery,
   IPaginationOptions,
   TimeSortingType,
-} from '../constants/api_request';
-import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../constants/config';
-import {useRouter} from 'next/router';
-import {convertMillisecondsToSeconds} from '../lib/common';
-import {IAddressBrief} from '../interfaces/address';
+} from '@/constants/api_request';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
+import {IAddressBrief} from '@/interfaces/address';
+import {ITransactionData} from '@/interfaces/transaction';
+import {IProducedBlock} from '@/interfaces/block';
+import {MarketContext} from '@/contexts/market_context';
+import {convertMillisecondsToSeconds} from '@/lib/common';
 
 export interface IAddressDetailsProvider {
   children: React.ReactNode;

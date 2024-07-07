@@ -5,35 +5,35 @@ import {
   IAddressTransactionQuery,
   IPaginationOptions,
   TimeSortingType,
-} from '../constants/api_request';
-import {IChainDetail, IChain} from '../interfaces/chain';
-import {IPromotion, defaultPromotion} from '../interfaces/promotion';
-import {ISearchResult} from '../interfaces/search_result';
-import {ISuggestions, defaultSuggestions} from '../interfaces/suggestions';
-import {IBlockDetail, IProducedBlock, IBlockList} from '../interfaces/block';
+} from '@/constants/api_request';
+import {IChainDetail, IChain} from '@/interfaces/chain';
+import {IPromotion, defaultPromotion} from '@/interfaces/promotion';
+import {ISearchResult} from '@/interfaces/search_result';
+import {ISuggestions, defaultSuggestions} from '@/interfaces/suggestions';
+import {IBlockDetail, IProducedBlock, IBlockList} from '@/interfaces/block';
 import {
   ITransactionData,
   ITransactionDetail,
   ITransactionList,
   ITransactionHistorySection,
-} from '../interfaces/transaction';
+} from '@/interfaces/transaction';
 import {
   IAddressBrief,
   IAddressProducedBlock,
   IAddressRelatedTransaction,
-} from '../interfaces/address';
-import {IReviewDetail, IReviews} from '../interfaces/review';
+} from '@/interfaces/address';
+import {IReviewDetail, IReviews} from '@/interfaces/review';
 import {
   IRedFlag,
   IRedFlagDetail,
   IRedFlagListForCurrency,
   IRedFlagPage,
-} from '../interfaces/red_flag';
-import {IInteractionItem} from '../interfaces/interaction_item';
-import {IContractDetail} from '../interfaces/contract';
-import {IEvidenceDetail} from '../interfaces/evidence';
-import {ICurrencyDetailString, ICurrencyListPage, ITop100Holders} from '../interfaces/currency';
-import {IBlackListData} from '../interfaces/blacklist';
+} from '@/interfaces/red_flag';
+import {IInteractionItem} from '@/interfaces/interaction_item';
+import {IContractDetail} from '@/interfaces/contract';
+import {IEvidenceDetail} from '@/interfaces/evidence';
+import {ICurrencyDetailString, ICurrencyListPage, ITop100Holders} from '@/interfaces/currency';
+import {IBlackListData} from '@/interfaces/blacklist';
 
 export interface IMarketProvider {
   children: React.ReactNode;

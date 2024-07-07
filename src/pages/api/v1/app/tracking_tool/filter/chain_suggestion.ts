@@ -1,8 +1,8 @@
 // 103 - GET /app/tracking-tool filter chain suggestion
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../prisma/client';
-import {isValid64BitInteger} from '../../../../../../lib/common';
-import {INPUT_SUGGESTION_LIMIT} from '../../../../../../constants/config';
+import {INPUT_SUGGESTION_LIMIT} from '@/constants/config';
+import {isValid64BitInteger} from '@/lib/common';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = string[];
 

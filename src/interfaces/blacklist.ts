@@ -1,4 +1,4 @@
-import {ICommonData} from './common_data';
+import {ICommonData} from '@/interfaces/common_data';
 
 export interface IBlackList extends ICommonData {
   address: string;

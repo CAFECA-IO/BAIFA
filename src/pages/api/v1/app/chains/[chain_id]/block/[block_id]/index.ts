@@ -4,7 +4,7 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import {IBlockDetail} from '@/interfaces/block';
 import {StabilityLevel} from '@/constants/stability_level';
 import {assessBlockStability} from '@/lib/common';
-import prisma from '@/client';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IBlockDetail | undefined;
 

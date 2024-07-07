@@ -1,5 +1,5 @@
-import {ICommonData} from './common_data';
-import {IStabilityLevel, StabilityLevel} from '../constants/stability_level';
+import {IStabilityLevel, StabilityLevel} from '@/constants/stability_level';
+import {ICommonData} from '@/interfaces/common_data';
 
 export interface IBlock extends ICommonData {
   stability: IStabilityLevel;

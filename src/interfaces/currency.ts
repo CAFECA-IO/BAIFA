@@ -1,5 +1,5 @@
-import {IRedFlag} from './red_flag';
-import {IDisplayTransaction} from './transaction';
+import {IRedFlag} from '@/interfaces/red_flag';
+import {IDisplayTransaction} from '@/interfaces/transaction';
 
 export interface IHolder {
   addressId: string;

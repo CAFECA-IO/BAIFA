@@ -1,11 +1,11 @@
+import {RowType} from '@/constants/table_row_type';
 import {
   IBalanceSheetsNeo,
   ICurrencyDetail,
   ICryptocurrencyDetail,
-} from '../../interfaces/balance_sheets_neo';
-import {roundToDecimal} from '../common';
-import {ITable} from '../../interfaces/report_table';
-import {RowType} from '../../constants/table_row_type';
+} from '@/interfaces/balance_sheets_neo';
+import {ITable} from '@/interfaces/report_table';
+import {roundToDecimal} from '@/lib/common';
 
 export const createBalanceSheetsTable = (
   dates: string[],

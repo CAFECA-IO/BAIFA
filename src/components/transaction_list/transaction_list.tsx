@@ -1,7 +1,7 @@
-import TransactionItem from '../transaction_item/transaction_item';
-import {IDisplayTransaction} from '../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
+import {IDisplayTransaction} from '@/interfaces/transaction';
+import {TranslateFunction} from '@/interfaces/locale';
+import TransactionItem from '@/components/transaction_item/transaction_item';
 
 export interface ITransactionListProps {
   transactions: IDisplayTransaction[];

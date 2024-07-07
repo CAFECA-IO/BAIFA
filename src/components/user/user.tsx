@@ -1,9 +1,9 @@
-import Link from 'next/link';
-import {BFAURL} from '../../constants/url';
-import useOuterClick from '../../lib/hooks/use_outer_click';
 import {Dispatch, SetStateAction} from 'react';
+import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
+import {BFAURL} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import useOuterClick from '@/lib/hooks/use_outer_click';
 
 // ToDo: (20230727 - Julian) when login function is done, remove this props
 interface IUserProps {

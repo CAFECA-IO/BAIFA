@@ -1,18 +1,18 @@
+import {useTranslation} from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
-import BoltButton from '../bolt_button/bolt_button';
-import Tooltip from '../tooltip/tooltip';
-import {timestampToString, truncateText} from '../../lib/common';
-import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {ITransactionDetail} from '../../interfaces/transaction';
-import {getDynamicUrl} from '../../constants/url';
-import {TransactionStatus, DefaultTransactionStatus} from '../../constants/transaction_status';
-import {DEFAULT_TRUNCATE_LENGTH, redFlagTypeI18nObj} from '../../constants/config';
-import Skeleton from '../skeleton/skeleton';
-import {APIURL, HttpMethod} from '../../constants/api_request';
-import {IMenuOptions} from '../../interfaces/red_flag';
-import useAPIResponse from '../../lib/hooks/use_api_response';
+import {APIURL, HttpMethod} from '@/constants/api_request';
+import {TransactionStatus, DefaultTransactionStatus} from '@/constants/transaction_status';
+import {DEFAULT_TRUNCATE_LENGTH, redFlagTypeI18nObj} from '@/constants/config';
+import {getDynamicUrl} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import {ITransactionDetail} from '@/interfaces/transaction';
+import {IMenuOptions} from '@/interfaces/red_flag';
+import {timestampToString, truncateText} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import Tooltip from '@/components/tooltip/tooltip';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface ITransactionDetailProps {
   transactionData: ITransactionDetail;

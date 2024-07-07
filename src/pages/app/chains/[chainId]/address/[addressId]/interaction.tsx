@@ -1,21 +1,13 @@
+import {useState, useEffect, useContext} from 'react';
+import {BsArrowLeftShort} from 'react-icons/bs';
+import useStateRef from 'react-usestateref';
+import {GetServerSideProps} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, useEffect, useContext} from 'react';
-import useStateRef from 'react-usestateref';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {GetServerSideProps} from 'next';
-import NavBar from '../../../../../../components/nav_bar/nav_bar';
-import {SearchBarWithKeyDown} from '../../../../../../components/search_bar/search_bar';
-import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
-import DatePicker from '../../../../../../components/date_picker/date_picker';
-import InteractionItem from '../../../../../../components/interaction_item/interaction_item';
-import Footer from '../../../../../../components/footer/footer';
-import {BsArrowLeftShort} from 'react-icons/bs';
-import {getChainIcon} from '../../../../../../lib/common';
-import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {IInteractionList} from '../../../../../../interfaces/interaction_item';
+import {APIURL, HttpMethod} from '@/constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
@@ -23,14 +15,22 @@ import {
   default30DayPeriod,
   sortMostAndLeastOptions,
   sortOldAndNewOptions,
-} from '../../../../../../constants/config';
-import Pagination from '../../../../../../components/pagination/pagination';
-import {AppContext} from '../../../../../../contexts/app_context';
-import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
-import Skeleton from '../../../../../../components/skeleton/skeleton';
-import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
-import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
-import {getDynamicUrl} from '../../../../../../constants/url';
+} from '@/constants/config';
+import {getDynamicUrl} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IInteractionList} from '@/interfaces/interaction_item';
+import {getChainIcon} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import {AppContext} from '@/contexts/app_context';
+import NavBar from '@/components/nav_bar/nav_bar';
+import {SearchBarWithKeyDown} from '@/components/search_bar/search_bar';
+import SortingMenu from '@/components/sorting_menu/sorting_menu';
+import DatePicker from '@/components/date_picker/date_picker';
+import InteractionItem from '@/components/interaction_item/interaction_item';
+import Footer from '@/components/footer/footer';
+import Pagination from '@/components/pagination/pagination';
+import Skeleton from '@/components/skeleton/skeleton';
+import DataNotFound from '@/components/data_not_found/data_not_found';
 
 interface IInteractionPageProps {
   addressId: string;

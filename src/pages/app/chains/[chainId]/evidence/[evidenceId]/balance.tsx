@@ -1,6 +1,6 @@
-import Head from 'next/head';
 import {GetServerSideProps} from 'next';
-import BalanceSheetsNeo from '../../../../../../components/balance_sheets_neo/balance_sheets_neo';
+import Head from 'next/head';
+import BalanceSheetsNeo from '@/components/balance_sheets_neo/balance_sheets_neo';
 
 interface IAllReportsPageProps {
   chainId: string;

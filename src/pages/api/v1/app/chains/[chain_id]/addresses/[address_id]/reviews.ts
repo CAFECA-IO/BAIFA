@@ -2,7 +2,7 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {IReviews} from '@/interfaces/review';
-import prisma from '@/client';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IReviews;
 

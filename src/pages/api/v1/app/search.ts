@@ -1,19 +1,19 @@
 // 003 - GET /app/search?search_input=${searchInput}
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {assessAddressRisk, assessBlockStability, isValid64BitInteger} from '../../../../lib/common';
-import {StabilityLevel} from '../../../../constants/stability_level';
-import {ISearchResult, ISearchResultData} from '../../../../interfaces/search_result';
-import {ISearchType, SearchType, isSearchType} from '../../../../constants/search_type';
-import {RiskLevel} from '../../../../constants/risk_level';
 import {
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
   PUBLIC_TAGS_REFERENCE,
   CODE_WHEN_NULL,
-} from '../../../../constants/config';
-import prisma from '../../../../../prisma/client';
-import {AddressType} from '../../../../interfaces/address_info';
+} from '@/constants/config';
+import {RiskLevel} from '@/constants/risk_level';
+import {StabilityLevel} from '@/constants/stability_level';
+import {ISearchType, SearchType, isSearchType} from '@/constants/search_type';
+import {AddressType} from '@/interfaces/address_info';
+import {ISearchResult, ISearchResultData} from '@/interfaces/search_result';
+import {assessAddressRisk, assessBlockStability, isValid64BitInteger} from '@/lib/common';
+import prisma from '@/lib/utils/prisma';
 
 // Info: Array of ResponseDataItem (20240131 - Shirley)
 type ResponseData = ISearchResultData;

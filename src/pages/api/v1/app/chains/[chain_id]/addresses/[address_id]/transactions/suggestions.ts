@@ -1,6 +1,6 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../../../../prisma/client';
-import {INPUT_SUGGESTION_LIMIT} from '../../../../../../../../../constants/config';
+import {INPUT_SUGGESTION_LIMIT} from '@/constants/config';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = {
   suggestions: string[];

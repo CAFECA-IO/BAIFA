@@ -1,7 +1,7 @@
 // 101 - GET /app/tracking-tool add address following list
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../prisma/client';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = string[];
 

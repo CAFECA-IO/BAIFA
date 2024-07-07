@@ -1,13 +1,13 @@
+import {RowType} from '@/constants/table_row_type';
 import {
   ICashFlowNeo,
   INonCashDetail,
   ICashDetail,
   dummyCashBreakdown,
-} from '../../interfaces/cash_flow_neo';
-import {defaultBreakdown} from '../../interfaces/report_currency_detail';
-import {roundToDecimal} from '../common';
-import {ITable} from '../../interfaces/report_table';
-import {RowType} from '../../constants/table_row_type';
+} from '@/interfaces/cash_flow_neo';
+import {defaultBreakdown} from '@/interfaces/report_currency_detail';
+import {ITable} from '@/interfaces/report_table';
+import {roundToDecimal} from '@/lib/common';
 
 export const createCashFlowFirstPart = (
   endedDate: string,

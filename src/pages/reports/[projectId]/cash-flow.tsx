@@ -1,7 +1,7 @@
-import Head from 'next/head';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import {BaifaReports} from '../../../constants/baifa_reports';
-import StatementsOfCashFlow from '../../../components/statements_of_cash_flow/statements_of_cash_flow';
+import Head from 'next/head';
+import {BaifaReports} from '@/constants/baifa_reports';
+import StatementsOfCashFlow from '@/components/statements_of_cash_flow/statements_of_cash_flow';
 
 interface IStatementsOfCashFlowProps {
   projectId: string;

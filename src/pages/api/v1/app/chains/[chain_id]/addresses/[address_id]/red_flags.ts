@@ -1,13 +1,13 @@
 // 013 - GET /app/chains/:chain_id/addresses/:address_id/red_flags
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IRedFlagOfAddress} from '../../../../../../../../interfaces/red_flag';
 import {
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
   CODE_WHEN_NULL,
-} from '../../../../../../../../constants/config';
-import prisma from '../../../../../../../../../prisma/client';
+} from '@/constants/config';
+import {IRedFlagOfAddress} from '@/interfaces/red_flag';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IRedFlagOfAddress;
 

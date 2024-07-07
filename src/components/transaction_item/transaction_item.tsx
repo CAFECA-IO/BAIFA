@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {timestampToString} from '../../lib/common';
-import {IDisplayTransaction} from '../../interfaces/transaction';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {getDynamicUrl} from '../../constants/url';
-import {TransactionType, DefaultTransactionType} from '../../constants/transaction_type';
-import {TransactionStatus, DefaultTransactionStatus} from '../../constants/transaction_status';
+import {getDynamicUrl} from '@/constants/url';
+import {TransactionType, DefaultTransactionType} from '@/constants/transaction_type';
+import {TransactionStatus, DefaultTransactionStatus} from '@/constants/transaction_status';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IDisplayTransaction} from '@/interfaces/transaction';
+import {timestampToString} from '@/lib/common';
 
 interface ITransactionItemProps {
   transaction: IDisplayTransaction;

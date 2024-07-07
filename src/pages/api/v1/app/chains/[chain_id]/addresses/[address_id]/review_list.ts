@@ -1,12 +1,12 @@
 // 027 - GET /app/chains/:chain_id/addresses/:address_id/review_list
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IReviewDetail} from '@/interfaces/review';
 import {
   DEFAULT_PAGE,
   DEFAULT_REVIEWS_COUNT_IN_PAGE,
 } from '@/constants/config';
-import prisma from '@/client';
+import {IReviewDetail} from '@/interfaces/review';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IReviewDetail[];
 

@@ -1,34 +1,34 @@
+import {useEffect, useState, useContext} from 'react';
+import {BsArrowLeftShort} from 'react-icons/bs';
+import {GetServerSideProps} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import {useEffect, useState, useContext} from 'react';
-import {AppContext} from '../../../../../../contexts/app_context';
-import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
-import NavBar from '../../../../../../components/nav_bar/nav_bar';
-import Footer from '../../../../../../components/footer/footer';
-import BoltButton from '../../../../../../components/bolt_button/bolt_button';
-import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
-import {GetServerSideProps} from 'next';
-import {TranslateFunction} from '../../../../../../interfaces/locale';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {convertStringToSortingType, getChainIcon} from '../../../../../../lib/common';
-import {ITransactionList} from '../../../../../../interfaces/transaction';
-import DatePicker from '../../../../../../components/date_picker/date_picker';
-import Pagination from '../../../../../../components/pagination/pagination';
-import {SearchBarWithKeyDown} from '../../../../../../components/search_bar/search_bar';
-import SortingMenu from '../../../../../../components/sorting_menu/sorting_menu';
-import TransactionList from '../../../../../../components/transaction_list/transaction_list';
+import {APIURL, HttpMethod} from '@/constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
-} from '../../../../../../constants/config';
-import Skeleton from '../../../../../../components/skeleton/skeleton';
-import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
-import {getDynamicUrl} from '../../../../../../constants/url';
+} from '@/constants/config';
+import {getDynamicUrl} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import {ITransactionList} from '@/interfaces/transaction';
+import {convertStringToSortingType, getChainIcon} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import {AppContext} from '@/contexts/app_context';
+import NavBar from '@/components/nav_bar/nav_bar';
+import Footer from '@/components/footer/footer';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import DatePicker from '@/components/date_picker/date_picker';
+import Pagination from '@/components/pagination/pagination';
+import {SearchBarWithKeyDown} from '@/components/search_bar/search_bar';
+import SortingMenu from '@/components/sorting_menu/sorting_menu';
+import TransactionList from '@/components/transaction_list/transaction_list';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface ITransitionsInBlockPageProps {
   chainId: string;

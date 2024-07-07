@@ -1,5 +1,5 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IExchangeRatesResponse} from '../../../../../../../../interfaces/exchange_rates_neo';
+import {IExchangeRatesResponse} from '@/interfaces/exchange_rates_neo';
 
 type ResponseData = IExchangeRatesResponse | undefined;
 

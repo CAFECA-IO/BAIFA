@@ -1,28 +1,28 @@
+import {useState, useEffect, useContext} from 'react';
+import {BsArrowLeftShort} from 'react-icons/bs';
+import {GetStaticPaths, GetStaticProps} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import {useRouter} from 'next/router';
-import {useState, useEffect, useContext} from 'react';
-import NavBar from '../../../../../../components/nav_bar/nav_bar';
-import Footer from '../../../../../../components/footer/footer';
-import ReviewSection from '../../../../../../components/review_section/review_section';
-import {IReviews} from '../../../../../../interfaces/review';
-import {BsArrowLeftShort} from 'react-icons/bs';
-import {convertStringToSortingType, getChainIcon} from '../../../../../../lib/common';
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {GetStaticPaths, GetStaticProps} from 'next';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {AppContext} from '../../../../../../contexts/app_context';
-import {MarketContext} from '../../../../../../contexts/market_context';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {useRouter} from 'next/router';
+import {IPaginationOptions, TimeSortingType} from '@/constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
   sortOldAndNewOptions,
-} from '../../../../../../constants/config';
-import {IPaginationOptions, TimeSortingType} from '../../../../../../constants/api_request';
-import Pagination from '../../../../../../components/pagination/pagination';
-import {getDynamicUrl} from '../../../../../../constants/url';
+} from '@/constants/config';
+import {getDynamicUrl} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IReviews} from '@/interfaces/review';
+import {convertStringToSortingType, getChainIcon} from '@/lib/common';
+import {AppContext} from '@/contexts/app_context';
+import {MarketContext} from '@/contexts/market_context';
+import NavBar from '@/components/nav_bar/nav_bar';
+import Footer from '@/components/footer/footer';
+import ReviewSection from '@/components/review_section/review_section';
+import Pagination from '@/components/pagination/pagination';
 
 interface IReviewDetailsPageProps {
   addressId: string;

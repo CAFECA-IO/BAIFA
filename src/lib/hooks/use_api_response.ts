@@ -6,7 +6,7 @@ import {
   HttpMethod,
   QueryParams,
   RequestOptions,
-} from '../../constants/api_request';
+} from '@/constants/api_request';
 
 async function fetchData<Data>(
   api: string,

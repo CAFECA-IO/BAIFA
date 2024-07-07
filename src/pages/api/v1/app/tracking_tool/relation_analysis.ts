@@ -2,7 +2,7 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {IRelationAnalysis} from '@/interfaces/relation_analysis';
-import prisma from '@/client';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IRelationAnalysis;
 

@@ -1,18 +1,12 @@
+import {useState} from 'react';
+import {BsArrowLeftShort} from 'react-icons/bs';
+import {GetServerSideProps} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {GetServerSideProps} from 'next';
-import NavBar from '../../../../../../components/nav_bar/nav_bar';
-import BoltButton from '../../../../../../components/bolt_button/bolt_button';
-import Footer from '../../../../../../components/footer/footer';
-import {BsArrowLeftShort} from 'react-icons/bs';
-import {convertStringToSortingType, getChainIcon} from '../../../../../../lib/common';
-import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {IRedFlagOfAddress} from '../../../../../../interfaces/red_flag';
-import RedFlagList from '../../../../../../components/red_flag_list/red_flag_list';
-import {useState} from 'react';
+import {APIURL, HttpMethod} from '@/constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
@@ -20,12 +14,18 @@ import {
   default30DayPeriod,
   sortOldAndNewOptions,
   defaultOption,
-} from '../../../../../../constants/config';
-import Skeleton from '../../../../../../components/skeleton/skeleton';
-import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
-import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
-import {IDatePeriod} from '../../../../../../interfaces/date_period';
-import {getDynamicUrl} from '../../../../../../constants/url';
+} from '@/constants/config';
+import {getDynamicUrl} from '@/constants/url';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IRedFlagOfAddress} from '@/interfaces/red_flag';
+import {convertStringToSortingType, getChainIcon} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import NavBar from '@/components/nav_bar/nav_bar';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import Footer from '@/components/footer/footer';
+import RedFlagList from '@/components/red_flag_list/red_flag_list';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface IRedFlagOfAddressPageProps {
   chainId: string;

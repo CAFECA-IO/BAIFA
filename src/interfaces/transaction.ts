@@ -1,5 +1,5 @@
-import {IAddressInfo} from './address_info';
-import {ICommonData} from './common_data';
+import {IAddressInfo} from '@/interfaces/address_info';
+import {ICommonData} from '@/interfaces/common_data';
 
 export interface IDisplayTransaction extends ICommonData {
   status: string;

@@ -1,10 +1,10 @@
 // 030 - GET /app/currencies/:currency_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '@/client';
 import {DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
 import {ITransaction, ITransactionHistorySection} from '@/interfaces/transaction';
 import {AddressType, IAddressInfo} from '@/interfaces/address_info';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = ITransactionHistorySection;
 
