@@ -1,12 +1,12 @@
-import Head from 'next/head';
 import {useContext, useEffect} from 'react';
 import {GetServerSideProps} from 'next';
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import Head from 'next/head';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../interfaces/locale';
-import NavBar from '../../../components/nav_bar/nav_bar';
-import AllCurrenciesPageBody from '../../../components/all_currencies_page_body/all_currencies_page_body';
-import {AppContext} from '../../../contexts/app_context';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {TranslateFunction} from '@/interfaces/locale';
+import {AppContext} from '@/contexts/app_context';
+import AllCurrenciesPageBody from '@/components/all_currencies_page_body/all_currencies_page_body';
+import NavBar from '@/components/nav_bar/nav_bar';
 
 const CurrenciesPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

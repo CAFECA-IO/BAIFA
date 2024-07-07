@@ -1,5 +1,5 @@
 import {NextApiRequest, NextApiResponse} from 'next';
-import SendMail from '../../lib/utils/email';
+import SendMail from '@/lib/utils/email';
 
 type emailConfig = {
   googleClientID: string;

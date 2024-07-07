@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import Tooltip from '../tooltip/tooltip';
-import BoltButton from '../bolt_button/bolt_button';
-import {BFAURL, getDynamicUrl} from '../../constants/url';
-import {timestampToString, truncateText} from '../../lib/common';
-import {IEvidenceDetail} from '../../interfaces/evidence';
-import {EvidenceState, DefaultEvidenceState} from '../../constants/state';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
-import Skeleton from '../skeleton/skeleton';
+import {BFAURL, getDynamicUrl} from '@/constants/url';
+import {DEFAULT_TRUNCATE_LENGTH} from '@/constants/config';
+import {EvidenceState, DefaultEvidenceState} from '@/constants/state';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IEvidenceDetail} from '@/interfaces/evidence';
+import {timestampToString, truncateText} from '@/lib/common';
+import Tooltip from '@/components/tooltip/tooltip';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface IEvidenceDetailProps {
   evidenceData: IEvidenceDetail;

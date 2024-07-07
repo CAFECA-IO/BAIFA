@@ -1,11 +1,11 @@
 // 006 - GET /app/chains/:chain_id/block
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../../prisma/client';
-import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../../constants/config';
-import {IBlockBrief, IBlockList} from '../../../../../../../interfaces/block';
-import {StabilityLevel} from '../../../../../../../constants/stability_level';
-import {assessBlockStability} from '../../../../../../../lib/common';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
+import {StabilityLevel} from '@/constants/stability_level';
+import {IBlockBrief, IBlockList} from '@/interfaces/block';
+import {assessBlockStability} from '@/lib/common';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IBlockList;
 

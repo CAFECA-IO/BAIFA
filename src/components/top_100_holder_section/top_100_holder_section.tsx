@@ -1,23 +1,23 @@
-import {useRouter} from 'next/router';
+import {useState} from 'react';
+import {useTranslation} from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState} from 'react';
-import useAPIResponse from '../../lib/hooks/use_api_response';
-import SearchBar from '../search_bar/search_bar';
-import BoltButton from '../bolt_button/bolt_button';
-import {TranslateFunction} from '../../interfaces/locale';
-import {useTranslation} from 'next-i18next';
-import {DEFAULT_CURRENCY_ICON, DEFAULT_PAGE, ITEM_PER_PAGE} from '../../constants/config';
-import {getCurrencyIcon} from '../../lib/common';
-import {ITop100Holders} from '../../interfaces/currency';
-import {getDynamicUrl} from '../../constants/url';
-import Pagination from '../pagination/pagination';
-import {APIURL, HttpMethod} from '../../constants/api_request';
-import {SkeletonList} from '../skeleton/skeleton';
+import {useRouter} from 'next/router';
+import {APIURL, HttpMethod} from '@/constants/api_request';
+import {DEFAULT_CURRENCY_ICON, DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
+import {getDynamicUrl} from '@/constants/url';
+import {ITop100Holders} from '@/interfaces/currency';
+import {TranslateFunction} from '@/interfaces/locale';
+import {getCurrencyIcon} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import SearchBar from '@/components/search_bar/search_bar';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import Pagination from '@/components/pagination/pagination';
+import {SkeletonList} from '@/components/skeleton/skeleton';
 
 interface ITop100HolderSectionProps {
   chainId: string;
-  currencyId: string;
+  currencyId: number;
   unit: string;
 }
 

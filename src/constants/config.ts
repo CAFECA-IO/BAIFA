@@ -1,4 +1,4 @@
-import {REPORT_PATH} from '../constants/url';
+import {REPORT_PATH} from '@/constants/url';
 
 export const TBD_API_URL = 'https://api.tidebit-defi.com/api';
 export const TBD_API_VERSION = 'v1';

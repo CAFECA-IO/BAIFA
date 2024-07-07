@@ -1,11 +1,11 @@
+import {useContext} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import {useContext} from 'react';
-import {MarketContext} from '../../contexts/market_context';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {BFAURL} from '../../constants/url';
-import Skeleton from '../skeleton/skeleton';
+import {BFAURL} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import {MarketContext} from '@/contexts/market_context';
+import Skeleton from '@/components/skeleton/skeleton';
 
 const MainMenu = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

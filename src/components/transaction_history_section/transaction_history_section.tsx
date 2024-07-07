@@ -1,21 +1,21 @@
 import {useState, useContext, Dispatch, SetStateAction} from 'react';
-import {SearchBarWithKeyDown, SearchBarWithSuggestions} from '../search_bar/search_bar';
-import SortingMenu from '../sorting_menu/sorting_menu';
-import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
 import {
   ITEM_PER_PAGE,
   sortOldAndNewOptions,
   default30DayPeriod,
   DEFAULT_PAGE,
-} from '../../constants/config';
-import TransactionHistoryItem from '../transaction_history_item/transaction_history_item';
-import Pagination from '../pagination/pagination';
-import {IDisplayTransaction} from '../../interfaces/transaction';
-import DatePicker from '../date_picker/date_picker';
-import {AddressDetailsContext} from '../../contexts/address_details_context';
-import {SkeletonList} from '../skeleton/skeleton';
-import {IDatePeriod} from '../../interfaces/date_period';
+} from '@/constants/config';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IDisplayTransaction} from '@/interfaces/transaction';
+import {AddressDetailsContext} from '@/contexts/address_details_context';
+import DatePicker from '@/components/date_picker/date_picker';
+import {SearchBarWithKeyDown, SearchBarWithSuggestions} from '@/components/search_bar/search_bar';
+import SortingMenu from '@/components/sorting_menu/sorting_menu';
+import TransactionHistoryItem from '@/components/transaction_history_item/transaction_history_item';
+import Pagination from '@/components/pagination/pagination';
+import {SkeletonList} from '@/components/skeleton/skeleton';
 
 export enum TransactionDataType {
   ADDRESS_DETAILS = 'ADDRESS_DETAILS',

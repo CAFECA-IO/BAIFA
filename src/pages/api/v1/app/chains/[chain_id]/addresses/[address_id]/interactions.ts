@@ -1,14 +1,14 @@
 // 014 - GET /app/chains/:chain_id/addresses/:address_id/interactions?type=address
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IInteractionList, IInteraction} from '../../../../../../../../interfaces/interaction_item';
-import {AddressType} from '../../../../../../../../interfaces/address_info';
-import prisma from '../../../../../../../../../prisma/client';
 import {
   ITEM_PER_PAGE,
   sortMostAndLeastOptions,
   sortOldAndNewOptions,
-} from '../../../../../../../../constants/config';
+} from '@/constants/config';
+import {IInteractionList, IInteraction} from '@/interfaces/interaction_item';
+import {AddressType} from '@/interfaces/address_info';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IInteractionList;
 

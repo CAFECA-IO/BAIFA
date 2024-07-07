@@ -1,7 +1,7 @@
 // Info: 搭配 Web worker 寫出多線程管理 API 的調用，包含發起 request 跟取消 request 的功能 (20240227 - Shirley)
 import {useEffect, useRef, useCallback} from 'react';
 import useStateRef from 'react-usestateref';
-import {FetcherResponse, QueryParams, RequestOptions} from '../../constants/api_request';
+import {FetcherResponse, QueryParams, RequestOptions} from '@/constants/api_request';
 
 /**Info: A custom hook to manage API calls (20240313 - Shirley)
  *

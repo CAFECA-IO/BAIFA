@@ -1,10 +1,10 @@
 import {useState, useCallback, useRef, createContext} from 'react';
 import useStateRef from 'react-usestateref';
-import AddAddressPanel from '../components/add_address_panel/add_address_panel';
-import FilterPanel from '../components/filter_panel/filter_panel';
-import RelationAnalysisPanel from '../components/relation_analysis_panel/relation_analysis_panel';
-import {IDatePeriod} from '../interfaces/date_period';
-import {default30DayPeriod} from '../constants/config';
+import {default30DayPeriod} from '@/constants/config';
+import {IDatePeriod} from '@/interfaces/date_period';
+import AddAddressPanel from '@/components/add_address_panel/add_address_panel';
+import FilterPanel from '@/components/filter_panel/filter_panel';
+import RelationAnalysisPanel from '@/components/relation_analysis_panel/relation_analysis_panel';
 
 export interface ITrackingProvider {
   children: React.ReactNode;

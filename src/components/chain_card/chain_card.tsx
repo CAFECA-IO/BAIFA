@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {BFAURL} from '../../constants/url';
-import {getChainIcon, withCommas} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {IChainDetail} from '../../interfaces/chain';
-import {DEFAULT_CHAIN_ICON} from '../../constants/config';
+import {DEFAULT_CHAIN_ICON} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IChainDetail} from '@/interfaces/chain';
+import {getChainIcon, withCommas} from '@/lib/common';
 
 interface IChainCardProps {
   chainData: IChainDetail;

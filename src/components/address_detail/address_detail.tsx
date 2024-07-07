@@ -1,19 +1,19 @@
 import {useState, useEffect, useRef} from 'react';
+import useStateRef from 'react-usestateref';
 import Link from 'next/link';
-import Tooltip from '../tooltip/tooltip';
-import {timestampToString, getTimeString} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {IAddressBrief} from '../../interfaces/address';
-import {BFAURL, getDynamicUrl} from '../../constants/url';
-import {RiskLevel} from '../../constants/risk_level';
-import Skeleton from '../skeleton/skeleton';
+import Tooltip from '@/components/tooltip/tooltip';
+import {timestampToString, getTimeString} from '@/lib/common';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IAddressBrief} from '@/interfaces/address';
+import {BFAURL, getDynamicUrl} from '@/constants/url';
+import {RiskLevel} from '@/constants/risk_level';
+import Skeleton from '@/components/skeleton/skeleton';
 import {
   DEFAULT_INTERACTED_ACCOUNT_COUNT,
   DEFAULT_RED_FLAG_COUNT,
   MILLISECONDS_IN_A_SECOND,
-} from '../../constants/config';
-import useStateRef from 'react-usestateref';
+} from '@/constants/config';
 
 interface IAddressDetailProps {
   addressData: IAddressBrief;

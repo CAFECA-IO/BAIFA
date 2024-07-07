@@ -1,14 +1,14 @@
+import {useState, useEffect, useRef} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState, useEffect, useRef} from 'react';
-import BoltButton from '../../components/bolt_button/bolt_button';
-import {getChainIcon, getTimeString} from '../../lib/common';
-import {getDynamicUrl} from '../../constants/url';
-import {IBlackList} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {DEFAULT_CHAIN_ICON} from '../../constants/config';
-import Skeleton from '../skeleton/skeleton';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import Skeleton from '@/components/skeleton/skeleton';
+import {getChainIcon, getTimeString} from '@/lib/common';
+import {DEFAULT_CHAIN_ICON} from '@/constants/config';
+import {getDynamicUrl} from '@/constants/url';
+import {IBlackList} from '@/interfaces/blacklist';
+import {TranslateFunction} from '@/interfaces/locale';
 
 interface IBlackListItemProps {
   blacklistAddress: IBlackList;

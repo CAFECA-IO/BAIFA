@@ -1,22 +1,22 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import Tooltip from '../../components/tooltip/tooltip';
-import {SearchType} from '../../constants/search_type';
-import {getChainIcon, timestampToString, truncateText} from '../../lib/common';
-import {getDynamicUrl} from '../../constants/url';
-import {RiskLevel} from '../../constants/risk_level';
-import {ISearchResult} from '../../interfaces/search_result';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {IAddress} from '../../interfaces/address';
-import {IBlock} from '../../interfaces/block';
-import {IBlackList} from '../../interfaces/blacklist';
-import {StabilityLevel} from '../../constants/stability_level';
-import {IContract} from '../../interfaces/contract';
-import {IEvidence} from '../../interfaces/evidence';
-import {ITransactionDetail} from '../../interfaces/transaction';
-import {IRedFlagSearchResult} from '../../interfaces/red_flag';
-import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
+import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '@/constants/config';
+import {SearchType} from '@/constants/search_type';
+import {StabilityLevel} from '@/constants/stability_level';
+import {getDynamicUrl} from '@/constants/url';
+import {RiskLevel} from '@/constants/risk_level';
+import {ISearchResult} from '@/interfaces/search_result';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IAddress} from '@/interfaces/address';
+import {IBlock} from '@/interfaces/block';
+import {IBlackList} from '@/interfaces/blacklist';
+import {IContract} from '@/interfaces/contract';
+import {IEvidence} from '@/interfaces/evidence';
+import {ITransactionDetail} from '@/interfaces/transaction';
+import {IRedFlagSearchResult} from '@/interfaces/red_flag';
+import {getChainIcon, timestampToString, truncateText} from '@/lib/common';
+import Tooltip from '@/components/tooltip/tooltip';
 
 interface ISearchingResultItemProps {
   searchResult: ISearchResult;

@@ -1,19 +1,19 @@
 import {Dispatch, SetStateAction, useState} from 'react';
 import {useRouter} from 'next/router';
-import BlockList from '../block_list/block_list';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {IBlockList} from '../../interfaces/block';
-import DatePicker from '../date_picker/date_picker';
-import {SearchBarWithKeyDown} from '../search_bar/search_bar';
-import SortingMenu from '../sorting_menu/sorting_menu';
-import {sortOldAndNewOptions, default30DayPeriod, ITEM_PER_PAGE} from '../../constants/config';
-import Pagination from '../pagination/pagination';
-import Skeleton from '../skeleton/skeleton';
-import useAPIResponse from '../../lib/hooks/use_api_response';
-import {APIURL, HttpMethod} from '../../constants/api_request';
-import {ChainDetailTab} from '../../interfaces/chain';
-import {convertStringToSortingType} from '../../lib/common';
+import {sortOldAndNewOptions, default30DayPeriod, ITEM_PER_PAGE} from '@/constants/config';
+import {APIURL, HttpMethod} from '@/constants/api_request';
+import {ChainDetailTab} from '@/interfaces/chain';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IBlockList} from '@/interfaces/block';
+import {convertStringToSortingType} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import BlockList from '@/components/block_list/block_list';
+import DatePicker from '@/components/date_picker/date_picker';
+import {SearchBarWithKeyDown} from '@/components/search_bar/search_bar';
+import SortingMenu from '@/components/sorting_menu/sorting_menu';
+import Pagination from '@/components/pagination/pagination';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface IBlockTabProps {
   chainDetailLoading: boolean;

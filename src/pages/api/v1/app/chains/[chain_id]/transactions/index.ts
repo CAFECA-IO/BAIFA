@@ -1,9 +1,9 @@
 // 009 - GET /app/chains/:chain_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../../prisma/client';
-import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../../constants/config';
-import {IDisplayTransaction, ITransactionList} from '../../../../../../../interfaces/transaction';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
+import {IDisplayTransaction, ITransactionList} from '@/interfaces/transaction';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = ITransactionList;
 

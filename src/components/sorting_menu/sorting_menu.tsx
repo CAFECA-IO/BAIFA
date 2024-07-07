@@ -1,11 +1,11 @@
 import {Dispatch, SetStateAction} from 'react';
-import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import useOuterClick from '../../lib/hooks/use_outer_click';
 import {FaChevronDown} from 'react-icons/fa';
-import {convertStringToSortingType, truncateText} from '../../lib/common';
-import {DEFAULT_TRUNCATE_LENGTH, DEFAULT_PAGE} from '../../constants/config';
-import {TimeSortingType} from '../../constants/api_request';
+import {useTranslation} from 'next-i18next';
+import {DEFAULT_TRUNCATE_LENGTH, DEFAULT_PAGE} from '@/constants/config';
+import {TimeSortingType} from '@/constants/api_request';
+import {TranslateFunction} from '@/interfaces/locale';
+import {convertStringToSortingType, truncateText} from '@/lib/common';
+import useOuterClick from '@/lib/hooks/use_outer_click';
 
 interface ISearchFilter {
   sortingOptions: string[];

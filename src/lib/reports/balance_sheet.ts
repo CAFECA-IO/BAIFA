@@ -1,8 +1,8 @@
-import {IBalanceSheet, IBalanceAccountingDetail} from '../../interfaces/balance_sheet';
-import {roundToDecimal} from '../../lib/common';
-import {ITable} from '../../interfaces/report_table';
-import {RowType} from '../../constants/table_row_type';
-import {ICurrencyDetail} from '../../interfaces/report_currency_detail';
+import {RowType} from '@/constants/table_row_type';
+import {IBalanceSheet, IBalanceAccountingDetail} from '@/interfaces/balance_sheet';
+import {ITable} from '@/interfaces/report_table';
+import {ICurrencyDetail} from '@/interfaces/report_currency_detail';
+import {roundToDecimal} from '@/lib/common';
 
 export const createBalanceSheetsTable = (
   dates: string[],

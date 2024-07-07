@@ -1,8 +1,8 @@
 // 106 - GET /app/tracking-tool relation analysis
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IRelationAnalysis} from '../../../../../interfaces/relation_analysis';
-import prisma from '../../../../../../prisma/client';
+import {IRelationAnalysis} from '@/interfaces/relation_analysis';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IRelationAnalysis;
 
@@ -33,9 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const transactionCount = transactionData.length;
 
     // Info: (20240409 - Julian) 取得 symbol
-    const currencyIds = transactionData.map(transaction => transaction?.currency_id ?? '');
-    const uniqueCurrencyIds = Array.from(new Set(currencyIds));
-    const currencyId = uniqueCurrencyIds.length === 1 ? uniqueCurrencyIds[0] : '';
+    const currencyIds = transactionData.map(transaction => transaction?.currency_id as number);
+    const currencyId = currencyIds[0];
 
     const currencyData = await prisma.currencies.findUnique({
       where: {

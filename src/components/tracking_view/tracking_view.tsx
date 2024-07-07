@@ -1,8 +1,8 @@
 import {useContext, useEffect, useState} from 'react';
 import * as d3 from 'd3';
-import {TrackingContext, TrackingType} from '../../contexts/tracking_context';
-import {truncateText} from '../../lib/common';
-import {DIAMETER_OF_MAP, DIAMETER_OF_SECOND_LAYER} from '../../constants/config';
+import {DIAMETER_OF_MAP, DIAMETER_OF_SECOND_LAYER} from '@/constants/config';
+import {truncateText} from '@/lib/common';
+import {TrackingContext, TrackingType} from '@/contexts/tracking_context';
 
 interface INode {
   id: string;

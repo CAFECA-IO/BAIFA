@@ -1,14 +1,14 @@
+import {useState, useContext} from 'react';
+import {HiPlus, HiMinus} from 'react-icons/hi';
+import {IoIosArrowUp} from 'react-icons/io';
+import {IoEyeOutline} from 'react-icons/io5';
 import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
-import {useState, useContext} from 'react';
 import * as d3 from 'd3';
-import {TrackingContext, TrackingType} from '../../contexts/tracking_context';
-import {TranslateFunction} from '../../interfaces/locale';
-import {HiPlus, HiMinus} from 'react-icons/hi';
-import {IoEyeOutline} from 'react-icons/io5';
-import {IoIosArrowUp} from 'react-icons/io';
-import {STICKY_NOTE_SIZE, buttonStyle} from '../../constants/config';
-import TrackingView from '../tracking_view/tracking_view';
+import {STICKY_NOTE_SIZE, buttonStyle} from '@/constants/config';
+import {TranslateFunction} from '@/interfaces/locale';
+import {TrackingContext, TrackingType} from '@/contexts/tracking_context';
+import TrackingView from '@/components/tracking_view/tracking_view';
 
 const TrackingToolPanel = () => {
   const notes: string[] = []; // Info: (20240412 - Julian) 儲存版面上的便條紙

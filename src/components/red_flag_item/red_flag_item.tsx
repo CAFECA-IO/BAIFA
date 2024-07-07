@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {BFAURL} from '../../constants/url';
-import {getChainIcon, timestampToString} from '../../lib/common';
-import {IRedFlag} from '../../interfaces/red_flag';
-import {DEFAULT_CHAIN_ICON, redFlagTypeI18nObj} from '../../constants/config';
+import {DEFAULT_CHAIN_ICON, redFlagTypeI18nObj} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IRedFlag} from '@/interfaces/red_flag';
+import {getChainIcon, timestampToString} from '@/lib/common';
 
 interface IRedFlagItemProps {
   redFlagData: IRedFlag;

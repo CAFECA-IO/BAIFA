@@ -1,10 +1,10 @@
 import {useState, ChangeEvent, KeyboardEvent} from 'react';
-import Image from 'next/image';
-import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
 import {ImCross} from 'react-icons/im';
+import Image from 'next/image';
 import Link from 'next/link';
-import {BFAURL} from '../../constants/url';
+import {useTranslation} from 'next-i18next';
+import {TranslateFunction} from '@/interfaces/locale';
+import {BFAURL} from '@/constants/url';
 
 const PrivateNoteSection = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

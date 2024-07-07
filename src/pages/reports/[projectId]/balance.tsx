@@ -1,7 +1,7 @@
-import Head from 'next/head';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import BalanceSheets from '../../../components/balance_sheets/balance_sheets';
-import {BaifaReports} from '../../../constants/baifa_reports';
+import Head from 'next/head';
+import {BaifaReports} from '@/constants/baifa_reports';
+import BalanceSheets from '@/components/balance_sheets/balance_sheets';
 
 interface IBalanceSheetsProps {
   projectId: string;

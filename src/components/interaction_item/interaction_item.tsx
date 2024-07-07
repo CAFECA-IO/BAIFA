@@ -1,11 +1,11 @@
-import Link from 'next/link';
 import Image from 'next/image';
-import {BFAURL, getDynamicUrl} from '../../constants/url';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {IInteraction} from '../../interfaces/interaction_item';
-import {getChainIcon} from '../../lib/common';
-import {DEFAULT_CHAIN_ICON} from '../../constants/config';
+import Link from 'next/link';
+import {DEFAULT_CHAIN_ICON} from '@/constants/config';
+import {BFAURL, getDynamicUrl} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IInteraction} from '@/interfaces/interaction_item';
+import {getChainIcon} from '@/lib/common';
 
 interface IInteractionItemProps {
   originalAddressId: string;

@@ -1,8 +1,8 @@
 // 004 - GET /app/chains
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IChain} from '../../../../../interfaces/chain';
-import prisma from '../../../../../../prisma/client';
+import {IChain} from '@/interfaces/chain';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IChain[];
 

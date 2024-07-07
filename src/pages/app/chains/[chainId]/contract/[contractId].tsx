@@ -1,26 +1,13 @@
+import {useContext, useState, useEffect} from 'react';
+import {BsArrowLeftShort} from 'react-icons/bs';
+import {GetServerSideProps} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import useAPIResponse from '../../../../../lib/hooks/use_api_response';
 import {useRouter} from 'next/router';
-import {useContext, useState, useEffect} from 'react';
-import {GetServerSideProps} from 'next';
-import {BsArrowLeftShort} from 'react-icons/bs';
-import NavBar from '../../../../../components/nav_bar/nav_bar';
-import BoltButton from '../../../../../components/bolt_button/bolt_button';
-import Footer from '../../../../../components/footer/footer';
-import ContractDetail from '../../../../../components/contract_detail/contract_detail';
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../../../interfaces/locale';
-import {convertStringToSortingType, getChainIcon, truncateText} from '../../../../../lib/common';
-import {BFAURL} from '../../../../../constants/url';
-import {IContractDetail, dummyContractDetail} from '../../../../../interfaces/contract';
-import PrivateNoteSection from '../../../../../components/private_note_section/private_note_section';
-import TransactionHistorySection from '../../../../../components/transaction_history_section/transaction_history_section';
-import Tooltip from '../../../../../components/tooltip/tooltip';
-import {AppContext} from '../../../../../contexts/app_context';
-import {ITransactionHistorySection} from '../../../../../interfaces/transaction';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {APIURL, HttpMethod} from '@/constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
@@ -28,10 +15,23 @@ import {
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
-} from '../../../../../constants/config';
-import DataNotFound from '../../../../../components/data_not_found/data_not_found';
-import {IDatePeriod} from '../../../../../interfaces/date_period';
-import {APIURL, HttpMethod} from '../../../../../constants/api_request';
+} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
+import {IContractDetail, dummyContractDetail} from '@/interfaces/contract';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {TranslateFunction} from '@/interfaces/locale';
+import {ITransactionHistorySection} from '@/interfaces/transaction';
+import {convertStringToSortingType, getChainIcon, truncateText} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import {AppContext} from '@/contexts/app_context';
+import NavBar from '@/components/nav_bar/nav_bar';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import Footer from '@/components/footer/footer';
+import ContractDetail from '@/components/contract_detail/contract_detail';
+import PrivateNoteSection from '@/components/private_note_section/private_note_section';
+import TransactionHistorySection from '@/components/transaction_history_section/transaction_history_section';
+import Tooltip from '@/components/tooltip/tooltip';
+import DataNotFound from '@/components/data_not_found/data_not_found';
 
 interface IContractDetailDetailPageProps {
   chainId: string;

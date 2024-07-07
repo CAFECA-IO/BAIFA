@@ -1,13 +1,13 @@
 import {useState} from 'react';
-import Image from 'next/image';
-import useInputNumber from '../lib/hooks/use_input_number';
 import Head from 'next/head';
-import LandingNavBar from '../components/landing_nav_bar/landing_nav_bar';
-import LandingFooter from '../components/landing_footer/landing_footer';
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {FormAnimation} from '../constants/form_animation';
+import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
-import {ILocale, TranslateFunction} from '../interfaces/locale';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {FormAnimation} from '@/constants/form_animation';
+import {ILocale, TranslateFunction} from '@/interfaces/locale';
+import useInputNumber from '@/lib/hooks/use_input_number';
+import LandingNavBar from '@/components/landing_nav_bar/landing_nav_bar';
+import LandingFooter from '@/components/landing_footer/landing_footer';
 
 const ContactUsPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

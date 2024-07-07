@@ -2,13 +2,13 @@ import {useState} from 'react';
 import {useRouter} from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
-import I18n from '../i18n/i18n';
-import User from '../user/user';
-import useOuterClick from '../../lib/hooks/use_outer_click';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {BFAURL} from '../../constants/url';
-import version from '../../lib/utils/version';
+import {BFAURL} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import useOuterClick from '@/lib/hooks/use_outer_click';
+import version from '@/lib/utils/version';
+import I18n from '@/components/i18n/i18n';
+import User from '@/components/user/user';
 
 const NavBar = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

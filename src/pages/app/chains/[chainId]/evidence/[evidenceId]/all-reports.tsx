@@ -1,8 +1,8 @@
-import Head from 'next/head';
 import {GetServerSideProps} from 'next';
-import BalanceSheetsNeo from '../../../../../../components/balance_sheets_neo/balance_sheets_neo';
-import ComprehensiveIncomeStatementsNeo from '../../../../../../components/comprehensive_income_statements_neo/comprehensive_income_statements_neo';
-import StatementsOfCashFlowNeo from '../../../../../../components/statements_of_cash_flow_neo/statements_of_cash_flow_neo';
+import Head from 'next/head';
+import BalanceSheetsNeo from '@/components/balance_sheets_neo/balance_sheets_neo';
+import ComprehensiveIncomeStatementsNeo from '@/components/comprehensive_income_statements_neo/comprehensive_income_statements_neo';
+import StatementsOfCashFlowNeo from '@/components/statements_of_cash_flow_neo/statements_of_cash_flow_neo';
 
 interface IAllReportsPageProps {
   chainId: string;

@@ -1,18 +1,10 @@
-import Head from 'next/head';
-import {GetServerSideProps} from 'next';
-import {useRouter} from 'next/router';
 import {useState} from 'react';
-import useAPIResponse from '../../../lib/hooks/use_api_response';
+import {GetServerSideProps} from 'next';
+import Head from 'next/head';
+import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import NavBar from '../../../components/nav_bar/nav_bar';
-import RedFlagList from '../../../components/red_flag_list/red_flag_list';
-import Footer from '../../../components/footer/footer';
-import {TranslateFunction} from '../../../interfaces/locale';
-import Breadcrumb from '../../../components/breadcrumb/breadcrumb';
-import {BFAURL} from '../../../constants/url';
-import {IMenuOptions, IRedFlagPage} from '../../../interfaces/red_flag';
-import {IDatePeriod} from '../../../interfaces/date_period';
+import {APIURL, HttpMethod} from '@/constants/api_request';
 import {
   sortOldAndNewOptions,
   default30DayPeriod,
@@ -20,9 +12,17 @@ import {
   redFlagTypeI18nObj,
   ITEM_PER_PAGE,
   DEFAULT_PAGE,
-} from '../../../constants/config';
-import {APIURL, HttpMethod} from '../../../constants/api_request';
-import {convertStringToSortingType, getKeyByValue} from '../../../lib/common';
+} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IMenuOptions, IRedFlagPage} from '@/interfaces/red_flag';
+import {convertStringToSortingType, getKeyByValue} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import NavBar from '@/components/nav_bar/nav_bar';
+import RedFlagList from '@/components/red_flag_list/red_flag_list';
+import Footer from '@/components/footer/footer';
+import Breadcrumb from '@/components/breadcrumb/breadcrumb';
 
 const RedFlagListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

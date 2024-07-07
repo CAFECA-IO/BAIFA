@@ -1,5 +1,5 @@
-import {AddressType} from './address_info';
-import {ICommonData} from './common_data';
+import {AddressType} from '@/interfaces/address_info';
+import {ICommonData} from '@/interfaces/common_data';
 
 export interface IInteractionItem extends ICommonData {
   // Info: (20240220 - Julian) from ICommonData

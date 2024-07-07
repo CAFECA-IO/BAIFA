@@ -1,15 +1,15 @@
-import Link from 'next/link';
 import {Dispatch, SetStateAction} from 'react';
-import {IReviewDetail, IReviews} from '../../interfaces/review';
+import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import ReviewItem from '../review_item/review_item';
-import BoltButton from '../bolt_button/bolt_button';
-import {BFAURL} from '../../constants/url';
-import {DEFAULT_REVIEWS_COUNT_IN_PAGE, sortOldAndNewOptions} from '../../constants/config';
-import SortingMenu from '../sorting_menu/sorting_menu';
-import {roundToDecimal} from '../../lib/common';
-import Skeleton from '../skeleton/skeleton';
+import {DEFAULT_REVIEWS_COUNT_IN_PAGE, sortOldAndNewOptions} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
+import {IReviewDetail, IReviews} from '@/interfaces/review';
+import {TranslateFunction} from '@/interfaces/locale';
+import {roundToDecimal} from '@/lib/common';
+import ReviewItem from '@/components/review_item/review_item';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import SortingMenu from '@/components/sorting_menu/sorting_menu';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface IReviewDetailSection {
   reviews: IReviews;

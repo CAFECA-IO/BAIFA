@@ -1,9 +1,9 @@
 // 020 - GET /app/blacklist
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IBlackListData} from '../../../../interfaces/blacklist';
-import prisma from '../../../../../prisma/client';
-import {DEFAULT_PAGE, ITEM_PER_PAGE, PUBLIC_TAGS_REFERENCE} from '../../../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE, PUBLIC_TAGS_REFERENCE} from '@/constants/config';
+import {IBlackListData} from '@/interfaces/blacklist';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IBlackListData;
 

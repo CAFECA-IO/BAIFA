@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react';
-import {timestampToString, getReportTimeSpan, roundToDecimal} from '../../lib/common';
-import {IResult} from '../../interfaces/result';
-import {IExchangeRates} from '../../interfaces/exchange_rates';
-import {CLOSING_TIME} from '../../constants/config';
-import {getApiRoute} from '../../constants/project_api_route';
+import {CLOSING_TIME} from '@/constants/config';
+import {getApiRoute} from '@/constants/project_api_route';
+import {IResult} from '@/interfaces/result';
+import {IExchangeRates} from '@/interfaces/exchange_rates';
+import {timestampToString, getReportTimeSpan, roundToDecimal} from '@/lib/common';
 
 interface IReportExchageRateFormProps {
   projectId: string;

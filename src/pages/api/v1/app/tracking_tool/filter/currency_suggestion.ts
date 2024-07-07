@@ -1,7 +1,7 @@
 // 104 - GET /app/tracking-tool filter currency suggestion
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../prisma/client';
-import {INPUT_SUGGESTION_LIMIT} from '../../../../../../constants/config';
+import {INPUT_SUGGESTION_LIMIT} from '@/constants/config';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = string[];
 
@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             },
           },
           {
-            id: {
+            address: {
               contains: searchInput,
               mode: 'insensitive', // Info: (20240402 - Julian) 不區分大小寫
             },

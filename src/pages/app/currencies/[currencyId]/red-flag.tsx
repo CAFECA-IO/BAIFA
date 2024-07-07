@@ -1,13 +1,12 @@
+import {useState} from 'react';
+import {BsArrowLeftShort} from 'react-icons/bs';
+import {GetServerSideProps} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState} from 'react';
 import {useRouter} from 'next/router';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {GetServerSideProps} from 'next';
-import NavBar from '../../../../components/nav_bar/nav_bar';
-import BoltButton from '../../../../components/bolt_button/bolt_button';
-import Footer from '../../../../components/footer/footer';
+import {APIURL, HttpMethod} from '@/constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   default30DayPeriod,
@@ -16,20 +15,21 @@ import {
   redFlagTypeI18nObj,
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
-} from '../../../../constants/config';
-import {BsArrowLeftShort} from 'react-icons/bs';
-import {TranslateFunction} from '../../../../interfaces/locale';
-import {IMenuOptions, IRedFlagListForCurrency} from '../../../../interfaces/red_flag';
-import RedFlagList from '../../../../components/red_flag_list/red_flag_list';
-import {BFAURL} from '../../../../constants/url';
-import {IDatePeriod} from '../../../../interfaces/date_period';
-import useAPIResponse from '../../../../lib/hooks/use_api_response';
-import {APIURL, HttpMethod} from '../../../../constants/api_request';
-import DataNotFound from '../../../../components/data_not_found/data_not_found';
-import {getCurrencyIcon, convertStringToSortingType, getKeyByValue} from '../../../../lib/common';
+} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IMenuOptions, IRedFlagListForCurrency} from '@/interfaces/red_flag';
+import {getCurrencyIcon, convertStringToSortingType, getKeyByValue} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import RedFlagList from '@/components/red_flag_list/red_flag_list';
+import NavBar from '@/components/nav_bar/nav_bar';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import Footer from '@/components/footer/footer';
+import DataNotFound from '@/components/data_not_found/data_not_found';
 
 interface IRedFlagOfCurrencyPageProps {
-  currencyId: string;
+  currencyId: number;
 }
 
 const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {

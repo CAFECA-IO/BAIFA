@@ -1,12 +1,12 @@
-import Image from 'next/image';
 import {useCallback, useState, useEffect, Dispatch, SetStateAction} from 'react';
-import useOuterClick from '../../lib/hooks/use_outer_click';
 import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai';
-import {MONTH_LIST, WEEK_LIST, DEFAULT_PAGE} from '../../constants/config';
+import Image from 'next/image';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {IDatePeriod} from '../../interfaces/date_period';
-import {timestampToString} from '../../lib/common';
+import {MONTH_LIST, WEEK_LIST, DEFAULT_PAGE} from '@/constants/config';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {timestampToString} from '@/lib/common';
+import useOuterClick from '@/lib/hooks/use_outer_click';
 
 type Dates = {
   date: number;

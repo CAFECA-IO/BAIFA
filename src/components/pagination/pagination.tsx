@@ -1,9 +1,9 @@
 import {Dispatch, SetStateAction, useCallback, useEffect} from 'react';
 import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
-import {DEFAULT_PAGE, ITEM_PER_PAGE, buttonStyle} from '../../constants/config';
-import useStateRef from 'react-usestateref';
 import {useRouter} from 'next/router';
-import {IAddressHistoryQuery} from '../../constants/api_request';
+import useStateRef from 'react-usestateref';
+import {DEFAULT_PAGE, ITEM_PER_PAGE, buttonStyle} from '@/constants/config';
+import {IAddressHistoryQuery} from '@/constants/api_request';
 
 interface IPagination {
   activePage: number;

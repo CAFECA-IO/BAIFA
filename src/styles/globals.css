@@ -72,7 +72,8 @@ a {
 }
 
 @page {
-  size: 595px 842px;
+  /* size: A4; */
+  size: 595px 843px;
   margin: 0cm;
 }
 

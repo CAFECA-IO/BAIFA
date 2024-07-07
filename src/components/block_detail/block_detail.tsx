@@ -1,16 +1,16 @@
 import {useState, useEffect} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import BoltButton from '../bolt_button/bolt_button';
-import Tooltip from '../tooltip/tooltip';
-import {timestampToString, getTimeString, truncateText, getChainIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {IBlockDetail} from '../../interfaces/block';
-import {getDynamicUrl} from '../../constants/url';
-import {StabilityLevel} from '../../constants/stability_level';
-import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
-import Skeleton from '../skeleton/skeleton';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import Tooltip from '@/components/tooltip/tooltip';
+import Skeleton from '@/components/skeleton/skeleton';
+import {timestampToString, getTimeString, truncateText, getChainIcon} from '@/lib/common';
+import {TranslateFunction} from '@/interfaces/locale';
+import {getDynamicUrl} from '@/constants/url';
+import {StabilityLevel} from '@/constants/stability_level';
+import {DEFAULT_CHAIN_ICON, DEFAULT_TRUNCATE_LENGTH} from '@/constants/config';
+import {IBlockDetail} from '@/interfaces/block';
 
 interface IBlockDetailProps {
   blockData: IBlockDetail;

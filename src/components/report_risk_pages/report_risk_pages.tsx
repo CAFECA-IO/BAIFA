@@ -1,4 +1,4 @@
-import ReportPageBody from '../../components/report_page_body/report_page_body';
+import ReportPageBody from '@/components/report_page_body/report_page_body';
 
 interface IReportRiskPagesProps {
   reportTitle: string;

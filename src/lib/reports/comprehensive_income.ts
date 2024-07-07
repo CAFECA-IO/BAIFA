@@ -1,11 +1,11 @@
+import {RowType} from '@/constants/table_row_type';
 import {
   IComprehensiveIncomeStatements,
   IIncomeAccountingDetail,
-} from '../../interfaces/comprehensive_income_statements';
-import {defaultBreakdown} from '../../interfaces/report_currency_detail';
-import {roundToDecimal, getChange} from '../../lib/common';
-import {ITable} from '../../interfaces/report_table';
-import {RowType} from '../../constants/table_row_type';
+} from '@/interfaces/comprehensive_income_statements';
+import {defaultBreakdown} from '@/interfaces/report_currency_detail';
+import {ITable} from '@/interfaces/report_table';
+import {roundToDecimal, getChange} from '@/lib/common';
 
 export const createCISFirstPart = (
   thead: string[],

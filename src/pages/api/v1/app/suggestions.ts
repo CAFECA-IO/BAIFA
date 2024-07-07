@@ -1,9 +1,9 @@
 // 002 - GET /app/suggestions?search_input=${searchInput}
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {INPUT_SUGGESTION_LIMIT} from '../../../../constants/config';
-import {isValid64BitInteger} from '../../../../lib/common';
-import prisma from '../../../../../prisma/client';
+import {INPUT_SUGGESTION_LIMIT} from '@/constants/config';
+import {isValid64BitInteger} from '@/lib/common';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = {
   suggestions: string[];

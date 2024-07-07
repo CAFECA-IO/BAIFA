@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import {TranslateFunction} from '../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
+import {TranslateFunction} from '@/interfaces/locale';
 
 const DataNotFound = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

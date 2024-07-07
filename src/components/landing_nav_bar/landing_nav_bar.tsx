@@ -1,12 +1,12 @@
 import {useEffect, useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import useOuterClick from '../../lib/hooks/use_outer_click';
-import I18n from '../../components/i18n/i18n';
-import {BFAURL} from '../../constants/url';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import version from '../../lib/utils/version';
+import {BFAURL} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import version from '@/lib/utils/version';
+import useOuterClick from '@/lib/hooks/use_outer_click';
+import I18n from '@/components/i18n/i18n';
 
 const LandingNavBar = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

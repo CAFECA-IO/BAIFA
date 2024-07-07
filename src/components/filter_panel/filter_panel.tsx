@@ -2,13 +2,13 @@ import {ChangeEvent, Dispatch, SetStateAction, useState, useEffect} from 'react'
 import {IoIosCloseCircleOutline} from 'react-icons/io';
 import {ImCross} from 'react-icons/im';
 import {FaAngleRight, FaArrowLeft} from 'react-icons/fa';
-import DatePicker from '../date_picker/date_picker';
-import {IDatePeriod} from '../../interfaces/date_period';
-import useAPIResponse from '../../lib/hooks/use_api_response';
-import {HttpMethod} from '../../constants/api_request';
-import {IChainDetail} from '../../interfaces/chain';
-import {ICurrencyListPage} from '../../interfaces/currency';
-import BoltButton from '../bolt_button/bolt_button';
+import {HttpMethod} from '@/constants/api_request';
+import {IChainDetail} from '@/interfaces/chain';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {ICurrencyListPage} from '@/interfaces/currency';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import DatePicker from '@/components/date_picker/date_picker';
 
 interface IFilterPanelProps {
   modalVisible: boolean;

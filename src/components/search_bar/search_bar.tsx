@@ -1,8 +1,8 @@
 import {Dispatch, SetStateAction, KeyboardEvent, useState, ChangeEvent} from 'react';
 import {RiSearchLine} from 'react-icons/ri';
 import useStateRef from 'react-usestateref';
-import useOuterClick from '../../lib/hooks/use_outer_click';
-import {DEFAULT_PAGE} from '../../constants/config';
+import {DEFAULT_PAGE} from '@/constants/config';
+import useOuterClick from '@/lib/hooks/use_outer_click';
 
 interface ISearchBarProps {
   searchBarPlaceholder: string;

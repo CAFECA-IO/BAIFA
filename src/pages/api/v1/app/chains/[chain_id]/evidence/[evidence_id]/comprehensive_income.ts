@@ -1,12 +1,12 @@
 // 032 - GET /app/chains/:chain_id/evidence/:evidence_id/comprehensive_income
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../../../prisma/client';
 import {
   ComprehensiveIncomeNeoSchema,
   IComprehensiveIncomeResponse,
-} from '../../../../../../../../interfaces/comprehensive_income_neo';
-import {IEvidenceContent} from '../../../../../../../../interfaces/evidence';
+} from '@/interfaces/comprehensive_income_neo';
+import {IEvidenceContent} from '@/interfaces/evidence';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IComprehensiveIncomeResponse | undefined;
 

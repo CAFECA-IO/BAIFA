@@ -1,11 +1,11 @@
 import {useRef, useState, useEffect} from 'react';
+import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai';
 import Image from 'next/image';
 import Link from 'next/link';
-import LandingFooter from '../landing_footer/landing_footer';
-import {massiveDataContent, servicesContent, whyUsContent} from '../../constants/config';
-import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
+import {massiveDataContent, servicesContent, whyUsContent} from '@/constants/config';
+import {TranslateFunction} from '@/interfaces/locale';
+import LandingFooter from '@/components/landing_footer/landing_footer';
 
 const LandingPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

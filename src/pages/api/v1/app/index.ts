@@ -1,9 +1,9 @@
 // 001 - GET /app
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {IPromotion} from '../../../../interfaces/promotion';
-import prisma from '../../../../../prisma/client';
-import {PUBLIC_TAGS_REFERENCE} from '../../../../constants/config';
+import {PUBLIC_TAGS_REFERENCE} from '@/constants/config';
+import {IPromotion} from '@/interfaces/promotion';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IPromotion;
 

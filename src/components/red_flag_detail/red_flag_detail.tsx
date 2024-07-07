@@ -2,16 +2,16 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import Tooltip from '../tooltip/tooltip';
-import BoltButton from '../bolt_button/bolt_button';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {IMenuOptions, IRedFlagDetail} from '../../interfaces/red_flag';
-import {getChainIcon, timestampToString, truncateText} from '../../lib/common';
-import {getDynamicUrl} from '../../constants/url';
-import {DEFAULT_TRUNCATE_LENGTH, redFlagTypeI18nObj} from '../../constants/config';
-import {APIURL, HttpMethod} from '../../constants/api_request';
-import useAPIResponse from '../../lib/hooks/use_api_response';
+import {getDynamicUrl} from '@/constants/url';
+import {DEFAULT_TRUNCATE_LENGTH, redFlagTypeI18nObj} from '@/constants/config';
+import {APIURL, HttpMethod} from '@/constants/api_request';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IMenuOptions, IRedFlagDetail} from '@/interfaces/red_flag';
+import Tooltip from '@/components/tooltip/tooltip';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import {getChainIcon, timestampToString, truncateText} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
 
 interface IRedFlagDetailProps {
   redFlagData: IRedFlagDetail;

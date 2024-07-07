@@ -1,15 +1,15 @@
 import {Dispatch, SetStateAction} from 'react';
-import {ITEM_PER_PAGE, sortOldAndNewOptions} from '../../constants/config';
-import Pagination from '../../components/pagination/pagination';
-import {SearchBarWithKeyDown} from '../../components/search_bar/search_bar';
-import SortingMenu from '../../components/sorting_menu/sorting_menu';
-import DatePicker from '../../components/date_picker/date_picker';
-import RedFlagItem from '../../components/red_flag_item/red_flag_item';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {IRedFlag} from '../../interfaces/red_flag';
-import {IDatePeriod} from '../../interfaces/date_period';
-import Skeleton from '../skeleton/skeleton';
+import {ITEM_PER_PAGE, sortOldAndNewOptions} from '@/constants/config';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IRedFlag} from '@/interfaces/red_flag';
+import Pagination from '@/components/pagination/pagination';
+import {SearchBarWithKeyDown} from '@/components/search_bar/search_bar';
+import SortingMenu from '@/components/sorting_menu/sorting_menu';
+import DatePicker from '@/components/date_picker/date_picker';
+import RedFlagItem from '@/components/red_flag_item/red_flag_item';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface IRedFlagListProps {
   redFlagData: IRedFlag[];
