@@ -1,15 +1,15 @@
 // 023 - GET /app/chains/:chain_id/addresses/:address_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {AddressType} from '../../../../../../../../../interfaces/address_info';
-import {IAddressRelatedTransaction} from '../../../../../../../../../interfaces/address';
-import {IDisplayTransaction} from '../../../../../../../../../interfaces/transaction';
-import prisma from '../../../../../../../../../../prisma/client';
 import {
   CODE_WHEN_NULL,
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
-} from '../../../../../../../../../constants/config';
+} from '@/constants/config';
+import {AddressType} from '@/interfaces/address_info';
+import {IAddressRelatedTransaction} from '@/interfaces/address';
+import {IDisplayTransaction} from '@/interfaces/transaction';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IAddressRelatedTransaction | undefined;
 

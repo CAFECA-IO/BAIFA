@@ -1,8 +1,8 @@
 // 016 - GET /app/chains/:chain_id/evidence/:evidence_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../../../prisma/client';
-import {IEvidenceBrief} from '../../../../../../../../interfaces/evidence';
+import {IEvidenceBrief} from '@/interfaces/evidence';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IEvidenceBrief | undefined;
 

@@ -1,35 +1,35 @@
+import {useState, useEffect, useContext} from 'react';
+import {BsArrowLeftShort} from 'react-icons/bs';
+import {GetServerSideProps} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import useAPIResponse from '../../../../../../lib/hooks/use_api_response';
-import {useState, useEffect, useContext} from 'react';
-import {AppContext} from '../../../../../../contexts/app_context';
 import {useRouter} from 'next/router';
-import {GetServerSideProps} from 'next';
-import NavBar from '../../../../../../components/nav_bar/nav_bar';
-import BoltButton from '../../../../../../components/bolt_button/bolt_button';
-import EvidenceDetail from '../../../../../../components/evidence_detail/evidence_detail';
-import PrivateNoteSection from '../../../../../../components/private_note_section/private_note_section';
-import TransactionHistorySection from '../../../../../../components/transaction_history_section/transaction_history_section';
-import Footer from '../../../../../../components/footer/footer';
-import {BsArrowLeftShort} from 'react-icons/bs';
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../../../../interfaces/locale';
-import {convertStringToSortingType, getChainIcon, truncateText} from '../../../../../../lib/common';
-import {BFAURL} from '../../../../../../constants/url';
-import {IEvidenceDetail, dummyEvidenceDetail} from '../../../../../../interfaces/evidence';
-import {ITransactionHistorySection} from '../../../../../../interfaces/transaction';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {APIURL, HttpMethod} from '@/constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
-} from '../../../../../../constants/config';
-import DataNotFound from '../../../../../../components/data_not_found/data_not_found';
-import {IDatePeriod} from '../../../../../../interfaces/date_period';
-import {APIURL, HttpMethod} from '../../../../../../constants/api_request';
+} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {IEvidenceDetail, dummyEvidenceDetail} from '@/interfaces/evidence';
+import {TranslateFunction} from '@/interfaces/locale';
+import {ITransactionHistorySection} from '@/interfaces/transaction';
+import {convertStringToSortingType, getChainIcon, truncateText} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import {AppContext} from '@/contexts/app_context';
+import NavBar from '@/components/nav_bar/nav_bar';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import EvidenceDetail from '@/components/evidence_detail/evidence_detail';
+import PrivateNoteSection from '@/components/private_note_section/private_note_section';
+import TransactionHistorySection from '@/components/transaction_history_section/transaction_history_section';
+import Footer from '@/components/footer/footer';
+import DataNotFound from '@/components/data_not_found/data_not_found';
 
 interface IEvidenceDetailDetailPageProps {
   chainId: string;

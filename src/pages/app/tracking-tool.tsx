@@ -1,13 +1,13 @@
-import {useTranslation} from 'next-i18next';
 import Head from 'next/head';
+import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {ILocale, TranslateFunction} from '../../interfaces/locale';
-import {BFAURL} from '../../constants/url';
-import Footer from '../../components/footer/footer';
-import Breadcrumb from '../../components/breadcrumb/breadcrumb';
-import NavBar from '../../components/nav_bar/nav_bar';
-import TrackingToolPanel from '../../components/tracking_tool_panel/tracking_tool_panel';
-import {TrackingProvider} from '../../contexts/tracking_context';
+import {BFAURL} from '@/constants/url';
+import {ILocale, TranslateFunction} from '@/interfaces/locale';
+import {TrackingProvider} from '@/contexts/tracking_context';
+import Footer from '@/components/footer/footer';
+import Breadcrumb from '@/components/breadcrumb/breadcrumb';
+import NavBar from '@/components/nav_bar/nav_bar';
+import TrackingToolPanel from '@/components/tracking_tool_panel/tracking_tool_panel';
 
 const TrackingToolPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

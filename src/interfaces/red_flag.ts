@@ -1,4 +1,4 @@
-import {ICommonData} from './common_data';
+import {ICommonData} from '@/interfaces/common_data';
 
 export interface IRedFlag extends ICommonData {
   // chainName: string; // TODO: Info:(20240201 - Julian) 可能移除

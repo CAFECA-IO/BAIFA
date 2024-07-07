@@ -1,9 +1,9 @@
-import {AddressType} from './address_info';
-import {IProducedBlock} from './block';
-import {ICommonData} from './common_data';
-import {IInteractionItem} from './interaction_item';
-import {IReviewDetail} from './review';
-import {ITransactionData} from './transaction';
+import {AddressType} from '@/interfaces/address_info';
+import {IProducedBlock} from '@/interfaces/block';
+import {ICommonData} from '@/interfaces/common_data';
+import {IInteractionItem} from '@/interfaces/interaction_item';
+import {IReviewDetail} from '@/interfaces/review';
+import {ITransactionData} from '@/interfaces/transaction';
 
 export interface IAddress extends ICommonData {
   address: string;

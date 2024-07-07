@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import {BaifaReports} from '../../constants/baifa_reports';
+import {BaifaReports} from '@/constants/baifa_reports';
 
 interface ReportCoverProps {
   reportTitle: string;

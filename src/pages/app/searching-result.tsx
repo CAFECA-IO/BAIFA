@@ -1,36 +1,36 @@
-import Head from 'next/head';
 import {useState, useEffect, useContext} from 'react';
-import {AppContext} from '../../contexts/app_context';
 import useStateRef from 'react-usestateref';
+import {GetServerSideProps} from 'next';
+import Head from 'next/head';
 import {useRouter} from 'next/router';
-import NavBar from '../../components/nav_bar/nav_bar';
-import Footer from '../../components/footer/footer';
-import DatePicker from '../../components/date_picker/date_picker';
-import SortingMenu from '../../components/sorting_menu/sorting_menu';
-import SearchingResultItem from '../../components/searching_result_item/searching_result_item';
-import Pagination from '../../components/pagination/pagination';
+import {useTranslation} from 'next-i18next';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {ParsedUrlQuery} from 'querystring';
+import {APIURL, HttpMethod} from '@/constants/api_request';
 import {
   sortOldAndNewOptions,
   ITEM_PER_PAGE,
   default30DayPeriod,
   DEFAULT_PAGE,
-} from '../../constants/config';
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
+} from '@/constants/config';
+import {SearchType} from '@/constants/search_type';
+import {TranslateFunction} from '@/interfaces/locale';
 import {
   ISearchResultData,
   filterTabs,
   filterTabsToSearchType,
-} from '../../interfaces/search_result';
-import GlobalSearch from '../../components/global_search/global_search';
-import {GetServerSideProps} from 'next';
-import {ParsedUrlQuery} from 'querystring';
-import Skeleton from '../../components/skeleton/skeleton';
-import useAPIWorker from '../../lib/hooks/use_api_worker';
-import {APIURL, HttpMethod} from '../../constants/api_request';
-import {convertStringToSortingType} from '../../lib/common';
-import {SearchType} from '../../constants/search_type';
+} from '@/interfaces/search_result';
+import {convertStringToSortingType} from '@/lib/common';
+import useAPIWorker from '@/lib/hooks/use_api_worker';
+import {AppContext} from '@/contexts/app_context';
+import NavBar from '@/components/nav_bar/nav_bar';
+import Footer from '@/components/footer/footer';
+import DatePicker from '@/components/date_picker/date_picker';
+import SortingMenu from '@/components/sorting_menu/sorting_menu';
+import SearchingResultItem from '@/components/searching_result_item/searching_result_item';
+import Pagination from '@/components/pagination/pagination';
+import GlobalSearch from '@/components/global_search/global_search';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface ISearchingResultPageProps {
   searchQuery: string;

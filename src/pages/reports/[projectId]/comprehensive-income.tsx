@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import {GetStaticPaths, GetStaticProps} from 'next';
-import {BaifaReports} from '../../../constants/baifa_reports';
-import ComprehensiveIncomeStatements from '../../../components/comprehensive_income_statements/comprehensive_income_statements';
+import {BaifaReports} from '@/constants/baifa_reports';
+import ComprehensiveIncomeStatements from '@/components/comprehensive_income_statements/comprehensive_income_statements';
 
 interface IComprehensiveIncomeStatementsProps {
   projectId: string;

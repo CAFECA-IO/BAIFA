@@ -1,33 +1,33 @@
+import {useState} from 'react';
+import {BsArrowLeftShort} from 'react-icons/bs';
+import {GetServerSideProps} from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import {useState} from 'react';
 import {useRouter} from 'next/router';
-import {GetServerSideProps} from 'next';
-import NavBar from '../../../components/nav_bar/nav_bar';
-import RedFlagDetail from '../../../components/red_flag_detail/red_flag_detail';
-import BoltButton from '../../../components/bolt_button/bolt_button';
-import Footer from '../../../components/footer/footer';
-import {BsArrowLeftShort} from 'react-icons/bs';
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../../interfaces/locale';
-import {IRedFlagDetail} from '../../../interfaces/red_flag';
-import {getChainIcon, convertStringToSortingType} from '../../../lib/common';
-import {BFAURL} from '../../../constants/url';
-import TransactionHistorySection from '../../../components/transaction_history_section/transaction_history_section';
-import {ITransactionHistorySection} from '../../../interfaces/transaction';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {APIURL, HttpMethod} from '@/constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
-} from '../../../constants/config';
-import {IDatePeriod} from '../../../interfaces/date_period';
-import useAPIResponse from '../../../lib/hooks/use_api_response';
-import {APIURL, HttpMethod} from '../../../constants/api_request';
-import DataNotFound from '../../../components/data_not_found/data_not_found';
+} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IRedFlagDetail} from '@/interfaces/red_flag';
+import {ITransactionHistorySection} from '@/interfaces/transaction';
+import {getChainIcon, convertStringToSortingType} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import NavBar from '@/components/nav_bar/nav_bar';
+import RedFlagDetail from '@/components/red_flag_detail/red_flag_detail';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import Footer from '@/components/footer/footer';
+import TransactionHistorySection from '@/components/transaction_history_section/transaction_history_section';
+import DataNotFound from '@/components/data_not_found/data_not_found';
 
 interface IRedFlagDetailPageProps {
   redFlagId: string;

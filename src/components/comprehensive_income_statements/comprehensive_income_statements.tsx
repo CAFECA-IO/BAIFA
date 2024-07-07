@@ -1,23 +1,23 @@
 import {useEffect, useState, useRef} from 'react';
-import {BaifaReports} from '../../constants/baifa_reports';
-import {A4_SIZE} from '../../constants/config';
-import {getApiRoute} from '../../constants/project_api_route';
-import {IComprehensiveIncomeStatements} from '../../interfaces/comprehensive_income_statements';
-import {IResult} from '../../interfaces/result';
-import {timestampToString, getReportTimeSpan} from '../../lib/common';
-import useWindowSize from '../../lib/hooks/use_window_size';
+import {BaifaReports} from '@/constants/baifa_reports';
+import {A4_SIZE} from '@/constants/config';
+import {getApiRoute} from '@/constants/project_api_route';
+import {IComprehensiveIncomeStatements} from '@/interfaces/comprehensive_income_statements';
+import {IResult} from '@/interfaces/result';
+import {timestampToString, getReportTimeSpan} from '@/lib/common';
+import useWindowSize from '@/lib/hooks/use_window_size';
 import {
   createCISFirstPart,
   createCISLastPart,
   createRevenueTable,
   createRevenueChangeTable,
-} from '../../lib/reports/comprehensive_income';
-import ReportContent from '../report_content/report_content';
-import ReportCover from '../report_cover/report_cover';
-import ReportExchageRateForm from '../report_exchage_rate_form/report_exchage_rate_form';
-import ReportPageBody from '../report_page_body/report_page_body';
-import ReportRiskPages from '../report_risk_pages/report_risk_pages';
-import ReportTable from '../report_table/report_table';
+} from '@/lib/reports/comprehensive_income';
+import ReportContent from '@/components/report_content/report_content';
+import ReportCover from '@/components/report_cover/report_cover';
+import ReportExchageRateForm from '@/components/report_exchage_rate_form/report_exchage_rate_form';
+import ReportPageBody from '@/components/report_page_body/report_page_body';
+import ReportRiskPages from '@/components/report_risk_pages/report_risk_pages';
+import ReportTable from '@/components/report_table/report_table';
 
 interface IComprehensiveIncomeStatementsProps {
   projectId: string;

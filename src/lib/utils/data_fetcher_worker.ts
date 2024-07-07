@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import {HttpMethod, RequestOptions} from '../../constants/api_request';
+import {HttpMethod, RequestOptions} from '@/constants/api_request';
 
 interface FetchRequestData {
   key: string;

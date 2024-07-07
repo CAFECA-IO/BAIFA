@@ -1,9 +1,9 @@
 // 021 - GET /app/red_flags
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../prisma/client';
-import {IRedFlagPage} from '../../../../../interfaces/red_flag';
-import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
+import {IRedFlagPage} from '@/interfaces/red_flag';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IRedFlagPage;
 

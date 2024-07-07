@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
-import {ICurrencyDetailString} from '../../interfaces/currency';
-import {TranslateFunction} from '../../interfaces/locale';
-import {roundToDecimal, withCommas} from '../../lib/common';
-import {BFAURL} from '../../constants/url';
-import Tooltip from '../tooltip/tooltip';
-import Skeleton from '../skeleton/skeleton';
+import {BFAURL} from '@/constants/url';
+import {ICurrencyDetailString} from '@/interfaces/currency';
+import {TranslateFunction} from '@/interfaces/locale';
+import {roundToDecimal, withCommas} from '@/lib/common';
+import Tooltip from '@/components/tooltip/tooltip';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface ICurrencyDetailProps {
   currencyData: ICurrencyDetailString;

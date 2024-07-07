@@ -1,16 +1,16 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import {BFAURL} from '../../constants/url';
 import {BiLogoGithub} from 'react-icons/bi';
 import {BsTelephone} from 'react-icons/bs';
 import {FiMapPin} from 'react-icons/fi';
+import Link from 'next/link';
+import Image from 'next/image';
 import {
   copyright,
   baifaAddress,
   baifaAddressOnMap,
   baifaPhone,
   githubLink,
-} from '../../constants/config';
+} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
 
 const LandingFooter = () => {
   return (

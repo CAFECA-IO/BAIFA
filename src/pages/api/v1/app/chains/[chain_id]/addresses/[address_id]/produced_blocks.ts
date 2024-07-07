@@ -1,12 +1,12 @@
 // 024 - GET /app/chains/:chain_id/addresses/:address_id/produced_blocks
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {AddressType} from '../../../../../../../../interfaces/address_info';
-import {IAddressProducedBlock} from '../../../../../../../../interfaces/address';
-import {IProductionBlock} from '../../../../../../../../interfaces/block';
-import prisma from '../../../../../../../../../prisma/client';
-import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../../../constants/config';
-import {assessBlockStability} from '../../../../../../../../lib/common';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
+import {AddressType} from '@/interfaces/address_info';
+import {IAddressProducedBlock} from '@/interfaces/address';
+import {IProductionBlock} from '@/interfaces/block';
+import {assessBlockStability} from '@/lib/common';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IAddressProducedBlock | undefined;
 

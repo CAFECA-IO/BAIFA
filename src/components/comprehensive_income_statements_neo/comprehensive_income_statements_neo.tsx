@@ -1,23 +1,23 @@
 import {useEffect, useRef} from 'react';
-import useAPIResponse from '../../lib/hooks/use_api_response';
-import {BaifaReports} from '../../constants/baifa_reports';
-import {A4_SIZE} from '../../constants/config';
-import {timestampToString} from '../../lib/common';
-import useWindowSize from '../../lib/hooks/use_window_size';
+import {APIURL, HttpMethod} from '@/constants/api_request';
+import {BaifaReports} from '@/constants/baifa_reports';
+import {A4_SIZE} from '@/constants/config';
+import {IComprehensiveIncomeResponse} from '@/interfaces/comprehensive_income_neo';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import {timestampToString} from '@/lib/common';
+import useWindowSize from '@/lib/hooks/use_window_size';
 import {
   createCISFirstPart,
   createCISLastPart,
   createRevenueTable,
   createRevenueChangeTable,
-} from '../../lib/reports/comprehensive_income_neo';
-import ReportContent from '../report_content/report_content';
-import ReportCover from '../report_cover/report_cover';
-import ReportPageBody from '../report_page_body/report_page_body';
-import ReportRiskPages from '../report_risk_pages/report_risk_pages';
-import ReportTable from '../report_table/report_table';
-import {IComprehensiveIncomeResponse} from '../../interfaces/comprehensive_income_neo';
-import {APIURL, HttpMethod} from '../../constants/api_request';
-import ReportExchageRateFormNeo from '../report_exchage_rate_form_neo/report_exchage_rate_form_neo';
+} from '@/lib/reports/comprehensive_income_neo';
+import ReportContent from '@/components/report_content/report_content';
+import ReportCover from '@/components/report_cover/report_cover';
+import ReportPageBody from '@/components/report_page_body/report_page_body';
+import ReportRiskPages from '@/components/report_risk_pages/report_risk_pages';
+import ReportTable from '@/components/report_table/report_table';
+import ReportExchageRateFormNeo from '@/components/report_exchage_rate_form_neo/report_exchage_rate_form_neo';
 
 interface IComprehensiveIncomeStatementsNeoProps {
   chainId: string;

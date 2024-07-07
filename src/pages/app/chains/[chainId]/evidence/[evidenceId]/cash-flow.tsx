@@ -1,6 +1,6 @@
-import Head from 'next/head';
 import {GetServerSideProps} from 'next';
-import StatementsOfCashFlowNeo from '../../../../../../components/statements_of_cash_flow_neo/statements_of_cash_flow_neo';
+import Head from 'next/head';
+import StatementsOfCashFlowNeo from '@/components/statements_of_cash_flow_neo/statements_of_cash_flow_neo';
 
 interface IAllReportsPageProps {
   chainId: string;

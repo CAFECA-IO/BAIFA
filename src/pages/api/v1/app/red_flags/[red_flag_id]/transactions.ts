@@ -1,10 +1,10 @@
 // 035 - GET /app/red_flags/:red_flag_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../prisma/client';
-import {ITransactionHistorySection} from '../../../../../../interfaces/transaction';
-import {AddressType} from '../../../../../../interfaces/address_info';
-import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../constants/config';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
+import {ITransactionHistorySection} from '@/interfaces/transaction';
+import {AddressType} from '@/interfaces/address_info';
+import prisma from '@/lib/utils/prisma'
 
 type ResponseData = ITransactionHistorySection;
 

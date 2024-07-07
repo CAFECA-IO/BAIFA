@@ -1,5 +1,5 @@
 import React, {useContext, createContext, useState} from 'react';
-import {MarketContext} from './market_context';
+import {MarketContext} from '@/contexts/market_context';
 
 interface IAppProvider {
   children: React.ReactNode;

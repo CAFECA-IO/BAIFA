@@ -1,11 +1,11 @@
-import {ISearchType, SearchType} from '../constants/search_type';
-import {IBlock} from './block';
-import {IAddress} from './address';
-import {IContract} from './contract';
-import {IEvidence} from './evidence';
-import {IRedFlagSearchResult} from './red_flag';
-import {ITransactionSearchResult} from './transaction';
-import {IBlackList} from './blacklist';
+import {ISearchType, SearchType} from '@/constants/search_type';
+import {IBlock} from '@/interfaces/block';
+import {IAddress} from '@/interfaces/address';
+import {IContract} from '@/interfaces/contract';
+import {IEvidence} from '@/interfaces/evidence';
+import {IRedFlagSearchResult} from '@/interfaces/red_flag';
+import {ITransactionSearchResult} from '@/interfaces/transaction';
+import {IBlackList} from '@/interfaces/blacklist';
 
 export interface ISearchResult {
   type: ISearchType;

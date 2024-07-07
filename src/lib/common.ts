@@ -1,4 +1,7 @@
-import {IPaginationOptions, TimeSortingType} from '../constants/api_request';
+import clsx from 'clsx';
+import type {ClassValue} from 'clsx';
+import {twMerge} from 'tailwind-merge';
+import {IPaginationOptions, TimeSortingType} from '@/constants/api_request';
 import {
   DEFAULT_CHAIN_ICON,
   DEFAULT_CURRENCY_ICON,
@@ -9,13 +12,10 @@ import {
   sortOldAndNewOptions,
   THRESHOLD_FOR_ADDRESS_RISK_LEVEL,
   THRESHOLD_FOR_BLOCK_STABILITY,
-} from '../constants/config';
-import {StabilityLevel} from '../constants/stability_level';
-import clsx from 'clsx';
-import type {ClassValue} from 'clsx';
-import {twMerge} from 'tailwind-merge';
-import {AddressType} from '../interfaces/address_info';
-import {IRiskLevel, RiskLevel} from '../constants/risk_level';
+} from '@/constants/config';
+import {StabilityLevel} from '@/constants/stability_level';
+import {IRiskLevel, RiskLevel} from '@/constants/risk_level';
+import {AddressType} from '@/interfaces/address_info';
 
 export const getKeyByValue = (
   object: {
@@ -189,7 +189,7 @@ export const getChainIcon = (chainId: string) => {
   };
 };
 
-export const getCurrencyIcon = (currencyId: string) => {
+export const getCurrencyIcon = (currencyId: number) => {
   // Info: (20240206 - Julian) 如果沒有 currencyId，就顯示 default_currency.svg
   if (!currencyId) return {src: DEFAULT_CURRENCY_ICON, alt: 'currency_icon'};
   return {

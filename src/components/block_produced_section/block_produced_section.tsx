@@ -1,24 +1,24 @@
-import Image from 'next/image';
-import Link from 'next/link';
 import {useState, Dispatch, SetStateAction} from 'react';
 import useStateRef from 'react-usestateref';
-import {SearchBarWithKeyDown} from '../search_bar/search_bar';
-import SortingMenu from '../sorting_menu/sorting_menu';
-import {TranslateFunction} from '../../interfaces/locale';
+import Image from 'next/image';
+import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
 import {
   DEFAULT_CHAIN_ICON,
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
-} from '../../constants/config';
-import {getChainIcon, roundToDecimal, timestampToString} from '../../lib/common';
-import {getDynamicUrl} from '../../constants/url';
-import Pagination from '../pagination/pagination';
-import DatePicker from '../date_picker/date_picker';
-import {IProductionBlock} from '../../interfaces/block';
-import {SkeletonList} from '../skeleton/skeleton';
-import {IDatePeriod} from '../../interfaces/date_period';
+} from '@/constants/config';
+import {TranslateFunction} from '@/interfaces/locale';
+import {getDynamicUrl} from '@/constants/url';
+import {IProductionBlock} from '@/interfaces/block';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {getChainIcon, roundToDecimal, timestampToString} from '@/lib/common';
+import DatePicker from '@/components/date_picker/date_picker';
+import Pagination from '@/components/pagination/pagination';
+import {SearchBarWithKeyDown} from '@/components/search_bar/search_bar';
+import {SkeletonList} from '@/components/skeleton/skeleton';
+import SortingMenu from '@/components/sorting_menu/sorting_menu';
 
 interface IBlockProducedHistorySectionProps {
   blocks: IProductionBlock[];

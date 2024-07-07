@@ -1,9 +1,9 @@
 // 015 - GET /app/chains/:chain_id/contracts/:contract_id
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../../../prisma/client';
-import {AddressType} from '../../../../../../../../interfaces/address_info';
-import {IContractBrief} from '../../../../../../../../interfaces/contract';
+import {AddressType} from '@/interfaces/address_info';
+import {IContractBrief} from '@/interfaces/contract';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = IContractBrief | undefined;
 

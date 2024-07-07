@@ -1,5 +1,5 @@
-import {IRedFlag} from './red_flag';
-import {IDisplayTransaction} from './transaction';
+import {IRedFlag} from '@/interfaces/red_flag';
+import {IDisplayTransaction} from '@/interfaces/transaction';
 
 export interface IHolder {
   addressId: string;
@@ -17,7 +17,7 @@ export interface ITop100Holders {
 }
 
 export interface ICurrency {
-  currencyId: string;
+  currencyId: number;
   currencyName: string;
   rank: number;
   riskLevel: string;
@@ -55,19 +55,3 @@ export interface ICurrencyDetailString extends ICurrency {
   flagging: IRedFlag[];
   flaggingCount: number;
 }
-
-export const dummyCurrencyDetailString: ICurrencyDetailString = {
-  currencyId: '',
-  currencyName: '',
-  rank: 0,
-  riskLevel: '',
-  chainId: '',
-  price: 0,
-  volumeIn24h: 0,
-  unit: '',
-  totalAmount: '',
-  holderCount: 0,
-  totalTransfers: 0,
-  flagging: [],
-  flaggingCount: 0,
-};

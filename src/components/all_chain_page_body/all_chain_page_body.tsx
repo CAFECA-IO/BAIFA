@@ -1,13 +1,13 @@
-import Footer from '../footer/footer';
-import ChainsCard from '../chain_card/chain_card';
-import Breadcrumb from '../../components/breadcrumb/breadcrumb';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {BFAURL} from '../../constants/url';
-import Skeleton from '../skeleton/skeleton';
-import {IChainDetail} from '../../interfaces/chain';
-import useAPIResponse from '../../lib/hooks/use_api_response';
-import {APIURL, HttpMethod} from '../../constants/api_request';
+import Footer from '@/components/footer/footer';
+import ChainsCard from '@/components/chain_card/chain_card';
+import Breadcrumb from '@/components/breadcrumb/breadcrumb';
+import Skeleton from '@/components/skeleton/skeleton';
+import {TranslateFunction} from '@/interfaces/locale';
+import {BFAURL} from '@/constants/url';
+import {APIURL, HttpMethod} from '@/constants/api_request';
+import {IChainDetail} from '@/interfaces/chain';
+import useAPIResponse from '@/lib/hooks/use_api_response';
 
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

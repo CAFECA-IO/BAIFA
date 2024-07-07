@@ -1,20 +1,20 @@
 import {useState, useEffect} from 'react';
-import Footer from '../footer/footer';
-import Breadcrumb from '../breadcrumb/breadcrumb';
-import CurrencyItem from '../currency_item/currency_item';
-import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {BFAURL} from '../../constants/url';
-import {ICurrencyListPage} from '../../interfaces/currency';
-import Pagination from '../pagination/pagination';
-import {SearchBarWithKeyDown} from '../search_bar/search_bar';
-import SortingMenu from '../sorting_menu/sorting_menu';
-import useAPIResponse from '../../lib/hooks/use_api_response';
-import {APIURL, HttpMethod} from '../../constants/api_request';
-import Skeleton from '../skeleton/skeleton';
-import {DEFAULT_PAGE, ITEM_PER_PAGE, defaultOption} from '../../constants/config';
-import {getKeyByValue} from '../../lib/common';
 import {useRouter} from 'next/router';
+import {useTranslation} from 'next-i18next';
+import Footer from '@/components/footer/footer';
+import Breadcrumb from '@/components/breadcrumb/breadcrumb';
+import CurrencyItem from '@/components/currency_item/currency_item';
+import Pagination from '@/components/pagination/pagination';
+import {SearchBarWithKeyDown} from '@/components/search_bar/search_bar';
+import Skeleton from '@/components/skeleton/skeleton';
+import SortingMenu from '@/components/sorting_menu/sorting_menu';
+import {ICurrencyListPage} from '@/interfaces/currency';
+import {TranslateFunction} from '@/interfaces/locale';
+import {DEFAULT_PAGE, ITEM_PER_PAGE, defaultOption} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
+import {APIURL, HttpMethod} from '@/constants/api_request';
+import {getKeyByValue} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
 
 const AllCurrenciesPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

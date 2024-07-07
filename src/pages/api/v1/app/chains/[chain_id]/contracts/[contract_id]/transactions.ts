@@ -1,10 +1,10 @@
 // 025 - GET /app/chains/:chain_id/contracts/:contract_id/transactions
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {AddressType, IAddressInfo} from '../../../../../../../../interfaces/address_info';
-import {ITransactionHistorySection} from '../../../../../../../../interfaces/transaction';
-import {DEFAULT_PAGE, ITEM_PER_PAGE} from '../../../../../../../../constants/config';
-import prisma from '../../../../../../../../../prisma/client';
+import {AddressType, IAddressInfo} from '@/interfaces/address_info';
+import {ITransactionHistorySection} from '@/interfaces/transaction';
+import {DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = ITransactionHistorySection;
 

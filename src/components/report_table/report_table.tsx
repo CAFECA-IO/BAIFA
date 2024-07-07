@@ -1,5 +1,5 @@
-import {ITableRows, ITable} from '../../interfaces/report_table';
-import {RowType} from '../../constants/table_row_type';
+import {RowType} from '@/constants/table_row_type';
+import {ITableRows, ITable} from '@/interfaces/report_table';
 
 interface IReportTable {
   tableData: ITable;

@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {IContractDetail} from '../../interfaces/contract';
-import Tooltip from '../tooltip/tooltip';
-import BoltButton from '../bolt_button/bolt_button';
-import {getDynamicUrl} from '../../constants/url';
-import {timestampToString, truncateText} from '../../lib/common';
-import {DEFAULT_TRUNCATE_LENGTH} from '../../constants/config';
-import Skeleton from '../skeleton/skeleton';
+import {DEFAULT_TRUNCATE_LENGTH} from '@/constants/config';
+import {getDynamicUrl} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IContractDetail} from '@/interfaces/contract';
+import {timestampToString, truncateText} from '@/lib/common';
+import Tooltip from '@/components/tooltip/tooltip';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface IContractDetailDetailProps {
   contractData: IContractDetail;

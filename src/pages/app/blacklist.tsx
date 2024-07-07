@@ -1,29 +1,29 @@
+import {useState} from 'react';
 import Head from 'next/head';
 import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
-import {useState} from 'react';
-import NavBar from '../../components/nav_bar/nav_bar';
-import Breadcrumb from '../../components/breadcrumb/breadcrumb';
-import SortingMenu from '../../components/sorting_menu/sorting_menu';
-import Pagination from '../../components/pagination/pagination';
-import SearchBar from '../../components/search_bar/search_bar';
-import BlacklistItem from '../../components/blacklist_item/blacklist_item';
-import {IBlackListData} from '../../interfaces/blacklist';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {TranslateFunction} from '../../interfaces/locale';
-import {BFAURL} from '../../constants/url';
+import {APIURL, HttpMethod} from '@/constants/api_request';
 import {
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
   sortOldAndNewOptions,
   defaultOption,
-} from '../../constants/config';
-import {APIURL, HttpMethod} from '../../constants/api_request';
-import useAPIResponse from '../../lib/hooks/use_api_response';
-import {convertStringToSortingType} from '../../lib/common';
-import Skeleton from '../../components/skeleton/skeleton';
-import Footer from '../../components/footer/footer';
+} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
+import {IBlackListData} from '@/interfaces/blacklist';
+import {TranslateFunction} from '@/interfaces/locale';
+import {convertStringToSortingType} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import NavBar from '@/components/nav_bar/nav_bar';
+import Breadcrumb from '@/components/breadcrumb/breadcrumb';
+import SortingMenu from '@/components/sorting_menu/sorting_menu';
+import Pagination from '@/components/pagination/pagination';
+import SearchBar from '@/components/search_bar/search_bar';
+import BlacklistItem from '@/components/blacklist_item/blacklist_item';
+import Skeleton from '@/components/skeleton/skeleton';
+import Footer from '@/components/footer/footer';
 
 const BlackListPage = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');

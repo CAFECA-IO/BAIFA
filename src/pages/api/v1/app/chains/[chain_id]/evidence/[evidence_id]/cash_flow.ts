@@ -1,12 +1,12 @@
 // 033 - GET /app/chains/:chain_id/evidence/:evidence_id/cash_flow
 
 import type {NextApiRequest, NextApiResponse} from 'next';
-import prisma from '../../../../../../../../../prisma/client';
 import {
   ICashFlowResponse,
   CashFlowNeoSchema,
-} from '../../../../../../../../interfaces/cash_flow_neo';
-import {IEvidenceContent} from '../../../../../../../../interfaces/evidence';
+} from '@/interfaces/cash_flow_neo';
+import {IEvidenceContent} from '@/interfaces/evidence';
+import prisma from '@/lib/utils/prisma';
 
 type ResponseData = ICashFlowResponse | undefined;
 

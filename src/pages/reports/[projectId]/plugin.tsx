@@ -1,27 +1,27 @@
 import {useEffect, useState} from 'react';
+import {BiLinkAlt} from 'react-icons/bi';
+import {FiDownload} from 'react-icons/fi';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useTranslation} from 'next-i18next';
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import BoltButton from '../../../components/bolt_button/bolt_button';
-import ReserveCard from '../../../components/reserve_card/reserve_card';
-import {TranslateFunction} from '../../../interfaces/locale';
-import {IResult} from '../../../interfaces/result';
+import {REPORT_PATH, BFAURL} from '@/constants/url';
+import {pluginReportsList} from '@/constants/config';
+import {APIURL} from '@/constants/api_request';
+import {TranslateFunction} from '@/interfaces/locale';
+import {IResult} from '@/interfaces/result';
+import {dummyWebsiteReserve, IWebsiteReserve} from '@/interfaces/website_reserve';
 import {
   timestampToString,
   getReportTimeSpan,
   getChainIcon,
   withCommas,
   roundToDecimal,
-} from '../../../lib/common';
-import {REPORT_PATH, BFAURL} from '../../../constants/url';
-import {pluginReportsList} from '../../../constants/config';
-import {APIURL} from '../../../constants/api_request';
-import {dummyWebsiteReserve, IWebsiteReserve} from '../../../interfaces/website_reserve';
-import {BiLinkAlt} from 'react-icons/bi';
-import {FiDownload} from 'react-icons/fi';
+} from '@/lib/common';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import ReserveCard from '@/components/reserve_card/reserve_card';
 
 interface IBaifaPluginProps {
   projectId: string;

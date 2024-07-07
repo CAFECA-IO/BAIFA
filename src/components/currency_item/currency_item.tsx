@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {getCurrencyIcon} from '../../lib/common';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {BFAURL} from '../../constants/url';
-import {DEFAULT_CURRENCY_ICON} from '../../constants/config';
+import {DEFAULT_CURRENCY_ICON} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
+import {TranslateFunction} from '@/interfaces/locale';
+import {getCurrencyIcon} from '@/lib/common';
 
 interface ICurrencyItemProps {
-  currencyId: string;
+  currencyId: number;
   currencyName: string;
   rank: number;
   riskLevel: string;

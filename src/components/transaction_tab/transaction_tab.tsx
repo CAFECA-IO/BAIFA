@@ -1,19 +1,19 @@
 import {Dispatch, SetStateAction, useState} from 'react';
 import {useRouter} from 'next/router';
-import TransactionList from '../transaction_list/transaction_list';
 import {useTranslation} from 'next-i18next';
-import {TranslateFunction} from '../../interfaces/locale';
-import {ITransactionList} from '../../interfaces/transaction';
-import {SearchBarWithKeyDown} from '../search_bar/search_bar';
-import DatePicker from '../date_picker/date_picker';
-import SortingMenu from '../sorting_menu/sorting_menu';
-import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '../../constants/config';
-import Pagination from '../pagination/pagination';
-import Skeleton from '../skeleton/skeleton';
-import useAPIResponse from '../../lib/hooks/use_api_response';
-import {APIURL, HttpMethod} from '../../constants/api_request';
-import {ChainDetailTab} from '../../interfaces/chain';
-import {convertStringToSortingType} from '../../lib/common';
+import {APIURL, HttpMethod} from '@/constants/api_request';
+import {ITEM_PER_PAGE, default30DayPeriod, sortOldAndNewOptions} from '@/constants/config';
+import {ChainDetailTab} from '@/interfaces/chain';
+import {TranslateFunction} from '@/interfaces/locale';
+import {ITransactionList} from '@/interfaces/transaction';
+import {convertStringToSortingType} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import DatePicker from '@/components/date_picker/date_picker';
+import {SearchBarWithKeyDown} from '@/components/search_bar/search_bar';
+import SortingMenu from '@/components/sorting_menu/sorting_menu';
+import TransactionList from '@/components/transaction_list/transaction_list';
+import Pagination from '@/components/pagination/pagination';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface ITransactionTabProps {
   chainDetailLoading: boolean;

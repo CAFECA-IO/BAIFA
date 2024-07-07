@@ -1,6 +1,6 @@
-import Head from 'next/head';
 import {GetServerSideProps} from 'next';
-import ComprehensiveIncomeStatementsNeo from '../../../../../../components/comprehensive_income_statements_neo/comprehensive_income_statements_neo';
+import Head from 'next/head';
+import ComprehensiveIncomeStatementsNeo from '@/components/comprehensive_income_statements_neo/comprehensive_income_statements_neo';
 
 interface IAllReportsPageProps {
   chainId: string;

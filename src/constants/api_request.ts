@@ -1,4 +1,4 @@
-import {TBD_API_URL, TBD_API_VERSION, BFA_API_URL, BFA_API_VERSION} from './config';
+import {TBD_API_URL, TBD_API_VERSION, BFA_API_URL, BFA_API_VERSION} from '@/constants/config';
 
 export type IAPIName =
   | 'BALANCE_SHEET'

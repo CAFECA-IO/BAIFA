@@ -1,37 +1,37 @@
+import {useState} from 'react';
+import {BsArrowLeftShort} from 'react-icons/bs';
+import {GetServerSideProps} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import NavBar from '../../../../components/nav_bar/nav_bar';
-import Footer from '../../../../components/footer/footer';
-import CurrencyDetail from '../../../../components/currency_detail/currency_detail';
-import {useState} from 'react';
-import {GetServerSideProps} from 'next';
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
-import {ICurrencyDetailString, dummyCurrencyDetailString} from '../../../../interfaces/currency';
-import {BsArrowLeftShort} from 'react-icons/bs';
 import {useRouter} from 'next/router';
-import Top100HolderSection from '../../../../components/top_100_holder_section/top_100_holder_section';
-import TransactionHistorySection from '../../../../components/transaction_history_section/transaction_history_section';
-import BoltButton from '../../../../components/bolt_button/bolt_button';
-import {TranslateFunction} from '../../../../interfaces/locale';
 import {useTranslation} from 'next-i18next';
-import {getCurrencyIcon, convertStringToSortingType} from '../../../../lib/common';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {APIURL, HttpMethod} from '@/constants/api_request';
 import {
   DEFAULT_CURRENCY_ICON,
   DEFAULT_PAGE,
   ITEM_PER_PAGE,
   default30DayPeriod,
   sortOldAndNewOptions,
-} from '../../../../constants/config';
-import {ITransactionHistorySection} from '../../../../interfaces/transaction';
-import {IDatePeriod} from '../../../../interfaces/date_period';
-import {BFAURL} from '../../../../constants/url';
-import useAPIResponse from '../../../../lib/hooks/use_api_response';
-import {APIURL, HttpMethod} from '../../../../constants/api_request';
-import DataNotFound from '../../../../components/data_not_found/data_not_found';
-import Skeleton from '../../../../components/skeleton/skeleton';
+} from '@/constants/config';
+import {BFAURL} from '@/constants/url';
+import {ICurrencyDetailString} from '@/interfaces/currency';
+import {IDatePeriod} from '@/interfaces/date_period';
+import {TranslateFunction} from '@/interfaces/locale';
+import {ITransactionHistorySection} from '@/interfaces/transaction';
+import {getCurrencyIcon, convertStringToSortingType} from '@/lib/common';
+import useAPIResponse from '@/lib/hooks/use_api_response';
+import NavBar from '@/components/nav_bar/nav_bar';
+import Footer from '@/components/footer/footer';
+import CurrencyDetail from '@/components/currency_detail/currency_detail';
+import Top100HolderSection from '@/components/top_100_holder_section/top_100_holder_section';
+import TransactionHistorySection from '@/components/transaction_history_section/transaction_history_section';
+import BoltButton from '@/components/bolt_button/bolt_button';
+import DataNotFound from '@/components/data_not_found/data_not_found';
+import Skeleton from '@/components/skeleton/skeleton';
 
 interface ICurrencyDetailPageProps {
-  currencyId: string;
+  currencyId: number;
 }
 
 const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
@@ -59,11 +59,11 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   });
 
   // Info: (20240321 - Liz) 從 API 取得 currency data (如果沒有的話，就給預設值)
-  const currencyData = currencyDataRaw ?? dummyCurrencyDetailString;
+  const currencyData = currencyDataRaw as ICurrencyDetailString;
 
   // Info: (20240321 - Liz) 從 currencyData 取得 chainId, unit, currencyName
   const {unit, chainId, currencyName} = currencyData;
-  const isCurrencyIdExist = currencyId === currencyData.currencyId;
+  const isCurrencyIdExist = currencyId === currencyData?.currencyId;
 
   // Info: (20240321 - Liz) Call API to get transaction history data (API-030)
   const {
