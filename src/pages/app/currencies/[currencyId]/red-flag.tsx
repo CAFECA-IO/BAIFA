@@ -29,7 +29,8 @@ import Footer from '@/components/footer/footer';
 import DataNotFound from '@/components/data_not_found/data_not_found';
 
 interface IRedFlagOfCurrencyPageProps {
-  currencyId: number;
+  currencyId: string;
+  // Info: (今天 - Liz) 這裡的 currencyId 是從 getServerSideProps 取得的
 }
 
 const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {

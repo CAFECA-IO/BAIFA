@@ -31,7 +31,8 @@ import DataNotFound from '@/components/data_not_found/data_not_found';
 import Skeleton from '@/components/skeleton/skeleton';
 
 interface ICurrencyDetailPageProps {
-  currencyId: number;
+  currencyId: string;
+  // Info: (今天 - Liz) 這裡的 currencyId 是從 getServerSideProps 取得的
 }
 
 const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
@@ -59,11 +60,26 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   });
 
   // Info: (20240321 - Liz) 從 API 取得 currency data (如果沒有的話，就給預設值)
-  const currencyData = currencyDataRaw as ICurrencyDetailString;
+  const currencyData: ICurrencyDetailString = currencyDataRaw ?? {
+    currencyId: 0,
+    currencyName: '',
+    rank: 0,
+    riskLevel: '',
+    chainId: '',
+    price: 0,
+    volumeIn24h: 0,
+    unit: '',
+    totalAmount: '',
+    holderCount: 0,
+    totalTransfers: 0,
+    flagging: [],
+    flaggingCount: 0,
+  };
 
   // Info: (20240321 - Liz) 從 currencyData 取得 chainId, unit, currencyName
   const {unit, chainId, currencyName} = currencyData;
-  const isCurrencyIdExist = currencyId === currencyData?.currencyId;
+  const currencyIdByAPI = currencyData?.currencyId;
+  const isCurrencyIdExist = +currencyId === currencyIdByAPI;
 
   // Info: (20240321 - Liz) Call API to get transaction history data (API-030)
   const {
