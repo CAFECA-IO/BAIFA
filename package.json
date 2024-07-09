@@ -1,6 +1,6 @@
 {
   "name": "baifa",
-  "version": "0.1.4",
+  "version": "0.1.4+1",
   "scripts": {
     "dev": "next dev",
     "build": "npm run generate && next build",
