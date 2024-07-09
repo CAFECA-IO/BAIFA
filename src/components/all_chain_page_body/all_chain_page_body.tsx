@@ -12,6 +12,7 @@ import useAPIResponse from '@/lib/hooks/use_api_response';
 const AllChainPageBody = () => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
+  // Info: (240709 - Liz) Call API to get chains list (API-004)
   const {data: chainData, isLoading: isChainLoading} = useAPIResponse<IChainDetail[]>(
     `${APIURL.CHAINS}`,
     {method: HttpMethod.GET}
