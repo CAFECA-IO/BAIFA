@@ -86,14 +86,14 @@ export const timestampToString = (timestamp: number | undefined) => {
 
   const monthNameShort = monthNamesInShort[monthIndex];
   const monthName = monthFullName[monthIndex];
-  const dateSrting = `${year}-${month.toString().padStart(2, '0')}-${day
+  const dateString = `${year}-${month.toString().padStart(2, '0')}-${day
     .toString()
     .padStart(2, '0')}`;
   const dayString = `${day.toString().padStart(2, '0')}`;
   const monthString = MONTH_LIST[monthIndex];
 
   return {
-    date: dateSrting, // e.g. 2021-01-01
+    date: dateString, // e.g. 2021-01-01
     dateOfLastYear: `${year - 1}-${month.toString().padStart(2, '0')}-${day
       .toString()
       .padStart(2, '0')}`, // e.g. 2020-01-01
@@ -189,7 +189,7 @@ export const getChainIcon = (chainId: string) => {
   };
 };
 
-export const getCurrencyIcon = (currencyId: number) => {
+export const getCurrencyIcon = (currencyId: string) => {
   // Info: (20240206 - Julian) 如果沒有 currencyId，就顯示 default_currency.svg
   if (!currencyId) return {src: DEFAULT_CURRENCY_ICON, alt: 'currency_icon'};
   return {
@@ -204,7 +204,7 @@ export const getUnit = (chainId: string) => {
     {currencyId: 'eth', currencyName: 'Ethereum', unit: 'ETH'},
     {currencyId: 'isun', currencyName: 'iSunCloud', unit: 'BOLT'},
     {currencyId: 'usdt', currencyName: 'Tether', unit: 'USDT'},
-    {currencyId: 'bnb', currencyName: 'Binace Coin', unit: 'BNB'},
+    {currencyId: 'bnb', currencyName: 'Binance Coin', unit: 'BNB'},
   ];
 
   return dummyCurrencyData.find(currency => currency.currencyId === chainId)?.unit ?? '';
