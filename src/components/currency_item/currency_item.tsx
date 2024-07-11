@@ -11,11 +11,19 @@ interface ICurrencyItemProps {
   currencyName: string;
   rank: number;
   riskLevel: string;
+  currencyIconId: string;
 }
 
-const CurrencyItem = ({currencyId, currencyName, rank, riskLevel}: ICurrencyItemProps) => {
+const CurrencyItem = ({
+  currencyId,
+  currencyName,
+  rank,
+  riskLevel,
+  currencyIconId,
+}: ICurrencyItemProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
-  const currencyIcon = getCurrencyIcon(currencyId.toString());
+
+  const currencyIcon = getCurrencyIcon(currencyIconId);
 
   // Info: (20240222 - Liz) riskLevel 有三種值 Low, Normal, High 要轉換成對應的顏色和文字
   const riskLevelMappings: {[key: string]: {riskColor: string; riskText: string}} = {

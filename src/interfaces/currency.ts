@@ -54,4 +54,16 @@ export interface ICurrencyDetailString extends ICurrency {
   totalTransfers: number;
   flagging: IRedFlag[];
   flaggingCount: number;
+  currencyIconId: string;
+}
+
+export interface ICurrencyWithIcon extends ICurrency {
+  currencyIconId: string;
+}
+
+export interface ICurrencyList {
+  currencies: ICurrencyWithIcon[];
+  totalPages: number;
+  chainNameTypes: string[];
+  chainIdNameObj: {[key: string]: string};
 }
