@@ -9,7 +9,7 @@ type ResponseData = IRedFlagListForCurrency;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240319 - Liz) query string parameter
-  const currency_id = 
+  const currency_id =
     typeof req.query.currency_id === 'string' ? parseInt(req.query.currency_id) : undefined;
   const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : DEFAULT_PAGE;
   const offset =
@@ -149,6 +149,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       : null;
     const chainName = chainNameRaw?.chain_name ?? 'Unknown Chain Name';
 
+    // Info: (240711 - Liz) 由 currency id 找到 currency 的 address
+    const addressOfCurrency = currency_id
+      ? await prisma.currencies.findUnique({
+          where: {
+            id: currency_id,
+          },
+          select: {
+            address: true,
+          },
+        })
+      : null;
+    const currencyAddress = addressOfCurrency?.address ?? '';
+    const currencyIconId = `${chainId}_${currencyAddress}`;
+
     // Info: (20240307 - Liz) 計算總頁數
     const totalPages = Math.ceil(totalRedFlagCount / offset);
 
@@ -157,6 +171,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       redFlagData: redFlagDataFormat,
       chainName,
       totalPages,
+      currencyIconId,
     };
 
     prisma.$connect();

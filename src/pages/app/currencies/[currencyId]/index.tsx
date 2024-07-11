@@ -74,10 +74,11 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
     totalTransfers: 0,
     flagging: [],
     flaggingCount: 0,
+    currencyIconId: '',
   };
 
-  // Info: (20240321 - Liz) 從 currencyData 取得 chainId, unit, currencyName
-  const {unit, chainId, currencyName} = currencyData;
+  // Info: (20240321 - Liz) 從 currencyData 取得 chainId, unit, currencyName, currencyIconId
+  const {unit, chainId, currencyName, currencyIconId} = currencyData;
   const currencyIdByAPI = currencyData?.currencyId;
   const isCurrencyIdExist = +currencyId === currencyIdByAPI;
 
@@ -108,7 +109,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   };
 
   // Info: (20240315 - Liz) Get Currency Icon
-  const currencyIcon = getCurrencyIcon(currencyId);
+  const currencyIcon = getCurrencyIcon(currencyIconId);
 
   // Info: (20240315 - Liz) head title
   const headTitle = isCurrencyIdExist ? `${currencyName} - BAIFA` : 'BAIFA';
@@ -157,7 +158,12 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
 
   const displayedTop100Holder =
     isCurrencyIdExist && !currencyDataError ? (
-      <Top100HolderSection chainId={chainId} currencyId={currencyId} unit={unit} />
+      <Top100HolderSection
+        chainId={chainId}
+        currencyId={currencyId}
+        unit={unit}
+        currencyIconId={currencyIconId}
+      />
     ) : null;
 
   const displayedTransactionHistory =

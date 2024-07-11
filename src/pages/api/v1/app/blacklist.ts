@@ -38,6 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         target: true, // Info: (20240216 - Liz) 是個地址
         target_type: true, // Info: (20240216 - Liz)  0:contract / 1:address
         created_timestamp: true, // Info: (20240216 - Liz) 標籤建立時間
+        chain_id: true,
       },
       orderBy: [
         {
@@ -75,38 +76,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    // Info: (20240301 - Liz) 從 blacklist 中 target_type 為 0 的 target 值(target 值為地址)
+    // Info: (20240301 - Liz) 從 blacklist 中 target_type 為 0 的 target 值(target 值為地址) 和 chain_id，組成一個物件陣列作為 OR 的篩選條件
     const contractTargets = blacklist
       .filter(item => item.target_type === '0')
-      .map(item => item.target)
-      .filter(value => typeof value === 'string') as string[];
+      .map(item => ({contract_address: item.target, chain_id: item.chain_id}));
 
-    // Info: (20240301 - Liz) 從 blacklist 中 target_type 為 1 的 target 值(target 值為地址)
+    // Info: (20240301 - Liz) 從 blacklist 中 target_type 為 1 的 target 值(target 值為地址) 和 chain_id，組成一個物件陣列作為 OR 的篩選條件
     const addressTargets = blacklist
       .filter(item => item.target_type === '1')
-      .map(item => item.target)
-      .filter(value => typeof value === 'string') as string[];
+      .map(item => ({address: item.target, chain_id: item.chain_id}));
 
-    // Info: (20240301 - Liz) 從 contracts table 中取得黑名單合約的 chain_id
+    // Info: (20240301 - Liz) 從 contracts table 中取得滿足黑名單合約篩選條件的 chain_id 和 contract_address 和 latest_active_time
     const contractsData = await prisma.contracts.findMany({
       where: {
-        contract_address: {
-          in: contractTargets,
-        },
+        OR: contractTargets,
       },
       select: {
         contract_address: true,
         chain_id: true,
-        created_timestamp: true, // ToDo: (20240305 - Liz) 等資料庫修改後就要改成拿"最後更新時間"
+        latest_active_time: true,
       },
     });
 
-    // Info: (20240301 - Liz) 從 addresses table 中取得黑名單地址的 chain_id
+    // Info: (20240301 - Liz) 從 addresses table 中取得滿足黑名單地址篩選條件的 chain_id 和 address 和 latest_active_time
     const addressesData = await prisma.addresses.findMany({
       where: {
-        address: {
-          in: addressTargets,
-        },
+        OR: addressTargets,
       },
       select: {
         address: true,
@@ -115,22 +110,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
     });
 
-    // Info: (20240301 - Liz) 將取得的 contractsData 轉換成物件，方便查找
+    // Info: (20240301 - Liz) 將取得的 contractsData 物件陣列轉換成物件，方便查找
     const contractChainId: {[address: string]: string} = {};
     contractsData.forEach(contractData => {
       if (contractData.contract_address) {
         contractChainId[contractData.contract_address] = `${contractData.chain_id}`;
       }
     });
-    const contractCreatedTimestamp: {[address: string]: number} = {};
+    const contractLatestActiveTime: {[address: string]: number} = {};
     contractsData.forEach(contractData => {
       if (contractData.contract_address) {
-        contractCreatedTimestamp[contractData.contract_address] =
-          contractData.created_timestamp ?? 0;
+        contractLatestActiveTime[contractData.contract_address] =
+          contractData.latest_active_time ?? 0;
       }
     });
 
-    // Info: (20240301 - Liz) 將取得的 addressesData 轉換成物件，方便查找
+    // Info: (20240301 - Liz) 將取得的 addressesData 物件陣列轉換成物件，方便查找
     const addressChainId: {[address: string]: string} = {};
     addressesData.forEach(addressData => {
       if (addressData.address) {
@@ -177,7 +172,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         switch (item.target_type) {
           case '0':
             chainId = contractChainId[target] ?? 'Unknown Chain ID';
-            latestActiveTime = contractCreatedTimestamp[target] ?? 0;
+            latestActiveTime = contractLatestActiveTime[target] ?? 0;
             break;
           case '1':
             chainId = addressChainId[target] ?? 'Unknown Chain ID';

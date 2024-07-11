@@ -8,7 +8,7 @@ import Pagination from '@/components/pagination/pagination';
 import {SearchBarWithKeyDown} from '@/components/search_bar/search_bar';
 import Skeleton from '@/components/skeleton/skeleton';
 import SortingMenu from '@/components/sorting_menu/sorting_menu';
-import {ICurrencyListPage} from '@/interfaces/currency';
+import {ICurrencyList} from '@/interfaces/currency';
 import {TranslateFunction} from '@/interfaces/locale';
 import {DEFAULT_PAGE, ITEM_PER_PAGE, defaultOption} from '@/constants/config';
 import {BFAURL} from '@/constants/url';
@@ -40,19 +40,18 @@ const AllCurrenciesPageBody = () => {
   const sortingReq = sortingMap[sorting];
 
   // Info: (20240402 - Liz) Call API to get currencies list (API-017)
-  const {data: currenciesData, isLoading: isCurrenciesDataLoading} =
-    useAPIResponse<ICurrencyListPage>(
-      `${APIURL.CURRENCIES}`,
-      {method: HttpMethod.GET},
-      // Info: (20240325 - Liz) 預設值 ?page=1&offset=10&sort=asc&search=&type=
-      {
-        page: activePage,
-        offset: ITEM_PER_PAGE,
-        sort: sortingReq,
-        search: search,
-        type: filteredTypeByChainId,
-      }
-    );
+  const {data: currenciesData, isLoading: isCurrenciesDataLoading} = useAPIResponse<ICurrencyList>(
+    `${APIURL.CURRENCIES}`,
+    {method: HttpMethod.GET},
+    // Info: (20240325 - Liz) 預設值 ?page=1&offset=10&sort=asc&search=&type=
+    {
+      page: activePage,
+      offset: ITEM_PER_PAGE,
+      sort: sortingReq,
+      search: search,
+      type: filteredTypeByChainId,
+    }
+  );
 
   // Info: (20240319 - Liz) chain id 和 chain name 的對應物件
   useEffect(() => {
@@ -79,6 +78,7 @@ const AllCurrenciesPageBody = () => {
           currencyName={currency.currencyName}
           rank={index + 1} // Info: (20240126 - Julian) DB 並沒有 rank，所以暫時用 index + 1 代替
           riskLevel={currency.riskLevel}
+          currencyIconId={currency.currencyIconId}
         />
       ))
     ) : (

@@ -188,12 +188,12 @@ export const getChainIcon = (chainId: string) => {
     alt: `chain_icon`,
   };
 };
-
-export const getCurrencyIcon = (currencyId: string) => {
+export const getCurrencyIcon = (currencyIconId: string) => {
+  // Info: (240711 - Liz) currencyIconId = `${currency chainId}_${currency address}`
   // Info: (20240206 - Julian) 如果沒有 currencyId，就顯示 default_currency.svg
-  if (!currencyId) return {src: DEFAULT_CURRENCY_ICON, alt: 'currency_icon'};
+  if (!currencyIconId) return {src: DEFAULT_CURRENCY_ICON, alt: 'currency_icon'};
   return {
-    src: `/currencies/${currencyId}.svg`,
+    src: `/currencies/${currencyIconId}.svg`,
     alt: `currency_icon`,
   };
 };
