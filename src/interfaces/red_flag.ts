@@ -9,6 +9,7 @@ export interface IRedFlagListForCurrency {
   redFlagData: IRedFlag[];
   chainName: string;
   totalPages: number;
+  currencyIconId: string;
 }
 
 export interface IRedFlagSearchResult extends IRedFlag {

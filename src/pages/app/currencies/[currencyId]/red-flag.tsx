@@ -29,7 +29,8 @@ import Footer from '@/components/footer/footer';
 import DataNotFound from '@/components/data_not_found/data_not_found';
 
 interface IRedFlagOfCurrencyPageProps {
-  currencyId: number;
+  currencyId: string;
+  // Info: (240709 - Liz) 這裡的 currencyId 是從 getServerSideProps 取得的
 }
 
 const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
@@ -99,7 +100,9 @@ const RedFlagOfCurrencyPage = ({currencyId}: IRedFlagOfCurrencyPageProps) => {
   const headTitle = `${t('RED_FLAG_DETAIL_PAGE.BREADCRUMB_TITLE')} ${t(
     'COMMON.OF'
   )} ${currencyName} - BAIFA`;
-  const currencyIcon = getCurrencyIcon(currencyId);
+
+  const currencyIconId = redFlagData?.currencyIconId ?? '';
+  const currencyIcon = getCurrencyIcon(currencyIconId);
 
   // Info: (20240325 - Liz) 畫面顯示元件
   const displayedRedFlagList = !redFlagDataError ? (

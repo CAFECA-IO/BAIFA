@@ -17,11 +17,17 @@ import {SkeletonList} from '@/components/skeleton/skeleton';
 
 interface ITop100HolderSectionProps {
   chainId: string;
-  currencyId: number;
+  currencyId: string;
   unit: string;
+  currencyIconId: string;
 }
 
-const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionProps) => {
+const Top100HolderSection = ({
+  chainId,
+  currencyId,
+  unit,
+  currencyIconId,
+}: ITop100HolderSectionProps) => {
   const {t}: {t: TranslateFunction} = useTranslation('common');
 
   const router = useRouter();
@@ -47,7 +53,7 @@ const Top100HolderSection = ({chainId, currencyId, unit}: ITop100HolderSectionPr
   // Info: (20240402 - Liz) 從 API 取得總頁數
   const totalPages = top100HoldersData?.totalPages ?? 0;
 
-  const currencyIcon = getCurrencyIcon(currencyId);
+  const currencyIcon = getCurrencyIcon(currencyIconId);
 
   const holderList =
     top100HoldersData?.holdersData && top100HoldersData?.holdersData.length > 0 ? (

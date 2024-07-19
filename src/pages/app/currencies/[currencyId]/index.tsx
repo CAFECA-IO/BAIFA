@@ -31,7 +31,8 @@ import DataNotFound from '@/components/data_not_found/data_not_found';
 import Skeleton from '@/components/skeleton/skeleton';
 
 interface ICurrencyDetailPageProps {
-  currencyId: number;
+  currencyId: string;
+  // Info: (240709 - Liz) 這裡的 currencyId 是從 getServerSideProps 取得的
 }
 
 const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
@@ -59,11 +60,27 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   });
 
   // Info: (20240321 - Liz) 從 API 取得 currency data (如果沒有的話，就給預設值)
-  const currencyData = currencyDataRaw as ICurrencyDetailString;
+  const currencyData: ICurrencyDetailString = currencyDataRaw ?? {
+    currencyId: 0,
+    currencyName: '',
+    rank: 0,
+    riskLevel: '',
+    chainId: '',
+    price: 0,
+    volumeIn24h: 0,
+    unit: '',
+    totalAmount: '',
+    holderCount: 0,
+    totalTransfers: 0,
+    flagging: [],
+    flaggingCount: 0,
+    currencyIconId: '',
+  };
 
-  // Info: (20240321 - Liz) 從 currencyData 取得 chainId, unit, currencyName
-  const {unit, chainId, currencyName} = currencyData;
-  const isCurrencyIdExist = currencyId === currencyData?.currencyId;
+  // Info: (20240321 - Liz) 從 currencyData 取得 chainId, unit, currencyName, currencyIconId
+  const {unit, chainId, currencyName, currencyIconId} = currencyData;
+  const currencyIdByAPI = currencyData?.currencyId;
+  const isCurrencyIdExist = +currencyId === currencyIdByAPI;
 
   // Info: (20240321 - Liz) Call API to get transaction history data (API-030)
   const {
@@ -92,7 +109,7 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
   };
 
   // Info: (20240315 - Liz) Get Currency Icon
-  const currencyIcon = getCurrencyIcon(currencyId);
+  const currencyIcon = getCurrencyIcon(currencyIconId);
 
   // Info: (20240315 - Liz) head title
   const headTitle = isCurrencyIdExist ? `${currencyName} - BAIFA` : 'BAIFA';
@@ -141,7 +158,12 @@ const CurrencyDetailPage = ({currencyId}: ICurrencyDetailPageProps) => {
 
   const displayedTop100Holder =
     isCurrencyIdExist && !currencyDataError ? (
-      <Top100HolderSection chainId={chainId} currencyId={currencyId} unit={unit} />
+      <Top100HolderSection
+        chainId={chainId}
+        currencyId={currencyId}
+        unit={unit}
+        currencyIconId={currencyIconId}
+      />
     ) : null;
 
   const displayedTransactionHistory =

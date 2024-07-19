@@ -9,7 +9,7 @@ type ResponseData = ICurrencyDetailString | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240112 - Julian) query string parameter
-  const currency_id = 
+  const currency_id =
     typeof req.query.currency_id === 'string' ? parseInt(req.query.currency_id) : undefined;
 
   try {
@@ -30,6 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             risk_level: true,
             chain_id: true,
             symbol: true,
+            address: true, // Info: (240711 - Liz) For currencyIconId use
           },
         })
       : null;
@@ -119,8 +120,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const riskLevel = currencyData?.risk_level
       ? riskLevelCodesObj[currencyData.risk_level]
       : 'Unknown Risk Level';
-    
+
     const currencyId = currencyData?.id as number;
+
+    const currencyIconId = currencyData ? `${chainId}_${currencyData.address}` : '';
 
     // Info: (20240221 - Liz) 組合回傳資料並轉換成 API 要的格式
     const result: ResponseData = currencyData
@@ -138,6 +141,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           flagging,
           flaggingCount: flagging.length,
           riskLevel,
+          currencyIconId,
         }
       : undefined;
 

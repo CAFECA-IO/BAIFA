@@ -72,6 +72,7 @@ const TransactionHistorySection = ({
   const [activePageDefault, setActivePageDefault] = useState(DEFAULT_PAGE);
   const totalPagesDefault = totalPage ?? defaultPages;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchDefault, setSearchDefault] = useState('');
   const [sortingDefault, setSortingDefault] = useState<string>(sortOldAndNewOptions[0]);
   const [periodDefault, setPeriodDefault] = useState(default30DayPeriod);

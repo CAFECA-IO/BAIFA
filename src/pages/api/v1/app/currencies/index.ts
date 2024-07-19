@@ -2,10 +2,10 @@
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {DEFAULT_PAGE, ITEM_PER_PAGE} from '@/constants/config';
-import {ICurrencyListPage} from '@/interfaces/currency';
+import {ICurrencyList} from '@/interfaces/currency';
 import prisma from '@/lib/utils/prisma';
 
-type ResponseData = ICurrencyListPage;
+type ResponseData = ICurrencyList;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   // Info: (20240308 - Liz) query string parameter
@@ -37,6 +37,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         id: true,
         risk_level: true,
         name: true,
+        address: true, // Info: (240711 - Liz) For currencyIconId use
+        chain_id: true, // Info: (240711 - Liz) For currencyIconId use
       },
       orderBy: {
         name: sorting,
@@ -112,11 +114,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         ? riskLevelCodeMeaningObj[currency.risk_level]
         : 'Unknown Risk Level';
 
+      const currencyIconId = `${currency.chain_id}_${currency.address}`;
+
       return {
         currencyId: currency.id,
         currencyName: `${currency.name}`,
         rank: 0, // ToDo: (20240125 - Julian) 討論去留
         riskLevel: riskLevel,
+        currencyIconId,
       };
     });
 
