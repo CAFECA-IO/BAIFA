@@ -12,7 +12,7 @@ export default function Navbar() {
         <nav className="relative flex w-full items-center justify-between bg-black px-6 py-4 text-white">
             <div className="flex items-center gap-6">
                 <Link href="/" className="text-xl font-bold uppercase tracking-wider">
-                    OKLINK
+                    BAIFA
                 </Link>
                 <div className="h-4 w-[1px] bg-gray-700"></div>
                 <div className="relative">

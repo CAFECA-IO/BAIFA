@@ -1,42 +1,49 @@
 import { ArrowRight } from 'lucide-react';
-
-const txns = [
-    { hash: '0x5e1b1de8504...', time: '21 小時前', from: 'Coinbase. User', to: 'Coinbase. DepositAn...', value: '91,914 ETH' },
-    { hash: '0xf4d2348645a...', time: '19 小時前', from: 'Binance. DepositAndWi...', to: 'Binance. Withdraw_13', value: '18,762 ETH' },
-    { hash: '0x263761188d8...', time: '20 小時前', from: 'Bybit. Cold Wallet_15', to: 'Bybit. DepositAndWith...', value: '15,000 ETH' },
-    { hash: '0x25125b6b4e7...', time: '9 小時前', from: '0xb62c...6af53ae3994', to: '0x4ebb...119bd304003', value: '15,000 ETH' },
-];
+import Link from 'next/link';
+import { MOCK_TRANSACTIONS } from '@/data/mock-blockchain-data';
 
 export default function TransactionList() {
     return (
-        <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-            <div className="flex items-center justify-between border-b border-gray-100 p-4">
-                <h2 className="text-lg font-bold text-gray-900">大額交易</h2>
-                <button className="text-gray-400 hover:text-black">
-                    <ArrowRight size={20} />
-                </button>
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-lg font-bold text-gray-900">大額交易</h3>
+                <ArrowRight size={20} className="text-gray-400 cursor-pointer hover:text-black" />
             </div>
-            <div>
-                {txns.map((txn) => (
-                    <div key={txn.hash} className="flex items-center gap-4 border-b border-gray-100 p-4 last:border-0 hover:bg-gray-50">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-gray-100 text-gray-500">
-                            <span className="font-bold">Tx</span>
+
+            <div className="h-[430px] overflow-y-auto pr-2 space-y-6 custom-scrollbar">
+                {MOCK_TRANSACTIONS.map((txn) => (
+                    <div key={txn.hash} className="flex items-center gap-4 border-b border-gray-50 pb-4 last:border-0 last:pb-0">
+                        {/* Icon */}
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-500">
+                            Tx
                         </div>
-                        <div className="flex-1 space-y-1">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-blue-600">{txn.hash}</span>
-                                <span className="text-xs text-gray-400">{txn.time}</span>
+
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                            <div className="mb-1 flex flex-wrap items-center gap-2 text-sm">
+                                <Link href="/" className="font-bold text-[#5841D8] hover:underline truncate max-w-[80px]">{txn.hash}</Link>
+                                <span className="text-gray-400 text-xs text-nowrap">發送方</span>
+                                <Link href="/" className="truncate text-[#5841D8] hover:underline max-w-[100px] sm:max-w-[140px]">{txn.from}</Link>
                             </div>
-                            <div className="flex flex-col text-xs text-gray-500">
-                                <span className="flex gap-1">發送方 <span className="text-blue-600 truncate max-w-[150px]">{txn.from}</span></span>
-                                <span className="flex gap-1">接收方 <span className="text-blue-600 truncate max-w-[150px]">{txn.to}</span></span>
+                            <div className="flex flex-wrap items-center gap-2 text-sm">
+                                <span className="text-xs text-gray-500 min-w-[60px]">{txn.time}</span>
+                                <span className="text-gray-400 text-xs text-nowrap">接收方</span>
+                                <Link href="/" className="truncate text-[#5841D8] hover:underline max-w-[100px] sm:max-w-[140px]">{txn.to}</Link>
                             </div>
                         </div>
-                        <div className="flex flex-col items-end">
-                            <span className="text-xs font-bold text-black">{txn.value}</span>
+
+                        {/* Value */}
+                        <div className="shrink-0 text-right">
+                            <div className="text-sm font-bold text-gray-900">{txn.value}</div>
                         </div>
                     </div>
                 ))}
+            </div>
+
+            <div className="mt-6">
+                <button className="w-full rounded-full bg-black py-3 text-sm font-bold text-white transition hover:bg-gray-800">
+                    查看全部大額交易
+                </button>
             </div>
         </div>
     );

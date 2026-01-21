@@ -29,10 +29,10 @@ export default function Footer() {
                 {/* Brand */}
                 <div className="mb-20">
                     <Link href="/" className="mb-4 block text-2xl font-bold uppercase tracking-wider">
-                        OKLINK
+                        BAIFA
                     </Link>
                     <p className="text-xs text-gray-500">
-                        OKLink 是多鏈區塊鏈瀏覽器和 Web3 數據平臺
+                        BAIFA 是多鏈區塊鏈瀏覽器和 Web3 數據平臺
                     </p>
                 </div>
 
@@ -65,7 +65,7 @@ export default function Footer() {
 
                     {/* About Links */}
                     <div className="lg:col-span-1">
-                        <h3 className="mb-6 font-bold text-gray-300">關於 OKLink</h3>
+                        <h3 className="mb-6 font-bold text-gray-300">關於 BAIFA</h3>
                         <ul className="space-y-3 text-xs text-gray-500">
                             <li><Link href="/" className="hover:text-white transition">用戶條款</Link></li>
                             <li><Link href="/" className="hover:text-white transition">隱私條款</Link></li>

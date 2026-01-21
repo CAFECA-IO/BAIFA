@@ -21,7 +21,7 @@ export default function ExplorerMenu() {
                 <h3 className="mb-4 text-lg font-bold">瀏覽器</h3>
                 <p className="text-sm leading-relaxed text-gray-500">
                     暢享全新 Web3 數據平臺，輕鬆獲取豐富的數據和強大的功能。
-                    OKLink 瀏覽器現支持多種區塊鏈網絡和 Web3 工具，讓您輕鬆進行鏈上數據分析，快速獲取重要的鏈上信息，滿足個性化需求。
+                    BAIFA 瀏覽器現支持多種區塊鏈網絡和 Web3 工具，讓您輕鬆進行鏈上數據分析，快速獲取重要的鏈上信息，滿足個性化需求。
                 </p>
             </div>
 
