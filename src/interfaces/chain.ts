@@ -41,6 +41,7 @@ export interface IChain {
     icon: string; // Changed from LucideIcon to string for serialization
     color: string;
     bgColor: string;
+    description: string;
     stats: IChainStat[];
     details?: IDetailedStats;
 }

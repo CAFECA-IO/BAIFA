@@ -13,7 +13,7 @@ export default function ChainList() {
                     return (
                         <Link
                             key={chain.name}
-                            href={`/${chain.id}`}
+                            href={`/chain/${chain.id}`}
                             className="flex flex-col justify-between rounded-xl border border-gray-800 bg-[#111] p-6 transition hover:cursor-pointer hover:bg-slate-800"
                         >
                             <div className="mb-6 flex items-center gap-4">
@@ -53,9 +53,9 @@ export default function ChainList() {
                         <Box size={20} className="text-gray-400" />
                     </div>
                     <h3 className="mb-6 text-lg font-bold text-white">區塊鏈數據看板</h3>
-                    <button className="flex w-full items-center justify-center gap-2 rounded-full bg-[#5841D8] py-3 text-sm font-bold text-white transition hover:bg-[#4b36c0]">
+                    <Link href="/all-chain" className="flex w-full items-center justify-center gap-2 rounded-full bg-[#5841D8] py-3 text-sm font-bold text-white transition hover:bg-[#4b36c0]">
                         查看更多
-                    </button>
+                    </Link>
                 </div>
             </div>
         </section>

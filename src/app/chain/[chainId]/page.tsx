@@ -1,9 +1,7 @@
-import Navbar from '@/components/layout/navbar';
 import BlockList from '@/components/chain/block-list';
 import TransactionList from '@/components/chain/transaction-list';
 import { MOCK_CHAINS } from '@/data/mock-chains';
 import ChainOverview from '@/components/chain/chain-overview';
-import Footer from '@/components/layout/footer';
 
 export default async function ChainDetailPage({
     params,
@@ -23,7 +21,6 @@ export default async function ChainDetailPage({
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Navbar />
             <div className="mx-auto max-w-7xl pt-6 py-20 text-black">
                 <ChainOverview chain={chain} />
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -31,7 +28,6 @@ export default async function ChainDetailPage({
                     <TransactionList />
                 </div>
             </div>
-            <Footer />
         </div>
     );
 }

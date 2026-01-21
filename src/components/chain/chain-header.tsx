@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import { Hexagon, Globe, Twitter, MessageCircle, Github, FileText } from 'lucide-react';
 import { IChain } from '@/interfaces/chain';
 import { ICON_MAP } from '@/lib/maps';
@@ -9,6 +12,8 @@ type Props = {
 };
 
 export default function ChainHeader({ chain, showDetails, onToggleDetails }: Props) {
+    const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
     const displayName = chain ? chain.name : 'Ethereum';
     // Resolve Icon
     const iconName = chain ? chain.icon : 'Hexagon';
@@ -16,6 +21,14 @@ export default function ChainHeader({ chain, showDetails, onToggleDetails }: Pro
 
     const color = chain ? chain.color : 'text-gray-800';
     const bgColor = chain ? chain.bgColor : 'bg-gray-100';
+    const description = chain ? chain.description : 'Ethereum 是一個開源的去中心化區塊鏈網絡...';
+
+    const toggleDescription = () => setIsDescriptionExpanded(!isDescriptionExpanded);
+
+    const shouldTruncate = description.length > 85;
+    const displayDescription = isDescriptionExpanded || !shouldTruncate
+        ? description
+        : `${description.slice(0, 85)}...`;
 
     return (
         <div className="mb-8">
@@ -49,8 +62,15 @@ export default function ChainHeader({ chain, showDetails, onToggleDetails }: Pro
 
             {/* Description */}
             <p className="mb-4 text-sm leading-relaxed text-gray-600">
-                {displayName} 是一個開源的去中心化區塊鏈網絡... (Description placeholder)
-                <span className="cursor-pointer font-bold text-black ml-1">展開全部</span>
+                {displayDescription}
+                {shouldTruncate && (
+                    <span
+                        className="cursor-pointer font-bold text-black ml-1 hover:underline"
+                        onClick={toggleDescription}
+                    >
+                        {isDescriptionExpanded ? '收起全部' : '展開全部'}
+                    </span>
+                )}
             </p>
 
             {/* Action Buttons */}
