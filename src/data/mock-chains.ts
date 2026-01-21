@@ -1,7 +1,7 @@
 import { Bitcoin, Layers, Hexagon, Zap, Command, Box, Database, Droplet } from 'lucide-react';
-import { Chain } from '@/interfaces/chain';
+import { IChain } from '@/interfaces/chain';
 
-export const MOCK_CHAINS: Chain[] = [
+export const MOCK_CHAINS: IChain[] = [
     {
         id: 'btc',
         name: 'Bitcoin',

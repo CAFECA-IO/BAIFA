@@ -18,6 +18,7 @@ export default function HeroSection() {
                     <div className="relative flex items-center">
                         <input
                             type="text"
+                            aria-label="Search"
                             placeholder="搜索地址 / 交易 / 區塊 / 代幣 / ENS"
                             className="h-14 w-full rounded-full border border-gray-800 bg-white pl-8 pr-16 text-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                         />

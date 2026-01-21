@@ -1,4 +1,4 @@
-import { ArrowRight, Box } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 const blocks = [
     { height: '24281681', time: '12 秒前', producer: '0xdadb...0ce9a924f783711', txns: '504', reward: '0.0199803 ETH', gas: '0.57 Gwei' },

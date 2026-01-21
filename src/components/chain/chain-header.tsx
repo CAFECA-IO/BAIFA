@@ -1,7 +1,7 @@
 import { Hexagon, Globe, Twitter, MessageCircle, Github, FileText } from 'lucide-react';
-import { Chain } from '@/interfaces/chain';
+import { IChain } from '@/interfaces/chain';
 
-export default function ChainHeader({ chain }: { chain?: Chain }) {
+export default function ChainHeader({ chain }: { chain?: IChain }) {
     const displayName = chain ? chain.name : 'Ethereum';
     const Icon = chain ? chain.icon : Hexagon;
     const color = chain ? chain.color : 'text-gray-800';

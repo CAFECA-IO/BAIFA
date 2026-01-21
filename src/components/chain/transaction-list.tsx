@@ -1,4 +1,4 @@
-import { ArrowRight, FileText } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 const txns = [
     { hash: '0x5e1b1de8504...', time: '21 小時前', from: 'Coinbase. User', to: 'Coinbase. DepositAn...', value: '91,914 ETH' },

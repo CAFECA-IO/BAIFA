@@ -16,6 +16,7 @@ export default function Footer() {
                     <div className="relative w-full max-w-md">
                         <input
                             type="email"
+                            aria-label="Email subscription"
                             placeholder="輸入郵箱"
                             className="h-12 w-full rounded-full bg-white px-6 text-black outline-none placeholder:text-gray-400"
                         />
@@ -108,7 +109,10 @@ export default function Footer() {
           I will add it here fixed or keep it in previous component. 
           Let's add a fixed global one here as per screenshot showing it at bottom right of screen.
       */}
-            <button className="fixed bottom-6 right-6 flex h-12 w-12 items-center justify-center rounded-full bg-[#5841D8] text-white shadow-lg transition hover:bg-[#4b36c0] z-50">
+            <button
+                aria-label="Open Chat"
+                className="fixed bottom-6 right-6 flex h-12 w-12 items-center justify-center rounded-full bg-[#5841D8] text-white shadow-lg transition hover:bg-[#4b36c0] z-50"
+            >
                 <MessageCircle size={24} />
             </button>
 

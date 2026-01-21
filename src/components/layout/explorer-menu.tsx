@@ -32,6 +32,7 @@ export default function ExplorerMenu() {
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                     <input
                         type="text"
+                        aria-label="Search networks"
                         placeholder="搜索網絡"
                         className="w-full rounded-md bg-gray-200 py-2 pl-9 pr-4 text-sm outline-none transition focus:bg-white focus:ring-2 focus:ring-gray-200"
                     />

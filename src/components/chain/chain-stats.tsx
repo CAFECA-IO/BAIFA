@@ -1,6 +1,6 @@
-import { ChainStat } from '@/interfaces/chain';
+import { IChainStat } from '@/interfaces/chain';
 
-export default function ChainStats({ stats }: { stats?: ChainStat[] }) {
+export default function ChainStats({ stats }: { stats?: IChainStat[] }) {
     if (!stats) return null;
 
     return (
