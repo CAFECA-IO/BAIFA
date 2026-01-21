@@ -11,7 +11,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import nextPlugin from '@next/eslint-plugin-next';
-import checkFile from 'eslint-plugin-check-file';
+// import tailwindcss from 'eslint-plugin-tailwindcss';
 import prettierConfig from 'eslint-config-prettier';
 
 // Info: (20251113 - Tzuhan)  --- 抽離出的共用規則 (同時適用於 Next.js 和 Hardhat) ---
@@ -30,15 +30,8 @@ const commonRules = {
     // Info: (20251113 - Tzuhan) 介面採用 IPascalCase，名稱強制以 I 開頭
     { selector: 'interface', format: ['PascalCase'], custom: { regex: '^I[A-Z]', match: true } },
   ],
-  'check-file/filename-naming-convention': [
-    'error',
-    {
-      '**/*.{js,ts,jsx,tsx}': 'SNAKE_CASE',
-    },
-    {
-      ignoreMiddleExtensions: true,
-    },
-  ],
+  // 'tailwindcss/no-custom-classname': 'warn',
+  // 'tailwindcss/classnames-order': 'error',
 };
 
 const tslintConfigs = [
@@ -70,7 +63,6 @@ const tslintConfigs = [
       'jsx-a11y': jsxA11y,
       '@next/next': nextPlugin,
       // tailwindcss,
-      'check-file': checkFile,
     },
     languageOptions: {
       parser: tseslint.parser,
@@ -107,7 +99,7 @@ const tslintConfigs = [
 
       'no-restricted-imports': [
         'error',
-        { patterns: [{ group: ['./*', '../*'], message: "請使用 '@/' 路徑別名取代相對路徑 '..'" }] },
+        { patterns: [{ group: ['../*'], message: "請使用 '@/' 路徑別名取代相對路徑 '..'" }] },
       ],
 
       'jsx-a11y/click-events-have-key-events': 'warn',
@@ -119,6 +111,9 @@ const tslintConfigs = [
   // Info: (20251113 - Tzuhan) --- CONFIG 2: Hardhat / Node.js Scripts ---
   {
     files: ['scripts/**/*.ts', 'test/**/*.ts', 'ignition/**/*.ts', 'hardhat.config.ts'], // Info: (20251113 - Tzuhan) <-- 鎖定 Hardhat 相關檔案
+    plugins: {
+      // tailwindcss, // Info: (20251113 - Tzuhan) 這些檔案不需要 React/Next 外掛
+    },
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
@@ -135,9 +130,6 @@ const tslintConfigs = [
     },
     settings: {
       'import/resolver': { typescript: {} },
-    },
-    plugins: {
-      'check-file': checkFile,
     },
     rules: {
       ...commonRules,
