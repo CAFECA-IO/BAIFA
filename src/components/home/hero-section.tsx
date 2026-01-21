@@ -4,7 +4,7 @@ export default function HeroSection() {
     return (
         <section className="relative flex flex-col items-center justify-center px-4 py-20 text-center sm:py-32">
             {/* Background Glow */}
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 transform bg-purple-900/20 blur-[100px] filter"></div>
+            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-[#5841D8]/50 blur-[120px] filter"></div>
 
             <div className="relative z-10 w-full max-w-4xl space-y-6">
                 <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
