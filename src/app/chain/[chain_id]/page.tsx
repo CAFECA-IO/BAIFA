@@ -1,7 +1,7 @@
-import BlockList from '@/components/chain/block-list';
-import TransactionList from '@/components/chain/transaction-list';
-import { MOCK_CHAINS } from '@/data/mock-chains';
-import ChainOverview from '@/components/chain/chain-overview';
+import BlockList from '@/components/chain/block_list';
+import TransactionList from '@/components/chain/transaction_list';
+import { MOCK_CHAINS } from '@/data/mock_chains';
+import ChainOverview from '@/components/chain/chain_overview';
 
 export default async function ChainDetailPage({
     params,

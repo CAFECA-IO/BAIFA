@@ -1,6 +1,6 @@
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { MOCK_BLOCKS } from '@/data/mock-blockchain-data';
+import { MOCK_BLOCKS } from '@/data/mock_blockchain_data';
 
 export default function BlockList() {
     return (

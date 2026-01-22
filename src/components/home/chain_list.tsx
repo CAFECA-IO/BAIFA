@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Layers, Hexagon, Zap, Box } from 'lucide-react';
-import { MOCK_CHAINS } from '@/data/mock-chains';
+import { MOCK_CHAINS } from '@/data/mock_chains';
 import { ICON_MAP } from '@/lib/maps';
 
 export default function ChainList() {
@@ -53,7 +53,7 @@ export default function ChainList() {
                         <Box size={20} className="text-gray-400" />
                     </div>
                     <h3 className="mb-6 text-lg font-bold text-white">區塊鏈數據看板</h3>
-                    <Link href="/all-chain" className="flex w-full items-center justify-center gap-2 rounded-full bg-[#5841D8] py-3 text-sm font-bold text-white transition hover:bg-[#4b36c0]">
+                    <Link href="/all_chain" className="flex w-full items-center justify-center gap-2 rounded-full bg-[#5841D8] py-3 text-sm font-bold text-white transition hover:bg-[#4b36c0]">
                         查看更多
                     </Link>
                 </div>

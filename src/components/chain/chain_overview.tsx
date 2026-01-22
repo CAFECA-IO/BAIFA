@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { IChain } from '@/interfaces/chain';
-import ChainHeader from '@/components/chain/chain-header';
-import ChainStats from '@/components/chain/chain-stats';
+import ChainHeader from '@/components/chain/chain_header';
+import ChainStats from '@/components/chain/chain_stats';
 
 export default function ChainOverview({ chain }: { chain: IChain }) {
     const [showDetails, setShowDetails] = useState(false);

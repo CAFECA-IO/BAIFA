@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ChevronDown, Globe } from 'lucide-react';
 import { useState } from 'react';
-import ExplorerMenu from './explorer-menu';
+import ExplorerMenu from './explorer_menu';
 
 export default function Navbar() {
     const [isExplorerOpen, setIsExplorerOpen] = useState(false);

@@ -1,6 +1,6 @@
 import { Search } from 'lucide-react';
 import Link from 'next/link';
-import { MOCK_CHAINS } from '@/data/mock-chains';
+import { MOCK_CHAINS } from '@/data/mock_chains';
 import { ICON_MAP } from '@/lib/maps';
 import { Hexagon } from 'lucide-react';
 

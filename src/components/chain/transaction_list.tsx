@@ -1,6 +1,6 @@
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { MOCK_TRANSACTIONS } from '@/data/mock-blockchain-data';
+import { MOCK_TRANSACTIONS } from '@/data/mock_blockchain_data';
 
 export default function TransactionList() {
     return (
