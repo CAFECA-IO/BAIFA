@@ -1,12 +1,12 @@
 {
   "name": "baifa",
-  "version": "0.1.0+1",
+  "version": "0.1.0+2",
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "lint": "eslint --fix . --cache",
     "build": "npm run lint && next build",
     "start": "npm run build && next start",
-    "lint": "eslint --fix . --cache",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|jsx|ts|tsx|json)\"",
     "check-format": "prettier --ignore-path .gitignore --list-different \"**/*.+(js|jsx|ts|tsx|json)\"",
     "validate": "prettier --ignore-path .gitignore --write \"**/*.+(js|jsx|ts|tsx|json|css)\" && eslint --fix . && npm run test",
