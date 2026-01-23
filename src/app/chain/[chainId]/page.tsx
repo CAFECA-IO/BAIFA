@@ -1,20 +1,52 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import BlockList from '@/components/chain/block_list';
 import TransactionList from '@/components/chain/transaction_list';
-import { MOCK_CHAINS } from '@/data/mock_chains';
 import ChainOverview from '@/components/chain/chain_overview';
+import { IChain } from '@/interfaces/chain';
+import { fetchApi } from '@/lib/services/api_service';
+import { Loader2 } from 'lucide-react';
 
-export default async function ChainDetailPage({
-  params,
-}: {
-  params: Promise<{ chainId: string }>;
-}) {
-  const { chainId } = await params;
-  const chain = MOCK_CHAINS.find((c) => c.id === chainId);
+export default function ChainDetailPage() {
+  const params = useParams();
+  const chainId = params?.chainId as string;
+  const [chain, setChain] = useState<IChain | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!chain) {
+  useEffect(() => {
+    if (!chainId) return;
+
+    const fetchChainDetail = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchApi<IChain>(`/api/v1/chains/${chainId}`);
+        setChain(data);
+      } catch (err) {
+        console.error('Failed to fetch chain detail:', err);
+        setError('無法下載鏈詳情，請稍後再試。');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChainDetail();
+  }, [chainId]);
+
+  if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <h1 className="text-2xl font-bold">Chain Not Found: {chainId}</h1>
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+      </div>
+    );
+  }
+
+  if (error || !chain) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <h1 className="text-2xl font-bold text-black">{error || `Chain Not Found: ${chainId}`}</h1>
       </div>
     );
   }
