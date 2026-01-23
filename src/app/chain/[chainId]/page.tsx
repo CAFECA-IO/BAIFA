@@ -1,39 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import BlockList from '@/components/chain/block_list';
 import TransactionList from '@/components/chain/transaction_list';
 import ChainOverview from '@/components/chain/chain_overview';
 import { IChain } from '@/interfaces/chain';
-import { fetchApi } from '@/lib/services/api_service';
+import { useFetchApi } from '@/lib/hooks/use_fetch_api';
 import { Loader2 } from 'lucide-react';
 
 export default function ChainDetailPage() {
   const params = useParams();
   const chainId = params?.chainId as string;
-  const [chain, setChain] = useState<IChain | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!chainId) return;
-
-    const fetchChainDetail = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchApi<IChain>(`/api/v1/chains/${chainId}`);
-        setChain(data);
-      } catch (err) {
-        console.error('Failed to fetch chain detail:', err);
-        setError('無法下載鏈詳情，請稍後再試。');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchChainDetail();
-  }, [chainId]);
+  const {
+    data: chain,
+    loading,
+    error,
+  } = useFetchApi<IChain>(
+    chainId ? `/api/v1/chains/${chainId}` : null,
+    '無法下載鏈詳情，請稍後再試。'
+  );
 
   if (loading) {
     return (

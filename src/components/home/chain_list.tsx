@@ -2,31 +2,16 @@
 
 import Link from 'next/link';
 import { Layers, Hexagon, Zap, Box, Loader2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { IChain } from '@/interfaces/chain';
-import { fetchApi } from '@/lib/services/api_service';
+import { useFetchApi } from '@/lib/hooks/use_fetch_api';
 import { ICON_MAP } from '@/lib/maps';
 
 export default function ChainList() {
-  const [chains, setChains] = useState<IChain[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchChains = async () => {
-      try {
-        const data = await fetchApi<IChain[]>('/api/v1/chains');
-        setChains(data);
-      } catch (err) {
-        console.error('Failed to fetch chains:', err);
-        setError('無法下載鏈數據，請稍後再試。');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchChains();
-  }, []);
+  const {
+    data: chains,
+    loading,
+    error,
+  } = useFetchApi<IChain[]>('/api/v1/chains', '無法下載鏈數據，請稍後再試。');
 
   if (loading) {
     return (
@@ -54,7 +39,7 @@ export default function ChainList() {
     <section className="mx-[20px] w-full max-w-7xl px-4 py-8 pb-32">
       <p className="mb-4 text-3xl font-bold">多鏈數據，一站解決</p>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {chains.map((chain) => {
+        {chains?.map((chain) => {
           const Icon = ICON_MAP[chain.icon] || Hexagon;
           return (
             <Link
