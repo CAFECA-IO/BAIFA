@@ -2,16 +2,21 @@
 
 import Link from 'next/link';
 import { Layers, Hexagon, Zap, Box, Loader2 } from 'lucide-react';
-import { IChain } from '@/interfaces/chain';
-import { useFetchApi } from '@/lib/hooks/use_fetch_api';
+// import { IChain } from '@/interfaces/chain';
+// import { useFetchApi } from '@/lib/hooks/use_fetch_api';
 import { ICON_MAP } from '@/lib/maps';
+import { MOCK_CHAINS } from '@/data/mock_chains';
 
 export default function ChainList() {
-  const {
-    data: chains,
-    loading,
-    error,
-  } = useFetchApi<IChain[]>('/api/v1/chains', '無法下載鏈數據，請稍後再試。');
+  // const {
+  //   data: chains,
+  //   loading,
+  //   error,
+  // } = useFetchApi<IChain[]>('/api/v1/chains', '無法下載鏈數據，請稍後再試。');
+
+  const loading = false;
+  const error = null;
+  const chains = MOCK_CHAINS;
 
   if (loading) {
     return (

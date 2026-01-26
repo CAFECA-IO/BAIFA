@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react';
 import { fetchApi } from '@/lib/services/api_service';
+import { IApiMethod } from '@/interfaces/api_method';
+
+interface IUseFetchApiOptions {
+  url: string | null;
+  method: IApiMethod;
+  errorMessage: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body?: any;
+}
 
 /**
  * A custom hook to fetch data from an API endpoint.
@@ -7,10 +16,7 @@ import { fetchApi } from '@/lib/services/api_service';
  * @param errorMessage Custom error message to show on failure.
  * @returns An object containing the data, loading state, and error message.
  */
-export function useFetchApi<T>(
-  url: string | null,
-  errorMessage: string = '無法下載數據，請稍後再試。'
-) {
+export function useFetchApi<T>({ url, method, errorMessage, body }: IUseFetchApiOptions) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +30,10 @@ export function useFetchApi<T>(
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await fetchApi<T>(url);
+        const result = await fetchApi<T>(url, {
+          method,
+          body: body ? JSON.stringify(body) : undefined,
+        });
         setData(result);
         setError(null);
       } catch (err) {
@@ -36,7 +45,7 @@ export function useFetchApi<T>(
     };
 
     fetchData();
-  }, [url, errorMessage]);
+  }, [url, errorMessage, method, JSON.stringify(body)]);
 
   return { data, loading, error };
 }
