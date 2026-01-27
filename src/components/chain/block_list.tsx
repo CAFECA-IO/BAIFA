@@ -12,13 +12,13 @@ interface IBlockListProps {
 
 export default function BlockList({ blocks, loading }: IBlockListProps) {
   const pathname = usePathname();
-  const blockListLink = `${pathname}/blocks`;
+  const blockListPath = `${pathname}/blocks`;
 
   return (
     <div className="flex flex-col items-stretch rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <div className="mb-6 flex items-center justify-between">
         <h3 className="text-lg font-bold text-gray-900">最新區塊</h3>
-        <Link href={blockListLink}>
+        <Link href={blockListPath}>
           <ArrowRight size={20} className="cursor-pointer text-gray-400 hover:text-[#5841D8]" />
         </Link>
       </div>
@@ -73,7 +73,7 @@ export default function BlockList({ blocks, loading }: IBlockListProps) {
       </div>
 
       <Link
-        href={blockListLink}
+        href={blockListPath}
         className="mt-6 w-full rounded-full bg-black py-3 text-center text-sm font-bold text-white transition hover:bg-[#5841D8]"
       >
         查看全部區塊

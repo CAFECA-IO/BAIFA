@@ -12,7 +12,7 @@ export const MOCK_CHAINS: IChain[] = [
     stats: [
       { label: 'iSunCoin 價格', value: '$0', change: '0%', isNegative: true },
       { label: '市值', value: '0T' },
-      { label: '總交易數', value: '0B txns' },
+      { label: '區塊高度', value: '-' },
       { label: '最佳手續費', value: '0 sat/vB' },
       { label: '24h 鏈上交易量', value: '0K BTC' },
     ],

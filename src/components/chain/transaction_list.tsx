@@ -1,6 +1,9 @@
+'use client';
+
 import { ArrowRight, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { ITransaction } from '@/interfaces/chain';
+import { usePathname } from 'next/navigation';
 
 interface ITransactionListProps {
   transactions: ITransaction[];
@@ -8,11 +11,16 @@ interface ITransactionListProps {
 }
 
 export default function TransactionList({ transactions, loading }: ITransactionListProps) {
+  const pathName = usePathname();
+  const transactionListPath = `${pathName}/transactions`;
+
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="flex flex-col items-stretch rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <div className="mb-6 flex items-center justify-between">
         <h3 className="text-lg font-bold text-gray-900">最新交易</h3>
-        <ArrowRight size={20} className="cursor-pointer text-gray-400 hover:text-black" />
+        <Link href={transactionListPath}>
+          <ArrowRight size={20} className="cursor-pointer text-gray-400 hover:text-[#5841D8]" />
+        </Link>
       </div>
 
       <div className="custom-scrollbar h-[430px] space-y-6 overflow-y-auto pr-2">
@@ -74,11 +82,12 @@ export default function TransactionList({ transactions, loading }: ITransactionL
         )}
       </div>
 
-      <div className="mt-6">
-        <button className="w-full rounded-full bg-black py-3 text-sm font-bold text-white transition hover:bg-gray-800">
-          查看全部交易
-        </button>
-      </div>
+      <Link
+        href={transactionListPath}
+        className="mt-6 w-full rounded-full bg-black py-3 text-center text-sm font-bold text-white transition hover:bg-[#5841D8]"
+      >
+        查看全部交易
+      </Link>
     </div>
   );
 }

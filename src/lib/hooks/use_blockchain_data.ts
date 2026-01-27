@@ -17,6 +17,8 @@ export function useBlockchainData(chainId: string | null) {
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [latestGasPrice, setLatestGasPrice] = useState<string>('-');
+  const [latestBlockNumber, setLatestBlockNumber] = useState<string>('-');
 
   useEffect(() => {
     if (!chainId) return;
@@ -37,6 +39,7 @@ export function useBlockchainData(chainId: string | null) {
         });
 
         const latestBn = bnRes.result;
+        setLatestBlockNumber(formatHexToDecimal(latestBn));
         const latestBnDec = BigInt(latestBn);
 
         // 2. Fetch last 6 blocks to fill the list
@@ -57,6 +60,13 @@ export function useBlockchainData(chainId: string | null) {
         }
 
         const blockResponses: IJsonRpcResponse<IJsonRpcBlock>[] = await Promise.all(blockPromises);
+
+        // Extract latest gas price from the latest block
+        if (blockResponses[0]?.result) {
+          const b = blockResponses[0].result;
+          setLatestGasPrice(`${formatHexToGwei(b.baseFeePerGas || '0x0')} Gwei`);
+        }
+
         const fetchedBlocks: IBlock[] = [];
         const fetchedTransactions: ITransaction[] = [];
 
@@ -84,22 +94,33 @@ export function useBlockchainData(chainId: string | null) {
             gasPrice: `${formatHexToMwei(b.baseFeePerGas || '0x0')} Mwei`,
           });
 
-          if (Array.isArray(b.transactions)) {
-            // Take some transactions from each block
-            (b.transactions as IJsonRpcTransaction[])
-              .slice(0, 3)
-              .forEach((t: IJsonRpcTransaction) => {
-                fetchedTransactions.push({
-                  hash: truncateAddress(t.hash, 10, 8),
-                  time: formatTimestamp(b.timestamp),
-                  from: truncateAddress(t.from),
-                  fromLabel: t.from,
-                  to: truncateAddress(t.to),
-                  toLabel: t.to,
-                  value: `${parseFloat(formatHexToEther(t.value)).toFixed(4)} ETH`,
-                });
-              });
-          }
+          (b.transactions as IJsonRpcTransaction[]).forEach((t: IJsonRpcTransaction) => {
+            const gasEstimate = BigInt(t.gas || '0x0');
+            const gasPrice = BigInt(t.gasPrice || '0x0');
+            const fee = formatHexToEther((gasEstimate * gasPrice).toString(16));
+
+            // Basic method detection
+            let method = 'Transfer';
+            if (t.input && t.input !== '0x') {
+              method = t.input.slice(0, 10); // Show selector
+              if (method === '0xa9059cbb') method = 'Transfer (ERC20)';
+              if (method === '0x095ea7b3') method = 'Approve';
+            }
+
+            fetchedTransactions.push({
+              hash: t.hash,
+              method,
+              blockNumber: formatHexToDecimal(b.number),
+              time: formatTimestamp(b.timestamp),
+              timestamp: formatFullTimestamp(b.timestamp),
+              from: truncateAddress(t.from),
+              fromLabel: t.from,
+              to: truncateAddress(t.to),
+              toLabel: t.to,
+              value: `${parseFloat(formatHexToEther(t.value)).toFixed(4)} ETH`,
+              fee: `${parseFloat(fee).toFixed(8)} ETH`,
+            });
+          });
         });
 
         setBlocks(fetchedBlocks);
@@ -119,5 +140,5 @@ export function useBlockchainData(chainId: string | null) {
     return () => clearInterval(interval);
   }, [chainId]);
 
-  return { blocks, transactions, loading, error };
+  return { blocks, transactions, latestGasPrice, latestBlockNumber, loading, error };
 }

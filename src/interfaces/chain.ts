@@ -32,12 +32,16 @@ export interface IBlock {
 
 export interface ITransaction {
   hash: string;
-  time: string;
+  method?: string;
+  blockNumber: string;
+  time: string; // Elapsed time
+  timestamp: string; // Full date/time
   from: string;
   fromLabel?: string;
   to: string;
   toLabel?: string;
   value: string;
+  fee: string;
   type?: string;
 }
 
