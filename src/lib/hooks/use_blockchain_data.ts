@@ -90,7 +90,7 @@ export function useBlockchainData(chainId: string | null) {
               proposer: b.miner,
               proposerLabel: b.miner,
               txns: Array.isArray(b.transactions) ? b.transactions.length : 0,
-              reward: '0.00 ETH',
+              reward: '-',
               gas: `${formatHexToGwei(b.gasUsed)} Gwei`,
               size: `${formatHexToDecimal(b.size)} bytes`,
               gasUsed: gasUsed.toLocaleString(),
@@ -125,7 +125,8 @@ export function useBlockchainData(chainId: string | null) {
                 })
               );
               const txResponses = await Promise.all(txPromises);
-              txObjects = txResponses.map((r) => r.result).filter(Boolean);
+              // 增加過濾以確保數據存在
+              txObjects = txResponses.map((r) => r?.result).filter(Boolean);
             } else {
               // If transactions are already objects, take the last few we need
               const needCount = 10 - fetchedTransactions.length;

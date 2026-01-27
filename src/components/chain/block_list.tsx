@@ -57,7 +57,6 @@ const BlockItem = ({ block }: { block: IBlock }) => {
 export default function BlockList({ blocks, loading }: IBlockListProps) {
   const pathname = usePathname();
   const blockListPath = `${pathname}/blocks`;
-  // const addressPath = `${pathname}/address/${block.proposerLabel}`;
 
   return (
     <div className="flex flex-col items-stretch rounded-xl border border-gray-200 bg-white p-6 shadow-sm">

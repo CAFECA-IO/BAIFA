@@ -9,25 +9,27 @@ export interface IJsonRpcResponse<T> {
 }
 
 export interface IJsonRpcBlock {
-  number: string;
-  hash: string;
-  parentHash: string;
-  nonce: string;
-  sha3Uncles: string;
-  logsBloom: string;
-  transactionsRoot: string;
-  stateRoot: string;
-  miner: string;
+  baseFeePerGas?: string;
   difficulty: string;
-  totalDifficulty: string;
   extraData: string;
-  size: string;
   gasLimit: string;
   gasUsed: string;
+  hash: string;
+  logsBloom: string;
+  miner: string;
+  mixHash: string;
+  nonce: string;
+  number: string;
+  parentHash: string;
+  receiptsRoot: string;
+  sha3Uncles: string;
+  size: string;
+  stateRoot: string;
   timestamp: string;
+  totalDifficulty: string;
   transactions: string[] | IJsonRpcTransaction[];
+  transactionsRoot: string;
   uncles: string[];
-  baseFeePerGas?: string;
 }
 
 export interface IJsonRpcTransaction {

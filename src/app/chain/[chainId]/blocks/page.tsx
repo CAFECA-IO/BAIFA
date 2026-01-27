@@ -15,6 +15,7 @@ const BlockItem = ({ block }: { block: IBlock }) => {
   const params = useParams();
   const isAlertBlock = false; // mock
 
+  const blockPath = `/`;
   const addressPath = `/chain/${params.chainId}/address/${block.proposer}`;
 
   const copyAddressHandler = () => {
@@ -26,7 +27,7 @@ const BlockItem = ({ block }: { block: IBlock }) => {
   return (
     <tr key={block.height} className="hover:bg-gray-50/50">
       <td className="px-6 py-5">
-        <Link href={`/block/${block.height}`} className="font-medium text-[#5841D8]">
+        <Link href={blockPath} className="font-bold font-medium text-[#5841D8] hover:underline">
           {block.height}
         </Link>
       </td>
