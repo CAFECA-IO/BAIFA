@@ -46,7 +46,13 @@ async function forward(request: NextRequest, params: Promise<{ chainId: string }
     let payload: unknown;
 
     if (contentType && contentType.includes('application/json')) {
-      payload = await response.json();
+      try {
+        payload = await response.json();
+      } catch (err) {
+        // Fallback to text if JSON parsing fails (common for empty response bodies)
+        payload = await response.text();
+        console.error('Failed to parse JSON response:', err);
+      }
     } else {
       payload = await response.text();
     }
