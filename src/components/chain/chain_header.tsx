@@ -14,6 +14,7 @@ import {
 import { IChain } from '@/interfaces/chain';
 import { ICON_MAP } from '@/lib/maps';
 import useOuterClick from '@/lib/hooks/use_outer_click';
+import Toggle from '@/components/common/toggle';
 
 type Props = {
   chain?: IChain;
@@ -40,7 +41,12 @@ const BLOCKCHAIN_MENU = [
   { label: '已驗證合約', href: '#' },
 ];
 
-export default function ChainHeader({ chain, showDetails, onToggleDetails }: Props) {
+export default function ChainHeader({
+  chain,
+  showDetails,
+  onToggleDetails,
+  latestGasPrice,
+}: Props) {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const {
     targetRef: blockchainRef,
@@ -48,14 +54,14 @@ export default function ChainHeader({ chain, showDetails, onToggleDetails }: Pro
     setComponentVisible: setBlockchainVisible,
   } = useOuterClick<HTMLDivElement>(false);
 
-  const displayName = chain ? chain.name : 'Ethereum';
+  const displayName = chain ? chain.name : 'iSunCoin';
   // Resolve Icon
   const iconName = chain ? chain.icon : 'Hexagon';
   const Icon = ICON_MAP[iconName] || Hexagon;
 
   const color = chain ? chain.color : 'text-gray-800';
   const bgColor = chain ? chain.bgColor : 'bg-gray-100';
-  const description = chain ? chain.description : 'Ethereum 是一個開源的去中心化區塊鏈網絡...';
+  const description = chain ? chain.description : 'iSunCoin 是一個開源的去中心化區塊鏈網絡...';
 
   const toggleDescription = () => setIsDescriptionExpanded(!isDescriptionExpanded);
 
@@ -170,21 +176,12 @@ export default function ChainHeader({ chain, showDetails, onToggleDetails }: Pro
           </button>
         </div>
 
-        {chain?.details && (
-          <button
-            type="button"
-            className="flex cursor-pointer items-center gap-2 text-xs font-bold text-nowrap text-black"
-            onClick={onToggleDetails}
-          >
-            <span>{showDetails ? '收起' : '全部數據'}</span>
-            <div
-              className={`relative h-4 w-8 rounded-full transition-colors ${showDetails ? 'bg-black' : 'bg-gray-300'}`}
-            >
-              <div
-                className={`absolute top-0.5 h-3 w-3 rounded-full bg-white shadow transition-all ${showDetails ? 'right-0.5' : 'left-0.5'}`}
-              ></div>
-            </div>
-          </button>
+        {showDetails && onToggleDetails && (
+          <Toggle
+            isOpen={showDetails}
+            onToggle={onToggleDetails}
+            label={{ open: '收起', close: '全部數據' }}
+          />
         )}
       </div>
     </div>

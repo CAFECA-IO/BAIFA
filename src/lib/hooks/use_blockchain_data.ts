@@ -82,7 +82,7 @@ export function useBlockchainData(chainId: string | null) {
             height: formatHexToDecimal(b.number),
             time: formatTimestamp(b.timestamp),
             timestamp: formatFullTimestamp(b.timestamp),
-            proposer: truncateAddress(b.miner),
+            proposer: b.miner,
             proposerLabel: b.miner,
             txns: Array.isArray(b.transactions) ? b.transactions.length : 0,
             reward: '0.00 ETH', // Mocked as it's not simple to get via standard RPC
@@ -126,8 +126,7 @@ export function useBlockchainData(chainId: string | null) {
         setBlocks(fetchedBlocks);
         setTransactions(fetchedTransactions);
         setError(null);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Failed to fetch blockchain data:', err);
         setError('無法獲取最新區塊數據');
       } finally {
