@@ -32,7 +32,7 @@ export default function TransactionList({ transactions, loading }: ITransactionL
           transactions.map((txn) => (
             <div
               key={txn.hash}
-              className="flex items-center gap-4 border-b border-gray-50 pb-4 last:border-0 last:pb-0"
+              className="animate-block-in flex items-center gap-4 border-b border-gray-50 pb-4 last:border-0 last:pb-0"
             >
               {/* Icon */}
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-500">

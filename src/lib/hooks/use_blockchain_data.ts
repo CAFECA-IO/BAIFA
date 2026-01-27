@@ -42,59 +42,65 @@ export function useBlockchainData(chainId: string | null) {
         setLatestBlockNumber(formatHexToDecimal(latestBn));
         const latestBnDec = BigInt(latestBn);
 
-        // 2. Fetch last 6 blocks to fill the list
-        const blockPromises = [];
-        for (let i = 0; i < 6; i++) {
-          const bnHex = `0x${(latestBnDec - BigInt(i)).toString(16)}`;
-          blockPromises.push(
-            fetchApi<IJsonRpcResponse<IJsonRpcBlock>>(url, {
-              method: 'POST',
-              body: JSON.stringify({
-                jsonrpc: '2.0',
-                method: 'eth_getBlockByNumber',
-                params: [bnHex, true], // true to get full transactions
-                id: i + 2,
-              }),
-            })
-          );
-        }
-
-        const blockResponses: IJsonRpcResponse<IJsonRpcBlock>[] = await Promise.all(blockPromises);
-
-        // Extract latest gas price from the latest block
-        if (blockResponses[0]?.result) {
-          const b = blockResponses[0].result;
-          setLatestGasPrice(`${formatHexToGwei(b.baseFeePerGas || '0x0')} Gwei`);
-        }
-
         const fetchedBlocks: IBlock[] = [];
         const fetchedTransactions: ITransaction[] = [];
 
-        for (const res of blockResponses) {
-          const b = res.result;
-          if (!b) continue;
+        let currentBnDec = latestBnDec;
+        let blocksProcessed = 0;
+        const MAX_BLOCKS_TO_SCAN = 50;
 
-          const gasUsed = BigInt(b.gasUsed);
-          const gasLimit = BigInt(b.gasLimit);
-          const gasUsedPercent = Number((gasUsed * 10000n) / gasLimit) / 100;
-
-          fetchedBlocks.push({
-            height: formatHexToDecimal(b.number),
-            time: formatTimestamp(b.timestamp),
-            timestamp: formatFullTimestamp(b.timestamp),
-            proposer: b.miner,
-            proposerLabel: b.miner,
-            txns: Array.isArray(b.transactions) ? b.transactions.length : 0,
-            reward: '0.00 ETH',
-            gas: `${formatHexToGwei(b.gasUsed)} Gwei`,
-            size: `${formatHexToDecimal(b.size)} bytes`,
-            gasUsed: gasUsed.toLocaleString(),
-            gasUsedPercent,
-            gasLimit: gasLimit.toLocaleString(),
-            gasPrice: `${formatHexToMwei(b.baseFeePerGas || '0x0')} Mwei`,
+        while (
+          (fetchedTransactions.length < 10 || fetchedBlocks.length < 6) &&
+          blocksProcessed < MAX_BLOCKS_TO_SCAN &&
+          currentBnDec >= 0n
+        ) {
+          const bnHex = `0x${currentBnDec.toString(16)}`;
+          const res = await fetchApi<IJsonRpcResponse<IJsonRpcBlock>>(url, {
+            method: 'POST',
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              method: 'eth_getBlockByNumber',
+              params: [bnHex, true], // true to get full transactions
+              id: blocksProcessed + 2,
+            }),
           });
 
-          // Fetch transactions if they aren't full objects and we still need more
+          const b = res.result;
+          if (!b) {
+            currentBnDec -= 1n;
+            blocksProcessed++;
+            continue;
+          }
+
+          // Extract latest gas price from the first block we successfully fetch
+          if (blocksProcessed === 0 || !latestGasPrice || latestGasPrice === '-') {
+            setLatestGasPrice(`${formatHexToGwei(b.baseFeePerGas || '0x0')} Gwei`);
+          }
+
+          // Add to blocks list if we still need the first 6
+          if (fetchedBlocks.length < 6) {
+            const gasUsed = BigInt(b.gasUsed);
+            const gasLimit = BigInt(b.gasLimit);
+            const gasUsedPercent = Number((gasUsed * 10000n) / gasLimit) / 100;
+
+            fetchedBlocks.push({
+              height: formatHexToDecimal(b.number),
+              time: formatTimestamp(b.timestamp),
+              timestamp: formatFullTimestamp(b.timestamp),
+              proposer: b.miner,
+              proposerLabel: b.miner,
+              txns: Array.isArray(b.transactions) ? b.transactions.length : 0,
+              reward: '0.00 ETH',
+              gas: `${formatHexToGwei(b.gasUsed)} Gwei`,
+              size: `${formatHexToDecimal(b.size)} bytes`,
+              gasUsed: gasUsed.toLocaleString(),
+              gasUsedPercent,
+              gasLimit: gasLimit.toLocaleString(),
+              gasPrice: `${formatHexToMwei(b.baseFeePerGas || '0x0')} Mwei`,
+            });
+          }
+
+          // Fetch transactions if we still need more
           const rawTxns = b.transactions;
           if (fetchedTransactions.length < 10 && Array.isArray(rawTxns) && rawTxns.length > 0) {
             let txObjects: IJsonRpcTransaction[] = [];
@@ -103,7 +109,8 @@ export function useBlockchainData(chainId: string | null) {
               // Upstream returned only hashes, need to fetch individually
               // Get the last 10 (latest) transactions in the block
               const totalTx = rawTxns.length;
-              const startIndex = Math.max(0, totalTx - 10);
+              const needCount = 10 - fetchedTransactions.length;
+              const startIndex = Math.max(0, totalTx - needCount);
               const txHashesToFetch = (rawTxns as string[]).slice(startIndex);
 
               const txPromises = txHashesToFetch.map((_, index) =>
@@ -113,23 +120,23 @@ export function useBlockchainData(chainId: string | null) {
                     jsonrpc: '2.0',
                     method: 'eth_getTransactionByBlockHashAndIndex',
                     params: [b.hash, `0x${(startIndex + index).toString(16)}`],
-                    id: 100 + index,
+                    id: 1000 + blocksProcessed * 100 + index,
                   }),
                 })
               );
               const txResponses = await Promise.all(txPromises);
               txObjects = txResponses.map((r) => r.result).filter(Boolean);
             } else {
-              // If transactions are already objects, take the last 10
-              txObjects = (rawTxns as IJsonRpcTransaction[]).slice(-10);
+              // If transactions are already objects, take the last few we need
+              const needCount = 10 - fetchedTransactions.length;
+              txObjects = (rawTxns as IJsonRpcTransaction[]).slice(-needCount);
             }
 
-            // Reverse to put newest first (highest index first)
+            // Reverse to put newest first (highest index first) within this block's contribution
             txObjects
               .slice()
               .reverse()
               .forEach((t: IJsonRpcTransaction) => {
-                // Only take up to 10 transactions total for the dashboard
                 if (fetchedTransactions.length >= 10) return;
 
                 const gasEstimate = BigInt(t.gas || '0x0');
@@ -159,11 +166,8 @@ export function useBlockchainData(chainId: string | null) {
               });
           }
 
-          if (fetchedTransactions.length >= 10) {
-            // We have enough transactions for the list
-            // But we might want to continue processing blocks to fill the blocks list?
-            // The outer loop handles blocks, so we just continue.
-          }
+          currentBnDec -= 1n;
+          blocksProcessed++;
         }
 
         setBlocks(fetchedBlocks);

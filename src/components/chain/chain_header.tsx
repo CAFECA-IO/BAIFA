@@ -45,7 +45,7 @@ export default function ChainHeader({
   chain,
   showDetails,
   onToggleDetails,
-  latestGasPrice,
+  // latestGasPrice,
 }: Props) {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const {
@@ -83,9 +83,9 @@ export default function ChainHeader({
         <div className="flex items-center gap-3">
           {displayLogo}
           <h1 className="text-2xl font-bold text-gray-900">{displayName} 瀏覽器</h1>
-          <div className="flex items-center gap-1 rounded bg-orange-50 px-2 py-1 text-xs font-medium text-orange-500">
+          {/* <div className="flex items-center gap-1 rounded bg-orange-50 px-2 py-1 text-xs font-medium text-orange-500">
             <span className="text-[10px]">⛽</span> {latestGasPrice || '-'}
-          </div>
+          </div> */}
         </div>
 
         <div className="flex gap-2 text-sm text-gray-600">

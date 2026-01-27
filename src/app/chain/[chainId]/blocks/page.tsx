@@ -12,7 +12,10 @@ import ChainHeader from '@/components/chain/chain_header';
 import Pagination, { PaginationType } from '@/components/common/pagination';
 
 const BlockItem = ({ block }: { block: IBlock }) => {
-  const isAlertBlock = false;
+  const params = useParams();
+  const isAlertBlock = false; // mock
+
+  const addressPath = `/chain/${params.chainId}/address/${block.proposer}`;
 
   const copyAddressHandler = () => {
     navigator.clipboard.writeText(block.proposer);
@@ -31,7 +34,7 @@ const BlockItem = ({ block }: { block: IBlock }) => {
       <td className="px-6 py-5">
         <div className="flex items-center gap-1.5">
           {isShowAlertIcon}
-          <Link href="/" className="font-mono text-[#5841D8] hover:underline">
+          <Link href={addressPath} className="font-mono text-[#5841D8] hover:underline">
             {block.proposer}
           </Link>
           <button
