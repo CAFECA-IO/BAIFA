@@ -70,9 +70,9 @@ export function useBlockchainData(chainId: string | null) {
         const fetchedBlocks: IBlock[] = [];
         const fetchedTransactions: ITransaction[] = [];
 
-        blockResponses.forEach((res: IJsonRpcResponse<IJsonRpcBlock>) => {
+        for (const res of blockResponses) {
           const b = res.result;
-          if (!b) return;
+          if (!b) continue;
 
           const gasUsed = BigInt(b.gasUsed);
           const gasLimit = BigInt(b.gasLimit);
@@ -85,7 +85,7 @@ export function useBlockchainData(chainId: string | null) {
             proposer: b.miner,
             proposerLabel: b.miner,
             txns: Array.isArray(b.transactions) ? b.transactions.length : 0,
-            reward: '0.00 ETH', // Mocked as it's not simple to get via standard RPC
+            reward: '0.00 ETH',
             gas: `${formatHexToGwei(b.gasUsed)} Gwei`,
             size: `${formatHexToDecimal(b.size)} bytes`,
             gasUsed: gasUsed.toLocaleString(),
@@ -94,34 +94,62 @@ export function useBlockchainData(chainId: string | null) {
             gasPrice: `${formatHexToMwei(b.baseFeePerGas || '0x0')} Mwei`,
           });
 
-          (b.transactions as IJsonRpcTransaction[]).forEach((t: IJsonRpcTransaction) => {
-            const gasEstimate = BigInt(t.gas || '0x0');
-            const gasPrice = BigInt(t.gasPrice || '0x0');
-            const fee = formatHexToEther((gasEstimate * gasPrice).toString(16));
+          // Fetch transactions if they aren't full objects
+          const rawTxns = b.transactions;
+          if (Array.isArray(rawTxns) && rawTxns.length > 0) {
+            let txObjects: IJsonRpcTransaction[] = [];
 
-            // Basic method detection
-            let method = 'Transfer';
-            if (t.input && t.input !== '0x') {
-              method = t.input.slice(0, 10); // Show selector
-              if (method === '0xa9059cbb') method = 'Transfer (ERC20)';
-              if (method === '0x095ea7b3') method = 'Approve';
+            if (typeof rawTxns[0] === 'string') {
+              // Upstream returned only hashes, need to fetch individually
+              // To avoid massive RPC calls, we only fetch the first 10 txns per block
+              const txToFetch = (rawTxns as string[]).slice(0, 10);
+              const txPromises = txToFetch.map((_, index) =>
+                fetchApi<IJsonRpcResponse<IJsonRpcTransaction>>(url, {
+                  method: 'POST',
+                  body: JSON.stringify({
+                    jsonrpc: '2.0',
+                    method: 'eth_getTransactionByBlockHashAndIndex',
+                    params: [b.hash, `0x${index.toString(16)}`],
+                    id: 100 + index,
+                  }),
+                })
+              );
+              const txResponses = await Promise.all(txPromises);
+              txObjects = txResponses.map((r) => r.result).filter(Boolean);
+
+              // console.log('🥝txObjects', txObjects);
+            } else {
+              txObjects = rawTxns as IJsonRpcTransaction[];
             }
 
-            fetchedTransactions.push({
-              hash: t.hash,
-              method,
-              blockNumber: formatHexToDecimal(b.number),
-              time: formatTimestamp(b.timestamp),
-              timestamp: formatFullTimestamp(b.timestamp),
-              from: truncateAddress(t.from),
-              fromLabel: t.from,
-              to: truncateAddress(t.to),
-              toLabel: t.to,
-              value: `${parseFloat(formatHexToEther(t.value)).toFixed(4)} ETH`,
-              fee: `${parseFloat(fee).toFixed(8)} ETH`,
+            txObjects.forEach((t: IJsonRpcTransaction) => {
+              const gasEstimate = BigInt(t.gas || '0x0');
+              const gasPrice = BigInt(t.gasPrice || '0x0');
+              const fee = formatHexToEther((gasEstimate * gasPrice).toString(16));
+
+              let method = 'Transfer';
+              if (t.input && t.input !== '0x') {
+                method = t.input.slice(0, 10);
+                if (method === '0xa9059cbb') method = 'Transfer (ERC20)';
+                if (method === '0x095ea7b3') method = 'Approve';
+              }
+
+              fetchedTransactions.push({
+                hash: t.hash,
+                method,
+                blockNumber: formatHexToDecimal(b.number),
+                time: formatTimestamp(b.timestamp),
+                timestamp: formatFullTimestamp(b.timestamp),
+                from: truncateAddress(t.from),
+                fromLabel: t.from,
+                to: truncateAddress(t.to),
+                toLabel: t.to,
+                value: `${parseFloat(formatHexToEther(t.value)).toFixed(4)} ETH`,
+                fee: `${parseFloat(fee).toFixed(8)} ETH`,
+              });
             });
-          });
-        });
+          }
+        }
 
         setBlocks(fetchedBlocks);
         setTransactions(fetchedTransactions);

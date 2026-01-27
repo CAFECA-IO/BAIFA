@@ -4,26 +4,26 @@ import { useParams } from 'next/navigation';
 import BlockList from '@/components/chain/block_list';
 import TransactionList from '@/components/chain/transaction_list';
 import ChainOverview from '@/components/chain/chain_overview';
-// import { IChain } from '@/interfaces/chain';
-// import { useFetchApi } from '@/lib/hooks/use_fetch_api';
+import { IChain } from '@/interfaces/chain';
+import { useFetchApi } from '@/lib/hooks/use_fetch_api';
 import { useBlockchainData } from '@/lib/hooks/use_blockchain_data';
 // import { Loader2 } from 'lucide-react';
-// import { API_METHOD } from '@/constants/api_method';
+import { API_METHOD } from '@/constants/api_method';
 
 export default function ChainDetailPage() {
   const params = useParams();
   const chainId = params?.chainId as string;
 
   // 1. Fetch basic chain info
-  // const {
-  //   data: chain,
-  //   loading: chainLoading,
-  //   error: chainError,
-  // } = useFetchApi<IChain>({
-  //   url: chainId ? `/api/v1/chains/${chainId}` : null,
-  //   method: API_METHOD.POST,
-  //   errorMessage: '無法下載鏈詳情，請稍後再試。',
-  // });
+  const {
+    data: chain,
+    // loading: chainLoading,
+    // error: chainError,
+  } = useFetchApi<IChain>({
+    url: chainId ? `/api/v1/chains/${chainId}` : null,
+    method: API_METHOD.POST,
+    errorMessage: '無法下載鏈詳情，請稍後再試。',
+  });
 
   // 2. Fetch dynamic blockchain data (Blocks & Transactions)
   const {
@@ -34,6 +34,23 @@ export default function ChainDetailPage() {
     loading: dataLoading,
     error: dataError,
   } = useBlockchainData(chainId);
+
+  // const { data: transactionData } = useFetchApi<IJsonRpcResponse<any>>({
+  //   url: chainId ? `/api/v1/chains/${chainId}` : null,
+  //   method: API_METHOD.POST,
+  //   errorMessage: '無法下載交易，請稍後再試。',
+  //   body: {
+  //     "jsonrpc": "2.0",
+  //     "method": "eth_getTransactionByBlockHashAndIndex",
+  //     "params": [
+  //       "0x3c82bc62179602b67318c013c10f99011037c49cba84e31ffe6e465a21c521a7",
+  //       "0x0"
+  //     ],
+  //     "id": 1
+  //   }
+  // })
+
+  // console.log('🍉transactions', transactionData?.result);
 
   // if (chainLoading) {
   //   return (
@@ -55,7 +72,7 @@ export default function ChainDetailPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-7xl py-20 pt-6 text-black">
         <ChainOverview
-          // chain={chain || undefined}
+          chain={chain || undefined}
           latestGasPrice={latestGasPrice}
           latestBlockNumber={latestBlockNumber}
         />

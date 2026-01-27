@@ -50,7 +50,7 @@ export default function TransactionListPage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-6 pt-8">
-        <h2 className="mb-6 text-2xl font-bold text-gray-900">大額交易</h2>
+        <h2 className="mb-6 text-2xl font-bold text-gray-900">交易列表</h2>
 
         {/* Filters */}
         <div className="mb-6 flex flex-wrap items-center gap-4">

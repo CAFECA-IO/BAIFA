@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import {
-  Hexagon,
   Globe,
   Twitter,
   MessageCircle,
@@ -56,11 +56,18 @@ export default function ChainHeader({
 
   const displayName = chain ? chain.name : 'iSunCoin';
   // Resolve Icon
-  const iconName = chain ? chain.icon : 'Hexagon';
-  const Icon = ICON_MAP[iconName] || Hexagon;
-
   const color = chain ? chain.color : 'text-gray-800';
   const bgColor = chain ? chain.bgColor : 'bg-gray-100';
+  const iconName = chain ? chain.icon : 'iSunCoin';
+  const Icon = ICON_MAP[iconName] || null;
+  const displayLogo = Icon ? (
+    <div className={`flex h-10 w-10 items-center justify-center rounded-full ${bgColor} ${color}`}>
+      <Icon size={24} fill="currentColor" className="opacity-80" />
+    </div>
+  ) : (
+    <Image src="/logo/isuncoin.svg" alt="isuncoin_logo" width={24} height={24} />
+  );
+
   const description = chain ? chain.description : 'iSunCoin 是一個開源的去中心化區塊鏈網絡...';
 
   const toggleDescription = () => setIsDescriptionExpanded(!isDescriptionExpanded);
@@ -74,11 +81,7 @@ export default function ChainHeader({
       {/* Top Header Row */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${bgColor} ${color}`}
-          >
-            <Icon size={24} fill="currentColor" className="opacity-80" />
-          </div>
+          {displayLogo}
           <h1 className="text-2xl font-bold text-gray-900">{displayName} 瀏覽器</h1>
           <div className="flex items-center gap-1 rounded bg-orange-50 px-2 py-1 text-xs font-medium text-orange-500">
             <span className="text-[10px]">⛽</span> {latestGasPrice || '-'}
