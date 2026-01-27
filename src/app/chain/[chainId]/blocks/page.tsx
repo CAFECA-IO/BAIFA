@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Copy, AlertCircle, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
@@ -8,10 +9,13 @@ import { useFetchApi } from '@/lib/hooks/use_fetch_api';
 import { API_METHOD } from '@/constants/api_method';
 import { IChain } from '@/interfaces/chain';
 import ChainHeader from '@/components/chain/chain_header';
+import Pagination from '@/components/common/pagination';
 
 export default function BlockListPage() {
   const params = useParams();
   const chainId = params?.chainId as string;
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   // 1. Fetch chain info for header
   const { data: chain } = useFetchApi<IChain>({
@@ -23,7 +27,8 @@ export default function BlockListPage() {
   // 2. Fetch block data
   const { blocks, loading, error } = useBlockchainData(chainId);
 
-  const blockCount = '8,786,179'; // Mocked or derived from latest block
+  const blockCount = '0'; // Mocked or derived from latest block
+  const totalPage = Math.ceil(Number(blockCount) / 10);
 
   if (loading && blocks.length === 0) {
     return (
@@ -138,17 +143,11 @@ export default function BlockListPage() {
 
             {/* Footer Pagination */}
             <div className="flex items-center justify-end border-t border-gray-100 p-4">
-              <div className="flex items-center gap-2">
-                <button className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                  上一頁
-                </button>
-                <div className="flex items-center gap-1 px-2 text-sm">
-                  第 <span className="font-bold text-gray-900">1</span> 頁，共 500 頁
-                </div>
-                <button className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                  下一頁
-                </button>
-              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPage}
+                onPageChange={(page) => setCurrentPage(page)}
+              />
             </div>
           </div>
 
