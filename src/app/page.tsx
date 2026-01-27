@@ -5,7 +5,7 @@ import JourneySection from '@/components/home/journey_section';
 export default function Home() {
   return (
     <div className="min-h-screen bg-black">
-      <main className="flex w-full items-center flex-col">
+      <main className="flex w-full flex-col items-center">
         <HeroSection />
         <ChainList />
         <JourneySection />

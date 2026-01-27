@@ -41,29 +41,29 @@ export default function TransactionList({ transactions, loading }: ITransactionL
 
               {/* Content */}
               <div className="min-w-0 flex-1">
-                <div className="mb-1 flex flex-wrap items-center gap-2 text-sm">
+                <div className="mb-1 grid grid-cols-6 gap-2 text-sm">
                   <Link
                     href="/"
-                    className="max-w-[80px] truncate font-bold text-[#5841D8] hover:underline"
+                    className="col-span-2 truncate font-bold text-[#5841D8] hover:underline"
                     title={txn.hash}
                   >
                     {txn.hash}
                   </Link>
-                  <span className="text-xs text-nowrap text-gray-400">發送方</span>
+                  <span className="col-span-1 text-xs text-nowrap text-gray-400">發送方</span>
                   <Link
                     href="/"
-                    className="max-w-[100px] truncate text-[#5841D8] hover:underline sm:max-w-[140px]"
+                    className="col-span-3 max-w-[100px] truncate text-[#5841D8] hover:underline sm:max-w-[140px]"
                     title={txn.fromLabel}
                   >
                     {txn.from}
                   </Link>
                 </div>
-                <div className="flex flex-wrap items-center gap-2 text-sm">
-                  <span className="min-w-[60px] text-xs text-gray-500">{txn.time}</span>
-                  <span className="text-xs text-nowrap text-gray-400">接收方</span>
+                <div className="grid grid-cols-6 gap-2 text-sm">
+                  <span className="col-span-2 text-xs text-gray-500">{txn.time}</span>
+                  <span className="col-span-1 text-xs text-nowrap text-gray-400">接收方</span>
                   <Link
                     href="/"
-                    className="max-w-[100px] truncate text-[#5841D8] hover:underline sm:max-w-[140px]"
+                    className="col-span-3 max-w-[100px] truncate text-[#5841D8] hover:underline sm:max-w-[140px]"
                     title={txn.toLabel}
                   >
                     {txn.to}

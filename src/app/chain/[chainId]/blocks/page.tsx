@@ -3,13 +3,68 @@
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { Copy, AlertCircle, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { Copy, AlertCircle, Loader2 } from 'lucide-react';
 import { useBlockchainData } from '@/lib/hooks/use_blockchain_data';
 import { useFetchApi } from '@/lib/hooks/use_fetch_api';
 import { API_METHOD } from '@/constants/api_method';
-import { IChain } from '@/interfaces/chain';
+import { IBlock, IChain } from '@/interfaces/chain';
 import ChainHeader from '@/components/chain/chain_header';
-import Pagination from '@/components/common/pagination';
+import Pagination, { PaginationType } from '@/components/common/pagination';
+
+const BlockItem = ({ block }: { block: IBlock }) => {
+  const isAlertBlock = false;
+
+  const copyAddressHandler = () => {
+    navigator.clipboard.writeText(block.proposer);
+  };
+
+  const isShowAlertIcon = isAlertBlock && <AlertCircle size={14} className="text-orange-400" />;
+
+  return (
+    <tr key={block.height} className="hover:bg-gray-50/50">
+      <td className="px-6 py-5">
+        <Link href={`/block/${block.height}`} className="font-medium text-[#5841D8]">
+          {block.height}
+        </Link>
+      </td>
+      <td className="px-6 py-5 whitespace-nowrap text-gray-600">{block.timestamp.split(' ')[1]}</td>
+      <td className="px-6 py-5">
+        <div className="flex items-center gap-1.5">
+          {isShowAlertIcon}
+          <Link href="/" className="font-mono text-[#5841D8] hover:underline">
+            {block.proposer}
+          </Link>
+          <button
+            type="button"
+            className="cursor-pointer text-gray-300 hover:text-gray-500"
+            onClick={copyAddressHandler}
+          >
+            <Copy size={12} />
+          </button>
+        </div>
+      </td>
+      <td className="px-6 py-5 text-gray-900">{block.txns}</td>
+      <td className="px-6 py-5 text-gray-500">{block.size}</td>
+      <td className="px-6 py-5">
+        <div className="flex flex-col gap-1">
+          <span className="font-medium text-gray-900">{block.gasUsed}</span>
+          <div className="flex items-center gap-2">
+            <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-100">
+              <div
+                className="h-full bg-gray-400"
+                style={{ width: `${Math.min(block.gasUsedPercent, 100)}%` }}
+              ></div>
+            </div>
+            <span className="text-[10px] text-gray-400">{block.gasUsedPercent.toFixed(2)}%</span>
+          </div>
+        </div>
+      </td>
+      <td className="px-6 py-5 text-gray-900">{block.gasLimit}</td>
+      <td className="px-6 py-5 text-gray-600">{block.gasPrice}</td>
+      <td className="px-6 py-5 text-gray-900">{block.reward}</td>
+    </tr>
+  );
+};
 
 export default function BlockListPage() {
   const params = useParams();
@@ -57,19 +112,13 @@ export default function BlockListPage() {
             <div className="flex items-center justify-between border-b border-gray-100 p-4 text-sm text-gray-500">
               <div>
                 共計 <span className="font-medium text-gray-900">{blockCount}</span> 個區塊
-                (僅展示近 1 萬條數據)
               </div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <button className="rounded p-1 text-gray-300 hover:bg-gray-50">
-                    <ChevronLeft size={18} />
-                  </button>
-                  <span className="font-medium text-gray-900">1 / 500</span>
-                  <button className="rounded p-1 text-gray-400 hover:bg-gray-50 hover:text-gray-900">
-                    <ChevronRight size={18} />
-                  </button>
-                </div>
-              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPage}
+                onPageChange={(page) => setCurrentPage(page)}
+                type={PaginationType.NUMBER_WITH_SLASH}
+              />
             </div>
 
             {/* Table */}
@@ -89,53 +138,8 @@ export default function BlockListPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {blocks.map((block, idx) => (
-                    <tr key={block.height} className="hover:bg-gray-50/50">
-                      <td className="px-6 py-5">
-                        <Link
-                          href={`/block/${block.height}`}
-                          className="font-medium text-[#5841D8]"
-                        >
-                          {block.height}
-                        </Link>
-                      </td>
-                      <td className="px-6 py-5 whitespace-nowrap text-gray-600">
-                        {block.timestamp.split(' ')[1]}
-                      </td>
-                      <td className="px-6 py-5">
-                        <div className="flex items-center gap-1.5">
-                          {idx % 3 === 1 && <AlertCircle size={14} className="text-orange-400" />}
-                          <Link href="/" className="font-mono text-[#5841D8]">
-                            {block.proposer}
-                          </Link>
-                          <Copy
-                            size={12}
-                            className="cursor-pointer text-gray-300 hover:text-gray-500"
-                          />
-                        </div>
-                      </td>
-                      <td className="px-6 py-5 text-gray-900">{block.txns}</td>
-                      <td className="px-6 py-5 text-gray-500">{block.size}</td>
-                      <td className="px-6 py-5">
-                        <div className="flex flex-col gap-1">
-                          <span className="font-medium text-gray-900">{block.gasUsed}</span>
-                          <div className="flex items-center gap-2">
-                            <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-100">
-                              <div
-                                className="h-full bg-gray-400"
-                                style={{ width: `${Math.min(block.gasUsedPercent, 100)}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-[10px] text-gray-400">
-                              {block.gasUsedPercent.toFixed(2)}%
-                            </span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-5 text-gray-900">{block.gasLimit}</td>
-                      <td className="px-6 py-5 text-gray-600">{block.gasPrice}</td>
-                      <td className="px-6 py-5 text-gray-900">{block.reward}</td>
-                    </tr>
+                  {blocks.map((block) => (
+                    <BlockItem key={block.height} block={block} />
                   ))}
                 </tbody>
               </table>
@@ -147,6 +151,7 @@ export default function BlockListPage() {
                 currentPage={currentPage}
                 totalPages={totalPage}
                 onPageChange={(page) => setCurrentPage(page)}
+                type={PaginationType.TEXT}
               />
             </div>
           </div>

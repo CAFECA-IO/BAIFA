@@ -9,6 +9,7 @@ import { useFetchApi } from '@/lib/hooks/use_fetch_api';
 import { useBlockchainData } from '@/lib/hooks/use_blockchain_data';
 // import { Loader2 } from 'lucide-react';
 import { API_METHOD } from '@/constants/api_method';
+// import { IJsonRpcResponse } from '@/interfaces/rpc';
 
 export default function ChainDetailPage() {
   const params = useParams();

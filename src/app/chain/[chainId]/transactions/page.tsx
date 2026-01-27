@@ -9,7 +9,7 @@ import { useFetchApi } from '@/lib/hooks/use_fetch_api';
 import { API_METHOD } from '@/constants/api_method';
 import { IChain } from '@/interfaces/chain';
 import { truncateAddress } from '@/lib/utils/format';
-import Pagination from '@/components/common/pagination';
+import Pagination, { PaginationType } from '@/components/common/pagination';
 
 export default function TransactionListPage() {
   const params = useParams();
@@ -82,7 +82,7 @@ export default function TransactionListPage() {
           <div className="flex items-center justify-between border-b border-gray-100 p-4 text-sm text-gray-500">
             <div>
               近 24 小時內共計 <span className="font-medium text-gray-900">{txnTotalCount}</span>{' '}
-              條交易記錄 (僅展示近 1 萬條數據)
+              條交易記錄
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
@@ -180,6 +180,7 @@ export default function TransactionListPage() {
               currentPage={currentPage}
               totalPages={totalPage}
               onPageChange={(page) => setCurrentPage(page)}
+              type={PaginationType.TEXT}
             />
           </div>
         </div>

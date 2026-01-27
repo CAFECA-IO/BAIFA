@@ -94,60 +94,75 @@ export function useBlockchainData(chainId: string | null) {
             gasPrice: `${formatHexToMwei(b.baseFeePerGas || '0x0')} Mwei`,
           });
 
-          // Fetch transactions if they aren't full objects
+          // Fetch transactions if they aren't full objects and we still need more
           const rawTxns = b.transactions;
-          if (Array.isArray(rawTxns) && rawTxns.length > 0) {
+          if (fetchedTransactions.length < 10 && Array.isArray(rawTxns) && rawTxns.length > 0) {
             let txObjects: IJsonRpcTransaction[] = [];
 
             if (typeof rawTxns[0] === 'string') {
               // Upstream returned only hashes, need to fetch individually
-              // To avoid massive RPC calls, we only fetch the first 10 txns per block
-              const txToFetch = (rawTxns as string[]).slice(0, 10);
-              const txPromises = txToFetch.map((_, index) =>
+              // Get the last 10 (latest) transactions in the block
+              const totalTx = rawTxns.length;
+              const startIndex = Math.max(0, totalTx - 10);
+              const txHashesToFetch = (rawTxns as string[]).slice(startIndex);
+
+              const txPromises = txHashesToFetch.map((_, index) =>
                 fetchApi<IJsonRpcResponse<IJsonRpcTransaction>>(url, {
                   method: 'POST',
                   body: JSON.stringify({
                     jsonrpc: '2.0',
                     method: 'eth_getTransactionByBlockHashAndIndex',
-                    params: [b.hash, `0x${index.toString(16)}`],
+                    params: [b.hash, `0x${(startIndex + index).toString(16)}`],
                     id: 100 + index,
                   }),
                 })
               );
               const txResponses = await Promise.all(txPromises);
               txObjects = txResponses.map((r) => r.result).filter(Boolean);
-
-              // console.log('🥝txObjects', txObjects);
             } else {
-              txObjects = rawTxns as IJsonRpcTransaction[];
+              // If transactions are already objects, take the last 10
+              txObjects = (rawTxns as IJsonRpcTransaction[]).slice(-10);
             }
 
-            txObjects.forEach((t: IJsonRpcTransaction) => {
-              const gasEstimate = BigInt(t.gas || '0x0');
-              const gasPrice = BigInt(t.gasPrice || '0x0');
-              const fee = formatHexToEther((gasEstimate * gasPrice).toString(16));
+            // Reverse to put newest first (highest index first)
+            txObjects
+              .slice()
+              .reverse()
+              .forEach((t: IJsonRpcTransaction) => {
+                // Only take up to 10 transactions total for the dashboard
+                if (fetchedTransactions.length >= 10) return;
 
-              let method = 'Transfer';
-              if (t.input && t.input !== '0x') {
-                method = t.input.slice(0, 10);
-                if (method === '0xa9059cbb') method = 'Transfer (ERC20)';
-                if (method === '0x095ea7b3') method = 'Approve';
-              }
+                const gasEstimate = BigInt(t.gas || '0x0');
+                const gasPrice = BigInt(t.gasPrice || '0x0');
+                const fee = formatHexToEther((gasEstimate * gasPrice).toString(16));
 
-              fetchedTransactions.push({
-                hash: t.hash,
-                method,
-                blockNumber: formatHexToDecimal(b.number),
-                time: formatTimestamp(b.timestamp),
-                timestamp: formatFullTimestamp(b.timestamp),
-                from: truncateAddress(t.from),
-                fromLabel: t.from,
-                to: truncateAddress(t.to),
-                toLabel: t.to,
-                value: `${parseFloat(formatHexToEther(t.value)).toFixed(4)} ETH`,
-                fee: `${parseFloat(fee).toFixed(8)} ETH`,
+                let method = 'Transfer';
+                if (t.input && t.input !== '0x') {
+                  method = t.input.slice(0, 10);
+                  if (method === '0xa9059cbb') method = 'Transfer (ERC20)';
+                  if (method === '0x095ea7b3') method = 'Approve';
+                }
+
+                fetchedTransactions.push({
+                  hash: t.hash,
+                  method,
+                  blockNumber: formatHexToDecimal(b.number),
+                  time: formatTimestamp(b.timestamp),
+                  timestamp: formatFullTimestamp(b.timestamp),
+                  from: truncateAddress(t.from),
+                  fromLabel: t.from,
+                  to: truncateAddress(t.to),
+                  toLabel: t.to,
+                  value: `${parseFloat(formatHexToEther(t.value)).toFixed(4)} ETH`,
+                  fee: `${parseFloat(fee).toFixed(8)} ETH`,
+                });
               });
-            });
+          }
+
+          if (fetchedTransactions.length >= 10) {
+            // We have enough transactions for the list
+            // But we might want to continue processing blocks to fill the blocks list?
+            // The outer loop handles blocks, so we just continue.
           }
         }
 

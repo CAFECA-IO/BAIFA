@@ -31,7 +31,7 @@ export async function request<T = unknown>(url: string, options: IRequestOptions
   const token = localStorage.getItem('dewt');
   const defaultHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   };
 
   const config: RequestInit = {
@@ -48,7 +48,11 @@ export async function request<T = unknown>(url: string, options: IRequestOptions
 
     if (!response.ok) {
       const errorData = data as { message?: string } | undefined;
-      throw new ApiError(errorData?.message || response.statusText || 'Request failed', response.status, data);
+      throw new ApiError(
+        errorData?.message || response.statusText || 'Request failed',
+        response.status,
+        data
+      );
     }
 
     return data as T;

@@ -10,13 +10,6 @@
     "experimentalDecorators": true,
     "strict": false
   },
-  "include": [
-    "hardhat.config.ts",
-    "scripts",
-    "test",
-    "ignition"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["hardhat.config.ts", "scripts", "test", "ignition"],
+  "exclude": ["node_modules"]
 }
