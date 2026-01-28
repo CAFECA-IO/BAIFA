@@ -43,6 +43,7 @@ export interface ITransaction {
   value: string;
   fee: string;
   type?: string;
+  description?: string;
 }
 
 export interface IChain {
