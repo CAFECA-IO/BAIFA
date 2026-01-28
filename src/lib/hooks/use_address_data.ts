@@ -19,7 +19,7 @@ export interface IAddressStats {
 
 export function useAddressData(chainId: string | null, address: string | null) {
   const [balance, setBalance] = useState<string>('0');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<IAddressStats | null>(null);
 
