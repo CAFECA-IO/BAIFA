@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { Copy, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { IBlock } from '@/interfaces/chain';
 import Pagination, { PaginationType } from '@/components/common/pagination';
 import { API_METHOD } from '@/constants/api_method';
 import { IJsonRpcResponse, IJsonRpcBlock } from '@/interfaces/rpc';
 import { fetchApi } from '@/lib/services/api_service';
+import CopyButton from '@/components/common/copy_button';
 
 const BlockItem = ({ block }: { block: IBlock }) => {
   const params = useParams();
@@ -17,16 +18,12 @@ const BlockItem = ({ block }: { block: IBlock }) => {
   const blockPath = `/`;
   const addressPath = `/chain/${params.chainId}/address/${block.proposer}`;
 
-  const copyAddressHandler = () => {
-    navigator.clipboard.writeText(block.proposer);
-  };
-
   const isShowAlertIcon = isAlertBlock && <AlertCircle size={14} className="text-orange-400" />;
 
   return (
-    <tr key={block.height} className="hover:bg-gray-50/50">
+    <tr className="animate-block-in hover:bg-gray-50/50">
       <td className="px-6 py-5">
-        <Link href={blockPath} className="font-bold font-medium text-[#5841D8] hover:underline">
+        <Link href={blockPath} className="font-bold text-[#5841D8] hover:underline">
           {block.height}
         </Link>
       </td>
@@ -37,13 +34,7 @@ const BlockItem = ({ block }: { block: IBlock }) => {
           <Link href={addressPath} className="font-mono text-[#5841D8] hover:underline">
             {block.proposer}
           </Link>
-          <button
-            type="button"
-            className="cursor-pointer text-gray-300 hover:text-gray-500"
-            onClick={copyAddressHandler}
-          >
-            <Copy size={12} />
-          </button>
+          <CopyButton value={block.proposer} />
         </div>
       </td>
       <td className="px-6 py-5 text-gray-900">{block.txns}</td>

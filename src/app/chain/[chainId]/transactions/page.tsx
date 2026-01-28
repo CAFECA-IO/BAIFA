@@ -3,14 +3,76 @@
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { Copy, ArrowLeft, ArrowRight, ChevronRight, Loader2, Search } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronRight, Loader2, Search } from 'lucide-react';
 import { useBlockchainData } from '@/lib/hooks/use_blockchain_data';
 import { useFetchApi } from '@/lib/hooks/use_fetch_api';
 import { API_METHOD } from '@/constants/api_method';
-import { IChain } from '@/interfaces/chain';
+import { IChain, ITransaction } from '@/interfaces/chain';
 import { truncateAddress } from '@/lib/utils/format';
 import Pagination, { PaginationType } from '@/components/common/pagination';
 import ChainHeader from '@/components/chain/chain_header';
+import CopyButton from '@/components/common/copy_button';
+
+const TransactionItem = ({ txn }: { txn: ITransaction }) => {
+  const params = useParams();
+  const chainId = params?.chainId as string;
+
+  const transactionPath = `/chain/${chainId}/tx/${txn.hash}`;
+  const blockPath = `/chain/${chainId}/block/${txn.blockNumber}`;
+  const fromPath = `/chain/${chainId}/address/${txn.fromLabel}`;
+  const toPath = `/chain/${chainId}/address/${txn.toLabel}`;
+
+  const displayFrom = !!txn.from ? (
+    <div className="flex items-center gap-1.5">
+      <Link href={fromPath} className="font-mono text-[#5841D8] hover:underline">
+        {txn.from}
+      </Link>
+      <CopyButton value={txn.from} />
+    </div>
+  ) : (
+    <p className="font-mono text-gray-600">Unknown</p>
+  );
+  const displayTo = !!txn.to ? (
+    <div className="flex items-center gap-1.5">
+      <Link href={toPath} className="font-mono text-[#5841D8] hover:underline">
+        {txn.to}
+      </Link>
+      <CopyButton value={txn.to} />
+    </div>
+  ) : (
+    <p className="font-mono text-gray-600">Unknown</p>
+  );
+
+  return (
+    <tr className="hover:bg-gray-50/50">
+      <td className="px-6 py-5">
+        <Link href={transactionPath} className="font-mono text-[#5841D8]" title={txn.hash}>
+          {truncateAddress(txn.hash, 8, 6)}
+        </Link>
+      </td>
+      <td className="px-6 py-5">
+        <span className="rounded-md bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-600">
+          {txn.method}
+        </span>
+      </td>
+      <td className="px-6 py-5">
+        <Link href={blockPath} className="font-bold text-[#5841D8] hover:underline">
+          {txn.blockNumber}
+        </Link>
+      </td>
+      <td className="px-6 py-5 whitespace-nowrap text-gray-600">{txn.timestamp}</td>
+      <td className="px-6 py-5">{displayFrom}</td>
+      <td className="px-4 py-5 text-center">
+        <div className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-50 text-green-500">
+          <ArrowRight size={14} />
+        </div>
+      </td>
+      <td className="px-6 py-5">{displayTo}</td>
+      <td className="px-6 py-5 font-bold text-gray-900">{txn.value}</td>
+      <td className="px-6 py-5 text-gray-500">{txn.fee}</td>
+    </tr>
+  );
+};
 
 export default function TransactionListPage() {
   const params = useParams();
@@ -38,6 +100,8 @@ export default function TransactionListPage() {
       </div>
     );
   }
+
+  // console.log('🍗transactions', transactions);
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -117,63 +181,7 @@ export default function TransactionListPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {transactions.map((txn) => (
-                    <tr key={txn.hash} className="hover:bg-gray-50/50">
-                      <td className="px-6 py-5">
-                        <Link
-                          href={`/tx/${txn.hash}`}
-                          className="font-mono text-[#5841D8]"
-                          title={txn.hash}
-                        >
-                          {truncateAddress(txn.hash, 8, 6)}
-                        </Link>
-                      </td>
-                      <td className="px-6 py-5">
-                        <span className="rounded-md bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-600">
-                          {txn.method}
-                        </span>
-                      </td>
-                      <td className="px-6 py-5">
-                        <Link href={`/block/${txn.blockNumber}`} className="text-[#5841D8]">
-                          {txn.blockNumber}
-                        </Link>
-                      </td>
-                      <td className="px-6 py-5 whitespace-nowrap text-gray-600">{txn.timestamp}</td>
-                      <td className="px-6 py-5">
-                        <div className="flex items-center gap-1.5">
-                          <Link
-                            href={`/address/${txn.fromLabel}`}
-                            className="font-mono text-[#5841D8]"
-                          >
-                            {txn.from}
-                          </Link>
-                          <Copy
-                            size={12}
-                            className="cursor-pointer text-gray-300 hover:text-gray-500"
-                          />
-                        </div>
-                      </td>
-                      <td className="px-4 py-5 text-center">
-                        <div className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-50 text-green-500">
-                          <ArrowRight size={14} />
-                        </div>
-                      </td>
-                      <td className="px-6 py-5">
-                        <div className="flex items-center gap-1.5">
-                          <Link
-                            href={`/address/${txn.toLabel}`}
-                            className="font-mono text-[#5841D8]"
-                          >
-                            {txn.to}
-                          </Link>
-                          <Copy
-                            size={12}
-                            className="cursor-pointer text-gray-300 hover:text-gray-500"
-                          />
-                        </div>
-                      </td>
-                      <td className="px-6 py-5 font-bold text-gray-900">{txn.value}</td>
-                      <td className="px-6 py-5 text-gray-500">{txn.fee}</td>
-                    </tr>
+                    <TransactionItem key={txn.hash} txn={txn} />
                   ))}
                 </tbody>
               </table>

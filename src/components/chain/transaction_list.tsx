@@ -23,7 +23,7 @@ export default function TransactionList({ transactions, loading }: ITransactionL
         </Link>
       </div>
 
-      <div className="custom-scrollbar h-[430px] space-y-6 overflow-y-auto pr-2">
+      <div className="custom-scrollbar flex-1 space-y-6 pr-2">
         {loading ? (
           <div className="flex h-full items-center justify-center">
             <Loader2 className="h-6 w-6 animate-spin text-gray-400" />

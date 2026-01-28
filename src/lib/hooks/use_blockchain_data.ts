@@ -50,7 +50,7 @@ export function useBlockchainData(chainId: string | null) {
         const MAX_BLOCKS_TO_SCAN = 50;
 
         while (
-          (fetchedTransactions.length < 10 || fetchedBlocks.length < 6) &&
+          (fetchedTransactions.length < 10 || fetchedBlocks.length < 10) &&
           blocksProcessed < MAX_BLOCKS_TO_SCAN &&
           currentBnDec >= 0n
         ) {
@@ -144,11 +144,20 @@ export function useBlockchainData(chainId: string | null) {
                 const gasPrice = BigInt(t.gasPrice || '0x0');
                 const fee = formatHexToEther((gasEstimate * gasPrice).toString(16));
 
+                const METHOD_SIGNATURES: Record<string, string> = {
+                  '0xa9059cbb': 'Transfer (ERC-20)',
+                  '0x095ea7b3': 'Approve (ERC-20)',
+                  '0x23b872dd': 'TransferFrom (ERC-20/721)',
+                  '0x42842e0e': 'SafeTransferFrom (ERC-721)',
+                  '0xf242432a': 'SafeTransferFrom (ERC-1155)',
+                  '0x2ea01f9c': 'HandleOps (ERC-4337)',
+                  '0x6931966a': 'ForcedTransfer (ERC-3643)',
+                };
+
                 let method = 'Transfer';
                 if (t.input && t.input !== '0x') {
-                  method = t.input.slice(0, 10);
-                  if (method === '0xa9059cbb') method = 'Transfer (ERC20)';
-                  if (method === '0x095ea7b3') method = 'Approve';
+                  const signature = t.input.slice(0, 10);
+                  method = METHOD_SIGNATURES[signature] || signature;
                 }
 
                 fetchedTransactions.push({
