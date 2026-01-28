@@ -79,21 +79,6 @@ export const MOCK_CHAINS: IChain[] = [
   //   },
   // },
   // {
-  //   id: 'xlayer',
-  //   name: 'X Layer',
-  //   icon: 'Layers',
-  //   color: 'text-white',
-  //   bgColor: 'bg-white/10',
-  //   description:
-  //     'X Layer 是一個基於 ZK 技術的以太坊 Layer 2 網絡，旨在連接 OKX 生態系統和以太坊社區。它提供低成本、高效率的交易體驗，並與以太坊虛擬機 (EVM) 完全兼容。',
-  //   stats: [
-  //     { label: 'X Layer 價格', value: '$12.45', change: '+1.2%', isNegative: false },
-  //     { label: '總交易筆數', value: '102.8M Txns' },
-  //     { label: '24h 鏈上交易量', value: '67.5K OKB' },
-  //     { label: '活躍地址數', value: '46,387' },
-  //   ],
-  // },
-  // {
   //   id: 'sol',
   //   name: 'Solana',
   //   icon: 'Zap',

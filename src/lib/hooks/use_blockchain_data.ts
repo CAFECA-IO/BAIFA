@@ -77,8 +77,8 @@ export function useBlockchainData(chainId: string | null) {
             setLatestGasPrice(`${formatHexToGwei(b.baseFeePerGas || '0x0')} Gwei`);
           }
 
-          // Add to blocks list if we still need the first 6
-          if (fetchedBlocks.length < 6) {
+          // Add to blocks list if we still need the first 10 blocks
+          if (fetchedBlocks.length < 10) {
             const gasUsed = BigInt(b.gasUsed);
             const gasLimit = BigInt(b.gasLimit);
             const gasUsedPercent = Number((gasUsed * 10000n) / gasLimit) / 100;

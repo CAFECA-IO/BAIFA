@@ -173,10 +173,6 @@ export default function ChainHeader({
           >
             <Github size={16} />
           </button>
-          <div className="mx-2 h-6 w-[1px] bg-gray-300"></div>
-          <button className="flex items-center gap-1 rounded border border-gray-200 px-3 py-1.5 text-xs font-bold text-gray-700 hover:border-gray-400 hover:text-black">
-            OKX Wallet
-          </button>
         </div>
 
         {showDetails && onToggleDetails && (

@@ -45,31 +45,31 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
 
   return (
     <tr className="hover:bg-gray-50/50">
-      <td className="px-6 py-5">
+      <td className="px-4 py-5">
         <Link href={transactionPath} className="font-mono text-[#5841D8]" title={txn.hash}>
           {truncateAddress(txn.hash, 8, 6)}
         </Link>
       </td>
-      <td className="px-6 py-5">
+      <td className="px-4 py-5">
         <span className="rounded-md bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-600">
           {txn.method}
         </span>
       </td>
-      <td className="px-6 py-5">
+      <td className="px-4 py-5">
         <Link href={blockPath} className="font-bold text-[#5841D8] hover:underline">
           {txn.blockNumber}
         </Link>
       </td>
-      <td className="px-6 py-5 whitespace-nowrap text-gray-600">{txn.timestamp}</td>
-      <td className="px-6 py-5">{displayFrom}</td>
-      <td className="px-4 py-5 text-center">
+      <td className="px-4 py-5 whitespace-nowrap text-gray-600">{txn.timestamp}</td>
+      <td className="px-4 py-5">{displayFrom}</td>
+      <td className="text-center">
         <div className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-50 text-green-500">
           <ArrowRight size={14} />
         </div>
       </td>
-      <td className="px-6 py-5">{displayTo}</td>
-      <td className="px-6 py-5 font-bold text-gray-900">{txn.value}</td>
-      <td className="px-6 py-5 text-gray-500">{txn.fee}</td>
+      <td className="px-4 py-5">{displayTo}</td>
+      <td className="px-4 py-5 font-bold text-gray-900">{txn.value}</td>
+      <td className="px-4 py-5 text-gray-500">{txn.fee}</td>
     </tr>
   );
 };
@@ -101,7 +101,7 @@ export default function TransactionListPage() {
     );
   }
 
-  // console.log('🍗transactions', transactions);
+  console.log('🍗transactions', transactions);
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
