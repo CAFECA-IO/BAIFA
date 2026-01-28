@@ -1,7 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useBlockchainData } from '@/lib/hooks/use_blockchain_data';
 import { useFetchApi } from '@/lib/hooks/use_fetch_api';
 import { API_METHOD } from '@/constants/api_method';
@@ -35,12 +36,20 @@ export default function BlockListPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-7xl py-20 pt-6 text-black">
         {/* Header Info */}
-        <ChainHeader
-          chain={chain ?? undefined}
-          //  showDetails={showDetails}
-          //  onToggleDetails={() => setShowDetails(!showDetails)}
-          // latestGasPrice={latestGasPrice}
-        />
+        <div className="flex items-start gap-4">
+          <Link
+            href={`/chain/${chainId}`}
+            className="cursor-pointer text-gray-500 hover:text-gray-800"
+          >
+            <ArrowLeft size={32} />
+          </Link>
+          <ChainHeader
+            chain={chain ?? undefined}
+            //  showDetails={showDetails}
+            //  onToggleDetails={() => setShowDetails(!showDetails)}
+            // latestGasPrice={latestGasPrice}
+          />
+        </div>
 
         <div className="mx-auto max-w-7xl px-6 pt-8">
           <h2 className="mb-6 text-2xl font-bold text-gray-900">區塊列表</h2>

@@ -14,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
+  ArrowLeft,
 } from 'lucide-react';
 import { useBlockchainData } from '@/lib/hooks/use_blockchain_data';
 import { useAddressData } from '@/lib/hooks/use_address_data';
@@ -133,12 +134,20 @@ export default function AddressDetailPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-7xl py-20 pt-6 text-black">
         {/* Header Info */}
-        <ChainHeader
-          //  chain={chain}
-          //  showDetails={showDetails}
-          //  onToggleDetails={() => setShowDetails(!showDetails)}
-          latestGasPrice={latestGasPrice}
-        />
+        <div className="flex items-start gap-4">
+          <Link
+            href={`/chain/${chainId}`}
+            className="cursor-pointer text-gray-500 hover:text-gray-800"
+          >
+            <ArrowLeft size={32} />
+          </Link>
+          <ChainHeader
+            //  chain={chain}
+            //  showDetails={showDetails}
+            //  onToggleDetails={() => setShowDetails(!showDetails)}
+            latestGasPrice={latestGasPrice}
+          />
+        </div>
 
         <div className="mx-auto max-w-7xl px-6 pt-8">
           {/* Address Identity Section */}
