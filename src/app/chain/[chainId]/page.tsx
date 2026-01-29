@@ -7,14 +7,13 @@ import ChainOverview from '@/components/chain/chain_overview';
 import { IChain } from '@/interfaces/chain';
 import { useFetchApi } from '@/lib/hooks/use_fetch_api';
 import { useBlockchainData } from '@/lib/hooks/use_blockchain_data';
-// import { Loader2 } from 'lucide-react';
 import { API_METHOD } from '@/constants/api_method';
 
 export default function ChainDetailPage() {
   const params = useParams();
   const chainId = params?.chainId as string;
 
-  // 1. Fetch basic chain info
+  // Info: (20260130 - Julian) 1. Fetch basic chain info
   const {
     data: chain,
     // loading: chainLoading,
@@ -25,7 +24,7 @@ export default function ChainDetailPage() {
     errorMessage: '無法下載鏈詳情，請稍後再試。',
   });
 
-  // 2. Fetch dynamic blockchain data (Blocks & Transactions)
+  // Info: (20260130 - Julian) 2. Fetch dynamic blockchain data (Blocks & Transactions)
   const {
     blocks,
     transactions,

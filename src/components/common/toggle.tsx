@@ -29,7 +29,7 @@ const Toggle = ({ isOpen, onToggle, label, labelOnRight }: IToggleProps) => {
         className={`relative h-4 w-8 rounded-full transition-colors ${isOpen ? 'bg-black' : 'bg-gray-300'}`}
       >
         <div
-          className={`absolute top-0.5 h-3 w-3 rounded-full bg-white shadow transition-all ${isOpen ? 'right-0.5' : 'left-0.5'}`}
+          className={`absolute top-0.5 h-3 w-3 rounded-full bg-white shadow transition-all duration-300 ease-in-out ${isOpen ? 'translate-x-[18px]' : 'translate-x-[2px]'}`}
         ></div>
       </div>
       {rightContent}

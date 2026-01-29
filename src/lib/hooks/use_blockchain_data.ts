@@ -11,6 +11,7 @@ import {
   formatHexToGwei,
   formatHexToMwei,
 } from '@/lib/utils/format';
+import { getMethodDescription } from '@/lib/utils/transaction';
 
 export function useBlockchainData(chainId: string | null) {
   const [blocks, setBlocks] = useState<IBlock[]>([]);
@@ -144,21 +145,7 @@ export function useBlockchainData(chainId: string | null) {
                 const gasPrice = BigInt(t.gasPrice || '0x0');
                 const fee = formatHexToEther((gasEstimate * gasPrice).toString(16));
 
-                const METHOD_SIGNATURES: Record<string, string> = {
-                  '0xa9059cbb': 'Transfer (ERC-20)',
-                  '0x095ea7b3': 'Approve (ERC-20)',
-                  '0x23b872dd': 'TransferFrom (ERC-20/721)',
-                  '0x42842e0e': 'SafeTransferFrom (ERC-721)',
-                  '0xf242432a': 'SafeTransferFrom (ERC-1155)',
-                  '0x2ea01f9c': 'HandleOps (ERC-4337)',
-                  '0x6931966a': 'ForcedTransfer (ERC-3643)',
-                };
-
-                let method = 'Transfer';
-                if (t.input && t.input !== '0x') {
-                  const signature = t.input.slice(0, 10);
-                  method = METHOD_SIGNATURES[signature] || signature;
-                }
+                const method = getMethodDescription(t.input);
 
                 fetchedTransactions.push({
                   hash: t.hash,
@@ -170,8 +157,8 @@ export function useBlockchainData(chainId: string | null) {
                   fromLabel: t.from,
                   to: truncateAddress(t.to),
                   toLabel: t.to,
-                  value: `${parseFloat(formatHexToEther(t.value)).toFixed(4)} ETH`,
-                  fee: `${parseFloat(fee).toFixed(8)} ETH`,
+                  value: `${parseFloat(formatHexToEther(t.value)).toFixed(2)} ETH`,
+                  fee: `${parseFloat(fee).toFixed(2)} ETH`,
                 });
               });
           }

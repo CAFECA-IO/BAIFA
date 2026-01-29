@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronDown, Globe } from 'lucide-react';
-import { useState } from 'react';
-import ExplorerMenu from './explorer_menu';
+// import { ChevronDown, Globe } from 'lucide-react';
+// import { useState } from 'react';
+// import ExplorerMenu from '@/components/layout/explorer_menu';
 
 export default function Navbar() {
-  const [isExplorerOpen, setIsExplorerOpen] = useState(false);
+  // const [isExplorerOpen, setIsExplorerOpen] = useState(false);
 
   return (
     <nav className="relative flex w-full items-center justify-between bg-black px-6 py-4 text-white">
@@ -14,7 +14,7 @@ export default function Navbar() {
         <Link href="/" className="text-xl font-bold tracking-wider uppercase">
           BAIFA
         </Link>
-        <div className="h-4 w-[1px] bg-gray-700"></div>
+        {/* <div className="h-4 w-[1px] bg-gray-700"></div>
         <div className="relative">
           <button
             onClick={() => setIsExplorerOpen(!isExplorerOpen)}
@@ -37,13 +37,13 @@ export default function Navbar() {
               <ExplorerMenu />
             </div>
           )}
-        </div>
+        </div> */}
       </div>
-      <div className="flex items-center gap-4">
+      {/* <div className="flex items-center gap-4">
         <button className="flex h-8 w-8 items-center justify-center rounded-md bg-gray-900 text-gray-400 hover:text-white">
           <Globe size={18} />
         </button>
-      </div>
+      </div> */}
     </nav>
   );
 }
