@@ -109,9 +109,9 @@ const TransactionTable = () => {
       try {
         setIsLoading(true);
         const url = `/api/v1/chains/${chainId}`;
-        const BLOCKS_TO_SCAN = 50; // 最多往前掃描 50 個區塊來湊交易
+        const BLOCKS_TO_SCAN = 50; // Info: (20260130 - Julian) 最多往前掃描 50 個區塊來湊交易
 
-        // 1. 取得當前最新區塊高度
+        // Info: (20260130 - Julian) 1. 取得當前最新區塊高度
         const bnRes = await fetchApi<IJsonRpcResponse<string>>(url, {
           method: 'POST',
           body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_blockNumber', params: [], id: 1 }),
@@ -120,10 +120,10 @@ const TransactionTable = () => {
 
         let allCollectedTxns: ITransaction[] = [];
 
-        // 2. 解析描述函式 - now using shared utilities
-        // Imported at top of file
+        // Info: (20260130 - Julian) 2. 解析描述函式 - now using shared utilities
+        // Info: (20260130 - Julian) Imported at top of file
 
-        // 3. 執行批量抓取
+        // Info: (20260130 - Julian) 3. 執行批量抓取
         const blockPromises = [];
         for (let i = 0; i < BLOCKS_TO_SCAN; i++) {
           const targetBn = latestBn - BigInt(i);
@@ -144,7 +144,7 @@ const TransactionTable = () => {
 
         const results = await Promise.all(blockPromises);
 
-        // 4. 整合所有區塊的交易
+        // Info: (20260130 - Julian) 4. 整合所有區塊的交易
         results.forEach((res) => {
           const block = res.result;
           if (block && block.transactions) {
@@ -159,7 +159,7 @@ const TransactionTable = () => {
                 from: tx.from,
                 to: tx.to || 'New Contract',
                 value: `${parseFloat(formatHexToEther(tx.value)).toFixed(2)} ETH`,
-                // 估算手續費
+                // Info: (20260130 - Julian) 估算手續費
                 fee: `${parseFloat(formatHexToEther((BigInt(tx.gas || '0x0') * BigInt(tx.gasPrice || '0x0')).toString(16))).toFixed(8)} ETH`,
               })
             );
@@ -167,7 +167,7 @@ const TransactionTable = () => {
           }
         });
 
-        // 按區塊高度由大到小排序 (確保最新的在最上面)
+        // Info: (20260130 - Julian) 按區塊高度由大到小排序 (確保最新的在最上面)
         allCollectedTxns.sort((a, b) => Number(b.blockNumber) - Number(a.blockNumber));
         setTransactions(allCollectedTxns);
         setTxnTotalCount(allCollectedTxns.length);
@@ -181,7 +181,7 @@ const TransactionTable = () => {
     fetchTransactionList();
   }, [chainId]);
 
-  // ToDo: 尚未實作篩選功能，先隱藏
+  // ToDo: (20260130 - Julian) 尚未實作篩選功能，先隱藏
   // const diaplayedFilters = (
   //   <div className="mb-6 flex flex-wrap items-center gap-4">
   //     <div className="relative max-w-xs flex-1">
@@ -214,7 +214,7 @@ const TransactionTable = () => {
     <>
       {/* {diaplayedFilters} */}
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-        {/* Table Header / Pagination Info */}
+        {/* Info: (20260130 - Julian) Table Header / Pagination Info */}
         <div className="flex items-center justify-between border-b border-gray-100 p-4 text-sm text-gray-500">
           <div>
             近 24 小時內共計 <span className="font-medium text-gray-900">{txnTotalCount}</span>{' '}
@@ -228,7 +228,7 @@ const TransactionTable = () => {
                     /> */}
         </div>
 
-        {/* Table */}
+        {/* Info: (20260130 - Julian) Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-gray-100 bg-gray-50/50 text-xs font-bold text-gray-500 uppercase">
@@ -249,7 +249,7 @@ const TransactionTable = () => {
           </table>
         </div>
 
-        {/* Footer Pagination */}
+        {/* Info: (20260130 - Julian) Footer Pagination */}
         {/* <div className="flex items-center justify-end border-t border-gray-100 p-4">
                     <Pagination
                         currentPage={currentPage}

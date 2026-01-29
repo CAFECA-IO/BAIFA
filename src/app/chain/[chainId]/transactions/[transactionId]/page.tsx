@@ -7,7 +7,7 @@ import {
   IJsonRpcReceipt,
   IJsonRpcBlock,
 } from '@/interfaces/rpc';
-import { fetchApi } from '@/lib/services/api_service'; // Assuming this exists based on usage in hooks
+import { fetchApi } from '@/lib/services/api_service'; // Info: (20260130 - Julian) Assuming this exists based on usage in hooks
 import {
   formatHexToDecimal,
   formatTimestamp,
@@ -24,15 +24,15 @@ import Link from 'next/link';
 interface ITransactionDetailsPageProps {
   params: Promise<{
     chainId: string;
-    transactionId: string; // This is the hash
+    transactionId: string; // Info: (20260130 - Julian) This is the hash
   }>;
 }
 
 interface IAccountState {
   address: string;
-  before: { balance: string; nonce: string }; // at block - 1
-  after: { balance: string; nonce: string }; // at block
-  change: string; // difference in balance
+  before: { balance: string; nonce: string }; // Info: (20260130 - Julian) at block - 1
+  after: { balance: string; nonce: string }; // Info: (20260130 - Julian) at block
+  change: string; // Info: (20260130 - Julian) difference in balance
   isMiner: boolean;
 }
 
@@ -57,7 +57,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
       const fetchStateChanges = async () => {
         setLoadingStateChanges(true);
         try {
-          // Identify unique addresses: From, To, Miner
+          // Info: (20260130 - Julian) Identify unique addresses: From, To, Miner
           const addresses = new Set<string>();
           if (tx.from) addresses.add(tx.from.toLowerCase());
           if (tx.to) addresses.add(tx.to.toLowerCase());
@@ -72,7 +72,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
           const url = `/api/v1/chains/${chainId}`;
 
           for (const addr of uniqueAddresses) {
-            // Batch requests if possible, but sequential for simplicity here or use Promise.all
+            // Info: (20260130 - Julian) Batch requests if possible, but sequential for simplicity here or use Promise.all
             const [balPrevRes, noncePrevRes, balCurrRes, nonceCurrRes] = await Promise.all([
               fetchApi<IJsonRpcResponse<string>>(url, {
                 method: 'POST',
@@ -118,14 +118,16 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
             const nonceCurr = BigInt(nonceCurrRes?.result ?? '0');
 
             const diff = balCurr - balPrev;
-            const sign = diff > 0n ? '+' : diff < 0n ? '' : ''; // negative number toString() includes sign
+            const sign = diff > 0n ? '+' : diff < 0n ? '' : ''; // Info: (20260130 - Julian) negative number toString() includes sign
             const diffEth = formatHexToEther(
               diff >= 0n ? `0x${diff.toString(16)}` : `-0x${(-diff).toString(16)}`
             );
 
-            // Handle very small diffs that formatHexToEther might truncate if not careful,
-            // but formatHexToEther uses ethers.formatEther which handles it well.
-            // Manually add sign for display if positive
+            /**
+             * Info: (20260130 - Julian) Handle very small diffs that formatHexToEther might truncate if not careful,
+             * but formatHexToEther uses ethers.formatEther which handles it well.
+             * Manually add sign for display if positive
+             */
             const changeDisplay = diff === 0n ? '0 ETH' : `${sign}${diffEth}`;
 
             results.push({
@@ -162,7 +164,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
       try {
         const url = `/api/v1/chains/${chainId}`;
 
-        // 0. Fetch Latest Block (for confirmations)
+        // Info: (20260130 - Julian) 0. Fetch Latest Block (for confirmations)
         const latestBnRes = await fetchApi<IJsonRpcResponse<string>>(url, {
           method: 'POST',
           body: JSON.stringify({
@@ -176,7 +178,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
           setLatestBlockNumber(latestBnRes.result);
         }
 
-        // 1. Fetch Transaction
+        // Info: (20260130 - Julian) 1. Fetch Transaction
         const txRes = await fetchApi<IJsonRpcResponse<IJsonRpcTransaction>>(url, {
           method: 'POST',
           body: JSON.stringify({
@@ -194,7 +196,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
         }
         setTx(txRes.result);
 
-        // 2. Fetch Receipt
+        // Info: (20260130 - Julian) 2. Fetch Receipt
         const receiptRes = await fetchApi<IJsonRpcResponse<IJsonRpcReceipt>>(url, {
           method: 'POST',
           body: JSON.stringify({
@@ -206,8 +208,8 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
         });
         setReceipt(receiptRes.result);
 
-        // 3. Fetch Block (if we have tx or receipt with block number)
-        // Receipt reliably has blockNumber if confirmed
+        // Info: (20260130 - Julian) 3. Fetch Block (if we have tx or receipt with block number)
+        // Info: (20260130 - Julian) Receipt reliably has blockNumber if confirmed
         const blockNumber = txRes.result.blockNumber || receiptRes.result?.blockNumber;
         if (blockNumber) {
           const blockRes = await fetchApi<IJsonRpcResponse<IJsonRpcBlock>>(url, {
@@ -215,7 +217,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
             body: JSON.stringify({
               jsonrpc: '2.0',
               method: 'eth_getBlockByNumber',
-              params: [blockNumber, false], // false for tx objects not needed
+              params: [blockNumber, false], // Info: (20260130 - Julian) false for tx objects not needed
               id: 3,
             }),
           });
@@ -246,7 +248,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
     return <div className="py-10 text-center text-red-500">{error || 'Transaction not found'}</div>;
   }
 
-  // --- Helpers for Display ---
+  // Info: (20260130 - Julian) --- Helpers for Display ---
   const isSuccess = receipt.status === '0x1';
   const statusColor = isSuccess ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
   const statusIcon = isSuccess ? (
@@ -262,10 +264,11 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
   if (latestBlockNumber && receipt.blockNumber) {
     confirmations = BigInt(latestBlockNumber) - BigInt(receipt.blockNumber) + 1n;
   }
-  // Assuming we don't have latest block number easily available here for confirmations count without another call,
-  // but we can skip confirmations or fetch latest block if critical. User image has it.
-  // For now let's show block number.
-
+  /**
+   * Info: (20260130 - Julian) Assuming we don't have latest block number easily available here for confirmations count without another call,
+   * but we can skip confirmations or fetch latest block if critical. User image has it.
+   * For now let's show block number.
+   */
   const timestamp = block?.timestamp ? formatFullTimestamp(block.timestamp) : '-';
   const timeAgo = block?.timestamp ? formatTimestamp(block.timestamp) : '-';
 
@@ -274,7 +277,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
     maximumFractionDigits: 18,
   });
 
-  // Gas Calculations
+  // Info: (20260130 - Julian) Gas Calculations
   const gasUsedDec = BigInt(receipt.gasUsed);
   const gasLimitDec = BigInt(tx.gas);
   const gasUsagePercent = Number((gasUsedDec * 10000n) / gasLimitDec) / 100;
@@ -285,7 +288,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
 
   const gasPriceGwei = formatHexToGwei('0x' + effectiveGasPriceDec.toString(16));
 
-  // EIP-1559 Fields
+  // Info: (20260130 - Julian) EIP-1559 Fields
   const maxFeePerGasGwei = tx.maxFeePerGas ? formatHexToGwei(tx.maxFeePerGas) : null;
   const maxPriorityFeePerGasGwei = tx.maxPriorityFeePerGas
     ? formatHexToGwei(tx.maxPriorityFeePerGas)
@@ -301,7 +304,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
 
     if (tx.maxFeePerGas) {
       const maxFeeDec = BigInt(tx.maxFeePerGas);
-      // Savings = (MaxFee - EffectiveGasPrice) * GasUsed
+      // Info: (20260130 - Julian) Savings = (MaxFee - EffectiveGasPrice) * GasUsed
       const savingsWei = (maxFeeDec - effectiveGasPriceDec) * gasUsedDec;
       if (savingsWei > 0n) {
         savingsEth = formatHexToEther('0x' + savingsWei.toString(16));
@@ -315,7 +318,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
         <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-md">
           <div className="divide-y divide-gray-100">
             <div>
-              {/* Transaction Hash */}
+              {/* Info: (20260130 - Julian) Transaction Hash */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="flex w-full items-center gap-1 text-sm text-gray-500 sm:w-1/4">
                   <FileText size={14} className="text-gray-400" /> 交易哈希 :
@@ -325,7 +328,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
                 </div>
               </div>
 
-              {/* Status */}
+              {/* Info: (20260130 - Julian) Status */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="w-full text-sm text-gray-500 sm:w-1/4">交易結果 :</div>
                 <div>
@@ -337,7 +340,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
                 </div>
               </div>
 
-              {/* Block */}
+              {/* Info: (20260130 - Julian) Block */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="w-full text-sm text-gray-500 sm:w-1/4">區塊 :</div>
                 <div className="flex items-center gap-2 text-sm">
@@ -355,7 +358,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
                 </div>
               </div>
 
-              {/* Timestamp */}
+              {/* Info: (20260130 - Julian) Timestamp */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="w-full text-sm text-gray-500 sm:w-1/4">時間 :</div>
                 <div className="flex items-center gap-2 text-sm text-gray-900">
@@ -366,7 +369,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
             </div>
 
             <div>
-              {/* From */}
+              {/* Info: (20260130 - Julian) From */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="w-full text-sm text-gray-500 sm:w-1/4">發送方 :</div>
                 <div className="flex items-center gap-2 text-sm">
@@ -380,7 +383,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
                 </div>
               </div>
 
-              {/* To */}
+              {/* Info: (20260130 - Julian) To */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="w-full text-sm text-gray-500 sm:w-1/4">接收方 :</div>
                 <div className="flex items-center gap-2 text-sm">
@@ -402,13 +405,13 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
             </div>
 
             <div>
-              {/* Value */}
+              {/* Info: (20260130 - Julian) Value */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="w-full text-sm text-gray-500 sm:w-1/4">交易數量 :</div>
                 <div className="text-sm font-medium text-gray-900">{valEthFormatted} ETH</div>
               </div>
 
-              {/* Transaction Fee */}
+              {/* Info: (20260130 - Julian) Transaction Fee */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="w-full text-sm text-gray-500 sm:w-1/4">交易手續費 :</div>
                 <div className="text-sm text-gray-900">{txFeeEth} ETH</div>
@@ -416,7 +419,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
             </div>
 
             <div>
-              {/* Gas Price */}
+              {/* Info: (20260130 - Julian) Gas Price */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="w-full text-sm text-gray-500 sm:w-1/4">Gas 價格 :</div>
                 <div className="text-sm text-gray-900">
@@ -424,7 +427,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
                 </div>
               </div>
 
-              {/* Gas Limit & Usage */}
+              {/* Info: (20260130 - Julian) Gas Limit & Usage */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="w-full text-sm text-gray-500 sm:w-1/4">Gas 限額 & Gas 消耗 :</div>
                 <div className="text-sm text-gray-900">
@@ -433,7 +436,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
                 </div>
               </div>
 
-              {/* Gas Fees (EIP-1559) */}
+              {/* Info: (20260130 - Julian) Gas Fees (EIP-1559) */}
               {(maxFeePerGasGwei || maxPriorityFeePerGasGwei) && (
                 <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                   <div className="w-full text-sm text-gray-500 sm:w-1/4">Gas 費 :</div>
@@ -455,7 +458,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
                 </div>
               )}
 
-              {/* Burnt & Savings */}
+              {/* Info: (20260130 - Julian) Burnt & Savings */}
               {(burntFeeEth || savingsEth) && (
                 <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                   <div className="w-full text-sm text-gray-500 sm:w-1/4">
@@ -478,7 +481,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
             </div>
 
             <div>
-              {/* Other Info */}
+              {/* Info: (20260130 - Julian) Other Info */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="w-full text-sm text-gray-500 sm:w-1/4">其他信息 :</div>
                 <div className="flex flex-col gap-2 text-sm text-gray-900 sm:w-3/4">
@@ -510,7 +513,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
                 </div>
               </div>
 
-              {/* Input Data */}
+              {/* Info: (20260130 - Julian) Input Data */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="w-full text-sm text-gray-500 sm:w-1/4">輸入數據 :</div>
                 <div className="w-full overflow-hidden text-sm sm:w-3/4">
@@ -612,7 +615,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
       <div className="container mx-auto max-w-7xl px-4 py-8">
         <h1 className="mb-6 text-2xl font-bold text-gray-900">交易詳情</h1>
 
-        {/* Tabs */}
+        {/* Info: (20260130 - Julian) Tabs */}
         <div className="mb-6 flex gap-4">
           <button
             type="button"

@@ -36,7 +36,7 @@ export default function BlockDetailHeader({
       label: '交易',
       path: `/chain/${chainId}/blocks/${blockId}/tx`,
     },
-    // ToDo: 其他 Tab 尚未實作，先隱藏
+    // ToDo: (20260130 - Julian) 其他 Tab 尚未實作，先隱藏
     // { id: BlockDetailTabType.INTERNAL_TXS, label: '內部交易', path: '#' },
     // { id: BlockDetailTabType.TOKEN_TRANSFERS, label: '代幣轉帳', path: '#' },
     // { id: BlockDetailTabType.NFT_TRANSFERS, label: 'NFT 轉帳', path: '#' },
@@ -60,7 +60,7 @@ export default function BlockDetailHeader({
 
   return (
     <>
-      {/* Header */}
+      {/* Info: (20260130 - Julian) Header */}
       <div className="mb-6 flex items-center gap-4">
         <h1 className="text-xl font-bold text-gray-900">區塊高度</h1>
         <div className="flex items-center gap-2">
@@ -82,7 +82,7 @@ export default function BlockDetailHeader({
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Info: (20260130 - Julian) Tabs */}
       <div className="mb-6 flex flex-wrap gap-2">{displayTabs}</div>
     </>
   );

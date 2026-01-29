@@ -30,7 +30,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
   const [block, setBlock] = useState<IJsonRpcBlock | null>(null);
   const [transactions, setTransactions] = useState<IJsonRpcTransaction[]>([]);
 
-  // Filtering & Pagination
+  // Info: (20260130 - Julian) Filtering & Pagination
   const [methodFilter, setMethodFilter] = useState<string>('');
   const [addressFilter, setAddressFilter] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -55,7 +55,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
           body: JSON.stringify({
             jsonrpc: '2.0',
             method: method,
-            params: [blockParam, true], // true to get full transactions
+            params: [blockParam, true], // Info: (20260130 - Julian) true to get full transactions
             id: 1,
           }),
         });
@@ -101,7 +101,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
 
   const blockNumber = BigInt(block.number);
 
-  // Filtering logic
+  // Info: (20260130 - Julian) Filtering logic
   const filteredTransactions = transactions.filter((tx) => {
     if (hideZeroValue && BigInt(tx.value) === 0n) return false;
 
@@ -137,7 +137,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
           activeTab={BlockDetailTabType.TRANSACTIONS}
         />
 
-        {/* Filters */}
+        {/* Info: (20260130 - Julian) Filters */}
         <div className="mb-6 flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 shadow-sm">
             <span className="text-sm whitespace-nowrap text-gray-500">發送方/接收方</span>
@@ -168,7 +168,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
             />
           </div>
 
-          {/* ... Other filter placeholders ... */}
+          {/* Info: (20260130 - Julian)... Other filter placeholders ... */}
           <div className="flex cursor-not-allowed items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 opacity-50 shadow-sm">
             <span className="text-sm text-gray-500">數量</span>
           </div>
@@ -192,7 +192,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
           </div>
         </div>
 
-        {/* Transaction Table */}
+        {/* Info: (20260130 - Julian) Transaction Table */}
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
           <div className="border-b border-gray-100 bg-gray-50/50 p-4 text-sm font-medium text-gray-600">
             共計 {totalCount} 條數據
@@ -291,7 +291,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
             </table>
           </div>
 
-          {/* Footer with Pagination */}
+          {/* Info: (20260130 - Julian) Footer with Pagination */}
           <div className="flex items-center justify-between border-t border-gray-100 p-4">
             <div className="flex items-center gap-2 text-sm text-gray-500">
               每頁顯示 {pageSize} 條内容

@@ -55,7 +55,7 @@ export default function ChainHeader({
   // } = useOuterClick<HTMLDivElement>(false);
 
   const displayName = chain ? chain.name : 'iSunCoin';
-  // Resolve Icon
+  // Info: (20260130 - Julian) Resolve Icon
   const color = chain ? chain.color : 'text-gray-800';
   const bgColor = chain ? chain.bgColor : 'bg-gray-100';
   const iconName = chain ? chain.icon : 'iSunCoin';
@@ -78,7 +78,7 @@ export default function ChainHeader({
 
   return (
     <div className="mb-8">
-      {/* Top Header Row */}
+      {/* Info: (20260130 - Julian) Top Header Row */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           {displayLogo}
@@ -127,7 +127,7 @@ export default function ChainHeader({
         </div> */}
       </div>
 
-      {/* Description */}
+      {/* Info: (20260130 - Julian) Description */}
       <p className="mb-4 text-sm leading-relaxed text-gray-600">
         {displayDescription}
         {shouldTruncate && (
@@ -140,7 +140,7 @@ export default function ChainHeader({
         )}
       </p>
 
-      {/* Action Buttons */}
+      {/* Info: (20260130 - Julian) Action Buttons */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <button

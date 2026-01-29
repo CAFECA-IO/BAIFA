@@ -69,11 +69,11 @@ export interface IJsonRpcReceipt {
   cumulativeGasUsed: string;
   gasUsed: string;
   contractAddress: string | null;
-  // ToDo: fix type
+  // ToDo: (20260130 - Julian) fix type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   logs: any[];
   logsBloom: string;
-  status: string; // 0x1 success, 0x0 failure
+  status: string; // Info: (20260130 - Julian) 0x1 success, 0x0 failure
   effectiveGasPrice: string;
   type: string;
 }

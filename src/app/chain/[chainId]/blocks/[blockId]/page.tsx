@@ -19,7 +19,7 @@ import BlockDetailHeader, { BlockDetailTabType } from '@/components/block/block_
 interface IBlockDetailsPageProps {
   params: Promise<{
     chainId: string;
-    blockId: string; // height or hash
+    blockId: string; // Info: (20260130 - Julian) height or hash
   }>;
 }
 
@@ -52,7 +52,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
   const [latestBlockNumber, setLatestBlockNumber] = useState<string | null>(null);
   const [parentBlockNumber, setParentBlockNumber] = useState<string | null>(null);
 
-  // parent block url
+  // Info: (20260130 - Julian) parent block url
   const parentBlockUrl = parentBlockNumber ? `/chain/${chainId}/blocks/${parentBlockNumber}` : '#';
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
       try {
         const url = `/api/v1/chains/${chainId}`;
 
-        // 1. Fetch Latest Block Number (for confirmations)
+        // Info: (20260130 - Julian) 1. Fetch Latest Block Number (for confirmations)
         const latestRes = await fetchApi<IJsonRpcResponse<string>>(url, {
           method: 'POST',
           body: JSON.stringify({
@@ -76,14 +76,16 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
           setLatestBlockNumber(latestRes.result);
         }
 
-        // 2. Fetch Block
-        // If blockId starts with 0x and is 66 chars, it's a hash.
-        // Otherwise, it's a height. Note: some height might be 0x.
+        /**
+         * Info: (20260130 - Julian) 2. Fetch Block
+         * If blockId starts with 0x and is 66 chars, it's a hash.
+         * Otherwise, it's a height. Note: some height might be 0x.
+         */
         const isHash = blockId.startsWith('0x') && blockId.length === 66;
         const method = isHash ? 'eth_getBlockByHash' : 'eth_getBlockByNumber';
         let blockParam = blockId;
         if (!isHash) {
-          // If it's a number string, convert to hex if it doesn't have 0x
+          // Info: (20260130 - Julian) If it's a number string, convert to hex if it doesn't have 0x
           if (!blockId.startsWith('0x')) {
             blockParam = `0x${BigInt(blockId).toString(16)}`;
           }
@@ -94,7 +96,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
           body: JSON.stringify({
             jsonrpc: '2.0',
             method: method,
-            params: [blockParam, false], // false to not get full transactions
+            params: [blockParam, false], // Info: (20260130 - Julian) false to not get full transactions
             id: 2,
           }),
         });
@@ -102,7 +104,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
         if (blockRes.result) {
           setBlock(blockRes.result);
 
-          // get parent block number
+          // Info: (20260130 - Julian) get parent block number
           const parentRes = await fetchApi<IJsonRpcResponse<IJsonRpcBlock>>(url, {
             method: 'POST',
             body: JSON.stringify({
@@ -157,7 +159,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
   const gasLimit = BigInt(block.gasLimit);
   const gasPercent = Number((gasUsed * 10000n) / gasLimit) / 100;
 
-  // Base Fee
+  // Info: (20260130 - Julian) Base Fee
   const baseFeeWei = block.baseFeePerGas ? BigInt(block.baseFeePerGas) : 0n;
   const burntFeeWei = baseFeeWei * gasUsed;
   const burntFeeEth = formatHexToEther(`0x${burntFeeWei.toString(16)}`);
@@ -172,7 +174,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
           activeTab={BlockDetailTabType.OVERVIEW}
         />
 
-        {/* Overview Tab Content */}
+        {/* Info: (20260130 - Julian) Overview Tab Content */}
         <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-md">
           <div className="divide-y divide-gray-100">
             <div>
@@ -207,7 +209,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
                   >
                     {Array.isArray(block.transactions) ? block.transactions.length : 0} 筆交易
                   </Link>
-                  {/* Internal txs, etc. would normally require more specific API calls, here as placeholders or mock if not available */}
+                  {/* Info: (20260130 - Julian) Internal txs, etc. would normally require more specific API calls, here as placeholders or mock if not available */}
                   <span className="text-gray-400">
                     及 0 筆內部交易 及 0 筆代幣轉帳 及 0 筆 NFT 轉帳
                   </span>
@@ -314,7 +316,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
               </DetailItem>
             </div>
 
-            {/* ... more blob fields if needed, but keeping it simple as per most blocks */}
+            {/* Info: (20260130 - Julian) ... more blob fields if needed, but keeping it simple as per most blocks */}
 
             <div>
               <DetailItem label="父區塊哈希">

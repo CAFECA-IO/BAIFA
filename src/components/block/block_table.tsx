@@ -13,7 +13,7 @@ import CopyButton from '@/components/common/copy_button';
 
 const BlockItem = ({ block }: { block: IBlock }) => {
   const params = useParams();
-  const isAlertBlock = false; // mock
+  const isAlertBlock = false; // Info: (20260130 - Julian) mock
 
   const blockPath = `/`;
   const addressPath = `/chain/${params.chainId}/address/${block.proposer}`;
@@ -69,7 +69,7 @@ const BlockTable = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
 
-  // 計算總頁數（BigInt 轉換為 Number 進行計算）
+  // Info: (20260130 - Julian) 計算總頁數（BigInt 轉換為 Number 進行計算）
   const totalPages = Math.ceil(latestBlockHeight / pageSize);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const BlockTable = () => {
       try {
         const url = `/api/v1/chains/${chainId}`;
 
-        // 1. 取得最新高度
+        // Info: (20260130 - Julian) 1. 取得最新高度
         const bnRes = await fetchApi<IJsonRpcResponse<string>>(url, {
           method: API_METHOD.POST,
           body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_blockNumber', params: [], id: 1 }),
@@ -86,10 +86,10 @@ const BlockTable = () => {
         const latestBn = BigInt(bnRes?.result ?? '0');
         setLatestBlockHeight(Number(latestBn));
 
-        // 2. 計算這一頁的起始高度
+        // Info: (20260130 - Julian) 2. 計算這一頁的起始高度
         const startHeight = latestBn - BigInt((currentPage - 1) * pageSize);
 
-        // 3. Batch 請求該頁的所有區塊
+        // Info: (20260130 - Julian) 3. Batch 請求該頁的所有區塊
         const requests = Array.from({ length: pageSize })
           .map((_, i) => {
             const targetHeight = startHeight - BigInt(i);
@@ -112,7 +112,7 @@ const BlockTable = () => {
           body: JSON.stringify(requests),
         });
 
-        // 4. Update state
+        // Info: (20260130 - Julian) 4. Update state
         const newBlocks = blocksRes
           .map((res) => res.result)
           .filter(Boolean)
@@ -130,7 +130,7 @@ const BlockTable = () => {
               timestamp: new Date(Number(block.timestamp) * 1000).toLocaleString(),
               proposer: block.miner,
               txns: Array.isArray(block.transactions) ? block.transactions.length : 0,
-              reward: '0', // Not available in standard RPC
+              reward: '0', // Info: (20260130 - Julian) Not available in standard RPC
               gas: '0',
               size: BigInt(block.size).toString(),
               gasUsed: gasUsed.toString(),
@@ -151,7 +151,7 @@ const BlockTable = () => {
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-      {/* Table Header / Pagination Info */}
+      {/* Info: (20260130 - Julian) Table Header / Pagination Info */}
       <div className="flex items-center justify-between border-b border-gray-100 p-4 text-sm text-gray-500">
         <div>
           共計 <span className="font-medium text-gray-900">{latestBlockHeight}</span> 個區塊
@@ -164,7 +164,7 @@ const BlockTable = () => {
         />
       </div>
 
-      {/* Table */}
+      {/* Info: (20260130 - Julian) Table */}
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-gray-100 bg-gray-50/50 text-xs font-bold text-gray-500 uppercase">
@@ -188,7 +188,7 @@ const BlockTable = () => {
         </table>
       </div>
 
-      {/* Footer Pagination */}
+      {/* Info: (20260130 - Julian) Footer Pagination */}
       <div className="flex items-center justify-end border-t border-gray-100 p-4">
         <Pagination
           currentPage={currentPage}
