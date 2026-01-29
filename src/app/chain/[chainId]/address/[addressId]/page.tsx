@@ -4,7 +4,6 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   Copy,
-  QrCode,
   AlertTriangle,
   ChevronDown,
   Search,
@@ -22,6 +21,7 @@ import { truncateAddress } from '@/lib/utils/format';
 import { useState } from 'react';
 import ChainHeader from '@/components/chain/chain_header';
 import Toggle from '@/components/common/toggle';
+import CopyButton from '@/components/common/copy_button';
 
 export default function AddressDetailPage() {
   const params = useParams();
@@ -166,8 +166,7 @@ export default function AddressDetailPage() {
                 <div className="flex items-center gap-2">
                   <span className="text-xl font-bold text-gray-900">地址</span>
                   <span className="text-xl font-medium text-gray-500">{addressId}</span>
-                  <Copy size={18} className="cursor-pointer text-gray-400 hover:text-black" />
-                  <QrCode size={18} className="cursor-pointer text-gray-400 hover:text-black" />
+                  <CopyButton value={addressId} />
                 </div>
               </div>
               <button className="rounded-lg border border-gray-200 p-2 text-gray-500 hover:bg-white hover:text-black">

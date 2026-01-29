@@ -170,8 +170,8 @@ export function useBlockchainData(chainId: string | null) {
                   fromLabel: t.from,
                   to: truncateAddress(t.to),
                   toLabel: t.to,
-                  value: `${parseFloat(formatHexToEther(t.value)).toFixed(4)} ETH`,
-                  fee: `${parseFloat(fee).toFixed(8)} ETH`,
+                  value: `${parseFloat(formatHexToEther(t.value)).toFixed(2)} ETH`,
+                  fee: `${parseFloat(fee).toFixed(2)} ETH`,
                 });
               });
           }
