@@ -1,6 +1,7 @@
 'use client';
 
 import { Copy } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface ICopyButtonProps {
   value: string;
@@ -9,6 +10,7 @@ interface ICopyButtonProps {
 const CopyButton = ({ value }: ICopyButtonProps) => {
   const copyHandler = () => {
     navigator.clipboard.writeText(value);
+    toast.success('複製成功！');
   };
 
   return (
