@@ -30,6 +30,17 @@ export interface IJsonRpcBlock {
   transactions: string[] | IJsonRpcTransaction[];
   transactionsRoot: string;
   uncles: string[];
+  withdrawals?: IJsonRpcWithdrawal[];
+  withdrawalsRoot?: string;
+  blobGasUsed?: string;
+  excessBlobGas?: string;
+}
+
+export interface IJsonRpcWithdrawal {
+  index: string;
+  validatorIndex: string;
+  address: string;
+  amount: string;
 }
 
 export interface IJsonRpcTransaction {
