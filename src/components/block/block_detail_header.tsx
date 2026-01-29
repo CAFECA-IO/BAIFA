@@ -36,12 +36,27 @@ export default function BlockDetailHeader({
       label: '交易',
       path: `/chain/${chainId}/blocks/${blockId}/tx`,
     },
-    { id: BlockDetailTabType.INTERNAL_TXS, label: '內部交易', path: '#' },
-    { id: BlockDetailTabType.TOKEN_TRANSFERS, label: '代幣轉帳', path: '#' },
-    { id: BlockDetailTabType.NFT_TRANSFERS, label: 'NFT 轉帳', path: '#' },
-    { id: BlockDetailTabType.WITHDRAWALS, label: '解押', path: '#' },
-    { id: BlockDetailTabType.BLOB, label: 'Blob', path: '#' },
+    // ToDo: 其他 Tab 尚未實作，先隱藏
+    // { id: BlockDetailTabType.INTERNAL_TXS, label: '內部交易', path: '#' },
+    // { id: BlockDetailTabType.TOKEN_TRANSFERS, label: '代幣轉帳', path: '#' },
+    // { id: BlockDetailTabType.NFT_TRANSFERS, label: 'NFT 轉帳', path: '#' },
+    // { id: BlockDetailTabType.WITHDRAWALS, label: '解押', path: '#' },
+    // { id: BlockDetailTabType.BLOB, label: 'Blob', path: '#' },
   ];
+
+  const displayTabs = tabs.map((tab) => (
+    <Link
+      key={tab.id}
+      href={tab.path}
+      className={`rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-colors ${
+        tab.id === activeTab
+          ? 'bg-black text-white'
+          : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+      }`}
+    >
+      {tab.label}
+    </Link>
+  ));
 
   return (
     <>
@@ -68,21 +83,7 @@ export default function BlockDetailHeader({
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex flex-wrap gap-2">
-        {tabs.map((tab) => (
-          <Link
-            key={tab.id}
-            href={tab.path}
-            className={`rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-colors ${
-              tab.id === activeTab
-                ? 'bg-black text-white'
-                : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-            }`}
-          >
-            {tab.label}
-          </Link>
-        ))}
-      </div>
+      <div className="mb-6 flex flex-wrap gap-2">{displayTabs}</div>
     </>
   );
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowRight, Search, Loader2 } from 'lucide-react';
+import { ArrowRight, /* Search, */ Loader2 } from 'lucide-react';
 import { ITransaction } from '@/interfaces/chain';
 import { truncateAddress } from '@/lib/utils/format';
 // import Pagination, { PaginationType } from '@/components/common/pagination';
@@ -181,18 +181,19 @@ const TransactionTable = () => {
     fetchTransactionList();
   }, [chainId]);
 
-  const diaplayedFilters = (
-    <div className="mb-6 flex flex-wrap items-center gap-4">
-      <div className="relative max-w-xs flex-1">
-        <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400" />
-        <input
-          type="text"
-          placeholder="方法"
-          className="w-full rounded-lg border border-gray-200 bg-white py-2 pr-4 pl-10 text-sm focus:ring-2 focus:ring-[#5841D8]/20 focus:outline-none"
-        />
-      </div>
-    </div>
-  );
+  // ToDo: 尚未實作篩選功能，先隱藏
+  // const diaplayedFilters = (
+  //   <div className="mb-6 flex flex-wrap items-center gap-4">
+  //     <div className="relative max-w-xs flex-1">
+  //       <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400" />
+  //       <input
+  //         type="text"
+  //         placeholder="方法"
+  //         className="w-full rounded-lg border border-gray-200 bg-white py-2 pr-4 pl-10 text-sm focus:ring-2 focus:ring-[#5841D8]/20 focus:outline-none"
+  //       />
+  //     </div>
+  //   </div>
+  // );
 
   const isDisplayedTable =
     !isLoading && transactions.length > 0 ? (
@@ -211,7 +212,7 @@ const TransactionTable = () => {
 
   return (
     <>
-      {diaplayedFilters}
+      {/* {diaplayedFilters} */}
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
         {/* Table Header / Pagination Info */}
         <div className="flex items-center justify-between border-b border-gray-100 p-4 text-sm text-gray-500">
