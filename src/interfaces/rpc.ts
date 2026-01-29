@@ -43,5 +43,26 @@ export interface IJsonRpcTransaction {
   value: string;
   gas: string;
   gasPrice: string;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
   input: string;
+}
+
+export interface IJsonRpcReceipt {
+  transactionHash: string;
+  transactionIndex: string;
+  blockHash: string;
+  blockNumber: string;
+  from: string;
+  to: string | null;
+  cumulativeGasUsed: string;
+  gasUsed: string;
+  contractAddress: string | null;
+  // ToDo: fix type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  logs: any[];
+  logsBloom: string;
+  status: string; // 0x1 success, 0x0 failure
+  effectiveGasPrice: string;
+  type: string;
 }
