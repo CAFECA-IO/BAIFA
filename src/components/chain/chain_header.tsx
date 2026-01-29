@@ -8,12 +8,12 @@ import {
   MessageCircle,
   Github,
   FileText,
-  ChevronDown,
-  ChevronUp,
+  // ChevronDown,
+  // ChevronUp,
 } from 'lucide-react';
 import { IChain } from '@/interfaces/chain';
 import { ICON_MAP } from '@/lib/maps';
-import useOuterClick from '@/lib/hooks/use_outer_click';
+// import useOuterClick from '@/lib/hooks/use_outer_click';
 import Toggle from '@/components/common/toggle';
 
 type Props = {
@@ -23,23 +23,23 @@ type Props = {
   latestGasPrice?: string;
 };
 
-const BLOCKCHAIN_MENU = [
-  { label: '交易列表', href: '#' },
-  { label: '大額交易', href: '#' },
-  { label: '待確認交易', href: '#' },
-  { separator: true },
-  { label: '區塊列表 (合併後)', href: '#' },
-  { label: '區塊列表 (合併前)', href: '#' },
-  { label: '驗證者列表', href: '#' },
-  { separator: true },
-  { label: 'Blob 列表', href: '#' },
-  { separator: true },
-  { label: 'ETH 1.0 質押記錄', href: '#' },
-  { label: 'ETH 1.0 解押記錄', href: '#' },
-  { separator: true },
-  { label: '富豪地址', href: '#' },
-  { label: '已驗證合約', href: '#' },
-];
+// const BLOCKCHAIN_MENU = [
+//   { label: '交易列表', href: '#' },
+//   { label: '大額交易', href: '#' },
+//   { label: '待確認交易', href: '#' },
+//   { separator: true },
+//   { label: '區塊列表 (合併後)', href: '#' },
+//   { label: '區塊列表 (合併前)', href: '#' },
+//   { label: '驗證者列表', href: '#' },
+//   { separator: true },
+//   { label: 'Blob 列表', href: '#' },
+//   { separator: true },
+//   { label: 'ETH 1.0 質押記錄', href: '#' },
+//   { label: 'ETH 1.0 解押記錄', href: '#' },
+//   { separator: true },
+//   { label: '富豪地址', href: '#' },
+//   { label: '已驗證合約', href: '#' },
+// ];
 
 export default function ChainHeader({
   chain,
@@ -48,11 +48,11 @@ export default function ChainHeader({
   // latestGasPrice,
 }: Props) {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const {
-    targetRef: blockchainRef,
-    componentVisible: isBlockchainVisible,
-    setComponentVisible: setBlockchainVisible,
-  } = useOuterClick<HTMLDivElement>(false);
+  // const {
+  //   targetRef: blockchainRef,
+  //   componentVisible: isBlockchainVisible,
+  //   setComponentVisible: setBlockchainVisible,
+  // } = useOuterClick<HTMLDivElement>(false);
 
   const displayName = chain ? chain.name : 'iSunCoin';
   // Resolve Icon
@@ -88,7 +88,7 @@ export default function ChainHeader({
           </div> */}
         </div>
 
-        <div className="flex gap-2 text-sm text-gray-600">
+        {/* <div className="flex gap-2 text-sm text-gray-600">
           <div className="relative" ref={blockchainRef}>
             <button
               className={`flex items-center gap-1 rounded-lg px-3 py-1.5 transition-colors ${isBlockchainVisible ? 'bg-gray-100 text-black' : 'hover:text-black'}`}
@@ -124,7 +124,7 @@ export default function ChainHeader({
           <button className="flex items-center gap-1 px-3 py-1.5 hover:text-black">
             更多 <ChevronDown size={14} />
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Description */}
