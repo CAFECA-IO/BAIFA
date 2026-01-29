@@ -11,6 +11,7 @@ import { formatHexToEther } from '@/lib/utils/format';
 import CopyButton from '@/components/common/copy_button';
 import { IJsonRpcResponse, IJsonRpcBlock, IJsonRpcTransaction } from '@/interfaces/rpc';
 import { fetchApi } from '@/lib/services/api_service';
+import { getMethodDescription, getTransactionDescription } from '@/lib/utils/transaction';
 
 const TransactionItem = ({ txn }: { txn: ITransaction }) => {
   const params = useParams();
@@ -119,50 +120,8 @@ const TransactionTable = () => {
 
         let allCollectedTxns: ITransaction[] = [];
 
-        // 2. 解析描述函式
-        const getDesc = (tx: IJsonRpcTransaction) => {
-          const input = tx.input || '0x';
-          const methodId = input.slice(0, 10).toLowerCase();
-          if (!tx.to) return 'Contract Creation (部署合約)';
-          if (input === '0x' || input === '0x0') return 'ETH Transfer (原生轉帳)';
-
-          const SIGNATURES: { [key: string]: string } = {
-            '0xa9059cbb': 'Transfer (ERC-20)',
-            '0x095ea7b3': 'Approve (授權)',
-            '0x23b872dd': 'TransferFrom (代理轉帳)',
-            '0x42842e0e': 'SafeTransferFrom (NFT 轉帳)',
-            '0xf242432a': 'SafeBatchTransfer (1155 批量轉帳)',
-            '0x2ea01f9c': 'HandleOps (4337 錢包操作)',
-            '0x6931966a': 'ForcedTransfer (3643 合規轉帳)',
-            '0xd0e30db0': 'Deposit (WETH 存款)',
-            '0x2e1a7d4d': 'Withdraw (WETH 提款)',
-          };
-          if (!tx.to) return 'Contract Creation (部署新合約)';
-          if (input === '0x' || input === '0x0') {
-            const ethValue = parseFloat(tx.value).toFixed(4);
-            return `ETH Transfer (發送 ${ethValue} ETH)`;
-          }
-
-          return SIGNATURES[methodId] || `Contract Call (方法: ${methodId})`;
-        };
-
-        const getMethodDescription = (input: string) => {
-          if (input === '0x' || !input) return 'ETH Transfer';
-
-          // 常見方法特徵碼映射表
-          const METHOD_SIGNATURES: { [key: string]: string } = {
-            '0xa9059cbb': 'Transfer (ERC-20)',
-            '0x095ea7b3': 'Approve (ERC-20)',
-            '0x23b872dd': 'TransferFrom (ERC-20/721)',
-            '0x42842e0e': 'SafeTransferFrom (ERC-721)',
-            '0xf242432a': 'SafeTransferFrom (ERC-1155)',
-            '0x2ea01f9c': 'HandleOps (ERC-4337)',
-            '0x6931966a': 'ForcedTransfer (ERC-3643)',
-          };
-
-          const methodId = input.slice(0, 10); // 取得 0x 加上前 8 碼
-          return METHOD_SIGNATURES[methodId] || `Execute (${methodId})`;
-        };
+        // 2. 解析描述函式 - now using shared utilities
+        // Imported at top of file
 
         // 3. 執行批量抓取
         const blockPromises = [];
@@ -192,7 +151,7 @@ const TransactionTable = () => {
             const blockTxns: ITransaction[] = (block.transactions as IJsonRpcTransaction[]).map(
               (tx: IJsonRpcTransaction) => ({
                 hash: tx.hash,
-                description: getDesc(tx),
+                description: getTransactionDescription(tx),
                 method: getMethodDescription(tx.input),
                 blockNumber: parseInt(block.number, 16).toString(),
                 time: new Date(parseInt(block.timestamp, 16) * 1000).toLocaleString(),

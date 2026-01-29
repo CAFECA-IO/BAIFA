@@ -14,7 +14,9 @@ import {
   formatFullTimestamp,
   formatHexToEther,
   formatHexToGwei,
+  truncateAddress,
 } from '@/lib/utils/format';
+import { getMethodDescription, getTransactionDescription } from '@/lib/utils/transaction';
 import CopyButton from '@/components/common/copy_button';
 import { CheckCircle, XCircle, FileText, Clock } from 'lucide-react';
 import Link from 'next/link';
@@ -26,10 +28,19 @@ interface ITransactionDetailsPageProps {
   }>;
 }
 
+interface IAccountState {
+  address: string;
+  before: { balance: string; nonce: string }; // at block - 1
+  after: { balance: string; nonce: string }; // at block
+  change: string; // difference in balance
+  isMiner: boolean;
+}
+
 export default function TransactionDetailsPage(props: ITransactionDetailsPageProps) {
   const params = use(props.params);
   const { chainId, transactionId } = params;
 
+  const [activeTab, setActiveTab] = useState<'overview' | 'status'>('overview');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,6 +48,112 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
   const [receipt, setReceipt] = useState<IJsonRpcReceipt | null>(null);
   const [block, setBlock] = useState<IJsonRpcBlock | null>(null);
   const [latestBlockNumber, setLatestBlockNumber] = useState<string | null>(null);
+
+  const [stateChanges, setStateChanges] = useState<IAccountState[]>([]);
+  const [loadingStateChanges, setLoadingStateChanges] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'status' && stateChanges.length === 0 && tx && block) {
+      const fetchStateChanges = async () => {
+        setLoadingStateChanges(true);
+        try {
+          // Identify unique addresses: From, To, Miner
+          const addresses = new Set<string>();
+          if (tx.from) addresses.add(tx.from.toLowerCase());
+          if (tx.to) addresses.add(tx.to.toLowerCase());
+          if (block.miner) addresses.add(block.miner.toLowerCase());
+
+          const uniqueAddresses = Array.from(addresses);
+          const blockNumber = BigInt(block.number);
+          const prevBlockNumberHex = `0x${(blockNumber - 1n).toString(16)}`;
+          const currBlockNumberHex = block.number;
+
+          const results: IAccountState[] = [];
+          const url = `/api/v1/chains/${chainId}`;
+
+          for (const addr of uniqueAddresses) {
+            // Batch requests if possible, but sequential for simplicity here or use Promise.all
+            const [balPrevRes, noncePrevRes, balCurrRes, nonceCurrRes] = await Promise.all([
+              fetchApi<IJsonRpcResponse<string>>(url, {
+                method: 'POST',
+                body: JSON.stringify({
+                  jsonrpc: '2.0',
+                  method: 'eth_getBalance',
+                  params: [addr, prevBlockNumberHex],
+                  id: 10,
+                }),
+              }),
+              fetchApi<IJsonRpcResponse<string>>(url, {
+                method: 'POST',
+                body: JSON.stringify({
+                  jsonrpc: '2.0',
+                  method: 'eth_getTransactionCount',
+                  params: [addr, prevBlockNumberHex],
+                  id: 11,
+                }),
+              }),
+              fetchApi<IJsonRpcResponse<string>>(url, {
+                method: 'POST',
+                body: JSON.stringify({
+                  jsonrpc: '2.0',
+                  method: 'eth_getBalance',
+                  params: [addr, currBlockNumberHex],
+                  id: 12,
+                }),
+              }),
+              fetchApi<IJsonRpcResponse<string>>(url, {
+                method: 'POST',
+                body: JSON.stringify({
+                  jsonrpc: '2.0',
+                  method: 'eth_getTransactionCount',
+                  params: [addr, currBlockNumberHex],
+                  id: 13,
+                }),
+              }),
+            ]);
+
+            const balPrev = BigInt(balPrevRes?.result ?? '0');
+            const balCurr = BigInt(balCurrRes?.result ?? '0');
+            const noncePrev = BigInt(noncePrevRes?.result ?? '0');
+            const nonceCurr = BigInt(nonceCurrRes?.result ?? '0');
+
+            const diff = balCurr - balPrev;
+            const sign = diff > 0n ? '+' : diff < 0n ? '' : ''; // negative number toString() includes sign
+            const diffEth = formatHexToEther(
+              diff >= 0n ? `0x${diff.toString(16)}` : `-0x${(-diff).toString(16)}`
+            );
+
+            // Handle very small diffs that formatHexToEther might truncate if not careful,
+            // but formatHexToEther uses ethers.formatEther which handles it well.
+            // Manually add sign for display if positive
+            const changeDisplay = diff === 0n ? '0 ETH' : `${sign}${diffEth}`;
+
+            results.push({
+              address: addr,
+              before: {
+                balance: formatHexToEther(balPrevRes?.result ?? '0x0'),
+                nonce: noncePrev.toString(),
+              },
+              after: {
+                balance: formatHexToEther(balCurrRes?.result ?? '0x0'),
+                nonce: nonceCurr.toString(),
+              },
+              change: changeDisplay,
+              isMiner: addr.toLowerCase() === block.miner.toLowerCase(),
+            });
+          }
+
+          setStateChanges(results);
+        } catch (e) {
+          console.error('Failed to fetch state changes', e);
+        } finally {
+          setLoadingStateChanges(false);
+        }
+      };
+
+      fetchStateChanges();
+    }
+  }, [activeTab, stateChanges.length, tx, block, chainId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -192,21 +309,9 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
     }
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto max-w-7xl px-4 py-8">
-        <h1 className="mb-6 text-2xl font-bold text-gray-900">交易詳情</h1>
-
-        {/* Tabs */}
-        <div className="mb-6 flex gap-4">
-          <button className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white shadow-sm">
-            概覽
-          </button>
-          <button className="rounded-md px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-900">
-            狀態
-          </button>
-        </div>
-
+  const renderContent = () => {
+    if (activeTab === 'overview') {
+      return (
         <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-md">
           <div className="divide-y divide-gray-100">
             <div>
@@ -376,17 +481,31 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
               {/* Other Info */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="w-full text-sm text-gray-500 sm:w-1/4">其他信息 :</div>
-                <div className="flex flex-wrap gap-4 text-sm text-gray-900">
-                  <div className="flex items-center gap-1">
-                    <span className="text-gray-500">交易類型:</span>{' '}
-                    {receipt.type === '0x2' ? '2 (EIP-1559 提出的交易類型)' : receipt.type}
+                <div className="flex flex-col gap-2 text-sm text-gray-900 sm:w-3/4">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
+                    <div className="flex items-center gap-1">
+                      <span className="text-gray-500">方法:</span>{' '}
+                      <span className="rounded bg-gray-100 px-2 py-0.5 font-mono text-xs">
+                        {getMethodDescription(tx.input)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-gray-500">描述:</span>{' '}
+                      <span>{getTransactionDescription(tx)}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-gray-500">Nonce:</span> {formatHexToDecimal(tx.nonce)}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-gray-500">區塊內交易編號:</span>{' '}
-                    {formatHexToDecimal(receipt.transactionIndex)}
+                  <div className="flex flex-wrap gap-4">
+                    <div className="flex items-center gap-1">
+                      <span className="text-gray-500">交易類型:</span>{' '}
+                      {receipt.type === '0x2' ? '2 (EIP-1559)' : receipt.type}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-gray-500">Nonce:</span> {formatHexToDecimal(tx.nonce)}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-gray-500">位置:</span>{' '}
+                      {formatHexToDecimal(receipt.transactionIndex)}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -403,6 +522,123 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
             </div>
           </div>
         </div>
+      );
+    }
+
+    if (activeTab === 'status') {
+      return (
+        <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-md">
+          <p className="mb-6 text-sm text-gray-500">
+            以下信息展示了在網絡上處理交易時，相應地址當前狀態的變化情況
+          </p>
+
+          {loadingStateChanges ? (
+            <div className="flex justify-center py-10">
+              <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="border-b border-gray-100 text-gray-500">
+                  <tr>
+                    <th className="pb-4 font-medium">地址</th>
+                    <th className="pb-4 font-medium">交易前</th>
+                    <th className="pb-4 font-medium">交易後</th>
+                    <th className="pb-4 font-medium">狀態變化</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {stateChanges.map((state) => (
+                    <tr key={state.address}>
+                      <td className="py-4 align-top">
+                        <div className="flex items-center gap-2">
+                          <Link
+                            href={`/chain/${chainId}/address/${state.address}`}
+                            className="font-mono text-blue-600 hover:text-blue-800 hover:underline"
+                          >
+                            {truncateAddress(state.address)}
+                          </Link>
+                          <CopyButton value={state.address} />
+                          {state.isMiner && (
+                            <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-500">
+                              出塊者
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-4 align-top">
+                        <div className="flex flex-col">
+                          <span className="font-medium text-gray-900">
+                            {state.before.balance} ETH
+                          </span>
+                          <span className="text-xs text-gray-500">Nonce: {state.before.nonce}</span>
+                        </div>
+                      </td>
+                      <td className="py-4 align-top">
+                        <div className="flex flex-col">
+                          <span className="font-medium text-gray-900">
+                            {state.after.balance} ETH
+                          </span>
+                          <span className="text-xs text-gray-500">Nonce: {state.after.nonce}</span>
+                        </div>
+                      </td>
+                      <td className="py-4 align-top">
+                        <span
+                          className={`font-medium ${
+                            state.change.startsWith('+')
+                              ? 'text-green-600'
+                              : state.change.startsWith('-')
+                                ? 'text-red-600'
+                                : 'text-gray-900'
+                          }`}
+                        >
+                          {state.change} ETH
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto max-w-7xl px-4 py-8">
+        <h1 className="mb-6 text-2xl font-bold text-gray-900">交易詳情</h1>
+
+        {/* Tabs */}
+        <div className="mb-6 flex gap-4">
+          <button
+            type="button"
+            onClick={() => setActiveTab('overview')}
+            className={`rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-colors ${
+              activeTab === 'overview'
+                ? 'bg-black text-white'
+                : 'bg-white text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            概覽
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('status')}
+            className={`rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-colors ${
+              activeTab === 'status'
+                ? 'bg-black text-white'
+                : 'bg-white text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            狀態
+          </button>
+        </div>
+
+        {renderContent()}
       </div>
     </div>
   );
