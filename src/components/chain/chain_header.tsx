@@ -59,7 +59,9 @@ export default function ChainHeader({
     <Image src="/logo/isuncoin.svg" alt="isuncoin_logo" width={24} height={24} />
   );
 
-  const description = chain ? chain.description : 'iSunCoin 是一個開源的去中心化區塊鏈網絡。';
+  const description = chain
+    ? chain.description
+    : 'iSunCoin  是一個開放自由的網際網路科技平台，旨在串聯全球電腦的運算資源，為各類去中心化應用程式提供運作環境。';
 
   const toggleDescription = () => setIsDescriptionExpanded(!isDescriptionExpanded);
 
@@ -141,6 +143,6 @@ export default function ChainHeader({
           />
         )}
       </div>
-    </div >
+    </div>
   );
 }

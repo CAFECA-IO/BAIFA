@@ -60,7 +60,7 @@ export interface IJsonRpcTransaction {
   v: string;
   r: string;
   s: string;
-  // EIP-1559 可能包含的欄位
+  // Info: (20260130 - Julian) EIP-1559 可能包含的欄位
   maxFeePerGas?: string;
   maxPriorityFeePerGas?: string;
 }

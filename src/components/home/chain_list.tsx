@@ -44,7 +44,7 @@ export default function ChainList() {
       color: 'text-orange-500',
       bgColor: 'bg-orange-500/10',
       description:
-        'iSunCoin 是世界上第一個去中心化的加密貨幣，由中本聰於 2008 年提出。它使用點對點網絡和工作量證明共識機制來處理交易和保護網絡安全。Bitcoin 被廣泛視為「數位黃金」，是目前市值最高的加密貨幣。',
+        'iSunCoin  是一個開放自由的網際網路科技平台，旨在串聯全球電腦的運算資源，為各類去中心化應用程式提供運作環境。',
       stats: [
         { label: 'iSunCoin 價格', value: '$0', change: '0%', isNegative: true },
         { label: '市值', value: '0T' },

@@ -217,8 +217,9 @@ export default function AddressDetailPage() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`relative px-6 py-4 text-sm font-bold transition-colors ${activeTab === tab ? 'text-[#5841D8]' : 'text-gray-500 hover:text-black'
-                  }`}
+                className={`relative px-6 py-4 text-sm font-bold transition-colors ${
+                  activeTab === tab ? 'text-[#5841D8]' : 'text-gray-500 hover:text-black'
+                }`}
               >
                 {tab}
                 {activeTab === tab && (
@@ -267,7 +268,7 @@ export default function AddressDetailPage() {
             </div>
           </div>
 
-          {/* Summary Cards */}
+          {/* Info: (20260130 - Julian) Summary Cards */}
           {isShowSummary}
 
           {/* Info: (20260130 - Julian) Transaction Table */}
@@ -300,7 +301,7 @@ export default function AddressDetailPage() {
               <table className="w-full text-left text-sm">
                 <thead className="bg-gray-50/50 text-xs font-bold text-gray-500 uppercase">
                   <tr>
-                    <th className="px-6 py-4">交易哈希</th>
+                    <th className="px-6 py-4">交易雜湊</th>
                     <th className="px-6 py-4">方法</th>
                     <th className="px-6 py-4">區塊</th>
                     <th className="px-6 py-4 text-[#5841D8]">時間</th>

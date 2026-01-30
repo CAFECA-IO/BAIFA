@@ -323,7 +323,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
               {/* Info: (20260130 - Julian) Transaction Hash */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="flex w-full items-center gap-1 text-sm text-gray-500 sm:w-1/4">
-                  <FileText size={14} className="text-gray-400" /> 交易哈希 :
+                  <FileText size={14} className="text-gray-400" /> 交易雜湊 :
                 </div>
                 <div className="flex items-center gap-2 font-mono text-sm text-gray-900">
                   {tx.hash} <CopyButton value={tx.hash} />

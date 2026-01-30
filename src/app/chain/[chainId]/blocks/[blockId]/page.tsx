@@ -141,7 +141,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
         <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-md">
           <div className="divide-y divide-gray-100">
             <div>
-              <DetailItem label="區塊哈希">
+              <DetailItem label="區塊雜湊">
                 <div className="flex items-center gap-2 font-mono leading-relaxed break-all">
                   {block.hash}
                   <CopyButton value={block.hash} />
@@ -276,7 +276,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
             {/* Info: (20260130 - Julian) ... more blob fields if needed, but keeping it simple as per most blocks */}
 
             <div>
-              <DetailItem label="父區塊哈希">
+              <DetailItem label="父區塊雜湊">
                 <Link
                   href={parentBlockPath}
                   className="font-mono break-all text-[#5841D8] hover:underline"

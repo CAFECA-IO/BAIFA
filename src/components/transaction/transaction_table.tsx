@@ -236,7 +236,7 @@ const TransactionTable = () => {
           <table className="w-full text-left text-sm">
             <thead className="border-b border-gray-100 bg-gray-50/50 text-xs font-bold text-gray-500 uppercase">
               <tr>
-                <th className="px-6 py-4">交易哈希</th>
+                <th className="px-6 py-4">交易雜湊</th>
                 <th className="px-6 py-4">方法</th>
                 <th className="px-6 py-4">交易描述</th>
                 <th className="px-6 py-4">區塊</th>

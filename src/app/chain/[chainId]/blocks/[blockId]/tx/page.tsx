@@ -211,7 +211,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
             <table className="w-full text-left text-sm">
               <thead className="border-b border-gray-100 bg-gray-50/50 text-xs font-bold text-gray-500 uppercase">
                 <tr>
-                  <th className="px-6 py-4">交易哈希</th>
+                  <th className="px-6 py-4">交易雜湊</th>
                   <th className="px-6 py-4">方法</th>
                   <th className="px-6 py-4">發送方</th>
                   <th className="w-8 px-6 py-4 text-center" aria-label="Transaction Direction"></th>
