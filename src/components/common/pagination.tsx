@@ -64,6 +64,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, type }: IPagination
         min={1}
         max={totalPages}
         className="w-24 rounded-lg border border-gray-200 bg-transparent px-2 py-1.5 text-center text-sm font-medium text-gray-700 outline-none"
+        aria-label="Page Number Input"
       />
       <button
         type="button"
@@ -83,6 +84,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, type }: IPagination
         onClick={handleFirstPage}
         disabled={firstDisabled}
         className="rounded p-1 text-gray-600 enabled:hover:text-[#5841D8] disabled:text-gray-300"
+        aria-label="First Page"
       >
         <ChevronsLeft size={18} />
       </button>
@@ -91,6 +93,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, type }: IPagination
         onClick={handlePreviousPage}
         disabled={previousDisabled}
         className="rounded p-1 text-gray-600 enabled:hover:text-[#5841D8] disabled:text-gray-300"
+        aria-label="Previous Page"
       >
         <ChevronLeft size={18} />
       </button>
@@ -102,6 +105,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, type }: IPagination
         onClick={handleNextPage}
         disabled={nextDisabled}
         className="rounded p-1 text-gray-600 enabled:hover:text-[#5841D8] disabled:text-gray-300"
+        aria-label="Next Page"
       >
         <ChevronRight size={18} />
       </button>
@@ -110,6 +114,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, type }: IPagination
         onClick={handleLastPage}
         disabled={lastDisabled}
         className="rounded p-1 text-gray-600 enabled:hover:text-[#5841D8] disabled:text-gray-300"
+        aria-label="Last Page"
       >
         <ChevronsRight size={18} />
       </button>

@@ -131,12 +131,12 @@ export default function ChainHeader({
       <p className="mb-4 text-sm leading-relaxed text-gray-600">
         {displayDescription}
         {shouldTruncate && (
-          <span
+          <button
             className="ml-1 cursor-pointer font-bold text-black hover:underline"
             onClick={toggleDescription}
           >
             {isDescriptionExpanded ? '收起全部' : '展開全部'}
-          </span>
+          </button>
         )}
       </p>
 

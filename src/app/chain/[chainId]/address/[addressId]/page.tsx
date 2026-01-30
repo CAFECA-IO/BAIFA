@@ -219,6 +219,7 @@ export default function AddressDetailPage() {
                   type="text"
                   placeholder="搜索方法"
                   className="rounded-lg border border-gray-200 bg-white py-2 pr-4 pl-10 text-sm focus:ring-2 focus:ring-[#5841D8]/20 focus:outline-none"
+                  aria-label="Filter by Method"
                 />
               </div>
             </div>
@@ -307,7 +308,7 @@ export default function AddressDetailPage() {
                     <th className="px-6 py-4">區塊</th>
                     <th className="px-6 py-4 text-[#5841D8]">時間</th>
                     <th className="px-6 py-4">發送方</th>
-                    <th className="px-4 py-4"></th>
+                    <th className="px-4 py-4" aria-label="Transaction Direction"></th>
                     <th className="px-6 py-4">接收方</th>
                     <th className="px-6 py-4">數量</th>
                     <th className="px-6 py-4">手續費</th>

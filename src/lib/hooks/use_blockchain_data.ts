@@ -74,7 +74,7 @@ export function useBlockchainData(chainId: string | null) {
           }
 
           // Info: (20260130 - Julian) Extract latest gas price from the first block we successfully fetch
-          if (blocksProcessed === 0 || !latestGasPrice || latestGasPrice === '-') {
+          if (blocksProcessed === 0) {
             setLatestGasPrice(`${formatHexToGwei(b.baseFeePerGas || '0x0')} Gwei`);
           }
 
