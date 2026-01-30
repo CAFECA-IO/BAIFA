@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export enum BlockDetailTabType {
   OVERVIEW = 'overview',
@@ -26,6 +26,8 @@ export default function BlockDetailHeader({
   blockNumber,
   activeTab,
 }: IBlockDetailHeaderProps) {
+  const blockListPath = `/chain/${chainId}/blocks`;
+
   const prevBlockPath = `/chain/${chainId}/blocks/${blockNumber - 1n}`;
   const nextBlockPath = `/chain/${chainId}/blocks/${blockNumber + 1n}`;
 
@@ -62,6 +64,9 @@ export default function BlockDetailHeader({
     <>
       {/* Header */}
       <div className="mb-6 flex items-center gap-4">
+        <Link href={blockListPath} className="cursor-pointer text-gray-500 hover:text-gray-800">
+          <ArrowLeft size={32} />
+        </Link>
         <h1 className="text-xl font-bold text-gray-900">區塊高度</h1>
         <div className="flex items-center gap-2">
           <Link

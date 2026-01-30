@@ -12,6 +12,7 @@ interface IBlockListProps {
 
 const BlockItem = ({ block }: { block: IBlock }) => {
   const pathname = usePathname();
+  const blockPath = `${pathname}/blocks/${block.height}`;
   const addressPath = `${pathname}/address/${block.proposerLabel}`;
 
   return (
@@ -27,7 +28,7 @@ const BlockItem = ({ block }: { block: IBlock }) => {
       {/* Content */}
       <div className="min-w-0 flex-1">
         <div className="mb-1 flex flex-wrap items-center gap-2 text-sm">
-          <Link href="/" className="font-bold text-[#5841D8] hover:underline">
+          <Link href={blockPath} className="font-bold text-[#5841D8] hover:underline">
             {block.height}
           </Link>
           <span className="text-xs text-gray-400">出塊者</span>
