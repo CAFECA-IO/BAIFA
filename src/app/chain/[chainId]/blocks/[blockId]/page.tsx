@@ -4,8 +4,7 @@ import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Clock, FileText, Cpu, Zap, Flame, LucideIcon, Loader2 } from 'lucide-react';
-import { IJsonRpcResponse, IJsonRpcBlock } from '@/interfaces/rpc';
-import { fetchApi } from '@/lib/services/api_service';
+import { IJsonRpcBlock } from '@/interfaces/rpc';
 import {
   formatHexToDecimal,
   formatTimestamp,
@@ -15,6 +14,7 @@ import {
 } from '@/lib/utils/format';
 import CopyButton from '@/components/common/copy_button';
 import BlockDetailHeader, { BlockDetailTabType } from '@/components/block/block_detail_header';
+import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 
 interface IBlockDetailsPageProps {
   params: Promise<{
@@ -46,91 +46,58 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
   const { chainId, blockId } = params;
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const [error, setError] = useState<string | null>(null);
   const [block, setBlock] = useState<IJsonRpcBlock | null>(null);
   const [latestBlockNumber, setLatestBlockNumber] = useState<string | null>(null);
-  const [parentBlockNumber, setParentBlockNumber] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  // Info: (20260130 - Julian) parent block url
-  const parentBlockUrl = parentBlockNumber ? `/chain/${chainId}/blocks/${parentBlockNumber}` : '#';
+  const { getBlockByNumber, getLatestBlockNumber, isLoading, error: rpcError } = useEthRpc(chainId);
+
+  // Info: (20260130 - Julian) 父區塊高度 => 當前區塊高度 - 1
+  const parentBlockNumber = block ? (BigInt(block.number) - 1n).toString() : null;
+
+  // Info: (20260130 - Julian) 路徑
+  const parentBlockPath = parentBlockNumber ? `/chain/${chainId}/blocks/${parentBlockNumber}` : '#';
+  const blockTxPath = block ? `/chain/${chainId}/blocks/${blockId}/tx` : '#';
+  const minerPath = block ? `/chain/${chainId}/address/${block.miner}` : '#';
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
       try {
-        const url = `/api/v1/chains/${chainId}`;
+        // Info: (20260130 - Julian) 取得區塊資訊
+        const blockData = await getBlockByNumber(blockId);
+        setBlock(blockData);
 
-        // Info: (20260130 - Julian) 1. Fetch Latest Block Number (for confirmations)
-        const latestRes = await fetchApi<IJsonRpcResponse<string>>(url, {
-          method: 'POST',
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            method: 'eth_blockNumber',
-            params: [],
-            id: 1,
-          }),
-        });
-        if (latestRes.result) {
-          setLatestBlockNumber(latestRes.result);
-        }
-
-        /**
-         * Info: (20260130 - Julian) 2. Fetch Block
-         * If blockId starts with 0x and is 66 chars, it's a hash.
-         * Otherwise, it's a height. Note: some height might be 0x.
-         */
-        const isHash = blockId.startsWith('0x') && blockId.length === 66;
-        const method = isHash ? 'eth_getBlockByHash' : 'eth_getBlockByNumber';
-        let blockParam = blockId;
-        if (!isHash) {
-          // Info: (20260130 - Julian) If it's a number string, convert to hex if it doesn't have 0x
-          if (!blockId.startsWith('0x')) {
-            blockParam = `0x${BigInt(blockId).toString(16)}`;
-          }
-        }
-
-        const blockRes = await fetchApi<IJsonRpcResponse<IJsonRpcBlock>>(url, {
-          method: 'POST',
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            method: method,
-            params: [blockParam, false], // Info: (20260130 - Julian) false to not get full transactions
-            id: 2,
-          }),
-        });
-
-        if (blockRes.result) {
-          setBlock(blockRes.result);
-
-          // Info: (20260130 - Julian) get parent block number
-          const parentRes = await fetchApi<IJsonRpcResponse<IJsonRpcBlock>>(url, {
-            method: 'POST',
-            body: JSON.stringify({
-              jsonrpc: '2.0',
-              method: 'eth_getBlockByHash',
-              params: [blockRes.result.parentHash, false],
-              id: 3,
-            }),
-          });
-          if (parentRes.result) {
-            setParentBlockNumber(parentRes.result.number);
-          }
-        } else {
-          setError('Block not found');
-        }
+        // Info: (20260130 - Julian) 取得最新區塊資訊
+        const latestBlockData = await getLatestBlockNumber();
+        setLatestBlockNumber(latestBlockData);
       } catch (err: unknown) {
         console.error('Failed to fetch block details:', err);
-        setError('Failed to fetch block details');
-      } finally {
-        setIsLoading(false);
+        setError(err as string);
       }
     };
 
     fetchData();
   }, [chainId, blockId]);
 
+  const backBtn = (
+    <button onClick={() => router.back()} className="mt-4 text-sm text-[#5841D8] hover:underline">
+      返回上一頁
+    </button>
+  );
+
+  // Info: (20260130 - Julian) RPC 錯誤
+  if (rpcError) {
+    return (
+      <div className="container mx-auto px-4 py-10 text-center">
+        <p className="text-red-500">{rpcError}</p>
+        {backBtn}
+      </div>
+    );
+  }
+
+  // Info: (20260130 - Julian) 載入中
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -139,16 +106,12 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
     );
   }
 
+  // Info: (20260130 - Julian) 錯誤或查無區塊
   if (error || !block) {
     return (
       <div className="container mx-auto px-4 py-10 text-center">
         <p className="text-red-500">{error || 'Block not found'}</p>
-        <button
-          onClick={() => router.back()}
-          className="mt-4 text-sm text-[#5841D8] hover:underline"
-        >
-          返回上一頁
-        </button>
+        {backBtn}
       </div>
     );
   }
@@ -178,7 +141,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
         <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-md">
           <div className="divide-y divide-gray-100">
             <div>
-              <DetailItem label="區塊哈希">
+              <DetailItem label="區塊雜湊">
                 <div className="flex items-center gap-2 font-mono leading-relaxed break-all">
                   {block.hash}
                   <CopyButton value={block.hash} />
@@ -203,10 +166,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
               <DetailItem label="交易數量" icon={FileText}>
                 <div className="flex flex-wrap items-center gap-x-1 gap-y-1">
                   <span>區塊內包含</span>
-                  <Link
-                    href={`/chain/${chainId}/blocks/${blockId}/tx`}
-                    className="font-bold text-[#5841D8] hover:underline"
-                  >
+                  <Link href={blockTxPath} className="font-bold text-[#5841D8] hover:underline">
                     {Array.isArray(block.transactions) ? block.transactions.length : 0} 筆交易
                   </Link>
                   {/* Info: (20260130 - Julian) Internal txs, etc. would normally require more specific API calls, here as placeholders or mock if not available */}
@@ -226,10 +186,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
             <div>
               <DetailItem label="驗證者">
                 <div className="flex items-center gap-2">
-                  <Link
-                    href={`/chain/${chainId}/address/${block.miner}`}
-                    className="font-mono text-[#5841D8] hover:underline"
-                  >
+                  <Link href={minerPath} className="font-mono text-[#5841D8] hover:underline">
                     {block.miner}
                   </Link>
                   <CopyButton value={block.miner} />
@@ -319,9 +276,9 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
             {/* Info: (20260130 - Julian) ... more blob fields if needed, but keeping it simple as per most blocks */}
 
             <div>
-              <DetailItem label="父區塊哈希">
+              <DetailItem label="父區塊雜湊">
                 <Link
-                  href={parentBlockUrl}
+                  href={parentBlockPath}
                   className="font-mono break-all text-[#5841D8] hover:underline"
                 >
                   {block.parentHash}

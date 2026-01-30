@@ -1,6 +1,5 @@
 import HeroSection from '@/components/home/hero_section';
 import ChainList from '@/components/home/chain_list';
-import JourneySection from '@/components/home/journey_section';
 
 export default function Home() {
   return (
@@ -8,7 +7,6 @@ export default function Home() {
       <main className="flex w-full flex-col items-center">
         <HeroSection />
         <ChainList />
-        <JourneySection />
       </main>
     </div>
   );

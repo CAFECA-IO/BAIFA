@@ -1,5 +1,3 @@
-import { Search } from 'lucide-react';
-
 export default function HeroSection() {
   return (
     <section className="relative flex flex-col items-center justify-center px-4 py-20 text-center sm:py-32">
@@ -11,23 +9,6 @@ export default function HeroSection() {
           全球領先的 Web3 數據分析平臺
         </h1>
         <p className="text-lg text-gray-400 sm:text-xl">區塊鏈瀏覽器、鏈上數據分析及服務</p>
-
-        <div className="mx-auto mt-10 w-full max-w-2xl">
-          <div className="relative flex items-center">
-            <input
-              type="text"
-              aria-label="Search"
-              placeholder="搜索地址 / 交易 / 區塊 / 代幣 / ENS"
-              className="h-14 w-full rounded-full border border-gray-800 bg-white pr-16 pl-8 text-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:outline-none"
-            />
-            <button
-              aria-label="Search"
-              className="absolute top-2 right-2 flex h-10 w-10 items-center justify-center rounded-full bg-[#5841D8] text-white transition hover:bg-[#4b36c0]"
-            >
-              <Search size={20} />
-            </button>
-          </div>
-        </div>
       </div>
     </section>
   );

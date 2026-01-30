@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useEffect, use } from 'react';
 import {
   IJsonRpcResponse,
@@ -18,8 +19,7 @@ import {
 } from '@/lib/utils/format';
 import { getMethodDescription, getTransactionDescription } from '@/lib/utils/transaction';
 import CopyButton from '@/components/common/copy_button';
-import { CheckCircle, XCircle, FileText, Clock } from 'lucide-react';
-import Link from 'next/link';
+import { CheckCircle, XCircle, FileText, Clock, ArrowLeft } from 'lucide-react';
 
 interface ITransactionDetailsPageProps {
   params: Promise<{
@@ -50,7 +50,9 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
   const [latestBlockNumber, setLatestBlockNumber] = useState<string | null>(null);
 
   const [stateChanges, setStateChanges] = useState<IAccountState[]>([]);
-  const [loadingStateChanges, setLoadingStateChanges] = useState(false);
+  const [loadingStateChanges, setLoadingStateChanges] = useState<boolean>(false);
+
+  const txListPath = `/chain/${chainId}/txs`;
 
   useEffect(() => {
     if (activeTab === 'status' && stateChanges.length === 0 && tx && block) {
@@ -321,7 +323,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
               {/* Info: (20260130 - Julian) Transaction Hash */}
               <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
                 <div className="flex w-full items-center gap-1 text-sm text-gray-500 sm:w-1/4">
-                  <FileText size={14} className="text-gray-400" /> 交易哈希 :
+                  <FileText size={14} className="text-gray-400" /> 交易雜湊 :
                 </div>
                 <div className="flex items-center gap-2 font-mono text-sm text-gray-900">
                   {tx.hash} <CopyButton value={tx.hash} />
@@ -621,7 +623,13 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto max-w-7xl px-4 py-8">
-        <h1 className="mb-6 text-2xl font-bold text-gray-900">交易詳情</h1>
+        <div className="mb-6 flex items-center gap-4">
+          <Link href={txListPath} className="cursor-pointer text-gray-500 hover:text-gray-800">
+            <ArrowLeft size={32} />
+          </Link>
+
+          <h1 className="text-2xl font-bold text-gray-900">交易詳情</h1>
+        </div>
 
         {/* Info: (20260130 - Julian) Tabs */}
         <div className="mb-6 flex gap-4">

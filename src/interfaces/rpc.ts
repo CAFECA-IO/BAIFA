@@ -9,27 +9,28 @@ export interface IJsonRpcResponse<T> {
 }
 
 export interface IJsonRpcBlock {
-  baseFeePerGas?: string;
+  number: string;
+  hash: string;
+  parentHash: string;
+  nonce: string;
+  sha3Uncles: string;
+  logsBloom: string;
+  transactionsRoot: string;
+  stateRoot: string;
+  receiptsRoot: string;
+  miner: string;
   difficulty: string;
+  totalDifficulty: string;
   extraData: string;
+  size: string;
   gasLimit: string;
   gasUsed: string;
-  hash: string;
-  logsBloom: string;
-  miner: string;
-  mixHash: string;
-  nonce: string;
-  number: string;
-  parentHash: string;
-  receiptsRoot: string;
-  sha3Uncles: string;
-  size: string;
-  stateRoot: string;
   timestamp: string;
-  totalDifficulty: string;
   transactions: string[] | IJsonRpcTransaction[];
-  transactionsRoot: string;
   uncles: string[];
+  baseFeePerGas?: string;
+
+  mixHash?: string;
   withdrawals?: IJsonRpcWithdrawal[];
   withdrawalsRoot?: string;
   blobGasUsed?: string;
@@ -44,19 +45,24 @@ export interface IJsonRpcWithdrawal {
 }
 
 export interface IJsonRpcTransaction {
-  hash: string;
-  nonce: string;
-  blockHash: string;
-  blockNumber: string;
-  transactionIndex: string;
+  blockHash: string | null;
+  blockNumber: string | null;
   from: string;
-  to: string;
-  value: string;
   gas: string;
   gasPrice: string;
+  hash: string;
+  input: string;
+  nonce: string;
+  to: string | null;
+  transactionIndex: string | null;
+  value: string;
+  type: string;
+  v: string;
+  r: string;
+  s: string;
+  // Info: (20260130 - Julian) EIP-1559 可能包含的欄位
   maxFeePerGas?: string;
   maxPriorityFeePerGas?: string;
-  input: string;
 }
 
 export interface IJsonRpcReceipt {

@@ -17,7 +17,7 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
   const params = useParams();
   const chainId = params?.chainId as string;
 
-  const transactionPath = `/chain/${chainId}/transactions/${txn.hash}`;
+  const transactionPath = `/chain/${chainId}/txs/${txn.hash}`;
   const blockPath = `/chain/${chainId}/blocks/${txn.blockNumber}`;
   const fromPath = `/chain/${chainId}/address/${txn.fromLabel}`;
   const toPath = `/chain/${chainId}/address/${txn.toLabel}`;
@@ -27,10 +27,13 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
   const datePart = validTimestamp.split(' ')[0];
   const timePart = validTimestamp.split(' ')[1];
 
+  const truncatedFrom = txn.from.startsWith('0x') ? truncateAddress(txn.from) : txn.from;
+  const truncatedTo = txn.to.startsWith('0x') ? truncateAddress(txn.to) : txn.to;
+
   const displayFrom = !!txn.from ? (
     <div className="flex items-center gap-1.5">
       <Link href={fromPath} className="font-mono text-[#5841D8] hover:underline">
-        {truncateAddress(txn.from)}
+        {truncatedFrom}
       </Link>
       <CopyButton value={txn.from} />
     </div>
@@ -40,7 +43,7 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
   const displayTo = !!txn.to ? (
     <div className="flex items-center gap-1.5">
       <Link href={toPath} className="font-mono text-[#5841D8] hover:underline">
-        {truncateAddress(txn.to)}
+        {truncatedTo}
       </Link>
       <CopyButton value={txn.to} />
     </div>
@@ -233,7 +236,7 @@ const TransactionTable = () => {
           <table className="w-full text-left text-sm">
             <thead className="border-b border-gray-100 bg-gray-50/50 text-xs font-bold text-gray-500 uppercase">
               <tr>
-                <th className="px-6 py-4">交易哈希</th>
+                <th className="px-6 py-4">交易雜湊</th>
                 <th className="px-6 py-4">方法</th>
                 <th className="px-6 py-4">交易描述</th>
                 <th className="px-6 py-4">區塊</th>

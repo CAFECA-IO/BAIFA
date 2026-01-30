@@ -2,15 +2,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import {
-  Globe,
-  Twitter,
-  MessageCircle,
-  Github,
-  FileText,
-  // ChevronDown,
-  // ChevronUp,
-} from 'lucide-react';
 import { IChain } from '@/interfaces/chain';
 import { ICON_MAP } from '@/lib/maps';
 // import useOuterClick from '@/lib/hooks/use_outer_click';
@@ -68,7 +59,9 @@ export default function ChainHeader({
     <Image src="/logo/isuncoin.svg" alt="isuncoin_logo" width={24} height={24} />
   );
 
-  const description = chain ? chain.description : 'iSunCoin 是一個開源的去中心化區塊鏈網絡。';
+  const description = chain
+    ? chain.description
+    : 'iSunCoin  是一個開放自由的網際網路科技平台，旨在串聯全球電腦的運算資源，為各類去中心化應用程式提供運作環境。';
 
   const toggleDescription = () => setIsDescriptionExpanded(!isDescriptionExpanded);
 
@@ -77,7 +70,7 @@ export default function ChainHeader({
     isDescriptionExpanded || !shouldTruncate ? description : `${description.slice(0, 85)}...`;
 
   return (
-    <div className="mb-8">
+    <div>
       {/* Info: (20260130 - Julian) Top Header Row */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -140,41 +133,8 @@ export default function ChainHeader({
         )}
       </p>
 
-      {/* Info: (20260130 - Julian) Action Buttons */}
+      {/* Info: (20260130 - Julian) Expand/Collapse Button */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <button
-            className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-gray-400 hover:text-black"
-            aria-label="Documentation"
-          >
-            <FileText size={16} />
-          </button>
-          <button
-            className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-gray-400 hover:text-black"
-            aria-label="Twitter"
-          >
-            <Twitter size={16} />
-          </button>
-          <button
-            className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-gray-400 hover:text-black"
-            aria-label="Community"
-          >
-            <MessageCircle size={16} />
-          </button>
-          <button
-            className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-gray-400 hover:text-black"
-            aria-label="Website"
-          >
-            <Globe size={16} />
-          </button>
-          <button
-            className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-gray-400 hover:text-black"
-            aria-label="Github"
-          >
-            <Github size={16} />
-          </button>
-        </div>
-
         {showDetails && onToggleDetails && (
           <Toggle
             isOpen={showDetails}

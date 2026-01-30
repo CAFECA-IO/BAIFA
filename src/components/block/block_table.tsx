@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { AlertCircle } from 'lucide-react';
@@ -12,12 +13,12 @@ import { fetchApi } from '@/lib/services/api_service';
 import CopyButton from '@/components/common/copy_button';
 
 const BlockItem = ({ block }: { block: IBlock }) => {
+  const pathname = usePathname();
   const params = useParams();
+  const chainId = params?.chainId as string;
+  const blockPath = `${pathname}/${block.height}`;
+  const addressPath = `/chain/${chainId}/address/${block.proposer}`;
   const isAlertBlock = false; // Info: (20260130 - Julian) mock
-
-  const blockPath = `/`;
-  const addressPath = `/chain/${params.chainId}/address/${block.proposer}`;
-
   const isShowAlertIcon = isAlertBlock && <AlertCircle size={14} className="text-orange-400" />;
 
   return (
