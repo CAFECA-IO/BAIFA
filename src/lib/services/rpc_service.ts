@@ -32,12 +32,18 @@ export const rpcService = {
   }),
 
   // 5. 取得區塊內容 (可指定是否包含完整交易物件)
-  getBlockByNumber: (blockNumber: string, fullTx: boolean = true) => ({
-    jsonrpc: '2.0',
-    method: 'eth_getBlockByNumber',
-    params: [blockNumber, fullTx],
-    id: Date.now() + 4,
-  }),
+  getBlockByNumber: (blockNumber: string, fullTx: boolean = true) => {
+    // 將 blockNumber 轉換為十六進制
+    const formattedBlockNumber = blockNumber.startsWith('0x')
+      ? blockNumber
+      : `0x${BigInt(blockNumber).toString(16)}`;
+    return {
+      jsonrpc: '2.0',
+      method: 'eth_getBlockByNumber',
+      params: [formattedBlockNumber, fullTx], // 將 blockNumber 轉換為十六進制
+      id: Date.now() + 4,
+    };
+  },
 
   // 6. 透過區塊哈希與索引取得交易
   getTransactionByBlockHashAndIndex: (blockHash: string, indexHex: string) => ({
@@ -45,5 +51,21 @@ export const rpcService = {
     method: 'eth_getTransactionByBlockHashAndIndex',
     params: [blockHash, indexHex],
     id: Date.now() + 5,
+  }),
+
+  // 7. 取得當前最新區塊高度
+  getBlockNumber: () => ({
+    jsonrpc: '2.0',
+    method: 'eth_blockNumber',
+    params: [],
+    id: Date.now() + 6,
+  }),
+
+  // 8. 透過區塊哈希取得區塊內容
+  getBlockByHash: (blockHash: string, fullTx: boolean = true) => ({
+    jsonrpc: '2.0',
+    method: 'eth_getBlockByHash',
+    params: [blockHash, fullTx],
+    id: Date.now() + 7,
   }),
 };

@@ -1,7 +1,12 @@
 import { useState, useCallback } from 'react';
 import { rpcService } from '@/lib/services/rpc_service';
 import { fetchApi } from '@/lib/services/api_service';
-import { IJsonRpcResponse } from '@/interfaces/rpc';
+import {
+  IJsonRpcBlock,
+  IJsonRpcReceipt,
+  IJsonRpcResponse,
+  IJsonRpcTransaction,
+} from '@/interfaces/rpc';
 
 interface IRpcBody {
   jsonrpc: string;
@@ -47,17 +52,39 @@ export const useEthRpc = (chainId: string) => {
     [url]
   );
 
-  // 封裝具體方法
-  const getTxCount = (address: string) => execute(rpcService.getTransactionCount(address));
-  const getBalance = (address: string) => execute(rpcService.getBalance(address));
-  const getTxReceipt = (txHash: string) => execute(rpcService.getTransactionReceipt(txHash));
-  const getTxByHash = (txHash: string) => execute(rpcService.getTransactionByHash(txHash));
+  // ===== 封裝具體方法 =====
+  // 取得地址發送次數
+  const getTxCount = (address: string) => execute<string>(rpcService.getTransactionCount(address));
+
+  // 取得地址餘額
+  const getBalance = (address: string) => execute<string>(rpcService.getBalance(address));
+
+  // 取得交易收據
+  const getTxReceipt = (txHash: string) =>
+    execute<IJsonRpcReceipt>(rpcService.getTransactionReceipt(txHash));
+
+  // 透過哈希取得交易
+  const getTxByHash = (txHash: string) =>
+    execute<IJsonRpcTransaction>(rpcService.getTransactionByHash(txHash));
+
+  // 透過高度取得區塊
   const getBlockByNumber = (bn: string, full?: boolean) =>
-    execute(rpcService.getBlockByNumber(bn, full));
+    execute<IJsonRpcBlock>(rpcService.getBlockByNumber(bn, full));
+
+  // 透過區塊哈希與索引取得交易
   const getTxByBlockAndIndex = (hash: string, index: number) => {
     const indexHex = `0x${index.toString(16)}`;
-    return execute(rpcService.getTransactionByBlockHashAndIndex(hash, indexHex));
+    return execute<IJsonRpcTransaction>(
+      rpcService.getTransactionByBlockHashAndIndex(hash, indexHex)
+    );
   };
+
+  // 取得最新高度
+  const getLatestBlockNumber = () => execute<string>(rpcService.getBlockNumber());
+
+  // 透過哈希取得區塊
+  const getBlockByHash = (blockHash: string, full: boolean = true) =>
+    execute<IJsonRpcBlock>(rpcService.getBlockByHash(blockHash, full));
 
   return {
     isLoading,
@@ -68,5 +95,7 @@ export const useEthRpc = (chainId: string) => {
     getTxByHash,
     getBlockByNumber,
     getTxByBlockAndIndex,
+    getLatestBlockNumber,
+    getBlockByHash,
   };
 };
