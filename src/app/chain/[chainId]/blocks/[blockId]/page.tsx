@@ -79,7 +79,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
     };
 
     fetchData();
-  }, [chainId, blockId]);
+  }, [chainId, blockId, getBlockByNumber, getLatestBlockNumber]);
 
   const backBtn = (
     <button onClick={() => router.back()} className="mt-4 text-sm text-[#5841D8] hover:underline">

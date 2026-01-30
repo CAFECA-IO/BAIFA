@@ -54,37 +54,58 @@ export const useEthRpc = (chainId: string) => {
 
   // Info: (20260130 - Julian) 封裝具體方法
   // Info: (20260130 - Julian) 取得地址發送次數
-  const getTxCount = (address: string) => execute<string>(rpcService.getTransactionCount(address));
+  const getTxCount = useCallback(
+    (address: string) => execute<string>(rpcService.getTransactionCount(address)),
+    [execute]
+  );
 
   // Info: (20260130 - Julian) 取得地址餘額
-  const getBalance = (address: string) => execute<string>(rpcService.getBalance(address));
+  const getBalance = useCallback(
+    (address: string) => execute<string>(rpcService.getBalance(address)),
+    [execute]
+  );
 
   // Info: (20260130 - Julian) 取得交易收據
-  const getTxReceipt = (txHash: string) =>
-    execute<IJsonRpcReceipt>(rpcService.getTransactionReceipt(txHash));
+  const getTxReceipt = useCallback(
+    (txHash: string) => execute<IJsonRpcReceipt>(rpcService.getTransactionReceipt(txHash)),
+    [execute]
+  );
 
   // Info: (20260130 - Julian) 透過雜湊取得交易
-  const getTxByHash = (txHash: string) =>
-    execute<IJsonRpcTransaction>(rpcService.getTransactionByHash(txHash));
+  const getTxByHash = useCallback(
+    (txHash: string) => execute<IJsonRpcTransaction>(rpcService.getTransactionByHash(txHash)),
+    [execute]
+  );
 
   // Info: (20260130 - Julian) 透過高度取得區塊
-  const getBlockByNumber = (bn: string, full?: boolean) =>
-    execute<IJsonRpcBlock>(rpcService.getBlockByNumber(bn, full));
+  const getBlockByNumber = useCallback(
+    (bn: string, full?: boolean) => execute<IJsonRpcBlock>(rpcService.getBlockByNumber(bn, full)),
+    [execute]
+  );
 
   // Info: (20260130 - Julian) 透過區塊雜湊與索引取得交易
-  const getTxByBlockAndIndex = (hash: string, index: number) => {
-    const indexHex = `0x${index.toString(16)}`;
-    return execute<IJsonRpcTransaction>(
-      rpcService.getTransactionByBlockHashAndIndex(hash, indexHex)
-    );
-  };
+  const getTxByBlockAndIndex = useCallback(
+    (hash: string, index: number) => {
+      const indexHex = `0x${index.toString(16)}`;
+      return execute<IJsonRpcTransaction>(
+        rpcService.getTransactionByBlockHashAndIndex(hash, indexHex)
+      );
+    },
+    [execute]
+  );
 
   // Info: (20260130 - Julian) 取得最新高度
-  const getLatestBlockNumber = () => execute<string>(rpcService.getBlockNumber());
+  const getLatestBlockNumber = useCallback(
+    () => execute<string>(rpcService.getBlockNumber()),
+    [execute]
+  );
 
   // Info: (20260130 - Julian) 透過雜湊取得區塊
-  const getBlockByHash = (blockHash: string, full: boolean = true) =>
-    execute<IJsonRpcBlock>(rpcService.getBlockByHash(blockHash, full));
+  const getBlockByHash = useCallback(
+    (blockHash: string, full: boolean = true) =>
+      execute<IJsonRpcBlock>(rpcService.getBlockByHash(blockHash, full)),
+    [execute]
+  );
 
   return {
     isLoading,

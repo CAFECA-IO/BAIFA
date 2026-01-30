@@ -11,6 +11,7 @@ export async function POST(
 
 async function forward(request: NextRequest, params: Promise<{ chainId: string }>) {
   const { chainId } = await params;
+  const body = await request.text();
 
   /**
    * Info: (20260130 - Julian) For now, we use the isuncoin mainnet as the default target,
@@ -23,25 +24,15 @@ async function forward(request: NextRequest, params: Promise<{ chainId: string }
   // Info: (20260130 - Julian) Preserve search params
   targetUrl.search = requestUrl.search;
 
-  const headers = new Headers(request.headers);
-  // Info: (20260130 - Julian) Remove host header to avoid confusion at the target server
-  headers.delete('host');
-
-  let body: BodyInit | undefined;
-  if (!['GET', 'HEAD'].includes(request.method)) {
-    try {
-      body = await request.arrayBuffer();
-    } catch {
-      // Info: (20260130 - Julian) Body might be empty or unreadable
-    }
-  }
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+  });
 
   try {
     const response = await fetch(targetUrl.toString(), {
       method: request.method,
-      headers: headers,
-      body: body,
-      redirect: 'manual',
+      headers,
+      body,
     });
 
     const contentType = response.headers.get('content-type');

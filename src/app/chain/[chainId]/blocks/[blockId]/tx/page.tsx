@@ -142,7 +142,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
     };
 
     fetchData();
-  }, [chainId, blockId]);
+  }, [chainId, blockId, getBlockByNumber, getBlockByHash]);
 
   const backBtn = (
     <button onClick={() => router.back()} className="mt-4 text-sm text-[#5841D8] hover:underline">
