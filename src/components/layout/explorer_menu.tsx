@@ -10,7 +10,6 @@ import {
   Droplet,
   Activity,
 } from 'lucide-react';
-import React from 'react';
 
 const networks = [
   { name: 'Bitcoin', icon: Bitcoin, color: 'text-orange-500' },
@@ -27,7 +26,7 @@ const networks = [
 export default function ExplorerMenu() {
   return (
     <div className="absolute top-full left-0 mt-2 flex w-[600px] overflow-hidden rounded-xl bg-white text-black shadow-2xl ring-1 ring-black/5">
-      {/* Left Column: Description */}
+      {/* Info: (20260130 - Julian) Left Column: Description */}
       <div className="w-1/3 bg-white p-6">
         <h3 className="mb-4 text-lg font-bold">瀏覽器</h3>
         <p className="text-sm leading-relaxed text-gray-500">
@@ -37,9 +36,9 @@ export default function ExplorerMenu() {
         </p>
       </div>
 
-      {/* Right Column: Network List */}
+      {/* Info: (20260130 - Julian) Right Column: Network List */}
       <div className="w-2/3 bg-gray-50 p-4">
-        {/* Search Bar */}
+        {/* Info: (20260130 - Julian) Search Bar */}
         <div className="relative mb-4">
           <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <input

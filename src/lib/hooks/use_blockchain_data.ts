@@ -28,7 +28,7 @@ export function useBlockchainData(chainId: string | null) {
       try {
         const url = `/api/v1/chains/${chainId}`;
 
-        // 1. Get latest block number
+        // Info: (20260130 - Julian) 1. Get latest block number
         const bnRes = await fetchApi<IJsonRpcResponse<string>>(url, {
           method: 'POST',
           body: JSON.stringify({
@@ -61,7 +61,7 @@ export function useBlockchainData(chainId: string | null) {
             body: JSON.stringify({
               jsonrpc: '2.0',
               method: 'eth_getBlockByNumber',
-              params: [bnHex, true], // true to get full transactions
+              params: [bnHex, true], // Info: (20260130 - Julian) true to get full transactions
               id: blocksProcessed + 2,
             }),
           });
@@ -73,12 +73,12 @@ export function useBlockchainData(chainId: string | null) {
             continue;
           }
 
-          // Extract latest gas price from the first block we successfully fetch
+          // Info: (20260130 - Julian) Extract latest gas price from the first block we successfully fetch
           if (blocksProcessed === 0 || !latestGasPrice || latestGasPrice === '-') {
             setLatestGasPrice(`${formatHexToGwei(b.baseFeePerGas || '0x0')} Gwei`);
           }
 
-          // Add to blocks list if we still need the first 10 blocks
+          // Info: (20260130 - Julian) Add to blocks list if we still need the first 10 blocks
           if (fetchedBlocks.length < 10) {
             const gasUsed = BigInt(b.gasUsed);
             const gasLimit = BigInt(b.gasLimit);
@@ -101,14 +101,14 @@ export function useBlockchainData(chainId: string | null) {
             });
           }
 
-          // Fetch transactions if we still need more
+          // Info: (20260130 - Julian) Fetch transactions if we still need more
           const rawTxns = b.transactions;
           if (fetchedTransactions.length < 10 && Array.isArray(rawTxns) && rawTxns.length > 0) {
             let txObjects: IJsonRpcTransaction[] = [];
 
             if (typeof rawTxns[0] === 'string') {
-              // Upstream returned only hashes, need to fetch individually
-              // Get the last 10 (latest) transactions in the block
+              // Info: (20260130 - Julian) Upstream returned only hashes, need to fetch individually
+              // Info: (20260130 - Julian) Get the last 10 (latest) transactions in the block
               const totalTx = rawTxns.length;
               const needCount = 10 - fetchedTransactions.length;
               const startIndex = Math.max(0, totalTx - needCount);
@@ -126,15 +126,15 @@ export function useBlockchainData(chainId: string | null) {
                 })
               );
               const txResponses = await Promise.all(txPromises);
-              // 增加過濾以確保數據存在
+              // Info: (20260130 - Julian) 增加過濾以確保數據存在
               txObjects = txResponses.map((r) => r?.result).filter(Boolean);
             } else {
-              // If transactions are already objects, take the last few we need
+              // Info: (20260130 - Julian) If transactions are already objects, take the last few we need
               const needCount = 10 - fetchedTransactions.length;
               txObjects = (rawTxns as IJsonRpcTransaction[]).slice(-needCount);
             }
 
-            // Reverse to put newest first (highest index first) within this block's contribution
+            // Info: (20260130 - Julian) Reverse to put newest first (highest index first) within this block's contribution
             txObjects
               .slice()
               .reverse()

@@ -12,17 +12,19 @@ export async function POST(
 async function forward(request: NextRequest, params: Promise<{ chainId: string }>) {
   const { chainId } = await params;
 
-  // For now, we use the isuncoin mainnet as the default target,
-  // but we can extend this to use chainId to determine other targets.
+  /**
+   * Info: (20260130 - Julian) For now, we use the isuncoin mainnet as the default target,
+   * but we can extend this to use chainId to determine other targets.
+   */
   const targetBaseUrl = process.env.ISUNCOIN_MAINNET_URL || 'https://mainnet.isuncoin.com';
   const targetUrl = new URL(targetBaseUrl);
   const requestUrl = new URL(request.url);
 
-  // Preserve search params
+  // Info: (20260130 - Julian) Preserve search params
   targetUrl.search = requestUrl.search;
 
   const headers = new Headers(request.headers);
-  // Remove host header to avoid confusion at the target server
+  // Info: (20260130 - Julian) Remove host header to avoid confusion at the target server
   headers.delete('host');
 
   let body: BodyInit | undefined;
@@ -30,7 +32,7 @@ async function forward(request: NextRequest, params: Promise<{ chainId: string }
     try {
       body = await request.arrayBuffer();
     } catch {
-      // Body might be empty or unreadable
+      // Info: (20260130 - Julian) Body might be empty or unreadable
     }
   }
 
@@ -49,7 +51,7 @@ async function forward(request: NextRequest, params: Promise<{ chainId: string }
       try {
         payload = await response.json();
       } catch (err) {
-        // Fallback to text if JSON parsing fails (common for empty response bodies)
+        // Info: (20260130 - Julian) Fallback to text if JSON parsing fails (common for empty response bodies)
         payload = await response.text();
         console.error('Failed to parse JSON response:', err);
       }
@@ -60,7 +62,7 @@ async function forward(request: NextRequest, params: Promise<{ chainId: string }
     if (response.ok) {
       return jsonOk(payload);
     } else {
-      // Map common status codes to ApiCode if possible, otherwise use INTERNAL_SERVER_ERROR
+      // Info: (20260130 - Julian) Map common status codes to ApiCode if possible, otherwise use INTERNAL_SERVER_ERROR
       let code = ApiCode.INTERNAL_SERVER_ERROR;
       if (response.status === 400) code = ApiCode.VALIDATION_ERROR;
       if (response.status === 401) code = ApiCode.UNAUTHORIZED;

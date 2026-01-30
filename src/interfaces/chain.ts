@@ -2,7 +2,7 @@ export interface IChainStat {
   label: string;
   value: string;
   change?: string;
-  subValue?: string; // For incremental values like +502,245
+  subValue?: string; // Info: (20260130 - Julian) For incremental values like +502,245
   isNegative?: boolean;
 }
 
@@ -13,16 +13,16 @@ export interface IDetailedStats {
   overview: IChainStat[];
 }
 
-// ... existing interfaces
+// Info: (20260130 - Julian) ... existing interfaces
 export interface IBlock {
   height: string;
-  time: string; // Elapsed time (e.g. 12s ago)
-  timestamp: string; // Full date/time
+  time: string; // Info: (20260130 - Julian) Elapsed time (e.g. 12s ago)
+  timestamp: string; // Info: (20260130 - Julian) Full date/time
   proposer: string;
   proposerLabel?: string;
   txns: number;
   reward: string;
-  gas: string; // Gas price or similar summary
+  gas: string; // Info: (20260130 - Julian) Gas price or similar summary
   size: string;
   gasUsed: string;
   gasUsedPercent: number;
@@ -34,8 +34,8 @@ export interface ITransaction {
   hash: string;
   method?: string;
   blockNumber: string;
-  time: string; // Elapsed time
-  timestamp: string; // Full date/time
+  time: string; // Info: (20260130 - Julian) Elapsed time
+  timestamp: string; // Info: (20260130 - Julian) Full date/time
   from: string;
   fromLabel?: string;
   to: string;
@@ -49,7 +49,7 @@ export interface ITransaction {
 export interface IChain {
   id: string;
   name: string;
-  icon: string; // Changed from LucideIcon to string for serialization
+  icon: string; // Info: (20260130 - Julian) Changed from LucideIcon to string for serialization
   color: string;
   bgColor: string;
   description: string;

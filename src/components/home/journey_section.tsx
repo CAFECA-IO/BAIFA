@@ -6,9 +6,9 @@ export default function JourneySection() {
       <div className="mx-auto max-w-7xl">
         <h2 className="mb-12 text-center text-3xl font-bold sm:text-5xl">區塊鏈之旅，從這裡開始</h2>
 
-        {/* Grid with 1px gap to create borders, no rounded corners */}
+        {/* Info: (20260130 - Julian) Grid with 1px gap to create borders, no rounded corners */}
         <div className="grid grid-cols-1 grid-rows-4 gap-[1px] border border-gray-200 bg-gray-200 md:grid-cols-2 md:grid-rows-2">
-          {/* Card 1: CEX Asset Dashboard */}
+          {/* Info: (20260130 - Julian) Card 1: CEX Asset Dashboard */}
           <div className="flex flex-col justify-between bg-white p-12 transition hover:bg-gray-50">
             <div>
               <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
@@ -24,7 +24,7 @@ export default function JourneySection() {
             </button>
           </div>
 
-          {/* Card 2: Gas Tracker */}
+          {/* Info: (20260130 - Julian) Card 2: Gas Tracker */}
           <div className="flex flex-col justify-between bg-white p-12 transition hover:bg-gray-50">
             <div>
               <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-lg bg-orange-50 text-orange-600">
@@ -42,7 +42,7 @@ export default function JourneySection() {
             </button>
           </div>
 
-          {/* Card 3: User Feedback */}
+          {/* Info: (20260130 - Julian) Card 3: User Feedback */}
           <div className="flex flex-col justify-between bg-white p-12 transition hover:bg-gray-50">
             <div>
               <h3 className="mb-3 text-2xl font-bold">用戶體驗反饋</h3>
@@ -53,7 +53,7 @@ export default function JourneySection() {
             </button>
           </div>
 
-          {/* Card 4: Bytecode Decompiler */}
+          {/* Info: (20260130 - Julian) Card 4: Bytecode Decompiler */}
           <div className="flex flex-col justify-between bg-white p-12 transition hover:bg-gray-50">
             <div>
               <h3 className="mb-3 text-2xl font-bold">字節碼反編譯</h3>

@@ -2,7 +2,7 @@ import { request } from '@/lib/utils/request';
 import { IApiResponse } from '@/lib/utils/response';
 
 /**
- * Generic API fetcher that handles the standard IApiResponse wrapper.
+ * Info: (20260130 - Julian) Generic API fetcher that handles the standard IApiResponse wrapper.
  * @param url The API endpoint URL
  * @param options Request options (query, headers, etc.)
  * @returns The payload from the API response

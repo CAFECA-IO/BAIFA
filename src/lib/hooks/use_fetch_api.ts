@@ -11,7 +11,7 @@ interface IUseFetchApiOptions {
 }
 
 /**
- * A custom hook to fetch data from an API endpoint.
+ * Info: (20260130 - Julian) A custom hook to fetch data from an API endpoint.
  * @param url The API endpoint URL. If null, the fetch will not execute.
  * @param errorMessage Custom error message to show on failure.
  * @returns An object containing the data, loading state, and error message.

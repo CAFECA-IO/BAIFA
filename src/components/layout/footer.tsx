@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="w-full bg-black px-6 py-16 text-white">
       <div className="mx-auto max-w-7xl">
-        {/* Brand */}
+        {/* Info: (20260130 - Julian) Brand */}
         <div className="mb-20">
           <Link href="/" className="mb-4 block text-2xl font-bold tracking-wider uppercase">
             BAIFA
@@ -13,7 +13,7 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Floating Chat Button (Moved from ChainList to be global if needed, but per design it was in ChainList. 
+      {/* Info: (20260130 - Julian) Floating Chat Button (Moved from ChainList to be global if needed, but per design it was in ChainList. 
           The screenshot for Footer shows a purple chat button at bottom right. 
           I will add it here fixed or keep it in previous component. 
           Let's add a fixed global one here as per screenshot showing it at bottom right of screen.

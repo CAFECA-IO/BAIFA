@@ -19,12 +19,12 @@ const BlockItem = ({ block }: { block: IBlock }) => {
       key={block.height}
       className="animate-block-in flex items-center gap-4 border-b border-gray-50 pb-4 last:border-0 last:pb-0"
     >
-      {/* Icon */}
+      {/* Info: (20260130 - Julian) Icon */}
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-500">
         Bk
       </div>
 
-      {/* Content */}
+      {/* Info: (20260130 - Julian) Content */}
       <div className="min-w-0 flex-1">
         <div className="mb-1 flex flex-wrap items-center gap-2 text-sm">
           <Link href="/" className="font-bold text-[#5841D8] hover:underline">
@@ -46,7 +46,7 @@ const BlockItem = ({ block }: { block: IBlock }) => {
         </div>
       </div>
 
-      {/* Gas */}
+      {/* Info: (20260130 - Julian) Gas */}
       <div className="flex shrink-0 items-center gap-1 rounded border border-orange-100 bg-orange-50 px-2 py-1 text-xs font-medium text-orange-500">
         ⛽ {block.gas}
       </div>

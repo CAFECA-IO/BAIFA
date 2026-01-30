@@ -41,12 +41,12 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
 
   return (
     <div className="animate-block-in flex items-center gap-4 border-b border-gray-50 pb-4 last:border-0 last:pb-0">
-      {/* Icon */}
+      {/* Info: (20260130 - Julian) Icon */}
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-500">
         Tx
       </div>
 
-      {/* Content */}
+      {/* Info: (20260130 - Julian) Content */}
       <div className="min-w-0 flex-1">
         <div className="mb-1 grid grid-cols-6 gap-2 text-sm">
           <Link
@@ -66,7 +66,7 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
         </div>
       </div>
 
-      {/* Value */}
+      {/* Info: (20260130 - Julian) Value */}
       <div className="shrink-0 text-right">
         <div className="text-sm font-bold text-gray-900">{txn.value}</div>
       </div>

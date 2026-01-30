@@ -3,8 +3,10 @@ import { formatEther, formatGwei } from 'viem';
 function ensureHexPrefix(hex: string): string {
   if (typeof hex !== 'string') return hex;
   if (hex.startsWith('0x')) return hex;
-  // If it contains hex characters or we specifically expect hex, add 0x
-  // For safety in these formatters, we assume if it's not starting with 0x, it might be a hex string from toString(16)
+  /**
+   * Info: (20260130 - Julian) If it contains hex characters or we specifically expect hex, add 0x
+   * For safety in these formatters, we assume if it's not starting with 0x, it might be a hex string from toString(16)
+   */
   return `0x${hex}`;
 }
 

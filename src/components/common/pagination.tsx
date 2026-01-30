@@ -43,7 +43,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, type }: IPagination
     onPageChange(totalPages);
   };
 
-  // 限制輸入範圍
+  // Info: (20260130 - Julian) 限制輸入範圍
   const disabledGo = inputPage < 1 || inputPage > totalPages;
   const handleInputPageChange = () => {
     if (inputPage >= 1 && inputPage <= totalPages) {

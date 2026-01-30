@@ -8,7 +8,7 @@ export default function AllChainPage() {
   return (
     <div className="min-h-screen bg-black p-6 text-white">
       <div className="mx-auto max-w-7xl">
-        {/* Header */}
+        {/* Info: (20260130 - Julian) Header */}
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <h1 className="flex items-center gap-2 text-2xl font-bold">
             42條鏈數據，一站式覆蓋
@@ -27,7 +27,7 @@ export default function AllChainPage() {
           </div>
         </div>
 
-        {/* List */}
+        {/* Info: (20260130 - Julian) List */}
         <div className="space-y-4">
           {MOCK_CHAINS.map((chain) => {
             const Icon = ICON_MAP[chain.icon] || Hexagon;
@@ -37,7 +37,7 @@ export default function AllChainPage() {
                 href={`/chain/${chain.id}`}
                 className="flex flex-col rounded-xl border border-gray-800 bg-[#111] p-6 transition hover:cursor-pointer hover:bg-slate-800"
               >
-                {/* Chain Header */}
+                {/* Info: (20260130 - Julian) Chain Header */}
                 <div className="mb-6 flex items-center gap-3">
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-full ${chain.bgColor}`}
@@ -49,7 +49,7 @@ export default function AllChainPage() {
                   </div>
                 </div>
 
-                {/* Stats Grid */}
+                {/* Info: (20260130 - Julian) Stats Grid */}
                 <div className="grid grid-cols-2 gap-x-4 gap-y-6 md:grid-cols-3 lg:grid-cols-6">
                   {chain.stats.map((stat, index) => (
                     <div key={index} className="flex flex-col">

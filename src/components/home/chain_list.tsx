@@ -80,7 +80,7 @@ export default function ChainList() {
           );
         })}
 
-        {/* Dashboard Card */}
+        {/* Info: (20260130 - Julian) Dashboard Card */}
         <div className="flex flex-col items-center justify-center rounded-xl border border-gray-800 bg-[#111] p-6 text-center">
           <div className="mb-6 flex gap-2 opacity-50">
             <Layers size={20} className="text-gray-400" />
