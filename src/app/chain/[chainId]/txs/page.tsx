@@ -13,7 +13,7 @@ export default function TransactionListPage() {
   const params = useParams();
   const chainId = params?.chainId as string;
 
-  // Fetch chain info for header
+  // Info: (20260130 - Julian) Fetch chain info for header
   const { data: chain } = useFetchApi<IChain>({
     url: chainId ? `/api/v1/chains/${chainId}` : null,
     method: API_METHOD.POST,
@@ -23,7 +23,7 @@ export default function TransactionListPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       <div className="mx-auto max-w-7xl py-20 pt-6 text-black">
-        {/* Header Info */}
+        {/* Info: (20260130 - Julian) Header Info */}
         <div className="flex items-start gap-4">
           <Link
             href={`/chain/${chainId}`}
@@ -33,8 +33,8 @@ export default function TransactionListPage() {
           </Link>
           <ChainHeader
             chain={chain ?? undefined}
-            //  showDetails={showDetails}
-            //  onToggleDetails={() => setShowDetails(!showDetails)}
+            // showDetails={showDetails}
+            // onToggleDetails={() => setShowDetails(!showDetails)}
             // latestGasPrice={latestGasPrice}
           />
         </div>

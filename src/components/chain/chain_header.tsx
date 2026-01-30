@@ -46,7 +46,7 @@ export default function ChainHeader({
   // } = useOuterClick<HTMLDivElement>(false);
 
   const displayName = chain ? chain.name : 'iSunCoin';
-  // Resolve Icon
+  // Info: (20260130 - Julian) Resolve Icon
   const color = chain ? chain.color : 'text-gray-800';
   const bgColor = chain ? chain.bgColor : 'bg-gray-100';
   const iconName = chain ? chain.icon : 'iSunCoin';
@@ -69,7 +69,7 @@ export default function ChainHeader({
 
   return (
     <div>
-      {/* Top Header Row */}
+      {/* Info: (20260130 - Julian) Top Header Row */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           {displayLogo}
@@ -118,20 +118,20 @@ export default function ChainHeader({
         </div> */}
       </div>
 
-      {/* Description */}
+      {/* Info: (20260130 - Julian) Description */}
       <p className="mb-4 text-sm leading-relaxed text-gray-600">
         {displayDescription}
         {shouldTruncate && (
-          <span
+          <button
             className="ml-1 cursor-pointer font-bold text-black hover:underline"
             onClick={toggleDescription}
           >
             {isDescriptionExpanded ? '收起全部' : '展開全部'}
-          </span>
+          </button>
         )}
       </p>
 
-      {/* Expand/Collapse Button */}
+      {/* Info: (20260130 - Julian) Expand/Collapse Button */}
       <div className="flex items-center justify-between">
         {showDetails && onToggleDetails && (
           <Toggle
@@ -141,6 +141,6 @@ export default function ChainHeader({
           />
         )}
       </div>
-    </div>
+    </div >
   );
 }

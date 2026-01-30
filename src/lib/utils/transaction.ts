@@ -28,7 +28,7 @@ const DESCRIPTION_SIGNATURES: { [key: string]: string } = {
 export const getMethodDescription = (input: string) => {
   if (!input || input === '0x' || input === '0x0') return 'ETH Transfer';
 
-  // Ensure prefix
+  // Info: (20260130 - Julian) Ensure prefix
   const cleanInput = input.startsWith('0x') ? input : `0x${input}`;
   const methodId = cleanInput.slice(0, 10).toLowerCase();
 
@@ -42,12 +42,12 @@ export const getTransactionDescription = (tx: IJsonRpcTransaction) => {
   if (!tx.to) return 'Contract Creation (部署合約)';
 
   if (input === '0x' || input === '0x0') {
-    // tx.value is hex string
+    // Info: (20260130 - Julian) tx.value is hex string
     const ethValue = parseFloat(formatHexToEther(tx.value ?? '0x0')).toFixed(4);
     return `ETH Transfer (發送 ${ethValue} ETH)`;
   }
 
-  // Try description map, then method map
+  // Info: (20260130 - Julian) Try description map, then method map
   return (
     DESCRIPTION_SIGNATURES[methodId] ||
     METHOD_SIGNATURES[methodId] ||

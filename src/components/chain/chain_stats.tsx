@@ -19,7 +19,7 @@ export default function ChainStats({
 }: Props) {
   if (!stats) return null;
 
-  // Helper to get value with dynamic override
+  // Info: (20260130 - Julian) Helper to get value with dynamic override
   const getDisplayValue = (stat: IChainStat) => {
     const label = stat.label.toLowerCase();
     if (label.includes('最佳手續費') || label.includes('gas 均價')) {
@@ -33,10 +33,10 @@ export default function ChainStats({
 
   return (
     <div className="mb-8 overflow-x-auto rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-      {/* Detailed Stats Grid - Only visible when toggled ON */}
+      {/* Info: (20260130 - Julian) Detailed Stats Grid - Only visible when toggled ON */}
       {showDetails && details && (
         <div className="mb-8 grid grid-cols-1 gap-8 border-b border-gray-100 pb-8 lg:grid-cols-4">
-          {/* Transactions */}
+          {/* Info: (20260130 - Julian) Transactions */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-gray-900">交易概覽</h3>
             <div className="space-y-4">
@@ -49,7 +49,7 @@ export default function ChainStats({
             </div>
           </div>
 
-          {/* Addresses */}
+          {/* Info: (20260130 - Julian) Addresses */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-gray-900">地址概覽</h3>
             <div className="space-y-4">
@@ -65,7 +65,7 @@ export default function ChainStats({
             </div>
           </div>
 
-          {/* Tokens */}
+          {/* Info: (20260130 - Julian) Tokens */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-gray-900">代幣概覽</h3>
             <div className="space-y-4">
@@ -81,7 +81,7 @@ export default function ChainStats({
             </div>
           </div>
 
-          {/* Overview */}
+          {/* Info: (20260130 - Julian) Overview */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-gray-900">概覽</h3>
             <div className="space-y-4">
@@ -96,7 +96,7 @@ export default function ChainStats({
         </div>
       )}
 
-      {/* Basic Stats Bar */}
+      {/* Info: (20260130 - Julian) Basic Stats Bar */}
       <div className="flex w-full flex-col md:flex-row">
         {stats.map((stat, index) => (
           <div
@@ -115,7 +115,7 @@ export default function ChainStats({
                   >
                     {stat.change}
                   </span>
-                  {/* Mock Sparkline */}
+                  {/* Info: (20260130 - Julian) Mock Sparkline */}
                   <svg
                     width="60"
                     height="20"

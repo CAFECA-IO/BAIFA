@@ -19,7 +19,7 @@ import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 interface IBlockDetailsPageProps {
   params: Promise<{
     chainId: string;
-    blockId: string; // height or hash
+    blockId: string; // Info: (20260130 - Julian) height or hash
   }>;
 }
 
@@ -54,10 +54,10 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
 
   const { getBlockByNumber, getLatestBlockNumber, isLoading, error: rpcError } = useEthRpc(chainId);
 
-  // 父區塊高度 => 當前區塊高度 - 1
+  // Info: (20260130 - Julian) 父區塊高度 => 當前區塊高度 - 1
   const parentBlockNumber = block ? (BigInt(block.number) - 1n).toString() : null;
 
-  // 路徑
+  // Info: (20260130 - Julian) 路徑
   const parentBlockPath = parentBlockNumber ? `/chain/${chainId}/blocks/${parentBlockNumber}` : '#';
   const blockTxPath = block ? `/chain/${chainId}/blocks/${blockId}/tx` : '#';
   const minerPath = block ? `/chain/${chainId}/address/${block.miner}` : '#';
@@ -65,11 +65,11 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 取得區塊資訊
+        // Info: (20260130 - Julian) 取得區塊資訊
         const blockData = await getBlockByNumber(blockId);
         setBlock(blockData);
 
-        // 取得最新區塊資訊
+        // Info: (20260130 - Julian) 取得最新區塊資訊
         const latestBlockData = await getLatestBlockNumber();
         setLatestBlockNumber(latestBlockData);
       } catch (err: unknown) {
@@ -87,7 +87,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
     </button>
   );
 
-  // RPC 錯誤
+  // Info: (20260130 - Julian) RPC 錯誤
   if (rpcError) {
     return (
       <div className="container mx-auto px-4 py-10 text-center">
@@ -97,7 +97,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
     );
   }
 
-  // 載入中
+  // Info: (20260130 - Julian) 載入中
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -106,7 +106,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
     );
   }
 
-  // 錯誤或查無區塊
+  // Info: (20260130 - Julian) 錯誤或查無區塊
   if (error || !block) {
     return (
       <div className="container mx-auto px-4 py-10 text-center">
@@ -122,7 +122,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
   const gasLimit = BigInt(block.gasLimit);
   const gasPercent = Number((gasUsed * 10000n) / gasLimit) / 100;
 
-  // Base Fee
+  // Info: (20260130 - Julian) Base Fee
   const baseFeeWei = block.baseFeePerGas ? BigInt(block.baseFeePerGas) : 0n;
   const burntFeeWei = baseFeeWei * gasUsed;
   const burntFeeEth = formatHexToEther(`0x${burntFeeWei.toString(16)}`);
@@ -137,7 +137,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
           activeTab={BlockDetailTabType.OVERVIEW}
         />
 
-        {/* Overview Tab Content */}
+        {/* Info: (20260130 - Julian) Overview Tab Content */}
         <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-md">
           <div className="divide-y divide-gray-100">
             <div>
@@ -169,7 +169,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
                   <Link href={blockTxPath} className="font-bold text-[#5841D8] hover:underline">
                     {Array.isArray(block.transactions) ? block.transactions.length : 0} 筆交易
                   </Link>
-                  {/* Internal txs, etc. would normally require more specific API calls, here as placeholders or mock if not available */}
+                  {/* Info: (20260130 - Julian) Internal txs, etc. would normally require more specific API calls, here as placeholders or mock if not available */}
                   <span className="text-gray-400">
                     及 0 筆內部交易 及 0 筆代幣轉帳 及 0 筆 NFT 轉帳
                   </span>
@@ -273,7 +273,7 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
               </DetailItem>
             </div>
 
-            {/* ... more blob fields if needed, but keeping it simple as per most blocks */}
+            {/* Info: (20260130 - Julian) ... more blob fields if needed, but keeping it simple as per most blocks */}
 
             <div>
               <DetailItem label="父區塊哈希">

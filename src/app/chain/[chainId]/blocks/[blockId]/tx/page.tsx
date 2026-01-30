@@ -97,7 +97,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
   const [block, setBlock] = useState<IJsonRpcBlock | null>(null);
   const [transactions, setTransactions] = useState<IJsonRpcTransaction[]>([]);
 
-  // Filtering & Pagination
+  // Info: (20260130 - Julian) Filtering & Pagination
   const [filteredTransactions, setFilteredTransactions] = useState<IJsonRpcTransaction[]>([]);
   const [hideZeroValue, setHideZeroValue] = useState<boolean>(false);
 
@@ -113,23 +113,23 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. 參數預處理：判斷是 Hash 還是 Number
+        // Info: (20260130 - Julian) 1. 參數預處理：判斷是 Hash 還是 Number
         const isHash = blockId.startsWith('0x') && blockId.length === 66;
 
         let result: IJsonRpcBlock | null = null;
 
         if (isHash) {
-          // 直接調用 Hook 方法
+          // Info: (20260130 - Julian) 直接調用 Hook 方法
           result = await getBlockByHash(blockId, true);
         } else {
-          // 確保轉換為 Hex 格式
+          // Info: (20260130 - Julian) 確保轉換為 Hex 格式
           const blockParam = blockId.startsWith('0x')
             ? blockId
             : `0x${BigInt(blockId).toString(16)}`;
           result = await getBlockByNumber(blockParam, true);
         }
 
-        // 2. 處理結果
+        // Info: (20260130 - Julian) 2. 處理結果
         if (result) {
           setBlock(result);
           setTransactions((result.transactions as IJsonRpcTransaction[]) || []);
@@ -150,7 +150,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
     </button>
   );
 
-  // RPC 錯誤
+  // Info: (20260130 - Julian) RPC 錯誤
   if (rpcError) {
     return (
       <div className="container mx-auto px-4 py-10 text-center">
@@ -160,7 +160,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
     );
   }
 
-  // 載入中
+  // Info: (20260130 - Julian) 載入中
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -169,7 +169,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
     );
   }
 
-  // 錯誤或找不到區塊
+  // Info: (20260130 - Julian) 錯誤或找不到區塊
   if (error || !block) {
     return (
       <div className="container mx-auto px-4 py-10 text-center">
@@ -192,11 +192,11 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
           activeTab={BlockDetailTabType.TRANSACTIONS}
         />
 
-        {/* Transaction Table */}
+        {/* Info: (20260130 - Julian) Transaction Table */}
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
           <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50/50 p-4">
             <p className="text-sm font-medium text-gray-600">共計 {totalCount} 條數據</p>
-            {/* Toggle */}
+            {/* Info: (20260130 - Julian) Toggle */}
             <Toggle
               isOpen={hideZeroValue}
               onToggle={toggleHideZeroValue}
@@ -214,7 +214,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
                   <th className="px-6 py-4">交易哈希</th>
                   <th className="px-6 py-4">方法</th>
                   <th className="px-6 py-4">發送方</th>
-                  <th className="w-8 px-6 py-4 text-center"></th>
+                  <th className="w-8 px-6 py-4 text-center" aria-label="Transaction Direction"></th>
                   <th className="px-6 py-4">接收方</th>
                   <th className="px-6 py-4">數量</th>
                   <th className="px-6 py-4 text-right">手續費</th>

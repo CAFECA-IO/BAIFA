@@ -31,7 +31,7 @@ export function useAddressData(chainId: string | null, address: string | null) {
       try {
         const url = `/api/v1/chains/${chainId}`;
 
-        // 1. Get ETH balance
+        // Info: (20260130 - Julian) 1. Get ETH balance
         const balanceRes = await fetchApi<IJsonRpcResponse<string>>(url, {
           method: 'POST',
           body: JSON.stringify({
@@ -45,9 +45,11 @@ export function useAddressData(chainId: string | null, address: string | null) {
         const ethBalance = formatHexToEther(balanceRes.result);
         setBalance(ethBalance);
 
-        // Mocking some stats derived from balance for now,
-        // as we don't have a full indexer API yet.
-        // In a real scenario, these would come from an indexer.
+        /**
+         * Info: (20260130 - Julian) Mocking some stats derived from balance for now,
+         * as we don't have a full indexer API yet.
+         * In a real scenario, these would come from an indexer.
+         */
         setStats({
           ethBalance: `${parseFloat(ethBalance).toFixed(4)} ETH`,
           totalAssets: `$${(parseFloat(ethBalance) * 2000).toLocaleString()}`, // Mocked rate

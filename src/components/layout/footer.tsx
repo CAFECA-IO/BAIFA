@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="w-full bg-black px-6 py-8 text-white">
       <div className="mx-auto max-w-7xl">
-        {/* Brand */}
+        {/* Info: (20260130 - Julian) Brand */}
         <div className="mb-20">
           <Link href="/" className="mb-4 block text-2xl font-bold tracking-wider uppercase">
             BAIFA

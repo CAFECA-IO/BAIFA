@@ -11,7 +11,7 @@
     "check-format": "prettier --ignore-path .gitignore --list-different \"**/*.+(js|jsx|ts|tsx|json)\"",
     "validate": "prettier --ignore-path .gitignore --write \"**/*.+(js|jsx|ts|tsx|json|css)\" && eslint --fix . && npm run test",
     "update-version": "npx tsx scripts/update_version.ts && git add package.json",
-    "swarm": "next start -p 10010",
+    "swarm": "next start -p 10003",
     "prepare": "husky",
     "test": "jest --coverage"
   },

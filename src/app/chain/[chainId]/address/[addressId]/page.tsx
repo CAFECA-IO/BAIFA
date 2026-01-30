@@ -43,7 +43,7 @@ export default function AddressDetailPage() {
 
   const loading = chainLoading || addressLoading;
 
-  // Filter and process transactions for this address
+  // Info: (20260130 - Julian) Filter and process transactions for this address
   const transactions = allTransactions
     .filter(
       (tx) =>
@@ -54,7 +54,7 @@ export default function AddressDetailPage() {
 
   const isHack = false;
 
-  // Use real stats if available
+  // Info: (20260130 - Julian) Use real stats if available
   const stats = realStats || {
     totalAssets: '-',
     assetsChange: '-',
@@ -79,7 +79,7 @@ export default function AddressDetailPage() {
 
   const isShowHackBanner = isHack && (
     <>
-      {/* Warning Banner */}
+      {/* Info: (20260130 - Julian) Warning Banner */}
       <div className="flex w-full items-center gap-3 rounded-xl border border-orange-100 bg-orange-50/50 p-4 text-sm text-gray-800">
         <AlertTriangle className="shrink-0 text-orange-500" size={18} />
         <p>
@@ -92,7 +92,7 @@ export default function AddressDetailPage() {
         </p>
       </div>
 
-      {/* Tags */}
+      {/* Info: (20260130 - Julian) Tags */}
       <div className="flex items-center gap-2">
         <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-500">
           # Hack
@@ -139,7 +139,7 @@ export default function AddressDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-7xl py-20 pt-6 text-black">
-        {/* Header Info */}
+        {/* Info: (20260130 - Julian) Header Info */}
         <div className="flex items-start gap-4">
           <Link
             href={`/chain/${chainId}`}
@@ -156,12 +156,12 @@ export default function AddressDetailPage() {
         </div>
 
         <div className="mx-auto max-w-7xl px-6 pt-8">
-          {/* Address Identity Section */}
+          {/* Info: (20260130 - Julian) Address Identity Section */}
           <div className="mb-6 flex flex-col items-start gap-4">
             <div className="flex w-full items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 overflow-hidden rounded-lg bg-gray-200">
-                  {/* Mock Identicon */}
+                  {/* Info: (20260130 - Julian) Mock Identicon */}
                   <div className="grid h-full grid-cols-2 gap-0.5 p-1">
                     <div className="bg-orange-400"></div>
                     <div className="bg-blue-400"></div>
@@ -180,9 +180,9 @@ export default function AddressDetailPage() {
             {isShowHackBanner}
           </div>
 
-          {/* Asset Overview Board */}
+          {/* Info: (20260130 - Julian) Asset Overview Board */}
           <div className="mb-8 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-            {/* Top Row */}
+            {/* Info: (20260130 - Julian) Top Row */}
             <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
               <div className="space-y-2">
                 <div className="text-xs font-medium text-gray-400">Ethereum 鏈總資產</div>
@@ -211,15 +211,14 @@ export default function AddressDetailPage() {
             </div>
           </div>
 
-          {/* Tabs */}
+          {/* Info: (20260130 - Julian) Tabs */}
           <div className="mb-6 flex border-b border-gray-200">
             {Object.values(AddressTab).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`relative px-6 py-4 text-sm font-bold transition-colors ${
-                  activeTab === tab ? 'text-[#5841D8]' : 'text-gray-500 hover:text-black'
-                }`}
+                className={`relative px-6 py-4 text-sm font-bold transition-colors ${activeTab === tab ? 'text-[#5841D8]' : 'text-gray-500 hover:text-black'
+                  }`}
               >
                 {tab}
                 {activeTab === tab && (
@@ -229,7 +228,7 @@ export default function AddressDetailPage() {
             ))}
           </div>
 
-          {/* Filters Bar */}
+          {/* Info: (20260130 - Julian) Filters Bar */}
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-400">
@@ -250,6 +249,7 @@ export default function AddressDetailPage() {
                   type="text"
                   placeholder="搜索方法"
                   className="rounded-lg border border-gray-200 bg-white py-2 pr-4 pl-10 text-sm focus:ring-2 focus:ring-[#5841D8]/20 focus:outline-none"
+                  aria-label="Filter by Method"
                 />
               </div>
             </div>
@@ -270,7 +270,7 @@ export default function AddressDetailPage() {
           {/* Summary Cards */}
           {isShowSummary}
 
-          {/* Transaction Table */}
+          {/* Info: (20260130 - Julian) Transaction Table */}
           <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
             <div className="flex items-center justify-between border-b border-gray-100 bg-white p-4 text-sm text-gray-500">
               <div>
@@ -305,7 +305,7 @@ export default function AddressDetailPage() {
                     <th className="px-6 py-4">區塊</th>
                     <th className="px-6 py-4 text-[#5841D8]">時間</th>
                     <th className="px-6 py-4">發送方</th>
-                    <th className="px-4 py-4"></th>
+                    <th className="px-4 py-4" aria-label="Transaction Direction"></th>
                     <th className="px-6 py-4">接收方</th>
                     <th className="px-6 py-4">數量</th>
                     <th className="px-6 py-4">手續費</th>
