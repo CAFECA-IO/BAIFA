@@ -17,7 +17,7 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
   const params = useParams();
   const chainId = params?.chainId as string;
 
-  const transactionPath = `/chain/${chainId}/transactions/${txn.hash}`;
+  const transactionPath = `/chain/${chainId}/txs/${txn.hash}`;
   const blockPath = `/chain/${chainId}/blocks/${txn.blockNumber}`;
   const fromPath = `/chain/${chainId}/address/${txn.fromLabel}`;
   const toPath = `/chain/${chainId}/address/${txn.toLabel}`;

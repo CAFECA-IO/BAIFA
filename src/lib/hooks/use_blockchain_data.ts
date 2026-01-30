@@ -155,8 +155,8 @@ export function useBlockchainData(chainId: string | null) {
                   timestamp: formatFullTimestamp(b.timestamp),
                   from: truncateAddress(t.from),
                   fromLabel: t.from,
-                  to: truncateAddress(t.to),
-                  toLabel: t.to,
+                  to: t.to ? truncateAddress(t.to) : '-',
+                  toLabel: t.to ?? 'Unknown',
                   value: `${parseFloat(formatHexToEther(t.value)).toFixed(2)} ETH`,
                   fee: `${parseFloat(fee).toFixed(2)} ETH`,
                 });

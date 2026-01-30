@@ -4,8 +4,8 @@ import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Clock, FileText, Cpu, Zap, Flame, LucideIcon, Loader2 } from 'lucide-react';
-import { IJsonRpcResponse, IJsonRpcBlock } from '@/interfaces/rpc';
-import { fetchApi } from '@/lib/services/api_service';
+import { /* IJsonRpcResponse, */ IJsonRpcBlock } from '@/interfaces/rpc';
+// import { fetchApi } from '@/lib/services/api_service';
 import {
   formatHexToDecimal,
   formatTimestamp,
@@ -15,6 +15,7 @@ import {
 } from '@/lib/utils/format';
 import CopyButton from '@/components/common/copy_button';
 import BlockDetailHeader, { BlockDetailTabType } from '@/components/block/block_detail_header';
+import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 
 interface IBlockDetailsPageProps {
   params: Promise<{
@@ -46,84 +47,91 @@ export default function BlockDetailsPage(props: IBlockDetailsPageProps) {
   const { chainId, blockId } = params;
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const [error, setError] = useState<string | null>(null);
   const [block, setBlock] = useState<IJsonRpcBlock | null>(null);
   const [latestBlockNumber, setLatestBlockNumber] = useState<string | null>(null);
-  const [parentBlockNumber, setParentBlockNumber] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  // parent block url
+  const {
+    getBlockByNumber,
+    getLatestBlockNumber,
+    isLoading,
+    //  error: rpcError
+  } = useEthRpc(chainId);
+
+  // 父區塊高度 => 當前區塊高度 - 1
+  const parentBlockNumber = block ? (BigInt(block.number) - 1n).toString() : null;
   const parentBlockUrl = parentBlockNumber ? `/chain/${chainId}/blocks/${parentBlockNumber}` : '#';
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
       try {
-        const url = `/api/v1/chains/${chainId}`;
+        // 取得區塊資訊
+        const blockData = await getBlockByNumber(blockId);
+        setBlock(blockData);
 
-        // 1. Fetch Latest Block Number (for confirmations)
-        const latestRes = await fetchApi<IJsonRpcResponse<string>>(url, {
-          method: 'POST',
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            method: 'eth_blockNumber',
-            params: [],
-            id: 1,
-          }),
-        });
-        if (latestRes.result) {
-          setLatestBlockNumber(latestRes.result);
-        }
-
-        // 2. Fetch Block
-        // If blockId starts with 0x and is 66 chars, it's a hash.
-        // Otherwise, it's a height. Note: some height might be 0x.
-        const isHash = blockId.startsWith('0x') && blockId.length === 66;
-        const method = isHash ? 'eth_getBlockByHash' : 'eth_getBlockByNumber';
-        let blockParam = blockId;
-        if (!isHash) {
-          // If it's a number string, convert to hex if it doesn't have 0x
-          if (!blockId.startsWith('0x')) {
-            blockParam = `0x${BigInt(blockId).toString(16)}`;
-          }
-        }
-
-        const blockRes = await fetchApi<IJsonRpcResponse<IJsonRpcBlock>>(url, {
-          method: 'POST',
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            method: method,
-            params: [blockParam, false], // false to not get full transactions
-            id: 2,
-          }),
-        });
-
-        if (blockRes.result) {
-          setBlock(blockRes.result);
-
-          // get parent block number
-          const parentRes = await fetchApi<IJsonRpcResponse<IJsonRpcBlock>>(url, {
-            method: 'POST',
-            body: JSON.stringify({
-              jsonrpc: '2.0',
-              method: 'eth_getBlockByHash',
-              params: [blockRes.result.parentHash, false],
-              id: 3,
-            }),
-          });
-          if (parentRes.result) {
-            setParentBlockNumber(parentRes.result.number);
-          }
-        } else {
-          setError('Block not found');
-        }
+        // 取得最新區塊資訊
+        const latestBlockData = await getLatestBlockNumber();
+        setLatestBlockNumber(latestBlockData);
       } catch (err: unknown) {
         console.error('Failed to fetch block details:', err);
-        setError('Failed to fetch block details');
-      } finally {
-        setIsLoading(false);
+        setError(err as string);
       }
+
+      // setIsLoading(true);
+      // setError(null);
+      // try {
+      //   const url = `/api/v1/chains/${chainId}`;
+
+      //   // 1. Fetch Latest Block Number (for confirmations)
+      //   const latestRes = await fetchApi<IJsonRpcResponse<string>>(url, {
+      //     method: 'POST',
+      //     body: JSON.stringify({
+      //       jsonrpc: '2.0',
+      //       method: 'eth_blockNumber',
+      //       params: [],
+      //       id: 1,
+      //     }),
+      //   });
+      //   if (latestRes.result) {
+      //     setLatestBlockNumber(latestRes.result);
+      //   }
+
+      //   // 2. Fetch Block
+      //   // If blockId starts with 0x and is 66 chars, it's a hash.
+      //   // Otherwise, it's a height. Note: some height might be 0x.
+      //   const isHash = blockId.startsWith('0x') && blockId.length === 66;
+      //   const method = isHash ? 'eth_getBlockByHash' : 'eth_getBlockByNumber';
+      //   let blockParam = blockId;
+      //   if (!isHash) {
+      //     // If it's a number string, convert to hex if it doesn't have 0x
+      //     if (!blockId.startsWith('0x')) {
+      //       blockParam = `0x${BigInt(blockId).toString(16)}`;
+      //     }
+      //   }
+
+      //   const blockRes = await fetchApi<IJsonRpcResponse<IJsonRpcBlock>>(url, {
+      //     method: 'POST',
+      //     body: JSON.stringify({
+      //       jsonrpc: '2.0',
+      //       method: method,
+      //       params: [blockParam, false], // false to not get full transactions
+      //       id: 2,
+      //     }),
+      //   });
+
+      //   if (blockRes.result) {
+      //     setBlock(blockRes.result);
+      //   } else {
+      //     setError('Block not found');
+      //   }
+      // } catch (err: unknown) {
+      //   console.error('Failed to fetch block details:', err);
+      //   setError('Failed to fetch block details');
+      // } finally {
+      //   setIsLoading(false);
+      // }
     };
 
     fetchData();

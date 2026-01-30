@@ -223,7 +223,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
                       <tr key={tx.hash} className="transition-colors hover:bg-gray-50/50">
                         <td className="px-6 py-4">
                           <Link
-                            href={`/chain/${chainId}/transactions/${tx.hash}`}
+                            href={`/chain/${chainId}/txs/${tx.hash}`}
                             className="font-mono text-[#5841D8] hover:underline"
                           >
                             {truncateAddress(tx.hash, 10, 8)}

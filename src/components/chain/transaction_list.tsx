@@ -15,6 +15,8 @@ interface ITransactionListProps {
 const TransactionItem = ({ txn }: { txn: ITransaction }) => {
   const params = useParams();
   const chainId = params?.chainId as string;
+
+  const transactionPath = `/chain/${chainId}/txs/${txn.hash}`;
   const fromPath = `/chain/${chainId}/address/${txn.fromLabel}`;
   const toPath = `/chain/${chainId}/address/${txn.toLabel}`;
 
@@ -50,7 +52,7 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
       <div className="min-w-0 flex-1">
         <div className="mb-1 grid grid-cols-6 gap-2 text-sm">
           <Link
-            href="/"
+            href={transactionPath}
             className="col-span-2 truncate font-bold text-[#5841D8] hover:underline"
             title={txn.hash}
           >
@@ -76,7 +78,7 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
 
 export default function TransactionList({ transactions, loading }: ITransactionListProps) {
   const pathName = usePathname();
-  const transactionListPath = `${pathName}/transactions`;
+  const transactionListPath = `${pathName}/txs`;
 
   return (
     <div className="flex flex-col items-stretch rounded-xl border border-gray-200 bg-white p-6 shadow-sm">

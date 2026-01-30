@@ -317,7 +317,10 @@ export default function AddressDetailPage() {
                     return (
                       <tr key={txn.hash} className="transition-colors hover:bg-gray-50/50">
                         <td className="px-6 py-5">
-                          <Link href={`/tx/${txn.hash}`} className="font-mono text-[#5841D8]">
+                          <Link
+                            href={`/chain/${chainId}/txs/${txn.hash}`}
+                            className="font-mono text-[#5841D8]"
+                          >
                             {truncateAddress(txn.hash, 10, 8)}
                           </Link>
                         </td>

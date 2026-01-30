@@ -14,10 +14,13 @@ import CopyButton from '@/components/common/copy_button';
 
 const BlockItem = ({ block }: { block: IBlock }) => {
   const pathname = usePathname();
-  const isAlertBlock = false; // mock
+  const params = useParams();
 
+  const chainId = params?.chainId as string;
   const blockPath = `${pathname}/${block.height}`;
-  const addressPath = `${pathname}/${block.proposer}`;
+  const addressPath = `/chain/${chainId}/address/${block.proposer}`;
+
+  const isAlertBlock = false; // mock
 
   const isShowAlertIcon = isAlertBlock && <AlertCircle size={14} className="text-orange-400" />;
 
