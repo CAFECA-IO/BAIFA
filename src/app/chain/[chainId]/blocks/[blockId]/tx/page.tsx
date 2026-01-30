@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
+import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Search, ArrowRight, Loader2 } from 'lucide-react';
@@ -12,6 +13,7 @@ import CopyButton from '@/components/common/copy_button';
 import Pagination, { PaginationType } from '@/components/common/pagination';
 import BlockDetailHeader, { BlockDetailTabType } from '@/components/block/block_detail_header';
 import Toggle from '@/components/common/toggle';
+// import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 
 interface IBlockTransactionsPageProps {
   params: Promise<{
@@ -19,6 +21,74 @@ interface IBlockTransactionsPageProps {
     blockId: string;
   }>;
 }
+
+const TransactionItem = ({ tx }: { tx: IJsonRpcTransaction }) => {
+  const params = useParams();
+  const { chainId } = params;
+
+  const txDetailPath = `/chain/${chainId}/txs/${tx.hash}`;
+  const fromPath = `/chain/${chainId}/address/${tx.from}`;
+
+  const method = getMethodDescription(tx.input);
+  const fee = formatHexToEther(
+    (BigInt(tx.gas || '0x0') * BigInt(tx.gasPrice || '0x0')).toString(16)
+  );
+
+  const displayTo = tx.to ? (
+    <>
+      <Link
+        href={`/chain/${chainId}/address/${tx.to}`}
+        className="font-mono text-[#5841D8] hover:underline"
+      >
+        {truncateAddress(tx.to)}
+      </Link>
+      <CopyButton value={tx.to} />
+    </>
+  ) : (
+    <span className="text-gray-400">合約創建</span>
+  );
+
+  return (
+    <tr key={tx.hash} className="transition-colors hover:bg-gray-50/50">
+      <td className="px-6 py-4">
+        <Link href={txDetailPath} className="font-mono text-[#5841D8] hover:underline">
+          {truncateAddress(tx.hash, 10, 8)}
+        </Link>
+      </td>
+      <td className="px-6 py-4">
+        <span className="rounded-md bg-gray-100 px-2 py-1 text-[11px] font-medium text-gray-600">
+          {method}
+        </span>
+      </td>
+      <td className="px-6 py-4">
+        <div className="flex items-center gap-1.5">
+          <Link href={fromPath} className="font-mono text-[#5841D8] hover:underline">
+            {truncateAddress(tx.from)}
+          </Link>
+          <CopyButton value={tx.from} />
+        </div>
+      </td>
+      <td className="px-1 py-4 text-center">
+        <div className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-green-50 text-green-500">
+          <ArrowRight size={12} />
+        </div>
+      </td>
+      <td className="px-6 py-4">
+        <div className="flex items-center gap-1.5">{displayTo}</div>
+      </td>
+      <td className="px-6 py-4 font-bold text-gray-900">
+        {parseFloat(formatHexToEther(tx.value)).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 18,
+        })}{' '}
+        ETH
+      </td>
+      <td className="px-6 py-4 text-right font-mono text-xs text-gray-500">
+        {parseFloat(fee).toFixed(8)} ETH
+      </td>
+    </tr>
+  );
+};
 
 export default function BlockTransactionsPage(props: IBlockTransactionsPageProps) {
   const params = use(props.params);
@@ -213,73 +283,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {paginatedTransactions.length > 0 ? (
-                  paginatedTransactions.map((tx) => {
-                    const method = getMethodDescription(tx.input);
-                    const fee = formatHexToEther(
-                      (BigInt(tx.gas || '0x0') * BigInt(tx.gasPrice || '0x0')).toString(16)
-                    );
-
-                    return (
-                      <tr key={tx.hash} className="transition-colors hover:bg-gray-50/50">
-                        <td className="px-6 py-4">
-                          <Link
-                            href={`/chain/${chainId}/txs/${tx.hash}`}
-                            className="font-mono text-[#5841D8] hover:underline"
-                          >
-                            {truncateAddress(tx.hash, 10, 8)}
-                          </Link>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="rounded-md bg-gray-100 px-2 py-1 text-[11px] font-medium text-gray-600">
-                            {method}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-1.5">
-                            <Link
-                              href={`/chain/${chainId}/address/${tx.from}`}
-                              className="font-mono text-[#5841D8] hover:underline"
-                            >
-                              {truncateAddress(tx.from)}
-                            </Link>
-                            <CopyButton value={tx.from} />
-                          </div>
-                        </td>
-                        <td className="px-1 py-4 text-center">
-                          <div className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-green-50 text-green-500">
-                            <ArrowRight size={12} />
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-1.5">
-                            {tx.to ? (
-                              <>
-                                <Link
-                                  href={`/chain/${chainId}/address/${tx.to}`}
-                                  className="font-mono text-[#5841D8] hover:underline"
-                                >
-                                  {truncateAddress(tx.to)}
-                                </Link>
-                                <CopyButton value={tx.to} />
-                              </>
-                            ) : (
-                              <span className="text-gray-400">合約創建</span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 font-bold text-gray-900">
-                          {parseFloat(formatHexToEther(tx.value)).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 18,
-                          })}{' '}
-                          ETH
-                        </td>
-                        <td className="px-6 py-4 text-right font-mono text-xs text-gray-500">
-                          {parseFloat(fee).toFixed(8)} ETH
-                        </td>
-                      </tr>
-                    );
-                  })
+                  paginatedTransactions.map((tx) => <TransactionItem key={tx.hash} tx={tx} />)
                 ) : (
                   <tr>
                     <td colSpan={7} className="px-6 py-10 text-center text-gray-500">
