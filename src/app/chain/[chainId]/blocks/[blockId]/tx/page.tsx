@@ -93,7 +93,6 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
   const { chainId, blockId } = params;
   const router = useRouter();
 
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [block, setBlock] = useState<IJsonRpcBlock | null>(null);
   const [transactions, setTransactions] = useState<IJsonRpcTransaction[]>([]);
