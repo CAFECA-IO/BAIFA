@@ -4,16 +4,14 @@ import { useState, useEffect, use } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Search, ArrowRight, Loader2 } from 'lucide-react';
-import { IJsonRpcResponse, IJsonRpcBlock, IJsonRpcTransaction } from '@/interfaces/rpc';
-import { fetchApi } from '@/lib/services/api_service';
+import { ArrowRight, Loader2 } from 'lucide-react';
+import { IJsonRpcBlock, IJsonRpcTransaction } from '@/interfaces/rpc';
 import { formatHexToEther, truncateAddress } from '@/lib/utils/format';
 import { getMethodDescription } from '@/lib/utils/transaction';
 import CopyButton from '@/components/common/copy_button';
-import Pagination, { PaginationType } from '@/components/common/pagination';
 import BlockDetailHeader, { BlockDetailTabType } from '@/components/block/block_detail_header';
 import Toggle from '@/components/common/toggle';
-// import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
+import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 
 interface IBlockTransactionsPageProps {
   params: Promise<{
@@ -95,58 +93,75 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
   const { chainId, blockId } = params;
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [block, setBlock] = useState<IJsonRpcBlock | null>(null);
   const [transactions, setTransactions] = useState<IJsonRpcTransaction[]>([]);
 
   // Filtering & Pagination
-  const [methodFilter, setMethodFilter] = useState<string>('');
-  const [addressFilter, setAddressFilter] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [filteredTransactions, setFilteredTransactions] = useState<IJsonRpcTransaction[]>([]);
   const [hideZeroValue, setHideZeroValue] = useState<boolean>(false);
-  const pageSize = 25;
+
+  const toggleHideZeroValue = () => {
+    setHideZeroValue((prev) => !prev);
+    setFilteredTransactions(
+      hideZeroValue ? transactions : transactions.filter((tx) => BigInt(tx.value) > 0n)
+    );
+  };
+
+  const { getBlockByNumber, getBlockByHash, isLoading, error: rpcError } = useEthRpc(chainId);
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
       try {
-        const url = `/api/v1/chains/${chainId}`;
+        // 1. 參數預處理：判斷是 Hash 還是 Number
         const isHash = blockId.startsWith('0x') && blockId.length === 66;
-        const method = isHash ? 'eth_getBlockByHash' : 'eth_getBlockByNumber';
-        let blockParam = blockId;
-        if (!isHash && !blockId.startsWith('0x')) {
-          blockParam = `0x${BigInt(blockId).toString(16)}`;
+
+        let result: IJsonRpcBlock | null = null;
+
+        if (isHash) {
+          // 直接調用 Hook 方法
+          result = await getBlockByHash(blockId, true);
+        } else {
+          // 確保轉換為 Hex 格式
+          const blockParam = blockId.startsWith('0x')
+            ? blockId
+            : `0x${BigInt(blockId).toString(16)}`;
+          result = await getBlockByNumber(blockParam, true);
         }
 
-        const blockRes = await fetchApi<IJsonRpcResponse<IJsonRpcBlock>>(url, {
-          method: 'POST',
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            method: method,
-            params: [blockParam, true], // true to get full transactions
-            id: 1,
-          }),
-        });
-
-        if (!blockRes.result) {
-          setError('Block not found');
-        } else {
-          setBlock(blockRes.result);
-          setTransactions((blockRes.result.transactions as IJsonRpcTransaction[]) || []);
+        // 2. 處理結果
+        if (result) {
+          setBlock(result);
+          setTransactions((result.transactions as IJsonRpcTransaction[]) || []);
+          setFilteredTransactions((result.transactions as IJsonRpcTransaction[]) || []);
         }
       } catch (err: unknown) {
         console.error('Failed to fetch block transactions:', err);
-        setError('Failed to fetch block transactions');
-      } finally {
-        setIsLoading(false);
+        setError(err as string);
       }
     };
 
     fetchData();
   }, [chainId, blockId]);
 
+  const backBtn = (
+    <button onClick={() => router.back()} className="mt-4 text-sm text-[#5841D8] hover:underline">
+      返回上一頁
+    </button>
+  );
+
+  // RPC 錯誤
+  if (rpcError) {
+    return (
+      <div className="container mx-auto px-4 py-10 text-center">
+        <p className="text-red-500">{rpcError}</p>
+        {backBtn}
+      </div>
+    );
+  }
+
+  // 載入中
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -155,47 +170,18 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
     );
   }
 
+  // 錯誤或找不到區塊
   if (error || !block) {
     return (
       <div className="container mx-auto px-4 py-10 text-center">
         <p className="text-red-500">{error || 'Block not found'}</p>
-        <button
-          onClick={() => router.back()}
-          className="mt-4 text-sm text-[#5841D8] hover:underline"
-        >
-          返回上一頁
-        </button>
+        {backBtn}
       </div>
     );
   }
 
   const blockNumber = BigInt(block.number);
-
-  // Filtering logic
-  const filteredTransactions = transactions.filter((tx) => {
-    if (hideZeroValue && BigInt(tx.value) === 0n) return false;
-
-    if (methodFilter) {
-      const method = getMethodDescription(tx.input).toLowerCase();
-      if (!method.includes(methodFilter.toLowerCase())) return false;
-    }
-
-    if (addressFilter) {
-      const addr = addressFilter.toLowerCase();
-      const fromMatch = tx.from?.toLowerCase().includes(addr);
-      const tomatch = tx.to?.toLowerCase().includes(addr);
-      if (!fromMatch && !tomatch) return false;
-    }
-
-    return true;
-  });
-
-  const totalCount = filteredTransactions.length;
-  const totalPages = Math.ceil(totalCount / pageSize);
-  const paginatedTransactions = filteredTransactions.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+  const totalCount = transactions.length;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -207,65 +193,19 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
           activeTab={BlockDetailTabType.TRANSACTIONS}
         />
 
-        {/* Filters */}
-        <div className="mb-6 flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 shadow-sm">
-            <span className="text-sm whitespace-nowrap text-gray-500">發送方/接收方</span>
-            <div className="mx-1 h-4 w-px bg-gray-200"></div>
-            <input
-              type="text"
-              placeholder="輸入地址搜索"
-              className="w-48 text-sm focus:outline-none"
-              value={addressFilter}
-              onChange={(e) => {
-                setAddressFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-            />
-          </div>
-
-          <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 shadow-sm">
-            <Search size={14} className="text-gray-400" />
-            <input
-              type="text"
-              placeholder="方法"
-              className="w-32 text-sm focus:outline-none"
-              value={methodFilter}
-              onChange={(e) => {
-                setMethodFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-            />
-          </div>
-
-          {/* ... Other filter placeholders ... */}
-          <div className="flex cursor-not-allowed items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 opacity-50 shadow-sm">
-            <span className="text-sm text-gray-500">數量</span>
-          </div>
-
-          <div className="flex cursor-not-allowed items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 opacity-50 shadow-sm">
-            <span className="text-sm text-gray-500">交易類型: 全部</span>
-          </div>
-
-          <div className="ml-auto">
+        {/* Transaction Table */}
+        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+          <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50/50 p-4">
+            <p className="text-sm font-medium text-gray-600">共計 {totalCount} 條數據</p>
+            {/* Toggle */}
             <Toggle
               isOpen={hideZeroValue}
-              onToggle={() => {
-                setHideZeroValue((prev) => !prev);
-                setCurrentPage(1);
-              }}
+              onToggle={toggleHideZeroValue}
               label={{
                 open: '展示數量為 0 的交易',
                 close: '展示數量為 0 的交易',
               }}
             />
-          </div>
-        </div>
-
-        {/* Transaction Table */}
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-          <div className="border-b border-gray-100 bg-gray-50/50 p-4 text-sm font-medium text-gray-600">
-            共計 {totalCount} 條數據
           </div>
 
           <div className="overflow-x-auto">
@@ -282,8 +222,8 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {paginatedTransactions.length > 0 ? (
-                  paginatedTransactions.map((tx) => <TransactionItem key={tx.hash} tx={tx} />)
+                {filteredTransactions.length > 0 ? (
+                  filteredTransactions.map((tx) => <TransactionItem key={tx.hash} tx={tx} />)
                 ) : (
                   <tr>
                     <td colSpan={7} className="px-6 py-10 text-center text-gray-500">
@@ -293,21 +233,6 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
                 )}
               </tbody>
             </table>
-          </div>
-
-          {/* Footer with Pagination */}
-          <div className="flex items-center justify-between border-t border-gray-100 p-4">
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              每頁顯示 {pageSize} 條内容
-            </div>
-            {totalPages > 1 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={(page) => setCurrentPage(page)}
-                type={PaginationType.TEXT}
-              />
-            )}
           </div>
         </div>
       </div>
