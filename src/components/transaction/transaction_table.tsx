@@ -239,7 +239,7 @@ const TransactionTable = () => {
                 <th className="px-6 py-4">區塊</th>
                 <th className="px-6 py-4 text-[#5841D8]">時間</th>
                 <th className="px-6 py-4">發送方</th>
-                <th className="px-4 py-4 text-center"></th>
+                <th className="px-4 py-4 text-center" aria-label="Transaction Direction"></th>
                 <th className="px-6 py-4">接收方</th>
                 <th className="px-6 py-4">數量</th>
                 <th className="px-6 py-4">手續費</th>

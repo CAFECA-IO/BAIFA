@@ -39,7 +39,7 @@ const BlockItem = ({ block }: { block: IBlock }) => {
       </td>
       <td className="px-6 py-5 text-gray-900">{block.txns}</td>
       <td className="px-6 py-5 text-gray-500">{block.size}</td>
-      <td className="px-6 py-5">
+      <td className="px-6 py-5" aria-label="Gas Usage">
         <div className="flex flex-col gap-1">
           <span className="font-medium text-gray-900">{block.gasUsed}</span>
           <div className="flex items-center gap-2">
@@ -161,6 +161,7 @@ const BlockTable = () => {
           totalPages={totalPages}
           onPageChange={(page) => setCurrentPage(page)}
           type={PaginationType.NUMBER_WITH_SLASH}
+          aria-label="Pagination Navigation"
         />
       </div>
 

@@ -544,15 +544,23 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
               <table className="w-full text-left text-sm">
                 <thead className="border-b border-gray-100 text-gray-500">
                   <tr>
-                    <th className="pb-4 font-medium">地址</th>
-                    <th className="pb-4 font-medium">交易前</th>
-                    <th className="pb-4 font-medium">交易後</th>
-                    <th className="pb-4 font-medium">狀態變化</th>
+                    <th className="pb-4 font-medium" aria-label="Address">
+                      地址
+                    </th>
+                    <th className="pb-4 font-medium" aria-label="Before Transaction">
+                      交易前
+                    </th>
+                    <th className="pb-4 font-medium" aria-label="After Transaction">
+                      交易後
+                    </th>
+                    <th className="pb-4 font-medium" aria-label="State Change">
+                      狀態變化
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {stateChanges.map((state) => (
-                    <tr key={state.address}>
+                    <tr key={state.address} aria-label={`State change for ${state.address}`}>
                       <td className="py-4 align-top">
                         <div className="flex items-center gap-2">
                           <Link
@@ -569,7 +577,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
                           )}
                         </div>
                       </td>
-                      <td className="py-4 align-top">
+                      <td className="py-4 align-top" aria-label="Before Transaction State">
                         <div className="flex flex-col">
                           <span className="font-medium text-gray-900">
                             {state.before.balance} ETH
@@ -577,7 +585,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
                           <span className="text-xs text-gray-500">Nonce: {state.before.nonce}</span>
                         </div>
                       </td>
-                      <td className="py-4 align-top">
+                      <td className="py-4 align-top" aria-label="After Transaction State">
                         <div className="flex flex-col">
                           <span className="font-medium text-gray-900">
                             {state.after.balance} ETH

@@ -147,6 +147,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
               placeholder="輸入地址搜索"
               className="w-48 text-sm focus:outline-none"
               value={addressFilter}
+              aria-label="Filter by Address"
               onChange={(e) => {
                 setAddressFilter(e.target.value);
                 setCurrentPage(1);
@@ -161,6 +162,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
               placeholder="方法"
               className="w-32 text-sm focus:outline-none"
               value={methodFilter}
+              aria-label="Filter by Method"
               onChange={(e) => {
                 setMethodFilter(e.target.value);
                 setCurrentPage(1);
@@ -205,7 +207,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
                   <th className="px-6 py-4">交易哈希</th>
                   <th className="px-6 py-4">方法</th>
                   <th className="px-6 py-4">發送方</th>
-                  <th className="w-8 px-6 py-4 text-center"></th>
+                  <th className="w-8 px-6 py-4 text-center" aria-label="Transaction Direction"></th>
                   <th className="px-6 py-4">接收方</th>
                   <th className="px-6 py-4">數量</th>
                   <th className="px-6 py-4 text-right">手續費</th>
@@ -245,7 +247,7 @@ export default function BlockTransactionsPage(props: IBlockTransactionsPageProps
                             <CopyButton value={tx.from} />
                           </div>
                         </td>
-                        <td className="px-1 py-4 text-center">
+                        <td className="px-1 py-4 text-center" aria-label="Transaction Arrow">
                           <div className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-green-50 text-green-500">
                             <ArrowRight size={12} />
                           </div>
