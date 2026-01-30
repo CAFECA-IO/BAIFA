@@ -5,9 +5,10 @@ import toast from 'react-hot-toast';
 
 interface ICopyButtonProps {
   value: string;
+  size?: number;
 }
 
-const CopyButton = ({ value }: ICopyButtonProps) => {
+const CopyButton = ({ value, size = 16 }: ICopyButtonProps) => {
   const copyHandler = () => {
     navigator.clipboard.writeText(value);
     toast.success('複製成功！');
@@ -15,7 +16,7 @@ const CopyButton = ({ value }: ICopyButtonProps) => {
 
   return (
     <button type="button" onClick={copyHandler} className="p-2 text-gray-300 hover:text-gray-500">
-      <Copy size={12} />
+      <Copy size={size} />
     </button>
   );
 };

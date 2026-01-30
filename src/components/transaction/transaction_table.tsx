@@ -27,10 +27,13 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
   const datePart = validTimestamp.split(' ')[0];
   const timePart = validTimestamp.split(' ')[1];
 
+  const truncatedFrom = txn.from.startsWith('0x') ? truncateAddress(txn.from) : txn.from;
+  const truncatedTo = txn.to.startsWith('0x') ? truncateAddress(txn.to) : txn.to;
+
   const displayFrom = !!txn.from ? (
     <div className="flex items-center gap-1.5">
       <Link href={fromPath} className="font-mono text-[#5841D8] hover:underline">
-        {truncateAddress(txn.from)}
+        {truncatedFrom}
       </Link>
       <CopyButton value={txn.from} />
     </div>
@@ -40,7 +43,7 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
   const displayTo = !!txn.to ? (
     <div className="flex items-center gap-1.5">
       <Link href={toPath} className="font-mono text-[#5841D8] hover:underline">
-        {truncateAddress(txn.to)}
+        {truncatedTo}
       </Link>
       <CopyButton value={txn.to} />
     </div>

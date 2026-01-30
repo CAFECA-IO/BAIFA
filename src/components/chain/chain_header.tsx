@@ -2,15 +2,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import {
-  Globe,
-  Twitter,
-  MessageCircle,
-  Github,
-  FileText,
-  // ChevronDown,
-  // ChevronUp,
-} from 'lucide-react';
 import { IChain } from '@/interfaces/chain';
 import { ICON_MAP } from '@/lib/maps';
 // import useOuterClick from '@/lib/hooks/use_outer_click';
@@ -140,41 +131,8 @@ export default function ChainHeader({
         )}
       </p>
 
-      {/* Action Buttons */}
+      {/* Expand/Collapse Button */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <button
-            className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-gray-400 hover:text-black"
-            aria-label="Documentation"
-          >
-            <FileText size={16} />
-          </button>
-          <button
-            className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-gray-400 hover:text-black"
-            aria-label="Twitter"
-          >
-            <Twitter size={16} />
-          </button>
-          <button
-            className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-gray-400 hover:text-black"
-            aria-label="Community"
-          >
-            <MessageCircle size={16} />
-          </button>
-          <button
-            className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-gray-400 hover:text-black"
-            aria-label="Website"
-          >
-            <Globe size={16} />
-          </button>
-          <button
-            className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-gray-400 hover:text-black"
-            aria-label="Github"
-          >
-            <Github size={16} />
-          </button>
-        </div>
-
         {showDetails && onToggleDetails && (
           <Toggle
             isOpen={showDetails}

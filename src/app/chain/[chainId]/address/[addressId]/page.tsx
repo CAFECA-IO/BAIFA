@@ -9,7 +9,6 @@ import {
   Search,
   ArrowRight,
   Info,
-  ExternalLink,
   ChevronLeft,
   ChevronRight,
   Loader2,
@@ -23,6 +22,10 @@ import ChainHeader from '@/components/chain/chain_header';
 import Toggle from '@/components/common/toggle';
 import CopyButton from '@/components/common/copy_button';
 
+enum AddressTab {
+  TRANSACTIONS = '交易',
+}
+
 export default function AddressDetailPage() {
   const params = useParams();
   const chainId = params?.chainId as string;
@@ -34,22 +37,24 @@ export default function AddressDetailPage() {
     loading: chainLoading,
   } = useBlockchainData(chainId);
   const { stats: realStats, loading: addressLoading } = useAddressData(chainId, addressId);
-  const [activeTab, setActiveTab] = useState('交易');
-  const [isOpenAssetOverview, setIsOpenAssetOverview] = useState(true);
-  const [isShowZeroTransaction, setIsShowZeroTransaction] = useState(false);
+  const [activeTab, setActiveTab] = useState<AddressTab>(AddressTab.TRANSACTIONS);
+  const [isOpenSummary, setIsOpenSummary] = useState<boolean>(true);
+  const [isShowZeroTransaction, setIsShowZeroTransaction] = useState<boolean>(false);
 
   const loading = chainLoading || addressLoading;
 
-  // Filter transactions for this address
-  const transactions = allTransactions.filter(
-    (tx) =>
-      tx.fromLabel?.toLowerCase() === addressId.toLowerCase() ||
-      tx.toLabel?.toLowerCase() === addressId.toLowerCase()
-  );
+  // Filter and process transactions for this address
+  const transactions = allTransactions
+    .filter(
+      (tx) =>
+        tx.fromLabel?.toLowerCase() === addressId.toLowerCase() ||
+        tx.toLabel?.toLowerCase() === addressId.toLowerCase()
+    )
+    .sort((a, b) => Number(b.blockNumber) - Number(a.blockNumber));
 
   const isHack = false;
 
-  // Use real stats if available, otherwise fallback to mock
+  // Use real stats if available
   const stats = realStats || {
     totalAssets: '-',
     assetsChange: '-',
@@ -96,35 +101,36 @@ export default function AddressDetailPage() {
     </>
   );
 
-  const isShowAssetOverview = isOpenAssetOverview && (
-    <div className="mb-8 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-        <div className="space-y-2">
-          <div className="text-xs font-medium text-gray-400">Ethereum 鏈總資產</div>
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-gray-900">{stats.totalAssets}</span>
-            <span className="text-sm font-bold text-green-500">{stats.assetsChange}</span>
-          </div>
+  const isShowSummary = isOpenSummary && (
+    <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+        <div className="mb-3 flex items-center gap-1 text-xs text-gray-400">
+          轉出交易數 <Info size={12} />
         </div>
-        <div className="space-y-2 border-l border-gray-100 pl-8">
-          <div className="text-xs font-medium text-gray-400">ETH 持倉</div>
-          <div className="flex flex-col">
-            <span className="text-base font-bold text-gray-900">{stats.ethBalance}</span>
-            <span className="text-xs text-gray-500">({stats.ethValue})</span>
-          </div>
+        <div className="flex items-baseline gap-2">
+          <span className="text-xl font-bold text-gray-900">{stats.outgoingTxns}</span>
+          <span className="text-xs font-medium text-gray-400">({stats.outgoingEth})</span>
         </div>
-        <div className="space-y-2 border-l border-gray-100 pl-8">
-          <div className="text-xs font-medium text-gray-400">USDT 持倉</div>
-          <div className="text-base font-bold text-gray-900">{stats.usdtBalance}</div>
+      </div>
+      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+        <div className="mb-3 flex items-center gap-1 text-xs text-gray-400">
+          轉入交易數 <Info size={12} />
         </div>
-        <div className="flex items-center justify-between border-l border-gray-100 pl-8">
-          <div className="space-y-2">
-            <div className="text-xs font-medium text-gray-400">USDC 持倉</div>
-            <div className="text-base font-bold text-gray-900">{stats.usdcBalance}</div>
+        <div className="flex items-baseline gap-2">
+          <span className="text-xl font-bold text-gray-900">{stats.incomingTxns}</span>
+          <span className="text-xs font-medium text-gray-400">({stats.incomingEth})</span>
+        </div>
+      </div>
+      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+        <div className="mb-3 flex items-center gap-1 text-xs text-gray-400">
+          主要交易對手 <Info size={12} />
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#5841D8]/10 text-[8px] font-bold text-[#5841D8]">
+            L
           </div>
-          <button className="flex items-center gap-1 text-xs font-bold text-gray-900">
-            展開 <ChevronDown size={14} />
-          </button>
+          <span className="text-base font-bold text-[#5841D8]">{stats.primaryCounterparty}</span>
+          <Copy size={12} className="text-gray-300" />
         </div>
       </div>
     </div>
@@ -169,20 +175,45 @@ export default function AddressDetailPage() {
                   <CopyButton value={addressId} />
                 </div>
               </div>
-              <button className="rounded-lg border border-gray-200 p-2 text-gray-500 hover:bg-white hover:text-black">
-                <ExternalLink size={18} />
-              </button>
             </div>
 
             {isShowHackBanner}
           </div>
 
           {/* Asset Overview Board */}
-          {isShowAssetOverview}
+          <div className="mb-8 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+            {/* Top Row */}
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+              <div className="space-y-2">
+                <div className="text-xs font-medium text-gray-400">Ethereum 鏈總資產</div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xl font-bold text-gray-900">{stats.totalAssets}</span>
+                  <span className="text-sm font-bold text-green-500">{stats.assetsChange}</span>
+                </div>
+              </div>
+              <div className="space-y-2 border-l border-gray-100 pl-8">
+                <div className="text-xs font-medium text-gray-400">ETH 持倉</div>
+                <div className="flex flex-col">
+                  <span className="text-base font-bold text-gray-900">{stats.ethBalance}</span>
+                  <span className="text-xs text-gray-500">({stats.ethValue})</span>
+                </div>
+              </div>
+              <div className="space-y-2 border-l border-gray-100 pl-8">
+                <div className="text-xs font-medium text-gray-400">USDT 持倉</div>
+                <div className="text-base font-bold text-gray-900">{stats.usdtBalance}</div>
+              </div>
+              <div className="flex items-center justify-between border-l border-gray-100 pl-8">
+                <div className="space-y-2">
+                  <div className="text-xs font-medium text-gray-400">USDC 持倉</div>
+                  <div className="text-base font-bold text-gray-900">{stats.usdcBalance}</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Tabs */}
           <div className="mb-6 flex border-b border-gray-200">
-            {['交易', '代幣轉帳', '內部交易', '資產', '多鏈資產'].map((tab) => (
+            {Object.values(AddressTab).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -229,48 +260,15 @@ export default function AddressDetailPage() {
                 <ChevronRight size={14} className="text-gray-400" />
               </div>
               <Toggle
-                isOpen={isOpenAssetOverview}
-                onToggle={() => setIsOpenAssetOverview(!isOpenAssetOverview)}
-                label={{ open: '展示交易統計數據', close: '隱藏交易統計數據' }}
+                isOpen={isOpenSummary}
+                onToggle={() => setIsOpenSummary((prev) => !prev)}
+                label={{ open: '展示交易統計數據', close: '展示交易統計數據' }}
               />
             </div>
           </div>
 
           {/* Summary Cards */}
-          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-              <div className="mb-3 flex items-center gap-1 text-xs text-gray-400">
-                轉出交易數 <Info size={12} />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl font-bold text-gray-900">{stats.outgoingTxns}</span>
-                <span className="text-xs font-medium text-gray-400">({stats.outgoingEth})</span>
-              </div>
-            </div>
-            <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-              <div className="mb-3 flex items-center gap-1 text-xs text-gray-400">
-                轉入交易數 <Info size={12} />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl font-bold text-gray-900">{stats.incomingTxns}</span>
-                <span className="text-xs font-medium text-gray-400">({stats.incomingEth})</span>
-              </div>
-            </div>
-            <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-              <div className="mb-3 flex items-center gap-1 text-xs text-gray-400">
-                主要交易對手 <Info size={12} />
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#5841D8]/10 text-[8px] font-bold text-[#5841D8]">
-                  L
-                </div>
-                <span className="text-base font-bold text-[#5841D8]">
-                  {stats.primaryCounterparty}
-                </span>
-                <Copy size={12} className="text-gray-300" />
-              </div>
-            </div>
-          </div>
+          {isShowSummary}
 
           {/* Transaction Table */}
           <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -283,7 +281,7 @@ export default function AddressDetailPage() {
                 <Toggle
                   isOpen={isShowZeroTransaction}
                   onToggle={() => setIsShowZeroTransaction(!isShowZeroTransaction)}
-                  label={{ open: '隱藏數量為 0 的交易', close: '展示數量為 0 的交易' }}
+                  label={{ open: '展示數量為 0 的交易', close: '展示數量為 0 的交易' }}
                   labelOnRight
                 />
                 <div className="flex items-center gap-4">
@@ -344,12 +342,12 @@ export default function AddressDetailPage() {
                             >
                               {txn.from}
                             </Link>
-                            <Copy size={12} className="text-gray-300" />
+                            <CopyButton size={12} value={txn.fromLabel ?? ''} />
                           </div>
                         </td>
                         <td className="px-4 py-5">
                           <span
-                            className={`rounded px-2 py-0.5 text-[10px] font-bold ${isOut ? 'bg-orange-50 text-orange-500' : 'bg-green-50 text-green-500'}`}
+                            className={`rounded px-2 py-0.5 text-[10px] font-bold ${isOut ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-500'}`}
                           >
                             {isOut ? 'Out' : 'In'}
                           </span>
@@ -362,13 +360,13 @@ export default function AddressDetailPage() {
                             >
                               {txn.to}
                             </Link>
-                            <Copy size={12} className="text-gray-300" />
+                            <CopyButton size={12} value={txn.toLabel ?? ''} />
                           </div>
                         </td>
                         <td
-                          className={`px-6 py-5 font-bold ${isOut ? 'text-gray-900' : 'text-gray-900'}`}
+                          className={`px-6 py-5 font-bold ${isOut ? 'text-red-500' : 'text-green-500'}`}
                         >
-                          {isOut ? '-' : ''}
+                          {isOut ? '-' : '+'}
                           {txn.value}
                         </td>
                         <td className="px-6 py-5 text-gray-400">{txn.fee}</td>
