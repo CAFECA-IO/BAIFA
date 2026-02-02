@@ -20,7 +20,7 @@ export const useEthRpc = (chainId: string) => {
   const [error, setError] = useState<string | null>(null);
   const url = `/api/v1/chains/${chainId}`;
 
-  // Info: (20260130 - Julian) 內部的通用請求處理器
+  // Info: (20260202 - Julian) 內部的通用請求處理器
   const execute = useCallback(
     async <T>(requestBody: IRpcBody): Promise<T | null> => {
       setIsLoading(true);
@@ -107,6 +107,46 @@ export const useEthRpc = (chainId: string) => {
     [execute]
   );
 
+  // Info: (20260202 - Julian) 批量請求處理器
+  const executeBatch = useCallback(
+    async <T>(requests: IRpcBody[]): Promise<IJsonRpcResponse<T>[] | null> => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        // Info: (20260202 - Julian) 為每個 Batch 請求注入獨立 ID
+        const bodyWithIds = requests.map((req, i) => ({
+          ...req,
+          id: Date.now() + i,
+        }));
+
+        const res = await fetchApi<IJsonRpcResponse<T>[]>(url, {
+          method: 'POST',
+          body: JSON.stringify(bodyWithIds),
+        });
+
+        return res;
+      } catch (err: unknown) {
+        // Info: (20260202 - Julian) 使用 instanceof 檢查類型
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          // Info: (20260202 - Julian) 處理非預期的錯誤類型（例如 throw "string"）
+          setError('發生未知錯誤');
+        }
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [url]
+  );
+
+  // Info: (20260202 - Julian) 批次取得區塊的方法
+  const getBlocksBatch = (heights: bigint[], full: boolean) => {
+    const requests = heights.map((h) => rpcService.getBlockByNumber(`0x${h.toString(16)}`, full));
+    return executeBatch<IJsonRpcBlock>(requests);
+  };
+
   return {
     isLoading,
     error,
@@ -118,5 +158,7 @@ export const useEthRpc = (chainId: string) => {
     getTxByBlockAndIndex,
     getLatestBlockNumber,
     getBlockByHash,
+    getBlocksBatch,
+    executeBatch,
   };
 };
