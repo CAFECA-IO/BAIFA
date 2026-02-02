@@ -68,28 +68,28 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
 
   return (
     <tr className="animate-block-in hover:bg-gray-50/50">
-      <td className="px-4 py-5">
+      <td className="px-3 py-5">
         <Link href={transactionPath} className="font-mono text-[#5841D8]" title={txn.hash}>
           {truncateAddress(txn.hash, 8, 6)}
         </Link>
       </td>
-      <td className="px-4 py-5">{displayedMethod}</td>
-      <td className="px-4 py-5">{displayedDescription}</td>
-      <td className="px-4 py-5">
+      <td className="px-3 py-5">{displayedMethod}</td>
+      <td className="px-3 py-5 text-xs">{displayedDescription}</td>
+      <td className="px-3 py-5">
         <Link href={blockPath} className="font-bold text-[#5841D8] hover:underline">
           {txn.blockNumber}
         </Link>
       </td>
-      <td className="px-4 py-5 whitespace-nowrap text-gray-600">{displayTime}</td>
-      <td className="px-4 py-5">{displayFrom}</td>
+      <td className="px-3 py-5 whitespace-nowrap text-gray-600">{displayTime}</td>
+      <td className="px-3 py-5">{displayFrom}</td>
       <td className="text-center">
         <div className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-50 text-green-500">
           <ArrowRight size={14} />
         </div>
       </td>
-      <td className="px-4 py-5">{displayTo}</td>
-      <td className="px-4 py-5 font-bold text-gray-900">{txn.value}</td>
-      <td className="px-4 py-5 text-gray-500">{txn.fee}</td>
+      <td className="px-3 py-5">{displayTo}</td>
+      <td className="px-3 py-5 font-bold text-gray-900">{txn.value}</td>
+      <td className="px-3 py-5 text-gray-500">{txn.fee}</td>
     </tr>
   );
 };
@@ -148,6 +148,15 @@ const TransactionTable = () => {
     fetchTransactionList();
   }, [chainId]);
 
+  // Info: (20260202 - Julian) 發生錯誤
+  if (rpcError || error) {
+    return (
+      <div className="container mx-auto px-4 py-10 text-center">
+        <p className="text-red-500">{rpcError || error}</p>
+      </div>
+    );
+  }
+
   const isDisplayedTable = isLoading ? (
     // Info: (20260202 - Julian) 載入中
     <tr>
@@ -155,18 +164,11 @@ const TransactionTable = () => {
         <Loader2 className="mx-auto h-6 w-6 animate-spin text-gray-600" />
       </td>
     </tr>
-  ) : transactions.length > 0 ? (
+  ) : transactions.length === 0 ? (
     // Info: (20260202 - Julian) 無資料
     <tr>
       <td colSpan={10} className="p-10 text-center font-semibold">
         <p className="text-gray-900">尚無數據</p>
-      </td>
-    </tr>
-  ) : rpcError || error ? (
-    // Info: (20260202 - Julian) 發生錯誤
-    <tr>
-      <td colSpan={10} className="p-10 text-center font-semibold">
-        <p className="text-red-500">{rpcError || error}</p>
       </td>
     </tr>
   ) : (
@@ -189,16 +191,16 @@ const TransactionTable = () => {
         <table className="w-full text-left text-sm">
           <thead className="border-b border-gray-100 bg-gray-50/50 text-xs font-bold text-gray-500 uppercase">
             <tr>
-              <th className="px-6 py-4">交易雜湊</th>
-              <th className="px-6 py-4">方法</th>
-              <th className="px-6 py-4">交易描述</th>
-              <th className="px-6 py-4">區塊</th>
-              <th className="px-6 py-4 text-[#5841D8]">時間</th>
-              <th className="px-6 py-4">發送方</th>
+              <th className="px-3 py-4">交易雜湊</th>
+              <th className="px-3 py-4">方法</th>
+              <th className="px-3 py-4">交易描述</th>
+              <th className="px-3 py-4">區塊</th>
+              <th className="px-3 py-4 text-[#5841D8]">時間</th>
+              <th className="px-3 py-4">發送方</th>
               <th className="px-4 py-4 text-center" aria-label="Transaction Direction"></th>
-              <th className="px-6 py-4">接收方</th>
-              <th className="px-6 py-4">數量</th>
-              <th className="px-6 py-4">手續費</th>
+              <th className="px-3 py-4">接收方</th>
+              <th className="px-3 py-4">數量</th>
+              <th className="px-3 py-4">手續費</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">{isDisplayedTable}</tbody>

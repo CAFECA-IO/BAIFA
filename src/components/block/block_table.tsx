@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { IBlock } from '@/interfaces/chain';
 import Pagination, { PaginationType } from '@/components/common/pagination';
 import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
@@ -66,12 +66,13 @@ const BlockTable = () => {
   const params = useParams();
   const chainId = params?.chainId as string;
 
+  const [error, setError] = useState<string | null>();
   const [latestBlockHeight, setLatestBlockHeight] = useState<number>(0);
   const [blocks, setBlocks] = useState<IBlock[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
 
-  const { getLatestBlockNumber, getBlocksBatch } = useEthRpc(chainId);
+  const { getLatestBlockNumber, getBlocksBatch, isLoading, error: rpcError } = useEthRpc(chainId);
 
   // Info: (20260130 - Julian) 計算總頁數（BigInt 轉換為 Number 進行計算）
   const totalPages = Math.ceil(latestBlockHeight / pageSize);
@@ -93,19 +94,48 @@ const BlockTable = () => {
           .filter((h) => h >= 0n);
 
         // 3. 使用 Hook 的 Batch 方法
-        const blockDatas = await getBlocksBatch(heights);
+        const blockDatas = await getBlocksBatch(heights, true);
 
         // 4. 轉換格式
         if (blockDatas) {
           setBlocks(blockDatas.map(formatRpcBlock));
         }
-      } catch (error) {
-        console.error('Fetch blocks error:', error);
+      } catch (err: unknown) {
+        console.error('Fetch blocks error:', err);
+        setError(err as string);
       }
     };
 
     fetchBlocks();
   }, [chainId, currentPage]);
+
+  // Info: (20260202 - Julian) 發生錯誤
+  if (rpcError || error) {
+    return (
+      <div className="container mx-auto px-4 py-10 text-center">
+        <p className="text-red-500">{rpcError || error}</p>
+      </div>
+    );
+  }
+
+  const isDisplayedBlocks = isLoading ? (
+    // Info: (20260202 - Julian) 載入中
+    <tr>
+      <td colSpan={10} className="p-10 text-center font-semibold">
+        <Loader2 className="mx-auto h-6 w-6 animate-spin text-gray-600" />
+      </td>
+    </tr>
+  ) : blocks.length === 0 ? (
+    // Info: (20260202 - Julian) 無資料
+    <tr>
+      <td colSpan={10} className="p-10 text-center font-semibold">
+        <p className="text-gray-900">尚無數據</p>
+      </td>
+    </tr>
+  ) : (
+    // Info: (20260202 - Julian) 渲染區塊列表
+    blocks.map((block) => <BlockItem key={block.height} block={block} />)
+  );
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
@@ -139,11 +169,7 @@ const BlockTable = () => {
               <th className="px-3 py-4">區塊獎勵</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
-            {blocks.map((block) => (
-              <BlockItem key={block.height} block={block} />
-            ))}
-          </tbody>
+          <tbody className="divide-y divide-gray-50">{isDisplayedBlocks}</tbody>
         </table>
       </div>
 
