@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { IBlock } from '@/interfaces/chain';
+import { IJsonRpcBlock } from '@/interfaces/rpc';
 import Pagination, { PaginationType } from '@/components/common/pagination';
 import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 import { formatRpcBlock } from '@/lib/utils/format';
@@ -98,7 +99,10 @@ const BlockTable = () => {
 
         // 4. 轉換格式
         if (blockDatas) {
-          setBlocks(blockDatas.map(formatRpcBlock));
+          const blocksData = blockDatas
+            .map((res) => res.result)
+            .filter((block): block is IJsonRpcBlock => !!block);
+          setBlocks(blocksData.map(formatRpcBlock));
         }
       } catch (err: unknown) {
         console.error('Fetch blocks error:', err);
