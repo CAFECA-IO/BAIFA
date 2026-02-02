@@ -142,8 +142,8 @@ export const useEthRpc = (chainId: string) => {
   );
 
   // Info: (20260202 - Julian) 批次取得區塊的方法
-  const getBlocksBatch = (heights: bigint[]) => {
-    const requests = heights.map((h) => rpcService.getBlockByNumber(`0x${h.toString(16)}`, false));
+  const getBlocksBatch = (heights: bigint[], full?: boolean) => {
+    const requests = heights.map((h) => rpcService.getBlockByNumber(`0x${h.toString(16)}`, full));
     return executeBatch<IJsonRpcBlock>(requests);
   };
 

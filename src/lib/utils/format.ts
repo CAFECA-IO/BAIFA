@@ -1,6 +1,7 @@
 import { formatEther, formatGwei } from 'viem';
 import { IJsonRpcBlock, IJsonRpcTransaction } from '@/interfaces/rpc';
-import { IBlock } from '@/interfaces/chain';
+import { IBlock, ITransaction } from '@/interfaces/chain';
+import { getTransactionDescription, getMethodDescription } from '@/lib/utils/transaction';
 
 function ensureHexPrefix(hex: string): string {
   if (typeof hex !== 'string') return hex;
@@ -76,7 +77,7 @@ export function truncateAddress(address: string, start = 6, end = 4): string {
 }
 
 /**
- * 將 RPC 回傳的原始 Block 資料轉換為 UI 顯示用的介面
+ * 將 RPC 回傳的原始 Block 資料 (IJsonRpcBlock) 轉換為 UI 顯示用的介面 (IBlock)
  */
 export const formatRpcBlock = (block: IJsonRpcBlock): IBlock => {
   const gasUsed = BigInt(block.gasUsed);
@@ -118,6 +119,35 @@ export const formatRpcBlock = (block: IJsonRpcBlock): IBlock => {
     gasUsed: gasUsed.toString(),
     gasUsedPercent: percent,
     gasLimit: gasLimit.toString(),
+  };
+};
+
+/**
+ * 將 RPC 回傳的原始 Transaction 資料 (IJsonRpcTransaction) 轉換為 UI 顯示用的介面 (ITransaction)
+ */
+export const formatRpcTransaction = (
+  tx: IJsonRpcTransaction,
+  blockTimestamp: string,
+  blockNumber: string
+): ITransaction => {
+  const ts = parseInt(blockTimestamp, 16);
+  const gasLimit = BigInt(tx.gas || '0x0');
+  const gasPrice = BigInt(tx.gasPrice || '0x0');
+  const fee = gasLimit * gasPrice;
+
+  return {
+    hash: tx.hash,
+    // 這裡調用你原本定義的描述函式
+    description: getTransactionDescription(tx),
+    method: getMethodDescription(tx.input),
+    blockNumber: parseInt(blockNumber, 16).toString(),
+    time: new Date(ts * 1000).toLocaleString(),
+    timestamp: ts.toString(),
+    from: tx.from,
+    to: tx.to || 'New Contract',
+    value: `${parseFloat(formatHexToEther(tx.value)).toFixed(2)} ETH`,
+    // 精確到 8 位小數的手續費
+    fee: `${parseFloat(formatHexToEther(fee.toString(16))).toFixed(8)} ETH`,
   };
 };
 
