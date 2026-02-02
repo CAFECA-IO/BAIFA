@@ -107,32 +107,36 @@ const TransactionTable = () => {
   useEffect(() => {
     const fetchTransactionList = async () => {
       try {
-        // 1. 取得最新高度
+        // Info: (20260202 - Julian) 1. 取得最新高度
         const latestHex = await getLatestBlockNumber();
         if (!latestHex) return;
 
         const latestBn = BigInt(latestHex);
         const BLOCKS_TO_SCAN = 50;
 
-        // 2. 準備要掃描的區塊高度陣列
+        // Info: (20260202 - Julian) 2. 準備要掃描的區塊高度陣列
         const heights = Array.from({ length: BLOCKS_TO_SCAN })
           .map((_, i) => latestBn - BigInt(i))
           .filter((h) => h >= 0n);
 
-        // 3. 批量抓取區塊 (包含完整交易物件)
-        // 注意：這裡 Hook 內部的 getBlocksBatch 需要傳入 full = true
+        /**
+         * Info: (20260202 - Julian) 3. 批量抓取區塊 (包含完整交易物件)
+         * 注意：這裡 Hook 內部的 getBlocksBatch 需要傳入 full = true
+         */
         const res = await getBlocksBatch(heights, true);
         const blocks = res ? res.map((item) => item.result).filter((res) => res !== undefined) : [];
 
         if (blocks) {
-          // 4. 平坦化所有區塊中的交易並轉換格式
+          // Info: (20260202 - Julian) 4. 平坦化所有區塊中的交易並轉換格式
           const allCollectedTxns = blocks.flatMap((block) => {
             const txs = (block.transactions as IJsonRpcTransaction[]) || [];
             return txs.map((tx) => formatRpcTransaction(tx, block.timestamp, block.number));
           });
 
-          // 5. 排序並更新狀態
-          // 由於 getBlocksBatch 回傳順序可能不保證，建議保留排序
+          /**
+           * Info: (20260202 - Julian) 5. 排序並更新狀態
+           * 由於 getBlocksBatch 回傳順序可能不保證，建議保留排序
+           */
           const sortedTxns = allCollectedTxns.sort(
             (a, b) => Number(b.timestamp) - Number(a.timestamp)
           );

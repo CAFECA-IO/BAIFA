@@ -34,11 +34,11 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. 第一階段：Batch 抓取互不依賴的資料
+        // Info: (20260202 - Julian) 1. 第一階段：Batch 抓取互不依賴的資料
         const batchRequests = [
-          rpcService.getBlockNumber(), // 取得最新高度
-          rpcService.getTransactionByHash(txId), // 取得交易內容
-          rpcService.getTransactionReceipt(txId), // 取得交易收據
+          rpcService.getBlockNumber(), // Info: (20260202 - Julian) 取得最新高度
+          rpcService.getTransactionByHash(txId), // Info: (20260202 - Julian) 取得交易內容
+          rpcService.getTransactionReceipt(txId), // Info: (20260202 - Julian) 取得交易收據
         ];
 
         const res = await executeBatch<string | IJsonRpcTransaction | IJsonRpcReceipt>(
@@ -52,11 +52,11 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
 
         const [latestBn, txResult, receiptResult] = results;
 
-        // 2. 處理第一階段結果
+        // Info: (20260202 - Julian) 2. 處理第一階段結果
         if (latestBn && typeof latestBn === 'string') setLatestBlockNumber(latestBn);
 
         if (!txResult) {
-          // 這裡可以處理業務邏輯錯誤
+          // Info: (20260202 - Julian) 這裡可以處理業務邏輯錯誤
           setTx(null);
           setReceipt(null);
           setBlock(null);
@@ -70,7 +70,7 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
         if (receiptResult && typeof receiptResult === 'object')
           setReceipt(receiptResult as IJsonRpcReceipt);
 
-        // 3. 第二階段：根據第一階段拿到的 blockNumber 抓取區塊詳情
+        // Info: (20260202 - Julian) 3. 第二階段：根據第一階段拿到的 blockNumber 抓取區塊詳情
         const blockNumber =
           (txResult as IJsonRpcReceipt).blockNumber ||
           (receiptResult as IJsonRpcReceipt).blockNumber;

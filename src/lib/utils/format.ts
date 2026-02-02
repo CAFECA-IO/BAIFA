@@ -76,33 +76,33 @@ export function truncateAddress(address: string, start = 6, end = 4): string {
   return `${address.slice(0, start)}...${address.slice(-end)}`;
 }
 
-/**
- * 將 RPC 回傳的原始 Block 資料 (IJsonRpcBlock) 轉換為 UI 顯示用的介面 (IBlock)
- */
+// Info: (20260202 - Julian) 將 RPC 回傳的原始 Block 資料 (IJsonRpcBlock) 轉換為 UI 顯示用的介面 (IBlock)
 export const formatRpcBlock = (block: IJsonRpcBlock): IBlock => {
   const gasUsed = BigInt(block.gasUsed);
   const gasLimit = BigInt(block.gasLimit);
 
-  // 1. 計算該區塊的總手續費 (Total Gas Fee)
+  // Info: (20260202 - Julian) 1. 計算該區塊的總手續費 (Total Gas Fee)
   let totalFee = 0n;
   if (Array.isArray(block.transactions) && typeof block.transactions[0] !== 'string') {
     totalFee = (block.transactions as IJsonRpcTransaction[]).reduce((acc, tx) => {
-      // 這裡簡單使用 gasPrice * gas，精確做法應配合 Receipt 的 gasUsed
+      // Info: (20260202 - Julian) 這裡簡單使用 gasPrice * gas，精確做法應配合 Receipt 的 gasUsed
       return acc + BigInt(tx.gasPrice) * BigInt(tx.gas);
     }, 0n);
   }
 
-  // 2. 計算平均 Gas Price (Gwei)
+  // Info: (20260202 - Julian) 2. 計算平均 Gas Price (Gwei)
   const avgGasPrice = gasUsed > 0n ? Number(totalFee / gasUsed) / 1e9 : 0;
 
-  // 3. 組合區塊獎勵 (Block Reward)
-  // 在 PoS 之後，區塊獎勵主要是手續費與小費，此處以總手續費估算
+  /**
+   * Info: (20260202 - Julian) 3. 組合區塊獎勵 (Block Reward)
+   * 在 PoS 之後，區塊獎勵主要是手續費與小費，此處以總手續費估算
+   */
   const blockReward = Number(totalFee) / 1e18;
 
-  // 計算 Gas 使用百分比 (精確到小數點後兩位)
+  // Info: (20260202 - Julian) 計算 Gas 使用百分比 (精確到小數點後兩位)
   const percent = gasLimit > 0n ? Number((gasUsed * 10000n) / gasLimit) / 100 : 0;
 
-  // 計算距離現在多久
+  // Info: (20260202 - Julian) 計算距離現在多久
   const diff = Math.floor((Date.now() - Number(block.timestamp) * 1000) / 1000);
   const timeAgo = diff < 60 ? `${diff}s ago` : `${Math.floor(diff / 60)}m ${diff % 60}s ago`;
 
@@ -113,18 +113,16 @@ export const formatRpcBlock = (block: IJsonRpcBlock): IBlock => {
     proposer: block.miner,
     txns: Array.isArray(block.transactions) ? block.transactions.length : 0,
     size: BigInt(block.size).toString(),
-    reward: blockReward.toFixed(6), // 區塊獎勵 (ETH)
-    gas: (Number(totalFee) / 1e18).toFixed(6), // 總手續費 (ETH)
-    gasPrice: avgGasPrice.toFixed(2), // 平均 Gas Price (Gwei)
+    reward: blockReward.toFixed(6), // Info: (20260202 - Julian) 區塊獎勵 (ETH)
+    gas: (Number(totalFee) / 1e18).toFixed(6), // Info: (20260202 - Julian) 總手續費 (ETH)
+    gasPrice: avgGasPrice.toFixed(2), // Info: (20260202 - Julian) 平均 Gas Price (Gwei)
     gasUsed: gasUsed.toString(),
     gasUsedPercent: percent,
     gasLimit: gasLimit.toString(),
   };
 };
 
-/**
- * 將 RPC 回傳的原始 Transaction 資料 (IJsonRpcTransaction) 轉換為 UI 顯示用的介面 (ITransaction)
- */
+// Info: (20260202 - Julian) 將 RPC 回傳的原始 Transaction 資料 (IJsonRpcTransaction) 轉換為 UI 顯示用的介面 (ITransaction)
 export const formatRpcTransaction = (
   tx: IJsonRpcTransaction,
   blockTimestamp: string,
@@ -137,7 +135,7 @@ export const formatRpcTransaction = (
 
   return {
     hash: tx.hash,
-    // 這裡調用你原本定義的描述函式
+    // Info: (20260202 - Julian) 調用你原本定義的描述函式
     description: getTransactionDescription(tx),
     method: getMethodDescription(tx.input),
     blockNumber: parseInt(blockNumber, 16).toString(),
@@ -146,17 +144,15 @@ export const formatRpcTransaction = (
     from: tx.from,
     to: tx.to || 'New Contract',
     value: `${parseFloat(formatHexToEther(tx.value)).toFixed(2)} ETH`,
-    // 精確到 8 位小數的手續費
+    // Info: (20260202 - Julian) 精確到 8 位小數的手續費
     fee: `${parseFloat(formatHexToEther(fee.toString(16))).toFixed(8)} ETH`,
   };
 };
 
-/**
- * 輔助方法：將 Hex 轉換為 Ether 字串 (例如顯示於數量欄位)
- */
+// Info: (20260202 - Julian) 輔助方法：將 Hex 轉換為 Ether 字串 (例如顯示於數量欄位)
 export const hexToEther = (hex: string): string => {
   const val = BigInt(hex);
-  return (Number(val) / 1e18).toFixed(4); // 簡單示範，實際可用 ethers.formatEther
+  return (Number(val) / 1e18).toFixed(4); // Info: (20260202 - Julian) 簡單示範，實際可用 ethers.formatEther
 };
 
 export const formatBalanceChange = (prevHex: string, currHex: string): string => {

@@ -17,22 +17,22 @@ interface IEventLogsProps {
 export interface ILogParameter {
   name: string;
   type: string;
-  value: string; // 保持為字串，方便 UI 轉換
+  value: string; // Info: (20260202 - Julian) 保持為字串，方便 UI 轉換
   isIndexed: boolean;
 }
 
 export interface IProcessedLog {
-  index: number; // 顯示於列表左側的序號
-  address: string; // 合約地址
-  addressTag?: string; // 像是 "Uniswap V4"
-  eventName: string; // 像是 "Swap"
-  eventSignature: string; // 完整的函數定義供 UI 顯示
+  index: number; // Info: (20260202 - Julian) 顯示於列表左側的序號
+  address: string; // Info: (20260202 - Julian) 合約地址
+  addressTag?: string; // Info: (20260202 - Julian) 像是 "Uniswap V4"
+  eventName: string; // Info: (20260202 - Julian) 像是 "Swap"
+  eventSignature: string; // Info: (20260202 - Julian) 完整的函數定義供 UI 顯示
   topics: {
     label: string;
     value: string;
   }[];
-  decodedData?: ILogParameter[]; // 解析後的參數
-  rawData: string; // 備用的原始資料
+  decodedData?: ILogParameter[]; // Info: (20260202 - Julian) 解析後的參數
+  rawData: string; // Info: (20260202 - Julian) 備用的原始資料
 }
 
 const LogItem = ({
@@ -99,7 +99,7 @@ const LogItem = ({
   const indexedParams = log.decodedData?.filter((p) => p.isIndexed) || [];
   const nonIndexedParams = log.decodedData?.filter((p) => !p.isIndexed) || [];
 
-  // Fallback for non-decoded data
+  // Info: (20260202 - Julian) Fallback for non-decoded data
   const dataChunks = [];
   if (!log.decodedData && log.rawData && log.rawData.length > 2) {
     const rawContent = log.rawData.slice(2);
@@ -110,16 +110,16 @@ const LogItem = ({
 
   return (
     <div className="flex gap-6 border-b border-gray-100 py-8 last:border-0">
-      {/* Index */}
+      {/* Info: (20260202 - Julian) Index */}
       <div className="shrink-0">
         <div className="flex h-8 w-8 items-center justify-center rounded bg-gray-50 text-sm font-bold text-gray-400">
           {index}
         </div>
       </div>
 
-      {/* Content */}
+      {/* Info: (20260202 - Julian) Content */}
       <div className="grow space-y-5">
-        {/* Address & Tag */}
+        {/* Info: (20260202 - Julian) Address & Tag */}
         <div className="flex items-start gap-4">
           <div className="w-24 shrink-0 pt-1 text-sm font-medium text-gray-500">地址</div>
           <div className="flex flex-col gap-1">
@@ -140,7 +140,7 @@ const LogItem = ({
           </div>
         </div>
 
-        {/* Event Signature */}
+        {/* Info: (20260202 - Julian) Event Signature */}
         <div className="flex items-start gap-4">
           <div className="w-24 shrink-0 pt-1 text-sm font-medium text-gray-500">事件名稱</div>
           <div className="flex flex-col gap-1">
@@ -156,7 +156,7 @@ const LogItem = ({
           </div>
         </div>
 
-        {/* Topics Section */}
+        {/* Info: (20260202 - Julian) Topics Section */}
         <div className="flex items-start gap-4">
           <div className="w-24 shrink-0 pt-1 text-sm font-medium text-gray-500">Topic</div>
           <div className="w-full space-y-3">
@@ -186,7 +186,7 @@ const LogItem = ({
           </div>
         </div>
 
-        {/* Data Section (Decoded Parameters or Raw Chunks) */}
+        {/* Info: (20260202 - Julian) Data Section (Decoded Parameters or Raw Chunks) */}
         <div className="flex items-start gap-4">
           <div className="w-24 shrink-0 pt-1 text-sm font-medium text-gray-500">數據</div>
           <div className="w-full space-y-4 rounded-xl border border-gray-50 bg-gray-50/50 p-4">
@@ -224,15 +224,15 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
 
   useEffect(() => {
     const fetchLogsFlow = async () => {
-      // 階段 1: 取得收據 (Receipt) 以獲得 logs
+      // Info: (20260202 - Julian) 階段 1: 取得收據 (Receipt) 以獲得 logs
       const response = await executeBatch([rpcService.getTransactionReceipt(txId)]);
 
       const receipt = response ? (response[0]?.result as IJsonRpcReceipt) : null;
       if (!receipt || !receipt.logs) return;
 
-      // 使用 IRpcLog 作為輸入，轉換為 IProcessedLog
+      // Info: (20260202 - Julian) 使用 IRpcLog 作為輸入，轉換為 IProcessedLog
       const processedLogs: IProcessedLog[] = receipt.logs.map((log: IJsonRpcLog, i) => {
-        const decoded = decodeLog(log); // 這裡會用到 ethers 或其他庫
+        const decoded = decodeLog(log); // Info: (20260202 - Julian) 這裡會用到 ethers 或其他庫
 
         return {
           index: i,
@@ -290,13 +290,13 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
   const logs = eventLogs || [];
   const filteredLogs = logs.filter((log) => {
     const matchesAddr = log.address.toLowerCase().includes(searchAddr.toLowerCase());
-    // Event filter could be implemented if we had decoded names properly
+    // Info: (20260202 - Julian) Event filter could be implemented if we had decoded names properly
     return matchesAddr;
   });
 
   return (
     <div className="rounded-xl border border-gray-100 bg-white p-6 text-gray-900 shadow-md">
-      {/* Header / Filter Toolbar */}
+      {/* Info: (20260202 - Julian) Header / Filter Toolbar */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div className="text-sm text-gray-500">
           共計 <span className="font-bold text-gray-900">{logs.length}</span> 個事件日誌
@@ -332,7 +332,7 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
         </div>
       </div>
 
-      {/* Logs List */}
+      {/* Info: (20260202 - Julian) Logs List */}
       <div className="divide-y divide-gray-50">
         {filteredLogs.length > 0 ? (
           filteredLogs.map((log, i) => <LogItem key={i} log={log} index={i} chainId={chainId} />)

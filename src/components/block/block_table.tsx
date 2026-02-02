@@ -81,23 +81,23 @@ const BlockTable = () => {
   useEffect(() => {
     const fetchBlocks = async () => {
       try {
-        // 1. 取得最新高度
+        // Info: (20260202 - Julian) 1. 取得最新高度
         const latestHex = await getLatestBlockNumber();
         if (!latestHex) return;
 
         const latestBn = BigInt(latestHex);
         setLatestBlockHeight(Number(latestBn));
 
-        // 2. 計算這一頁需要抓取的區塊高度陣列
+        // Info: (20260202 - Julian) 2. 計算這一頁需要抓取的區塊高度陣列
         const startHeight = latestBn - BigInt((currentPage - 1) * pageSize);
         const heights = Array.from({ length: pageSize })
           .map((_, i) => startHeight - BigInt(i))
           .filter((h) => h >= 0n);
 
-        // 3. 使用 Hook 的 Batch 方法
+        // Info: (20260202 - Julian) 3. 使用 Hook 的 Batch 方法
         const blockDatas = await getBlocksBatch(heights, true);
 
-        // 4. 轉換格式
+        // Info: (20260202 - Julian) 4. 轉換格式
         if (blockDatas) {
           const blocksData = blockDatas
             .map((res) => res.result)

@@ -76,7 +76,7 @@ const TransactionStatus = ({ chainId, txId }: ITransactionStatus) => {
 
   // Info: (20260202 - Julian) 分析狀態變化
   const runAnalysis = async (currentTx: IJsonRpcTransaction, currentBlock: IJsonRpcBlock) => {
-    // 1. 收集地址邏輯保持不變
+    // Info: (20260202 - Julian) 1. 收集地址邏輯保持不變
     const addressList = Array.from(
       new Set(
         [
@@ -90,7 +90,7 @@ const TransactionStatus = ({ chainId, txId }: ITransactionStatus) => {
     const prevBnHex = `0x${(BigInt(currentBlock.number) - 1n).toString(16)}`;
     const currBnHex = currentBlock.number;
 
-    // 2. 構建請求
+    // Info: (20260202 - Julian) 2. 構建請求
     const stateRequests = addressList.flatMap((addr) => [
       rpcService.getBalance(addr, prevBnHex),
       rpcService.getTransactionCount(addr, prevBnHex),
@@ -101,22 +101,22 @@ const TransactionStatus = ({ chainId, txId }: ITransactionStatus) => {
     const batchResponses = await executeBatch<string>(stateRequests);
     if (!batchResponses) return;
 
-    // 4. 安全提取數值的內部工具
+    // Info: (20260202 - Julian) 4. 安全提取數值的內部工具
     const safeExtract = (index: number, address: string, method: string): string => {
       const resp = batchResponses[index];
       if (resp?.error) {
-        // 針對 missing trie node (-32000) 進行紀錄
+        // Info: (20260202 - Julian) 鈍針對 missing trie node (-32000) 進行紀錄
         console.warn(`RPC 警告 [${address} - ${method}]: ${resp.error.message}`);
         return '0x0';
       }
       return resp?.result ?? '0x0';
     };
 
-    // 5. 解析結果
+    // Info: (20260202 - Julian) 5. 解析結果
     const results: IAccountState[] = addressList.map((addr, i) => {
       const base = i * 4;
 
-      // 依序提取：前餘額、前 Nonce、後餘額、後 Nonce
+      // Info: (20260202 - Julian) 依序提取：前餘額、前 Nonce、後餘額、後 Nonce
       const balPrev = safeExtract(base, addr, 'getBalance_prev');
       const noncePrev = safeExtract(base + 1, addr, 'getNonce_prev');
       const balCurr = safeExtract(base + 2, addr, 'getBalance_curr');
@@ -143,17 +143,17 @@ const TransactionStatus = ({ chainId, txId }: ITransactionStatus) => {
   useEffect(() => {
     const fetchStateChanges = async () => {
       try {
-        // --- 階段 1: 取得交易與收據 ---
+        // Info: (20260202 - Julian) --- 階段 1: 取得交易與收據 ---
         const firstBatch = [
           rpcService.getTransactionByHash(txId),
           rpcService.getTransactionReceipt(txId),
         ];
 
-        // 根據方法轉型
+        // Info: (20260202 - Julian) 根據方法轉型
         const baseResponses = await executeBatch<IJsonRpcTransaction | IJsonRpcReceipt>(firstBatch);
         if (!baseResponses) return;
 
-        // 驗證回傳結果是否存在且無誤
+        // Info: (20260202 - Julian) 驗證回傳結果是否存在且無誤
         const txData = baseResponses[0]?.result as IJsonRpcTransaction | undefined;
         const receiptData = baseResponses[1]?.result as IJsonRpcReceipt | undefined;
 
@@ -162,12 +162,14 @@ const TransactionStatus = ({ chainId, txId }: ITransactionStatus) => {
           return;
         }
 
-        // --- 階段 2: 取得區塊詳情 ---
-        // 這裡我們需要 Block 裡的 miner 地址來判斷出塊者
+        /**
+         * Info: (20260202 - Julian) --- 階段 2: 取得區塊詳情 ---
+         * Info: (20260202 - Julian) 這裡我們需要 Block 裡的 miner 地址來判斷出塊者
+         */
         const rawBlock = await getBlockByNumber(receiptData.blockNumber, false);
         if (!rawBlock) return;
 
-        // --- 階段 3: 執行狀態分析 (帶入強型別) ---
+        // Info: (20260202 - Julian) --- 階段 3: 執行狀態分析 (帶入強型別) ---
         await runAnalysis(txData, rawBlock);
       } catch (err: unknown) {
         console.error('Initialization failed:', err);
