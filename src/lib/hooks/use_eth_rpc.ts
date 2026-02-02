@@ -109,7 +109,7 @@ export const useEthRpc = (chainId: string) => {
 
   // Info: (20260202 - Julian) 批量請求處理器
   const executeBatch = useCallback(
-    async <T>(requests: IRpcBody[]): Promise<T[] | null> => {
+    async <T>(requests: IRpcBody[]): Promise<IJsonRpcResponse<T>[] | null> => {
       setIsLoading(true);
       setError(null);
       try {
@@ -124,8 +124,7 @@ export const useEthRpc = (chainId: string) => {
           body: JSON.stringify(bodyWithIds),
         });
 
-        // 將所有 result 提取出來組成陣列回傳
-        return res.map((item) => item.result).filter((res) => res !== undefined);
+        return res;
       } catch (err: unknown) {
         // Info: (20260202 - Julian) 使用 instanceof 檢查類型
         if (err instanceof Error) {

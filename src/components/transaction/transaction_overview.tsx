@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { CheckCircle, XCircle, FileText, Clock } from 'lucide-react';
 import {
@@ -11,23 +12,156 @@ import {
 } from '@/lib/utils/format';
 import { IJsonRpcTransaction, IJsonRpcReceipt, IJsonRpcBlock } from '@/interfaces/rpc';
 import { getMethodDescription, getTransactionDescription } from '@/lib/utils/transaction';
+import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 import CopyButton from '@/components/common/copy_button';
+import { rpcService } from '@/lib/services/rpc_service';
 
 interface ITransactionOverviewProps {
   chainId: string;
-  tx: IJsonRpcTransaction;
-  receipt: IJsonRpcReceipt;
-  block: IJsonRpcBlock;
-  latestBlockNumber: string;
+  txId: string;
 }
 
-const TransactionOverview = ({
-  chainId,
-  tx,
-  receipt,
-  block,
-  latestBlockNumber,
-}: ITransactionOverviewProps) => {
+const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
+  const [error, setError] = useState<string | null>(null);
+
+  const [tx, setTx] = useState<IJsonRpcTransaction | null>(null);
+  const [receipt, setReceipt] = useState<IJsonRpcReceipt | null>(null);
+  const [block, setBlock] = useState<IJsonRpcBlock | null>(null);
+  const [latestBlockNumber, setLatestBlockNumber] = useState<string | null>(null);
+
+  const { executeBatch, getBlockByNumber, isLoading, error: rpcError } = useEthRpc(chainId);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // 1. 第一階段：Batch 抓取互不依賴的資料
+        const batchRequests = [
+          rpcService.getBlockNumber(), // 取得最新高度
+          rpcService.getTransactionByHash(txId), // 取得交易內容
+          rpcService.getTransactionReceipt(txId), // 取得交易收據
+        ];
+
+        const res = await executeBatch<string | IJsonRpcTransaction | IJsonRpcReceipt>(
+          batchRequests
+        );
+        const results = res
+          ? res.map((item) => item.result).filter((res) => res !== undefined)
+          : [];
+
+        console.log('👾results', results);
+
+        if (!results || results.length < 3) return;
+
+        const [latestBn, txResult, receiptResult] = results;
+
+        // 2. 處理第一階段結果
+        if (latestBn && typeof latestBn === 'string') setLatestBlockNumber(latestBn);
+
+        if (!txResult) {
+          // 這裡可以處理業務邏輯錯誤
+          setTx(null);
+          setReceipt(null);
+          setBlock(null);
+          setLatestBlockNumber(null);
+
+          setError('Transaction not found');
+          return;
+        }
+
+        if (txResult && typeof txResult === 'object') setTx(txResult as IJsonRpcTransaction);
+        if (receiptResult && typeof receiptResult === 'object')
+          setReceipt(receiptResult as IJsonRpcReceipt);
+
+        // 3. 第二階段：根據第一階段拿到的 blockNumber 抓取區塊詳情
+        const blockNumber =
+          (txResult as IJsonRpcReceipt).blockNumber ||
+          (receiptResult as IJsonRpcReceipt).blockNumber;
+        if (blockNumber) {
+          const blockData = await getBlockByNumber(blockNumber, false);
+          if (blockData) setBlock(blockData);
+        }
+      } catch (err: unknown) {
+        console.error(err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch transaction details');
+      }
+    };
+
+    if (chainId && txId) {
+      fetchData();
+    }
+  }, [chainId, txId]);
+
+  // Info: (20260202 - Julian) Render Loading Skeleton
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="border-b border-gray-100 text-gray-500">
+              <tr>
+                <th className="pb-4 font-medium">地址</th>
+                <th className="pb-4 font-medium">交易前</th>
+                <th className="pb-4 font-medium">交易後</th>
+                <th className="pb-4 font-medium">狀態變化</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {[1, 2, 3].map((i) => (
+                <tr key={i}>
+                  <td className="py-4">
+                    <div className="h-4 w-32 animate-pulse rounded bg-gray-100" />
+                  </td>
+                  <td className="py-4">
+                    <div className="space-y-2">
+                      <div className="h-4 w-24 animate-pulse rounded bg-gray-100" />
+                      <div className="h-3 w-16 animate-pulse rounded bg-gray-50" />
+                    </div>
+                  </td>
+                  <td className="py-4">
+                    <div className="space-y-2">
+                      <div className="h-4 w-24 animate-pulse rounded bg-gray-100" />
+                      <div className="h-3 w-16 animate-pulse rounded bg-gray-50" />
+                    </div>
+                  </td>
+                  <td className="py-4">
+                    <div className="h-4 w-20 animate-pulse rounded bg-gray-100" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
+  // Info: (20260202 - Julian) Render Error State
+  if (error || rpcError) {
+    return (
+      <div className="flex flex-col items-center justify-center rounded-lg bg-red-50 py-10 text-center">
+        <div className="mb-4 rounded-full bg-red-100 p-3 text-red-600">
+          <XCircle size={28} />
+        </div>
+        <h3 className="mb-1 text-lg font-semibold text-red-900">數據加載失敗</h3>
+        <p className="max-w-md text-sm text-red-600">{error || rpcError}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-6 rounded-lg bg-red-600 px-6 py-2 text-sm font-medium text-white transition-all hover:bg-red-700 hover:shadow-lg active:scale-95"
+        >
+          重試
+        </button>
+      </div>
+    );
+  }
+
+  if (!block) {
+    return <div className="py-10 text-center text-red-500">Block not found</div>;
+  }
+
+  if (!tx || !receipt) {
+    return <div className="py-10 text-center text-red-500">Transaction not found</div>;
+  }
+
   // Info: (20260130 - Julian) --- Helpers for Display ---
   const isSuccess = receipt.status === '0x1';
   const statusColor = isSuccess ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
