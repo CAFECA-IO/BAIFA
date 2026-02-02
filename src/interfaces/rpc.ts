@@ -65,6 +65,18 @@ export interface IJsonRpcTransaction {
   maxPriorityFeePerGas?: string;
 }
 
+export interface IJsonRpcLog {
+  address: string;
+  topics: string[];
+  data: string;
+  blockNumber: string;
+  transactionHash: string;
+  transactionIndex: string;
+  blockHash: string;
+  logIndex: string;
+  removed: boolean;
+}
+
 export interface IJsonRpcReceipt {
   transactionHash: string;
   transactionIndex: string;
@@ -75,9 +87,7 @@ export interface IJsonRpcReceipt {
   cumulativeGasUsed: string;
   gasUsed: string;
   contractAddress: string | null;
-  // ToDo: (20260130 - Julian) fix type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  logs: any[];
+  logs: IJsonRpcLog[];
   logsBloom: string;
   status: string; // Info: (20260130 - Julian) 0x1 success, 0x0 failure
   effectiveGasPrice: string;

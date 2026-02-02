@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, use } from 'react';
 import TransactionOverview from '@/components/transaction/transaction_overview';
+import EventLogs from '@/components/transaction/event_logs';
 import TransactionStatus from '@/components/transaction/transaction_status';
 import { ArrowLeft } from 'lucide-react';
 
@@ -15,6 +16,7 @@ interface ITransactionDetailsPageProps {
 
 enum TxTab {
   OVERVIEW = 'overview',
+  LOGS = 'logs',
   STATUS = 'status',
 }
 
@@ -27,7 +29,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
   const [activeTab, setActiveTab] = useState<TxTab>(TxTab.OVERVIEW);
 
   const displayedBtns = Object.values(TxTab).map((tab) => {
-    const tabName = tab === TxTab.OVERVIEW ? '概覽' : '狀態';
+    const tabName = tab === TxTab.OVERVIEW ? '概覽' : tab === TxTab.LOGS ? '事件日誌' : '狀態';
     const clickHandler = () => setActiveTab(tab);
     return (
       <button
@@ -46,6 +48,8 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
   const displayedContent =
     activeTab === TxTab.OVERVIEW ? (
       <TransactionOverview chainId={chainId} txId={transactionId} />
+    ) : activeTab === TxTab.LOGS ? (
+      <EventLogs chainId={chainId} txId={transactionId} />
     ) : (
       <TransactionStatus chainId={chainId} txId={transactionId} />
     );

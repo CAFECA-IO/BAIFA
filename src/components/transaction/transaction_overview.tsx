@@ -48,8 +48,6 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
           ? res.map((item) => item.result).filter((res) => res !== undefined)
           : [];
 
-        console.log('👾results', results);
-
         if (!results || results.length < 3) return;
 
         const [latestBn, txResult, receiptResult] = results;

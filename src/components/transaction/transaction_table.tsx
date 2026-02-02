@@ -121,7 +121,8 @@ const TransactionTable = () => {
 
         // 3. 批量抓取區塊 (包含完整交易物件)
         // 注意：這裡 Hook 內部的 getBlocksBatch 需要傳入 full = true
-        const blocks = await getBlocksBatch(heights, true);
+        const res = await getBlocksBatch(heights, true);
+        const blocks = res ? res.map((item) => item.result).filter((res) => res !== undefined) : [];
 
         if (blocks) {
           // 4. 平坦化所有區塊中的交易並轉換格式
