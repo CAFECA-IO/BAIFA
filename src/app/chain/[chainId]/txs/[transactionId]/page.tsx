@@ -15,10 +15,11 @@ import {
   formatFullTimestamp,
   formatHexToEther,
   formatHexToGwei,
-  truncateAddress,
 } from '@/lib/utils/format';
 import { getMethodDescription, getTransactionDescription } from '@/lib/utils/transaction';
 import CopyButton from '@/components/common/copy_button';
+// import TransactionOverview from '@/components/transaction/transaction_overview';
+import TransactionStatus from '@/components/transaction/transaction_status';
 import { CheckCircle, XCircle, FileText, Clock, ArrowLeft } from 'lucide-react';
 
 interface ITransactionDetailsPageProps {
@@ -36,11 +37,16 @@ interface IAccountState {
   isMiner: boolean;
 }
 
+enum TxTab {
+  OVERVIEW = 'overview',
+  STATUS = 'status',
+}
+
 export default function TransactionDetailsPage(props: ITransactionDetailsPageProps) {
   const params = use(props.params);
   const { chainId, transactionId } = params;
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'status'>('overview');
+  const [activeTab, setActiveTab] = useState<TxTab>(TxTab.OVERVIEW);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,12 +56,12 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
   const [latestBlockNumber, setLatestBlockNumber] = useState<string | null>(null);
 
   const [stateChanges, setStateChanges] = useState<IAccountState[]>([]);
-  const [loadingStateChanges, setLoadingStateChanges] = useState<boolean>(false);
+  const [, setLoadingStateChanges] = useState<boolean>(false);
 
   const txListPath = `/chain/${chainId}/txs`;
 
   useEffect(() => {
-    if (activeTab === 'status' && stateChanges.length === 0 && tx && block) {
+    if (activeTab === TxTab.STATUS && stateChanges.length === 0 && tx && block) {
       const fetchStateChanges = async () => {
         setLoadingStateChanges(true);
         try {
@@ -246,6 +252,10 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
     );
   }
 
+  if (!block) {
+    return <div className="py-10 text-center text-red-500">Block not found</div>;
+  }
+
   if (error || !tx || !receipt) {
     return <div className="py-10 text-center text-red-500">{error || 'Transaction not found'}</div>;
   }
@@ -315,7 +325,7 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
   }
 
   const renderContent = () => {
-    if (activeTab === 'overview') {
+    if (activeTab === TxTab.OVERVIEW) {
       return (
         <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-md">
           <div className="divide-y divide-gray-100">
@@ -530,92 +540,8 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
       );
     }
 
-    if (activeTab === 'status') {
-      return (
-        <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-md">
-          <p className="mb-6 text-sm text-gray-500">
-            以下信息展示了在網絡上處理交易時，相應地址當前狀態的變化情況
-          </p>
-
-          {loadingStateChanges ? (
-            <div className="flex justify-center py-10">
-              <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="border-b border-gray-100 text-gray-500">
-                  <tr>
-                    <th className="pb-4 font-medium" aria-label="Address">
-                      地址
-                    </th>
-                    <th className="pb-4 font-medium" aria-label="Before Transaction">
-                      交易前
-                    </th>
-                    <th className="pb-4 font-medium" aria-label="After Transaction">
-                      交易後
-                    </th>
-                    <th className="pb-4 font-medium" aria-label="State Change">
-                      狀態變化
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {stateChanges.map((state) => (
-                    <tr key={state.address} aria-label={`State change for ${state.address}`}>
-                      <td className="py-4 align-top">
-                        <div className="flex items-center gap-2">
-                          <Link
-                            href={`/chain/${chainId}/address/${state.address}`}
-                            className="font-mono text-blue-600 hover:text-blue-800 hover:underline"
-                          >
-                            {truncateAddress(state.address)}
-                          </Link>
-                          <CopyButton value={state.address} />
-                          {state.isMiner && (
-                            <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-500">
-                              出塊者
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="py-4 align-top" aria-label="Before Transaction State">
-                        <div className="flex flex-col">
-                          <span className="font-medium text-gray-900">
-                            {state.before.balance} ETH
-                          </span>
-                          <span className="text-xs text-gray-500">Nonce: {state.before.nonce}</span>
-                        </div>
-                      </td>
-                      <td className="py-4 align-top" aria-label="After Transaction State">
-                        <div className="flex flex-col">
-                          <span className="font-medium text-gray-900">
-                            {state.after.balance} ETH
-                          </span>
-                          <span className="text-xs text-gray-500">Nonce: {state.after.nonce}</span>
-                        </div>
-                      </td>
-                      <td className="py-4 align-top">
-                        <span
-                          className={`font-medium ${
-                            state.change.startsWith('+')
-                              ? 'text-green-600'
-                              : state.change.startsWith('-')
-                                ? 'text-red-600'
-                                : 'text-gray-900'
-                          }`}
-                        >
-                          {state.change} ETH
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      );
+    if (activeTab === TxTab.STATUS) {
+      <TransactionStatus chainId={chainId} tx={tx} block={block} />;
     }
     return null;
   };
@@ -635,9 +561,9 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
         <div className="mb-6 flex gap-4">
           <button
             type="button"
-            onClick={() => setActiveTab('overview')}
+            onClick={() => setActiveTab(TxTab.OVERVIEW)}
             className={`rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-colors ${
-              activeTab === 'overview'
+              activeTab === TxTab.OVERVIEW
                 ? 'bg-black text-white'
                 : 'bg-white text-gray-500 hover:text-gray-900'
             }`}
@@ -646,9 +572,9 @@ export default function TransactionDetailsPage(props: ITransactionDetailsPagePro
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('status')}
+            onClick={() => setActiveTab(TxTab.STATUS)}
             className={`rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-colors ${
-              activeTab === 'status'
+              activeTab === TxTab.STATUS
                 ? 'bg-black text-white'
                 : 'bg-white text-gray-500 hover:text-gray-900'
             }`}

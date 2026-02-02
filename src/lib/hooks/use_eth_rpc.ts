@@ -124,7 +124,8 @@ export const useEthRpc = (chainId: string) => {
           body: JSON.stringify(bodyWithIds),
         });
 
-        return res.map((item) => item.result).filter(Boolean);
+        // 將所有 result 提取出來組成陣列回傳
+        return res.map((item) => item.result).filter((res) => res !== undefined);
       } catch (err: unknown) {
         // Info: (20260202 - Julian) 使用 instanceof 檢查類型
         if (err instanceof Error) {
@@ -147,9 +148,6 @@ export const useEthRpc = (chainId: string) => {
     return executeBatch<IJsonRpcBlock>(requests);
   };
 
-  // Info: (20260202 - Julian) 批次取得交易的方法
-  // const getTxsBatch =
-
   return {
     isLoading,
     error,
@@ -162,5 +160,6 @@ export const useEthRpc = (chainId: string) => {
     getLatestBlockNumber,
     getBlockByHash,
     getBlocksBatch,
+    executeBatch,
   };
 };

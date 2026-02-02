@@ -158,3 +158,17 @@ export const hexToEther = (hex: string): string => {
   const val = BigInt(hex);
   return (Number(val) / 1e18).toFixed(4); // 簡單示範，實際可用 ethers.formatEther
 };
+
+export const formatBalanceChange = (prevHex: string, currHex: string): string => {
+  const prev = BigInt(prevHex);
+  const curr = BigInt(currHex);
+  const diff = curr - prev;
+
+  if (diff === 0n) return '0 ETH';
+
+  const eth = formatHexToEther(
+    diff >= 0n ? `0x${diff.toString(16)}` : `-0x${(-diff).toString(16)}`
+  );
+
+  return diff > 0n ? `+${eth} ETH` : `${eth} ETH`;
+};
