@@ -7,15 +7,16 @@ import Link from 'next/link';
 import { AlertCircle } from 'lucide-react';
 import { IBlock } from '@/interfaces/chain';
 import Pagination, { PaginationType } from '@/components/common/pagination';
-import { API_METHOD } from '@/constants/api_method';
-import { IJsonRpcResponse, IJsonRpcBlock } from '@/interfaces/rpc';
-import { fetchApi } from '@/lib/services/api_service';
+import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
+import { formatRpcBlock } from '@/lib/utils/format';
 import CopyButton from '@/components/common/copy_button';
 
 const BlockItem = ({ block }: { block: IBlock }) => {
   const pathname = usePathname();
   const params = useParams();
   const chainId = params?.chainId as string;
+
+  // Info: (20260202 - Julian) 連結路徑
   const blockPath = `${pathname}/${block.height}`;
   const addressPath = `/chain/${chainId}/address/${block.proposer}`;
   const isAlertBlock = false; // Info: (20260130 - Julian) mock
@@ -23,13 +24,13 @@ const BlockItem = ({ block }: { block: IBlock }) => {
 
   return (
     <tr className="animate-block-in hover:bg-gray-50/50">
-      <td className="px-6 py-5">
+      <td className="px-3 py-5">
         <Link href={blockPath} className="font-bold text-[#5841D8] hover:underline">
           {block.height}
         </Link>
       </td>
-      <td className="px-6 py-5 whitespace-nowrap text-gray-600">{block.timestamp.split(' ')[1]}</td>
-      <td className="px-6 py-5">
+      <td className="px-3 py-5 whitespace-nowrap text-gray-600">{block.timestamp.split(' ')[1]}</td>
+      <td className="px-3 py-5">
         <div className="flex items-center gap-1.5">
           {isShowAlertIcon}
           <Link href={addressPath} className="font-mono text-[#5841D8] hover:underline">
@@ -38,9 +39,9 @@ const BlockItem = ({ block }: { block: IBlock }) => {
           <CopyButton value={block.proposer} />
         </div>
       </td>
-      <td className="px-6 py-5 text-gray-900">{block.txns}</td>
-      <td className="px-6 py-5 text-gray-500">{block.size}</td>
-      <td className="px-6 py-5" aria-label="Gas Usage">
+      <td className="px-3 py-5 text-gray-900">{block.txns}</td>
+      <td className="px-3 py-5 text-gray-500">{block.size}</td>
+      <td className="px-3 py-5" aria-label="Gas Usage">
         <div className="flex flex-col gap-1">
           <span className="font-medium text-gray-900">{block.gasUsed}</span>
           <div className="flex items-center gap-2">
@@ -54,9 +55,9 @@ const BlockItem = ({ block }: { block: IBlock }) => {
           </div>
         </div>
       </td>
-      <td className="px-6 py-5 text-gray-900">{block.gasLimit}</td>
-      <td className="px-6 py-5 text-gray-600">{block.gasPrice}</td>
-      <td className="px-6 py-5 text-gray-900">{block.reward}</td>
+      <td className="px-3 py-5 text-gray-900">{block.gasLimit}</td>
+      <td className="px-3 py-5 text-gray-600">{block.gasPrice}</td>
+      <td className="px-3 py-5 text-gray-900">{block.reward}</td>
     </tr>
   );
 };
@@ -70,78 +71,34 @@ const BlockTable = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
 
+  const { getLatestBlockNumber, getBlocksBatch } = useEthRpc(chainId);
+
   // Info: (20260130 - Julian) 計算總頁數（BigInt 轉換為 Number 進行計算）
   const totalPages = Math.ceil(latestBlockHeight / pageSize);
 
   useEffect(() => {
     const fetchBlocks = async () => {
       try {
-        const url = `/api/v1/chains/${chainId}`;
+        // 1. 取得最新高度
+        const latestHex = await getLatestBlockNumber();
+        if (!latestHex) return;
 
-        // Info: (20260130 - Julian) 1. 取得最新高度
-        const bnRes = await fetchApi<IJsonRpcResponse<string>>(url, {
-          method: API_METHOD.POST,
-          body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_blockNumber', params: [], id: 1 }),
-        });
-
-        const latestBn = BigInt(bnRes?.result ?? '0');
+        const latestBn = BigInt(latestHex);
         setLatestBlockHeight(Number(latestBn));
 
-        // Info: (20260130 - Julian) 2. 計算這一頁的起始高度
+        // 2. 計算這一頁需要抓取的區塊高度陣列
         const startHeight = latestBn - BigInt((currentPage - 1) * pageSize);
+        const heights = Array.from({ length: pageSize })
+          .map((_, i) => startHeight - BigInt(i))
+          .filter((h) => h >= 0n);
 
-        // Info: (20260130 - Julian) 3. Batch 請求該頁的所有區塊
-        const requests = Array.from({ length: pageSize })
-          .map((_, i) => {
-            const targetHeight = startHeight - BigInt(i);
-            return {
-              jsonrpc: '2.0',
-              method: 'eth_getBlockByNumber',
-              params: [`0x${targetHeight.toString(16)}`, false],
-              id: i,
-            };
-          })
-          .filter((req) => BigInt(req.params[0]) >= 0n);
+        // 3. 使用 Hook 的 Batch 方法
+        const blockDatas = await getBlocksBatch(heights);
 
-        if (requests.length === 0) {
-          setBlocks([]);
-          return;
+        // 4. 轉換格式
+        if (blockDatas) {
+          setBlocks(blockDatas.map(formatRpcBlock));
         }
-
-        const blocksRes = await fetchApi<IJsonRpcResponse<IJsonRpcBlock>[]>(url, {
-          method: API_METHOD.POST,
-          body: JSON.stringify(requests),
-        });
-
-        // Info: (20260130 - Julian) 4. Update state
-        const newBlocks = blocksRes
-          .map((res) => res.result)
-          .filter(Boolean)
-          .map((block) => {
-            const gasUsed = BigInt(block.gasUsed);
-            const gasLimit = BigInt(block.gasLimit);
-            const percent = Number((gasUsed * 10000n) / gasLimit) / 100;
-            const diff = Math.floor((Date.now() - Number(block.timestamp) * 1000) / 1000);
-            const timeAgo =
-              diff < 60 ? `${diff}s ago` : `${Math.floor(diff / 60)}m ${diff % 60}s ago`;
-
-            return {
-              height: BigInt(block.number).toString(),
-              time: timeAgo,
-              timestamp: new Date(Number(block.timestamp) * 1000).toLocaleString(),
-              proposer: block.miner,
-              txns: Array.isArray(block.transactions) ? block.transactions.length : 0,
-              reward: '0', // Info: (20260130 - Julian) Not available in standard RPC
-              gas: '0',
-              size: BigInt(block.size).toString(),
-              gasUsed: gasUsed.toString(),
-              gasUsedPercent: percent,
-              gasLimit: gasLimit.toString(),
-              gasPrice: '0',
-            } as IBlock;
-          });
-
-        setBlocks(newBlocks);
       } catch (error) {
         console.error('Fetch blocks error:', error);
       }
@@ -171,15 +128,15 @@ const BlockTable = () => {
         <table className="w-full text-left text-sm">
           <thead className="border-b border-gray-100 bg-gray-50/50 text-xs font-bold text-gray-500 uppercase">
             <tr>
-              <th className="px-6 py-4">區塊</th>
-              <th className="px-6 py-4 text-[#5841D8]">時間</th>
-              <th className="px-6 py-4">驗證者</th>
-              <th className="px-6 py-4">總交易數</th>
-              <th className="px-6 py-4">區塊大小</th>
-              <th className="px-6 py-4">Gas 消耗</th>
-              <th className="px-6 py-4">Gas 限額</th>
-              <th className="px-6 py-4">Gas 均價</th>
-              <th className="px-6 py-4">區塊獎勵</th>
+              <th className="px-3 py-4">區塊</th>
+              <th className="px-3 py-4 text-[#5841D8]">時間</th>
+              <th className="px-3 py-4">驗證者</th>
+              <th className="px-3 py-4">總交易數</th>
+              <th className="px-3 py-4">區塊大小</th>
+              <th className="px-3 py-4">Gas 消耗</th>
+              <th className="px-3 py-4">Gas 限額</th>
+              <th className="px-3 py-4">Gas 均價</th>
+              <th className="px-3 py-4">區塊獎勵</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">

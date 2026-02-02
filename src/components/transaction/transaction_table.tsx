@@ -3,10 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowRight, /* Search, */ Loader2 } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { ITransaction } from '@/interfaces/chain';
 import { truncateAddress } from '@/lib/utils/format';
-// import Pagination, { PaginationType } from '@/components/common/pagination';
 import { formatHexToEther } from '@/lib/utils/format';
 import CopyButton from '@/components/common/copy_button';
 import { IJsonRpcResponse, IJsonRpcBlock, IJsonRpcTransaction } from '@/interfaces/rpc';
@@ -102,10 +101,7 @@ const TransactionTable = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
-  // const [currentPage, setCurrentPage] = useState<number>(1);
-  // const [totalPages, setTotalPages] = useState<number>(0);
   const [txnTotalCount, setTxnTotalCount] = useState<number>(0);
-  // const pageSize = 10;
 
   useEffect(() => {
     const fetchTransactionList = async () => {
@@ -184,20 +180,6 @@ const TransactionTable = () => {
     fetchTransactionList();
   }, [chainId]);
 
-  // ToDo: (20260130 - Julian) 尚未實作篩選功能，先隱藏
-  // const diaplayedFilters = (
-  //   <div className="mb-6 flex flex-wrap items-center gap-4">
-  //     <div className="relative max-w-xs flex-1">
-  //       <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400" />
-  //       <input
-  //         type="text"
-  //         placeholder="方法"
-  //         className="w-full rounded-lg border border-gray-200 bg-white py-2 pr-4 pl-10 text-sm focus:ring-2 focus:ring-[#5841D8]/20 focus:outline-none"
-  //       />
-  //     </div>
-  //   </div>
-  // );
-
   const isDisplayedTable =
     !isLoading && transactions.length > 0 ? (
       transactions.map((txn) => <TransactionItem key={txn.hash} txn={txn} />)
@@ -223,12 +205,6 @@ const TransactionTable = () => {
             近 24 小時內共計 <span className="font-medium text-gray-900">{txnTotalCount}</span>{' '}
             條交易記錄
           </div>
-          {/* <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={(page) => setCurrentPage(page)}
-                        type={PaginationType.NUMBER_WITH_SLASH}
-                    /> */}
         </div>
 
         {/* Info: (20260130 - Julian) Table */}
