@@ -6,8 +6,8 @@ import { IJsonRpcTransaction, IJsonRpcBlock, IJsonRpcReceipt } from '@/interface
 import { rpcService } from '@/lib/services/rpc_service';
 import { formatHexToEther, formatBalanceChange } from '@/lib/utils/format';
 import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
-import { XCircle } from 'lucide-react';
 import CopyButton from '@/components/common/copy_button';
+import ErrorState from '@/components/common/error_state';
 
 interface IAccountState {
   address: string;
@@ -226,19 +226,11 @@ const TransactionStatus = ({ chainId, txId }: ITransactionStatus) => {
   // Info: (20260202 - Julian) Render Error State
   if (error || rpcError)
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg bg-red-50 py-10 text-center">
-        <div className="mb-4 rounded-full bg-red-100 p-3 text-red-600">
-          <XCircle size={28} />
-        </div>
-        <h3 className="mb-1 text-lg font-semibold text-red-900">數據加載失敗</h3>
-        <p className="max-w-md text-sm text-red-600">{error || rpcError}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-6 rounded-lg bg-red-600 px-6 py-2 text-sm font-medium text-white transition-all hover:bg-red-700 hover:shadow-lg active:scale-95"
-        >
-          重試
-        </button>
-      </div>
+      <ErrorState
+        message={error || rpcError}
+        onRetry={() => window.location.reload()}
+        showContainer
+      />
     );
 
   const displayedStateChanges =

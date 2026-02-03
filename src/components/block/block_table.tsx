@@ -11,6 +11,7 @@ import Pagination, { PaginationType } from '@/components/common/pagination';
 import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 import { formatRpcBlock } from '@/lib/utils/format';
 import CopyButton from '@/components/common/copy_button';
+import ErrorState from '@/components/common/error_state';
 
 const BlockItem = ({ block }: { block: IBlock }) => {
   const pathname = usePathname();
@@ -116,8 +117,13 @@ const BlockTable = () => {
   // Info: (20260202 - Julian) 發生錯誤
   if (rpcError || error) {
     return (
-      <div className="container mx-auto px-4 py-10 text-center">
-        <p className="text-red-500">{rpcError || error}</p>
+      <div className="py-10">
+        <ErrorState
+          title="區塊列表加載失敗"
+          message={rpcError || error}
+          onRetry={() => window.location.reload()}
+          showContainer
+        />
       </div>
     );
   }

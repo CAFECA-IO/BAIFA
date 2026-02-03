@@ -10,6 +10,7 @@ import CopyButton from '@/components/common/copy_button';
 import { IJsonRpcTransaction } from '@/interfaces/rpc';
 import { formatRpcTransaction } from '@/lib/utils/format';
 import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
+import ErrorState from '@/components/common/error_state';
 
 const TransactionItem = ({ txn }: { txn: ITransaction }) => {
   const params = useParams();
@@ -156,8 +157,13 @@ const TransactionTable = () => {
   // Info: (20260202 - Julian) 發生錯誤
   if (rpcError || error) {
     return (
-      <div className="container mx-auto px-4 py-10 text-center">
-        <p className="text-red-500">{rpcError || error}</p>
+      <div className="py-10">
+        <ErrorState
+          title="交易列表加載失敗"
+          message={rpcError || error}
+          onRetry={() => window.location.reload()}
+          showContainer
+        />
       </div>
     );
   }

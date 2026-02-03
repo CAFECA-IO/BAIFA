@@ -14,6 +14,7 @@ import { IJsonRpcTransaction, IJsonRpcReceipt, IJsonRpcBlock } from '@/interface
 import { getMethodDescription, getTransactionDescription } from '@/lib/utils/transaction';
 import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 import CopyButton from '@/components/common/copy_button';
+import ErrorState from '@/components/common/error_state';
 import { rpcService } from '@/lib/services/rpc_service';
 
 interface ITransactionOverviewProps {
@@ -136,28 +137,34 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
   // Info: (20260202 - Julian) Render Error State
   if (error || rpcError) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg bg-red-50 py-10 text-center">
-        <div className="mb-4 rounded-full bg-red-100 p-3 text-red-600">
-          <XCircle size={28} />
-        </div>
-        <h3 className="mb-1 text-lg font-semibold text-red-900">數據加載失敗</h3>
-        <p className="max-w-md text-sm text-red-600">{error || rpcError}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-6 rounded-lg bg-red-600 px-6 py-2 text-sm font-medium text-white transition-all hover:bg-red-700 hover:shadow-lg active:scale-95"
-        >
-          重試
-        </button>
-      </div>
+      <ErrorState
+        message={error || rpcError}
+        onRetry={() => window.location.reload()}
+        showContainer
+      />
     );
   }
 
   if (!block) {
-    return <div className="py-10 text-center text-red-500">Block not found</div>;
+    return (
+      <ErrorState
+        title="找不到區塊"
+        message="無法取得該交易對應的區塊資訊"
+        onRetry={() => window.location.reload()}
+        showContainer
+      />
+    );
   }
 
   if (!tx || !receipt) {
-    return <div className="py-10 text-center text-red-500">Transaction not found</div>;
+    return (
+      <ErrorState
+        title="找不到交易"
+        message="無法取得該交易或收據的詳細資訊"
+        onRetry={() => window.location.reload()}
+        showContainer
+      />
+    );
   }
 
   // Info: (20260130 - Julian) --- Helpers for Display ---

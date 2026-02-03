@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ChevronDown, XCircle, Info, ExternalLink } from 'lucide-react';
+import { Search, ChevronDown, Info, ExternalLink } from 'lucide-react';
 import { IJsonRpcReceipt, IJsonRpcLog } from '@/interfaces/rpc';
 import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 import { rpcService } from '@/lib/services/rpc_service';
 import CopyButton from '@/components/common/copy_button';
+import ErrorState from '@/components/common/error_state';
 import { decodeLog } from '@/lib/utils/log_parser';
 
 interface IEventLogsProps {
@@ -279,11 +280,12 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
 
   if (rpcError) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-white py-20 shadow-md">
-        <XCircle className="mb-4 text-red-500" size={48} />
-        <h3 className="text-lg font-semibold text-gray-900">載入事件日誌失敗</h3>
-        <p className="text-gray-500">{rpcError}</p>
-      </div>
+      <ErrorState
+        title="載入事件日誌失敗"
+        message={rpcError}
+        onRetry={() => window.location.reload()}
+        showContainer
+      />
     );
   }
 
