@@ -272,7 +272,7 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
         return {
           index: i,
           address: log.address,
-          eventName: decoded?.name || 'Unknown',
+          eventName: decoded?.name || 'Unknown', // TODO: 顯示未解析事件
           eventSignature: decoded?.signature || '',
           topics,
           decodedData,
