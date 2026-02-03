@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { CheckCircle, XCircle, FileText, Clock } from 'lucide-react';
+import { CheckCircle, XCircle, FileText, Clock, ArrowRight } from 'lucide-react';
 import {
   formatHexToDecimal,
   formatTimestamp,
@@ -10,8 +10,9 @@ import {
   formatHexToEther,
   formatHexToGwei,
 } from '@/lib/utils/format';
-import { IJsonRpcTransaction, IJsonRpcReceipt, IJsonRpcBlock } from '@/interfaces/rpc';
+import { IJsonRpcTransaction, IJsonRpcReceipt, IJsonRpcBlock, IJsonRpcLog } from '@/interfaces/rpc';
 import { getMethodDescription, getTransactionDescription } from '@/lib/utils/transaction';
+import { formatTokenAmount } from '@/lib/utils/log_parser';
 import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 import CopyButton from '@/components/common/copy_button';
 import ErrorState from '@/components/common/error_state';
@@ -22,63 +23,232 @@ interface ITransactionOverviewProps {
   txId: string;
 }
 
+export interface ITokenTransfer {
+  from: string;
+  to: string;
+  value: string;
+  tokenAddress: string;
+  tokenSymbol?: string; // 可選：需透過額外查詢或對照表取得
+  tokenDecimals?: number;
+}
+
+const TokenTransferList = ({
+  transfers,
+  chainId,
+}: {
+  transfers: ITokenTransfer[];
+  chainId: string;
+}) => {
+  const [viewMode, setViewMode] = useState<'all' | 'net'>('all');
+
+  const createAddressLabel = (address: string) => {
+    return (
+      <div className="flex items-center gap-2 text-sm">
+        <Link
+          href={`/chain/${chainId}/address/${address}`}
+          className="font-mono text-blue-600 hover:text-blue-800 hover:underline"
+        >
+          {address}
+        </Link>
+        <CopyButton value={address} />
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
+      <div className="w-full text-sm text-gray-500 sm:w-1/4">ERC20 代幣轉帳 :</div>
+      <div className="grow space-y-3">
+        {/* 切換按鈕 */}
+        <div className="mb-2 flex gap-2">
+          <button
+            type="button"
+            onClick={() => setViewMode('all')}
+            className={`rounded px-3 py-1 text-xs ${viewMode === 'all' ? 'bg-black text-white' : 'bg-gray-100 text-black'}`}
+          >
+            所有轉帳
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode('net')}
+            className={`rounded px-3 py-1 text-xs ${viewMode === 'net' ? 'bg-black text-white' : 'bg-gray-100 text-black'}`}
+          >
+            淨轉帳
+          </button>
+        </div>
+
+        {/* 轉帳列表 */}
+        <ul className="space-y-2">
+          {transfers.map((item, i) => (
+            <li key={i} className="flex items-center gap-2 text-sm">
+              <span className="text-gray-400">發送方</span>
+              {createAddressLabel(item.from)}
+              <ArrowRight size={14} className="text-gray-300" />
+              <span className="text-gray-400">接收方</span>
+              {createAddressLabel(item.to)}
+              <span className="ml-2 font-bold">
+                {formatTokenAmount(item.value, item.tokenDecimals || 18)}
+              </span>
+              {/* <TokenTag address={item.tokenAddress} /> */}
+              <Link href={`/chain/${chainId}/address/${item.tokenAddress}`}>
+                {item.tokenAddress}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+const extractRawTransfers = (logs: IJsonRpcLog[]) => {
+  // ERC20 Transfer 事件的 Topic 0
+  const TRANSFER_TOPIC = '0xddf252ad1be2c89b6c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
+
+  return logs
+    .filter(
+      (log) => log.topics[0] === TRANSFER_TOPIC && log.topics.length === 3 // 標準 ERC20 Transfer 會有 3 個 Topic (Event, From, To)
+    )
+    .map((log) => ({
+      tokenAddress: log.address,
+      from: `0x${log.topics[1].slice(26)}`, // 移除補零的部分，還原為 20 bytes 地址
+      to: `0x${log.topics[2].slice(26)}`,
+      value: log.data, // 這是十六進位的金額
+    }));
+};
+
+/**
+ * 解析 RPC eth_call 回傳的 ABI 編碼字串 (用於 symbol, name)
+ * @param hex RPC 回傳的 0x 開頭長字串
+ */
+export const parseRpcString = (hex: string | undefined): string => {
+  if (
+    !hex ||
+    hex === '0x' ||
+    hex === '0x0000000000000000000000000000000000000000000000000000000000000000'
+  ) {
+    return '';
+  }
+
+  try {
+    // 1. 移除 0x 前綴
+    const data = hex.startsWith('0x') ? hex.slice(2) : hex;
+
+    /**
+     * ABI String 編碼結構：
+     * [0-63]    - 數據起始位置偏移量 (通常是 0x20)
+     * [64-127]  - 字串實際長度 (以 bytes 為單位)
+     * [128...]  - UTF-8 編碼內容
+     */
+
+    // 2. 取得長度 (位於第 2 個 32-byte 區塊)
+    const lengthHex = data.slice(64, 128);
+    const length = parseInt(lengthHex, 16);
+
+    // 3. 根據長度截取內容 (從第 3 個 32-byte 區塊開始)
+    // 一個 byte 對應兩個 hex 字元，所以從 index 128 開始往後切 length * 2
+    const contentHex = data.slice(128, 128 + length * 2);
+
+    // 4. 將 Hex 轉回 UTF-8 字串
+    const bytes = new Uint8Array(
+      contentHex.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) || []
+    );
+
+    return new TextDecoder().decode(bytes).replace(/\0/g, ''); // 移除可能的空字元
+  } catch (error) {
+    console.error('解析 RPC 字串失敗:', error);
+    return 'Unknown';
+  }
+};
+
 const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
   const [error, setError] = useState<string | null>(null);
-
   const [tx, setTx] = useState<IJsonRpcTransaction | null>(null);
   const [receipt, setReceipt] = useState<IJsonRpcReceipt | null>(null);
   const [block, setBlock] = useState<IJsonRpcBlock | null>(null);
   const [latestBlockNumber, setLatestBlockNumber] = useState<string | null>(null);
+  const [tokenTransfers, setTokenTransfers] = useState<ITokenTransfer[]>([]);
 
   const { executeBatch, getBlockByNumber, isLoading, error: rpcError } = useEthRpc(chainId);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Info: (20260202 - Julian) 1. 第一階段：Batch 抓取互不依賴的資料
-        const batchRequests = [
-          rpcService.getBlockNumber(), // Info: (20260202 - Julian) 取得最新高度
-          rpcService.getTransactionByHash(txId), // Info: (20260202 - Julian) 取得交易內容
-          rpcService.getTransactionReceipt(txId), // Info: (20260202 - Julian) 取得交易收據
+        // --- 階段 1: 基礎資料抓取 (互不依賴) ---
+        const firstBatch = [
+          rpcService.getBlockNumber(),
+          rpcService.getTransactionByHash(txId),
+          rpcService.getTransactionReceipt(txId),
         ];
 
-        const res = await executeBatch<string | IJsonRpcTransaction | IJsonRpcReceipt>(
-          batchRequests
+        const firstRes = await executeBatch<string | IJsonRpcTransaction | IJsonRpcReceipt>(
+          firstBatch
         );
-        const results = res
-          ? res.map((item) => item.result).filter((res) => res !== undefined)
-          : [];
+        const [latestBn, txData, receiptData] = firstRes?.map((r) => r.result) || [];
 
-        if (!results || results.length < 3) return;
-
-        const [latestBn, txResult, receiptResult] = results;
-
-        // Info: (20260202 - Julian) 2. 處理第一階段結果
-        if (latestBn && typeof latestBn === 'string') setLatestBlockNumber(latestBn);
-
-        if (!txResult) {
-          // Info: (20260202 - Julian) 這裡可以處理業務邏輯錯誤
-          setTx(null);
-          setReceipt(null);
-          setBlock(null);
-          setLatestBlockNumber(null);
-
-          setError('Transaction not found');
+        if (!txData || !receiptData) {
+          setError('找不到交易或收據資訊');
           return;
         }
 
-        if (txResult && typeof txResult === 'object') setTx(txResult as IJsonRpcTransaction);
-        if (receiptResult && typeof receiptResult === 'object')
-          setReceipt(receiptResult as IJsonRpcReceipt);
+        // 更新基礎狀態
+        setLatestBlockNumber(latestBn as string);
+        setTx(txData as IJsonRpcTransaction);
+        setReceipt(receiptData as IJsonRpcReceipt);
 
-        // Info: (20260202 - Julian) 3. 第二階段：根據第一階段拿到的 blockNumber 抓取區塊詳情
-        const blockNumber =
-          (txResult as IJsonRpcReceipt).blockNumber ||
-          (receiptResult as IJsonRpcReceipt).blockNumber;
-        if (blockNumber) {
-          const blockData = await getBlockByNumber(blockNumber, false);
-          if (blockData) setBlock(blockData);
-        }
+        // --- 階段 2: 依賴型資料抓取 (區塊與代幣元數據) ---
+
+        // 2a. 抓取區塊詳情
+        const blockPromise = getBlockByNumber((receiptData as IJsonRpcReceipt).blockNumber, false);
+
+        // 2b. 解析 Logs 並過濾出 ERC20 Transfer
+        const rawTransfers = extractRawTransfers((receiptData as IJsonRpcReceipt).logs || []);
+        const uniqueTokenAddresses = Array.from(new Set(rawTransfers.map((t) => t.tokenAddress)));
+
+        // 2c. 準備代幣 MetaData 請求
+        const tokenMetaRequests = uniqueTokenAddresses.flatMap((addr) => [
+          rpcService.getErc20Symbol(addr),
+          rpcService.getErc20Decimals(addr),
+        ]);
+
+        // 併發執行：區塊抓取與代幣 Meta 抓取
+        const [blockData, metaResponses] = await Promise.all([
+          blockPromise,
+          tokenMetaRequests.length > 0
+            ? executeBatch<string>(tokenMetaRequests)
+            : Promise.resolve([]),
+        ]);
+
+        if (blockData) setBlock(blockData);
+
+        // --- 階段 3: 資料整合與映射 ---
+
+        // 建立代幣資訊映射表
+        const tokenMap: Record<string, { symbol: string; decimals: number }> = {};
+        uniqueTokenAddresses.forEach((addr, i) => {
+          if (metaResponses) {
+            const symbolRes = metaResponses[i * 2]?.result;
+            const decimalsRes = metaResponses[i * 2 + 1]?.result;
+
+            tokenMap[addr.toLowerCase()] = {
+              // 解碼 RPC 回傳的 hex string，這部分通常需要 utils 輔助，暫以簡單轉換示範
+              symbol: parseRpcString(symbolRes) || 'Unknown',
+              decimals: decimalsRes ? parseInt(decimalsRes, 16) : 18,
+            };
+          }
+        });
+
+        // 組合成最終的 Token Transfers 列表
+        const finalTransfers = rawTransfers.map((t) => {
+          const meta = tokenMap[t.tokenAddress.toLowerCase()];
+          return {
+            ...t,
+            tokenSymbol: meta.symbol,
+            tokenDecimals: meta.decimals,
+          };
+        });
+
+        setTokenTransfers(finalTransfers); // 這是傳給 <TokenTransferList /> 的資料
       } catch (err: unknown) {
         console.error(err);
         setError(err instanceof Error ? err.message : 'Failed to fetch transaction details');
@@ -320,6 +490,9 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
             </div>
           </div>
         </div>
+
+        {/* Info: (20260203 - Julian) Token Transfers */}
+        <TokenTransferList chainId={chainId} transfers={tokenTransfers} />
 
         <div>
           {/* Info: (20260130 - Julian) Value */}

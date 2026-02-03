@@ -37,6 +37,7 @@ export default function AddressDetailPage() {
     loading: chainLoading,
   } = useBlockchainData(chainId);
   const { stats: realStats, loading: addressLoading } = useAddressData(chainId, addressId);
+
   const [activeTab, setActiveTab] = useState<AddressTab>(AddressTab.TRANSACTIONS);
   const [isOpenSummary, setIsOpenSummary] = useState<boolean>(true);
   const [isShowZeroTransaction, setIsShowZeroTransaction] = useState<boolean>(false);
