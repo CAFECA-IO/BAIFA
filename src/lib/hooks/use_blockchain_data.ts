@@ -16,7 +16,7 @@ import { getMethodDescription } from '@/lib/utils/transaction';
 export function useBlockchainData(chainId: string | null) {
   const [blocks, setBlocks] = useState<IBlock[]>([]);
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [latestGasPrice, setLatestGasPrice] = useState<string>('-');
   const [latestBlockNumber, setLatestBlockNumber] = useState<string>('-');
@@ -157,8 +157,8 @@ export function useBlockchainData(chainId: string | null) {
                   fromLabel: t.from,
                   to: t.to ? truncateAddress(t.to) : '-',
                   toLabel: t.to ?? 'Unknown',
-                  value: `${parseFloat(formatHexToEther(t.value)).toFixed(2)} ETH`,
-                  fee: `${parseFloat(fee).toFixed(2)} ETH`,
+                  value: `${parseFloat(formatHexToEther(t.value)).toFixed(2)} ISC`,
+                  fee: `${parseFloat(fee).toFixed(2)} ISC`,
                 });
               });
           }

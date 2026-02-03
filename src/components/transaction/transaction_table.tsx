@@ -10,6 +10,7 @@ import CopyButton from '@/components/common/copy_button';
 import { IJsonRpcTransaction } from '@/interfaces/rpc';
 import { formatRpcTransaction } from '@/lib/utils/format';
 import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
+import ErrorState from '@/components/common/error_state';
 
 const TransactionItem = ({ txn }: { txn: ITransaction }) => {
   const params = useParams();
@@ -151,27 +152,32 @@ const TransactionTable = () => {
     };
 
     fetchTransactionList();
-  }, [chainId]);
+  }, [chainId, getLatestBlockNumber, getBlocksBatch]);
 
   // Info: (20260202 - Julian) 發生錯誤
   if (rpcError || error) {
     return (
-      <div className="container mx-auto px-4 py-10 text-center">
-        <p className="text-red-500">{rpcError || error}</p>
+      <div className="py-10">
+        <ErrorState
+          title="交易列表加載失敗"
+          message={rpcError || error}
+          onRetry={() => window.location.reload()}
+          showContainer
+        />
       </div>
     );
   }
 
   const isDisplayedTable = isLoading ? (
     // Info: (20260202 - Julian) 載入中
-    <tr>
+    <tr aria-hidden="true">
       <td colSpan={10} className="p-10 text-center font-semibold">
         <Loader2 className="mx-auto h-6 w-6 animate-spin text-gray-600" />
       </td>
     </tr>
   ) : transactions.length === 0 ? (
     // Info: (20260202 - Julian) 無資料
-    <tr>
+    <tr aria-hidden="true">
       <td colSpan={10} className="p-10 text-center font-semibold">
         <p className="text-gray-900">尚無數據</p>
       </td>

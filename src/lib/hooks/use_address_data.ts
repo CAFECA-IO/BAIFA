@@ -51,16 +51,16 @@ export function useAddressData(chainId: string | null, address: string | null) {
          * In a real scenario, these would come from an indexer.
          */
         setStats({
-          ethBalance: `${parseFloat(ethBalance).toFixed(4)} ETH`,
+          ethBalance: `${parseFloat(ethBalance).toFixed(4)} ISC`,
           totalAssets: `$${(parseFloat(ethBalance) * 2000).toLocaleString()}`, // Mocked rate
           assetsChange: '+0.00%',
           ethValue: `$${(parseFloat(ethBalance) * 2000).toLocaleString()}`,
           usdtBalance: '0.00 USDT',
           usdcBalance: '0.00 USDC',
           outgoingTxns: '0',
-          outgoingEth: '0 ETH',
+          outgoingEth: '0 ISC',
           incomingTxns: '0',
-          incomingEth: '0 ETH',
+          incomingEth: '0 ISC',
           primaryCounterparty: '-',
         });
 

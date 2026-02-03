@@ -38,7 +38,7 @@ export default function ChainHeader({
   onToggleDetails,
   // latestGasPrice,
 }: Props) {
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState<boolean>(false);
   // const {
   //   targetRef: blockchainRef,
   //   componentVisible: isBlockchainVisible,

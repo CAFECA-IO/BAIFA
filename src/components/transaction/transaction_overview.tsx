@@ -14,7 +14,10 @@ import { IJsonRpcTransaction, IJsonRpcReceipt, IJsonRpcBlock } from '@/interface
 import { getMethodDescription, getTransactionDescription } from '@/lib/utils/transaction';
 import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 import CopyButton from '@/components/common/copy_button';
+import ErrorState from '@/components/common/error_state';
 import { rpcService } from '@/lib/services/rpc_service';
+import TokenTransferList, { ITokenTransfer } from '@/components/transaction/token_transfer_list';
+import { parseRpcString, extractRawTransfers } from '@/lib/utils/log_parser';
 
 interface ITransactionOverviewProps {
   chainId: string;
@@ -23,61 +26,91 @@ interface ITransactionOverviewProps {
 
 const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
   const [error, setError] = useState<string | null>(null);
-
   const [tx, setTx] = useState<IJsonRpcTransaction | null>(null);
   const [receipt, setReceipt] = useState<IJsonRpcReceipt | null>(null);
   const [block, setBlock] = useState<IJsonRpcBlock | null>(null);
   const [latestBlockNumber, setLatestBlockNumber] = useState<string | null>(null);
+  const [tokenTransfers, setTokenTransfers] = useState<ITokenTransfer[]>([]);
 
   const { executeBatch, getBlockByNumber, isLoading, error: rpcError } = useEthRpc(chainId);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Info: (20260202 - Julian) 1. 第一階段：Batch 抓取互不依賴的資料
-        const batchRequests = [
-          rpcService.getBlockNumber(), // Info: (20260202 - Julian) 取得最新高度
-          rpcService.getTransactionByHash(txId), // Info: (20260202 - Julian) 取得交易內容
-          rpcService.getTransactionReceipt(txId), // Info: (20260202 - Julian) 取得交易收據
+        // Info: (20260203 - Julian) 階段 1: 基礎資料抓取 (互不依賴)
+        const firstBatch = [
+          rpcService.getBlockNumber(),
+          rpcService.getTransactionByHash(txId),
+          rpcService.getTransactionReceipt(txId),
         ];
 
-        const res = await executeBatch<string | IJsonRpcTransaction | IJsonRpcReceipt>(
-          batchRequests
+        const firstRes = await executeBatch<string | IJsonRpcTransaction | IJsonRpcReceipt>(
+          firstBatch
         );
-        const results = res
-          ? res.map((item) => item.result).filter((res) => res !== undefined)
-          : [];
+        const [latestBn, txData, receiptData] = firstRes?.map((r) => r.result) || [];
 
-        if (!results || results.length < 3) return;
-
-        const [latestBn, txResult, receiptResult] = results;
-
-        // Info: (20260202 - Julian) 2. 處理第一階段結果
-        if (latestBn && typeof latestBn === 'string') setLatestBlockNumber(latestBn);
-
-        if (!txResult) {
-          // Info: (20260202 - Julian) 這裡可以處理業務邏輯錯誤
-          setTx(null);
-          setReceipt(null);
-          setBlock(null);
-          setLatestBlockNumber(null);
-
-          setError('Transaction not found');
+        if (!txData || !receiptData) {
+          setError('找不到交易或收據資訊');
           return;
         }
 
-        if (txResult && typeof txResult === 'object') setTx(txResult as IJsonRpcTransaction);
-        if (receiptResult && typeof receiptResult === 'object')
-          setReceipt(receiptResult as IJsonRpcReceipt);
+        // Info: (20260203 - Julian) 更新基礎狀態
+        setLatestBlockNumber(latestBn as string);
+        setTx(txData as IJsonRpcTransaction);
+        setReceipt(receiptData as IJsonRpcReceipt);
 
-        // Info: (20260202 - Julian) 3. 第二階段：根據第一階段拿到的 blockNumber 抓取區塊詳情
-        const blockNumber =
-          (txResult as IJsonRpcReceipt).blockNumber ||
-          (receiptResult as IJsonRpcReceipt).blockNumber;
-        if (blockNumber) {
-          const blockData = await getBlockByNumber(blockNumber, false);
-          if (blockData) setBlock(blockData);
-        }
+        // Info: (20260203 - Julian) 階段 2: 依賴型資料抓取 (區塊與代幣元數據)
+
+        // Info: (20260203 - Julian) 2a. 抓取區塊詳情
+        const blockPromise = getBlockByNumber((receiptData as IJsonRpcReceipt).blockNumber, false);
+
+        // Info: (20260203 - Julian) 2b. 解析 Logs 並過濾出 ERC20 Transfer
+        const rawTransfers = extractRawTransfers((receiptData as IJsonRpcReceipt).logs || []);
+        const uniqueTokenAddresses = Array.from(new Set(rawTransfers.map((t) => t.tokenAddress)));
+
+        // Info: (20260203 - Julian) 2c. 準備代幣 MetaData 請求
+        const tokenMetaRequests = uniqueTokenAddresses.flatMap((addr) => [
+          rpcService.getErc20Symbol(addr),
+          rpcService.getErc20Decimals(addr),
+        ]);
+
+        // Info: (20260203 - Julian) 併發執行：區塊抓取與代幣 Meta 抓取
+        const [blockData, metaResponses] = await Promise.all([
+          blockPromise,
+          tokenMetaRequests.length > 0
+            ? executeBatch<string>(tokenMetaRequests)
+            : Promise.resolve([]),
+        ]);
+
+        if (blockData) setBlock(blockData);
+
+        // Info: (20260203 - Julian) 階段 3: 資料整合與映射
+
+        // Info: (20260203 - Julian) 建立代幣資訊映射表
+        const tokenMap: Record<string, { symbol: string; decimals: number }> = {};
+        uniqueTokenAddresses.forEach((addr, i) => {
+          if (metaResponses) {
+            const symbolRes = metaResponses[i * 2]?.result;
+            const decimalsRes = metaResponses[i * 2 + 1]?.result;
+
+            tokenMap[addr.toLowerCase()] = {
+              symbol: parseRpcString(symbolRes) || 'Unknown',
+              decimals: decimalsRes ? parseInt(decimalsRes, 16) : 18,
+            };
+          }
+        });
+
+        // Info: (20260203 - Julian) 組合成最終的 Token Transfers 列表
+        const finalTransfers = rawTransfers.map((t) => {
+          const meta = tokenMap[t.tokenAddress.toLowerCase()];
+          return {
+            ...t,
+            tokenSymbol: meta.symbol,
+            tokenDecimals: meta.decimals,
+          };
+        });
+
+        setTokenTransfers(finalTransfers); // Info: (20260203 - Julian) 這是傳給 <TokenTransferList /> 的資料
       } catch (err: unknown) {
         console.error(err);
         setError(err instanceof Error ? err.message : 'Failed to fetch transaction details');
@@ -87,7 +120,7 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
     if (chainId && txId) {
       fetchData();
     }
-  }, [chainId, txId]);
+  }, [chainId, txId, executeBatch, getBlockByNumber]);
 
   // Info: (20260202 - Julian) Render Loading Skeleton
   if (isLoading) {
@@ -105,23 +138,23 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {[1, 2, 3].map((i) => (
-                <tr key={i}>
-                  <td className="py-4">
+                <tr key={i} aria-hidden="true">
+                  <td className="py-4" aria-hidden="true">
                     <div className="h-4 w-32 animate-pulse rounded bg-gray-100" />
                   </td>
-                  <td className="py-4">
+                  <td className="py-4" aria-hidden="true">
                     <div className="space-y-2">
                       <div className="h-4 w-24 animate-pulse rounded bg-gray-100" />
                       <div className="h-3 w-16 animate-pulse rounded bg-gray-50" />
                     </div>
                   </td>
-                  <td className="py-4">
+                  <td className="py-4" aria-hidden="true">
                     <div className="space-y-2">
                       <div className="h-4 w-24 animate-pulse rounded bg-gray-100" />
                       <div className="h-3 w-16 animate-pulse rounded bg-gray-50" />
                     </div>
                   </td>
-                  <td className="py-4">
+                  <td className="py-4" aria-hidden="true">
                     <div className="h-4 w-20 animate-pulse rounded bg-gray-100" />
                   </td>
                 </tr>
@@ -136,28 +169,34 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
   // Info: (20260202 - Julian) Render Error State
   if (error || rpcError) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg bg-red-50 py-10 text-center">
-        <div className="mb-4 rounded-full bg-red-100 p-3 text-red-600">
-          <XCircle size={28} />
-        </div>
-        <h3 className="mb-1 text-lg font-semibold text-red-900">數據加載失敗</h3>
-        <p className="max-w-md text-sm text-red-600">{error || rpcError}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-6 rounded-lg bg-red-600 px-6 py-2 text-sm font-medium text-white transition-all hover:bg-red-700 hover:shadow-lg active:scale-95"
-        >
-          重試
-        </button>
-      </div>
+      <ErrorState
+        message={error || rpcError}
+        onRetry={() => window.location.reload()}
+        showContainer
+      />
     );
   }
 
   if (!block) {
-    return <div className="py-10 text-center text-red-500">Block not found</div>;
+    return (
+      <ErrorState
+        title="找不到區塊"
+        message="無法取得該交易對應的區塊資訊"
+        onRetry={() => window.location.reload()}
+        showContainer
+      />
+    );
   }
 
   if (!tx || !receipt) {
-    return <div className="py-10 text-center text-red-500">Transaction not found</div>;
+    return (
+      <ErrorState
+        title="找不到交易"
+        message="無法取得該交易或收據的詳細資訊"
+        onRetry={() => window.location.reload()}
+        showContainer
+      />
+    );
   }
 
   // Info: (20260130 - Julian) --- Helpers for Display ---
@@ -314,17 +353,20 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
           </div>
         </div>
 
+        {/* Info: (20260203 - Julian) Token Transfers */}
+        <TokenTransferList chainId={chainId} transfers={tokenTransfers} />
+
         <div>
           {/* Info: (20260130 - Julian) Value */}
           <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
             <div className="w-full text-sm text-gray-500 sm:w-1/4">交易數量 :</div>
-            <div className="text-sm font-medium text-gray-900">{valEthFormatted} ETH</div>
+            <div className="text-sm font-medium text-gray-900">{valEthFormatted} ISC</div>
           </div>
 
           {/* Info: (20260130 - Julian) Transaction Fee */}
           <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
             <div className="w-full text-sm text-gray-500 sm:w-1/4">交易手續費 :</div>
-            <div className="text-sm text-gray-900">{txFeeEth} ETH</div>
+            <div className="text-sm text-gray-900">{txFeeEth} ISC</div>
           </div>
         </div>
 
@@ -375,12 +417,12 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
               <div className="flex flex-wrap items-center gap-2 text-sm text-gray-900">
                 {burntFeeEth && (
                   <span className="flex items-center gap-1 rounded bg-orange-50 px-2 py-1 text-orange-700">
-                    🔥 銷毀手續費 : {burntFeeEth} ETH
+                    🔥 銷毀手續費 : {burntFeeEth} ISC
                   </span>
                 )}
                 {savingsEth && (
                   <span className="flex items-center gap-1 rounded bg-green-50 px-2 py-1 text-green-700">
-                    💸 手續費找零 : {savingsEth} ETH
+                    💸 手續費找零 : {savingsEth} ISC
                   </span>
                 )}
               </div>

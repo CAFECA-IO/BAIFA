@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { rpcService } from '@/lib/services/rpc_service';
+import { rpcService, IRpcBody } from '@/lib/services/rpc_service';
 import { fetchApi } from '@/lib/services/api_service';
 import {
   IJsonRpcBlock,
@@ -7,13 +7,6 @@ import {
   IJsonRpcResponse,
   IJsonRpcTransaction,
 } from '@/interfaces/rpc';
-
-interface IRpcBody {
-  jsonrpc: string;
-  method: string;
-  params: unknown[];
-  id: number;
-}
 
 export const useEthRpc = (chainId: string) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -142,10 +135,13 @@ export const useEthRpc = (chainId: string) => {
   );
 
   // Info: (20260202 - Julian) 批次取得區塊的方法
-  const getBlocksBatch = (heights: bigint[], full: boolean) => {
-    const requests = heights.map((h) => rpcService.getBlockByNumber(`0x${h.toString(16)}`, full));
-    return executeBatch<IJsonRpcBlock>(requests);
-  };
+  const getBlocksBatch = useCallback(
+    (heights: bigint[], full: boolean) => {
+      const requests = heights.map((h) => rpcService.getBlockByNumber(`0x${h.toString(16)}`, full));
+      return executeBatch<IJsonRpcBlock>(requests);
+    },
+    [executeBatch]
+  );
 
   return {
     isLoading,
