@@ -37,7 +37,7 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // --- 階段 1: 基礎資料抓取 (互不依賴) ---
+        // Info: (20260203 - Julian) 階段 1: 基礎資料抓取 (互不依賴)
         const firstBatch = [
           rpcService.getBlockNumber(),
           rpcService.getTransactionByHash(txId),
@@ -54,27 +54,27 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
           return;
         }
 
-        // 更新基礎狀態
+        // Info: (20260203 - Julian) 更新基礎狀態
         setLatestBlockNumber(latestBn as string);
         setTx(txData as IJsonRpcTransaction);
         setReceipt(receiptData as IJsonRpcReceipt);
 
-        // --- 階段 2: 依賴型資料抓取 (區塊與代幣元數據) ---
+        // Info: (20260203 - Julian) 階段 2: 依賴型資料抓取 (區塊與代幣元數據)
 
-        // 2a. 抓取區塊詳情
+        // Info: (20260203 - Julian) 2a. 抓取區塊詳情
         const blockPromise = getBlockByNumber((receiptData as IJsonRpcReceipt).blockNumber, false);
 
-        // 2b. 解析 Logs 並過濾出 ERC20 Transfer
+        // Info: (20260203 - Julian) 2b. 解析 Logs 並過濾出 ERC20 Transfer
         const rawTransfers = extractRawTransfers((receiptData as IJsonRpcReceipt).logs || []);
         const uniqueTokenAddresses = Array.from(new Set(rawTransfers.map((t) => t.tokenAddress)));
 
-        // 2c. 準備代幣 MetaData 請求
+        // Info: (20260203 - Julian) 2c. 準備代幣 MetaData 請求
         const tokenMetaRequests = uniqueTokenAddresses.flatMap((addr) => [
           rpcService.getErc20Symbol(addr),
           rpcService.getErc20Decimals(addr),
         ]);
 
-        // 併發執行：區塊抓取與代幣 Meta 抓取
+        // Info: (20260203 - Julian) 併發執行：區塊抓取與代幣 Meta 抓取
         const [blockData, metaResponses] = await Promise.all([
           blockPromise,
           tokenMetaRequests.length > 0
@@ -84,9 +84,9 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
 
         if (blockData) setBlock(blockData);
 
-        // --- 階段 3: 資料整合與映射 ---
+        // Info: (20260203 - Julian) 階段 3: 資料整合與映射
 
-        // 建立代幣資訊映射表
+        // Info: (20260203 - Julian) 建立代幣資訊映射表
         const tokenMap: Record<string, { symbol: string; decimals: number }> = {};
         uniqueTokenAddresses.forEach((addr, i) => {
           if (metaResponses) {
@@ -100,7 +100,7 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
           }
         });
 
-        // 組合成最終的 Token Transfers 列表
+        // Info: (20260203 - Julian) 組合成最終的 Token Transfers 列表
         const finalTransfers = rawTransfers.map((t) => {
           const meta = tokenMap[t.tokenAddress.toLowerCase()];
           return {
@@ -110,7 +110,7 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
           };
         });
 
-        setTokenTransfers(finalTransfers); // 這是傳給 <TokenTransferList /> 的資料
+        setTokenTransfers(finalTransfers); // Info: (20260203 - Julian) 這是傳給 <TokenTransferList /> 的資料
       } catch (err: unknown) {
         console.error(err);
         setError(err instanceof Error ? err.message : 'Failed to fetch transaction details');
@@ -120,7 +120,7 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
     if (chainId && txId) {
       fetchData();
     }
-  }, [chainId, txId]);
+  }, [chainId, txId, executeBatch, getBlockByNumber]);
 
   // Info: (20260202 - Julian) Render Loading Skeleton
   if (isLoading) {
@@ -138,23 +138,23 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {[1, 2, 3].map((i) => (
-                <tr key={i}>
-                  <td className="py-4">
+                <tr key={i} aria-hidden="true">
+                  <td className="py-4" aria-hidden="true">
                     <div className="h-4 w-32 animate-pulse rounded bg-gray-100" />
                   </td>
-                  <td className="py-4">
+                  <td className="py-4" aria-hidden="true">
                     <div className="space-y-2">
                       <div className="h-4 w-24 animate-pulse rounded bg-gray-100" />
                       <div className="h-3 w-16 animate-pulse rounded bg-gray-50" />
                     </div>
                   </td>
-                  <td className="py-4">
+                  <td className="py-4" aria-hidden="true">
                     <div className="space-y-2">
                       <div className="h-4 w-24 animate-pulse rounded bg-gray-100" />
                       <div className="h-3 w-16 animate-pulse rounded bg-gray-50" />
                     </div>
                   </td>
-                  <td className="py-4">
+                  <td className="py-4" aria-hidden="true">
                     <div className="h-4 w-20 animate-pulse rounded bg-gray-100" />
                   </td>
                 </tr>

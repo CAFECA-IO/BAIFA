@@ -3,10 +3,10 @@
 import { XCircle } from 'lucide-react';
 
 interface IErrorStateProps {
-  title?: string; // 錯誤標題，預設為「數據加載失敗」
-  message?: string | null; // 錯誤詳細訊息
-  onRetry?: () => void; // 重試按鈕的回調函式
-  showContainer?: boolean; // 是否顯示邊框與陰影 (容器樣式)，預設為 false
+  title?: string; // Info: (20260203 - Julian) 錯誤標題，預設為「數據加載失敗」
+  message?: string | null; // Info: (20260203 - Julian) 錯誤詳細訊息
+  onRetry?: () => void; // Info: (20260203 - Julian) 重試按鈕的回調函式
+  showContainer?: boolean; // Info: (20260203 - Julian) 是否顯示邊框與陰影 (容器樣式)，預設為 false
 }
 
 const ErrorState = ({

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { IJsonRpcTransaction, IJsonRpcBlock, IJsonRpcReceipt } from '@/interfaces/rpc';
 import { rpcService } from '@/lib/services/rpc_service';
 import { formatHexToEther, formatBalanceChange } from '@/lib/utils/format';
@@ -75,70 +75,73 @@ const TransactionStatus = ({ chainId, txId }: ITransactionStatus) => {
   const [error, setError] = useState<string | null>();
 
   // Info: (20260202 - Julian) 分析狀態變化
-  const runAnalysis = async (currentTx: IJsonRpcTransaction, currentBlock: IJsonRpcBlock) => {
-    // Info: (20260202 - Julian) 1. 收集地址邏輯保持不變
-    const addressList = Array.from(
-      new Set(
-        [
-          currentTx.from?.toLowerCase(),
-          currentTx.to?.toLowerCase(),
-          currentBlock.miner?.toLowerCase(),
-        ].filter(Boolean) as string[]
-      )
-    );
+  const runAnalysis = useCallback(
+    async (currentTx: IJsonRpcTransaction, currentBlock: IJsonRpcBlock) => {
+      // Info: (20260202 - Julian) 1. 收集地址邏輯保持不變
+      const addressList = Array.from(
+        new Set(
+          [
+            currentTx.from?.toLowerCase(),
+            currentTx.to?.toLowerCase(),
+            currentBlock.miner?.toLowerCase(),
+          ].filter(Boolean) as string[]
+        )
+      );
 
-    const prevBnHex = `0x${(BigInt(currentBlock.number) - 1n).toString(16)}`;
-    const currBnHex = currentBlock.number;
+      const prevBnHex = `0x${(BigInt(currentBlock.number) - 1n).toString(16)}`;
+      const currBnHex = currentBlock.number;
 
-    // Info: (20260202 - Julian) 2. 構建請求
-    const stateRequests = addressList.flatMap((addr) => [
-      rpcService.getBalance(addr, prevBnHex),
-      rpcService.getTransactionCount(addr, prevBnHex),
-      rpcService.getBalance(addr, currBnHex),
-      rpcService.getTransactionCount(addr, currBnHex),
-    ]);
+      // Info: (20260202 - Julian) 2. 構建請求
+      const stateRequests = addressList.flatMap((addr) => [
+        rpcService.getBalance(addr, prevBnHex),
+        rpcService.getTransactionCount(addr, prevBnHex),
+        rpcService.getBalance(addr, currBnHex),
+        rpcService.getTransactionCount(addr, currBnHex),
+      ]);
 
-    const batchResponses = await executeBatch<string>(stateRequests);
-    if (!batchResponses) return;
+      const batchResponses = await executeBatch<string>(stateRequests);
+      if (!batchResponses) return;
 
-    // Info: (20260202 - Julian) 4. 安全提取數值的內部工具
-    const safeExtract = (index: number, address: string, method: string): string => {
-      const resp = batchResponses[index];
-      if (resp?.error) {
-        // Info: (20260202 - Julian) 鈍針對 missing trie node (-32000) 進行紀錄
-        console.warn(`RPC 警告 [${address} - ${method}]: ${resp.error.message}`);
-        return '0x0';
-      }
-      return resp?.result ?? '0x0';
-    };
-
-    // Info: (20260202 - Julian) 5. 解析結果
-    const results: IAccountState[] = addressList.map((addr, i) => {
-      const base = i * 4;
-
-      // Info: (20260202 - Julian) 依序提取：前餘額、前 Nonce、後餘額、後 Nonce
-      const balPrev = safeExtract(base, addr, 'getBalance_prev');
-      const noncePrev = safeExtract(base + 1, addr, 'getNonce_prev');
-      const balCurr = safeExtract(base + 2, addr, 'getBalance_curr');
-      const nonceCurr = safeExtract(base + 3, addr, 'getNonce_curr');
-
-      return {
-        address: addr,
-        before: {
-          balance: formatHexToEther(balPrev),
-          nonce: BigInt(noncePrev).toString(),
-        },
-        after: {
-          balance: formatHexToEther(balCurr),
-          nonce: BigInt(nonceCurr).toString(),
-        },
-        change: formatBalanceChange(balPrev, balCurr),
-        isMiner: addr === currentBlock.miner?.toLowerCase(),
+      // Info: (20260202 - Julian) 4. 安全提取數值的內部工具
+      const safeExtract = (index: number, address: string, method: string): string => {
+        const resp = batchResponses[index];
+        if (resp?.error) {
+          // Info: (20260202 - Julian) 鈍針對 missing trie node (-32000) 進行紀錄
+          console.warn(`RPC 警告 [${address} - ${method}]: ${resp.error.message}`);
+          return '0x0';
+        }
+        return resp?.result ?? '0x0';
       };
-    });
 
-    setStateChanges(results);
-  };
+      // Info: (20260202 - Julian) 5. 解析結果
+      const results: IAccountState[] = addressList.map((addr, i) => {
+        const base = i * 4;
+
+        // Info: (20260202 - Julian) 依序提取：前餘額、前 Nonce、後餘額、後 Nonce
+        const balPrev = safeExtract(base, addr, 'getBalance_prev');
+        const noncePrev = safeExtract(base + 1, addr, 'getNonce_prev');
+        const balCurr = safeExtract(base + 2, addr, 'getBalance_curr');
+        const nonceCurr = safeExtract(base + 3, addr, 'getNonce_curr');
+
+        return {
+          address: addr,
+          before: {
+            balance: formatHexToEther(balPrev),
+            nonce: BigInt(noncePrev).toString(),
+          },
+          after: {
+            balance: formatHexToEther(balCurr),
+            nonce: BigInt(nonceCurr).toString(),
+          },
+          change: formatBalanceChange(balPrev, balCurr),
+          isMiner: addr === currentBlock.miner?.toLowerCase(),
+        };
+      });
+
+      setStateChanges(results);
+    },
+    [executeBatch]
+  );
 
   useEffect(() => {
     const fetchStateChanges = async () => {
@@ -163,13 +166,13 @@ const TransactionStatus = ({ chainId, txId }: ITransactionStatus) => {
         }
 
         /**
-         * Info: (20260202 - Julian) --- 階段 2: 取得區塊詳情 ---
-         * Info: (20260202 - Julian) 這裡我們需要 Block 裡的 miner 地址來判斷出塊者
+         * Info: (20260202 - Julian) 階段 2: 取得區塊詳情
+         * 這裡我們需要 Block 裡的 miner 地址來判斷出塊者
          */
         const rawBlock = await getBlockByNumber(receiptData.blockNumber, false);
         if (!rawBlock) return;
 
-        // Info: (20260202 - Julian) --- 階段 3: 執行狀態分析 (帶入強型別) ---
+        // Info: (20260202 - Julian) 階段 3: 執行狀態分析 (帶入強型別)
         await runAnalysis(txData, rawBlock);
       } catch (err: unknown) {
         console.error('Initialization failed:', err);
@@ -178,7 +181,7 @@ const TransactionStatus = ({ chainId, txId }: ITransactionStatus) => {
     };
 
     fetchStateChanges();
-  }, [chainId, txId]);
+  }, [chainId, txId, executeBatch, getBlockByNumber, runAnalysis]);
 
   // Info: (20260202 - Julian) Render Loading Skeleton
   if (isLoading)
@@ -196,23 +199,23 @@ const TransactionStatus = ({ chainId, txId }: ITransactionStatus) => {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {[1, 2, 3].map((i) => (
-                <tr key={i}>
-                  <td className="py-4">
+                <tr key={i} aria-hidden="true">
+                  <td className="py-4" aria-hidden="true">
                     <div className="h-4 w-32 animate-pulse rounded bg-gray-100" />
                   </td>
-                  <td className="py-4">
+                  <td className="py-4" aria-hidden="true">
                     <div className="space-y-2">
                       <div className="h-4 w-24 animate-pulse rounded bg-gray-100" />
                       <div className="h-3 w-16 animate-pulse rounded bg-gray-50" />
                     </div>
                   </td>
-                  <td className="py-4">
+                  <td className="py-4" aria-hidden="true">
                     <div className="space-y-2">
                       <div className="h-4 w-24 animate-pulse rounded bg-gray-100" />
                       <div className="h-3 w-16 animate-pulse rounded bg-gray-50" />
                     </div>
                   </td>
-                  <td className="py-4">
+                  <td className="py-4" aria-hidden="true">
                     <div className="h-4 w-20 animate-pulse rounded bg-gray-100" />
                   </td>
                 </tr>
@@ -237,7 +240,7 @@ const TransactionStatus = ({ chainId, txId }: ITransactionStatus) => {
     stateChanges.length > 0 ? (
       stateChanges.map((state) => <ListItem key={state.address} chainId={chainId} state={state} />)
     ) : (
-      <tr>
+      <tr aria-hidden="true">
         <td colSpan={10} className="p-10 text-center font-semibold">
           <p className="text-gray-900">尚無數據</p>
         </td>

@@ -11,7 +11,7 @@ export interface ITokenTransfer {
   to: string;
   value: string;
   tokenAddress: string;
-  tokenSymbol?: string; // 可選：需透過額外查詢或對照表取得
+  tokenSymbol?: string; // Info: (20260203 - Julian) 可選：需透過額外查詢或對照表取得
   tokenDecimals?: number;
 }
 
@@ -28,7 +28,7 @@ interface ITokenTransferListProps {
 const TokenTransferList = ({ transfers, chainId }: ITokenTransferListProps) => {
   const [viewMode, setViewMode] = useState<EViewMode>(EViewMode.ALL);
 
-  // ToDo: 替換為實際的 token 頁面路徑
+  // ToDo: (20260203 - Julian) 替換為實際的 token 頁面路徑
   const tokenPath = '#';
 
   const createAddressLabel = (address: string) => {
@@ -49,7 +49,7 @@ const TokenTransferList = ({ transfers, chainId }: ITokenTransferListProps) => {
   const displayedList =
     transfers.length > 0 ? (
       <div className="grow space-y-3">
-        {/* 切換按鈕 */}
+        {/* Info: (20260203 - Julian) 切換按鈕 */}
         <div className="mb-2 flex gap-2">
           <button
             type="button"
@@ -67,7 +67,7 @@ const TokenTransferList = ({ transfers, chainId }: ITokenTransferListProps) => {
           </button>
         </div>
 
-        {/* 轉帳列表 */}
+        {/* Info: (20260203 - Julian) 轉帳列表 */}
         <ul className="space-y-2">
           {transfers.map((item, i) => (
             <li key={i} className="flex items-center gap-2 text-sm">

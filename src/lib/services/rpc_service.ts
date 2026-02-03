@@ -47,7 +47,7 @@ export const rpcService = {
     return {
       jsonrpc: '2.0',
       method: 'eth_getBlockByNumber',
-      params: [formattedBlockNumber, fullTx], // 將 blockNumber 轉換為十六進制
+      params: [formattedBlockNumber, fullTx], // Info: (20260130 - Julian) 將 blockNumber 轉換為十六進制
       id: Date.now() + 4,
     };
   },
@@ -82,11 +82,11 @@ export const rpcService = {
    * @param userAddress 要查詢的用戶地址
    */
   getErc20Balance: (tokenAddress: string, userAddress: string): IRpcBody => {
-    // 移除 0x 並補足至 64 字元 (32 bytes)
+    // Info: (20260203 - Julian) 移除 0x 並補足至 64 字元 (32 bytes)
     const cleanAddress = userAddress.startsWith('0x') ? userAddress.slice(2) : userAddress;
     const paddedAddress = cleanAddress.padStart(64, '0');
 
-    // balanceOf 的 Method ID 是 0x70a08231
+    // Info: (20260203 - Julian) balanceOf 的 Method ID 是 0x70a08231
     const data = `0x70a08231${paddedAddress}`;
 
     return {
@@ -115,7 +115,7 @@ export const rpcService = {
   getErc20Decimals: (tokenAddress: string): IRpcBody => ({
     jsonrpc: '2.0',
     method: 'eth_call',
-    params: [{ to: tokenAddress, data: '0x313ce567' }, 'latest'], // 0x313ce567 是 decimals() 的 selector
+    params: [{ to: tokenAddress, data: '0x313ce567' }, 'latest'], // Info: (20260203 - Julian) 0x313ce567 是 decimals() 的 selector
     id: Date.now() + 10,
   }),
 };

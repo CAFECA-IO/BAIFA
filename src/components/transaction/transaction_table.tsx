@@ -152,7 +152,7 @@ const TransactionTable = () => {
     };
 
     fetchTransactionList();
-  }, [chainId]);
+  }, [chainId, getLatestBlockNumber, getBlocksBatch]);
 
   // Info: (20260202 - Julian) 發生錯誤
   if (rpcError || error) {
@@ -170,14 +170,14 @@ const TransactionTable = () => {
 
   const isDisplayedTable = isLoading ? (
     // Info: (20260202 - Julian) 載入中
-    <tr>
+    <tr aria-hidden="true">
       <td colSpan={10} className="p-10 text-center font-semibold">
         <Loader2 className="mx-auto h-6 w-6 animate-spin text-gray-600" />
       </td>
     </tr>
   ) : transactions.length === 0 ? (
     // Info: (20260202 - Julian) 無資料
-    <tr>
+    <tr aria-hidden="true">
       <td colSpan={10} className="p-10 text-center font-semibold">
         <p className="text-gray-900">尚無數據</p>
       </td>

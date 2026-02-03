@@ -60,7 +60,7 @@ const LogItem = ({
     (val: string, paramKey: string, paramType?: string) => {
       if (!val || val === '0x') return <span className="text-gray-400 italic">0x</span>;
 
-      // 辨識地址：包含標準 address 與 32-byte 填充地址
+      // Info: (20260203 - Julian) 辨識地址：包含標準 address 與 32-byte 填充地址
       const isAddress =
         paramType === 'address' ||
         (val.length === 66 && val.startsWith('0x000000000000000000000000'));
@@ -84,7 +84,7 @@ const LogItem = ({
 
       const mode = displayModes[paramKey] || 'Dec';
 
-      // 安全地處理 BigInt 轉換
+      // Info: (20260203 - Julian) 安全地處理 BigInt 轉換
       let displayText = val;
       let hasDec = false;
       try {
@@ -177,7 +177,7 @@ const LogItem = ({
           </div>
         </div>
 
-        {/* 事件特徵 */}
+        {/* Info: (20260203 - Julian) 事件特徵 */}
         <div className="flex items-start gap-4">
           <div className="w-24 shrink-0 pt-1 text-xs font-bold tracking-wider text-gray-400 uppercase">
             事件日誌
@@ -200,7 +200,7 @@ const LogItem = ({
           <div className="grow space-y-4">{displayedTopics}</div>
         </div>
 
-        {/* 數據內容 */}
+        {/* Info: (20260203 - Julian) 數據內容 */}
         <div className="flex items-start gap-4">
           <div className="w-24 shrink-0 pt-1 text-xs font-bold tracking-wider text-gray-400 uppercase">
             數據內容
@@ -265,14 +265,14 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
               name: input.name,
               type: input.type,
               value: decoded.args[input.name]?.toString() || '0x',
-              isIndexed: !!input.indexed, // 使用 !! 將 boolean | null 強制轉為 boolean
+              isIndexed: !!input.indexed, // Info: (20260203 - Julian) 使用 !! 將 boolean | null 強制轉為 boolean
             }))
           : [];
 
         return {
           index: i,
           address: log.address,
-          eventName: decoded?.name || 'Unknown', // TODO: 顯示未解析事件
+          eventName: decoded?.name || 'Unknown', // Info: (20260203 - Julian) TODO: 顯示未解析事件
           eventSignature: decoded?.signature || '',
           topics,
           decodedData,
@@ -314,6 +314,7 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
           <input
             type="text"
             placeholder="搜尋地址或事件..."
+            aria-label="Search inputs"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-96 rounded-lg border border-gray-300 bg-white py-2 pr-4 pl-9 text-base text-blue-500 transition-all placeholder:text-gray-400 focus:border-blue-400 focus:outline-none"
