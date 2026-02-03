@@ -113,8 +113,8 @@ export const formatRpcBlock = (block: IJsonRpcBlock): IBlock => {
     proposer: block.miner,
     txns: Array.isArray(block.transactions) ? block.transactions.length : 0,
     size: BigInt(block.size).toString(),
-    reward: blockReward.toFixed(6), // Info: (20260202 - Julian) 區塊獎勵 (ETH)
-    gas: (Number(totalFee) / 1e18).toFixed(6), // Info: (20260202 - Julian) 總手續費 (ETH)
+    reward: blockReward.toFixed(6), // Info: (20260202 - Julian) 區塊獎勵 (ISC)
+    gas: (Number(totalFee) / 1e18).toFixed(6), // Info: (20260202 - Julian) 總手續費 (ISC)
     gasPrice: avgGasPrice.toFixed(2), // Info: (20260202 - Julian) 平均 Gas Price (Gwei)
     gasUsed: gasUsed.toString(),
     gasUsedPercent: percent,
@@ -143,9 +143,9 @@ export const formatRpcTransaction = (
     timestamp: ts.toString(),
     from: tx.from,
     to: tx.to || 'New Contract',
-    value: `${parseFloat(formatHexToEther(tx.value)).toFixed(2)} ETH`,
+    value: `${parseFloat(formatHexToEther(tx.value)).toFixed(2)} ISC`,
     // Info: (20260202 - Julian) 精確到 8 位小數的手續費
-    fee: `${parseFloat(formatHexToEther(fee.toString(16))).toFixed(8)} ETH`,
+    fee: `${parseFloat(formatHexToEther(fee.toString(16))).toFixed(8)} ISC`,
   };
 };
 
@@ -160,11 +160,11 @@ export const formatBalanceChange = (prevHex: string, currHex: string): string =>
   const curr = BigInt(currHex);
   const diff = curr - prev;
 
-  if (diff === 0n) return '0 ETH';
+  if (diff === 0n) return '0 ISC';
 
   const eth = formatHexToEther(
     diff >= 0n ? `0x${diff.toString(16)}` : `-0x${(-diff).toString(16)}`
   );
 
-  return diff > 0n ? `+${eth} ETH` : `${eth} ETH`;
+  return diff > 0n ? `+${eth} ISC` : `${eth} ISC`;
 };

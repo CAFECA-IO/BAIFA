@@ -33,7 +33,7 @@ export default function JourneySection() {
               <h3 className="mb-3 text-2xl font-bold">Gas Tracker</h3>
               <p className="mb-2 text-base text-gray-500">發現最佳交易時刻</p>
               <div className="mb-8">
-                <span className="text-sm text-gray-400">ETH 最佳手續費</span>
+                <span className="text-sm text-gray-400">ISC 最佳手續費</span>
                 <div className="text-3xl font-bold text-orange-600">0.056938 Gwei</div>
               </div>
             </div>

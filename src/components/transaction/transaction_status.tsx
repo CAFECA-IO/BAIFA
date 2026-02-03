@@ -41,13 +41,13 @@ const ListItem = ({ chainId, state }: { chainId: string; state: IAccountState })
       </td>
       <td className="py-4 align-top" aria-label="Before Transaction State">
         <div className="flex flex-col">
-          <span className="font-medium text-gray-900">{state.before.balance} ETH</span>
+          <span className="font-medium text-gray-900">{state.before.balance} ISC</span>
           <span className="text-xs text-gray-500">Nonce: {state.before.nonce}</span>
         </div>
       </td>
       <td className="py-4 align-top" aria-label="After Transaction State">
         <div className="flex flex-col">
-          <span className="font-medium text-gray-900">{state.after.balance} ETH</span>
+          <span className="font-medium text-gray-900">{state.after.balance} ISC</span>
           <span className="text-xs text-gray-500">Nonce: {state.after.nonce}</span>
         </div>
       </td>
@@ -61,7 +61,7 @@ const ListItem = ({ chainId, state }: { chainId: string; state: IAccountState })
                 : 'text-gray-900'
           }`}
         >
-          {state.change} ETH
+          {state.change} ISC
         </span>
       </td>
     </tr>

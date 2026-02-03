@@ -157,8 +157,8 @@ export function useBlockchainData(chainId: string | null) {
                   fromLabel: t.from,
                   to: t.to ? truncateAddress(t.to) : '-',
                   toLabel: t.to ?? 'Unknown',
-                  value: `${parseFloat(formatHexToEther(t.value)).toFixed(2)} ETH`,
-                  fee: `${parseFloat(fee).toFixed(2)} ETH`,
+                  value: `${parseFloat(formatHexToEther(t.value)).toFixed(2)} ISC`,
+                  fee: `${parseFloat(fee).toFixed(2)} ISC`,
                 });
               });
           }

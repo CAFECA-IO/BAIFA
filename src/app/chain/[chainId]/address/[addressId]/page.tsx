@@ -186,14 +186,14 @@ export default function AddressDetailPage() {
             {/* Info: (20260130 - Julian) Top Row */}
             <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
               <div className="space-y-2">
-                <div className="text-xs font-medium text-gray-400">Ethereum 鏈總資產</div>
+                <div className="text-xs font-medium text-gray-400">ISC 鏈總資產</div>
                 <div className="flex items-center gap-2">
                   <span className="text-xl font-bold text-gray-900">{stats.totalAssets}</span>
                   <span className="text-sm font-bold text-green-500">{stats.assetsChange}</span>
                 </div>
               </div>
               <div className="space-y-2 border-l border-gray-100 pl-8">
-                <div className="text-xs font-medium text-gray-400">ETH 持倉</div>
+                <div className="text-xs font-medium text-gray-400">ISC 持倉</div>
                 <div className="flex flex-col">
                   <span className="text-base font-bold text-gray-900">{stats.ethBalance}</span>
                   <span className="text-xs text-gray-500">({stats.ethValue})</span>

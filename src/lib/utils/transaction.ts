@@ -26,7 +26,7 @@ const DESCRIPTION_SIGNATURES: { [key: string]: string } = {
 };
 
 export const getMethodDescription = (input: string) => {
-  if (!input || input === '0x' || input === '0x0') return 'ETH Transfer';
+  if (!input || input === '0x' || input === '0x0') return 'ISC Transfer';
 
   // Info: (20260130 - Julian) Ensure prefix
   const cleanInput = input.startsWith('0x') ? input : `0x${input}`;
@@ -44,7 +44,7 @@ export const getTransactionDescription = (tx: IJsonRpcTransaction) => {
   if (input === '0x' || input === '0x0') {
     // Info: (20260130 - Julian) tx.value is hex string
     const ethValue = parseFloat(formatHexToEther(tx.value ?? '0x0')).toFixed(4);
-    return `ETH Transfer (發送 ${ethValue} ETH)`;
+    return `ISC Transfer (發送 ${ethValue} ISC)`;
   }
 
   // Info: (20260130 - Julian) Try description map, then method map

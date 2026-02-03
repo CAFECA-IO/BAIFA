@@ -360,13 +360,13 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
           {/* Info: (20260130 - Julian) Value */}
           <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
             <div className="w-full text-sm text-gray-500 sm:w-1/4">交易數量 :</div>
-            <div className="text-sm font-medium text-gray-900">{valEthFormatted} ETH</div>
+            <div className="text-sm font-medium text-gray-900">{valEthFormatted} ISC</div>
           </div>
 
           {/* Info: (20260130 - Julian) Transaction Fee */}
           <div className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-12">
             <div className="w-full text-sm text-gray-500 sm:w-1/4">交易手續費 :</div>
-            <div className="text-sm text-gray-900">{txFeeEth} ETH</div>
+            <div className="text-sm text-gray-900">{txFeeEth} ISC</div>
           </div>
         </div>
 
@@ -417,12 +417,12 @@ const TransactionOverview = ({ chainId, txId }: ITransactionOverviewProps) => {
               <div className="flex flex-wrap items-center gap-2 text-sm text-gray-900">
                 {burntFeeEth && (
                   <span className="flex items-center gap-1 rounded bg-orange-50 px-2 py-1 text-orange-700">
-                    🔥 銷毀手續費 : {burntFeeEth} ETH
+                    🔥 銷毀手續費 : {burntFeeEth} ISC
                   </span>
                 )}
                 {savingsEth && (
                   <span className="flex items-center gap-1 rounded bg-green-50 px-2 py-1 text-green-700">
-                    💸 手續費找零 : {savingsEth} ETH
+                    💸 手續費找零 : {savingsEth} ISC
                   </span>
                 )}
               </div>
