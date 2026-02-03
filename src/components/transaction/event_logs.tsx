@@ -300,7 +300,7 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-gray-50 pb-6">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-50 pb-6">
         <div>
           <h3 className="text-lg font-bold text-gray-900">事件日誌</h3>
           <p className="text-sm text-gray-500">共計 {eventLogs.length} 個事件</p>
@@ -308,7 +308,7 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
 
         <div className="group relative">
           <Search
-            size={14}
+            size={20}
             className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-blue-500"
           />
           <input
@@ -316,7 +316,7 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
             placeholder="搜尋地址或事件..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="h-9 w-64 rounded-lg border border-gray-200 bg-gray-50 pr-4 pl-9 text-xs transition-all focus:border-blue-400 focus:bg-white focus:outline-none"
+            className="w-96 rounded-lg border border-gray-300 bg-white py-2 pr-4 pl-9 text-base text-blue-500 transition-all placeholder:text-gray-400 focus:border-blue-400 focus:outline-none"
           />
         </div>
       </div>

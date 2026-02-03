@@ -1,14 +1,24 @@
 import { Interface, LogDescription } from 'ethers';
 
-// 1. 定義常見的 ABI 介面
+// 定義常見的 ABI 介面
 const COMMON_ABI = [
+  // ERC-20 & ERC-721
   'event Transfer(address indexed from, address indexed to, uint256 value)',
   'event Approval(address indexed owner, address indexed spender, uint256 value)',
+
+  // WETH
   'event Deposit(address indexed dst, uint256 wad)',
   'event Withdrawal(address indexed src, uint256 wad)',
-  'event Swap(address indexed sender, address indexed recipient, int128 amount0, int128 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick)',
-];
 
+  // Uniswap V3
+  'event Swap(address indexed sender, address indexed recipient, int256 amount0, int256 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick)',
+  'event Mint(address sender, address indexed owner, int24 tickLower, int24 tickUpper, uint128 amount, uint256 amount0, uint256 amount1)',
+  'event Burn(address indexed owner, int24 tickLower, int24 tickUpper, uint128 amount, uint256 amount0, uint256 amount1)',
+  'event Collect(address indexed owner, address recipient, int24 tickLower, int24 tickUpper, uint128 amount0, uint128 amount1)',
+
+  // Uniswap V4 (如果這是你的重點)
+  'event Swap(address indexed sender, address indexed recipient, int128 amount0, int128 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick, uint24 fee)',
+];
 const iface = new Interface(COMMON_ABI);
 
 /**
