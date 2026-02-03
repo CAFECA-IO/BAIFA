@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { Search, ExternalLink } from 'lucide-react';
-import { IJsonRpcReceipt, IJsonRpcLog } from '@/interfaces/rpc';
+import { IJsonRpcReceipt } from '@/interfaces/rpc';
 import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 import { rpcService } from '@/lib/services/rpc_service';
 import CopyButton from '@/components/common/copy_button';
 import ErrorState from '@/components/common/error_state';
 import { decodeLog } from '@/lib/utils/log_parser';
+import HexLine from '@/components/common/hex_line';
 
 interface IEventLogsProps {
   chainId: string;
@@ -45,164 +46,188 @@ const LogItem = ({
   index: number;
   chainId: string;
 }) => {
-  const [isDec, setIsDec] = useState<boolean>(true);
+  const [displayModes, setDisplayModes] = useState<Record<string, 'Dec' | 'Hex'>>({});
 
-  const renderValue = (val: string, paramType?: string) => {
-    if (!val || val === '0x') return '0x';
-
-    // Info: (20260202 - Julian) 偵測是否為可能的地址 (20 bytes / 40 chars + 0x)
-    const isAddressType =
-      paramType === 'address' ||
-      (val.length === 66 && val.startsWith('0x000000000000000000000000'));
-    const address = isAddressType ? (val.startsWith('0x0000') ? '0x' + val.slice(26) : val) : null;
-
-    if (address) {
-      return (
-        <div className="flex items-center gap-2">
-          <Link
-            href={`/chain/${chainId}/address/${address}`}
-            className="font-mono text-blue-600 hover:text-blue-800 hover:underline"
-          >
-            {address}
-          </Link>
-          <CopyButton value={address} />
-        </div>
-      );
-    }
-
-    try {
-      const dec = BigInt(val).toString();
-      return (
-        <div className="flex items-center gap-2 text-sm">
-          <div className="flex shrink-0 overflow-hidden rounded border border-gray-200 text-[10px]">
-            <button
-              type="button"
-              onClick={() => setIsDec((prev) => !prev)}
-              className={`px-1.5 py-0.5 ${isDec ? 'bg-gray-100 font-bold text-gray-900' : 'bg-white text-gray-400'}`}
-            >
-              Dec
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsDec((prev) => !prev)}
-              className={`px-1.5 py-0.5 ${!isDec ? 'bg-gray-100 font-bold text-gray-900' : 'bg-white text-gray-400'}`}
-            >
-              Hex
-            </button>
-          </div>
-          <span className="font-mono break-all text-gray-700">{isDec ? dec : val}</span>
-        </div>
-      );
-    } catch {
-      return <span className="font-mono break-all text-gray-700">{val}</span>;
-    }
+  // Info: (20260203 - Julian) 根據 key 切換顯示模式
+  const toggleMode = (key: string) => {
+    setDisplayModes((prev) => ({
+      ...prev,
+      [key]: prev[key] === 'Hex' ? 'Dec' : 'Hex',
+    }));
   };
 
-  const indexedParams = log.decodedData?.filter((p) => p.isIndexed) || [];
-  const nonIndexedParams = log.decodedData?.filter((p) => !p.isIndexed) || [];
+  const renderValue = useCallback(
+    (val: string, paramKey: string, paramType?: string) => {
+      if (!val || val === '0x') return <span className="text-gray-400 italic">0x</span>;
 
-  // Info: (20260202 - Julian) Fallback for non-decoded data
-  const dataChunks = [];
-  if (!log.decodedData && log.rawData && log.rawData.length > 2) {
-    const rawContent = log.rawData.slice(2);
-    for (let i = 0; i < rawContent.length; i += 64) {
-      dataChunks.push('0x' + rawContent.slice(i, i + 64));
-    }
-  }
+      // 辨識地址：包含標準 address 與 32-byte 填充地址
+      const isAddress =
+        paramType === 'address' ||
+        (val.length === 66 && val.startsWith('0x000000000000000000000000'));
+      const cleanAddress = isAddress ? (val.length === 66 ? '0x' + val.slice(26) : val) : null;
 
-  const displayedTopics = log.topics.map((topic, i) => {
-    const param = i > 0 && indexedParams.length > i ? indexedParams[i - 1] : null;
-    return (
-      <div key={i} className="group flex items-center gap-4">
-        <div className="flex flex-col items-center pt-1">
-          <span className="text-xs font-bold text-gray-300 transition-colors">{i}</span>
-        </div>
-        <div className="flex w-full flex-col gap-1">
-          {param && (
-            <span className="text-xs font-bold tracking-wider text-gray-400 uppercase">
-              {param.name}{' '}
-              <span className="font-normal text-gray-300 lowercase">({param.type})</span>
-            </span>
+      const addressPath = `/chain/${chainId}/address/${cleanAddress}`;
+
+      if (cleanAddress) {
+        return (
+          <div className="flex items-center gap-2">
+            <Link
+              href={addressPath}
+              className="font-mono text-sm break-all text-blue-600 hover:text-blue-800 hover:underline"
+            >
+              {cleanAddress}
+            </Link>
+            <CopyButton value={cleanAddress} />
+          </div>
+        );
+      }
+
+      const mode = displayModes[paramKey] || 'Dec';
+
+      // 安全地處理 BigInt 轉換
+      let displayText = val;
+      let hasDec = false;
+      try {
+        if (val.startsWith('0x') && val.length > 2) {
+          displayText = mode === 'Dec' ? BigInt(val).toString() : val;
+          hasDec = true;
+        }
+      } catch {
+        displayText = val;
+      }
+
+      return (
+        <div className="flex items-center gap-2 overflow-hidden">
+          {hasDec && (
+            <div className="flex shrink-0 overflow-hidden rounded border border-gray-200 text-[10px]">
+              <button
+                type="button"
+                onClick={() => toggleMode(paramKey)}
+                className={`px-1.5 py-0.5 transition-colors ${mode === 'Dec' ? 'bg-gray-100 font-bold text-gray-900' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
+              >
+                Dec
+              </button>
+              <button
+                type="button"
+                onClick={() => toggleMode(paramKey)}
+                className={`px-1.5 py-0.5 transition-colors ${mode === 'Hex' ? 'bg-gray-100 font-bold text-gray-900' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
+              >
+                Hex
+              </button>
+            </div>
           )}
-          <div className="w-full">{renderValue(topic.value, param?.type)}</div>
+          <span className="font-mono text-sm break-all text-gray-700">{displayText}</span>
         </div>
+      );
+    },
+    [chainId, displayModes]
+  );
+
+  const nonIndexedParams = useMemo(
+    () => log.decodedData?.filter((p) => !p.isIndexed) || [],
+    [log.decodedData]
+  );
+
+  const dataChunks = useMemo(() => {
+    if (log.decodedData && log.decodedData.length > 0) return [];
+    if (!log.rawData || log.rawData === '0x') return [];
+    return (log.rawData.slice(2).match(/.{1,64}/g) || []).map((s) => '0x' + s);
+  }, [log.decodedData, log.rawData]);
+
+  const displayedTopics = log.topics.map((topic, i) => (
+    <div key={i} className="flex gap-4">
+      <span className="w-4 pt-1.5 text-[10px] font-black text-gray-300">{i}</span>
+      <div className="min-w-0 grow space-y-1.5">
+        <div className="text-[10px] font-bold tracking-tighter text-gray-400 uppercase">
+          {topic.label}
+        </div>
+        {renderValue(topic.value, `topic_${index}_${i}`)}
       </div>
-    );
-  });
+    </div>
+  ));
 
   return (
     <div className="flex gap-6 border-b border-gray-100 py-8 last:border-0">
-      {/* Info: (20260202 - Julian) Index */}
-      <div className="shrink-0">
-        <div className="flex h-8 w-8 items-center justify-center rounded bg-gray-50 text-sm font-bold text-gray-400">
-          {index}
-        </div>
+      {/* Info: (20260203 - Julian) 顯示 Log 的序號 */}
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-gray-100 bg-gray-50 text-sm font-bold text-gray-400">
+        {index}
       </div>
 
-      {/* Info: (20260202 - Julian) Content */}
-      <div className="grow space-y-5">
-        {/* Info: (20260202 - Julian) Address & Tag */}
+      <div className="min-w-0 grow space-y-6">
+        {/* Info: (20260203 - Julian) 地址欄 */}
         <div className="flex items-start gap-4">
-          <div className="w-24 shrink-0 pt-1 text-sm font-medium text-gray-500">地址</div>
-          <div className="flex flex-col gap-1">
+          <div className="w-24 shrink-0 pt-1 text-xs font-bold tracking-wider text-gray-400 uppercase">
+            合約地址
+          </div>
+          <div className="space-y-1">
             <div className="flex items-center gap-2">
               <Link
                 href={`/chain/${chainId}/address/${log.address}`}
-                className="font-mono text-blue-600 hover:text-blue-800 hover:underline"
+                className="font-mono text-sm text-blue-600 hover:underline"
               >
                 {log.address}
               </Link>
-              <CopyButton value={log.address} />
+              <CopyButton value={log.address} size={14} />
             </div>
             {log.addressTag && (
-              <span className="flex items-center gap-1 text-xs text-gray-400">
-                <ExternalLink size={12} /> {log.addressTag}
+              <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-700">
+                <ExternalLink size={10} /> {log.addressTag}
               </span>
             )}
           </div>
         </div>
 
-        {/* Info: (20260202 - Julian) Event Signature */}
+        {/* 事件特徵 */}
         <div className="flex items-start gap-4">
-          <div className="w-24 shrink-0 pt-1 text-sm font-medium text-gray-500">事件名稱</div>
-          <div className="flex flex-col gap-1">
+          <div className="w-24 shrink-0 pt-1 text-xs font-bold tracking-wider text-gray-400 uppercase">
+            事件日誌
+          </div>
+          <div className="min-w-0 grow space-y-2">
             <div className="text-base font-bold text-gray-900">{log.eventName}</div>
             {log.eventSignature && (
-              <span className="rounded bg-gray-50 px-2 py-1 font-mono text-xs break-all text-gray-400">
+              <div className="rounded-lg border border-gray-100 bg-gray-50 p-2.5 font-mono text-[11px] leading-relaxed break-all text-gray-500">
                 {log.eventSignature}
-              </span>
+              </div>
             )}
           </div>
         </div>
 
-        {/* Info: (20260202 - Julian) Topics Section */}
+        {/* Info: (20260203 - Julian) Topics 區塊 */}
         <div className="flex items-start gap-4">
-          <div className="w-24 shrink-0 pt-1 text-sm font-medium text-gray-500">Topic</div>
-          <div className="w-full space-y-3">{displayedTopics}</div>
+          <div className="w-24 shrink-0 pt-1 text-xs font-bold tracking-wider text-gray-400 uppercase">
+            Topics
+          </div>
+          <div className="grow space-y-4">{displayedTopics}</div>
         </div>
 
-        {/* Info: (20260202 - Julian) Data Section (Decoded Parameters or Raw Chunks) */}
+        {/* 數據內容 */}
         <div className="flex items-start gap-4">
-          <div className="w-24 shrink-0 pt-1 text-sm font-medium text-gray-500">數據</div>
-          <div className="w-full space-y-4 rounded-xl border border-gray-50 bg-gray-50/50 p-4">
-            {log.decodedData && nonIndexedParams.length > 0 ? (
-              nonIndexedParams.map((param, i) => (
-                <div key={i} className="flex flex-col gap-1">
-                  <span className="text-[10px] font-bold tracking-wider text-gray-400 uppercase">
-                    {param.name}{' '}
-                    <span className="font-normal text-gray-300 lowercase">({param.type})</span>
-                  </span>
-                  <div>{renderValue(param.value, param.type)}</div>
+          <div className="w-24 shrink-0 pt-1 text-xs font-bold tracking-wider text-gray-400 uppercase">
+            數據內容
+          </div>
+          <div className="grow space-y-5 overflow-hidden rounded-xl border border-gray-100 bg-gray-50 p-4">
+            {nonIndexedParams.length > 0 ? (
+              nonIndexedParams.map((p, i) => (
+                <div key={i} className="space-y-1.5">
+                  <div className="text-[10px] font-bold tracking-tighter text-gray-400 uppercase">
+                    {p.name} <span className="font-normal lowercase opacity-70">({p.type})</span>
+                  </div>
+                  {renderValue(p.value, `data_${index}_${i}`, p.type)}
                 </div>
               ))
             ) : dataChunks.length > 0 ? (
-              dataChunks.map((chunk, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div className="grow">{renderValue(chunk, `data_chunk_${i}`)}</div>
-                </div>
-              ))
+              <div className="space-y-1 font-mono">
+                {dataChunks.map((chunk, i) => (
+                  <HexLine
+                    key={i}
+                    chunk={chunk}
+                    index={i}
+                    renderValue={(val: string) => renderValue(val, `chunk_${index}_${i}`)}
+                  />
+                ))}
+              </div>
             ) : (
-              <span className="text-xs text-gray-400 italic">無額外數據</span>
+              <span className="text-xs text-gray-400 italic">無額外數據內容</span>
             )}
           </div>
         </div>
@@ -214,107 +239,93 @@ const LogItem = ({
 const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
   const { executeBatch, isLoading, error: rpcError } = useEthRpc(chainId);
   const [eventLogs, setEventLogs] = useState<IProcessedLog[]>([]);
-  const [searchAddr, setSearchAddr] = useState<string>('');
+  const [searchInput, setSearchInput] = useState<string>('');
 
   useEffect(() => {
     const fetchLogsFlow = async () => {
-      // Info: (20260202 - Julian) 階段 1: 取得收據 (Receipt) 以獲得 logs
       const response = await executeBatch([rpcService.getTransactionReceipt(txId)]);
+      const receipt = response?.[0]?.result as IJsonRpcReceipt | undefined;
 
-      const receipt = response ? (response[0]?.result as IJsonRpcReceipt) : null;
-      if (!receipt || !receipt.logs) return;
+      if (!receipt?.logs) return;
 
-      // Info: (20260202 - Julian) 使用 IRpcLog 作為輸入，轉換為 IProcessedLog
-      const processedLogs: IProcessedLog[] = receipt.logs.map((log: IJsonRpcLog, i) => {
-        const decoded = decodeLog(log); // Info: (20260202 - Julian) 這裡會用到 ethers 或其他庫
+      const processed: IProcessedLog[] = receipt.logs.map((log, i) => {
+        const decoded = decodeLog(log.topics, log.data);
+
+        const topics = log.topics.map((t, ti) => ({
+          label:
+            ti === 0
+              ? 'Signature Hash'
+              : decoded?.fragment.inputs.filter((input) => input.indexed)[ti - 1]?.name ||
+                `topic [${ti}]`,
+          value: t,
+        }));
+
+        const decodedData = decoded?.args
+          ? decoded.fragment.inputs.map((input) => ({
+              name: input.name,
+              type: input.type,
+              value: decoded.args[input.name]?.toString() || '0x',
+              isIndexed: !!input.indexed, // 使用 !! 將 boolean | null 強制轉為 boolean
+            }))
+          : [];
 
         return {
           index: i,
           address: log.address,
           eventName: decoded?.name || 'Unknown',
           eventSignature: decoded?.signature || '',
-          topics: log.topics.map((t, ti) => ({
-            label: `topic_${ti}`,
-            value: t,
-          })),
-          decodedData: decoded?.args || undefined, //? mapArgsToParams(decoded) : undefined,
+          topics,
+          decodedData,
           rawData: log.data,
         };
       });
 
-      setEventLogs(processedLogs);
+      setEventLogs(processed);
     };
 
     fetchLogsFlow();
-  }, [txId, chainId]);
+  }, [txId, chainId, executeBatch]);
 
-  if (isLoading) {
-    return (
-      <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-md">
-        <div className="mb-6 flex animate-pulse items-center justify-between">
-          <div className="h-4 w-32 rounded bg-gray-100" />
-          <div className="h-10 w-64 rounded bg-gray-100" />
-        </div>
-        <div className="space-y-12">
-          {[1, 2].map((i) => (
-            <div key={i} className="flex gap-6">
-              <div className="h-8 w-8 shrink-0 animate-pulse rounded bg-gray-100" />
-              <div className="grow space-y-4">
-                <div className="h-4 w-1/2 animate-pulse rounded bg-gray-100" />
-                <div className="h-4 w-1/3 animate-pulse rounded bg-gray-100" />
-                <div className="h-20 w-full animate-pulse rounded bg-gray-50" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+  const filteredLogs = useMemo(() => {
+    return eventLogs.filter(
+      (log) =>
+        log.address.toLowerCase().includes(searchInput.toLowerCase()) ||
+        log.eventName.toLowerCase().includes(searchInput.toLowerCase())
     );
-  }
+  }, [eventLogs, searchInput]);
 
-  if (rpcError) {
-    return (
-      <ErrorState
-        title="載入事件日誌失敗"
-        message={rpcError}
-        onRetry={() => window.location.reload()}
-        showContainer
-      />
-    );
-  }
-
-  const logs = eventLogs || [];
-  const filteredLogs = logs.filter((log) => {
-    const matchesAddr = log.address.toLowerCase().includes(searchAddr.toLowerCase());
-    // Info: (20260202 - Julian) Event filter could be implemented if we had decoded names properly
-    return matchesAddr;
-  });
+  if (isLoading)
+    return <div className="animate-pulse p-8 text-center text-gray-400">正在載入事件日誌...</div>;
+  if (rpcError) return <ErrorState title="載入失敗" message={rpcError} showContainer />;
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-6 text-gray-900 shadow-md">
-      {/* Info: (20260202 - Julian) Header / Filter Toolbar */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="text-sm text-gray-500">
-          共計 <span className="font-bold text-gray-900">{logs.length}</span> 個事件日誌
+    <div className="overflow-hidden rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-gray-50 pb-6">
+        <div>
+          <h3 className="text-lg font-bold text-gray-900">事件日誌</h3>
+          <p className="text-sm text-gray-500">共計 {eventLogs.length} 個事件</p>
         </div>
 
-        <div className="relative flex items-center gap-3">
-          <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400" />
+        <div className="group relative">
+          <Search
+            size={14}
+            className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-blue-500"
+          />
           <input
             type="text"
-            placeholder="按地址搜尋"
-            value={searchAddr}
-            onChange={(e) => setSearchAddr(e.target.value)}
-            className="h-10 rounded-lg border border-gray-200 bg-white pr-4 pl-10 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-400 focus:outline-none"
+            placeholder="搜尋地址或事件..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="h-9 w-64 rounded-lg border border-gray-200 bg-gray-50 pr-4 pl-9 text-xs transition-all focus:border-blue-400 focus:bg-white focus:outline-none"
           />
         </div>
       </div>
 
-      {/* Info: (20260202 - Julian) Logs List */}
-      <div className="divide-y divide-gray-50">
+      <div className="space-y-2">
         {filteredLogs.length > 0 ? (
           filteredLogs.map((log, i) => <LogItem key={i} log={log} index={i} chainId={chainId} />)
         ) : (
-          <div className="py-20 text-center text-gray-400">沒有符合條件的事件日誌</div>
+          <div className="py-20 text-center text-gray-400">查無相符的事件日誌</div>
         )}
       </div>
     </div>
