@@ -14,7 +14,7 @@ export default function ChainOverview({
   latestGasPrice?: string;
   latestBlockNumber?: string;
 }) {
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState<boolean>(false);
 
   return (
     <>

@@ -18,7 +18,7 @@ interface IUseFetchApiOptions {
  */
 export function useFetchApi<T>({ url, method, errorMessage, body }: IUseFetchApiOptions) {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // Info: (20260130 - Julian) Serialize body for dependency stability

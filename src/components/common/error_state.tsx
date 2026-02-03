@@ -30,6 +30,7 @@ const ErrorState = ({
       {message && <p className="max-w-md text-sm text-red-600">{message}</p>}
       {onRetry && (
         <button
+          type="button"
           onClick={onRetry}
           className="mt-6 rounded-lg bg-red-600 px-6 py-2 text-sm font-medium text-white transition-all hover:bg-red-700 hover:shadow-lg active:scale-95"
         >

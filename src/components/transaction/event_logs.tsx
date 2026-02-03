@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ChevronDown, Info, ExternalLink } from 'lucide-react';
+import { Search, ExternalLink } from 'lucide-react';
 import { IJsonRpcReceipt, IJsonRpcLog } from '@/interfaces/rpc';
 import { useEthRpc } from '@/lib/hooks/use_eth_rpc';
 import { rpcService } from '@/lib/services/rpc_service';
@@ -45,11 +45,10 @@ const LogItem = ({
   index: number;
   chainId: string;
 }) => {
-  const [isDec, setIsDec] = useState<{ [key: string]: boolean }>({});
+  const [isDec, setIsDec] = useState<boolean>(true);
 
-  const renderValue = (val: string, key: string, paramType?: string) => {
+  const renderValue = (val: string, paramType?: string) => {
     if (!val || val === '0x') return '0x';
-    const showDec = isDec[key];
 
     // Info: (20260202 - Julian) 偵測是否為可能的地址 (20 bytes / 40 chars + 0x)
     const isAddressType =
@@ -77,19 +76,21 @@ const LogItem = ({
         <div className="flex items-center gap-2 text-sm">
           <div className="flex shrink-0 overflow-hidden rounded border border-gray-200 text-[10px]">
             <button
-              onClick={() => setIsDec((prev) => ({ ...prev, [key]: true }))}
-              className={`px-1.5 py-0.5 ${showDec ? 'bg-gray-100 font-bold text-gray-900' : 'bg-white text-gray-400'}`}
+              type="button"
+              onClick={() => setIsDec((prev) => !prev)}
+              className={`px-1.5 py-0.5 ${isDec ? 'bg-gray-100 font-bold text-gray-900' : 'bg-white text-gray-400'}`}
             >
               Dec
             </button>
             <button
-              onClick={() => setIsDec((prev) => ({ ...prev, [key]: false }))}
-              className={`px-1.5 py-0.5 ${!showDec ? 'bg-gray-100 font-bold text-gray-900' : 'bg-white text-gray-400'}`}
+              type="button"
+              onClick={() => setIsDec((prev) => !prev)}
+              className={`px-1.5 py-0.5 ${!isDec ? 'bg-gray-100 font-bold text-gray-900' : 'bg-white text-gray-400'}`}
             >
               Hex
             </button>
           </div>
-          <span className="font-mono break-all text-gray-700">{showDec ? dec : val}</span>
+          <span className="font-mono break-all text-gray-700">{isDec ? dec : val}</span>
         </div>
       );
     } catch {
@@ -108,6 +109,26 @@ const LogItem = ({
       dataChunks.push('0x' + rawContent.slice(i, i + 64));
     }
   }
+
+  const displayedTopics = log.topics.map((topic, i) => {
+    const param = i > 0 && indexedParams.length > i ? indexedParams[i - 1] : null;
+    return (
+      <div key={i} className="group flex items-center gap-4">
+        <div className="flex flex-col items-center pt-1">
+          <span className="text-xs font-bold text-gray-300 transition-colors">{i}</span>
+        </div>
+        <div className="flex w-full flex-col gap-1">
+          {param && (
+            <span className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+              {param.name}{' '}
+              <span className="font-normal text-gray-300 lowercase">({param.type})</span>
+            </span>
+          )}
+          <div className="w-full">{renderValue(topic.value, param?.type)}</div>
+        </div>
+      </div>
+    );
+  });
 
   return (
     <div className="flex gap-6 border-b border-gray-100 py-8 last:border-0">
@@ -145,10 +166,7 @@ const LogItem = ({
         <div className="flex items-start gap-4">
           <div className="w-24 shrink-0 pt-1 text-sm font-medium text-gray-500">事件名稱</div>
           <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-gray-900">
-              <Info size={16} className="text-blue-500" />
-              <span className="text-base font-bold">{log.eventName}</span>
-            </div>
+            <div className="text-base font-bold text-gray-900">{log.eventName}</div>
             {log.eventSignature && (
               <span className="rounded bg-gray-50 px-2 py-1 font-mono text-xs break-all text-gray-400">
                 {log.eventSignature}
@@ -160,31 +178,7 @@ const LogItem = ({
         {/* Info: (20260202 - Julian) Topics Section */}
         <div className="flex items-start gap-4">
           <div className="w-24 shrink-0 pt-1 text-sm font-medium text-gray-500">Topic</div>
-          <div className="w-full space-y-3">
-            {log.topics.map((topic, i) => {
-              const param = i > 0 ? indexedParams[i - 1] : null;
-              return (
-                <div key={i} className="group flex items-start gap-4">
-                  <div className="flex flex-col items-center pt-1">
-                    <span className="text-[10px] font-bold text-gray-300 transition-colors group-hover:text-gray-500">
-                      {i}
-                    </span>
-                  </div>
-                  <div className="flex w-full flex-col gap-1">
-                    {param && (
-                      <span className="text-[10px] font-bold tracking-wider text-gray-400 uppercase">
-                        {param.name}{' '}
-                        <span className="font-normal text-gray-300 lowercase">({param.type})</span>
-                      </span>
-                    )}
-                    <div className="w-full">
-                      {renderValue(topic.value, `topic_${i}`, param?.type)}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <div className="w-full space-y-3">{displayedTopics}</div>
         </div>
 
         {/* Info: (20260202 - Julian) Data Section (Decoded Parameters or Raw Chunks) */}
@@ -198,7 +192,7 @@ const LogItem = ({
                     {param.name}{' '}
                     <span className="font-normal text-gray-300 lowercase">({param.type})</span>
                   </span>
-                  <div>{renderValue(param.value, `data_${param.name}`, param.type)}</div>
+                  <div>{renderValue(param.value, param.type)}</div>
                 </div>
               ))
             ) : dataChunks.length > 0 ? (
@@ -220,8 +214,7 @@ const LogItem = ({
 const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
   const { executeBatch, isLoading, error: rpcError } = useEthRpc(chainId);
   const [eventLogs, setEventLogs] = useState<IProcessedLog[]>([]);
-  const [searchAddr, setSearchAddr] = useState('');
-  const [eventFilter, setEventFilter] = useState('all');
+  const [searchAddr, setSearchAddr] = useState<string>('');
 
   useEffect(() => {
     const fetchLogsFlow = async () => {
@@ -304,33 +297,15 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
           共計 <span className="font-bold text-gray-900">{logs.length}</span> 個事件日誌
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <select
-              value={eventFilter}
-              onChange={(e) => setEventFilter(e.target.value)}
-              className="h-10 cursor-pointer appearance-none rounded-lg border border-gray-200 bg-white pr-10 pl-4 text-sm font-medium transition-colors hover:border-gray-300 focus:ring-2 focus:ring-black/5 focus:outline-none"
-            >
-              <option value="all">事件: 全部</option>
-              <option value="transfer">Transfer</option>
-              <option value="approval">Approval</option>
-            </select>
-            <ChevronDown
-              size={14}
-              className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-400"
-            />
-          </div>
-
-          <div className="relative">
-            <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="按地址搜索"
-              value={searchAddr}
-              onChange={(e) => setSearchAddr(e.target.value)}
-              className="h-10 rounded-lg border border-gray-200 bg-white pr-4 pl-10 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-400 focus:outline-none"
-            />
-          </div>
+        <div className="relative flex items-center gap-3">
+          <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="按地址搜尋"
+            value={searchAddr}
+            onChange={(e) => setSearchAddr(e.target.value)}
+            className="h-10 rounded-lg border border-gray-200 bg-white pr-4 pl-10 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-400 focus:outline-none"
+          />
         </div>
       </div>
 
