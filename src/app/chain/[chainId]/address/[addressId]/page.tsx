@@ -1,141 +1,129 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  Copy,
-  AlertTriangle,
-  ChevronDown,
-  Search,
-  ArrowRight,
-  Info,
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
+  // Copy,
+  // AlertTriangle,
+  // ChevronDown,
+  // Search,
+  // ArrowRight,
+  // Info,
+  // ChevronLeft,
+  // ChevronRight,
+  // Loader2,
   ArrowLeft,
 } from 'lucide-react';
-import { useBlockchainData } from '@/lib/hooks/use_blockchain_data';
-import { useAddressData } from '@/lib/hooks/use_address_data';
-import { truncateAddress } from '@/lib/utils/format';
-import { useState } from 'react';
+// import { useBlockchainData } from '@/lib/hooks/use_blockchain_data';
+// import { truncateAddress } from '@/lib/utils/format';
 import ChainHeader from '@/components/chain/chain_header';
-import Toggle from '@/components/common/toggle';
-import CopyButton from '@/components/common/copy_button';
+import AddressDetailHeader from '@/components/address/address_detail_header';
+import AddressTxTable from '@/components/address/address_tx_table';
 
 enum AddressTab {
   TRANSACTIONS = '交易',
 }
+
+export const useTransactionList = (address: string, chainId: string) => {
+  // ToDo: (20260204 - Julian) Remove any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [pageKey, setPageKey] = useState<string | null>(null); // Info: (20260204 - Julian) 用於分頁
+
+  const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+
+  const fetchTransactions = async (isNextPage = false) => {
+    setLoading(true);
+    try {
+      // Info: (20260204 - Julian) 使用 Alchemy 的 getAssetTransfers API
+      const response = await fetch(`https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'alchemy_getAssetTransfers',
+          params: [
+            {
+              fromBlock: '0x0',
+              toBlock: 'latest',
+              fromAddress: address, // Info: (20260204 - Julian) 或同時查詢 toAddress
+              category: ['external', 'erc20', 'erc721'],
+              maxCount: '0x19', // Info: (20260204 - Julian) 每次 25 筆
+              pageKey: isNextPage ? pageKey : undefined,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      }
+
+      const data = await response.json();
+      const result = data.result;
+
+      if (!result) {
+        throw new Error(data.error?.message || 'Unknown Alchemy error');
+      }
+
+      setTransactions((prev) => (isNextPage ? [...prev, ...result.transfers] : result.transfers));
+      setPageKey(result.pageKey || null);
+    } catch (err) {
+      console.error('無法取得交易紀錄:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [address, chainId]);
+
+  return { transactions, loading, hasMore: !!pageKey, loadMore: () => fetchTransactions(true) };
+};
 
 export default function AddressDetailPage() {
   const params = useParams();
   const chainId = params?.chainId as string;
   const addressId = params?.addressId as string;
 
-  const {
-    transactions: allTransactions,
-    latestGasPrice,
-    loading: chainLoading,
-  } = useBlockchainData(chainId);
-  const { stats: realStats, loading: addressLoading } = useAddressData(chainId, addressId);
+  const { transactions /* , loading, hasMore, loadMore */ } = useTransactionList(
+    addressId,
+    chainId
+  );
+
+  // const {
+  //   transactions: allTransactions,
+  //   latestGasPrice,
+  //   loading: chainLoading,
+  // } = useBlockchainData(chainId);
 
   const [activeTab, setActiveTab] = useState<AddressTab>(AddressTab.TRANSACTIONS);
-  const [isOpenSummary, setIsOpenSummary] = useState<boolean>(true);
-  const [isShowZeroTransaction, setIsShowZeroTransaction] = useState<boolean>(false);
 
-  const loading = chainLoading || addressLoading;
+  // const [isOpenSummary, setIsOpenSummary] = useState<boolean>(true);
+  // const [isShowZeroTransaction, setIsShowZeroTransaction] = useState<boolean>(false);
+
+  // const loading = chainLoading
 
   // Info: (20260130 - Julian) Filter and process transactions for this address
-  const transactions = allTransactions
-    .filter(
-      (tx) =>
-        tx.fromLabel?.toLowerCase() === addressId.toLowerCase() ||
-        tx.toLabel?.toLowerCase() === addressId.toLowerCase()
-    )
-    .sort((a, b) => Number(b.blockNumber) - Number(a.blockNumber));
+  // const transactions = allTransactions
+  //   .filter(
+  //     (tx) =>
+  //       tx.fromLabel?.toLowerCase() === addressId.toLowerCase() ||
+  //       tx.toLabel?.toLowerCase() === addressId.toLowerCase()
+  //   )
+  //   .sort((a, b) => Number(b.blockNumber) - Number(a.blockNumber));
 
-  const isHack = false;
-
-  // Info: (20260130 - Julian) Use real stats if available
-  const stats = realStats || {
-    totalAssets: '-',
-    assetsChange: '-',
-    ethBalance: '-',
-    ethValue: '-',
-    usdtBalance: '-',
-    usdcBalance: '-',
-    outgoingTxns: '-',
-    outgoingEth: '-',
-    incomingTxns: '-',
-    incomingEth: '-',
-    primaryCounterparty: '-',
-  };
-
-  if (loading && transactions.length === 0) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-white">
-        <Loader2 className="h-8 w-8 animate-spin text-[#5841D8]" />
-      </div>
-    );
-  }
-
-  const isShowHackBanner = isHack && (
-    <>
-      {/* Info: (20260130 - Julian) Warning Banner */}
-      <div className="flex w-full items-center gap-3 rounded-xl border border-orange-100 bg-orange-50/50 p-4 text-sm text-gray-800">
-        <AlertTriangle className="shrink-0 text-orange-500" size={18} />
-        <p>
-          該地址被舉報為 <span className="font-bold">Hack 地址</span>
-          ，請注意可能涉及的風險！如果您認為這是一個錯誤，
-          <Link href="#" className="font-bold text-[#5841D8] hover:underline">
-            請通知我們
-          </Link>
-          。
-        </p>
-      </div>
-
-      {/* Info: (20260130 - Julian) Tags */}
-      <div className="flex items-center gap-2">
-        <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-500">
-          # Hack
-        </span>
-      </div>
-    </>
-  );
-
-  const isShowSummary = isOpenSummary && (
-    <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-        <div className="mb-3 flex items-center gap-1 text-xs text-gray-400">
-          轉出交易數 <Info size={12} />
-        </div>
-        <div className="flex items-baseline gap-2">
-          <span className="text-xl font-bold text-gray-900">{stats.outgoingTxns}</span>
-          <span className="text-xs font-medium text-gray-400">({stats.outgoingEth})</span>
-        </div>
-      </div>
-      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-        <div className="mb-3 flex items-center gap-1 text-xs text-gray-400">
-          轉入交易數 <Info size={12} />
-        </div>
-        <div className="flex items-baseline gap-2">
-          <span className="text-xl font-bold text-gray-900">{stats.incomingTxns}</span>
-          <span className="text-xs font-medium text-gray-400">({stats.incomingEth})</span>
-        </div>
-      </div>
-      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-        <div className="mb-3 flex items-center gap-1 text-xs text-gray-400">
-          主要交易對手 <Info size={12} />
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#5841D8]/10 text-[8px] font-bold text-[#5841D8]">
-            L
-          </div>
-          <span className="text-base font-bold text-[#5841D8]">{stats.primaryCounterparty}</span>
-          <Copy size={12} className="text-gray-300" />
-        </div>
-      </div>
-    </div>
-  );
+  // if (loading && transactions.length === 0) {
+  //   return (
+  //     <div className="flex h-screen items-center justify-center bg-white">
+  //       <Loader2 className="h-8 w-8 animate-spin text-[#5841D8]" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -148,90 +136,32 @@ export default function AddressDetailPage() {
           >
             <ArrowLeft size={32} />
           </Link>
-          <ChainHeader
-            //  chain={chain}
-            //  showDetails={showDetails}
-            //  onToggleDetails={() => setShowDetails(!showDetails)}
-            latestGasPrice={latestGasPrice}
-          />
+          <ChainHeader />
         </div>
 
         <div className="mx-auto max-w-7xl px-6 pt-8">
-          {/* Info: (20260130 - Julian) Address Identity Section */}
-          <div className="mb-6 flex flex-col items-start gap-4">
-            <div className="flex w-full items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 overflow-hidden rounded-lg bg-gray-200">
-                  {/* Info: (20260130 - Julian) Mock Identicon */}
-                  <div className="grid h-full grid-cols-2 gap-0.5 p-1">
-                    <div className="bg-orange-400"></div>
-                    <div className="bg-blue-400"></div>
-                    <div className="bg-green-400"></div>
-                    <div className="bg-purple-400"></div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-gray-900">地址</span>
-                  <span className="text-xl font-medium text-gray-500">{addressId}</span>
-                  <CopyButton value={addressId} />
-                </div>
-              </div>
-            </div>
-
-            {isShowHackBanner}
-          </div>
-
-          {/* Info: (20260130 - Julian) Asset Overview Board */}
-          <div className="mb-8 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-            {/* Info: (20260130 - Julian) Top Row */}
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-              <div className="space-y-2">
-                <div className="text-xs font-medium text-gray-400">ISC 鏈總資產</div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-gray-900">{stats.totalAssets}</span>
-                  <span className="text-sm font-bold text-green-500">{stats.assetsChange}</span>
-                </div>
-              </div>
-              <div className="space-y-2 border-l border-gray-100 pl-8">
-                <div className="text-xs font-medium text-gray-400">ISC 持倉</div>
-                <div className="flex flex-col">
-                  <span className="text-base font-bold text-gray-900">{stats.ethBalance}</span>
-                  <span className="text-xs text-gray-500">({stats.ethValue})</span>
-                </div>
-              </div>
-              <div className="space-y-2 border-l border-gray-100 pl-8">
-                <div className="text-xs font-medium text-gray-400">USDT 持倉</div>
-                <div className="text-base font-bold text-gray-900">{stats.usdtBalance}</div>
-              </div>
-              <div className="flex items-center justify-between border-l border-gray-100 pl-8">
-                <div className="space-y-2">
-                  <div className="text-xs font-medium text-gray-400">USDC 持倉</div>
-                  <div className="text-base font-bold text-gray-900">{stats.usdcBalance}</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Info: (20260204 - Julian) Address Identity Section */}
+          <AddressDetailHeader address={addressId} chainId={chainId} />
 
           {/* Info: (20260130 - Julian) Tabs */}
-          <div className="mb-6 flex border-b border-gray-200">
+          <div className="flex pb-4">
             {Object.values(AddressTab).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`relative px-6 py-4 text-sm font-bold transition-colors ${
-                  activeTab === tab ? 'text-[#5841D8]' : 'text-gray-500 hover:text-black'
+                className={`rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-colors ${
+                  activeTab === tab
+                    ? 'bg-black text-white'
+                    : 'bg-white text-gray-500 hover:text-gray-900'
                 }`}
               >
                 {tab}
-                {activeTab === tab && (
-                  <div className="absolute bottom-0 left-0 h-0.5 w-full bg-[#5841D8]"></div>
-                )}
               </button>
             ))}
           </div>
 
           {/* Info: (20260130 - Julian) Filters Bar */}
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          {/* <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-400">
                 開始日期 <ArrowRight size={14} /> 結束日期
@@ -267,121 +197,10 @@ export default function AddressDetailPage() {
                 label={{ open: '展示交易統計數據', close: '展示交易統計數據' }}
               />
             </div>
-          </div>
+          </div> */}
 
-          {/* Info: (20260130 - Julian) Summary Cards */}
-          {isShowSummary}
-
-          {/* Info: (20260130 - Julian) Transaction Table */}
-          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-            <div className="flex items-center justify-between border-b border-gray-100 bg-white p-4 text-sm text-gray-500">
-              <div>
-                共計 <span className="font-bold text-gray-900">{transactions.length}</span>{' '}
-                條交易記錄 (僅展示最新數據)
-              </div>
-              <div className="flex items-center gap-4">
-                <Toggle
-                  isOpen={isShowZeroTransaction}
-                  onToggle={() => setIsShowZeroTransaction(!isShowZeroTransaction)}
-                  label={{ open: '展示數量為 0 的交易', close: '展示數量為 0 的交易' }}
-                  labelOnRight
-                />
-                <div className="flex items-center gap-4">
-                  <button className="text-gray-300">
-                    <ChevronLeft size={20} />
-                  </button>
-                  <span className="font-bold text-gray-900">1 / 500</span>
-                  <button className="text-gray-400">
-                    <ChevronRight size={20} />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-gray-50/50 text-xs font-bold text-gray-500 uppercase">
-                  <tr>
-                    <th className="px-6 py-4">交易雜湊</th>
-                    <th className="px-6 py-4">方法</th>
-                    <th className="px-6 py-4">區塊</th>
-                    <th className="px-6 py-4 text-[#5841D8]">時間</th>
-                    <th className="px-6 py-4">發送方</th>
-                    <th className="px-4 py-4" aria-label="Transaction Direction"></th>
-                    <th className="px-6 py-4">接收方</th>
-                    <th className="px-6 py-4">數量</th>
-                    <th className="px-6 py-4">手續費</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {transactions.map((txn) => {
-                    const isOut = txn.fromLabel?.toLowerCase() === addressId.toLowerCase();
-                    return (
-                      <tr key={txn.hash} className="transition-colors hover:bg-gray-50/50">
-                        <td className="px-6 py-5">
-                          <Link
-                            href={`/chain/${chainId}/txs/${txn.hash}`}
-                            className="font-mono text-[#5841D8]"
-                          >
-                            {truncateAddress(txn.hash, 10, 8)}
-                          </Link>
-                        </td>
-                        <td className="px-6 py-5">
-                          <span className="rounded bg-gray-100 px-2 py-1 text-[10px] font-bold text-gray-600">
-                            {txn.method}
-                          </span>
-                        </td>
-                        <td className="px-6 py-5">
-                          <Link href={`/block/${txn.blockNumber}`} className="text-[#5841D8]">
-                            {txn.blockNumber}
-                          </Link>
-                        </td>
-                        <td className="px-6 py-5 whitespace-nowrap text-gray-600">
-                          {txn.timestamp.split(' ')[1]}
-                        </td>
-                        <td className="px-6 py-5">
-                          <div className="flex items-center gap-1.5">
-                            <Link
-                              href={`/address/${txn.fromLabel}`}
-                              className="font-mono text-[#5841D8]"
-                            >
-                              {txn.from}
-                            </Link>
-                            <CopyButton size={12} value={txn.fromLabel ?? ''} />
-                          </div>
-                        </td>
-                        <td className="px-4 py-5">
-                          <span
-                            className={`rounded px-2 py-0.5 text-[10px] font-bold ${isOut ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-500'}`}
-                          >
-                            {isOut ? 'Out' : 'In'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-5">
-                          <div className="flex items-center gap-1.5">
-                            <Link
-                              href={`/address/${txn.toLabel}`}
-                              className="font-mono text-[#5841D8]"
-                            >
-                              {txn.to}
-                            </Link>
-                            <CopyButton size={12} value={txn.toLabel ?? ''} />
-                          </div>
-                        </td>
-                        <td
-                          className={`px-6 py-5 font-bold ${isOut ? 'text-red-500' : 'text-green-500'}`}
-                        >
-                          {isOut ? '-' : '+'}
-                          {txn.value}
-                        </td>
-                        <td className="px-6 py-5 text-gray-400">{txn.fee}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          {/* Info: (20260204 - Julian) Transaction Table */}
+          <AddressTxTable address={addressId} transactions={transactions} />
         </div>
       </div>
     </div>

@@ -83,7 +83,7 @@ export const rpcService = {
    */
   getErc20Balance: (tokenAddress: string, userAddress: string): IRpcBody => {
     // Info: (20260203 - Julian) 移除 0x 並補足至 64 字元 (32 bytes)
-    const cleanAddress = userAddress.startsWith('0x') ? userAddress.slice(2) : userAddress;
+    const cleanAddress = userAddress.toLowerCase().replace('0x', '');
     const paddedAddress = cleanAddress.padStart(64, '0');
 
     // Info: (20260203 - Julian) balanceOf 的 Method ID 是 0x70a08231
@@ -92,13 +92,7 @@ export const rpcService = {
     return {
       jsonrpc: '2.0',
       method: 'eth_call',
-      params: [
-        {
-          to: tokenAddress,
-          data: data,
-        },
-        'latest',
-      ],
+      params: [{ to: tokenAddress, data }, 'latest'],
       id: Date.now() + 8,
     };
   },
@@ -107,7 +101,7 @@ export const rpcService = {
   getErc20Symbol: (tokenAddress: string): IRpcBody => ({
     jsonrpc: '2.0',
     method: 'eth_call',
-    params: [{ to: tokenAddress, data: '0x95d89b41' }, 'latest'], // 0x95d89b41 是 symbol() 的 selector
+    params: [{ to: tokenAddress, data: '0x95d89b41' }, 'latest'], // Info: (20260203 - Julian) 0x95d89b41 是 symbol() 的 selector
     id: Date.now() + 9,
   }),
 

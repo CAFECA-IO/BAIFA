@@ -2,17 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { IChain } from '@/interfaces/chain';
-import { ICON_MAP } from '@/lib/maps';
 // import useOuterClick from '@/lib/hooks/use_outer_click';
-import Toggle from '@/components/common/toggle';
-
-type Props = {
-  chain?: IChain;
-  showDetails?: boolean;
-  onToggleDetails?: () => void;
-  latestGasPrice?: string;
-};
 
 // const BLOCKCHAIN_MENU = [
 //   { label: '交易列表', href: '#' },
@@ -32,12 +22,7 @@ type Props = {
 //   { label: '已驗證合約', href: '#' },
 // ];
 
-export default function ChainHeader({
-  chain,
-  showDetails,
-  onToggleDetails,
-  // latestGasPrice,
-}: Props) {
+export default function ChainHeader() {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState<boolean>(false);
   // const {
   //   targetRef: blockchainRef,
@@ -45,23 +30,10 @@ export default function ChainHeader({
   //   setComponentVisible: setBlockchainVisible,
   // } = useOuterClick<HTMLDivElement>(false);
 
-  const displayName = chain ? chain.name : 'iSunCoin';
-  // Info: (20260130 - Julian) Resolve Icon
-  const color = chain ? chain.color : 'text-gray-800';
-  const bgColor = chain ? chain.bgColor : 'bg-gray-100';
-  const iconName = chain ? chain.icon : 'iSunCoin';
-  const Icon = ICON_MAP[iconName] || null;
-  const displayLogo = Icon ? (
-    <div className={`flex h-10 w-10 items-center justify-center rounded-full ${bgColor} ${color}`}>
-      <Icon size={24} fill="currentColor" className="opacity-80" />
-    </div>
-  ) : (
-    <Image src="/logo/isuncoin.svg" alt="isuncoin_logo" width={24} height={24} />
-  );
-
-  const description = chain
-    ? chain.description
-    : 'iSunCoin  是一個開放自由的網際網路科技平台，旨在串聯全球電腦的運算資源，為各類去中心化應用程式提供運作環境。';
+  const displayName = 'iSunCoin';
+  const displayLogo = <Image src="/logo/isuncoin.svg" alt="isuncoin_logo" width={24} height={24} />;
+  const description =
+    'iSunCoin  是一個開放自由的網際網路科技平台，旨在串聯全球電腦的運算資源，為各類去中心化應用程式提供運作環境。';
 
   const toggleDescription = () => setIsDescriptionExpanded(!isDescriptionExpanded);
 
@@ -76,9 +48,6 @@ export default function ChainHeader({
         <div className="flex items-center gap-3">
           {displayLogo}
           <h1 className="text-2xl font-bold text-gray-900">{displayName} 瀏覽器</h1>
-          {/* <div className="flex items-center gap-1 rounded bg-orange-50 px-2 py-1 text-xs font-medium text-orange-500">
-            <span className="text-[10px]">⛽</span> {latestGasPrice || '-'}
-          </div> */}
         </div>
 
         {/* <div className="flex gap-2 text-sm text-gray-600">
@@ -132,17 +101,6 @@ export default function ChainHeader({
           </button>
         )}
       </p>
-
-      {/* Info: (20260130 - Julian) Expand/Collapse Button */}
-      <div className="flex items-center justify-between">
-        {showDetails && onToggleDetails && (
-          <Toggle
-            isOpen={showDetails}
-            onToggle={onToggleDetails}
-            label={{ open: '收起', close: '全部數據' }}
-          />
-        )}
-      </div>
     </div>
   );
 }
