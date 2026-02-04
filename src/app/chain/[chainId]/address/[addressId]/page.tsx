@@ -1,141 +1,64 @@
 'use client';
 
+// import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  Copy,
-  AlertTriangle,
-  ChevronDown,
-  Search,
-  ArrowRight,
-  Info,
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
+  // Copy,
+  // AlertTriangle,
+  // ChevronDown,
+  // Search,
+  // ArrowRight,
+  // Info,
+  // ChevronLeft,
+  // ChevronRight,
+  // Loader2,
   ArrowLeft,
 } from 'lucide-react';
-import { useBlockchainData } from '@/lib/hooks/use_blockchain_data';
-import { useAddressData } from '@/lib/hooks/use_address_data';
-import { truncateAddress } from '@/lib/utils/format';
-import { useState } from 'react';
-import ChainHeader from '@/components/chain/chain_header';
-import Toggle from '@/components/common/toggle';
-import CopyButton from '@/components/common/copy_button';
+// import { useBlockchainData } from '@/lib/hooks/use_blockchain_data';
+// import { truncateAddress } from '@/lib/utils/format';
+// import ChainHeader from '@/components/chain/chain_header';
+import AddressDetailHeader from '@/components/address/address_detail_header';
+// import Toggle from '@/components/common/toggle';
+// import CopyButton from '@/components/common/copy_button';
 
-enum AddressTab {
-  TRANSACTIONS = '交易',
-}
+// enum AddressTab {
+//   TRANSACTIONS = '交易',
+// }
 
 export default function AddressDetailPage() {
   const params = useParams();
   const chainId = params?.chainId as string;
   const addressId = params?.addressId as string;
 
-  const {
-    transactions: allTransactions,
-    latestGasPrice,
-    loading: chainLoading,
-  } = useBlockchainData(chainId);
-  const { stats: realStats, loading: addressLoading } = useAddressData(chainId, addressId);
+  // const {
+  //   transactions: allTransactions,
+  //   latestGasPrice,
+  //   loading: chainLoading,
+  // } = useBlockchainData(chainId);
 
-  const [activeTab, setActiveTab] = useState<AddressTab>(AddressTab.TRANSACTIONS);
-  const [isOpenSummary, setIsOpenSummary] = useState<boolean>(true);
-  const [isShowZeroTransaction, setIsShowZeroTransaction] = useState<boolean>(false);
+  // const [activeTab, setActiveTab] = useState<AddressTab>(AddressTab.TRANSACTIONS);
+  // const [isOpenSummary, setIsOpenSummary] = useState<boolean>(true);
+  // const [isShowZeroTransaction, setIsShowZeroTransaction] = useState<boolean>(false);
 
-  const loading = chainLoading || addressLoading;
+  // const loading = chainLoading
 
   // Info: (20260130 - Julian) Filter and process transactions for this address
-  const transactions = allTransactions
-    .filter(
-      (tx) =>
-        tx.fromLabel?.toLowerCase() === addressId.toLowerCase() ||
-        tx.toLabel?.toLowerCase() === addressId.toLowerCase()
-    )
-    .sort((a, b) => Number(b.blockNumber) - Number(a.blockNumber));
+  // const transactions = allTransactions
+  //   .filter(
+  //     (tx) =>
+  //       tx.fromLabel?.toLowerCase() === addressId.toLowerCase() ||
+  //       tx.toLabel?.toLowerCase() === addressId.toLowerCase()
+  //   )
+  //   .sort((a, b) => Number(b.blockNumber) - Number(a.blockNumber));
 
-  const isHack = false;
-
-  // Info: (20260130 - Julian) Use real stats if available
-  const stats = realStats || {
-    totalAssets: '-',
-    assetsChange: '-',
-    ethBalance: '-',
-    ethValue: '-',
-    usdtBalance: '-',
-    usdcBalance: '-',
-    outgoingTxns: '-',
-    outgoingEth: '-',
-    incomingTxns: '-',
-    incomingEth: '-',
-    primaryCounterparty: '-',
-  };
-
-  if (loading && transactions.length === 0) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-white">
-        <Loader2 className="h-8 w-8 animate-spin text-[#5841D8]" />
-      </div>
-    );
-  }
-
-  const isShowHackBanner = isHack && (
-    <>
-      {/* Info: (20260130 - Julian) Warning Banner */}
-      <div className="flex w-full items-center gap-3 rounded-xl border border-orange-100 bg-orange-50/50 p-4 text-sm text-gray-800">
-        <AlertTriangle className="shrink-0 text-orange-500" size={18} />
-        <p>
-          該地址被舉報為 <span className="font-bold">Hack 地址</span>
-          ，請注意可能涉及的風險！如果您認為這是一個錯誤，
-          <Link href="#" className="font-bold text-[#5841D8] hover:underline">
-            請通知我們
-          </Link>
-          。
-        </p>
-      </div>
-
-      {/* Info: (20260130 - Julian) Tags */}
-      <div className="flex items-center gap-2">
-        <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-500">
-          # Hack
-        </span>
-      </div>
-    </>
-  );
-
-  const isShowSummary = isOpenSummary && (
-    <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-        <div className="mb-3 flex items-center gap-1 text-xs text-gray-400">
-          轉出交易數 <Info size={12} />
-        </div>
-        <div className="flex items-baseline gap-2">
-          <span className="text-xl font-bold text-gray-900">{stats.outgoingTxns}</span>
-          <span className="text-xs font-medium text-gray-400">({stats.outgoingEth})</span>
-        </div>
-      </div>
-      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-        <div className="mb-3 flex items-center gap-1 text-xs text-gray-400">
-          轉入交易數 <Info size={12} />
-        </div>
-        <div className="flex items-baseline gap-2">
-          <span className="text-xl font-bold text-gray-900">{stats.incomingTxns}</span>
-          <span className="text-xs font-medium text-gray-400">({stats.incomingEth})</span>
-        </div>
-      </div>
-      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-        <div className="mb-3 flex items-center gap-1 text-xs text-gray-400">
-          主要交易對手 <Info size={12} />
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#5841D8]/10 text-[8px] font-bold text-[#5841D8]">
-            L
-          </div>
-          <span className="text-base font-bold text-[#5841D8]">{stats.primaryCounterparty}</span>
-          <Copy size={12} className="text-gray-300" />
-        </div>
-      </div>
-    </div>
-  );
+  // if (loading && transactions.length === 0) {
+  //   return (
+  //     <div className="flex h-screen items-center justify-center bg-white">
+  //       <Loader2 className="h-8 w-8 animate-spin text-[#5841D8]" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -148,72 +71,20 @@ export default function AddressDetailPage() {
           >
             <ArrowLeft size={32} />
           </Link>
-          <ChainHeader
+          {/* <ChainHeader
             //  chain={chain}
             //  showDetails={showDetails}
             //  onToggleDetails={() => setShowDetails(!showDetails)}
             latestGasPrice={latestGasPrice}
-          />
+          /> */}
         </div>
 
         <div className="mx-auto max-w-7xl px-6 pt-8">
-          {/* Info: (20260130 - Julian) Address Identity Section */}
-          <div className="mb-6 flex flex-col items-start gap-4">
-            <div className="flex w-full items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 overflow-hidden rounded-lg bg-gray-200">
-                  {/* Info: (20260130 - Julian) Mock Identicon */}
-                  <div className="grid h-full grid-cols-2 gap-0.5 p-1">
-                    <div className="bg-orange-400"></div>
-                    <div className="bg-blue-400"></div>
-                    <div className="bg-green-400"></div>
-                    <div className="bg-purple-400"></div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-gray-900">地址</span>
-                  <span className="text-xl font-medium text-gray-500">{addressId}</span>
-                  <CopyButton value={addressId} />
-                </div>
-              </div>
-            </div>
-
-            {isShowHackBanner}
-          </div>
-
-          {/* Info: (20260130 - Julian) Asset Overview Board */}
-          <div className="mb-8 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-            {/* Info: (20260130 - Julian) Top Row */}
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-              <div className="space-y-2">
-                <div className="text-xs font-medium text-gray-400">ISC 鏈總資產</div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-gray-900">{stats.totalAssets}</span>
-                  <span className="text-sm font-bold text-green-500">{stats.assetsChange}</span>
-                </div>
-              </div>
-              <div className="space-y-2 border-l border-gray-100 pl-8">
-                <div className="text-xs font-medium text-gray-400">ISC 持倉</div>
-                <div className="flex flex-col">
-                  <span className="text-base font-bold text-gray-900">{stats.ethBalance}</span>
-                  <span className="text-xs text-gray-500">({stats.ethValue})</span>
-                </div>
-              </div>
-              <div className="space-y-2 border-l border-gray-100 pl-8">
-                <div className="text-xs font-medium text-gray-400">USDT 持倉</div>
-                <div className="text-base font-bold text-gray-900">{stats.usdtBalance}</div>
-              </div>
-              <div className="flex items-center justify-between border-l border-gray-100 pl-8">
-                <div className="space-y-2">
-                  <div className="text-xs font-medium text-gray-400">USDC 持倉</div>
-                  <div className="text-base font-bold text-gray-900">{stats.usdcBalance}</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Info: (20260204 - Julian) Address Identity Section */}
+          <AddressDetailHeader address={addressId} chainId={chainId} />
 
           {/* Info: (20260130 - Julian) Tabs */}
-          <div className="mb-6 flex border-b border-gray-200">
+          {/* <div className="mb-6 flex border-b border-gray-200">
             {Object.values(AddressTab).map((tab) => (
               <button
                 key={tab}
@@ -228,10 +99,10 @@ export default function AddressDetailPage() {
                 )}
               </button>
             ))}
-          </div>
+          </div> */}
 
           {/* Info: (20260130 - Julian) Filters Bar */}
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          {/* <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-400">
                 開始日期 <ArrowRight size={14} /> 結束日期
@@ -267,13 +138,10 @@ export default function AddressDetailPage() {
                 label={{ open: '展示交易統計數據', close: '展示交易統計數據' }}
               />
             </div>
-          </div>
-
-          {/* Info: (20260130 - Julian) Summary Cards */}
-          {isShowSummary}
+          </div> */}
 
           {/* Info: (20260130 - Julian) Transaction Table */}
-          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+          {/* <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
             <div className="flex items-center justify-between border-b border-gray-100 bg-white p-4 text-sm text-gray-500">
               <div>
                 共計 <span className="font-bold text-gray-900">{transactions.length}</span>{' '}
@@ -381,7 +249,7 @@ export default function AddressDetailPage() {
                 </tbody>
               </table>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
