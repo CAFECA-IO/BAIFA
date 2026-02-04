@@ -30,14 +30,14 @@ export const useTransactionList = (address: string, chainId: string) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [pageKey, setPageKey] = useState<string | null>(null); // 用於分頁
+  const [pageKey, setPageKey] = useState<string | null>(null); // Info: (20260204 - Julian) 用於分頁
 
   const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
 
   const fetchTransactions = async (isNextPage = false) => {
     setLoading(true);
     try {
-      // 使用 Alchemy 的 getAssetTransfers API
+      // Info: (20260204 - Julian) 使用 Alchemy 的 getAssetTransfers API
       const response = await fetch(`https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`, {
         method: 'POST',
         body: JSON.stringify({
@@ -48,9 +48,9 @@ export const useTransactionList = (address: string, chainId: string) => {
             {
               fromBlock: '0x0',
               toBlock: 'latest',
-              fromAddress: address, // 或同時查詢 toAddress
+              fromAddress: address, // Info: (20260204 - Julian) 或同時查詢 toAddress
               category: ['external', 'erc20', 'erc721'],
-              maxCount: '0x19', // 每次 25 筆
+              maxCount: '0x19', // Info: (20260204 - Julian) 每次 25 筆
               pageKey: isNextPage ? pageKey : undefined,
             },
           ],

@@ -19,7 +19,7 @@ const AddressTxTable = ({ address, transactions }: IAddressTxTableProps) => {
             <th className="px-6 py-4">方法</th>
             <th className="px-6 py-4">區塊</th>
             <th className="px-6 py-4">發送方</th>
-            <th className="px-6 py-4">{/* IN/OUT 標籤 */}</th>
+            <th className="px-6 py-4">{/* Info: (20260204 - Julian) IN/OUT 標籤 */}</th>
             <th className="px-6 py-4">接收方</th>
             <th className="px-6 py-4">數量</th>
             <th className="px-6 py-4">手續費</th>

@@ -101,7 +101,7 @@ export const rpcService = {
   getErc20Symbol: (tokenAddress: string): IRpcBody => ({
     jsonrpc: '2.0',
     method: 'eth_call',
-    params: [{ to: tokenAddress, data: '0x95d89b41' }, 'latest'], // 0x95d89b41 是 symbol() 的 selector
+    params: [{ to: tokenAddress, data: '0x95d89b41' }, 'latest'], // Info: (20260203 - Julian) 0x95d89b41 是 symbol() 的 selector
     id: Date.now() + 9,
   }),
 

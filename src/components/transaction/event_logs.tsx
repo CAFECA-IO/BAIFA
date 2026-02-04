@@ -255,9 +255,11 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
             // Topic 0 永遠是事件簽名雜湊
             if (ti === 0) return { label: 'Signature Hash', value: t };
 
-            // 安全地尋找參數名稱
-            // 1. 先確認 decoded 及其 fragment 是否存在
-            // 2. 使用可選鏈 ?. 避免 undefined 報錯
+            /**
+             * Info: (20260204 - Julian) 安全地尋找參數名稱
+             * 1. 先確認 decoded 及其 fragment 是否存在
+             * 2. 使用可選鏈 ?. 避免 undefined 報錯
+             */
             const indexedInputs = decoded?.fragment?.inputs?.filter((input) => input.indexed) || [];
             const argName = indexedInputs[ti - 1]?.name;
 
@@ -272,7 +274,7 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
             .map((input) => ({
               name: input.name,
               type: input.type,
-              // 確保 value 存在，如果是動態解析可能 args 是空的
+              // Info: (20260204 - Julian) 確保 value 存在，如果是動態解析可能 args 是空的
               value: decoded?.args?.[input.name]?.toString() || '0x',
               isIndexed: false,
             }));

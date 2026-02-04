@@ -14,7 +14,7 @@ const TOKEN_MAP = {
 
 const checkAddressSecurity = async (address: string, chainId: string) => {
   try {
-    // GoPlus 支援多鏈：提供「惡意地址檢測」
+    // Info: (20260204 - Julian) GoPlus 支援多鏈：提供「惡意地址檢測」
     const response = await fetch(
       `https://api.gopluslabs.io/api/v1/address_security/${address}?chain_id=${chainId}`
     );
@@ -22,7 +22,7 @@ const checkAddressSecurity = async (address: string, chainId: string) => {
 
     if (data.code === 1 && data.result) {
       const res = data.result;
-      // 檢查關鍵風險欄位
+      // Info: (20260204 - Julian) 檢查關鍵風險欄位
       const isScam =
         res.cybercrime === '1' || res.phishing_activities === '1' || res.blacklisted === '1';
 
@@ -62,7 +62,7 @@ const AddressDetailHeader = ({ chainId, address }: IAddressDetailHeaderProps) =>
   });
 
   useEffect(() => {
-    // 執行安全檢測
+    // Info: (20260204 - Julian) 執行安全檢測
     checkAddressSecurity(address, chainId).then((res) => {
       if (res.isScam) setSecurity({ isScam: true, label: res.label || '' });
     });
@@ -77,7 +77,7 @@ const AddressDetailHeader = ({ chainId, address }: IAddressDetailHeaderProps) =>
       const res = await executeBatch<string>(requests);
       if (!res) return;
 
-      // 安全提取 result，若為 "0x" 或 undefined 則補回 "0x0"
+      // Info: (20260204 - Julian) 安全提取 result，若為 "0x" 或 undefined 則補回 "0x0"
       const sanitize = (val: string) => (!val || val === '0x' ? '0x0' : val);
 
       const ethRaw = sanitize(res[0]?.result);
