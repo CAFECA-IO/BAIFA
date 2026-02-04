@@ -252,7 +252,7 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
         receipt.logs.map(async (log, i) => {
           const decoded = await decodeLog(log.topics, log.data);
           const topics = log.topics.map((t, ti) => {
-            // Topic 0 永遠是事件簽名雜湊
+            // Info: (20260204 - Julian) Topic 0 永遠是事件簽名雜湊
             if (ti === 0) return { label: 'Signature Hash', value: t };
 
             /**
