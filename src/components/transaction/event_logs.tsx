@@ -248,37 +248,46 @@ const EventLogs = ({ chainId, txId }: IEventLogsProps) => {
 
       if (!receipt?.logs) return;
 
-      const processed: IProcessedLog[] = receipt.logs.map((log, i) => {
-        const decoded = decodeLog(log.topics, log.data);
+      const processed: IProcessedLog[] = await Promise.all(
+        receipt.logs.map(async (log, i) => {
+          const decoded = await decodeLog(log.topics, log.data);
+          const topics = log.topics.map((t, ti) => {
+            // Topic 0 永遠是事件簽名雜湊
+            if (ti === 0) return { label: 'Signature Hash', value: t };
 
-        const topics = log.topics.map((t, ti) => ({
-          label:
-            ti === 0
-              ? 'Signature Hash'
-              : decoded?.fragment.inputs.filter((input) => input.indexed)[ti - 1]?.name ||
-                `topic [${ti}]`,
-          value: t,
-        }));
+            // 安全地尋找參數名稱
+            // 1. 先確認 decoded 及其 fragment 是否存在
+            // 2. 使用可選鏈 ?. 避免 undefined 報錯
+            const indexedInputs = decoded?.fragment?.inputs?.filter((input) => input.indexed) || [];
+            const argName = indexedInputs[ti - 1]?.name;
 
-        const decodedData = decoded?.args
-          ? decoded.fragment.inputs.map((input) => ({
+            return {
+              label: argName ? `${ti}: ${argName}` : `Topic [${ti}]`,
+              value: t,
+            };
+          });
+
+          const decodedData: ILogParameter[] = (decoded?.fragment?.inputs || [])
+            .filter((input) => !input.indexed)
+            .map((input) => ({
               name: input.name,
               type: input.type,
-              value: decoded.args[input.name]?.toString() || '0x',
-              isIndexed: !!input.indexed, // Info: (20260203 - Julian) 使用 !! 將 boolean | null 強制轉為 boolean
-            }))
-          : [];
+              // 確保 value 存在，如果是動態解析可能 args 是空的
+              value: decoded?.args?.[input.name]?.toString() || '0x',
+              isIndexed: false,
+            }));
 
-        return {
-          index: i,
-          address: log.address,
-          eventName: decoded?.name || 'Unknown', // Info: (20260203 - Julian) TODO: 顯示未解析事件
-          eventSignature: decoded?.signature || '',
-          topics,
-          decodedData,
-          rawData: log.data,
-        };
-      });
+          return {
+            index: i,
+            address: log.address,
+            eventName: decoded?.name || 'Unknown', // Info: (20260203 - Julian) TODO: 顯示未解析事件
+            eventSignature: decoded?.signature || '',
+            topics,
+            decodedData,
+            rawData: log.data,
+          };
+        })
+      );
 
       setEventLogs(processed);
     };

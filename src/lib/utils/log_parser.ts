@@ -26,15 +26,92 @@ const COMMON_ABI = [
 ];
 const iface = new Interface(COMMON_ABI);
 
-// Info: (20260203 - Julian) 自動解析 Log
-export const decodeLog = (topics: string[], data: string): LogDescription | null => {
-  try {
-    // Info: (20260203 - Julian) ethers 會自動根據 topics[0] 匹配事件定義
-    return iface.parseLog({ topics, data });
-  } catch {
-    // Info: (20260203 - Julian) 如果不匹配任何已知 ABI，則回傳空
-    return null;
+// 本地快取：記錄已解析成功的事件
+const localCache: Record<string, { name: string; signature: string; iface: Interface }> = {};
+
+/**
+ * 整合型 Log 解析器 (支援 4Byte 與 Cache)
+ */
+export const decodeLog = async (topics: string[], data: string): Promise<LogDescription | null> => {
+  const topic0 = topics[0];
+  if (!topic0) return null; // 檢查 topic0 是否存在
+
+  // --- 策略 A: 檢查本地快取 ---
+  if (localCache[topic0] && localCache[topic0].iface) {
+    try {
+      const decoded = localCache[topic0].iface.parseLog({ topics, data });
+      if (decoded) return decoded;
+    } catch {
+      console.warn('快取解析失敗，嘗試重新解析');
+      delete localCache[topic0]; // 清除壞掉的快取
+    }
   }
+
+  // --- 策略 B: 使用 COMMON_ABI 嘗試解析 ---
+  try {
+    const basicDecoded = iface.parseLog({ topics, data });
+    if (basicDecoded) {
+      // 解析成功後，存入快取供下次使用
+      localCache[topic0] = {
+        name: basicDecoded.name,
+        signature: basicDecoded.signature,
+        iface: new Interface([basicDecoded.fragment.format()]),
+      };
+      return basicDecoded;
+    }
+  } catch {
+    console.warn('COMMON_ABI 解析失敗');
+  }
+
+  // --- 策略 C: 請求 4Byte Directory API ---
+  try {
+    const response = await fetch(
+      `https://www.4byte.directory/api/v1/event-signatures/?hex_signature=${topic0}`
+    );
+    const result = await response.json();
+
+    // 檢查是否有結果
+    if (result.results && result.results.length > 0) {
+      // 取得簽名字串，例如 "Transfer(address,address,uint256)"
+      const signature = result.results[0].text_signature;
+      const cleanSignature = `event ${signature}`; // 補上 event 關鍵字給 ethers 使用
+
+      // 注意：這裡也需要 try-catch，因為 topics 數量如果不對會報錯
+      try {
+        const dynamicIface = new Interface([cleanSignature]);
+        const decoded = dynamicIface.parseLog({ topics, data });
+        if (decoded) {
+          // 成功解析後，永續快取
+          localCache[topic0] = {
+            name: decoded.name,
+            signature: decoded.signature,
+            iface: dynamicIface,
+          };
+          return decoded;
+        }
+      } catch {
+        // 如果 parseLog 失敗（通常是 indexed 數量不對），至少回傳事件名稱
+        return {
+          name: signature.split('(')[0],
+          signature,
+          fragment: { name: signature.split('(')[0], inputs: [] },
+          args: [],
+        } as unknown as LogDescription;
+      }
+    } else {
+      // --- 重點：API 查無結果時的保底 ---
+      return {
+        name: `Method ${topic0.slice(0, 10)}`, // 顯示前幾個字元
+        signature: topic0,
+        fragment: { name: 'Unknown', inputs: [] },
+        args: [],
+      } as unknown as LogDescription;
+    }
+  } catch (err) {
+    console.warn('4Byte 查詢失敗:', err);
+  }
+
+  return null; // 全部失敗
 };
 
 /**
