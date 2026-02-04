@@ -4,21 +4,11 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import ChainHeader from '@/components/chain/chain_header';
-import { useFetchApi } from '@/lib/hooks/use_fetch_api';
-import { API_METHOD } from '@/constants/api_method';
-import { IChain } from '@/interfaces/chain';
 import TransactionTable from '@/components/transaction/transaction_table';
 
 export default function TransactionListPage() {
   const params = useParams();
   const chainId = params?.chainId as string;
-
-  // Info: (20260130 - Julian) Fetch chain info for header
-  const { data: chain } = useFetchApi<IChain>({
-    url: chainId ? `/api/v1/chains/${chainId}` : null,
-    method: API_METHOD.POST,
-    errorMessage: '無法下載鏈詳情',
-  });
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -31,12 +21,7 @@ export default function TransactionListPage() {
           >
             <ArrowLeft size={32} />
           </Link>
-          <ChainHeader
-            chain={chain ?? undefined}
-            // showDetails={showDetails}
-            // onToggleDetails={() => setShowDetails(!showDetails)}
-            // latestGasPrice={latestGasPrice}
-          />
+          <ChainHeader />
         </div>
 
         <div className="mx-auto max-w-7xl px-6 pt-8">

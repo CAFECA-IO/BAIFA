@@ -3,22 +3,12 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import { useFetchApi } from '@/lib/hooks/use_fetch_api';
-import { API_METHOD } from '@/constants/api_method';
-import { IChain } from '@/interfaces/chain';
 import ChainHeader from '@/components/chain/chain_header';
 import BlockTable from '@/components/block/block_table';
 
 export default function BlockListPage() {
   const params = useParams();
   const chainId = params?.chainId as string;
-
-  // Info: (20260130 - Julian) Fetch chain info for header
-  const { data: chain } = useFetchApi<IChain>({
-    url: chainId ? `/api/v1/chains/${chainId}` : null,
-    method: API_METHOD.POST,
-    errorMessage: '無法下載鏈詳情',
-  });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -31,12 +21,7 @@ export default function BlockListPage() {
           >
             <ArrowLeft size={32} />
           </Link>
-          <ChainHeader
-            chain={chain ?? undefined}
-            // showDetails={showDetails}
-            // onToggleDetails={() => setShowDetails(!showDetails)}
-            // latestGasPrice={latestGasPrice}
-          />
+          <ChainHeader />
         </div>
 
         <div className="mx-auto max-w-7xl px-6 pt-8">
