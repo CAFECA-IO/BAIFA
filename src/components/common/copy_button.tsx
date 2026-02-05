@@ -15,7 +15,12 @@ const CopyButton = ({ value, size = 16 }: ICopyButtonProps) => {
   };
 
   return (
-    <button type="button" onClick={copyHandler} className="p-2 text-gray-300 hover:text-gray-500">
+    <button
+      type="button"
+      onClick={copyHandler}
+      className="p-2 text-gray-300 hover:text-gray-500"
+      aria-label="Copy"
+    >
       <Copy size={size} />
     </button>
   );

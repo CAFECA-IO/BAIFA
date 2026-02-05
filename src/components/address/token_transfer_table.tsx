@@ -74,6 +74,7 @@ const TokenTransferTable = ({ address, transfers }: ITokenTransferTableProps) =>
                 href={`/chain/${chainId}/txs/${tx.hash}`}
                 className="font-mono text-sm text-blue-600 hover:text-blue-800"
                 title={tx.hash}
+                aria-label={`Transaction ${tx.hash}`}
               >
                 {truncateAddress(tx.hash, 8, 6)}
               </Link>
@@ -92,6 +93,7 @@ const TokenTransferTable = ({ address, transfers }: ITokenTransferTableProps) =>
                 <Link
                   href={`/chain/${chainId}/address/${tx.from}`}
                   className={`font-mono text-sm ${isFromUser ? 'text-gray-900' : 'text-blue-600 hover:underline'}`}
+                  aria-label={`Address ${tx.from}`}
                 >
                   {truncateAddress(tx.from)}
                 </Link>
@@ -105,12 +107,14 @@ const TokenTransferTable = ({ address, transfers }: ITokenTransferTableProps) =>
                 <Link
                   href={`/chain/${chainId}/address/${tx.to}`}
                   className={`font-mono text-sm ${isToUser ? 'text-gray-900' : 'text-blue-600 hover:underline'}`}
+                  aria-label={`Address ${tx.to}`}
                 >
                   {truncateAddress(tx.to)}
                 </Link>
                 <CopyButton value={tx.to} />
               </div>
             </td>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <td className="px-4 py-4">
               <div className="flex flex-col">
                 <span className="text-sm font-bold text-gray-900">
@@ -120,6 +124,7 @@ const TokenTransferTable = ({ address, transfers }: ITokenTransferTableProps) =>
                 <span className="text-[10px] text-gray-400">${(tx.value || 0).toFixed(2)}</span>
               </div>
             </td>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <td className="px-4 py-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50">
@@ -169,7 +174,9 @@ const TokenTransferTable = ({ address, transfers }: ITokenTransferTableProps) =>
               <th className="px-4 py-4">方法</th>
               <th className="px-4 py-4 text-[#5841D8]">時間</th>
               <th className="px-4 py-4">發送方</th>
-              <th className="px-2 py-4"></th>
+              <th className="px-2 py-4">
+                <span className="sr-only">Direction</span>
+              </th>
               <th className="px-4 py-4">接收方</th>
               <th className="px-4 py-4">數量</th>
               <th className="px-4 py-4">代幣</th>

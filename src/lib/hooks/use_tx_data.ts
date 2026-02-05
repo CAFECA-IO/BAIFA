@@ -69,11 +69,11 @@ export const useTransactionList = (
     } finally {
       setIsLoading(false);
     }
-  }, [address]);
+  }, [address, alchemyUrl, categories]);
 
   useEffect(() => {
     fetchTransactions();
-  }, [address, chainId]);
+  }, [fetchTransactions, chainId]);
 
   return { transactions, isLoading, refresh: fetchTransactions };
 };

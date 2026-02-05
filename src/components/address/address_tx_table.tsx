@@ -49,7 +49,7 @@ const AddressTxTable = ({ address, transactions }: IAddressTxTableProps) => {
         );
       })
     ) : (
-      <tr>
+      <tr tabIndex={-1} aria-label="No data">
         <td colSpan={8} className="p-10 text-center font-semibold">
           <p className="text-gray-900">尚無數據</p>
         </td>
@@ -66,6 +66,7 @@ const AddressTxTable = ({ address, transactions }: IAddressTxTableProps) => {
             <th className="border-b border-gray-200 px-6 py-4">區塊</th>
             <th className="border-b border-gray-200 px-6 py-4">發送方</th>
             <th className="border-b border-gray-200 px-6 py-4">
+              <span className="sr-only">Direction</span>
               {/* Info: (20260204 - Julian) IN/OUT 標籤 */}
             </th>
             <th className="border-b border-gray-200 px-6 py-4">接收方</th>

@@ -101,7 +101,7 @@ const AddressDetailHeader = ({ chainId, address }: IAddressDetailHeaderProps) =>
     };
 
     fetchHeaderData();
-  }, [address, chainId]);
+  }, [address, chainId, executeBatch]);
 
   if (isLoading) {
     return (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { IJsonRpcBlock, IJsonRpcTransaction } from '@/interfaces/rpc';
 import { IBlock, ITransaction } from '@/interfaces/chain';
 import {
@@ -21,7 +21,7 @@ export function useBlockchainData(chainId: string) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setError(null); // Info: (20260205 - Julian) 每次重新整理前清除舊錯誤
 
     try {
@@ -114,7 +114,7 @@ export function useBlockchainData(chainId: string) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [execute, getBlocksBatch]);
 
   useEffect(() => {
     if (!chainId) {
@@ -126,7 +126,7 @@ export function useBlockchainData(chainId: string) {
 
     const interval = setInterval(fetchData, 12000);
     return () => clearInterval(interval);
-  }, [chainId]);
+  }, [chainId, fetchData]);
 
   return { blocks, transactions, isLoading, error };
 }
