@@ -9,7 +9,7 @@ import { ITransaction } from '@/interfaces/chain';
 
 interface ITransactionListProps {
   transactions: ITransaction[];
-  loading?: boolean;
+  isLoading: boolean;
 }
 
 const TransactionItem = ({ txn }: { txn: ITransaction }) => {
@@ -76,9 +76,19 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
   );
 };
 
-export default function TransactionList({ transactions, loading }: ITransactionListProps) {
+export default function TransactionList({ transactions, isLoading }: ITransactionListProps) {
   const pathName = usePathname();
   const transactionListPath = `${pathName}/txs`;
+
+  const displayedTransactions = isLoading ? (
+    <div className="flex h-full items-center justify-center p-6">
+      <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+    </div>
+  ) : transactions.length > 0 ? (
+    transactions.map((txn) => <TransactionItem key={txn.hash} txn={txn} />)
+  ) : (
+    <div className="flex h-full items-center justify-center p-6 text-gray-400">尚無數據</div>
+  );
 
   return (
     <div className="flex flex-col items-stretch rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -89,17 +99,7 @@ export default function TransactionList({ transactions, loading }: ITransactionL
         </Link>
       </div>
 
-      <div className="custom-scrollbar flex-1 space-y-6 pr-2">
-        {loading ? (
-          <div className="flex h-full items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-          </div>
-        ) : transactions.length > 0 ? (
-          transactions.map((txn) => <TransactionItem key={txn.hash} txn={txn} />)
-        ) : (
-          <div className="flex h-full items-center justify-center text-gray-400">尚無數據</div>
-        )}
-      </div>
+      <div className="custom-scrollbar flex-1 space-y-6 pr-2">{displayedTransactions}</div>
 
       <Link
         href={transactionListPath}
