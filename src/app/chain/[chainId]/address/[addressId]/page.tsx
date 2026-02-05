@@ -20,25 +20,23 @@ import {
 import ChainHeader from '@/components/chain/chain_header';
 import AddressDetailHeader from '@/components/address/address_detail_header';
 import AddressTxTable from '@/components/address/address_tx_table';
+import { IAlchemyTransaction } from '@/interfaces/alchemy';
 
 enum AddressTab {
   TRANSACTIONS = '交易',
 }
 
 export const useTransactionList = (address: string, chainId: string) => {
-  // ToDo: (20260204 - Julian) Remove any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [transactions, setTransactions] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<IAlchemyTransaction[]>([]);
   const [loading, setLoading] = useState(false);
-  const [pageKey, setPageKey] = useState<string | null>(null); // Info: (20260204 - Julian) 用於分頁
 
-  const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
 
-  const fetchTransactions = async (isNextPage = false) => {
+  const fetchTransactions = async () => {
     setLoading(true);
     try {
       // Info: (20260204 - Julian) 使用 Alchemy 的 getAssetTransfers API
-      const response = await fetch(`https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`, {
+      const response = await fetch(`https://eth-mainnet.g.alchemy.com/v2/${apiKey}`, {
         method: 'POST',
         body: JSON.stringify({
           jsonrpc: '2.0',
@@ -49,9 +47,7 @@ export const useTransactionList = (address: string, chainId: string) => {
               fromBlock: '0x0',
               toBlock: 'latest',
               fromAddress: address, // Info: (20260204 - Julian) 或同時查詢 toAddress
-              category: ['external', 'erc20', 'erc721'],
-              maxCount: '0x19', // Info: (20260204 - Julian) 每次 25 筆
-              pageKey: isNextPage ? pageKey : undefined,
+              category: ['external', 'internal', 'erc20', 'erc721', 'erc1155', 'specialnft'],
             },
           ],
         }),
@@ -69,8 +65,7 @@ export const useTransactionList = (address: string, chainId: string) => {
         throw new Error(data.error?.message || 'Unknown Alchemy error');
       }
 
-      setTransactions((prev) => (isNextPage ? [...prev, ...result.transfers] : result.transfers));
-      setPageKey(result.pageKey || null);
+      setTransactions(result.transfers);
     } catch (err) {
       console.error('無法取得交易紀錄:', err);
     } finally {
@@ -82,7 +77,7 @@ export const useTransactionList = (address: string, chainId: string) => {
     fetchTransactions();
   }, [address, chainId]);
 
-  return { transactions, loading, hasMore: !!pageKey, loadMore: () => fetchTransactions(true) };
+  return { transactions, loading };
 };
 
 export default function AddressDetailPage() {
