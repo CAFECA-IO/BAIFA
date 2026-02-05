@@ -155,6 +155,7 @@ export const useEthRpc = (chainId: string) => {
     getLatestBlockNumber,
     getBlockByHash,
     getBlocksBatch,
+    execute,
     executeBatch,
   };
 };

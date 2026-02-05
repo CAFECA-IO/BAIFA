@@ -172,7 +172,7 @@ const TransactionTable = () => {
     // Info: (20260202 - Julian) 載入中
     <tr aria-hidden="true">
       <td colSpan={10} className="p-10 text-center font-semibold">
-        <Loader2 className="mx-auto h-6 w-6 animate-spin text-gray-600" />
+        <Loader2 className="mx-auto h-6 w-6 animate-spin text-[#5841D8]" />
       </td>
     </tr>
   ) : transactions.length === 0 ? (

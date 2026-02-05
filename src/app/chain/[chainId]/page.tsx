@@ -11,23 +11,18 @@ export default function ChainDetailPage() {
   const chainId = params?.chainId as string;
 
   // Info: (20260130 - Julian) 2. Fetch dynamic blockchain data (Blocks & Transactions)
-  const {
-    blocks,
-    transactions,
-    loading: dataLoading,
-    error: dataError,
-  } = useBlockchainData(chainId);
+  const { blocks, transactions, isLoading, error } = useBlockchainData(chainId);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-7xl py-20 pt-6 text-black">
         <ChainHeader />
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <BlockList blocks={blocks} loading={dataLoading} />
-          <TransactionList transactions={transactions} loading={dataLoading} />
+          <BlockList blocks={blocks} isLoading={isLoading} />
+          <TransactionList transactions={transactions} isLoading={isLoading} />
         </div>
-        {dataError && (
-          <div className="mt-4 text-center text-sm text-red-500">即時數據獲取失敗：{dataError}</div>
+        {error && (
+          <div className="mt-4 text-center text-sm text-red-500">即時數據獲取失敗：{error}</div>
         )}
       </div>
     </div>

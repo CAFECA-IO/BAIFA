@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 
 interface IBlockListProps {
   blocks: IBlock[];
-  loading?: boolean;
+  isLoading: boolean;
 }
 
 const BlockItem = ({ block }: { block: IBlock }) => {
@@ -55,9 +55,19 @@ const BlockItem = ({ block }: { block: IBlock }) => {
   );
 };
 
-export default function BlockList({ blocks, loading }: IBlockListProps) {
+export default function BlockList({ blocks, isLoading }: IBlockListProps) {
   const pathname = usePathname();
   const blockListPath = `${pathname}/blocks`;
+
+  const displayedBlocks = isLoading ? (
+    <div className="flex h-full items-center justify-center p-6">
+      <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+    </div>
+  ) : blocks.length > 0 ? (
+    blocks.map((block) => <BlockItem key={block.height} block={block} />)
+  ) : (
+    <div className="flex h-full items-center justify-center text-gray-400">尚無數據</div>
+  );
 
   return (
     <div className="flex flex-col items-stretch rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -68,17 +78,7 @@ export default function BlockList({ blocks, loading }: IBlockListProps) {
         </Link>
       </div>
 
-      <div className="custom-scrollbar flex-1 space-y-6 pr-2">
-        {loading ? (
-          <div className="flex h-full items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-          </div>
-        ) : blocks.length > 0 ? (
-          blocks.map((block) => <BlockItem key={block.height} block={block} />)
-        ) : (
-          <div className="flex h-full items-center justify-center text-gray-400">尚無數據</div>
-        )}
-      </div>
+      <div className="custom-scrollbar flex-1 space-y-6 pr-2">{displayedBlocks}</div>
 
       <Link
         href={blockListPath}

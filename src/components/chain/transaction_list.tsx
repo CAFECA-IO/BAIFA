@@ -6,10 +6,11 @@ import { ArrowRight, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import CopyButton from '@/components/common/copy_button';
 import { ITransaction } from '@/interfaces/chain';
+import { truncateAddress } from '@/lib/utils/format';
 
 interface ITransactionListProps {
   transactions: ITransaction[];
-  loading?: boolean;
+  isLoading: boolean;
 }
 
 const TransactionItem = ({ txn }: { txn: ITransaction }) => {
@@ -17,29 +18,11 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
   const chainId = params?.chainId as string;
 
   const transactionPath = `/chain/${chainId}/txs/${txn.hash}`;
-  const fromPath = `/chain/${chainId}/address/${txn.fromLabel}`;
-  const toPath = `/chain/${chainId}/address/${txn.toLabel}`;
+  const fromPath = `/chain/${chainId}/address/${txn.from}`;
+  const toPath = `/chain/${chainId}/address/${txn.to}`;
 
-  const displayFrom = !!txn.from ? (
-    <div className="flex items-center gap-1.5">
-      <Link href={fromPath} className="font-mono text-[#5841D8] hover:underline">
-        {txn.from}
-      </Link>
-      <CopyButton value={txn.fromLabel ?? txn.from} />
-    </div>
-  ) : (
-    <p className="font-mono text-gray-600">Unknown</p>
-  );
-  const displayTo = !!txn.to ? (
-    <div className="flex items-center gap-1.5">
-      <Link href={toPath} className="font-mono text-[#5841D8] hover:underline">
-        {txn.to}
-      </Link>
-      <CopyButton value={txn.toLabel ?? txn.to} />
-    </div>
-  ) : (
-    <p className="font-mono text-gray-600">Unknown</p>
-  );
+  const fromStr = txn.from.startsWith('0x') ? truncateAddress(txn.from, 10, 4) : txn.from;
+  const toStr = txn.to.startsWith('0x') ? truncateAddress(txn.to, 10, 4) : txn.to;
 
   return (
     <div className="animate-block-in flex items-center gap-4 border-b border-gray-50 pb-4 last:border-0 last:pb-0">
@@ -53,32 +36,58 @@ const TransactionItem = ({ txn }: { txn: ITransaction }) => {
         <div className="mb-1 grid grid-cols-6 gap-2 text-sm">
           <Link
             href={transactionPath}
-            className="col-span-2 truncate font-bold text-[#5841D8] hover:underline"
+            className="col-span-2 flex items-center hover:underline"
             title={txn.hash}
           >
-            {txn.hash}
+            <p className="overflow-hidden font-bold text-ellipsis whitespace-nowrap text-[#5841D8]">
+              {txn.hash}
+            </p>
           </Link>
-          <span className="col-span-1 text-xs text-nowrap text-gray-400">發送方</span>
-          {displayFrom}
+          <div className="col-span-1 flex items-center text-xs whitespace-nowrap text-gray-400">
+            發送方
+          </div>
+          <div className="col-span-3 flex items-center gap-1.5">
+            <Link href={fromPath} className="font-mono text-[#5841D8] hover:underline">
+              {fromStr}
+            </Link>
+            <CopyButton value={txn.from} />
+          </div>
         </div>
         <div className="grid grid-cols-6 gap-2 text-sm">
-          <span className="col-span-2 text-xs text-gray-500">{txn.time}</span>
-          <span className="col-span-1 text-xs text-nowrap text-gray-400">接收方</span>
-          {displayTo}
+          <span className="col-span-2 flex items-center text-xs text-gray-500">{txn.time}</span>
+          <span className="col-span-1 flex items-center text-xs whitespace-nowrap text-gray-400">
+            接收方
+          </span>
+          <div className="col-span-3 flex items-center gap-1.5">
+            <Link href={toPath} className="font-mono text-[#5841D8] hover:underline">
+              {toStr}
+            </Link>
+            <CopyButton value={txn.to} />
+          </div>
         </div>
       </div>
 
       {/* Info: (20260130 - Julian) Value */}
       <div className="shrink-0 text-right">
-        <div className="text-sm font-bold text-gray-900">{txn.value}</div>
+        <div className="text-sm font-bold text-gray-900">{txn.value} ISC</div>
       </div>
     </div>
   );
 };
 
-export default function TransactionList({ transactions, loading }: ITransactionListProps) {
+export default function TransactionList({ transactions, isLoading }: ITransactionListProps) {
   const pathName = usePathname();
   const transactionListPath = `${pathName}/txs`;
+
+  const displayedTransactions = isLoading ? (
+    <div className="flex h-full items-center justify-center p-6">
+      <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+    </div>
+  ) : transactions.length > 0 ? (
+    transactions.map((txn) => <TransactionItem key={txn.hash} txn={txn} />)
+  ) : (
+    <div className="flex h-full items-center justify-center p-6 text-gray-400">尚無數據</div>
+  );
 
   return (
     <div className="flex flex-col items-stretch rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -89,17 +98,7 @@ export default function TransactionList({ transactions, loading }: ITransactionL
         </Link>
       </div>
 
-      <div className="custom-scrollbar flex-1 space-y-6 pr-2">
-        {loading ? (
-          <div className="flex h-full items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-          </div>
-        ) : transactions.length > 0 ? (
-          transactions.map((txn) => <TransactionItem key={txn.hash} txn={txn} />)
-        ) : (
-          <div className="flex h-full items-center justify-center text-gray-400">尚無數據</div>
-        )}
-      </div>
+      <div className="custom-scrollbar flex-1 space-y-6 pr-2">{displayedTransactions}</div>
 
       <Link
         href={transactionListPath}
