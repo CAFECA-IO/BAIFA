@@ -1,100 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import {
-  // Copy,
-  // AlertTriangle,
-  // ChevronDown,
-  // Search,
-  // ArrowRight,
-  // Info,
-  // ChevronLeft,
-  // ChevronRight,
-  // Loader2,
-  ArrowLeft,
-} from 'lucide-react';
-// import { useBlockchainData } from '@/lib/hooks/use_blockchain_data';
-// import { truncateAddress } from '@/lib/utils/format';
+import { Loader2, ArrowLeft } from 'lucide-react';
 import ChainHeader from '@/components/chain/chain_header';
 import AddressDetailHeader from '@/components/address/address_detail_header';
 import AddressTxTable from '@/components/address/address_tx_table';
-import { IAlchemyTransaction } from '@/interfaces/alchemy';
+import { useTransactionList } from '@/lib/hooks/use_tx_data';
 
 enum AddressTab {
   TRANSACTIONS = '交易',
 }
-
-export const useTransactionList = (address: string, chainId: string) => {
-  const [transactions, setTransactions] = useState<IAlchemyTransaction[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
-
-  const fetchTransactions = async () => {
-    setLoading(true);
-    try {
-      // Info: (20260204 - Julian) 使用 Alchemy 的 getAssetTransfers API
-      const response = await fetch(`https://eth-mainnet.g.alchemy.com/v2/${apiKey}`, {
-        method: 'POST',
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'alchemy_getAssetTransfers',
-          params: [
-            {
-              fromBlock: '0x0',
-              toBlock: 'latest',
-              fromAddress: address, // Info: (20260204 - Julian) 或同時查詢 toAddress
-              category: ['external', 'internal', 'erc20', 'erc721', 'erc1155', 'specialnft'],
-            },
-          ],
-        }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-      }
-
-      const data = await response.json();
-      const result = data.result;
-
-      if (!result) {
-        throw new Error(data.error?.message || 'Unknown Alchemy error');
-      }
-
-      setTransactions(result.transfers);
-    } catch (err) {
-      console.error('無法取得交易紀錄:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchTransactions();
-  }, [address, chainId]);
-
-  return { transactions, loading };
-};
 
 export default function AddressDetailPage() {
   const params = useParams();
   const chainId = params?.chainId as string;
   const addressId = params?.addressId as string;
 
-  const { transactions /* , loading, hasMore, loadMore */ } = useTransactionList(
-    addressId,
-    chainId
-  );
-
-  // const {
-  //   transactions: allTransactions,
-  //   latestGasPrice,
-  //   loading: chainLoading,
-  // } = useBlockchainData(chainId);
+  const { transactions, isLoading } = useTransactionList(addressId, chainId);
 
   const [activeTab, setActiveTab] = useState<AddressTab>(AddressTab.TRANSACTIONS);
 
@@ -120,6 +44,26 @@ export default function AddressDetailPage() {
   //   );
   // }
 
+  const displayedTabs = Object.values(AddressTab).map((tab) => (
+    <button
+      key={tab}
+      onClick={() => setActiveTab(tab)}
+      className={`rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-colors ${
+        activeTab === tab ? 'bg-black text-white' : 'bg-white text-gray-500 hover:text-gray-900'
+      }`}
+    >
+      {tab}
+    </button>
+  ));
+
+  const displayedTxTable = isLoading ? (
+    <div className="flex items-center justify-center p-6">
+      <Loader2 className="h-8 w-8 animate-spin text-[#5841D8]" />
+    </div>
+  ) : (
+    <AddressTxTable address={addressId} transactions={transactions} />
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-7xl py-20 pt-6 text-black">
@@ -139,63 +83,10 @@ export default function AddressDetailPage() {
           <AddressDetailHeader address={addressId} chainId={chainId} />
 
           {/* Info: (20260130 - Julian) Tabs */}
-          <div className="flex pb-4">
-            {Object.values(AddressTab).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-colors ${
-                  activeTab === tab
-                    ? 'bg-black text-white'
-                    : 'bg-white text-gray-500 hover:text-gray-900'
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-
-          {/* Info: (20260130 - Julian) Filters Bar */}
-          {/* <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-400">
-                開始日期 <ArrowRight size={14} /> 結束日期
-              </div>
-              <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm">
-                發送方/接收方 <ChevronDown size={14} className="text-gray-400" />
-              </div>
-              <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm">
-                數量 <ChevronDown size={14} className="text-gray-400" />
-              </div>
-              <div className="relative">
-                <Search
-                  size={16}
-                  className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
-                />
-                <input
-                  type="text"
-                  placeholder="搜索方法"
-                  className="rounded-lg border border-gray-200 bg-white py-2 pr-4 pl-10 text-sm focus:ring-2 focus:ring-[#5841D8]/20 focus:outline-none"
-                  aria-label="Filter by Method"
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <span className="text-gray-400">交易狀態：</span>
-                <span className="font-bold text-gray-900">全部</span>
-                <ChevronRight size={14} className="text-gray-400" />
-              </div>
-              <Toggle
-                isOpen={isOpenSummary}
-                onToggle={() => setIsOpenSummary((prev) => !prev)}
-                label={{ open: '展示交易統計數據', close: '展示交易統計數據' }}
-              />
-            </div>
-          </div> */}
+          <div className="flex pb-4">{displayedTabs}</div>
 
           {/* Info: (20260204 - Julian) Transaction Table */}
-          <AddressTxTable address={addressId} transactions={transactions} />
+          {displayedTxTable}
         </div>
       </div>
     </div>
