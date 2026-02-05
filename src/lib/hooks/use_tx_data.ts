@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { IAlchemyTransaction } from '@/interfaces/alchemy';
+import { TransactionCategory } from '@/constants/transaction_category';
 
 enum TransactionType {
   FROM = 'from',
@@ -11,7 +12,11 @@ enum TransactionType {
  * Ref: https://www.alchemy.com/docs/data/transfers-api/transfers-endpoints/alchemy-get-asset-transfers
  * 使用 Alchemy 的 getAssetTransfers API 取得指定位址的交易紀錄
  */
-export const useTransactionList = (address: string, chainId: string) => {
+export const useTransactionList = (
+  address: string,
+  chainId: string,
+  categories: TransactionCategory[] = [TransactionCategory.EXTERNAL] // 預設為一般交易
+) => {
   const [transactions, setTransactions] = useState<IAlchemyTransaction[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -32,7 +37,7 @@ export const useTransactionList = (address: string, chainId: string) => {
           fromBlock: '0x0',
           toBlock: 'latest',
           [type === TransactionType.FROM ? 'fromAddress' : 'toAddress']: address,
-          category: ['external', 'internal', 'erc20', 'erc721', 'erc1155', 'specialnft'],
+          category: categories,
           withMetadata: true,
           excludeZeroValue: true,
         },

@@ -7,10 +7,13 @@ import { Loader2, ArrowLeft } from 'lucide-react';
 import ChainHeader from '@/components/chain/chain_header';
 import AddressDetailHeader from '@/components/address/address_detail_header';
 import AddressTxTable from '@/components/address/address_tx_table';
+import TokenTransferTable from '@/components/address/token_transfer_table';
 import { useTransactionList } from '@/lib/hooks/use_tx_data';
+import { TransactionCategory } from '@/constants/transaction_category';
 
 enum AddressTab {
   TRANSACTIONS = '交易',
+  TOKEN_TRANSFERS = '代幣轉帳',
 }
 
 export default function AddressDetailPage() {
@@ -18,31 +21,16 @@ export default function AddressDetailPage() {
   const chainId = params?.chainId as string;
   const addressId = params?.addressId as string;
 
-  const { transactions, isLoading } = useTransactionList(addressId, chainId);
-
   const [activeTab, setActiveTab] = useState<AddressTab>(AddressTab.TRANSACTIONS);
 
-  // const [isOpenSummary, setIsOpenSummary] = useState<boolean>(true);
-  // const [isShowZeroTransaction, setIsShowZeroTransaction] = useState<boolean>(false);
+  // Info: (20260205 - Julian) 根據目前 Tab 決定要顯示的交易類別
+  const categories: TransactionCategory[] =
+    activeTab === AddressTab.TRANSACTIONS
+      ? [TransactionCategory.EXTERNAL]
+      : [TransactionCategory.ERC20];
 
-  // const loading = chainLoading
-
-  // Info: (20260130 - Julian) Filter and process transactions for this address
-  // const transactions = allTransactions
-  //   .filter(
-  //     (tx) =>
-  //       tx.fromLabel?.toLowerCase() === addressId.toLowerCase() ||
-  //       tx.toLabel?.toLowerCase() === addressId.toLowerCase()
-  //   )
-  //   .sort((a, b) => Number(b.blockNumber) - Number(a.blockNumber));
-
-  // if (loading && transactions.length === 0) {
-  //   return (
-  //     <div className="flex h-screen items-center justify-center bg-white">
-  //       <Loader2 className="h-8 w-8 animate-spin text-[#5841D8]" />
-  //     </div>
-  //   );
-  // }
+  // Info: (20260205 - Julian) 取得交易紀錄
+  const { transactions, isLoading } = useTransactionList(addressId, chainId, categories);
 
   const displayedTabs = Object.values(AddressTab).map((tab) => (
     <button
@@ -56,12 +44,17 @@ export default function AddressDetailPage() {
     </button>
   ));
 
-  const displayedTxTable = isLoading ? (
-    <div className="flex items-center justify-center p-6">
-      <Loader2 className="h-8 w-8 animate-spin text-[#5841D8]" />
+  const displayedContent = isLoading ? (
+    <div className="flex items-center justify-center p-6 text-center">
+      <div className="flex flex-col items-center gap-2">
+        <Loader2 className="h-8 w-8 animate-spin text-[#5841D8]" />
+        <p className="text-sm text-gray-400">正在載入數據...</p>
+      </div>
     </div>
-  ) : (
+  ) : activeTab === AddressTab.TRANSACTIONS ? (
     <AddressTxTable address={addressId} transactions={transactions} />
+  ) : (
+    <TokenTransferTable address={addressId} transfers={transactions} />
   );
 
   return (
@@ -83,10 +76,10 @@ export default function AddressDetailPage() {
           <AddressDetailHeader address={addressId} chainId={chainId} />
 
           {/* Info: (20260130 - Julian) Tabs */}
-          <div className="flex pb-4">{displayedTabs}</div>
+          <div className="flex gap-4 pb-4">{displayedTabs}</div>
 
-          {/* Info: (20260204 - Julian) Transaction Table */}
-          {displayedTxTable}
+          {/* Info: (20260205 - Julian) Content */}
+          {displayedContent}
         </div>
       </div>
     </div>
