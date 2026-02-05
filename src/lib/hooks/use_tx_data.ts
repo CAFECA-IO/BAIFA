@@ -15,7 +15,7 @@ enum TransactionType {
 export const useTransactionList = (
   address: string,
   chainId: string,
-  categories: TransactionCategory[] = [TransactionCategory.EXTERNAL] // 預設為一般交易
+  categories: TransactionCategory[] = [TransactionCategory.EXTERNAL] // Info: (20260205 - Julian) 預設為一般交易
 ) => {
   const [transactions, setTransactions] = useState<IAlchemyTransaction[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
